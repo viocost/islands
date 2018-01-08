@@ -2,6 +2,13 @@ $header_bg_color: #404244
 $header_color: #f2f2f2
 $row_bg_color: #e3eafc
 
+@mixin message
+  width: 70%
+  border-radius: 0.5rem
+  margin: 0.5rem
+  padding: 0.3rem
+  color: #4c4c4c
+
 *,
 *::before,
 *::after
@@ -35,6 +42,7 @@ h3
   padding:  2rem 0 2rem 0
   .heading__main
     font-weight: 100
+    color: whitesmoke
 .online__heading-icon
   i.fa
     margin-right: 1.8rem
@@ -75,6 +83,18 @@ table
   margin-top: 4rem
 
 
+.btn
+  outline: 0
+  background: #fff
+  font-size: 2rem
+  border: 1px solid purple
+  border-radius: 0.5rem
+  margin-left: 1rem
+  padding: 1rem
+  &:hover
+    background-color: #fff7ff
+  &:active
+    background-color: darken(#fff7ff, 10%)
 
 #enter_name
   margin: 3rem 0 6rem 0
@@ -84,29 +104,26 @@ table
     font-size: 2rem
     border: 2px solid #f2f2f2
     border-radius: 0.3rem
-  button
-    outline: 0
-    background: #fff
-    font-size: 2rem
-    border: 1px solid purple
-    border-radius: 0.5rem
-    margin-left: 1rem
-    padding: 1rem
-    &:hover
-      background-color: #fff7ff
-    &:active
-      background-color: darken(#fff7ff, 10%)
+
 
 #you_online
-  margin: 3rem 0 6rem 0
+  margin: 3rem 0 3rem 0
+#user-name
+  font-size: 2rem
+
+.online
+  color: orange
 
 .online_users
-  border: 1px solid cadetblue
+  border: 2px solid #cccccc
   padding: 1rem
   border-radius: 1rem
   display: inline-block
   min-height: 30vh
-  min-width: 25%
+  width: 30%
+  overflow: hidden
+  float: left
+  margin: 0  40px 0 0
 
 .online_users_heading
   font-weight: 500
@@ -115,7 +132,46 @@ table
   padding: 0.5rem
   background-color: #ccd9fa
 
+#chat_window
+  display: inline-block
+  width: 64%
+  min-height: 30vh
+
+  border: #cccccc 2px solid
+  border-radius: 1rem
+  float: right
+  padding: 1rem 2rem 1rem 2rem
+  overflow: auto
+  max-height: 30vh
 
 
+  .message
+    @include message
+    float: left
+    background-color: #c4e8ff
+
+  .my_message
+    @include message
+    float: right
+    background-color: #d6ffef
+    text-align: right
+
+.new_message
+  float: right
+  text-align: right
 
 
+  *
+    display: block
+    margin: 1rem 0 1rem 0
+
+  #new-msg
+    min-width: 60%
+    padding: 1rem
+
+
+  #send-new-msg
+    float: right
+
+#waiting_room
+  display: none

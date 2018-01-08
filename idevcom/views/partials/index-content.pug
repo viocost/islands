@@ -1,24 +1,26 @@
 .container
-	.heading
-		h1.heading__main Welcome to Islands dev chat
+
 
 	#enter_name
 		input#join-room-name(type="text" placeholder="Enter your name")
-		button#join-room-button Join waiting room
+		button.btn#join-room-button Join waiting room
 
 	#you_online
 		span#user-name
 
 
 
+	#waiting_room
 
+		.online_users
+			h3.online_users_heading Online now:
+			table#users_table
+		#chat_window
 
-	.online_users
-		h3.online_users_heading Online now:
-		table#users_table
+		.new_message
+			textarea#new-msg(placeholder='Enter your message')
+			button.btn#send-new-msg Send
 
-
-	#chatArea
 
 script.
 
@@ -26,8 +28,15 @@ script.
 	var joinName = document.querySelector('#join-room-name');
 	var ROOM = 'Waiting room';
 	var usersTable = document.querySelector('#users_table');
+	var SOCKET_ID = null;
 
+	$('#new-msg').keydown(function (e) {
+			if (e.ctrlKey && e.keyCode == 13) {
+					send_new_message();
+			}
+	});
 
+	$('#send-new-msg').click(send_new_message);
 
 	$('#join-room-button').click(function (){
 		if (joinName.value === ""){
@@ -38,17 +47,27 @@ script.
 					'query': 'name=' + joinName.value
 			});
 
-			//hide connection element
-			$('#enter_name').hide();
-
-			//display you are online
-			$('#user-name').html("<i class='fa fa-user-circle-o' aria-hidden='true'></i>" +  joinName.value + ", you are now online").css('display: block;');
 
 			//add name to the online table
 
 			io.emit('ready', ROOM);
 			io.on('announce', function (data) {
 					displayMessage(data.message);
+			});
+
+			io.on('new_message', function(data){
+					append_new_message(data)
+			});
+
+			io.on('connect', function(data){
+					//hide connection element
+					$('#enter_name').hide();
+
+					//display you are online
+					$('#user-name').html("<i class='fa fa-user-circle-o online' aria-hidden='true'></i><b>" +"   " + joinName.value + ",</b> you are now online").css('display: block;');
+					$('#waiting_room').show()
+					SOCKET_ID = io.socket.transport.sessid;
+
 			});
 
 			io.on('update_online_users', function (data) {
@@ -83,8 +102,37 @@ script.
 
 	}
 
+	function send_new_message(){
+
+			var message = $('#new-msg').val().trim();
+			if (message === ""){
+				toastr['warning']('Please enter new message!');
+				return;
+			}
+			//send message
+			io.emit('broadcast_msg', {'message': message})
+	}
+
 	function displayMessage(message){
 			toastr["info"]("Welcome to waiting room!")
+	}
+
+	function append_new_message(message){
+			var msg =  document.createElement('p');
+			var chatWindow = document.querySelector('#chat_window');
+			if (message.id !== SOCKET_ID){
+					//Not my message
+					msg.classList.add('message');
+			} else {
+					//My Message
+					msg.classList.add('my_message');
+			}
+			msg.innerHTML = '<b>'+message.author +'</b><br>' + message.message;
+
+			chatWindow.appendChild(msg);
+			chatWindow.scrollTop = chatWindow.scrollHeight;
+
+
 	}
 
 

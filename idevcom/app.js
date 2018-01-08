@@ -24,8 +24,6 @@ app.get('/', (req, res)=>{
 const USERS_ONLINE = {};
 
 app.io.on('connection', (socket)=>{
-
-
     if(socket.handshake.query.name !== undefined){
         user = {
             name : socket.handshake.query.name,
@@ -35,8 +33,19 @@ app.io.on('connection', (socket)=>{
         if (!USERS_ONLINE.hasOwnProperty(socket.id)){
             USERS_ONLINE[socket.id] = user.name;
         }
+        console.log(socket.id);
+        socket.send(socket.id);
         updateOnlineUsersList();
     }
+
+    socket.on('broadcast_msg', (data)=>{
+        message = {
+            author: USERS_ONLINE[socket.id],
+            message: data.message,
+            id: socket.id
+        };
+        app.io.broadcast('new_message', message);
+    });
 
     socket.on('disconnect', ()=>{
         if(USERS_ONLINE.hasOwnProperty(socket.id)){
