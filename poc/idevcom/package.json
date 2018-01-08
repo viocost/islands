@@ -1,0 +1,22 @@
+{
+  "name": "idevcom",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Konstantin Rybakov <viocost@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "coffee-script": "^1.12.7",
+    "connect": "^3.6.5",
+    "express": "^4.16.2",
+    "express.io": "^1.1.13",
+    "pug": "^2.0.0-rc.4",
+    "toastr": "^2.1.4"
+  },
+  "devDependencies": {
+    "morgan": "^1.9.0"
+  }
+}
