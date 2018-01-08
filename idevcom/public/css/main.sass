@@ -1,0 +1,121 @@
+$header_bg_color: #404244
+$header_color: #f2f2f2
+$row_bg_color: #e3eafc
+
+*,
+*::before,
+*::after
+  padding: 0
+  margin: 0
+  box-sizing: border-box
+
+html
+  font-size: 62.5%
+  font-family:  'Roboto', sans-serif
+
+body
+  font-size: 1.5rem
+
+header
+  background-color: $header_bg_color
+  height: 10vh
+  color: $header_color
+
+h1
+  font-size: 4rem
+
+h3
+  font-size: 2rem
+
+.container
+  width: 980px
+  margin: 0 auto
+
+.heading
+  padding:  2rem 0 2rem 0
+  .heading__main
+    font-weight: 100
+.online__heading-icon
+  i.fa
+    margin-right: 1.8rem
+    color: green
+
+.online_users
+  margin-top: 3rem
+
+
+
+table
+  table-layout: fixed
+
+  tr
+
+    height: 3rem
+    width: 100%
+
+    td.id
+      display: none
+    td.circle
+      text-align: center
+      width: 5rem
+      i.fa
+        color: green
+
+    td.username
+      font-size: 1.9rem
+      width: 70%
+
+  tr:hover
+    background-color: lighten($row_bg_color, 3%)
+    cursor: pointer
+
+
+
+#chatArea
+  margin-top: 4rem
+
+
+
+#enter_name
+  margin: 3rem 0 6rem 0
+  input
+    outline: 0
+    padding: 1rem
+    font-size: 2rem
+    border: 2px solid #f2f2f2
+    border-radius: 0.3rem
+  button
+    outline: 0
+    background: #fff
+    font-size: 2rem
+    border: 1px solid purple
+    border-radius: 0.5rem
+    margin-left: 1rem
+    padding: 1rem
+    &:hover
+      background-color: #fff7ff
+    &:active
+      background-color: darken(#fff7ff, 10%)
+
+#you_online
+  margin: 3rem 0 6rem 0
+
+.online_users
+  border: 1px solid cadetblue
+  padding: 1rem
+  border-radius: 1rem
+  display: inline-block
+  min-height: 30vh
+  min-width: 25%
+
+.online_users_heading
+  font-weight: 500
+  font-size: 1.5rem
+  border-radius: 0.5rem
+  padding: 0.5rem
+  background-color: #ccd9fa
+
+
+
+
+

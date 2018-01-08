@@ -1,0 +1,90 @@
+.container
+	.heading
+		h1.heading__main Welcome to Islands dev chat
+
+	#enter_name
+		input#join-room-name(type="text" placeholder="Enter your name")
+		button#join-room-button Join waiting room
+
+	#you_online
+		span#user-name
+
+
+
+
+
+	.online_users
+		h3.online_users_heading Online now:
+		table#users_table
+
+
+	#chatArea
+
+script.
+
+	var joinButton = document.querySelector('#join-room-button');
+	var joinName = document.querySelector('#join-room-name');
+	var ROOM = 'Waiting room';
+	var usersTable = document.querySelector('#users_table');
+
+
+
+	$('#join-room-button').click(function (){
+		if (joinName.value === ""){
+			toastr['warning']('Please enter your name')
+		}  else{
+			//Connect to a socket
+			io = io.connect(null, {
+					'query': 'name=' + joinName.value
+			});
+
+			//hide connection element
+			$('#enter_name').hide();
+
+			//display you are online
+			$('#user-name').html("<i class='fa fa-user-circle-o' aria-hidden='true'></i>" +  joinName.value + ", you are now online").css('display: block;');
+
+			//add name to the online table
+
+			io.emit('ready', ROOM);
+			io.on('announce', function (data) {
+					displayMessage(data.message);
+			});
+
+			io.on('update_online_users', function (data) {
+					usersTable.innerHTML = "";
+					for (key in data) {
+							if (data.hasOwnProperty(key)) {
+									var row = document.createElement('tr');
+									var id = document.createElement('td');
+									var circle = document.createElement('td');
+									var username = document.createElement('td');
+									id.classList.add('id');
+									circle.classList.add('circle');
+									username.classList.add('username');
+									id.innerHTML = key;
+									circle.innerHTML = "<i class='fa fa-circle' aria-hidden='true'> <i/>";
+									username.innerHTML = data[key];
+									row.appendChild(id);
+									row.appendChild(circle);
+									row.appendChild(username);
+									usersTable.appendChild(row);
+							}
+					}
+			})
+		}
+	})
+
+	chatArea = document.querySelector('#chatArea');
+
+	function updateOnlineUsersList(){
+		var usersTable = document.querySelector('#users_table')
+		usersTable.innerHTML = "";
+
+	}
+
+	function displayMessage(message){
+			toastr["info"]("Welcome to waiting room!")
+	}
+
+
