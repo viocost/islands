@@ -1,6 +1,4 @@
 .container
-
-
 	#enter_name
 		input#join-room-name(type="text" placeholder="Enter your name")
 		button.btn#join-room-button Join waiting room
@@ -8,131 +6,18 @@
 	#you_online
 		span#user-name
 
-
-
-	#waiting_room
-
+	.chat-wrapper#waiting_room
 		.online_users
-			h3.online_users_heading Online now:
-			table#users_table
-		#chat_window
+			h3.online-users-heading Online now:
+			#online-users-list
+				.online-user-row
+		.chat
+			#chat_window
+			.new-message-wrap
+				textarea#new-msg(placeholder='Enter your message')
+				p.send-new-message-hint Ctrl+Enter - send. Enter - new line
+				button.btn#send-new-msg Send
 
-		.new_message
-			textarea#new-msg(placeholder='Enter your message')
-			button.btn#send-new-msg Send
-
-
-script.
-
-	var joinButton = document.querySelector('#join-room-button');
-	var joinName = document.querySelector('#join-room-name');
-	var ROOM = 'Waiting room';
-	var usersTable = document.querySelector('#users_table');
-	var SOCKET_ID = null;
-
-	$('#new-msg').keydown(function (e) {
-			if (e.ctrlKey && e.keyCode == 13) {
-					send_new_message();
-			}
-	});
-
-	$('#send-new-msg').click(send_new_message);
-
-	$('#join-room-button').click(function (){
-		if (joinName.value === ""){
-			toastr['warning']('Please enter your name')
-		}  else{
-			//Connect to a socket
-			io = io.connect(null, {
-					'query': 'name=' + joinName.value
-			});
-
-
-			//add name to the online table
-
-			io.emit('ready', ROOM);
-			io.on('announce', function (data) {
-					displayMessage(data.message);
-			});
-
-			io.on('new_message', function(data){
-					append_new_message(data)
-			});
-
-			io.on('connect', function(data){
-					//hide connection element
-					$('#enter_name').hide();
-
-					//display you are online
-					$('#user-name').html("<i class='fa fa-user-circle-o online' aria-hidden='true'></i><b>" +"   " + joinName.value + ",</b> you are now online").css('display: block;');
-					$('#waiting_room').show()
-					SOCKET_ID = io.socket.transport.sessid;
-
-			});
-
-			io.on('update_online_users', function (data) {
-					usersTable.innerHTML = "";
-					for (key in data) {
-							if (data.hasOwnProperty(key)) {
-									var row = document.createElement('tr');
-									var id = document.createElement('td');
-									var circle = document.createElement('td');
-									var username = document.createElement('td');
-									id.classList.add('id');
-									circle.classList.add('circle');
-									username.classList.add('username');
-									id.innerHTML = key;
-									circle.innerHTML = "<i class='fa fa-circle' aria-hidden='true'> <i/>";
-									username.innerHTML = data[key];
-									row.appendChild(id);
-									row.appendChild(circle);
-									row.appendChild(username);
-									usersTable.appendChild(row);
-							}
-					}
-			})
-		}
-	})
-
-	chatArea = document.querySelector('#chatArea');
-
-	function updateOnlineUsersList(){
-		var usersTable = document.querySelector('#users_table')
-		usersTable.innerHTML = "";
-
-	}
-
-	function send_new_message(){
-
-			var message = $('#new-msg').val().trim();
-			if (message === ""){
-				toastr['warning']('Please enter new message!');
-				return;
-			}
-			//send message
-			io.emit('broadcast_msg', {'message': message})
-	}
-
-	function displayMessage(message){
-			toastr["info"]("Welcome to waiting room!")
-	}
-
-	function append_new_message(message){
-			var msg =  document.createElement('p');
-			var chatWindow = document.querySelector('#chat_window');
-			if (message.id !== SOCKET_ID){
-					//Not my message
-					msg.classList.add('message');
-			} else {
-					//My Message
-					msg.classList.add('my_message');
-			}
-			msg.innerHTML = '<b>'+message.author +'</b><br>' + message.message;
-
-			chatWindow.appendChild(msg);
-			chatWindow.scrollTop = chatWindow.scrollHeight;
-
-
-	}
+script(src='/js/waiting_room.js')
 
 
