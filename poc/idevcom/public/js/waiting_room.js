@@ -3,11 +3,22 @@ var joinName = document.querySelector('#join-room-name');
 var ROOM = 'Waiting room';
 var usersTable = document.querySelector('#online-users-list');
 var SOCKET_ID = null;
+var private_channels = []
+
 
 $('#new-msg').keydown(function (e) {
     if (e.ctrlKey && e.keyCode == 13) {
         send_new_message();
     }
+});
+
+//Setting up separate socket connection for private call
+$('#launch-private-room').click(function(){
+    privateIO = io.connect(null, {
+        'force new connection': true,
+        'query': 'name=' + joinName.value,
+        'private': true
+    })
 });
 
 $('#send-new-msg').click(send_new_message);
@@ -17,34 +28,35 @@ $('#join-room-button').click(function (){
         toastr['warning']('Please enter your name')
     }  else{
         //Connect to a socket
-        io = io.connect(null, {
+        socket = io.connect(null, {
             'query': 'name=' + joinName.value
         });
 
 
         //add name to the online table
 
-        io.emit('ready', ROOM);
-        io.on('announce', function (data) {
+        socket.emit('ready', ROOM);
+        socket.on('announce', function (data) {
             displayMessage(data.message);
         });
 
-        io.on('new_message', function(data){
+        socket.on('new_message', function(data){
             append_new_message(data)
         });
 
-        io.on('connect', function(data){
+        socket.on('connect', function(data){
             //hide connection element
             $('#enter_name').hide();
 
             //display you are online
             $('#user-name').html("<i class='fa fa-user-circle-o online' aria-hidden='true'></i><b>" +"   " + joinName.value + ",</b> you are now online").css('display: block;');
+
             $('#waiting_room').css('display','flex');
-            SOCKET_ID = io.socket.transport.sessid;
+            SOCKET_ID = socket.socket.transport.sessid;
 
         });
 
-        io.on('update_online_users', function (data) {
+        socket.on('update_online_users', function (data) {
             usersTable.innerHTML = "";
             for (key in data) {
 
