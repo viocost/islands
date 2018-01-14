@@ -49,20 +49,20 @@ System interface should consist of following pages:
 
 * Chat room page
 
-![chat_window.png](https://github.com/viocost/islands/edit/master/poc/idevcom/docs/mockups/chat_window.png)
+![chat_window.png](https://raw.githubusercontent.com/viocost/islands/edit/master/poc/idevcom/docs/mockups/chat_window.png)
 
 
 * Room authentication page / room not found
 
-![room_authentication.png](https://github.com/viocost/islands/edit/master/poc/idevcom/docs/mockups/room_authentication.png)
+![room_authentication.png](https://raw.githubusercontent.com/viocost/islands/edit/master/poc/idevcom/docs/mockups/room_authentication.png)
 
-![room_not_found.png](https://github.com/viocost/islands/edit/master/poc/idevcom/docs/mockups/room_not_found.png)
+![room_not_found.png]https://raw.githubusercontent.com/viocost/islands/edit/master/poc/idevcom/docs/mockups/room_not_found.png)
 
 
 * Room settings: only for the owner of the room
 
 
-![settings.png](https://github.com/viocost/islands/edit/master/poc/idevcom/docs/mockups/settings.png)
+![settings.png](https://raw.githubusercontent.com/viocost/islands/edit/master/poc/idevcom/docs/mockups/settings.png)
 
 
 
