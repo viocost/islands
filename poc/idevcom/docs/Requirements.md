@@ -56,7 +56,7 @@ System interface should consist of following pages:
 
 ![room_authentication.png](https://raw.githubusercontent.com/viocost/islands/edit/master/poc/idevcom/docs/mockups/room_authentication.png)
 
-![room_not_found.png]https://raw.githubusercontent.com/viocost/islands/edit/master/poc/idevcom/docs/mockups/room_not_found.png)
+![room_not_found.png](https://raw.githubusercontent.com/viocost/islands/edit/master/poc/idevcom/docs/mockups/room_not_found.png)
 
 
 * Room settings: only for the owner of the room
