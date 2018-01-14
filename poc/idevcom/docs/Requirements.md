@@ -81,8 +81,9 @@ System interface should consist of following pages:
 * If a user surrounds a part of a message with \`\`\` (3 backticks), the surrounded text should appear as a code snippet
 
 ##### Message handling
+Every message must be encrypted on the client side. Server should not see any unencrypted data at all.
+![message_handling.png](https://github.com/viocost/islands/raw/master/poc/idevcom/docs/mockups/Message%20handling.png)
 
-
-#####Chat history
+##### Chat history
 
 
