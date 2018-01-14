@@ -45,7 +45,7 @@ System interface should consist of following pages:
 
 * Landing page
 
-![Landing.png](/mockups/Landing.png)
+![Landing.png](https://github.com/viocost/islands/raw/master/poc/idevcom/docs/mockups/Landing.png)
 
 * Chat room page
 
