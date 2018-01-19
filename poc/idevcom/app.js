@@ -1,8 +1,11 @@
 const express = require("express.io"),
       app = express(),
       path = require('path'),
+      bodyParser = require("body-parser"),
       logger = require('morgan'),
-      PORT = 4000;
+      PORT = 4000,
+
+      controllers = require('./controllers/persistence');
 
 
 app.set('view engine', 'pug');
@@ -10,6 +13,9 @@ app.http().io();
 
 app.set('views', path.join(__dirname, 'views'));
 app.set("view engine", "pug");
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
 if (app.get('env') === 'development')
     app.use(logger('dev'));
@@ -24,6 +30,26 @@ app.get('/', (req, res)=>{
 //This one is blank yet
 app.get('/private', (req, res)=>{
     res.render('private');
+});
+
+app.get("/files", (req, res)=>{
+   res.render('files');
+});
+
+
+
+/*****FILES EXPERIMENTS******/
+app.get("/files", (req, res)=>{
+    res.render('files');
+});
+app.post("/files", controllers.run_files_experiment);
+/*****_END OF FILES EXPERIMENTS******/
+
+
+
+//This one is blank yet
+app.get('/cryptground', (req, res)=>{
+    res.render('cryptground');
 });
 
 //Dictionary of active socket connections
@@ -118,12 +144,16 @@ function sendTo(connection, message) {
     connection.send(JSON.stringify(message));
 }
 
+
+
 app.io.route('ready', (req)=>{
     req.io.join(req.data);
     app.io.room(req.data).broadcast('announce', {
         message: 'New client in the ' + req.data + ' room.'
     });
 });
+
+module.exports = app;
 
 app.listen(PORT, 'localhost', ()=>{
     console.log('app started on port ' + PORT);

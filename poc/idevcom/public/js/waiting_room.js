@@ -147,3 +147,5 @@ function get_current_time(){
     d = new Date();
     return d.getHours() + ':' + d.getMinutes()
 }
+
+
