@@ -1,5 +1,7 @@
-const express = require("express.io"),
+const express = require("express"),
+
       app = express(),
+
       path = require('path'),
       bodyParser = require("body-parser"),
       logger = require('morgan'),
@@ -9,7 +11,7 @@ const express = require("express.io"),
 
 
 app.set('view engine', 'pug');
-app.http().io();
+
 
 app.set('views', path.join(__dirname, 'views'));
 app.set("view engine", "pug");
@@ -52,12 +54,27 @@ app.get('/cryptground', (req, res)=>{
     res.render('cryptground');
 });
 
+
+//This one is blank yet
+app.get('/chat', (req, res)=>{
+    res.render('chat');
+});
+
 //Dictionary of active socket connections
 //key is socket id
 const USERS_ONLINE = {};
 
+
+let server = app.listen(PORT, 'localhost', ()=>{
+    console.log('app started on port ' + PORT);
+});
+
+const io  = require("socket.io").listen(server);
+
 //defining event handlers for socket.io
-app.io.on('connection', (socket)=>{
+io.on('connection', (socket)=>{
+
+    console.log("Address: " + socket.handshake.address.address + ":" + socket.handshake.address.port);
 
     if(socket.handshake.query.name !== undefined){
         //creating new user object
@@ -77,7 +94,7 @@ app.io.on('connection', (socket)=>{
         socket.send(socket.id);
 
         //asking all the clients to update online users list
-        updateOnlineUsersList();
+        updateOnlineUsersList(socket);
     }
 
     //
@@ -87,7 +104,7 @@ app.io.on('connection', (socket)=>{
             message: data.message,
             id: socket.id
         };
-        app.io.broadcast('new_message', message);
+        socket.emit('new_message', message);
     });
 
     socket.on('message', (message)=>{
@@ -132,12 +149,13 @@ app.io.on('connection', (socket)=>{
             console.log('user disconnected');
         }
         //asking all the clients to update online users list
-        updateOnlineUsersList();
+        updateOnlineUsersList(socket);
     });
 });
 
-function updateOnlineUsersList(){
-    app.io.broadcast('update_online_users', USERS_ONLINE);
+function updateOnlineUsersList(socket){
+    socket.emit('update_online_users', USERS_ONLINE);
+
 }
 
 function sendTo(connection, message) {
@@ -146,16 +164,14 @@ function sendTo(connection, message) {
 
 
 
-app.io.route('ready', (req)=>{
-    req.io.join(req.data);
-    app.io.room(req.data).broadcast('announce', {
-        message: 'New client in the ' + req.data + ' room.'
+io.on('ready', (socket)=>{
+    socket.join(socket.data);
+    io.room(socket.data).broadcast('announce', {
+        message: 'New client in the ' + socket.data + ' room.'
     });
 });
 
 module.exports = app;
 
-app.listen(PORT, 'localhost', ()=>{
-    console.log('app started on port ' + PORT);
-});
+
     

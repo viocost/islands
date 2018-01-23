@@ -2,8 +2,10 @@ var joinButton = document.querySelector('#join-room-button');
 var joinName = document.querySelector('#join-room-name');
 var ROOM = 'Waiting room';
 var usersTable = document.querySelector('#online-users-list');
-var SOCKET_ID = null;
-var private_channels = []
+var SOCKET_ID;
+var private_channels = [];
+var socket;
+
 
 
 $('#new-msg').keydown(function (e) {
@@ -14,11 +16,13 @@ $('#new-msg').keydown(function (e) {
 
 //Setting up separate socket connection for private call
 $('#launch-private-room').click(function(){
+    //TURN OFF FOR NOW
+    /*
     privateIO = io.connect(null, {
         'force new connection': true,
         'query': 'name=' + joinName.value,
         'private': true
-    })
+    })*/
 });
 
 $('#send-new-msg').click(send_new_message);
@@ -98,7 +102,7 @@ function send_new_message(){
         return;
     }
     //send message
-    io.emit('broadcast_msg', {'message': message})
+    socket.emit('broadcast_msg', {'message': message})
     newMessageField.val("");
 }
 
