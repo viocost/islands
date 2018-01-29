@@ -71,6 +71,9 @@ let server = app.listen(PORT, 'localhost', ()=>{
 
 const io  = require("socket.io").listen(server);
 
+//TESTING
+
+//END
 //defining event handlers for socket.io
 io.on('connection', (socket)=>{
 
