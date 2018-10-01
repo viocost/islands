@@ -1,15 +1,23 @@
-const express = require("express.io"),
+const express = require("express"),
+
       app = express(),
+
       path = require('path'),
+      bodyParser = require("body-parser"),
       logger = require('morgan'),
-      PORT = 4000;
+      PORT = 4000,
+
+      controllers = require('./controllers/persistence');
 
 
 app.set('view engine', 'pug');
-app.http().io();
+
 
 app.set('views', path.join(__dirname, 'views'));
 app.set("view engine", "pug");
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
 if (app.get('env') === 'development')
     app.use(logger('dev'));
@@ -26,12 +34,54 @@ app.get('/private', (req, res)=>{
     res.render('private');
 });
 
+app.get("/files", (req, res)=>{
+   res.render('files');
+});
+
+
+
+
+
+/*****FILES EXPERIMENTS******/
+app.get("/files", (req, res)=>{
+    res.render('files');
+});
+app.post("/files", controllers.run_files_experiment);
+/*****_END OF FILES EXPERIMENTS******/
+
+
+
+//This one is blank yet
+app.get('/cryptground', (req, res)=>{
+    res.render('cryptground', {title: "Cryptground"});
+});
+
+app.get('/icrypto', (req, res)=>{
+    res.render('icrypto', {title: "iCrypto testing"});
+});
+
+app.get('/chat', (req, res)=>{
+    res.render('chat', {title: "Welcome to idevcom chat!"});
+});
+
 //Dictionary of active socket connections
 //key is socket id
 const USERS_ONLINE = {};
 
+
+let server = app.listen(PORT, 'localhost', ()=>{
+    console.log('app started on port ' + PORT);
+});
+
+const io  = require("socket.io").listen(server);
+
+//TESTING
+
+//END
 //defining event handlers for socket.io
-app.io.on('connection', (socket)=>{
+io.on('connection', (socket)=>{
+
+    console.log("Address: " + socket.handshake.address.address + ":" + socket.handshake.address.port);
 
     if(socket.handshake.query.name !== undefined){
         //creating new user object
@@ -51,7 +101,7 @@ app.io.on('connection', (socket)=>{
         socket.send(socket.id);
 
         //asking all the clients to update online users list
-        updateOnlineUsersList();
+        updateOnlineUsersList(socket);
     }
 
     //
@@ -61,7 +111,7 @@ app.io.on('connection', (socket)=>{
             message: data.message,
             id: socket.id
         };
-        app.io.broadcast('new_message', message);
+        io.sockets.emit('new_message', message);
     });
 
     socket.on('message', (message)=>{
@@ -106,26 +156,29 @@ app.io.on('connection', (socket)=>{
             console.log('user disconnected');
         }
         //asking all the clients to update online users list
-        updateOnlineUsersList();
+        updateOnlineUsersList(socket);
     });
 });
 
-function updateOnlineUsersList(){
-    app.io.broadcast('update_online_users', USERS_ONLINE);
+function updateOnlineUsersList(socket){
+    socket.emit('update_online_users', USERS_ONLINE);
+
 }
 
 function sendTo(connection, message) {
     connection.send(JSON.stringify(message));
 }
 
-app.io.route('ready', (req)=>{
-    req.io.join(req.data);
-    app.io.room(req.data).broadcast('announce', {
-        message: 'New client in the ' + req.data + ' room.'
+
+
+io.on('ready', (socket)=>{
+    socket.join(socket.data);
+    io.room(socket.data).broadcast('announce', {
+        message: 'New client in the ' + socket.data + ' room.'
     });
 });
 
-app.listen(PORT, 'localhost', ()=>{
-    console.log('app started on port ' + PORT);
-});
+module.exports = app;
+
+
     

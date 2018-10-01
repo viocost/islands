@@ -1,0 +1,43 @@
+metadata : {
+	"topicID": "lkjsdg132fjk1l2h45dg423",
+	"topicName": "Our cool conversation",
+
+	"participants":{
+		"me": {
+			"pubKey" : "<pubKeyDataInPem>",
+			"nickname" :" <nickname>",
+			"island" : "<address of the island onion or ip>",
+			"rights" :" ENUM(__0__: readonly (mute), __1__: readWrite, __2__: 1 + invite, __3__: 2 + kick 	out, set rights)",
+
+
+
+		},
+
+
+		"local": { 		//or {}
+			"1" : {
+				"pubKey" : "<pubKeyDataInPem>",
+				"nickname" : "<nickname>",
+				"rights" :" ENUM(__0__: readonly (mute), __1__: readWrite, __2__: 1 + invite, __3__: 2 + kick 	out, set rights)",
+
+			} ,
+			"2": {
+				"pubKey" :" <pubKeyDataInPem>",
+				"nickname" : "<nickname>",
+				"rights" : "ENUM(__0__: readonly (mute), __1__: readWrite, __2__: 1 + invite, __3__: 2 + kick 	out, set rights)",
+			}
+		}
+
+		kaskjhsdjkd.onion: {
+			...
+		}
+
+		fwe234dsgsd.onion: {
+		   ...
+		}
+	}
+
+
+}
+
+	
