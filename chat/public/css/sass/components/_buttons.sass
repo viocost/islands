@@ -1,0 +1,25 @@
+.btn
+  outline: 0
+  background: #fff
+  font-size: 2rem
+  border: 1px solid #bc9cd4
+  border-radius: 0.5rem
+  padding: 1rem
+  &:hover
+    background-color: darken(#fff7ff, 15%)
+    cursor: pointer
+
+  &:active
+    background-color: darken(#fff7ff, 10%)
+  &.disabled
+    opacity: 0.65
+    cursor: not-allowed
+    background-color: #9da3ad
+    border: none
+    pointer-events:  none
+    &:hover
+      cursor: not-allowed
+
+
+
+
