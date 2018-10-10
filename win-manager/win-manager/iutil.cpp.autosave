@@ -1,0 +1,8 @@
+#include "iutil.h"
+#include <string>
+
+char* IUtil::concatStrings(char* a, char* b){
+    
+    char result [strlen(a) + strlen(b)]; 
+    
+}

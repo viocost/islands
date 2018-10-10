@@ -26,11 +26,13 @@ CONFIG += c++11
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    islandmanager.cpp
+    islandmanager.cpp \
+    iutil.cpp
 
 HEADERS += \
         mainwindow.h \
-    islandmanager.h
+    islandmanager.h \
+    iutil.h
 
 FORMS += \
         mainwindow.ui

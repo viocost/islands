@@ -4,9 +4,8 @@
 
 class IslandManager{
     public:
-        IslandManager();
-        ~IslandManager();
-
+        static void initialize();
+        static IslandManager& getInstance();
         int launchIsland();
         int shutdownIsland();
         int checkStatus();
@@ -15,6 +14,12 @@ class IslandManager{
         int setMainPort();
 
     private:
+        IslandManager();
+        ~IslandManager();
+
+        IslandManager(IslandManager const&) = delete;
+        IslandManager& operator= (IslandManager const&) = delete;
+
         std::string exec(std::string command);
 };
 

@@ -24,19 +24,22 @@ int IslandManager::launchIsland(){
 
 std::string IslandManager::exec(std::string command){
     std::array<char, 128> buffer;
-    //std::vector<char*> resChunks;
-    //char* result;
+    std::vector<char[128]> resChunks;
+    int outputLength = 0;
     std::shared_ptr<FILE> pipe(_popen(command.c_str(), "r"), pclose);
     if (!pipe) throw std::runtime_error("popen() failed!");
     while (!feof(pipe.get())) {
         if (fgets(buffer.data(), 128, pipe.get()) != nullptr){
-               //resChunks.push_back(buffer.data());
-            std::cout<<buffer.data();
+            char chunk[128];
+            memcpy(buffer.data(), &chunk, 128);
+            resChunks.push_back(chunk);
+            outputLength += buffer.size();            
         }
     }
+    char result = [outputLength];
 
-    return "blank";
-    //return result;
+    return &result;
+    
 }
 
 
