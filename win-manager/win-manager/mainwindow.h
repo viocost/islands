@@ -27,10 +27,9 @@ protected:
 
 private slots:
     void iconActivated(QSystemTrayIcon::ActivationReason reason);
-
-    void on_pushButton_clicked();
-
-    void on_pushButton_2_clicked();
+    void on_shutdownIslandButton_clicked();
+    void on_launchIslandButton_clicked();
+    void on_restartIslandButton_clicked();
 
 private:
     Ui::MainWindow *ui;
@@ -41,6 +40,8 @@ private:
     QAction *shudownIslandAction;
     QAction *restartIslandAction;
     QMenu *trayIconMenu;
+
+    void updateIslandStatus();
 
 
 

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <QCloseEvent>
 #include <QStyle>
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "islandmanager.h"
@@ -13,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     ui->setupUi(this);
+    this->updateIslandStatus();
     //QIcon icon = QIcon("island.png");
     mSystemTrayIcon = new QSystemTrayIcon(this);
     mSystemTrayIcon->setIcon(QIcon(":/images/island.png"));
@@ -60,15 +62,30 @@ void MainWindow::closeEvent(QCloseEvent * event)
     }
 }
 
-void MainWindow::on_pushButton_clicked()
+void MainWindow::on_shutdownIslandButton_clicked()
 {
-
-    ui->statusBar->showMessage("Launching Island!!", 5000);
-    IslandManager &im = IslandManager::getInstance();
-    im.launchIsland();
+    IslandManager::getInstance().shutdownIsland();
+    this->updateIslandStatus();
 }
 
-void MainWindow::on_pushButton_2_clicked()
+void MainWindow::on_launchIslandButton_clicked()
 {
-    ui->statusBar->showMessage("Island shutdown!", 5000);
+    IslandManager::getInstance().launchIsland();
+    this->updateIslandStatus();
+}
+
+void MainWindow::on_restartIslandButton_clicked()
+{
+    IslandManager::getInstance().restartIsland();
+    this->updateIslandStatus();
+}
+
+void MainWindow::updateIslandStatus(){
+    if(IslandManager::getInstance().isIslandRunning()){
+        ui->islandStatus->setText("Running");
+        ui->islandStatus->setStyleSheet("QLabel {color: green;}");
+    }else{
+        ui->islandStatus->setText("Not running");
+        ui->islandStatus->setStyleSheet("QLabel {color: red;}");
+    }
 }

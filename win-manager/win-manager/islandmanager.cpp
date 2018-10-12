@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <fstream>
+#include <regex>
 
 
 
@@ -17,26 +19,52 @@ IslandManager& IslandManager::getInstance(){
     return im;
 }
 
-int IslandManager::launchIsland(){
-    std::string a = this->exec("vboxmanage startvm Island");
+
+int IslandManager::shutdownIsland(){
+    if(this->isIslandRunning()){
+        this->exec(std::string("vboxmanage controlvm Island poweroff > " ) + this->CMD_RESPONSE_FILE);
+    }
     return 0;
 }
 
-std::string IslandManager::exec(std::string command){
-    std::array<char, 128> buffer;
-    //std::vector<char*> resChunks;
-    //char* result;
-    std::shared_ptr<FILE> pipe(_popen(command.c_str(), "r"), pclose);
-    if (!pipe) throw std::runtime_error("popen() failed!");
-    while (!feof(pipe.get())) {
-        if (fgets(buffer.data(), 128, pipe.get()) != nullptr){
-               //resChunks.push_back(buffer.data());
-            std::cout<<buffer.data();
-        }
+int IslandManager::launchIsland(){
+    if (!this->isIslandRunning()){
+        this->exec(std::string("vboxmanage startvm Island --type headless > " ) + this->CMD_RESPONSE_FILE);
+    }
+    return 0;
+}
+
+int IslandManager::restartIsland(){
+     if (this->isIslandRunning()){
+         this->shutdownIsland();
+         this->launchIsland();
+     }
+     return 0;
+}
+
+
+
+
+bool IslandManager::isIslandRunning(){
+
+    std::string* response = new std::string();
+    std::string temp;
+
+    this->exec(std::string("vboxmanage showvminfo \"Island\" | findstr /c:\"running \"") + " > " + this->CMD_RESPONSE_FILE);
+    std::ifstream input(this->CMD_RESPONSE_FILE);
+    while(input>>temp){
+        *response += temp;
     }
 
-    return "blank";
-    //return result;
+    std::regex re("^(?=.*State)(?=.*running)(?=.*since).+");
+    bool result =  std::regex_match(*response, re);
+    delete response;
+    return result;
+}
+
+int IslandManager::exec(std::string command){
+    std::system(command.c_str());
+    return 0;
 }
 
 
