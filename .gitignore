@@ -4,4 +4,6 @@
 Conversations/*
 *history/*
 gc.bat
-brun.sh
+run2.sh
+**/build-*/**
+**/*.autosave
