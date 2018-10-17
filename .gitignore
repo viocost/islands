@@ -5,5 +5,5 @@ Conversations/*
 *history/*
 gc.bat
 run2.sh
-**/build-*/**
-**/*.autosave
+build-*
+*.autosave

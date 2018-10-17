@@ -44,3 +44,21 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
+
+
+void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason)
+{
+
+    std::cout<<"Icon activated\n";
+}
+
+void MainWindow::closeEvent(QCloseEvent * event)
+{
+
+    if(this->isVisible()) {
+        event->ignore();
+        this->hide();
+        QSystemTrayIcon::MessageIcon icon = QSystemTrayIcon::MessageIcon(QSystemTrayIcon::Information);
+        mSystemTrayIcon->showMessage("Tray program", "Island manager minimized", icon, 2000);
+    }
+}
