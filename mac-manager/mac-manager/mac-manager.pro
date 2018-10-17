@@ -26,10 +26,15 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+        islandmanager.cpp \
+        iutil.cpp
+
 
 HEADERS += \
-        mainwindow.h
+        mainwindow.h \
+        islandmanager.h \
+        iutil.h
 
 FORMS += \
         mainwindow.ui
@@ -38,3 +43,8 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+RC_ICONS = island.ico
+
+RESOURCES += \
+    resources.qrc
