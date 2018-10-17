@@ -62,3 +62,32 @@ void MainWindow::closeEvent(QCloseEvent * event)
         mSystemTrayIcon->showMessage("Tray program", "Island manager minimized", icon, 2000);
     }
 }
+
+void MainWindow::on_launchIslandButton_clicked()
+{
+    IslandManager::getInstance().launchIsland();
+    this->updateIslandStatus();
+}
+
+void MainWindow::on_shutdownIslandButton_clicked()
+{
+    IslandManager::getInstance().shutdownIsland();
+    this->updateIslandStatus();
+}
+
+void MainWindow::on_restartIslandButton_clicked()
+{
+    IslandManager::getInstance().restartIsland();
+    this->updateIslandStatus();
+}
+
+
+void MainWindow::updateIslandStatus(){
+    if(IslandManager::getInstance().isIslandRunning()){
+        ui->islandStatus->setText("Running");
+        ui->islandStatus->setStyleSheet("QLabel {color: green;}");
+    }else{
+        ui->islandStatus->setText("Not running");
+        ui->islandStatus->setStyleSheet("QLabel {color: red;}");
+    }
+}

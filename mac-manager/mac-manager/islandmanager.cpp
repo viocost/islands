@@ -22,14 +22,14 @@ IslandManager& IslandManager::getInstance(){
 
 int IslandManager::shutdownIsland(){
     if(this->isIslandRunning()){
-        this->exec(std::string("vboxmanage controlvm Island poweroff > " ) + this->CMD_RESPONSE_FILE);
+        this->exec(std::string("/usr/local/bin/vboxmanage controlvm Island poweroff > " ) + this->CMD_RESPONSE_FILE);
     }
     return 0;
 }
 
 int IslandManager::launchIsland(){
     if (!this->isIslandRunning()){
-        this->exec(std::string("vboxmanage startvm Island --type headless > " ) + this->CMD_RESPONSE_FILE);
+        this->exec(std::string("/usr/local/bin/vboxmanage startvm Island --type headless > " ) + this->CMD_RESPONSE_FILE);
     }
     return 0;
 }
@@ -50,7 +50,7 @@ bool IslandManager::isIslandRunning(){
     std::string* response = new std::string();
     std::string temp;
 
-    this->exec(std::string("vboxmanage showvminfo \"Island\" | findstr /c:\"running \"") + " > " + this->CMD_RESPONSE_FILE);
+    this->exec(std::string("/usr/local/bin/vboxmanage showvminfo \"Island\" | grep running ") + " > " + this->CMD_RESPONSE_FILE);
     std::ifstream input(this->CMD_RESPONSE_FILE);
     while(input>>temp){
         *response += temp;
@@ -63,7 +63,7 @@ bool IslandManager::isIslandRunning(){
 }
 
 int IslandManager::exec(std::string command){
-    std::system(command.c_str());
+	std::system(command.c_str());
     return 0;
 }
 

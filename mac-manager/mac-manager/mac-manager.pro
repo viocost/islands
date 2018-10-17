@@ -28,13 +28,15 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
         islandmanager.cpp \
-        iutil.cpp
+        iutil.cpp \
+        config.h
 
 
 HEADERS += \
         mainwindow.h \
         islandmanager.h \
-        iutil.h
+        iutil.h \
+        config.cpp
 
 FORMS += \
         mainwindow.ui

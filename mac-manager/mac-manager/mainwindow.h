@@ -22,6 +22,9 @@ protected:
 
 private slots:
     void iconActivated(QSystemTrayIcon::ActivationReason reason);
+    void on_shutdownIslandButton_clicked();
+    void on_launchIslandButton_clicked();
+    void on_restartIslandButton_clicked();
 
 private:
     Ui::MainWindow *ui;
