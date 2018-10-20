@@ -6,30 +6,38 @@
 #include <iostream>
 #include <fstream>
 #include <regex>
+#include <sstream>
 
 
 
 #include "islandmanager.h"
 
-IslandManager::IslandManager(){}
-IslandManager::~IslandManager(){}
-
-IslandManager& IslandManager::getInstance(){
-    static IslandManager im;
-    return im;
+IslandManager::IslandManager(){
+    this->config = new Config();
+}
+IslandManager::~IslandManager(){
+    delete config;
 }
 
 
 int IslandManager::shutdownIsland(){
     if(this->isIslandRunning()){
-        this->exec(std::string("/usr/local/bin/vboxmanage controlvm Island poweroff > " ) + this->CMD_RESPONSE_FILE);
+        std::ostringstream ss;
+        ss<<this->get_vbox_path()<<" controlvm " << this->get_vmname() \
+         << " poweroff > " << this->CMD_RESPONSE_FILE;
+        std::string cmd = ss.str();
+        std::cout<<cmd;
+        this->exec(cmd);
     }
     return 0;
 }
 
 int IslandManager::launchIsland(){
     if (!this->isIslandRunning()){
-        this->exec(std::string("/usr/local/bin/vboxmanage startvm Island --type headless > " ) + this->CMD_RESPONSE_FILE);
+        std::ostringstream ss;
+        ss<<this->get_vbox_path()<<" startvm "<< this->get_vmname() \
+         << " --type headless > " << this->CMD_RESPONSE_FILE;
+        this->exec(ss.str());
     }
     return 0;
 }
@@ -43,14 +51,16 @@ int IslandManager::restartIsland(){
 }
 
 
-
-
 bool IslandManager::isIslandRunning(){
 
     std::string* response = new std::string();
     std::string temp;
 
-    this->exec(std::string("/usr/local/bin/vboxmanage showvminfo \"Island\" | grep running ") + " > " + this->CMD_RESPONSE_FILE);
+    std::ostringstream ss;
+
+    ss<<this->get_vbox_path()<< " showvminfo \""\
+     <<this->get_vmname()<<"\" | grep running > " << this->CMD_RESPONSE_FILE;
+    this->exec(ss.str());
     std::ifstream input(this->CMD_RESPONSE_FILE);
     while(input>>temp){
         *response += temp;
@@ -67,4 +77,24 @@ int IslandManager::exec(std::string command){
     return 0;
 }
 
+void IslandManager::init_config(){
+    this->config = new Config();
+}
 
+//Getters
+std::string IslandManager::get_vbox_path(){
+    return this->config->get("vboxpath");
+}
+
+std::string IslandManager::get_vmname(){
+    return this->config->get("vmname");
+}
+
+//Setters
+void IslandManager::set_vbox_path(std::string path){
+    this->config->set("vboxpath", path);
+}
+
+void IslandManager::set_vname(std::string name){
+    this->config->set("vmname", name);
+}

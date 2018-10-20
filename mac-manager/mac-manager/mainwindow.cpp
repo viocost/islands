@@ -12,15 +12,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
-
-
     mSystemTrayIcon = new QSystemTrayIcon(this);
     mSystemTrayIcon->setIcon(QIcon(":/images/island.png"));
     mSystemTrayIcon->setToolTip("Island Manager tray" "\n"
                                     "Another line");
-
-
+    this->islandManager = new IslandManager();
     QMenu * menu = new QMenu(this);
     QAction * viewWindow = new QAction("Show manager", this);
     QAction * exitIslandManager = new QAction("Exit", this);
@@ -43,13 +39,14 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete islandManager;
 }
 
 
 void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason)
 {
 
-    std::cout<<"Icon activated\n";
+    std::cout<<"Icon activated\n"<<reason;
 }
 
 void MainWindow::closeEvent(QCloseEvent * event)
@@ -59,31 +56,31 @@ void MainWindow::closeEvent(QCloseEvent * event)
         event->ignore();
         this->hide();
         QSystemTrayIcon::MessageIcon icon = QSystemTrayIcon::MessageIcon(QSystemTrayIcon::Information);
-        mSystemTrayIcon->showMessage("Tray program", "Island manager minimized", icon, 2000);
+        mSystemTrayIcon->showMessage("Island manager", "Island manager has been minimized", icon, 2000);
     }
 }
 
 void MainWindow::on_launchIslandButton_clicked()
 {
-    IslandManager::getInstance().launchIsland();
+    this->islandManager->launchIsland();
     this->updateIslandStatus();
 }
 
 void MainWindow::on_shutdownIslandButton_clicked()
 {
-    IslandManager::getInstance().shutdownIsland();
+    this->islandManager->shutdownIsland();
     this->updateIslandStatus();
 }
 
 void MainWindow::on_restartIslandButton_clicked()
 {
-    IslandManager::getInstance().restartIsland();
+    this->islandManager->restartIsland();
     this->updateIslandStatus();
 }
 
 
 void MainWindow::updateIslandStatus(){
-    if(IslandManager::getInstance().isIslandRunning()){
+    if(this->islandManager->isIslandRunning()){
         ui->islandStatus->setText("Running");
         ui->islandStatus->setStyleSheet("QLabel {color: green;}");
     }else{
@@ -91,3 +88,6 @@ void MainWindow::updateIslandStatus(){
         ui->islandStatus->setStyleSheet("QLabel {color: red;}");
     }
 }
+
+
+

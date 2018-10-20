@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>	
+#include "settingsparser.hpp"
 
 int main(){
 	while( 1 ){

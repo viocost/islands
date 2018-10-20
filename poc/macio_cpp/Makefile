@@ -1,4 +1,4 @@
 all:
-	g++ main.cpp -o main
+	g++ -std=c++11 main.cpp settingsparser.cpp -o main
 clean:
-	rm -rf main
+	rm -rf main output.txt conanbuildinfo.xcconfig conanbuildinfo.txt *.o

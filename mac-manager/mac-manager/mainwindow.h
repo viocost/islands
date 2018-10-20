@@ -35,6 +35,7 @@ private:
     QAction *shudownIslandAction;
     QAction *restartIslandAction;
     QMenu *trayIconMenu;
+    IslandManager *islandManager;
 
     void updateIslandStatus();
 };
