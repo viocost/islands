@@ -1,6 +1,7 @@
 #include <iostream>
 #include <QCloseEvent>
 #include <QStyle>
+#include <QMessageBox>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -33,7 +34,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(mSystemTrayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
                 this, SLOT(iconActivated(QSystemTrayIcon::ActivationReason)));
 
-
+    reload_ettings();
 }
 
 MainWindow::~MainWindow()
@@ -63,23 +64,23 @@ void MainWindow::closeEvent(QCloseEvent * event)
 void MainWindow::on_launchIslandButton_clicked()
 {
     this->islandManager->launchIsland();
-    this->updateIslandStatus();
+    this->update_island_status();
 }
 
 void MainWindow::on_shutdownIslandButton_clicked()
 {
     this->islandManager->shutdownIsland();
-    this->updateIslandStatus();
+    this->update_island_status();
 }
 
 void MainWindow::on_restartIslandButton_clicked()
 {
     this->islandManager->restartIsland();
-    this->updateIslandStatus();
+    this->update_island_status();
 }
 
 
-void MainWindow::updateIslandStatus(){
+void MainWindow::update_island_status(){
     if(this->islandManager->isIslandRunning()){
         ui->islandStatus->setText("Running");
         ui->islandStatus->setStyleSheet("QLabel {color: green;}");
@@ -90,4 +91,42 @@ void MainWindow::updateIslandStatus(){
 }
 
 
+void MainWindow::reload_ettings(){
+    std::string vmName = this->islandManager->get_vmname();
+    std::string vmid = "unknown";
+    std::string vboxmanagePath = this->islandManager->get_vbox_path();
+    ui->vmnameLineEdit->setText(QString::fromStdString(vmName.empty() ? "unknown" : vmName));
+    ui->vmidLineEdit->setText(QString::fromStdString(vmid.empty() ? "unknown" : vmid));
+    ui->vboxmanagePathLineEdit->setText(QString::fromStdString(vboxmanagePath.empty() ? "unknown" : vboxmanagePath));
+}
 
+
+//TODO
+void MainWindow::on_pathToVboxmanageLineEdit_textChanged(const QString &arg1)
+{
+    std::cout<<"Setting vboxmanage path";
+    std::string v = arg1.toStdString();
+    this->islandManager->set_vbox_path(v);
+}
+
+void MainWindow::on_vMIdLineEdit_textChanged(const QString &arg1)
+{
+
+}
+
+void MainWindow::on_vMnameLineEdit_textChanged(const QString &arg1)
+{
+
+}
+
+void MainWindow::on_pushButton_clicked()
+{
+    QMessageBox::StandardButton reply;
+      reply = QMessageBox::question(this, "Reset settings", "Would you like yo restore all settings defaults?",
+                                    QMessageBox::Yes|QMessageBox::No);
+      if (reply == QMessageBox::Yes) {
+          this->islandManager->restore_config_defaults();
+          this->reload_ettings();
+      } else { /* Do nothing*/ }
+
+}

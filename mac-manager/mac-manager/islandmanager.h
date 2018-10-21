@@ -15,14 +15,16 @@ class IslandManager{
         int setMainPort();
         void init_config();
 
+        void restore_config_defaults();
+
         //getters
         std::string get_vbox_path();
         std::string get_vmname();
-
+        std::string get_vmid();
         //setters
         void set_vbox_path(std::string path);
         void set_vname(std::string name);
-
+        void set_vmid(std::string id);
     private:
         Config * config;
 

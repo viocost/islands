@@ -26,6 +26,14 @@ private slots:
     void on_launchIslandButton_clicked();
     void on_restartIslandButton_clicked();
 
+    void on_pathToVboxmanageLineEdit_textChanged(const QString &arg1);
+
+    void on_vMIdLineEdit_textChanged(const QString &arg1);
+
+    void on_vMnameLineEdit_textChanged(const QString &arg1);
+
+    void on_pushButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     QSystemTrayIcon *mSystemTrayIcon;
@@ -37,7 +45,8 @@ private:
     QMenu *trayIconMenu;
     IslandManager *islandManager;
 
-    void updateIslandStatus();
+    void update_island_status();
+    void reload_ettings();
 };
 
 #endif // MAINWINDOW_H

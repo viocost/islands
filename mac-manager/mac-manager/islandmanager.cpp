@@ -52,12 +52,9 @@ int IslandManager::restartIsland(){
 
 
 bool IslandManager::isIslandRunning(){
-
     std::string* response = new std::string();
     std::string temp;
-
     std::ostringstream ss;
-
     ss<<this->get_vbox_path()<< " showvminfo \""\
      <<this->get_vmname()<<"\" | grep running > " << this->CMD_RESPONSE_FILE;
     this->exec(ss.str());
@@ -65,7 +62,6 @@ bool IslandManager::isIslandRunning(){
     while(input>>temp){
         *response += temp;
     }
-
     std::regex re("^(?=.*State)(?=.*running)(?=.*since).+");
     bool result =  std::regex_match(*response, re);
     delete response;
@@ -75,6 +71,12 @@ bool IslandManager::isIslandRunning(){
 int IslandManager::exec(std::string command){
 	std::system(command.c_str());
     return 0;
+}
+
+
+void IslandManager::restore_config_defaults(){
+
+    this->config->save_to_file();
 }
 
 void IslandManager::init_config(){
@@ -97,4 +99,8 @@ void IslandManager::set_vbox_path(std::string path){
 
 void IslandManager::set_vname(std::string name){
     this->config->set("vmname", name);
+}
+
+void IslandManager::set_vmid(std::string id){
+    this->config->set("vmid", id);
 }

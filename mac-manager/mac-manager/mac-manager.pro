@@ -91,5 +91,4 @@ RC_ICONS = island.ico
 RESOURCES += \
     resources.qrc
 
-DISTFILES += \
-    config.cfg
+DISTFILES +=

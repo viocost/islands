@@ -59,7 +59,7 @@ std::string Config::get(std::string k){
     if(this->config->HasMember(k.c_str())){
         return (*this->config)[k.c_str()].GetString();
     }
-    return nullptr;
+    return "";
 }
 
 bool Config::is_config_exist (std::string& name) {
@@ -81,9 +81,11 @@ void Config::save_to_file(){
 }
 
 void Config::init_default(){
+    delete this->config;
     this->init_json_config();
     this->set_initialized(true);
     this->set("vmname", this->defaults["vname"]);
+    this->set("vmid", "");
     this->set("vboxpath", this->defaults["vboxpath"]);
 }
 
