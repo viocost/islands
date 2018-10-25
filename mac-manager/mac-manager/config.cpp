@@ -1,12 +1,13 @@
 #include <string>
-#include "config.h"
+#include <iostream>
 #include <sys/stat.h>
-
+#include "config.h"
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
 #include "rapidjson/filereadstream.h"
 #include "rapidjson/filewritestream.h"
+#include <QDebug>
 
 Config::Config(){
     //Default params map
@@ -15,9 +16,11 @@ Config::Config(){
     this->defaults["conf_file_name"] = "config.json";
 
     if(Config::is_config_exist(this->defaults["conf_file_name"])){
+        qDebug()<<"Loading config from file";
         this->load();
         this->set_default_for_missing_params();
     } else{
+        qDebug()<<"LInitializing default";
         this->init_default();
         this->save_to_file();
     }
@@ -45,6 +48,7 @@ void Config::load(){
 
 void Config::set(std::string k, std::string v ){
     if(!this->is_initialized()){
+        qDebug()<<"CONFIG HAS NOT BEEN INITIALIZED!";
         throw "Config is not initialized.";
     }
     rapidjson::Value val;
@@ -72,7 +76,7 @@ void Config::save_to_file(){
     if(!this->is_initialized()){
         throw "Config is not initialized.";
     }
-    FILE* fp = fopen("config.json", "wb");
+    FILE* fp = fopen("config.json", "w");
     char writeBuffer[65536];
     rapidjson::FileWriteStream os (fp, writeBuffer, sizeof(writeBuffer));
     rapidjson::Writer<rapidjson::FileWriteStream> writer(os);

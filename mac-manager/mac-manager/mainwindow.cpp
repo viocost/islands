@@ -102,22 +102,6 @@ void MainWindow::reload_ettings(){
 
 
 //TODO
-void MainWindow::on_pathToVboxmanageLineEdit_textChanged(const QString &arg1)
-{
-    std::cout<<"Setting vboxmanage path";
-    std::string v = arg1.toStdString();
-    this->islandManager->set_vbox_path(v);
-}
-
-void MainWindow::on_vMIdLineEdit_textChanged(const QString &arg1)
-{
-
-}
-
-void MainWindow::on_vMnameLineEdit_textChanged(const QString &arg1)
-{
-
-}
 
 void MainWindow::on_pushButton_clicked()
 {
@@ -129,4 +113,11 @@ void MainWindow::on_pushButton_clicked()
           this->reload_ettings();
       } else { /* Do nothing*/ }
 
+}
+
+void MainWindow::on_vboxmanagePathLineEdit_textChanged(const QString &arg1)
+{
+    std::cout<<"Setting vboxmanage path";
+    std::string v = arg1.toStdString();
+    this->islandManager->set_vbox_path(v);
 }
