@@ -40,6 +40,8 @@ npm install -g pm2
 pm2 update 
 mkdir /data/islandsData/history -p
 
+groupadd islands
+adduser island islands
 
 
 
