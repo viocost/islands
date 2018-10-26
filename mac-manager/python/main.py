@@ -12,8 +12,9 @@
 
 
 import sys
-
+import resources_rc
 from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow
+from PyQt5.QtGui import QPixmap, QIcon
 from island_manager import IslandManager
 from window import Ui_MainWindow
 
@@ -27,6 +28,9 @@ def app():
     assign_handlers(ui, im)
     mw.show()
     refresh_island_status(ui, im)
+    appicon = QIcon()
+    appicon.addPixmap(QPixmap(":/images/island.png"))
+    app.setWindowIcon(appicon)
     sys.exit(app.exec_())
 
 

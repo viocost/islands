@@ -207,7 +207,6 @@ class Ui_MainWindow(object):
 
 
 
-import resources_rc
 
 
 

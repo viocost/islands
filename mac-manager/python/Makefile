@@ -4,7 +4,7 @@
 #
 
 all:
-	py2applet --make-setup main.py
+	py2applet --make-setup main.py --iconfile images/island.icns
 	python setup.py py2app -A
 
 clean:
