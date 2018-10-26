@@ -23,6 +23,7 @@ def app():
     mw = QMainWindow()
     ui = Ui_MainWindow()
     ui.setupUi(mw)
+    ui.islandStatus.setText("BOOOO")
     mw.show()
     sys.exit(app.exec_())
 

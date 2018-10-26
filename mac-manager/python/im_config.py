@@ -37,21 +37,16 @@ class IMConfig:
     def __get_dafault(self):
         return {
             "vboxmanage": "/usr/local/bin/vboxmanage",
-            "vmname": "",
+            "vmname": "Island",
             "vmid": "",
-            "hostonly": {
-                "vboxnetip": "192.168.56.1",
-                "netmask": "255.255.255.0",
-                "lowerip": "192.168.56.100",
-                "upperip": "192.168.56.200"
-            },
-
-            "natpf": {
-                "name": "Island_pf",
-                "protocol": "tcp",
-                "host_ip": "127.0.0.1",
-                "host_port": "4000",
-                "guest_ip": "0.0.0.0",
-                "guest_port": "4000"
-            }
+            "hostonly_vboxnetip": "192.168.56.1",
+            "hostonly_netmask": "255.255.255.0",
+            "hostonly_lowerip": "192.168.56.100",
+            "hostonly_upperip": "192.168.56.200",
+            "natpf_name": "Island_pf",
+            "natpf_protocol": "tcp",
+            "natpf_host_ip": "127.0.0.1",
+            "natpf_host_port": "4000",
+            "natpf_guest_ip": "0.0.0.0",
+            "natpf_guest_port": "4000"
         }
