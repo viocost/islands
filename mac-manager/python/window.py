@@ -182,7 +182,7 @@ class Ui_MainWindow(object):
         self.menuOptions.addAction(self.actionExit)
         self.menuBar.addAction(self.menuOptions.menuAction())
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
 
