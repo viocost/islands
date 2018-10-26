@@ -6,4 +6,8 @@ Conversations/*
 gc.bat
 run2.sh
 build-*
+dist/*
+build/*
+__pycache__/*
 *.autosave
+

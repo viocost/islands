@@ -54,3 +54,4 @@ class TestConfig(unittest.TestCase):
         im.launch_island()
         assert (im.is_running() is True)
 
+

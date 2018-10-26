@@ -18,11 +18,16 @@ class IslandManager():
         return "OK"
 
     def restart_island(self):
-        raise NotImplementedError
+        if self.is_running():
+            self.__exec(self.stop_island())
+            return self.__exec(self.__launch_cmd())
+
+        return self.__exec(self.__launch_cmd())
 
     def is_running(self):
         running_ptrn = re.compile(r"^(?=.*State)(?=.*running)(?=.*since).+")
         res = self.__exec(self.__is_vm_running_cmd())
+        print(running_ptrn.search(res.decode("utf8")) is not None)
         return running_ptrn.search(res.decode("utf8")) is not None
 
     def __exec(self, cmd):
