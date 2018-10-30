@@ -21,7 +21,6 @@ class IslandManager():
         if self.is_running():
             self.__exec(self.stop_island())
             return self.__exec(self.__launch_cmd())
-
         return self.__exec(self.__launch_cmd())
 
     def is_running(self):
@@ -29,6 +28,16 @@ class IslandManager():
         res = self.__exec(self.__is_vm_running_cmd())
         print(running_ptrn.search(res.decode("utf8")) is not None)
         return running_ptrn.search(res.decode("utf8")) is not None
+
+    def get_vboxmanage_path(self):
+        return self.__config['vboxmanage']
+
+    def get_vmname(self):
+        return self.__config['vmname']
+
+    def get_vmid(self):
+        return self.__config['vmid']
+
 
     def __exec(self, cmd):
         return check_output(cmd, shell=True)
