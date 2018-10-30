@@ -6,10 +6,18 @@ Conversations/*
 gc.bat
 run2.sh
 build-*
+<<<<<<< HEAD
 **/dist/
 **/build/
 **/.eggs/
 **/.DS_Store
 **/__pycache__/
+=======
+**/dist/*
+**/build/*
+**/.eggs/*
+**/.DS_Store
+**/__pycache__/*
+>>>>>>> pymac
 **/.autosave
 
