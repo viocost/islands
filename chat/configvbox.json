@@ -1,0 +1,16 @@
+{
+  "historyPath": "/media/sf_islandsData/history/",
+  "updatePath": "/media/sf_islandsData/update/",
+  "adminKeyPath": "/media/sf_islandsData/keys/",
+  "servicePath": "/media/sf_islandsData/service/",
+  "basePath": "/media/sf_islandsData/",
+  "torConnector" :{
+    "hiddenServiceHOST": "127.0.0.1",
+    "hiddenServicePORT": 4003,
+    "torListenerPort": 80,
+    "torControlHost": "127.0.0.1",
+    "torControlPort": 9051,
+    "torControlPassword" : "TheP@$sw0rd"
+  }
+
+}
