@@ -76,7 +76,7 @@ mkdir /usr/src/app
 curl -sL https://github.com/viocost/islands/archive/${BRANCH}.zip -o /tmp/${BRANCH}.zip
 cd /tmp
 unzip ${BRANCH}.zip
-cp islands-master/chat/* /usr/src/app/ -r
+cp islands-${BRANCH}/chat/* /usr/src/app/ -r
 npm install -g pm2  
 pm2 update 
 mkdir /data/islandsData/history -p
