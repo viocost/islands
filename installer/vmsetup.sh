@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # assuming that guest additions have been installed and internet connection is enabled
-
 echo "Preparing VM..."
 
 apt update
@@ -43,7 +42,6 @@ mkdir /data/islandsData/history -p
 
 groupadd islands
 adduser island islands
-
 
 
 
