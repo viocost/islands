@@ -1,0 +1,16 @@
+{
+  "historyPath": "/islandsData/history/",
+  "updatePath": "/islandsData/update/",
+  "adminKeyPath": "/islandsData/keys/",
+  "servicePath": "/islandsData/service/",
+  "basePath": "/islandsData/",
+  "torConnector" :{
+    "hiddenServiceHOST": "127.0.0.1",
+    "hiddenServicePORT": 4003,
+    "torListenerPort": 80,
+    "torControlHost": "127.0.0.1",
+    "torControlPort": 9051,
+    "torControlPassword" : "TheP@$sw0rd"
+  }
+
+}

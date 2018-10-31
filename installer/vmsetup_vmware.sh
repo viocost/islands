@@ -1,7 +1,10 @@
 #!/bin/bash
 
 # assuming that guest additions have been installed and internet connection is enabled
+
 echo "Preparing VM..."
+
+echo "adding network..."
 
 apt update
 apt install dirmngr
