@@ -3,6 +3,47 @@
 # assuming that guest additions have been installed and internet connection is enabled
 echo "Preparing VM..."
 
+#!/bin/bash
+
+BRANCH="master"
+
+USAGE="
+
+    ISLANDS SETUP OPTIONS:
+
+	-b | --branch
+	specific branch to pull code from
+
+    -h | --help
+	Print help message
+"
+
+POSITIONAL=()
+while [[ $# -gt 0 ]]
+
+do
+key="$1"
+
+case $key in
+    -b | --branch)
+    BRANCH="$2"
+	shift
+    shift
+    ;;
+    -h | --help)
+    HELP=true
+    shift
+    ;;
+esac
+done
+
+
+if [[ ${HELP} ]]; then
+    echo "$USAGE";
+    exit 0;
+fi
+
+
 apt update
 apt install dirmngr
 apt install unzip
@@ -32,9 +73,9 @@ echo Done
 
 mkdir /usr/src/app
 
-curl -sL https://github.com/viocost/islands/archive/master.zip -o /tmp/master.zip
+curl -sL https://github.com/viocost/islands/archive/${BRANCH}.zip -o /tmp/${BRANCH}.zip
 cd /tmp
-unzip master.zip
+unzip ${BRANCH}.zip
 cp islands-master/chat/* /usr/src/app/ -r
 npm install -g pm2  
 pm2 update 
