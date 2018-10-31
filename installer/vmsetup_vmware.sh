@@ -8,14 +8,14 @@
 # !IMPORTANT Shared folder name is islandsData
 
 
-mkdir /mnt/hgfs
+#mkdir /mnt/hgfs
 
-apt update
-apt install open-vm-tools -y 
-apt install open-vm-tools-desktop -y
+#apt update
+#apt install open-vm-tools -y 
+#apt install open-vm-tools-desktop -y
 
 # VMWare automount setup
-echo ".host:/	/mnt/hgfs	fuse.vmhgfs-fuse	allow_other	0	0" >> /etc/fstab
+echo ".host:/	/mnt/hgfs -o uid=1000 -o gid=1000 -o umask=775	fuse.vmhgfs-fuse	allow_other	0	0" >> /etc/fstab
 echo "mount /mnt/hgfs" >> /etc/rc.local
 chown root:root /etc/rc.local
 chmod 0755 /etc/rc.local

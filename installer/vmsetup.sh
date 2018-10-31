@@ -1,6 +1,15 @@
 #!/bin/bash
 
-# assuming that guest additions have been installed and internet connection is enabled
+
+# ASSUMPTIONS
+# 1. Guest additions have been installed
+# 2. Internet connection is enabled
+# 3. Running script as root
+# 4. User island exists in the system
+# 5. Group islands exists
+
+
+
 echo "Preparing VM..."
 
 #!/bin/bash
@@ -17,6 +26,12 @@ USAGE="
     -h | --help
 	Print help message
 "
+
+if [ "$EUID" -ne 0 ]
+  then echo "Please run as root"
+  exit
+fi
+
 
 POSITIONAL=()
 while [[ $# -gt 0 ]]
@@ -69,7 +84,7 @@ echo 'ControlPort 9051' | tee -a /etc/tor/torrc
 echo 'HashedControlPassword' $phash | tee -a /etc/tor/torrc
 echo 'ExitPolicy reject *:*' | tee -a /etc/tor/torrc
 service tor start
-echo Done
+echo Tor configuratuin completed. Launching service...
 
 mkdir /usr/src/app
 
@@ -77,12 +92,22 @@ curl -sL https://github.com/viocost/islands/archive/${BRANCH}.zip -o /tmp/${BRAN
 cd /tmp
 unzip ${BRANCH}.zip
 cp islands-${BRANCH}/chat/* /usr/src/app/ -r
+cd /usr/src/app/
+npm install 
 npm install -g pm2  
-pm2 update 
-mkdir /data/islandsData/history -p
+pm2 update
 
-groupadd islands
-adduser island islands
+chown island:islands /usr/src/*
+
+#starting app
+pm2 start /usr/src/app/app.js --node-args="--experimental-worker" -- -c /usr/src/app/configvmware.json
+pm2 save
+pm2 startup -u island --hp /home/island 
+
+echo Installation complete. Restarting...
+
+reboot
+
 
 
 
