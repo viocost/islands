@@ -84,7 +84,7 @@ echo 'ControlPort 9051' | tee -a /etc/tor/torrc
 echo 'HashedControlPassword' $phash | tee -a /etc/tor/torrc
 echo 'ExitPolicy reject *:*' | tee -a /etc/tor/torrc
 service tor start
-echo Tor configuratuin completed. Launching service...
+echo Tor configuration completed. Launching service...
 
 mkdir /usr/src/app
 
@@ -101,8 +101,8 @@ chown -R root:island /usr/src/*
 chmod -R 0774 /usr/src/*
 
 #starting app
-pm2 start /usr/src/app/app.js --node-args="--experimental-worker" -- -c /usr/src/app/configvmware.json
-pm2 save
+runuser -l island -c 'pm2 start /usr/src/app/app.js --node-args="--experimental-worker" -- -c /usr/src/app/configvmware.json'
+runuser -l island -c 'pm2 save'
 pm2 startup -u island --hp /home/island 
 
 echo Installation complete. Restarting...
