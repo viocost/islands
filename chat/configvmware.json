@@ -1,9 +1,9 @@
 {
-  "historyPath": "/islandsData/history/",
-  "updatePath": "/islandsData/update/",
-  "adminKeyPath": "/islandsData/keys/",
-  "servicePath": "/islandsData/service/",
-  "basePath": "/islandsData/",
+  "historyPath": "/mnt/hgfs/islandsData/history/",
+  "updatePath": "/mnt/hgfs/islandsData/update/",
+  "adminKeyPath": "/mnt/hgfs/islandsData/keys/",
+  "servicePath": "/mnt/hgfs/islandsData/service/",
+  "basePath": "/mnt/hgfs/islandsData/",
   "torConnector" :{
     "hiddenServiceHOST": "127.0.0.1",
     "hiddenServicePORT": 4003,
