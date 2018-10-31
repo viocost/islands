@@ -4,6 +4,8 @@
 
 echo "Preparing VM..."
 
+echo "adding network..."
+
 apt update
 apt install dirmngr
 apt install unzip
