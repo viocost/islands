@@ -12,4 +12,4 @@ build-*
 **/.DS_Store
 **/__pycache__/*
 **/.autosave
-
+**/.*.swp
