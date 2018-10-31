@@ -53,7 +53,7 @@ echo "[Unit]
 
 
 # VMWare automount setup
-echo ".host:/	/mnt/hgfs -o uid=1000 -o gid=1000 -o umask=775	fuse.vmhgfs-fuse	allow_other	0	0" >> /etc/fstab
+echo ".host:/	/mnt/hgfs fuse.vmhgfs-fuse	noauto,allow_other,uid=1000,gid=1000,umask=0775 	0	0" >> /etc/fstab
 echo "mount /mnt/hgfs" >> /etc/rc.local
 chown root:root /etc/rc.local
 chmod 0755 /etc/rc.local
