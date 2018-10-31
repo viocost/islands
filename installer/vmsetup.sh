@@ -97,7 +97,8 @@ npm install
 npm install -g pm2  
 pm2 update
 
-chown island:islands /usr/src/*
+chown -R root:island /usr/src/*
+chmod -R 0774 /usr/src/*
 
 #starting app
 pm2 start /usr/src/app/app.js --node-args="--experimental-worker" -- -c /usr/src/app/configvmware.json
@@ -106,7 +107,6 @@ pm2 startup -u island --hp /home/island
 
 echo Installation complete. Restarting...
 
-reboot
 
 
 
