@@ -20,8 +20,11 @@ Pseudocode on start:
       Search virtualization platforms
       
       if Virtualbox found:
-         Ask if ISlands VM is already exists
-      
+         Ask if ISlands VM is already exists 
+
+			# DIALOG
+      		Virtualbox found. Do you have Islands already installed? If yes - please specify gUID or name. If no, or you don't know - just hit NO
+
          if exists:
             specify name or id of the VM
             save config,
@@ -29,15 +32,26 @@ Pseudocode on start:
       
          else:
             offer to build islands VM and use it
+		 # DIALOG - Would you like to build Islands? Y/N
+
       else:
-         offer to use virtualbox
+        
+		 # DIALOG
+		 Virtualbox has not been found on this machine. Would you like me to install virtualbox and setup you Island?
+        
+		 offer to use virtualbox
          if agree:
             install virtualbox
             install islands 
             save config
             remain running 
             
+
          else if vmware found:   
+
+           # VMWARE found. This manager only supports Virtualbox. Would you like to see d`etailed instructions
+           on setting up islands on VMWARE? Y/Ninstaller -pkg ./VirtualBox/VirtualBox.pkg
+
            offer to see docs for vmware usage
             
 

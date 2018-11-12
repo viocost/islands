@@ -1,0 +1,17 @@
+{
+    "vbox_download": "https://download.virtualbox.org/virtualbox/5.2.20/VirtualBox-5.2.20-125813-OSX.dmg",
+    "vm_download": "https://sourceforge.net/projects/islands-image/files/Island.ova/download",
+    "vboxmanage": "/usr/local/bin/vboxmanage",
+    "vmname": "Island",
+    "vmid": "",
+    "hostonly_vboxnetip": "192.168.56.1",
+    "hostonly_netmask": "255.255.255.0",
+    "hostonly_lowerip": "192.168.56.100",
+    "hostonly_upperip": "192.168.56.200",
+    "natpf_name": "Island_pf",
+    "natpf_protocol": "tcp",
+    "natpf_host_ip": "127.0.0.1",
+    "natpf_host_port": "4000",
+    "natpf_guest_ip": "0.0.0.0",
+    "natpf_guest_port": "4000"
+}
