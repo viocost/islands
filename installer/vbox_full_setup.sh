@@ -94,7 +94,7 @@ mkdir /usr/src/app
 
 curl -sL https://github.com/viocost/islands/archive/${BRANCH}.zip -o /tmp/${BRANCH}.zip
 cd /tmp
-unzip ${BRANCH}.zip -qq
+unzip ${BRANCH}.zip 
 cp islands-${BRANCH}/chat/* /usr/src/app/ -r
 cd /usr/src/app/
 npm install
