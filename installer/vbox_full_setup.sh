@@ -58,16 +58,16 @@ if [[ ${HELP} ]]; then
     exit 0;
 fi
 
+echo INSTALLING FROM ${BRANCH}
 
-
-apt install dirmng -y
+apt update -y
+apt install dirmngr -y
 apt install unzip -y
 
 echo Installing Node.JS
 apt install curl -y
 apt install apt-transport-https -y
-curl -sL https://deb.nodesource.com/setup_10.x | bash -
-apt install -y nodejs
+
 
 echo Installing TOR
 echo 'deb https://deb.torproject.org/torproject.org stretch main' | tee -a /etc/apt/sources.list
@@ -84,12 +84,17 @@ echo 'ControlPort 9051' | tee -a /etc/tor/torrc
 echo 'HashedControlPassword' $phash | tee -a /etc/tor/torrc
 echo 'ExitPolicy reject *:*' | tee -a /etc/tor/torrc
 echo Tor configuration completed. Launching service...
+service tor start
+
+echo Installing Node.JS!
+curl -sL https://deb.nodesource.com/setup_10.x | bash -
+apt install -y nodejs
 
 mkdir /usr/src/app
 
 curl -sL https://github.com/viocost/islands/archive/${BRANCH}.zip -o /tmp/${BRANCH}.zip
 cd /tmp
-unzip ${BRANCH}.zip
+unzip ${BRANCH}.zip -qq
 cp islands-${BRANCH}/chat/* /usr/src/app/ -r
 cd /usr/src/app/
 npm install
@@ -98,9 +103,10 @@ pm2 update
 
 
 #starting app
-service tor start
+
 pm2 start /usr/src/app/app.js --node-args="--experimental-worker" -- -c /usr/src/app/configvbox.json
 pm2 save
 pm2 startup
 
 echo Installation complete. Restarting...
+reboot
