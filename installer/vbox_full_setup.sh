@@ -80,10 +80,15 @@ apt update
 apt install tor deb.torproject.org-keyring -y
 echo Configuring and starting TOR...
 phash=$(tor --hash-password 'TheP@$sw0rd' | grep 16\:.*)
+sleep 1s
 echo 'ControlPort 9051' | tee -a /etc/tor/torrc
+sleep 1s
 echo 'HashedControlPassword' $phash | tee -a /etc/tor/torrc
+sleep 1s
 echo 'ExitPolicy reject *:*' | tee -a /etc/tor/torrc
+sleep 1s
 echo Tor configuration completed. Launching service...
+sleep 1s
 service tor start
 
 echo Installing Node.JS!

@@ -139,6 +139,7 @@ class SetupWizzardWindow:
             self.ui.vm_install_output_console.append('<p style="color: green"> {msg} </p>'.format(msg=msg))
             self.ui.vm_install_output_console.append('<p style="color: green; font-size: 16px;"> '
                                                      'Click "continue" to proceed >> </p>'.format(msg=msg))
+            self.window.page(1).completeChanged.emit()
 
         def on_error(err):
             self.set_vm_page_buttons_enabled(True)

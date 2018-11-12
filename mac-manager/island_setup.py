@@ -203,21 +203,28 @@ class VMInstaller:
             self.setup.setup_shared_folder(self.data_path)
             self.on_message("Data folder set up... Launching VM")
             # Start machine... Wait until controlvm is available then run scripts
-            Executor.exec("vboxmanage startvm Island")
+            print(Executor.exec("vboxmanage startvm Island"))
             self.on_message("VM started...")
             Executor.exec("vboxmanage storageattach Island --storagectl IDE --port 1 --device 0 --type dvddrive --medium /Applications/VirtualBox.app/Contents/MacOS/VBoxGuestAdditions.iso")
             self.on_message("Guest additions mounted... Waiting for initial setup. This will take a while...")
             self.wait_guest_additions()
+            sleep(3)
+            self.wait_guest_additions()
             self.on_message("Guest additions are installed. Fetching Islands setup script..")
-            Executor.exec("""vboxmanage guestcontrol Island run --exe "/usr/bin/wget" --username root --password islands --wait-stdout --wait-stderr -- wget "https://raw.githubusercontent.com/viocost/islands/pymac/installer/vbox_full_setup.sh" -O "/root/isetup.sh" """)
+            Executor.exec("""vboxmanage guestcontrol Island run --exe "/usr/bin/wget" --username root --password islands --wait-stdout --wait-stderr -- wget "https://raw.githubusercontent.com/viocost/islands/dev/installer/vbox_full_setup.sh" -O "/root/isetup.sh" """)
 
-            Executor.exec("""vboxmanage guestcontrol Island run --exe "/bin/chmod" --username root --password islands --wait-stdout --wait-stderr -- chmod +x /root/isetup.sh """)
-            self.on_complete("Installation in progress. This step takes a while... Grab some tea")
+            print(Executor.exec("""vboxmanage guestcontrol Island run --exe "/bin/chmod" --username root --password islands --wait-stdout --wait-stderr -- chmod +x /root/isetup.sh """))
+            self.on_message("Installation in progress. This step takes a while... Grab some tea")
+            print("READY TO LAUNCH THE SCRIPT")
             Executor.exec("""vboxmanage guestcontrol Island run --exe "/bin/bash" --username root --password islands --wait-stdout --wait-stderr -- bash /root/isetup.sh -b dev""")
-        
+            sleep(1)
+            Executor.exec("""vboxmanage controlvm Island acpipowerbutton""")
+            sleep(2)
+            Executor.exec("""vboxmanage startvm Island """)
             self.on_complete("Islands Virtual Machine successfully installed.")
         except Exception as e:
             print("VMinstaller exception: " + str(e))
+            print(e.output.strip().decode("utf8"))
             self.on_error(e)
 
     def wait_guest_additions(self):
@@ -227,7 +234,7 @@ class VMInstaller:
                 return
             except Exception as e:
                 print(e.output.strip().decode("utf8"))
-                sleep(10)
+                sleep(15)
                 continue
 
 class InvalidPathFormat(Exception):
