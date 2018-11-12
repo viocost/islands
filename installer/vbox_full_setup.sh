@@ -108,5 +108,5 @@ pm2 start /usr/src/app/app.js --node-args="--experimental-worker" -- -c /usr/src
 pm2 save
 pm2 startup
 
-echo Installation complete. Restarting...
-reboot
+echo Installation complete!
+

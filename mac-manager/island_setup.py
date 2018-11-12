@@ -212,10 +212,10 @@ class VMInstaller:
             Executor.exec("""vboxmanage guestcontrol Island run --exe "/usr/bin/wget" --username root --password islands --wait-stdout --wait-stderr -- wget "https://raw.githubusercontent.com/viocost/islands/pymac/installer/vbox_full_setup.sh" -O "/root/isetup.sh" """)
 
             Executor.exec("""vboxmanage guestcontrol Island run --exe "/bin/chmod" --username root --password islands --wait-stdout --wait-stderr -- chmod +x /root/isetup.sh """)
-
-            #Executor.exec("""vboxmanage guestcontrol Island run --exe "/bin/bash" --username root --password islands --wait-stdout --wait-stderr -- bash /root/isetup.sh -b dev""")
-
-            self.on_complete("Islands Virtual Machine successfully installed")
+            self.on_complete("Installation in progress. This step takes a while... Grab some tea")
+            Executor.exec("""vboxmanage guestcontrol Island run --exe "/bin/bash" --username root --password islands --wait-stdout --wait-stderr -- bash /root/isetup.sh -b dev""")
+        
+            self.on_complete("Islands Virtual Machine successfully installed.")
         except Exception as e:
             print("VMinstaller exception: " + str(e))
             self.on_error(e)
