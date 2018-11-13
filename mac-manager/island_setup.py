@@ -179,6 +179,17 @@ class IslandSetup():
 
 
 
+class VBoxInstaller():
+    def __init__(self):
+        pass
+
+    def start(self):
+        pass
+
+    def install(self):
+        pass
+    
+
 class VMInstaller:
     def __init__(self, setup,  on_message, on_complete, on_error, data_path, download=False, image_path=None, port=False):
         self.thread = None
@@ -212,7 +223,7 @@ class VMInstaller:
             self.setup.setup_shared_folder(self.data_path)
             self.on_message("Data folder set up... Launching VM")
             # Start machine... Wait until controlvm is available then run scripts
-            print(Executor.exec("vboxmanage startvm Island"))
+            print(Executor.exec("vboxmanage startvm Island --type headless"))
             self.on_message("VM started...")
             Executor.exec("vboxmanage storageattach Island --storagectl IDE --port 1 --device 0 --type dvddrive --medium /Applications/VirtualBox.app/Contents/MacOS/VBoxGuestAdditions.iso")
             self.on_message("Guest additions mounted... Waiting for initial setup. This will take a while...")
@@ -235,7 +246,7 @@ class VMInstaller:
             for i in range(10):
                 try:
                     sleep(3)
-                    Executor.exec("""vboxmanage startvm Island """)
+                    Executor.exec("""vboxmanage startvm Island --type headless  """)
                     self.on_complete("Islands Virtual Machine successfully installed.")
                     return
                 except Exception:

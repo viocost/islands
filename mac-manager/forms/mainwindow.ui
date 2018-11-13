@@ -220,7 +220,7 @@
                  </font>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">clolr: blue;</string>
+                 <string notr="true"/>
                 </property>
                 <property name="text">
                  <string notr="true"/>
