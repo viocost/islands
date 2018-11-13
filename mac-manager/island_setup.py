@@ -120,7 +120,8 @@ class IslandSetup():
             raise PortForwardingException("Was not able to determine ip address of Islands VM")
         res = Executor.exec('vboxmanage controlvm   Island natpf1 "r1, tcp, 127.0.0.1, {port},'
                       ' {island_ip}, 4000"'.format(port=port, island_ip=island_ip))
-        self.__config["local_access"] = "http://localhost:{port}".format(port=port)
+        self.__config["local_access"] = "<a href='http://localhost:{port}'>http://localhost:{port}</a>".format(port=port)
+        self.__config.save()
         return res
 
     # Sets up a shareed folder for the imported vm

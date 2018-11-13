@@ -214,8 +214,19 @@
               </item>
               <item>
                <widget class="QLabel" name="island_access_address">
+                <property name="font">
+                 <font>
+                  <underline>true</underline>
+                 </font>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">clolr: blue;</string>
+                </property>
                 <property name="text">
-                 <string/>
+                 <string notr="true"/>
+                </property>
+                <property name="openExternalLinks">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>

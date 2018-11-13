@@ -28,7 +28,7 @@ class MainWindow:
         try:
             if self.setup.is_setup_required():
                 self.set_state("setup_required")
-                #self.request_to_run_setup()
+
             elif self.island_manager.is_running():
                 self.set_state("running")
             else:
@@ -101,8 +101,10 @@ class MainWindow:
         self.states[state]()
 
 
-    """ STATES SETTERS """
+    """ STATE SETTERS """
     def set_setup_required(self):
+        self.ui.island_access_label.setVisible(False)
+        self.ui.island_access_address.setVisible(False)
         reason = self.setup.is_setup_required()
         self.ui.islandStatus.setText("Setup required")
         self.ui.islandStatus.setStyleSheet('color: orange')
@@ -115,6 +117,10 @@ class MainWindow:
 
 
     def set_running(self):
+        if self.config["local_access"]:
+            self.ui.island_access_label.setVisible(True)
+            self.ui.island_access_address.setVisible(True)
+            self.ui.island_access_address.setText(self.config["local_access"])
         self.ui.islandStatus.setText("Running")
         self.ui.islandStatus.setStyleSheet('color: green')
         self.ui.restartIslandButton.setEnabled(True)
@@ -124,6 +130,8 @@ class MainWindow:
         self.ui.groupBox.hide()
 
     def set_not_running(self):
+        self.ui.island_access_label.setVisible(False)
+        self.ui.island_access_address.setVisible(False)
         self.ui.islandStatus.setText("Not running")
         self.ui.islandStatus.setStyleSheet('color: red')
         self.ui.restartIslandButton.setEnabled(False)
@@ -133,6 +141,8 @@ class MainWindow:
         self.ui.groupBox.hide()
 
     def set_unknown(self):
+        self.ui.island_access_label.setVisible(False)
+        self.ui.island_access_address.setVisible(False)
         self.ui.islandStatus.setText("Unknown")
         self.ui.islandStatus.setStyleSheet('color: gray')
         self.ui.restartIslandButton.setEnabled(False)
