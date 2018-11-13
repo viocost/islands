@@ -154,13 +154,14 @@ class SetupWizzardWindow(QObject):
             self.window.button(QWizard.BackButton).setEnabled(True)
             if err:
                 self.ui.vm_install_output_console.append('<p style="color: red"> {msg} </p>'.format(msg=str(err)))
-
+        port = self.ui.local_port.text() if self.ui.port_forwarding_enabled.isChecked() else False
         self.setup.run_vm_installer(on_message=on_message,
                                     on_complete=on_complete,
                                     on_error=on_error,
                                     download=download,
                                     image_path=vm_image_path,
-                                    data_path=data_path)
+                                    data_path=data_path,
+                                    port=port)
 
     def prepare_vm_setup_page(self):
         console = self.ui.vm_install_output_console

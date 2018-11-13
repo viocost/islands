@@ -1,3 +1,4 @@
+import re
 from threading import Thread
 from executor import ShellExecutor as Executor
 from time import sleep
@@ -108,13 +109,27 @@ class IslandSetup():
         Executor.exec("vboxmanage modifyvm {vmname} --nic2 hostonly --cableconnected2 on"
                       " --hostonlyadapter2 vboxnet0".format(vmname=self.__config["vmname"]))
 
+    def get_islands_ip(self):
+        res = Executor.exec('vboxmanage guestcontrol Island run --exe "/sbin/ip" '
+                            '--username root --password islands  --wait-stdout -- ip a  | grep eth1')
+        return re.search(r'(\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b)', res).group()
+
+    def setup_port_forwarding(self, port):
+        island_ip = self.get_islands_ip()
+        if not island_ip:
+            raise PortForwardingException("Was not able to determine ip address of Islands VM")
+        res = Executor.exec('vboxmanage controlvm   Island natpf1 "r1, tcp, 127.0.0.1, {port},'
+                      ' {island_ip}, 4000"'.format(port=port, island_ip=island_ip))
+        self.__config["local_access"] = "http://localhost:{port}".format(port=port)
+        return res
+
     # Sets up a shareed folder for the imported vm
     def setup_shared_folder(self, data_folder_path = "~/islandsData"):
         fullpath = self.parse_shared_folder_path(data_folder_path)
         if not path.exists(fullpath):
             makedirs(fullpath)
-        Executor.exec("vboxmanage sharedfolder add Island "
-                      "--name islandsData -hostpath {hostpath} -automount".format(hostpath=fullpath))
+        return Executor.exec("vboxmanage sharedfolder add Island "
+                    "--name islandsData -hostpath {hostpath} -automount".format(hostpath=fullpath))
 
     # Parses pshared folder path
     # Accepts either absolute path or relative to home directory
@@ -185,7 +200,8 @@ class VMInstaller:
     def install(self):
         try:
             if self.download:
-                self.on_message(self.setup.download_vm())
+                self.on_message("Downloading Islands VM...")
+                self.setup.download_vm()
                 self.on_message("Download complete")
             self.on_message("Importing VM...")
             self.setup.import_vm(self.image_path if self.image_path else "./Island.ova")
@@ -202,6 +218,8 @@ class VMInstaller:
             self.wait_guest_additions()
             sleep(3)
             self.wait_guest_additions()
+            if self.port:
+                self.setup.setup_port_forwarding(self.port)
             self.on_message("Guest additions are installed. Fetching Islands setup script..")
             Executor.exec("""vboxmanage guestcontrol Island run --exe "/usr/bin/wget" --username root --password islands --wait-stdout --wait-stderr -- wget "https://raw.githubusercontent.com/viocost/islands/dev/installer/vbox_full_setup.sh" -O "/root/isetup.sh" """)
             print(Executor.exec("""vboxmanage guestcontrol Island run --exe "/bin/chmod" --username root --password islands --wait-stdout --wait-stderr -- chmod +x /root/isetup.sh """))
@@ -209,6 +227,7 @@ class VMInstaller:
             print("Launching setup script")
             Executor.exec("""vboxmanage guestcontrol Island run --exe "/bin/bash" --username root --password islands --wait-stdout --wait-stderr -- bash /root/isetup.sh -b dev""")
             self.on_message("Setup completed. Restarting Islands...")
+
             sleep(1)
             Executor.exec("""vboxmanage controlvm Island acpipowerbutton""")
 
@@ -241,6 +260,8 @@ class VMInstaller:
 class InvalidPathFormat(Exception):
     pass
 
+class PortForwardingException(Exception):
+    pass
 
 class IslandsImageNotFound(Exception):
     pass

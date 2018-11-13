@@ -3,6 +3,7 @@
     "vm_download": "https://sourceforge.net/projects/islands-image/files/Island.ova/download",
     "vboxmanage": "/usr/local/bin/vboxmanage",
     "vmname": "Island",
+    "root_password": "islands",
     "vmid": "",
     "local_access": "",
     "hostonly_vboxnetip": "192.168.56.1",
