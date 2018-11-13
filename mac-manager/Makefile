@@ -9,7 +9,7 @@ all:
 	pyuic5 forms/setup_wizard.ui -o forms/setup_wizard_ui_setup.py
 	sed -i '' 's/^import resources_rc/import forms.resources_rc/g' forms/setup_wizard_ui_setup.py
 	sed -i '' 's/^import resources_rc/import forms.resources_rc/g' forms/main_window_ui_setup.py
-	py2applet --make-setup main.py --iconfile images/island.icns
+	py2applet --make-setup main.py  --iconfile images/icon.icns
 	python3 setup.py py2app -A
 clean:
 
@@ -21,4 +21,3 @@ clean:
 
 # vim:ft=make
 #
-

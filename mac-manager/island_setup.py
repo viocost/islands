@@ -69,7 +69,7 @@ class IslandSetup():
         print("Installation finished: \n" + res)
 
     def unmount_vbox_distro(self):
-        res = Executor.exec("hdiutil detach VirtualBox")
+        res = Executor.exec("hdiutil detach ~/VirtualBox")
         print("Image unmounted")
         return res
 
