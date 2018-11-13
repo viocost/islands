@@ -28,9 +28,9 @@ class Ui_IslandSetupWizzard(object):
         self.label.setStyleSheet("color: #011e4c")
         self.label.setObjectName("label")
         self.verticalLayout.addWidget(self.label)
-        self.textBrowser = QtWidgets.QTextBrowser(self.page_vbox_install_1)
-        self.textBrowser.setObjectName("textBrowser")
-        self.verticalLayout.addWidget(self.textBrowser)
+        self.vbox_setup_output_console = QtWidgets.QTextBrowser(self.page_vbox_install_1)
+        self.vbox_setup_output_console.setObjectName("vbox_setup_output_console")
+        self.verticalLayout.addWidget(self.vbox_setup_output_console)
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
@@ -151,7 +151,7 @@ class Ui_IslandSetupWizzard(object):
         _translate = QtCore.QCoreApplication.translate
         IslandSetupWizzard.setWindowTitle(_translate("IslandSetupWizzard", "Wizard"))
         self.label.setText(_translate("IslandSetupWizzard", "Step 1 - Virtualbox setup"))
-        self.textBrowser.setHtml(_translate("IslandSetupWizzard", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.vbox_setup_output_console.setHtml(_translate("IslandSetupWizzard", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'.SF NS Text\'; font-size:13pt; font-weight:400; font-style:normal;\">\n"

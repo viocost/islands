@@ -6,11 +6,15 @@ from forms.setup_wizard_ui_setup import Ui_IslandSetupWizzard as UI_setup
 
 
 class SetupWizzardWindow(QObject):
-
-    done = pyqtSignal()
+    # This isgnal will be emited whenever there is something to append to output screen
+    # First parameter is message,
+    # second parameter is console index: 0 - first page, 1 - second page
+    #
+    output = pyqtSignal(str, int)
 
     def __init__(self, parent, config,  island_manager, setup):
         QObject.__init__(self)
+
         self.working = False
         self.config = config
         self.setup = setup
@@ -22,15 +26,25 @@ class SetupWizzardWindow(QObject):
         self.island_manager = island_manager
         self.prepare_handlers()
 
+    # Handler for output signal
+    def appender(self, msg, console_index):
+        consoles = {
+            0: self.ui.vbox_setup_output_console,
+            1: self.ui.vm_install_output_console
+        }
+        if console_index not in consoles:
+            raise InvalidConsoleIndex
+        consoles[console_index].append(msg)
+        self.scroll_to_end(self.ui.vm_install_output_console)
+
+
     def prepare_handlers(self):
         # BUTTONS' HANDLERS
         self.ui.button_install_vbox.clicked.connect(self.process_vbox_install)
         self.ui.button_select_data_path.clicked.connect(self.select_data_folder)
         self.ui.button_import_ova.clicked.connect(self.select_islands_image)
         self.ui.button_install_islands.clicked.connect(self.download_install_islands)
-
-        # SIGNALS
-        # ***
+        self.output.connect(self.appender)
 
     # Clear window outputs
     def exec(self):
@@ -40,19 +54,19 @@ class SetupWizzardWindow(QObject):
 
 
     def reset_consoles(self):
-        self.ui.textBrowser.setText("")
+        self.ui.vbox_setup_output_console.setText("")
         self.ui.vm_install_output_console.setText("")
 
     def vboxpage_prepare_text(self):
-        self.ui.textBrowser.append(SetupMessages.checking_vbox())
+        self.ui.vbox_setup_output_console.append(SetupMessages.checking_vbox())
         if self.setup.is_virtualbox_installed():
-            self.ui.textBrowser.append(SetupMessages.virtualbox_found())
-            self.ui.textBrowser.append(SetupMessages.vb_installed_instructions())
+            self.ui.vbox_setup_output_console.append(SetupMessages.virtualbox_found())
+            self.ui.vbox_setup_output_console.append(SetupMessages.vb_installed_instructions())
             self.prepare_vm_setup_page()
         else:
-            self.ui.textBrowser.append(SetupMessages.virtualbox_not_installed())
-            self.ui.textBrowser.append(SetupMessages.vb_not_installed_instructions())
-        self.scroll_to_end(self.ui.textBrowser)
+            self.ui.vbox_setup_output_console.append(SetupMessages.virtualbox_not_installed())
+            self.ui.vbox_setup_output_console.append(SetupMessages.vb_not_installed_instructions())
+        self.scroll_to_end(self.ui.vbox_setup_output_console)
 
     def scroll_to_end(self, console):
         sb = console.verticalScrollBar()
@@ -130,23 +144,24 @@ class SetupWizzardWindow(QObject):
         data_path = self.ui.data_folder_path.text()
         self.proceed_vm_install(data_path=data_path, download=True)
 
+
+
+
     # Given install options sets up output handlers and
     # passes options to installer
     def proceed_vm_install(self, data_path, download=False, vm_image_path=None):
         self.set_vm_page_buttons_enabled(False)
         self.window.button(QWizard.BackButton).setEnabled(False)
 
-        def on_message(msg):
-            if msg:
-                self.ui.vm_install_output_console.append('<p style="color: blue"> {msg} </p>'.format(msg=msg))
-                self.scroll_to_end(self.ui.vm_install_output_console)
+        def on_message(msg, size=12):
+            self.output.emit('<p style="color: blue; font-size: {size}"> {msg} </p>'.format(msg=msg, size=size), 1)
 
         def on_complete(msg):
+            self.output.emit('<p style="color: green"> {msg} </p>'.format(msg=msg), 1)
+            self.output.emit('<p style="color: green; font-size: 16px;"> '
+                                                     'Click "continue" to proceed >> </p>', 1)
             self.set_vm_page_buttons_enabled(False)
             self.window.button(QWizard.BackButton).setEnabled(False)
-            self.ui.vm_install_output_console.append('<p style="color: green"> {msg} </p>'.format(msg=msg))
-            self.ui.vm_install_output_console.append('<p style="color: green; font-size: 16px;"> '
-                                                     'Click "continue" to proceed >> </p>'.format(msg=msg))
             self.window.page(1).completeChanged.emit()
 
         def on_error(err):
@@ -154,6 +169,7 @@ class SetupWizzardWindow(QObject):
             self.window.button(QWizard.BackButton).setEnabled(True)
             if err:
                 self.ui.vm_install_output_console.append('<p style="color: red"> {msg} </p>'.format(msg=str(err)))
+
         port = self.ui.local_port.text() if self.ui.port_forwarding_enabled.isChecked() else False
         self.setup.run_vm_installer(on_message=on_message,
                                     on_complete=on_complete,
@@ -174,35 +190,35 @@ class SetupWizzardWindow(QObject):
         self.set_vm_page_buttons_enabled(not self.setup.is_islands_vm_exist())
 
     def process_vbox_install(self):
-        console = self.ui.textBrowser
-        def run_setup_command(command):
-            res = self.setup.run(command)
-            if res["error"]:
-                console.append("<p style='color: red'>{errmsg}</p>".format(errmsg=res["result"]))
-                raise IslandSetupError(res["result"])
-        try:
-            self.set_vbox_page_buttons_enabled(False)
-            console.append("<p>Downloading virtualbox...</p>")
-            run_setup_command("download_vbox")
-            console.append("<p>Download complete. Mounting...</p>")
-            run_setup_command("mount_vbox_distro")
-            console.append("<p>Mounted. Installing</p>")
-            run_setup_command("install_vbox")
-            console.append("<p>Installed. Unmounting vbox distro</p>")
-            run_setup_command("unmount_vbox_distro")
-            console.append("<p>Unmounted. Removing distro</p>")
-            run_setup_command("delete_vbox_distro")
-            console.append("<p>Done.</p>")
-            console.append(SetupMessages.virtualbox_installed())
-            console.append(SetupMessages.vb_installed_instructions())
-            self.scroll_to_end(console)
+        def on_message(msg, size=12):
+            print("GOT MESSAGE: %s" % msg)
+            self.output.emit('<p style="color: blue; font-size: {size}"> {msg} </p>'.format(msg=msg, size=size), 0)
+
+        def on_complete(msg):
+            self.output.emit(SetupMessages.virtualbox_installed(), 0)
+            self.output.emit(SetupMessages.vb_installed_instructions(), 0)
+            self.output.emit('<p style="color: green"> {msg} </p>'.format(msg=msg), 0)
+            self.output.emit('<p style="color: green; font-size: 16px;"> '
+                             'Click "continue" to proceed >> </p>', 0)
             self.prepare_vm_setup_page()
-        except IslandSetupError:
-            console.append("<p style='color: orange; font-size: 20px'>"
-                           "<br><br>Virtualbox installation didn't successfully finish. "
-                           "Please try again...</p>")
-        self.set_vbox_page_buttons_enabled(not self.setup.is_virtualbox_installed())
-        self.window.page(0).completeChanged.emit()
+            self.window.page(0).completeChanged.emit()
+
+        def on_error(err):
+            if err:
+                self.output.emit('<p style="color: red"> {msg} </p>'.format(msg=str(err)), 0)
+            self.set_vbox_page_buttons_enabled(not self.setup.is_virtualbox_installed())
+            self.set_vm_page_buttons_enabled(True)
+
+        self.set_vbox_page_buttons_enabled(False)
+
+        self.setup.run_vbox_installer(
+            config=self.config,
+            setup=self.setup,
+            on_message=on_message,
+            on_complete=on_complete,
+            on_error=on_error
+        )
+        # self.window.page(0).completeChanged.emit()
 
 
 class SetupMessages:
@@ -286,6 +302,7 @@ class SetupMessages:
                              
          """
 
-class IslandSetupError(Exception):
-    pass
 
+
+class InvalidConsoleIndex(Exception):
+    pass

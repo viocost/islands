@@ -3,12 +3,16 @@ from threading import Thread
 from executor import ShellExecutor as Executor
 from time import sleep
 
+
 from os import path, makedirs, environ
 
 
 class IslandSetup():
+
     def __init__(self, config):
+
         self.vm_installer = None
+        self.vbox_installer = None
         self.__config = config
         self.commands = {
             "download_vbox": self.download_vbox,
@@ -22,6 +26,10 @@ class IslandSetup():
     def run_vm_installer(self, *args, **kwargs):
         self.vm_installer = VMInstaller(self, *args, **kwargs)
         self.vm_installer.start()
+
+    def run_vbox_installer(self, *args, **kwargs):
+        self.vbox_installer = VBoxInstaller(*args, **kwargs)
+        self.vbox_installer.start()
 
     # Runs arbitrary command from the set of predefined commands
     # Return result of command execution or error
@@ -43,20 +51,20 @@ class IslandSetup():
 
 
     def download_vbox(self):
-        res =  Executor.exec("curl {link} >> ./virtualbox.dmg".format(
+        res =  Executor.exec("curl {link} >> ~/virtualbox.dmg ".format(
             link=self.__config["vbox_download"]
         ))
         print("Download complete: " + str(res))
         return res
 
     def mount_vbox_distro(self):
-        res = Executor.exec("hdiutil attach virtualbox.dmg -mountpoint VirtualBox")
+        res = Executor.exec("hdiutil attach ~/virtualbox.dmg -mountpoint ~/VirtualBox")
         print("Image mounted")
         return res
 
     def install_vbox(self):
         res = Executor.exec(
-            """osascript -e 'do shell script "installer -pkg ./VirtualBox/VirtualBox.pkg -target /" with administrator privileges' """
+            """osascript -e 'do shell script "installer -pkg ~/VirtualBox/VirtualBox.pkg -target / " with administrator privileges' """
         )
         print("Installation finished: \n" + res)
 
@@ -66,7 +74,7 @@ class IslandSetup():
         return res
 
     def delete_vbox_distro(self):
-        res = Executor.exec("rm -rf ./virtualbox.dmg")
+        res = Executor.exec("rm -rf ~/virtualbox.dmg")
         return res
 
     def install_virtualbox(self):
@@ -76,8 +84,9 @@ class IslandSetup():
             print("Error")
             print(e)
 
-    # DOWNLOAD AND INSTALL VM METHODS
 
+
+    # DOWNLOAD AND INSTALL VM METHODS
     # Download Islands vm from specified source
     # Destination is app directory
     def download_vm(self):
@@ -93,7 +102,7 @@ class IslandSetup():
 
     # This assumes that VM is already imported
     # There is no way to check whether vboxnet0 interface exists,
-    # so we issue errorneous command to modify it
+    # so we issue erroneous command to modify it
     # if exitcode is 1 - interface doesn't exists, so we create it
     # if exitcode is 2 - interface found and we can add it to our VM
     # Otherwise there is some other error and we raise it
@@ -178,17 +187,41 @@ class IslandSetup():
             return False
 
 
-
-class VBoxInstaller():
-    def __init__(self):
-        pass
+class VBoxInstaller:
+    def __init__(self, config, setup, on_message, on_complete, on_error):
+        self.thread = None
+        self.setup = setup
+        self.config = config
+        self.message = on_message
+        self.complete = on_complete
+        self.error = on_error
 
     def start(self):
-        pass
+        self.thread = Thread(target=self.install)
+        self.thread.start()
 
     def install(self):
-        pass
-    
+        def run_setup_command(command):
+            res = self.setup.run(command)
+            if res["error"]:
+                self.error(res["result"])
+                raise IslandSetupError(res["result"])
+        try:
+            self.message("Downloading virtualbox...")
+            run_setup_command("download_vbox")
+            self.message("Download complete. Mounting...")
+            run_setup_command("mount_vbox_distro")
+            self.message("Mounted. Installing")
+            run_setup_command("install_vbox")
+            self.message("Installed. Unmounting vbox distro")
+            run_setup_command("unmount_vbox_distro")
+            self.message("Unmounted. Removing distro")
+            run_setup_command("delete_vbox_distro")
+            self.complete("Done.")
+        except IslandSetupError:
+            self.error("Virtualbox installation didn't successfully finish. "
+                       "Please try again...")
+
 
 class VMInstaller:
     def __init__(self, setup,  on_message, on_complete, on_error, data_path, download=False, image_path=None, port=False):
@@ -203,7 +236,6 @@ class VMInstaller:
         self.port = port
         if not download:
             assert(bool(image_path))
-
 
     def start(self):
         self.thread = Thread(target=self.install)
@@ -226,7 +258,8 @@ class VMInstaller:
             print(Executor.exec("vboxmanage startvm Island --type headless"))
             self.on_message("VM started...")
             Executor.exec("vboxmanage storageattach Island --storagectl IDE --port 1 --device 0 --type dvddrive --medium /Applications/VirtualBox.app/Contents/MacOS/VBoxGuestAdditions.iso")
-            self.on_message("Guest additions mounted... Waiting for initial setup. This will take a while...")
+            self.on_message("Guest additions mounted... Waiting for initial setup. \n"
+                            "This will take a while! Do not turn off your computer.")
             self.wait_guest_additions()
             sleep(3)
             self.wait_guest_additions()
@@ -276,6 +309,9 @@ class PortForwardingException(Exception):
     pass
 
 class IslandsImageNotFound(Exception):
+    pass
+
+class IslandSetupError(Exception):
     pass
 
 # Attach guest additions spell:

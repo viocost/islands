@@ -118,7 +118,7 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setUnderline(True)
         self.island_access_address.setFont(font)
-        self.island_access_address.setStyleSheet("clolr: blue;")
+        self.island_access_address.setStyleSheet("")
         self.island_access_address.setText("")
         self.island_access_address.setOpenExternalLinks(True)
         self.island_access_address.setObjectName("island_access_address")
