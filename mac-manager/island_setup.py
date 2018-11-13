@@ -17,10 +17,13 @@ class IslandSetup():
             "delete_vbox_distro": self.delete_vbox_distro,
         }
 
+    # Initializes vm installer in separate thread and starts it
     def run_vm_installer(self, *args, **kwargs):
         self.vm_installer = VMInstaller(self, *args, **kwargs)
         self.vm_installer.start()
 
+    # Runs arbitrary command from the set of predefined commands
+    # Return result of command execution or error
     def run(self, command):
         if command not in self.commands:
             raise KeyError("Invalid command")
@@ -28,7 +31,6 @@ class IslandSetup():
             return {
                 "result": str(self.commands[command]()),
                 "error": False
-
             }
         except Exception as e:
             return {
@@ -73,7 +75,7 @@ class IslandSetup():
             print("Error")
             print(e)
 
-    # DOWNLOAD AND INSTALL VM
+    # DOWNLOAD AND INSTALL VM METHODS
 
     # Download Islands vm from specified source
     # Destination is app directory
@@ -136,11 +138,7 @@ class IslandSetup():
             return "Island virtual machine not installed or not found"
         return False
 
-
-
-    def setup_island_vm(self):
-        pass
-
+    # SETTINGS SECTION
     def set_islands_vm_name(self, name):
         pass
 
@@ -164,16 +162,9 @@ class IslandSetup():
             return False
 
 
-    def is_vmware_found(self):
-        pass
-
-
-    def run_setup(self):
-        pass
-
 
 class VMInstaller:
-    def __init__(self, setup,  on_message, on_complete, on_error, data_path, download=False, image_path=None):
+    def __init__(self, setup,  on_message, on_complete, on_error, data_path, download=False, image_path=None, port=False):
         self.thread = None
         self.setup = setup
         self.on_message = on_message
@@ -182,6 +173,7 @@ class VMInstaller:
         self.download = download
         self.data_path = data_path
         self.image_path = image_path
+        self.port = port
         if not download:
             assert(bool(image_path))
 
@@ -212,16 +204,24 @@ class VMInstaller:
             self.wait_guest_additions()
             self.on_message("Guest additions are installed. Fetching Islands setup script..")
             Executor.exec("""vboxmanage guestcontrol Island run --exe "/usr/bin/wget" --username root --password islands --wait-stdout --wait-stderr -- wget "https://raw.githubusercontent.com/viocost/islands/dev/installer/vbox_full_setup.sh" -O "/root/isetup.sh" """)
-
             print(Executor.exec("""vboxmanage guestcontrol Island run --exe "/bin/chmod" --username root --password islands --wait-stdout --wait-stderr -- chmod +x /root/isetup.sh """))
             self.on_message("Installation in progress. This step takes a while... Grab some tea")
-            print("READY TO LAUNCH THE SCRIPT")
+            print("Launching setup script")
             Executor.exec("""vboxmanage guestcontrol Island run --exe "/bin/bash" --username root --password islands --wait-stdout --wait-stderr -- bash /root/isetup.sh -b dev""")
+            self.on_message("Setup completed. Restarting Islands...")
             sleep(1)
             Executor.exec("""vboxmanage controlvm Island acpipowerbutton""")
-            sleep(2)
-            Executor.exec("""vboxmanage startvm Island """)
-            self.on_complete("Islands Virtual Machine successfully installed.")
+
+            for i in range(10):
+                try:
+                    sleep(3)
+                    Executor.exec("""vboxmanage startvm Island """)
+                    self.on_complete("Islands Virtual Machine successfully installed.")
+                    return
+                except Exception:
+                    continue
+            self.on_error(Exception("VM launch unsuccessfull"))
+
         except Exception as e:
             print("VMinstaller exception: " + str(e))
             print(e.output.strip().decode("utf8"))
@@ -231,6 +231,7 @@ class VMInstaller:
         while True:
             try:
                 Executor.exec("""vboxmanage guestcontrol Island run --exe "/bin/ls" --username root --password islands  --wait-stdout -- ls "/" """)
+                print("Looks liek vboxmanage available now! Returning...")
                 return
             except Exception as e:
                 print(e.output.strip().decode("utf8"))
@@ -246,3 +247,6 @@ class IslandsImageNotFound(Exception):
 
 # Attach guest additions spell:
 # vboxmanage storageattach <vmname> --storagectl IDE --port 1 --device 0 --type dvddrive --medium /Applications/VirtualBox.app/Contents/MacOS/VBoxGuestAdditions.iso
+
+# Port forwarding spell:
+# vboxmanage controlvm   Island natpf1 "r1, tcp, 127.0.0.1, 4000, 192.168.56.102, 4000"

@@ -80,12 +80,15 @@ class MainWindow:
         return handler
 
     def launch_setup(self):
-        self.setup_window = SetupWindow(self.config, self.island_manager, self.setup)
+        self.setup_window = SetupWindow(self.window, self.config, self.island_manager, self.setup)
         self.set_setup_window_onclose_handler(self.setup_window)
         self.setup_window.set_vbox_checker(self.setup.is_virtualbox_installed)
         self.setup_window.set_islands_vm_checker(self.setup.is_islands_vm_exist)
-        self.setup_window.show()
-        self.setup_window.on_close(self.refresh_island_status())
+
+        res = self.setup_window.exec()
+        print("WIZZARD RESULT IS {res}".format(res=res))
+        self.refresh_island_status()
+
 
     def set_setup_window_onclose_handler(self, window):
         def handler():

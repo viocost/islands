@@ -5,24 +5,39 @@ from PyQt5.QtCore import QObject, pyqtSignal
 from forms.setup_wizard_ui_setup import Ui_IslandSetupWizzard as UI_setup
 
 
-class SetupWizzardWindow:
-    def __init__(self, config,  island_manager, setup):
+class SetupWizzardWindow(QObject):
+
+    done = pyqtSignal()
+
+    def __init__(self, parent, config,  island_manager, setup):
+        QObject.__init__(self)
         self.working = False
         self.config = config
         self.setup = setup
         self.ui = UI_setup()
-        self.window = QWizard()
+        self.window = QWizard(parent)
+
         self.ui.setupUi(self.window)
         self.ui.button_install_vbox.setDefault(True)
         self.island_manager = island_manager
         self.prepare_handlers()
 
+    def prepare_handlers(self):
+        # BUTTONS' HANDLERS
+        self.ui.button_install_vbox.clicked.connect(self.process_vbox_install)
+        self.ui.button_select_data_path.clicked.connect(self.select_data_folder)
+        self.ui.button_import_ova.clicked.connect(self.select_islands_image)
+        self.ui.button_install_islands.clicked.connect(self.download_install_islands)
+
+        # SIGNALS
+        # ***
 
     # Clear window outputs
-    def show(self):
+    def exec(self):
         self.reset_consoles()
         self.vboxpage_prepare_text()
-        self.window.show()
+        return self.window.exec()
+
 
     def reset_consoles(self):
         self.ui.textBrowser.setText("")
@@ -55,12 +70,10 @@ class SetupWizzardWindow:
             else:
                 event.ignore()
 
-
     def set_vbox_checker(self, handler):
         def is_complete():
             return handler()
         self.window.page(0).isComplete = is_complete
-        self.ui.textBrowser.append("<p><b style='color:red;'>Hello world</b></p>")
 
     def set_vbox_page_buttons_enabled(self, value):
         self.ui.button_install_vbox.setEnabled(value)
@@ -76,15 +89,6 @@ class SetupWizzardWindow:
             return handler()
         self.window.page(1).isComplete = is_complete
 
-    def prepare_handlers(self):
-        # BUTTONS' HANDLERS
-        self.ui.button_install_vbox.clicked.connect(self.process_vbox_install)
-        self.ui.button_select_data_path.clicked.connect(self.select_data_folder)
-        self.ui.button_import_ova.clicked.connect(self.select_islands_image)
-        self.ui.button_install_islands.clicked.connect(self.download_install_islands)
-
-        # SIGNALS
-        # ***
     # Appends text to a given console
     def process_output(self, data, output_type="regular", font_size=12):
         colors = {
@@ -99,8 +103,6 @@ class SetupWizzardWindow:
         console.append("<p style='color:{color}; font_size:{font_size}'> {data} </p>"
                        .format(color=colors[output_type], font_size=font_size, data=data))
 
-
-
     # Opens select foldedialog
     def select_data_folder(self):
         f_dialog = QFileDialog()
@@ -109,6 +111,7 @@ class SetupWizzardWindow:
         if res:
             self.ui.data_folder_path.setText(res)
 
+    # Starts islands install process with choose image option
     def select_islands_image(self):
         res = QFileDialog.getOpenFileName(self.window, "Select Islands image", environ["HOME"], "Virtual Appliance (*.ova)")
         if res == ('', ''):
@@ -122,9 +125,13 @@ class SetupWizzardWindow:
             self.proceed_vm_install(data_path=t, download=False, vm_image_path=res[0])
             # Launch thread
 
+    # Starts islands install process with image download option
     def download_install_islands(self):
-        self.proceed_vm_install()
+        data_path = self.ui.data_folder_path.text()
+        self.proceed_vm_install(data_path=data_path, download=True)
 
+    # Given install options sets up output handlers and
+    # passes options to installer
     def proceed_vm_install(self, data_path, download=False, vm_image_path=None):
         self.set_vm_page_buttons_enabled(False)
         self.window.button(QWizard.BackButton).setEnabled(False)
@@ -132,6 +139,7 @@ class SetupWizzardWindow:
         def on_message(msg):
             if msg:
                 self.ui.vm_install_output_console.append('<p style="color: blue"> {msg} </p>'.format(msg=msg))
+                self.scroll_to_end(self.ui.vm_install_output_console)
 
         def on_complete(msg):
             self.set_vm_page_buttons_enabled(False)

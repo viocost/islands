@@ -106,3 +106,10 @@ class TestConfig(unittest.TestCase):
         except Exception as e:
             print(e)
             print(e.output.strip().decode("utf8"))
+
+
+    def test_ipfetch(self):
+        import re
+        res = Executor.exec('vboxmanage guestcontrol Island run --exe "/sbin/ip" --username root --password islands  --wait-stdout -- ip a  | grep eth1')
+        v = re.search(r'(\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b)', res).group()
+        print("OUTPUT IS %s" % v)
