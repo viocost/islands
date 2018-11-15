@@ -113,3 +113,6 @@ class TestConfig(unittest.TestCase):
         res = Executor.exec('vboxmanage guestcontrol Island run --exe "/sbin/ip" --username root --password islands  --wait-stdout -- ip a  | grep eth1')
         v = re.search(r'(\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b)', res).group()
         print("OUTPUT IS %s" % v)
+
+    def test_hash(self):
+        print(self.setup.sha1("/Users/konstantin/Downloads/Island.ova"))

@@ -1,0 +1,9 @@
+{
+  "title": "Islands",
+  "icon": "./forms/icons/island.png",
+  "icon-size": 80,
+  "contents": [
+    { "x": 192, "y": 344, "type": "file", "path": "dist/Islands.app" },
+    { "x": 448, "y": 344, "type": "link", "path": "/Applications" }
+  ]
+}

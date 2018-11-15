@@ -1,4 +1,5 @@
 import re
+import hashlib
 from threading import Thread
 from executor import ShellExecutor as Executor
 from time import sleep
@@ -51,14 +52,14 @@ class IslandSetup():
 
 
     def download_vbox(self):
-        res =  Executor.exec("curl {link} >> ~/virtualbox.dmg ".format(
+        res =  Executor.exec("curl {link} >> ~/Downloads/virtualbox.dmg ".format(
             link=self.__config["vbox_download"]
         ))
         print("Download complete: " + str(res))
         return res
 
     def mount_vbox_distro(self):
-        res = Executor.exec("hdiutil attach ~/virtualbox.dmg -mountpoint ~/VirtualBox")
+        res = Executor.exec("hdiutil attach ~/Downloads/virtualbox.dmg -mountpoint ~/VirtualBox")
         print("Image mounted")
         return res
 
@@ -90,7 +91,7 @@ class IslandSetup():
     # Download Islands vm from specified source
     # Destination is app directory
     def download_vm(self):
-        return Executor.exec("curl -L {link} >> ./Island.ova".format(
+        return Executor.exec("curl -L {link} >> ~/Downloads/Island.ova".format(
             link=self.__config["vm_download"]))
 
     # Imports downloaded vm
@@ -98,7 +99,8 @@ class IslandSetup():
     def import_vm(self, path_to_image):
         if not path.exists(path_to_image):
             raise IslandsImageNotFound
-        return Executor.exec("vboxmanage import {path} ".format(path=path_to_image))
+
+        return Executor.exec("""osascript -e 'do shell script "vboxmanage import {path}  " with administrator privileges' """.format(path=path_to_image))
 
     # This assumes that VM is already imported
     # There is no way to check whether vboxnet0 interface exists,
@@ -140,6 +142,13 @@ class IslandSetup():
             makedirs(fullpath)
         return Executor.exec("vboxmanage sharedfolder add Island "
                     "--name islandsData -hostpath {hostpath} -automount".format(hostpath=fullpath))
+
+    def sha1(self, fname):
+        hash_sha1 = hashlib.sha1()
+        with open(fname, "rb") as f:
+            for chunk in iter(lambda: f.read(4096), b""):
+                hash_sha1.update(chunk)
+        return hash_sha1.hexdigest()
 
     # Parses pshared folder path
     # Accepts either absolute path or relative to home directory
@@ -248,7 +257,7 @@ class VMInstaller:
                 self.setup.download_vm()
                 self.on_message("Download complete")
             self.on_message("Importing VM...")
-            self.setup.import_vm(self.image_path if self.image_path else "./Island.ova")
+            self.setup.import_vm(self.image_path if self.image_path else "~/Downloads/Island.ova")
             self.on_message("Image imported. Configuring...")
             self.setup.setup_host_only_adapter()
             self.on_message("Network configured..")
