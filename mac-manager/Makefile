@@ -9,15 +9,19 @@ all:
 	pyuic5 forms/setup_wizard.ui -o forms/setup_wizard_ui_setup.py
 	sed -i '' 's/^import resources_rc/import forms.resources_rc/g' forms/setup_wizard_ui_setup.py
 	sed -i '' 's/^import resources_rc/import forms.resources_rc/g' forms/main_window_ui_setup.py
-	py2applet --make-setup main.py  --iconfile images/icon.icns
 	python3 setup.py py2app -A
-clean:
 
-	rm setup.py
+clean:
 	rm -rf build dist forms/main_window_ui_setup.py forms/setup_wizard_ui_setup.py
 	rm -rf resources_rc.py
 	rm -rf *.pyc
 	
+build:
+	if [ -f setup.py ]; then
+		python3 setup.py py2app --packages=PyQt5
+	else
+		echo "setup.py not found. Run \"make\" first"
+	fi
 
 # vim:ft=make
 #
