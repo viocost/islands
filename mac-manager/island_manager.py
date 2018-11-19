@@ -10,24 +10,26 @@ class IslandManager:
     """ Main API methods """
     def launch_island(self):
         if not self.is_running():
-            return Executor.exec(self.__launch_cmd())
-        return "OK"
+            return Executor.exec_sync(self.__launch_cmd())
+
+
 
     def stop_island(self):
         if self.is_running():
-            return Executor.exec(self.__stop_cmd())
-        return "OK"
+            return Executor.exec_sync(self.__stop_cmd())[1]
+
 
     def restart_island(self):
         if self.is_running():
-            Executor.exec(self.stop_island())
-            return Executor.exec(self.__launch_cmd())
-        return Executor.exec(self.__launch_cmd())
+            stop_res = Executor.exec_sync(self.stop_island())
+            assert stop_res[0] == 0
+            return Executor.exec_sync(self.__launch_cmd())
+
 
     def is_running(self):
-        # running_ptrn = re.compile(r"^(?=.*State)(?=.*running)(?=.*since).+")
+        running_ptrn = re.compile(r"^(?=.*State)(?=.*running)(?=.*since).+")
         res = Executor.exec_sync(self.__is_vm_running_cmd())
-        return res[0] == 0
+        return res[0] == 0 and running_ptrn.search(res[1]) is not None
 
     def get_vboxmanage_path(self):
         return self.__config['vboxmanage']

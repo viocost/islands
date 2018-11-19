@@ -54,18 +54,23 @@ class ShellExecutor:
 
 
     @staticmethod
-    def exec_sync(cmd):
+    def exec_sync(cmd, verbose=True):
         stdout = []
         stderr = []
 
         def on_data(data):
             stdout.append(data)
+            if verbose:
+                print("==DATA: %s" % data)
 
         def on_error(data):
             stderr.append(data)
+            if verbose:
+                print("==ERROR: %s" % data)
 
         res = ShellExecutor.__execute(cmd, on_data, on_error)
-
+        if verbose:
+            print("==RETURN CODE: %d" % res)
         stdout = "".join(stdout)
         stderr = "".join(stderr)
         return res, stdout, stderr

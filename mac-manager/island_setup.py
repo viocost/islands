@@ -187,9 +187,9 @@ class IslandSetup():
 
     def is_islands_vm_exist(self):
         try:
-            res = Executor.exec_sync("vboxmanage list vms | "
-                "grep -c \\\"{vmname}\\\" | cat ".format(vmname=self.__config['vmname']))
-            return int(res) > 0
+            execres = Executor.exec_sync("vboxmanage list vms | "
+                                     "grep  \\\"{vmname}\\\" ".format(vmname=self.__config['vmname']))
+            return execres[0] == 0
         except Exception as e:
             print("is_islands_vm_exist EXCEPTION!: " + str(e))
             return False
