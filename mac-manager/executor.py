@@ -54,7 +54,7 @@ class ShellExecutor:
 
 
     @staticmethod
-    def exec_sync(cmd, verbose=True):
+    def exec_sync(cmd, verbose=False):
         stdout = []
         stderr = []
 

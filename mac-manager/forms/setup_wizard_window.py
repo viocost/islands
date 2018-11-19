@@ -1,7 +1,7 @@
 
 from os import environ
 from PyQt5.QtWidgets import QMessageBox as QM, QWizard, QFileDialog
-from PyQt5.QtCore import QObject, pyqtSignal
+from PyQt5.QtCore import QObject, pyqtSignal, Qt
 from forms.setup_wizard_ui_setup import Ui_IslandSetupWizzard as UI_setup
 
 
@@ -43,7 +43,19 @@ class SetupWizzardWindow(QObject):
         self.ui.button_select_data_path.clicked.connect(self.select_data_folder)
         self.ui.button_import_ova.clicked.connect(self.select_islands_image)
         self.ui.button_install_islands.clicked.connect(self.download_install_islands)
+        self.window.keyPressEvent = self.key_press_handler()
         self.output.connect(self.appender)
+
+    def key_press_handler(self):
+        def handler(event):
+            if event.key() == Qt.Key_Escape:
+                install_complete = self.setup.is_virtualbox_installed and self.setup.is_islands_vm_exist()
+                message = "Setup is not complete yet. Setup process will be interrupted. " if not install_complete else ""
+                message += "Quit setup wizzard?"
+                res = QM.question(self.window, "Quit", message, QM.Yes | QM.No)
+                if res == QM.Yes:
+                    self.window.close()
+        return handler
 
     # Clear window outputs
     def exec(self):
