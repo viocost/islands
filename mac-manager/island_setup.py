@@ -51,6 +51,7 @@ class IslandSetup():
             }
 
 
+    # TODO async
     def download_vbox(self):
         res =  Executor.exec("curl {link} >> ~/Downloads/virtualbox.dmg ".format(
             link=self.__config["vbox_download"]
@@ -59,10 +60,11 @@ class IslandSetup():
         return res
 
     def mount_vbox_distro(self):
-        res = Executor.exec("hdiutil attach ~/Downloads/virtualbox.dmg -mountpoint ~/VirtualBox")
+        res = Executor.exec_sync("hdiutil attach ~/Downloads/virtualbox.dmg -mountpoint ~/VirtualBox")
         print("Image mounted")
         return res
 
+    # TODO async
     def install_vbox(self):
         res = Executor.exec(
             """osascript -e 'do shell script "installer -pkg ~/VirtualBox/VirtualBox.pkg -target / " with administrator privileges' """
@@ -70,23 +72,17 @@ class IslandSetup():
         print("Installation finished: \n" + res)
 
     def unmount_vbox_distro(self):
-        res = Executor.exec("hdiutil detach ~/VirtualBox")
+        res = Executor.exec_sync("hdiutil detach ~/VirtualBox")
         print("Image unmounted")
         return res
 
     def delete_vbox_distro(self):
-        res = Executor.exec("rm -rf ~/virtualbox.dmg")
+        res = Executor.exec_sync("rm -rf ~/virtualbox.dmg")
         return res
 
-    def install_virtualbox(self):
-        try:
-          pass
-        except Exception as e:
-            print("Error")
-            print(e)
 
 
-
+    # TODO async
     # DOWNLOAD AND INSTALL VM METHODS
     # Download Islands vm from specified source
     # Destination is app directory
@@ -94,13 +90,16 @@ class IslandSetup():
         return Executor.exec("curl -L {link} >> ~/Downloads/Island.ova".format(
             link=self.__config["vm_download"]))
 
+    # TODO async
     # Imports downloaded vm
     # Image must be downloaded into app root directory
     def import_vm(self, path_to_image):
         if not path.exists(path_to_image):
             raise IslandsImageNotFound
+        res = Executor.exec("vboxmanage import {path}  ".format(path=path_to_image))
+        if res[0] != 0:
+            raise ImportVMError('%s' % res[2])
 
-        return Executor.exec("""osascript -e 'do shell script "vboxmanage import {path}  " with administrator privileges' """.format(path=path_to_image))
 
     # This assumes that VM is already imported
     # There is no way to check whether vboxnet0 interface exists,
@@ -110,18 +109,18 @@ class IslandSetup():
     # Otherwise there is some other error and we raise it
     def setup_host_only_adapter(self):
         try:
-            Executor.exec("vboxmanage hostonlyif ipconfig vboxnet0")
+            Executor.exec_sync("vboxmanage hostonlyif ipconfig vboxnet0")
         except Exception as e:
             if e.returncode == 1:
-                Executor.exec("vboxmanage hostonlyif create")
+                Executor.exec_sync("vboxmanage hostonlyif create")
             elif e.returncode != 2:
                 raise e
         # Installing adapter onto vm
-        Executor.exec("vboxmanage modifyvm {vmname} --nic2 hostonly --cableconnected2 on"
+        Executor.exec_sync("vboxmanage modifyvm {vmname} --nic2 hostonly --cableconnected2 on"
                       " --hostonlyadapter2 vboxnet0".format(vmname=self.__config["vmname"]))
 
     def get_islands_ip(self):
-        res = Executor.exec('vboxmanage guestcontrol Island run --exe "/sbin/ip" '
+        res = Executor.exec_sync('vboxmanage guestcontrol Island run --exe "/sbin/ip" '
                             '--username root --password islands  --wait-stdout -- ip a  | grep eth1')
         return re.search(r'(\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b)', res).group()
 
@@ -129,7 +128,7 @@ class IslandSetup():
         island_ip = self.get_islands_ip()
         if not island_ip:
             raise PortForwardingException("Was not able to determine ip address of Islands VM")
-        res = Executor.exec('vboxmanage controlvm   Island natpf1 "r1, tcp, 127.0.0.1, {port},'
+        res = Executor.exec_sync('vboxmanage controlvm   Island natpf1 "r1, tcp, 127.0.0.1, {port},'
                       ' {island_ip}, 4000"'.format(port=port, island_ip=island_ip))
         self.__config["local_access"] = "<a href='http://localhost:{port}'>http://localhost:{port}</a>".format(port=port)
         self.__config.save()
@@ -140,7 +139,7 @@ class IslandSetup():
         fullpath = self.parse_shared_folder_path(data_folder_path)
         if not path.exists(fullpath):
             makedirs(fullpath)
-        return Executor.exec("vboxmanage sharedfolder add Island "
+        return Executor.exec_sync("vboxmanage sharedfolder add Island "
                     "--name islandsData -hostpath {hostpath} -automount".format(hostpath=fullpath))
 
     def sha1(self, fname):
@@ -188,7 +187,7 @@ class IslandSetup():
 
     def is_islands_vm_exist(self):
         try:
-            res = Executor.exec("vboxmanage list vms | "
+            res = Executor.exec_sync("vboxmanage list vms | "
                 "grep -c \\\"{vmname}\\\" | cat ".format(vmname=self.__config['vmname']))
             return int(res) > 0
         except Exception as e:
@@ -321,6 +320,9 @@ class IslandsImageNotFound(Exception):
     pass
 
 class IslandSetupError(Exception):
+    pass
+
+class ImportVMError(Exception):
     pass
 
 # Attach guest additions spell:

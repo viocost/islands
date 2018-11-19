@@ -100,12 +100,12 @@ class TestConfig(unittest.TestCase):
 
 
     def test_vmcontrol(self):
-        try:
-            Executor.exec(
-            """vboxmanage guestcontrol Island run --exe "/bin/ls" --username root --password islands  --wait-stdout -- ls "/" """)
-        except Exception as e:
-            print(e)
-            print(e.output.strip().decode("utf8"))
+            # """vboxmanage guestcontrol Island run --exe "/bin/ls" --username root --password islands  --wait-stdout -- ls "/" """
+            res = Executor.exec_sync(
+                "ls ~/ "
+            )
+            print("STDOUT PRINT: %s\nRESULT: %d\nERROR: %s" %(res[1], res[0], res[2]))
+
 
 
     def test_ipfetch(self):
@@ -116,3 +116,8 @@ class TestConfig(unittest.TestCase):
 
     def test_hash(self):
         print(self.setup.sha1("/Users/konstantin/Downloads/Island.ova"))
+
+
+    def test_download(self):
+        res = Executor.exec('curl {link}  -o ~/Downloads/test.dmg'.format(link=self.config['vbox_download']))
+        print(res)

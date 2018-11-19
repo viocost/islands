@@ -25,10 +25,9 @@ class IslandManager:
         return Executor.exec(self.__launch_cmd())
 
     def is_running(self):
-        running_ptrn = re.compile(r"^(?=.*State)(?=.*running)(?=.*since).+")
-        res = Executor.exec(self.__is_vm_running_cmd())
-        print(running_ptrn.search(res) is not None)
-        return running_ptrn.search(res) is not None
+        # running_ptrn = re.compile(r"^(?=.*State)(?=.*running)(?=.*since).+")
+        res = Executor.exec_sync(self.__is_vm_running_cmd())
+        return res[0] == 0
 
     def get_vboxmanage_path(self):
         return self.__config['vboxmanage']

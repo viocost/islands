@@ -20,7 +20,6 @@ class SetupWizzardWindow(QObject):
         self.setup = setup
         self.ui = UI_setup()
         self.window = QWizard(parent)
-
         self.ui.setupUi(self.window)
         self.ui.button_install_vbox.setDefault(True)
         self.island_manager = island_manager
