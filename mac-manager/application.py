@@ -20,9 +20,9 @@ from im_config import IMConfig
 
 
 class Application:
-    def __init__(self):
+    def __init__(self, default_config_path="default_config.json", config_path="config.json"):
         self.app = self.prepare_app()
-        self.config = IMConfig()
+        self.config = IMConfig(default_config_path, config_path)
         self.island_manager = IslandManager(self.config)
         self.setup = IslandSetup(self.config)
         self.main_window = MainWindow(self.config, self.island_manager, self.setup)
@@ -39,6 +39,10 @@ class Application:
         appicon.addPixmap(QPixmap(":/images/island"))
         app.setWindowIcon(appicon)
         return app
+
+    def kill(self):
+        print("Exiting!")
+        self.app.quit()
 
 if __name__ == "__main__":
     raise Exception("This module is not supposed to run as main")

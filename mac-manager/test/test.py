@@ -4,12 +4,13 @@ from im_config import IMConfig
 from island_manager import IslandManager
 from island_setup import IslandSetup
 from executor import ShellExecutor as Executor
-
+from downloader import Downloader
 
 class TestConfig(unittest.TestCase):
     def setUp(self):
         self.config = IMConfig("../default_config.json", "../config.json")
         self.setup = IslandSetup(self.config)
+        self.island_manager = IslandManager(self.setup)
 
     def test_init(self):
         print("Test 1")
@@ -119,5 +120,10 @@ class TestConfig(unittest.TestCase):
 
 
     def test_download(self):
-        res = Executor.exec('curl {link}  -o ~/Downloads/test.dmg'.format(link=self.config['vbox_download']))
-        print(res)
+        link = self.config['vbox_download']
+        Downloader.get(link)
+        #res = Executor.exec('curl {link}  -o ~/Downloads/test.dmg'.format(link=self.config['vbox_download']))
+      #  print(res)
+
+
+

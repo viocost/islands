@@ -3,7 +3,7 @@ import json
 
 
 class IMConfig:
-    def __init__(self, default_config_path = "default_config.json", config_path = "config.json" ):
+    def __init__(self, default_config_path="default_config.json", config_path="config.json" ):
         self.__default = self.__get_default(default_config_path)
         self.__custom = self.__load(config_path)
 

@@ -1,16 +1,17 @@
-
 from os import environ
 from PyQt5.QtWidgets import QMessageBox as QM, QWizard, QFileDialog
 from PyQt5.QtCore import QObject, pyqtSignal, Qt
 from forms.setup_wizard_ui_setup import Ui_IslandSetupWizzard as UI_setup
-
+from PyQt5.QtGui import QTextCursor
 
 class SetupWizzardWindow(QObject):
+
     # This isgnal will be emited whenever there is something to append to output screen
     # First parameter is message,
     # second parameter is console index: 0 - first page, 1 - second page
     #
     output = pyqtSignal(str, int)
+    progress = pyqtSignal(int, str, str, str, str, bool)
 
     def __init__(self, parent, config,  island_manager, setup):
         QObject.__init__(self)
@@ -25,16 +26,79 @@ class SetupWizzardWindow(QObject):
         self.island_manager = island_manager
         self.prepare_handlers()
 
-    # Handler for output signal
-    def appender(self, msg, console_index):
-        consoles = {
+        self.consoles = {
             0: self.ui.vbox_setup_output_console,
             1: self.ui.vm_install_output_console
         }
-        if console_index not in consoles:
+
+    # Handler for output signal
+    def appender(self, msg, console_index):
+
+        if console_index not in self.consoles:
             raise InvalidConsoleIndex
-        consoles[console_index].append(msg)
+        self.consoles[console_index].append(msg)
         self.scroll_to_end(self.ui.vm_install_output_console)
+
+    def progress_bar_handler(self, console_index, action, title="", progress_in_percents="", ratio="", success=True):
+
+        """This function initializes, updates and finalizes ASCII progress bar
+        Args:
+            console_index        -- window to output. Defined in constructor.
+            action               -- can be init, update, and finalize
+                                    init appends new progress bar to console
+                                    update - rewrites previous line and sets updated values for progress and ratio
+                                    finalize - rewrites last line in color depending  on success value
+            title                -- line right above progress bar
+            progress_in_percents -- exactly what it means
+            ratio                -- optional and will appear as is on the right of the progress bar
+
+            success              -- indicates whether operation succeeded. Only matters on finalize
+        """
+        if console_index not in self.consoles:
+            raise KeyError
+
+        def construct_progress_bar():
+            multiple = .3
+            fill = '='
+            void = ' '
+            fills = int(multiple*int(progress_in_percents))
+            whitespaces = int(multiple*100) - fills
+            print(fills, whitespaces)
+            return '<span style="font-family: Monaco"><b> {:>3}% </b><span style="white-space: pre;">|{}>{}|</span> </span>{}'.format(progress_in_percents, fill*fills,
+                                        void * whitespaces, ratio)
+
+        def init_progress_bar():
+            self.consoles[console_index].append('<br><b>{title}</b>'.format(title=title))
+            self.consoles[console_index].append(construct_progress_bar())
+
+
+        def update_progress_bar():
+            b = construct_progress_bar()
+            cursor = self.consoles[console_index].textCursor()
+
+            # Move cursor to the beginning of the line
+            cursor.movePosition(QTextCursor.StartOfLine)
+            cursor.movePosition(QTextCursor.EndOfBlock, QTextCursor.KeepAnchor)
+            cursor.removeSelectedText()
+            cursor.insertHtml(b)
+            # Select until the end
+            # delete
+            # write new update line
+
+            print("Current position: %s" % str(cursor.position()))
+
+        def finalize_progress_bar():
+            color, content = ("green", "OK") if success else ("red", "ERROR")
+            final_word = "<p style='color: {color}'>{content}</p>".format(color=color, content=content)
+            self.consoles[console_index].append(final_word)
+
+
+        if action == "update":
+            update_progress_bar()
+        elif action == 'init':
+            init_progress_bar()
+        elif action == 'finalize':
+            finalize_progress_bar()
 
 
     def prepare_handlers(self):
@@ -45,12 +109,38 @@ class SetupWizzardWindow(QObject):
         self.ui.button_install_islands.clicked.connect(self.download_install_islands)
         self.window.keyPressEvent = self.key_press_handler()
         self.output.connect(self.appender)
+        self.progress.connect(self.progress_bar_handler)
+
+        #TEST
+        self.ui.test_button.clicked.connect(self.test_output)
+
+    #TEST
+    def test_output(self):
+        from time import sleep
+        from threading import Thread
+
+        def run_test():
+
+            self.progress.emit(0, "init", "Testing progress bar", "0", "", True)
+            for i in range(101):
+                self.progress.emit(0, "update", "", str(i), '%d/100' % i, True)
+                sleep(.05)
+
+            self.progress.emit(0, "finalize", "", "", "", True)
+        p = Thread(target=run_test,  group=None)
+        p.start()
+
+
+
+
+
 
     def key_press_handler(self):
         def handler(event):
             if event.key() == Qt.Key_Escape:
                 install_complete = self.setup.is_virtualbox_installed and self.setup.is_islands_vm_exist()
-                message = "Setup is not complete yet. Setup process will be interrupted. " if not install_complete else ""
+                message = "Setup is not complete yet. Setup process will be interrupted. " \
+                    if not install_complete else ""
                 message += "Quit setup wizzard?"
                 res = QM.question(self.window, "Quit", message, QM.Yes | QM.No)
                 if res == QM.Yes:
