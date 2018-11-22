@@ -294,12 +294,13 @@ class SetupWizardWindow(QObject):
             self.update_ui_state()
         return on_errror
 
-    def get_on_complete_handler(self, msg, console):
+    def get_on_complete_handler(self, msg, console, action=None, ):
         def on_complete(size=14, color='green', ):
             self.output.emit('<p style="color: color; font-size: {size}"> {msg} </p>'
                              .format(msg=msg, size=size, color=color), console)
             self.update_ui_state()
-
+            if action:
+                action()
         return on_complete
     # Console event handlers
 
@@ -342,28 +343,23 @@ class SetupWizardWindow(QObject):
             return finalize_progres_bar
     # END progress bar handlers
 
-
-
     def process_vbox_install(self):
-        def on_complete(msg):
-            self.output.emit(SetupMessages.virtualbox_installed(), 0)
-            self.output.emit(SetupMessages.vb_installed_instructions(), 0)
-            self.output.emit('<p style="color: green"> {msg} </p>'.format(msg=msg), 0)
-            self.output.emit('<p style="color: green; font-size: 16px;"> '
-                             'Click "continue" to proceed >> </p>', 0)
-            self.prepare_vm_setup_page()
-            self.window.page(0).completeChanged.emit()
 
-
-
+        vbox_installed = self.setup.is_vbox_installed()
 
         self.setup.run_vbox_installer(
             config=self.config,
             setup=self.setup,
             on_message=self.get_on_message_handler(console=0),
             on_complete=self.get_on_complete_handler(msg="Virtualbox is now set up. Click on \"continue\" to proceed.",
+                                                     action=self.prepare_vm_setup_page,
                                                      console=0),
-            on_error=self.get_on_error_handler(console=0)
+            init_progres_bar=self.get_init_progres_bar_handler(0),
+            update_progres_bar=self.get_update_progres_bar_handler(0),
+            finalize_progres_bar=self.get_finalize_progres_bar_handler(0),
+            on_error=self.get_on_error_handler(console=0),
+            update=vbox_installed
+
         )
         # self.window.page(0).completeChanged.emit()
 
@@ -394,7 +390,7 @@ class SetupWizardWindow(QObject):
         """
         current_page_id = self.get_active_page_id()
         vbox_installed = self.setup.is_vbox_installed()
-        vbox_up_to_date = self.setup.is_vbox_up_to_date()
+        vbox_up_to_date = False if not vbox_installed else self.setup.is_vbox_up_to_date()
         islands_vm_installed = vbox_installed and vbox_up_to_date and \
                 self.setup.is_islands_vm_exist()
 

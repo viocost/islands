@@ -4,6 +4,7 @@ from threading import Thread
 from executor import ShellExecutor as Executor
 from time import sleep
 from vboxinstaller import VBoxInstaller
+from installer_exceptions import *
 
 
 
@@ -193,6 +194,7 @@ class IslandSetup():
         return res[0] == 0
 
     def is_vbox_up_to_date(self):
+
         res = Executor.exec_sync("{vboxmanage} -v".format(vboxmanage=self.__config['vboxmanage']))
         version = re.sub(r'[^\d^\.]', "", res[1])
         version = [int(i) for i in version.split('.')]
@@ -293,24 +295,6 @@ class VMInstaller:
                 continue
 
 
-class InvalidPathFormat(Exception):
-    pass
-
-
-class PortForwardingException(Exception):
-    pass
-
-
-class IslandsImageNotFound(Exception):
-    pass
-
-
-class IslandSetupError(Exception):
-    pass
-
-
-class ImportVMError(Exception):
-    pass
 
 # Attach guest additions spell:
 # vboxmanage storageattach <vmname> --storagectl IDE --port 1 --device 0 --type dvddrive --medium /Applications/VirtualBox.app/Contents/MacOS/VBoxGuestAdditions.iso
