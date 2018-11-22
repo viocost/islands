@@ -3,6 +3,8 @@ import hashlib
 from threading import Thread
 from executor import ShellExecutor as Executor
 from time import sleep
+from vboxinstaller import VBoxInstaller
+
 
 
 from os import path, makedirs, environ
@@ -53,6 +55,8 @@ class IslandSetup():
 
     # TODO async
     def download_vbox(self):
+
+
         res =  Executor.exec("curl {link} >> ~/Downloads/virtualbox.dmg ".format(
             link=self.__config["vbox_download"]
         ))
@@ -165,7 +169,7 @@ class IslandSetup():
     # END
 
     def is_setup_required(self):
-        if not self.is_virtualbox_installed():
+        if not self.is_vbox_set_up():
             return "Virtualbox not installed or not found"
         if not self.is_islands_vm_exist():
             return "Island virtual machine not installed or not found"
@@ -181,9 +185,20 @@ class IslandSetup():
     def get_vmware_docs(self):
         pass
 
-    def is_virtualbox_installed(self):
-        return path.exists(self.__config["vboxmanage"]) and \
-            path.isfile(self.__config["vboxmanage"])
+    def is_vbox_set_up(self):
+        return self.is_vbox_installed() and self.is_vbox_up_to_date()
+
+    def is_vbox_installed(self):
+        res = Executor.exec_sync("{vboxmanage} -v".format(vboxmanage=self.__config['vboxmanage']))
+        return res[0] == 0
+
+    def is_vbox_up_to_date(self):
+        res = Executor.exec_sync("{vboxmanage} -v".format(vboxmanage=self.__config['vboxmanage']))
+        version = re.sub(r'[^\d^\.]', "", res[1])
+        version = [int(i) for i in version.split('.')]
+        version[2] = int(str(version[2])[0:2])
+        return (res[0] == 0 and version[0] >= 5
+                and version[1] >= 2 and version[2] >= 20)
 
     def is_islands_vm_exist(self):
         try:
@@ -195,40 +210,7 @@ class IslandSetup():
             return False
 
 
-class VBoxInstaller:
-    def __init__(self, config, setup, on_message, on_complete, on_error):
-        self.thread = None
-        self.setup = setup
-        self.config = config
-        self.message = on_message
-        self.complete = on_complete
-        self.error = on_error
 
-    def start(self):
-        self.thread = Thread(target=self.install)
-        self.thread.start()
-
-    def install(self):
-        def run_setup_command(command):
-            res = self.setup.run(command)
-            if res["error"]:
-                self.error(res["result"])
-                raise IslandSetupError(res["result"])
-        try:
-            self.message("Downloading virtualbox...")
-            run_setup_command("download_vbox")
-            self.message("Download complete. Mounting...")
-            run_setup_command("mount_vbox_distro")
-            self.message("Mounted. Installing")
-            run_setup_command("install_vbox")
-            self.message("Installed. Unmounting vbox distro")
-            run_setup_command("unmount_vbox_distro")
-            self.message("Unmounted. Removing distro")
-            run_setup_command("delete_vbox_distro")
-            self.complete("Done.")
-        except IslandSetupError:
-            self.error("Virtualbox installation didn't successfully finish. "
-                       "Please try again...")
 
 
 class VMInstaller:
@@ -310,17 +292,22 @@ class VMInstaller:
                 sleep(15)
                 continue
 
+
 class InvalidPathFormat(Exception):
     pass
+
 
 class PortForwardingException(Exception):
     pass
 
+
 class IslandsImageNotFound(Exception):
     pass
 
+
 class IslandSetupError(Exception):
     pass
+
 
 class ImportVMError(Exception):
     pass

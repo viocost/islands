@@ -1,5 +1,5 @@
 from forms.main_window_ui_setup import Ui_MainWindow
-from forms.setup_wizard_window import SetupWizzardWindow as SetupWindow
+from forms.setup_wizard_window import SetupWizardWindow as SetupWindow
 from PyQt5.QtWidgets import QMainWindow, QMessageBox as QM
 
 
@@ -82,7 +82,7 @@ class MainWindow:
     def launch_setup(self):
         self.setup_window = SetupWindow(self.window, self.config, self.island_manager, self.setup)
         self.set_setup_window_onclose_handler(self.setup_window)
-        self.setup_window.set_vbox_checker(self.setup.is_virtualbox_installed)
+        self.setup_window.set_vbox_checker(self.setup.is_vbox_set_up)
         self.setup_window.set_islands_vm_checker(self.setup.is_islands_vm_exist)
 
         res = self.setup_window.exec()

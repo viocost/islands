@@ -4,9 +4,9 @@ from PyQt5.QtCore import QObject, pyqtSignal, Qt
 from forms.setup_wizard_ui_setup import Ui_IslandSetupWizzard as UI_setup
 from PyQt5.QtGui import QTextCursor
 
-class SetupWizzardWindow(QObject):
+class SetupWizardWindow(QObject):
 
-    # This isgnal will be emited whenever there is something to append to output screen
+    # This signal will be emitted whenever there is something to append to output screen
     # First parameter is message,
     # second parameter is console index: 0 - first page, 1 - second page
     #
@@ -31,6 +31,8 @@ class SetupWizzardWindow(QObject):
             1: self.ui.vm_install_output_console
         }
 
+
+
     # Handler for output signal
     def appender(self, msg, console_index):
 
@@ -39,6 +41,8 @@ class SetupWizzardWindow(QObject):
         self.consoles[console_index].append(msg)
         self.scroll_to_end(self.ui.vm_install_output_console)
 
+
+    # TODO Refactor
     def progress_bar_handler(self, console_index, action, title="", progress_in_percents="", ratio="", success=True):
 
         """This function initializes, updates and finalizes ASCII progress bar
@@ -92,7 +96,6 @@ class SetupWizzardWindow(QObject):
             final_word = "<p style='color: {color}'>{content}</p>".format(color=color, content=content)
             self.consoles[console_index].append(final_word)
 
-
         if action == "update":
             update_progress_bar()
         elif action == 'init':
@@ -116,6 +119,7 @@ class SetupWizzardWindow(QObject):
 
     #TEST
     def test_output(self):
+
         from time import sleep
         from threading import Thread
 
@@ -129,16 +133,12 @@ class SetupWizzardWindow(QObject):
             self.progress.emit(0, "finalize", "", "", "", True)
         p = Thread(target=run_test,  group=None)
         p.start()
-
-
-
-
-
+    #END TEST
 
     def key_press_handler(self):
         def handler(event):
             if event.key() == Qt.Key_Escape:
-                install_complete = self.setup.is_virtualbox_installed and self.setup.is_islands_vm_exist()
+                install_complete = self.setup.is_vbox_set_up and self.setup.is_islands_vm_exist()
                 message = "Setup is not complete yet. Setup process will be interrupted. " \
                     if not install_complete else ""
                 message += "Quit setup wizzard?"
@@ -151,6 +151,7 @@ class SetupWizzardWindow(QObject):
     def exec(self):
         self.reset_consoles()
         self.vboxpage_prepare_text()
+        self.update_ui_state()
         return self.window.exec()
 
 
@@ -158,16 +159,7 @@ class SetupWizzardWindow(QObject):
         self.ui.vbox_setup_output_console.setText("")
         self.ui.vm_install_output_console.setText("")
 
-    def vboxpage_prepare_text(self):
-        self.ui.vbox_setup_output_console.append(SetupMessages.checking_vbox())
-        if self.setup.is_virtualbox_installed():
-            self.ui.vbox_setup_output_console.append(SetupMessages.virtualbox_found())
-            self.ui.vbox_setup_output_console.append(SetupMessages.vb_installed_instructions())
-            self.prepare_vm_setup_page()
-        else:
-            self.ui.vbox_setup_output_console.append(SetupMessages.virtualbox_not_installed())
-            self.ui.vbox_setup_output_console.append(SetupMessages.vb_not_installed_instructions())
-        self.scroll_to_end(self.ui.vbox_setup_output_console)
+
 
     def scroll_to_end(self, console):
         sb = console.verticalScrollBar()
@@ -189,15 +181,6 @@ class SetupWizzardWindow(QObject):
         def is_complete():
             return handler()
         self.window.page(0).isComplete = is_complete
-
-    def set_vbox_page_buttons_enabled(self, value):
-        self.ui.button_install_vbox.setEnabled(value)
-        self.ui.button_path_to_vboxmanage.setEnabled(value)
-
-    def set_vm_page_buttons_enabled(self, value):
-        self.ui.button_select_data_path.setEnabled(value)
-        self.ui.button_import_ova.setEnabled(value)
-        self.ui.button_install_islands.setEnabled(value)
 
     def set_islands_vm_checker(self, handler):
         def is_complete():
@@ -280,6 +263,8 @@ class SetupWizzardWindow(QObject):
                                     data_path=data_path,
                                     port=port)
 
+
+
     def prepare_vm_setup_page(self):
         console = self.ui.vm_install_output_console
         if self.setup.is_islands_vm_exist():
@@ -290,11 +275,76 @@ class SetupWizzardWindow(QObject):
             console.append(SetupMessages.vm_not_found_instructions())
         self.set_vm_page_buttons_enabled(not self.setup.is_islands_vm_exist())
 
-    def process_vbox_install(self):
-        def on_message(msg, size=12):
-            print("GOT MESSAGE: %s" % msg)
-            self.output.emit('<p style="color: blue; font-size: {size}"> {msg} </p>'.format(msg=msg, size=size), 0)
 
+    # Console event handlers
+    # This handlers are used by setup installer to display the output and update status of
+    # installation process
+    def get_on_message_handler(self, console):
+        def on_message(msg, size=12, color='blue'):
+            print("GOT MESSAGE: %s" % msg)
+            self.output.emit('<p style="color: color; font-size: {size}"> {msg} </p>'
+                             .format(msg=msg, size=size, color=color), console)
+        return on_message
+
+    def get_on_error_handler(self, console):
+        def on_errror(msg, size=12, color='red'):
+            print("GOT MESSAGE: %s" % msg)
+            self.output.emit('<p style="color: color; font-size: {size}"> {msg} </p>'
+                             .format(msg=msg, size=size, color=color), console)
+            self.update_ui_state()
+        return on_errror
+
+    def get_on_complete_handler(self, msg, console):
+        def on_complete(size=14, color='green', ):
+            self.output.emit('<p style="color: color; font-size: {size}"> {msg} </p>'
+                             .format(msg=msg, size=size, color=color), console)
+            self.update_ui_state()
+
+        return on_complete
+    # Console event handlers
+
+    # Baking progress bar handlers
+    def get_init_progres_bar_handler(self, console):
+        def init_progres_bar(title, size=None):
+            ratio = "0/%d" % size if size is not None else ""
+
+            self.progress_bar_handler(console_index=console,
+                                      action='init',
+                                      title=title,
+                                      progress_in_percents="0",
+                                      ratio=ratio,
+                                      success=True)
+        return init_progres_bar
+
+    def get_update_progres_bar_handler(self, console):
+        def update_progres_bar(progress_in_percents, title, bytes_downloaded=None, total_size=None):
+            ratio = "%d/%d".format(bytes_downloaded, total_size) if bytes_downloaded and total_size \
+                else ""
+            self.progress_bar_handler(console_index=console,
+                                      action='update',
+                                      title=title,
+                                      progress_in_percents=str(progress_in_percents),
+                                      ratio=ratio,
+                                      success=True)
+
+        return update_progres_bar
+
+    def get_finalize_progres_bar_handler(self, console):
+        def finalize_progres_bar(progress_in_percents, title, bytes_downloaded=None, total_size=None):
+            ratio = "%d/%d".format(bytes_downloaded, total_size) if bytes_downloaded and total_size \
+                else ""
+            self.progress_bar_handler(console_index=console,
+                                      action='finalize',
+                                      title=title,
+                                      progress_in_percents=str(progress_in_percents),
+                                      ratio=ratio,
+                                      success=True)
+            return finalize_progres_bar
+    # END progress bar handlers
+
+
+
+    def process_vbox_install(self):
         def on_complete(msg):
             self.output.emit(SetupMessages.virtualbox_installed(), 0)
             self.output.emit(SetupMessages.vb_installed_instructions(), 0)
@@ -304,22 +354,86 @@ class SetupWizzardWindow(QObject):
             self.prepare_vm_setup_page()
             self.window.page(0).completeChanged.emit()
 
-        def on_error(err):
-            if err:
-                self.output.emit('<p style="color: red"> {msg} </p>'.format(msg=str(err)), 0)
-            self.set_vbox_page_buttons_enabled(not self.setup.is_virtualbox_installed())
-            self.set_vm_page_buttons_enabled(True)
 
-        self.set_vbox_page_buttons_enabled(False)
+
 
         self.setup.run_vbox_installer(
             config=self.config,
             setup=self.setup,
-            on_message=on_message,
-            on_complete=on_complete,
-            on_error=on_error
+            on_message=self.get_on_message_handler(console=0),
+            on_complete=self.get_on_complete_handler(msg="Virtualbox is now set up. Click on \"continue\" to proceed.",
+                                                     console=0),
+            on_error=self.get_on_error_handler(console=0)
         )
         # self.window.page(0).completeChanged.emit()
+
+    def vboxpage_prepare_text(self):
+        self.ui.vbox_setup_output_console.append(SetupMessages.checking_vbox())
+        if not self.setup.is_vbox_installed():
+            self.ui.vbox_setup_output_console.append(SetupMessages.virtualbox_not_installed())
+            self.ui.vbox_setup_output_console.append(SetupMessages.vb_not_installed_instructions())
+
+        elif not self.setup.is_vbox_up_to_date():
+            self.ui.vbox_setup_output_console.append(SetupMessages.virtualbox_update_required())
+            self.ui.vbox_setup_output_console.append(SetupMessages.virtualbox_update_required_instructions())
+
+        else:
+            self.ui.vbox_setup_output_console.append(SetupMessages.virtualbox_found())
+            self.ui.vbox_setup_output_console.append(SetupMessages.vb_installed_instructions())
+            self.prepare_vm_setup_page()
+
+
+    def update_ui_state(self):
+        """Checks setup condition and updates ALL elements accordingly
+
+           possible states:
+           Virtualbox installed, requires update, not installed
+           Active page: 1, 2, 3
+           VM installed, not installed
+
+        """
+        current_page_id = self.get_active_page_id()
+        vbox_installed = self.setup.is_vbox_installed()
+        vbox_up_to_date = self.setup.is_vbox_up_to_date()
+        islands_vm_installed = vbox_installed and vbox_up_to_date and \
+                self.setup.is_islands_vm_exist()
+
+        self.ui.button_install_vbox.setVisible(not (vbox_installed and vbox_up_to_date))
+        self.ui.button_install_vbox.setEnabled(not (vbox_installed and vbox_up_to_date))
+
+        if not vbox_installed:
+            self.ui.button_install_vbox.setText("Install Virtualbox")
+        else:
+            self.ui.button_install_vbox.setText("Update Virtualbox")
+
+        page2_enabled = (current_page_id == 1 and vbox_installed
+                         and vbox_up_to_date and not islands_vm_installed)
+        self.ui.button_import_ova.setEnabled(page2_enabled)
+        self.ui.button_import_ova.setVisible(page2_enabled)
+        self.ui.button_install_islands.setEnabled(page2_enabled)
+        self.ui.button_install_islands.setVisible(page2_enabled)
+        self.ui.data_folder_path.setEnabled(page2_enabled)
+        self.ui.button_select_data_path.setEnabled(page2_enabled)
+        self.ui.local_port.setEnabled(page2_enabled)
+        self.ui.port_forwarding_enabled.setEnabled(page2_enabled)
+        self.window.button(QWizard.BackButton).setEnabled(not page2_enabled or current_page_id != 0
+                                                          or not islands_vm_installed)
+        self.window.button(QWizard.NextButton).setEnabled((current_page_id == 0 and vbox_installed and vbox_up_to_date)
+                                                          or current_page_id == 1 and islands_vm_installed)
+        self.window.button(QWizard.FinishButton).setEnabled(current_page_id == 2 and vbox_installed and
+                                                            vbox_up_to_date and islands_vm_installed)
+        self.scroll_to_end(self.ui.vbox_setup_output_console)
+        self.scroll_to_end(self.ui.vm_install_output_console)
+
+        #self.window.page(current_page_id).completeChanged.emit()
+
+
+
+
+    def get_active_page_id(self):
+        return self.window.currentId()
+
+
 
 
 class SetupMessages:
@@ -340,6 +454,19 @@ class SetupMessages:
         return """  
             <p><b style='color:orange; font-size:18px; margin-bottom:20px;'>Virtualbox not installed</b></p>
                  """
+
+    @staticmethod
+    def virtualbox_update_required():
+        return """  
+            <p><b style='color:orange; font-size:18px; margin-bottom:20px;'>Virtualbox update required</b></p>
+                 """
+
+    @staticmethod
+    def virtualbox_update_required_instructions():
+        return """  
+            <p style='font-size=15px'>Click <b>Update Virtualbox</b> to download and install newest version of Virtualbox automatically</p>
+                 """
+
 
     @staticmethod
     def vb_installed_instructions():

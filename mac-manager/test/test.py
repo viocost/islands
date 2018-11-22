@@ -67,7 +67,7 @@ class TestConfig(unittest.TestCase):
         self.setup.install_virtualbox()
 
     def test_setup_vbox_exists(self):
-        assert(self.setup.is_virtualbox_installed() is True)
+        assert(self.setup.is_vbox_set_up() is True)
 
 
     def test_setup_vm_exists(self):
