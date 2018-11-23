@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QMessageBox as QM, QWizard, QFileDialog
 from PyQt5.QtCore import QObject, pyqtSignal, Qt
 from forms.setup_wizard_ui_setup import Ui_IslandSetupWizzard as UI_setup
 from PyQt5.QtGui import QTextCursor
+import util
 
 class SetupWizardWindow(QObject):
 
@@ -12,7 +13,8 @@ class SetupWizardWindow(QObject):
     #
     output = pyqtSignal(str, int)
     progress = pyqtSignal(int, str, str, str, str, bool)
-    update = pyqtSignal()
+    update_elements = pyqtSignal()
+    vbox_instal_complete = pyqtSignal()
 
     def __init__(self, parent, config,  island_manager, setup):
         QObject.__init__(self)
@@ -31,8 +33,6 @@ class SetupWizardWindow(QObject):
             0: self.ui.vbox_setup_output_console,
             1: self.ui.vm_install_output_console
         }
-
-
 
     # Handler for output signal
     def appender(self, msg, console_index):
@@ -104,7 +104,6 @@ class SetupWizardWindow(QObject):
         elif action == 'finalize':
             finalize_progress_bar()
 
-
     def prepare_handlers(self):
         # BUTTONS' HANDLERS
         self.ui.button_install_vbox.clicked.connect(self.process_vbox_install)
@@ -114,7 +113,8 @@ class SetupWizardWindow(QObject):
         self.window.keyPressEvent = self.key_press_handler()
         self.output.connect(self.appender)
         self.progress.connect(self.progress_bar_handler)
-        self.update.connect(self.update_ui_state)
+        self.update_elements.connect(self.update_ui_state)
+        self.vbox_instal_complete.connect(self.prepare_vm_setup_page)
 
         #TEST
         self.ui.test_button.clicked.connect(self.test_output)
@@ -230,40 +230,50 @@ class SetupWizardWindow(QObject):
         data_path = self.ui.data_folder_path.text()
         self.proceed_vm_install(data_path=data_path, download=True)
 
-
-
-
     # Given install options sets up output handlers and
     # passes options to installer
     def proceed_vm_install(self, data_path, download=False, vm_image_path=None):
-        self.set_vm_page_buttons_enabled(False)
+        print (self.config['vboxmanage'])
+        self.ui.button_select_data_path.setEnabled(False)
+        self.ui.button_install_islands.setEnabled(False)
+        self.ui.button_import_ova.setEnabled(False)
+        self.ui.data_folder_path.setEnabled(False)
+        self.ui.button_select_data_path.setEnabled(False)
+        self.ui.port_forwarding_enabled.setEnabled(False)
+        self.ui.local_port.setEnabled(False)
+
         self.window.button(QWizard.BackButton).setEnabled(False)
 
-        def on_message(msg, size=12):
-            self.output.emit('<p style="color: blue; font-size: {size}"> {msg} </p>'.format(msg=msg, size=size), 1)
-
-        def on_complete(msg):
-            self.output.emit('<p style="color: green"> {msg} </p>'.format(msg=msg), 1)
-            self.output.emit('<p style="color: green; font-size: 16px;"> '
-                                                     'Click "continue" to proceed >> </p>', 1)
-            self.set_vm_page_buttons_enabled(False)
-            self.window.button(QWizard.BackButton).setEnabled(False)
-            self.window.page(1).completeChanged.emit()
-
-        def on_error(err):
-            self.set_vm_page_buttons_enabled(True)
-            self.window.button(QWizard.BackButton).setEnabled(True)
-            if err:
-                self.ui.vm_install_output_console.append('<p style="color: red"> {msg} </p>'.format(msg=str(err)))
 
         port = self.ui.local_port.text() if self.ui.port_forwarding_enabled.isChecked() else False
-        self.setup.run_vm_installer(on_message=on_message,
-                                    on_complete=on_complete,
-                                    on_error=on_error,
+        self.setup.run_vm_installer(on_message=self.get_on_message_handler(console=1),
+                                    on_complete=self.get_on_complete_handler(msg="Click \"continue\" to proceed", console=1),
+                                    on_error=self.get_on_error_handler(console=1),
+                                    init_progres_bar=self.get_init_progress_bar_handler(console=1),
+                                    update_progres_bar=self.get_update_progress_bar_handler(console=1),
+                                    finalize_progres_bar=self.get_finalize_progress_bar_handler(console=1),
                                     download=download,
+                                    setup=self.setup,
                                     image_path=vm_image_path,
+                                    config=self.config,
                                     data_path=data_path,
                                     port=port)
+        # def on_message(msg, size=12):
+        #     self.output.emit('<p style="color: blue; font-size: {size}"> {msg} </p>'.format(msg=msg, size=size), 1)
+        #
+        # def on_complete(msg):
+        #     self.output.emit('<p style="color: green;"> {msg} </p>'.format(msg=msg), 1)
+        #     self.output.emit('<p style="color: green; font-size: 16px;"> '
+        #                                              'Click "continue" to proceed >> </p>', 1)
+        #     self.set_vm_page_buttons_enabled(False)
+        #     self.window.button(QWizard.BackButton).setEnabled(False)
+        #     self.window.page(1).completeChanged.emit()
+        #
+        # def on_error(err):
+        #     self.set_vm_page_buttons_enabled(True)
+        #     self.window.button(QWizard.BackButton).setEnabled(True)
+        #     if err:
+        #         self.ui.vm_install_output_console.append('<p style="color: red"> {msg} </p>'.format(msg=str(err)))
 
 
 
@@ -296,19 +306,19 @@ class SetupWizardWindow(QObject):
             self.update_ui_state()
         return on_errror
 
-    def get_on_complete_handler(self, msg, console):
-        def on_complete(size=14, color='green', ):
-            self.output.emit('<p style="color: color; font-size: {size}"> {msg} </p>'
+    def get_on_complete_handler(self, msg, console, handler = None):
+        def on_complete(size=16, color='green', ):
+            self.output.emit('<p style="color: {color}; font-size: {size}"> {msg} </p>'
                              .format(msg=msg, size=size, color=color), console)
-            self.update.emit()
-            # if action:
-            #     action()
+            self.update_elements.emit()
+            if handler:
+                handler()
         return on_complete
     # Console event handlers
 
     # Baking progress bar handlers
-    def get_init_progres_bar_handler(self, console):
-        def init_progres_bar(title, size=None):
+    def get_init_progress_bar_handler(self, console):
+        def init_progress_bar(title, size=None):
             ratio = "0/%d" % size if size is not None else ""
 
             self.progress_bar_handler(console_index=console,
@@ -317,11 +327,11 @@ class SetupWizardWindow(QObject):
                                       progress_in_percents="0",
                                       ratio=ratio,
                                       success=True)
-        return init_progres_bar
+        return init_progress_bar
 
-    def get_update_progres_bar_handler(self, console):
-        def update_progres_bar(progress, downloaded, total_size=None, title=None):
-            ratio = "%s/%s" % (str(downloaded), str(total_size)) if downloaded is not None and total_size \
+    def get_update_progress_bar_handler(self, console):
+        def update_progress_bar(progress, downloaded, total_size=None, title=None):
+            ratio = "%s/%s" % (str(util.sizeof_fmt(downloaded)), str(util.sizeof_fmt(total_size))) if downloaded is not None and total_size \
                 else ""
             title = title if title is not None else ""
             self.progress_bar_handler(console_index=console,
@@ -331,10 +341,10 @@ class SetupWizardWindow(QObject):
                                       ratio=ratio,
                                       success=True)
 
-        return update_progres_bar
+        return update_progress_bar
 
-    def get_finalize_progres_bar_handler(self, console):
-        def finalize_progres_bar(progress=None,  downloaded=None, total_size=None, title=None):
+    def get_finalize_progress_bar_handler(self, console):
+        def finalize_progress_bar(progress=None,  downloaded=None, total_size=None, title=None):
             ratio = "%s/%s" % (str(downloaded), str(total_size)) if downloaded is not None and total_size \
                 else ""
             self.progress_bar_handler(console_index=console,
@@ -343,26 +353,29 @@ class SetupWizardWindow(QObject):
                                       progress_in_percents=str(progress),
                                       ratio=ratio,
                                       success=True)
-        return finalize_progres_bar
+        return finalize_progress_bar
     # END progress bar handlers
 
     def process_vbox_install(self):
+        self.ui.button_install_vbox.setEnabled(False)
         vbox_installed = self.setup.is_vbox_installed()
+
+        def on_complete():
+            self.vbox_instal_complete.emit()
         self.setup.run_vbox_installer(
             config=self.config,
             setup=self.setup,
             on_message=self.get_on_message_handler(console=0),
             on_complete=self.get_on_complete_handler(msg="Virtualbox is now set up. Click on \"continue\" to proceed.",
-                                                     action=self.prepare_vm_setup_page,
-                                                     console=0),
-            init_progres_bar=self.get_init_progres_bar_handler(0),
-            update_progres_bar=self.get_update_progres_bar_handler(0),
-            finalize_progres_bar=self.get_finalize_progres_bar_handler(0),
+                                                     console=0,
+                                                     handler=on_complete),
+            init_progres_bar=self.get_init_progress_bar_handler(0),
+            update_progres_bar=self.get_update_progress_bar_handler(0),
+            finalize_progres_bar=self.get_finalize_progress_bar_handler(0),
             on_error=self.get_on_error_handler(console=0),
             update=vbox_installed
-
         )
-        # self.window.page(0).completeChanged.emit()
+
 
     def vboxpage_prepare_text(self):
         self.ui.vbox_setup_output_console.append(SetupMessages.checking_vbox())
@@ -403,17 +416,17 @@ class SetupWizardWindow(QObject):
         else:
             self.ui.button_install_vbox.setText("Update Virtualbox")
 
-        page2_enabled = (current_page_id == 1 and vbox_installed
+        vm_install_ready = (vbox_installed
                          and vbox_up_to_date and not islands_vm_installed)
-        self.ui.button_import_ova.setEnabled(page2_enabled)
-        self.ui.button_import_ova.setVisible(page2_enabled)
-        self.ui.button_install_islands.setEnabled(page2_enabled)
-        self.ui.button_install_islands.setVisible(page2_enabled)
-        self.ui.data_folder_path.setEnabled(page2_enabled)
-        self.ui.button_select_data_path.setEnabled(page2_enabled)
-        self.ui.local_port.setEnabled(page2_enabled)
-        self.ui.port_forwarding_enabled.setEnabled(page2_enabled)
-        self.window.button(QWizard.BackButton).setEnabled(not page2_enabled or current_page_id != 0
+        self.ui.button_import_ova.setEnabled(vm_install_ready)
+        self.ui.button_import_ova.setVisible(vm_install_ready)
+        self.ui.button_install_islands.setEnabled(vm_install_ready)
+        self.ui.button_install_islands.setVisible(vm_install_ready)
+        self.ui.data_folder_path.setEnabled(vm_install_ready)
+        self.ui.button_select_data_path.setEnabled(vm_install_ready)
+        self.ui.local_port.setEnabled(vm_install_ready)
+        self.ui.port_forwarding_enabled.setEnabled(vm_install_ready)
+        self.window.button(QWizard.BackButton).setEnabled(not vm_install_ready or current_page_id != 0
                                                           or not islands_vm_installed)
         self.window.button(QWizard.NextButton).setEnabled((current_page_id == 0 and vbox_installed and vbox_up_to_date)
                                                           or current_page_id == 1 and islands_vm_installed)

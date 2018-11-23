@@ -3,6 +3,7 @@ import hashlib
 from threading import Thread
 from time import sleep
 from vboxinstaller import VBoxInstaller
+from vm_installer import VMInstaller
 from installer_exceptions import *
 from executor import ShellExecutor as Executor
 
@@ -22,30 +23,21 @@ class IslandSetup:
 
     # Initializes vm installer in separate thread and starts it
     def run_vm_installer(self, *args, **kwargs):
-        self.vm_installer = VMInstaller(self, *args, **kwargs)
+        self.vm_installer = VMInstaller(*args, **kwargs)
         self.vm_installer.start()
 
     def run_vbox_installer(self, *args, **kwargs):
         self.vbox_installer = VBoxInstaller(*args, **kwargs)
         self.vbox_installer.start()
 
-
-
-    # TODO async
-    # DOWNLOAD AND INSTALL VM METHODS
-    # Download Islands vm from specified source
-    # Destination is app directory
-    def download_vm(self):
-        return Executor.exec("curl -L {link} >> ~/Downloads/Island.ova".format(
-            link=self.__config["vm_download"]))
-
     # TODO async
     # Imports downloaded vm
     # Image must be downloaded into app root directory
-    def import_vm(self, path_to_image):
+    def import_vm(self, path_to_image, on_data, on_error):
         if not path.exists(path_to_image):
             raise IslandsImageNotFound
-        res = Executor.exec("vboxmanage import {path}  ".format(path=path_to_image))
+        res = Executor.exec_stream("vboxmanage import {path}  ".format(path=path_to_image),
+                                   on_data=on_data, on_error=on_error)
         if res[0] != 0:
             raise ImportVMError('%s' % res[2])
 
@@ -57,13 +49,11 @@ class IslandSetup:
     # if exitcode is 2 - interface found and we can add it to our VM
     # Otherwise there is some other error and we raise it
     def setup_host_only_adapter(self):
-        try:
-            Executor.exec_sync("vboxmanage hostonlyif ipconfig vboxnet0")
-        except Exception as e:
-            if e.returncode == 1:
-                Executor.exec_sync("vboxmanage hostonlyif create")
-            elif e.returncode != 2:
-                raise e
+        res = Executor.exec_sync("vboxmanage hostonlyif ipconfig vboxnet0")
+        if res[0] == 1:
+            Executor.exec_sync("vboxmanage hostonlyif create")
+        elif res[0] != 2:
+            raise res[2]
         # Installing adapter onto vm
         Executor.exec_sync("vboxmanage modifyvm {vmname} --nic2 hostonly --cableconnected2 on"
                       " --hostonlyadapter2 vboxnet0".format(vmname=self.__config["vmname"]))
@@ -71,7 +61,8 @@ class IslandSetup:
     def get_islands_ip(self):
         res = Executor.exec_sync('vboxmanage guestcontrol Island run --exe "/sbin/ip" '
                             '--username root --password islands  --wait-stdout -- ip a  | grep eth1')
-        return re.search(r'(\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b)', res).group()
+        print("Island IP address request result: \nreturn: "+ str(res[0])+ "\nstdout: " + res[1]+ "stderr: " + res[2])
+        return re.search(r'(\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b)', res[1]).group()
 
     def setup_port_forwarding(self, port):
         island_ip = self.get_islands_ip()
@@ -158,85 +149,6 @@ class IslandSetup:
 
 
 
-
-class VMInstaller:
-    def __init__(self, setup,  on_message, on_complete, on_error, data_path, download=False, image_path=None, port=False):
-        self.thread = None
-        self.setup = setup
-        self.on_message = on_message
-        self.on_complete = on_complete
-        self.on_error = on_error
-        self.download = download
-        self.data_path = data_path
-        self.image_path = image_path
-        self.port = port
-        if not download:
-            assert(bool(image_path))
-
-    def start(self):
-        self.thread = Thread(target=self.install)
-        self.thread.start()
-
-    def install(self):
-        try:
-            if self.download:
-                self.on_message("Downloading Islands VM...")
-                self.setup.download_vm()
-                self.on_message("Download complete")
-            self.on_message("Importing VM...")
-            self.setup.import_vm(self.image_path if self.image_path else "~/Downloads/Island.ova")
-            self.on_message("Image imported. Configuring...")
-            self.setup.setup_host_only_adapter()
-            self.on_message("Network configured..")
-            self.setup.setup_shared_folder(self.data_path)
-            self.on_message("Data folder set up... Launching VM")
-            # Start machine... Wait until controlvm is available then run scripts
-            print(Executor.exec("vboxmanage startvm Island --type headless"))
-            self.on_message("VM started...")
-            Executor.exec("vboxmanage storageattach Island --storagectl IDE --port 1 --device 0 --type dvddrive --medium /Applications/VirtualBox.app/Contents/MacOS/VBoxGuestAdditions.iso")
-            self.on_message("Guest additions mounted... Waiting for initial setup. \n"
-                            "This will take a while! Do not turn off your computer.")
-            self.wait_guest_additions()
-            sleep(3)
-            self.wait_guest_additions()
-            if self.port:
-                self.setup.setup_port_forwarding(self.port)
-            self.on_message("Guest additions are installed. Fetching Islands setup script..")
-            Executor.exec("""vboxmanage guestcontrol Island run --exe "/usr/bin/wget" --username root --password islands --wait-stdout --wait-stderr -- wget "https://raw.githubusercontent.com/viocost/islands/dev/installer/vbox_full_setup.sh" -O "/root/isetup.sh" """)
-            print(Executor.exec("""vboxmanage guestcontrol Island run --exe "/bin/chmod" --username root --password islands --wait-stdout --wait-stderr -- chmod +x /root/isetup.sh """))
-            self.on_message("Installation in progress. This step takes a while... Grab some tea")
-            print("Launching setup script")
-            Executor.exec("""vboxmanage guestcontrol Island run --exe "/bin/bash" --username root --password islands --wait-stdout --wait-stderr -- bash /root/isetup.sh -b dev""")
-            self.on_message("Setup completed. Restarting Islands...")
-
-            sleep(1)
-            Executor.exec("""vboxmanage controlvm Island acpipowerbutton""")
-
-            for i in range(10):
-                try:
-                    sleep(3)
-                    Executor.exec("""vboxmanage startvm Island --type headless  """)
-                    self.on_complete("Islands Virtual Machine successfully installed.")
-                    return
-                except Exception:
-                    continue
-            self.on_error(Exception("VM launch unsuccessfull"))
-
-        except Exception as e:
-            print("VMinstaller exception: " + str(e))
-            print(e.output.strip().decode("utf8"))
-            self.on_error(e)
-
-    def wait_guest_additions(self):
-        while True:
-            try:
-                Executor.exec("""vboxmanage guestcontrol Island run --exe "/bin/ls" --username root --password islands  --wait-stdout -- ls "/" """)
-                print("Looks liek vboxmanage available now! Returning...")
-                return
-            except Exception as e:
-                print(e.output.strip().decode("utf8"))
-                sleep(15)
-                continue
 
 
 

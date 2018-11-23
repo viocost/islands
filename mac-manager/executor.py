@@ -92,12 +92,30 @@ class ShellExecutor:
         while proc.poll() is None:
             for line in proc.stderr:
                 err += line
+                if verbose:
+                    print("STDERR: " + line)
             for line in proc.stdout:
                 out += line
+                if verbose:
+                    print("STDOUT: " + line)
         res = proc.returncode
         return res, out, err
 
-
+    @staticmethod
+    def exec_stream(cmd, on_data, on_error, verbose=False):
+        res = None
+        proc = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE, bufsize=1, universal_newlines=True)
+        while proc.poll() is None:
+            for line in proc.stdout:
+                on_data(line)
+                if verbose:
+                    print("STDOUT: " + line)
+            for line in proc.stderr:
+                on_error(line)
+                if verbose:
+                    print("STDERR: " + line)
+        res = proc.returncode
+        return res, proc.stdout, proc.stderr
 
 
 

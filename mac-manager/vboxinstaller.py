@@ -47,7 +47,7 @@ class VBoxInstaller:
             self.message("Download complete. Mounting...")
             self.mount_vbox_distro()
             if self.update:
-                self.run_setup_command("uninstall_vbox")
+                self.uninstall_vbox()
                 self.message("Virtualbox old version is uninstalled")
 
             self.message("Mounted, installing virtualbox")
@@ -66,16 +66,18 @@ class VBoxInstaller:
         return Executor.exec_sync("hdiutil attach ~/Downloads/{imagename} -mountpoint ~/VirtualBox"
                                        .format(imagename=self.config["vbox_installer_name"]))
 
-    # TODO async
+
     def install_vbox(self):
-        res = Executor.exec_sync(
+        res = Executor.exec_stream(
             """osascript -e 'do shell script "installer -pkg {mpuntpoint}VirtualBox.pkg -target / " with administrator privileges' """.format(
-                mpuntpoint=self.config['vbox_distro_mountpoint'])
+                mpuntpoint=self.config['vbox_distro_mountpoint']), self.message, self.error
         )
 
-    # TODO
     def uninstall_vbox(self):
-        raise NotImplementedError
+        res = Executor.exec_sync(
+            """osascript -e 'do shell script "{mpuntpoint}VirtualBox_Uninstall.tool --unattended" with administrator privileges' """.format(
+                mpuntpoint=self.config['vbox_distro_mountpoint'])
+        )
 
     def unmount_vbox_distro(self):
         res = Executor.exec_sync(

@@ -5,6 +5,7 @@ from island_manager import IslandManager
 from island_setup import IslandSetup
 from executor import ShellExecutor as Executor
 from downloader import Downloader
+import util
 
 class TestConfig(unittest.TestCase):
     def setUp(self):
@@ -129,3 +130,37 @@ class TestConfig(unittest.TestCase):
         a = Executor.exec_sync('curl {link}  -o ~/Downloads/test.dmg'.format(link=self.config['vbox_download']))
         print(str(a))
 
+    def test_vbox_uninstall(self):
+        res = Executor.exec_sync(
+            """osascript -e 'do shell script "{mpuntpoint}VirtualBox_Uninstall.tool --unattended" with administrator privileges' """.format(
+                mpuntpoint=self.config['vbox_distro_mountpoint'])
+        )
+        print("done")
+
+
+    def test_size_formatter(self):
+        print(util.sizeof_fmt(123))
+        print(util.sizeof_fmt(96123))
+        print(util.sizeof_fmt(12344223))
+        print(util.sizeof_fmt(1654331453453))
+
+    def test_get_ip(self):
+        res = Executor.exec_sync('vboxmanage guestcontrol Island run --exe "/sbin/ip" '
+                                 '--username root --password islands  --wait-stdout -- ip a  | grep eth1')
+        a =  re.search(r'(\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b)', res[1]).group()
+        print(a)
+
+
+    def test_vm_setup(self):
+        res = Executor.exec_sync(
+            """vboxmanage guestcontrol Island run --exe "/usr/bin/wget" --username root --password islands --wait-stdout --wait-stderr -- wget "https://raw.githubusercontent.com/viocost/islands/dev/installer/vbox_full_setup.sh" -O "/root/isetup.sh" """, verbose=True)
+        print(Executor.exec_sync(
+            """vboxmanage guestcontrol Island run --exe "/bin/chmod" --username root --password islands --wait-stdout --wait-stderr -- chmod +x /root/isetup.sh """, True))
+
+
+    def test_async_install(self):
+        def output(s):
+            print("OUTPUT: " + s)
+        Executor.exec_stream(
+            """vboxmanage guestcontrol Island run --exe "/bin/bash" --username root --password islands --wait-stdout --wait-stderr -- bash /root/isetup.sh -b dev""",
+            on_data=output, on_error=output, verbose=True)
