@@ -125,5 +125,7 @@ class TestConfig(unittest.TestCase):
         #res = Executor.exec('curl {link}  -o ~/Downloads/test.dmg'.format(link=self.config['vbox_download']))
       #  print(res)
 
-
+    def test_safe_exec(self):
+        a = Executor.exec_sync_safe('curl {link}  -o ~/Downloads/test.dmg'.format(link=self.config['vbox_download']))
+        print(str(a))
 

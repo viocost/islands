@@ -34,8 +34,8 @@ class Downloader:
                 downloaded += blocksize
                 progress = math.floor(downloaded/(filesize * 0.01))
                 if on_update:
-                    on_update(progress, downloaded, filesize)
-                print("progress is: %d | downloaded:  %d" % (progress, downloaded))
+                    on_update(progress=progress, downloaded=downloaded, total_size=filesize)
+
 
 
 

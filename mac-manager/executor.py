@@ -1,7 +1,8 @@
 import asyncio
-from subprocess import check_output, STDOUT
+from  subprocess import Popen, PIPE
 from multiprocessing import Process
 from time import sleep
+from threading import Thread
 
 
 class ShellExecutor:
@@ -11,14 +12,20 @@ class ShellExecutor:
 
     @staticmethod
     def __execute(cmd, stdout_cb, stderr_cb):
-        loop = asyncio.get_event_loop()
+        loop = None
+        try:
+            loop = asyncio.get_event_loop()
+        except RuntimeError:
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            asyncio.get_child_watcher().attach_loop(loop)
         rc = loop.run_until_complete(
             ShellExecutor._stream_subprocess(
                 cmd,
                 stdout_cb,
                 stderr_cb,
             ))
-
+        print("Complete executing command. Returning from __execute")
         return rc
 
     @staticmethod
@@ -30,6 +37,7 @@ class ShellExecutor:
             ShellExecutor._read_stream(process.stdout, stdout_cb),
             ShellExecutor._read_stream(process.stderr, stderr_cb)
         ])
+        print("Waiting for process.")
         return await process.wait()
 
     @staticmethod
@@ -42,12 +50,12 @@ class ShellExecutor:
                 break
 
 
+
     @staticmethod
     def exec(cmd, on_data, on_error, on_done):
         def runner():
             res = ShellExecutor.__execute(cmd, on_data, on_error)
             on_done(res)
-
         p = Process(target=runner, group=None)
         p.start()
 
@@ -74,6 +82,14 @@ class ShellExecutor:
         stdout = "".join(stdout)
         stderr = "".join(stderr)
         return res, stdout, stderr
+
+    @staticmethod
+    def exec_sync_safe(cmd):
+        with Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE, bufsize=1, universal_newlines=True) as proc:
+            for line in proc.stderr:
+                print("STDERR:" + line, end="")
+
+        print("After POPEN")
 
 
 

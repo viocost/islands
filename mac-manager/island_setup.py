@@ -19,12 +19,14 @@ class IslandSetup():
         self.vbox_installer = None
         self.__config = config
         self.commands = {
-            "download_vbox": self.download_vbox,
             "mount_vbox_distro": self.mount_vbox_distro,
             "install_vbox": self.install_vbox,
             "unmount_vbox_distro": self.unmount_vbox_distro,
             "delete_vbox_distro": self.delete_vbox_distro,
+            "uninstall_vbox": self.uninstall_vbox
         }
+
+
 
     # Initializes vm installer in separate thread and starts it
     def run_vm_installer(self, *args, **kwargs):
@@ -37,12 +39,12 @@ class IslandSetup():
 
     # Runs arbitrary command from the set of predefined commands
     # Return result of command execution or error
-    def run(self, command):
-        if command not in self.commands:
+    def run(self, *args, **kwargs):
+        if kwargs['command'] not in self.commands:
             raise KeyError("Invalid command")
         try:
             return {
-                "result": str(self.commands[command]()),
+                "result": str(self.commands[kwargs['command']](args, kwargs)),
                 "error": False
             }
         except Exception as e:
@@ -53,28 +55,24 @@ class IslandSetup():
                 )
             }
 
+    def mount_vbox_distro(self, on_data, on_error, on_done):
+        Executor.exec("hdiutil attach ~/Downloads/{imagename} -mountpoint ~/VirtualBox"
+            .format(imagename=self.__config["vbox_installer_name"]),
+                            on_data, on_error, on_done)
 
-    # TODO async
-    def download_vbox(self):
 
 
-        res =  Executor.exec("curl {link} >> ~/Downloads/virtualbox.dmg ".format(
-            link=self.__config["vbox_download"]
-        ))
-        print("Download complete: " + str(res))
-        return res
-
-    def mount_vbox_distro(self):
-        res = Executor.exec_sync("hdiutil attach ~/Downloads/virtualbox.dmg -mountpoint ~/VirtualBox")
-        print("Image mounted")
-        return res
 
     # TODO async
     def install_vbox(self):
-        res = Executor.exec(
+        res = Executor.exec_sync(
             """osascript -e 'do shell script "installer -pkg ~/VirtualBox/VirtualBox.pkg -target / " with administrator privileges' """
         )
         print("Installation finished: \n" + res)
+
+    # TODO
+    def uninstall_vbox(self):
+        raise NotImplementedError
 
     def unmount_vbox_distro(self):
         res = Executor.exec_sync("hdiutil detach ~/VirtualBox")
@@ -84,7 +82,6 @@ class IslandSetup():
     def delete_vbox_distro(self):
         res = Executor.exec_sync("rm -rf ~/virtualbox.dmg")
         return res
-
 
 
     # TODO async

@@ -273,7 +273,7 @@ class SetupWizardWindow(QObject):
         else:
             console.append(SetupMessages.vm_not_found())
             console.append(SetupMessages.vm_not_found_instructions())
-        self.set_vm_page_buttons_enabled(not self.setup.is_islands_vm_exist())
+
 
 
     # Console event handlers
@@ -318,35 +318,34 @@ class SetupWizardWindow(QObject):
         return init_progres_bar
 
     def get_update_progres_bar_handler(self, console):
-        def update_progres_bar(progress_in_percents, title, bytes_downloaded=None, total_size=None):
-            ratio = "%d/%d".format(bytes_downloaded, total_size) if bytes_downloaded and total_size \
+        def update_progres_bar(progress, downloaded, total_size=None, title=None):
+            ratio = "%s/%s" % (str(downloaded), str(total_size)) if downloaded is not None and total_size \
                 else ""
+            title = title if title is not None else ""
             self.progress_bar_handler(console_index=console,
                                       action='update',
                                       title=title,
-                                      progress_in_percents=str(progress_in_percents),
+                                      progress_in_percents=str(progress),
                                       ratio=ratio,
                                       success=True)
 
         return update_progres_bar
 
     def get_finalize_progres_bar_handler(self, console):
-        def finalize_progres_bar(progress_in_percents, title, bytes_downloaded=None, total_size=None):
-            ratio = "%d/%d".format(bytes_downloaded, total_size) if bytes_downloaded and total_size \
+        def finalize_progres_bar(progress=None,  downloaded=None, total_size=None, title=None):
+            ratio = "%s/%s" % (str(downloaded), str(total_size)) if downloaded is not None and total_size \
                 else ""
             self.progress_bar_handler(console_index=console,
                                       action='finalize',
                                       title=title,
-                                      progress_in_percents=str(progress_in_percents),
+                                      progress_in_percents=str(progress),
                                       ratio=ratio,
                                       success=True)
-            return finalize_progres_bar
+        return finalize_progres_bar
     # END progress bar handlers
 
     def process_vbox_install(self):
-
         vbox_installed = self.setup.is_vbox_installed()
-
         self.setup.run_vbox_installer(
             config=self.config,
             setup=self.setup,
