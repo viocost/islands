@@ -211,70 +211,6 @@ class SetupWizardWindow(QObject):
         if res:
             self.ui.data_folder_path.setText(res)
 
-    # Starts islands install process with choose image option
-    def select_islands_image(self):
-        res = QFileDialog.getOpenFileName(self.window, "Select Islands image", environ["HOME"], "Virtual Appliance (*.ova)")
-        if res == ('', ''):
-            print("Cancelled")
-            return
-        proceed = QM.question(self.window, "Islands setup", "{vmname} will be installed and configured. "
-                                        "Continue?".format(vmname=res[0].split("/")[-1]), QM.Yes | QM.No)
-        if proceed == QM.Yes:
-            t = self.ui.data_folder_path.text()
-            print(t)
-            self.proceed_vm_install(data_path=t, download=False, vm_image_path=res[0])
-            # Launch thread
-
-    # Starts islands install process with image download option
-    def download_install_islands(self):
-        data_path = self.ui.data_folder_path.text()
-        self.proceed_vm_install(data_path=data_path, download=True)
-
-    # Given install options sets up output handlers and
-    # passes options to installer
-    def proceed_vm_install(self, data_path, download=False, vm_image_path=None):
-        print (self.config['vboxmanage'])
-        self.ui.button_select_data_path.setEnabled(False)
-        self.ui.button_install_islands.setEnabled(False)
-        self.ui.button_import_ova.setEnabled(False)
-        self.ui.data_folder_path.setEnabled(False)
-        self.ui.button_select_data_path.setEnabled(False)
-        self.ui.port_forwarding_enabled.setEnabled(False)
-        self.ui.local_port.setEnabled(False)
-
-        self.window.button(QWizard.BackButton).setEnabled(False)
-
-
-        port = self.ui.local_port.text() if self.ui.port_forwarding_enabled.isChecked() else False
-        self.setup.run_vm_installer(on_message=self.get_on_message_handler(console=1),
-                                    on_complete=self.get_on_complete_handler(msg="Click \"continue\" to proceed", console=1),
-                                    on_error=self.get_on_error_handler(console=1),
-                                    init_progres_bar=self.get_init_progress_bar_handler(console=1),
-                                    update_progres_bar=self.get_update_progress_bar_handler(console=1),
-                                    finalize_progres_bar=self.get_finalize_progress_bar_handler(console=1),
-                                    download=download,
-                                    setup=self.setup,
-                                    image_path=vm_image_path,
-                                    config=self.config,
-                                    data_path=data_path,
-                                    port=port)
-        # def on_message(msg, size=12):
-        #     self.output.emit('<p style="color: blue; font-size: {size}"> {msg} </p>'.format(msg=msg, size=size), 1)
-        #
-        # def on_complete(msg):
-        #     self.output.emit('<p style="color: green;"> {msg} </p>'.format(msg=msg), 1)
-        #     self.output.emit('<p style="color: green; font-size: 16px;"> '
-        #                                              'Click "continue" to proceed >> </p>', 1)
-        #     self.set_vm_page_buttons_enabled(False)
-        #     self.window.button(QWizard.BackButton).setEnabled(False)
-        #     self.window.page(1).completeChanged.emit()
-        #
-        # def on_error(err):
-        #     self.set_vm_page_buttons_enabled(True)
-        #     self.window.button(QWizard.BackButton).setEnabled(True)
-        #     if err:
-        #         self.ui.vm_install_output_console.append('<p style="color: red"> {msg} </p>'.format(msg=str(err)))
-
 
 
     def prepare_vm_setup_page(self):
@@ -294,14 +230,14 @@ class SetupWizardWindow(QObject):
     def get_on_message_handler(self, console):
         def on_message(msg, size=12, color='blue'):
             print("GOT MESSAGE: %s" % msg)
-            self.output.emit('<p style="color: color; font-size: {size}"> {msg} </p>'
+            self.output.emit('<p style="color: {color}; font-size: {size}"> {msg} </p>'
                              .format(msg=msg, size=size, color=color), console)
         return on_message
 
     def get_on_error_handler(self, console):
         def on_errror(msg, size=12, color='red'):
             print("GOT MESSAGE: %s" % msg)
-            self.output.emit('<p style="color: color; font-size: {size}"> {msg} </p>'
+            self.output.emit('<p style="color: {color}; font-size: {size}"> {msg} </p>'
                              .format(msg=msg, size=size, color=color), console)
             self.update_ui_state()
         return on_errror
@@ -375,6 +311,82 @@ class SetupWizardWindow(QObject):
             on_error=self.get_on_error_handler(console=0),
             update=vbox_installed
         )
+
+
+    # Starts islands install process with choose image option
+    def select_islands_image(self):
+        res = QFileDialog.getOpenFileName(self.window, "Select Islands image", environ["HOME"], "Virtual Appliance (*.ova)")
+        if res == ('', ''):
+            print("Cancelled")
+            return
+        proceed = QM.question(self.window, "Islands setup", "{vmname} will be installed and configured. "
+                                        "Continue?".format(vmname=res[0].split("/")[-1]), QM.Yes | QM.No)
+        if proceed == QM.Yes:
+            t = self.ui.data_folder_path.text()
+            print(t)
+            self.proceed_vm_install(data_path=t, download=False, vm_image_path=res[0])
+            # Launch thread
+
+    # Starts islands install process with image download option
+    def download_install_islands(self):
+        data_path = self.ui.data_folder_path.text()
+        if util.is_file_exist(self.config['downloads_path'] + self.config['vm_image_name']):
+            use_local = QM.question(self.window, "Islands setup", "Islands image found on this computer. "
+                                                    "Would you like to use it? Click 'No' to download newest image.",
+                                                    QM.Yes | QM.No)
+            if use_local == QM.Yes:
+                full_path = util.get_full_path(self.config['downloads_path'] + self.config['vm_image_name'])
+                self.proceed_vm_install(data_path=data_path, download=False, vm_image_path=full_path)
+                return
+
+        self.proceed_vm_install(data_path=data_path, download=True)
+
+    # Given install options sets up output handlers and
+    # passes options to installer
+    def proceed_vm_install(self, data_path, download=False, vm_image_path=None):
+        print (self.config['vboxmanage'])
+        self.ui.button_select_data_path.setEnabled(False)
+        self.ui.button_install_islands.setEnabled(False)
+        self.ui.button_import_ova.setEnabled(False)
+        self.ui.data_folder_path.setEnabled(False)
+        self.ui.button_select_data_path.setEnabled(False)
+        self.ui.port_forwarding_enabled.setEnabled(False)
+        self.ui.local_port.setEnabled(False)
+        self.window.button(QWizard.BackButton).setEnabled(False)
+        self.window.button(QWizard.NextButton).setEnabled(False)
+
+
+        port = self.ui.local_port.text() if self.ui.port_forwarding_enabled.isChecked() else False
+        self.setup.run_vm_installer(on_message=self.get_on_message_handler(console=1),
+                                    on_complete=self.get_on_complete_handler(msg="Click \"continue\" to proceed", console=1),
+                                    on_error=self.get_on_error_handler(console=1),
+                                    init_progres_bar=self.get_init_progress_bar_handler(console=1),
+                                    update_progres_bar=self.get_update_progress_bar_handler(console=1),
+                                    finalize_progres_bar=self.get_finalize_progress_bar_handler(console=1),
+                                    download=download,
+                                    setup=self.setup,
+                                    image_path=vm_image_path,
+                                    config=self.config,
+                                    data_path=data_path,
+                                    port=port)
+        # def on_message(msg, size=12):
+        #     self.output.emit('<p style="color: blue; font-size: {size}"> {msg} </p>'.format(msg=msg, size=size), 1)
+        #
+        # def on_complete(msg):
+        #     self.output.emit('<p style="color: green;"> {msg} </p>'.format(msg=msg), 1)
+        #     self.output.emit('<p style="color: green; font-size: 16px;"> '
+        #                                              'Click "continue" to proceed >> </p>', 1)
+        #     self.set_vm_page_buttons_enabled(False)
+        #     self.window.button(QWizard.BackButton).setEnabled(False)
+        #     self.window.page(1).completeChanged.emit()
+        #
+        # def on_error(err):
+        #     self.set_vm_page_buttons_enabled(True)
+        #     self.window.button(QWizard.BackButton).setEnabled(True)
+        #     if err:
+        #         self.ui.vm_install_output_console.append('<p style="color: red"> {msg} </p>'.format(msg=str(err)))
+
+
 
 
     def vboxpage_prepare_text(self):
