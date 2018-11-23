@@ -1,31 +1,23 @@
 import re
 import hashlib
 from threading import Thread
-from executor import ShellExecutor as Executor
 from time import sleep
 from vboxinstaller import VBoxInstaller
 from installer_exceptions import *
+from executor import ShellExecutor as Executor
 
 
 
 from os import path, makedirs, environ
 
 
-class IslandSetup():
+class IslandSetup:
 
     def __init__(self, config):
 
         self.vm_installer = None
         self.vbox_installer = None
         self.__config = config
-        self.commands = {
-            "mount_vbox_distro": self.mount_vbox_distro,
-            "install_vbox": self.install_vbox,
-            "unmount_vbox_distro": self.unmount_vbox_distro,
-            "delete_vbox_distro": self.delete_vbox_distro,
-            "uninstall_vbox": self.uninstall_vbox
-        }
-
 
 
     # Initializes vm installer in separate thread and starts it
@@ -37,51 +29,6 @@ class IslandSetup():
         self.vbox_installer = VBoxInstaller(*args, **kwargs)
         self.vbox_installer.start()
 
-    # Runs arbitrary command from the set of predefined commands
-    # Return result of command execution or error
-    def run(self, *args, **kwargs):
-        if kwargs['command'] not in self.commands:
-            raise KeyError("Invalid command")
-        try:
-            return {
-                "result": str(self.commands[kwargs['command']](args, kwargs)),
-                "error": False
-            }
-        except Exception as e:
-            return {
-                "error": True,
-                "result": "Error: {command} \n{errmsg}".format(
-                    command=command, errmsg=str(e)
-                )
-            }
-
-    def mount_vbox_distro(self, on_data, on_error, on_done):
-        Executor.exec("hdiutil attach ~/Downloads/{imagename} -mountpoint ~/VirtualBox"
-            .format(imagename=self.__config["vbox_installer_name"]),
-                            on_data, on_error, on_done)
-
-
-
-
-    # TODO async
-    def install_vbox(self):
-        res = Executor.exec_sync(
-            """osascript -e 'do shell script "installer -pkg ~/VirtualBox/VirtualBox.pkg -target / " with administrator privileges' """
-        )
-        print("Installation finished: \n" + res)
-
-    # TODO
-    def uninstall_vbox(self):
-        raise NotImplementedError
-
-    def unmount_vbox_distro(self):
-        res = Executor.exec_sync("hdiutil detach ~/VirtualBox")
-        print("Image unmounted")
-        return res
-
-    def delete_vbox_distro(self):
-        res = Executor.exec_sync("rm -rf ~/virtualbox.dmg")
-        return res
 
 
     # TODO async

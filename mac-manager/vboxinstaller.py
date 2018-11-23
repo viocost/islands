@@ -2,6 +2,7 @@ from threading import Thread
 from multiprocessing import Process
 from downloader import Downloader as Dl
 from installer_exceptions import IslandSetupError
+from executor import ShellExecutor as Executor
 
 class VBoxInstaller:
     def __init__(self, config,
@@ -25,7 +26,7 @@ class VBoxInstaller:
         self.update = update
 
     def start(self):
-        self.thread = Thread(target=self.install, args=[self.init_progres_bar])
+        self.thread = Thread(target=self.install)
         self.thread.start()
 
     def run_setup_command(self, *args, **kwargs):
@@ -43,25 +44,44 @@ class VBoxInstaller:
                    filename=self.config["vbox_installer_name"],
                    on_update=self.update_progres_bar)
             self.finalize_progres_bar()
-
             self.message("Download complete. Mounting...")
+            self.mount_vbox_distro()
+            if self.update:
+                self.run_setup_command("uninstall_vbox")
+                self.message("Virtualbox old version is uninstalled")
 
-            def on_done(res):
-                self.message("Mounted. Installing...")
-
-            self.setup.mount_vbox_distro(on_data=self.message, on_error=self.error, on_done=on_done)
-
-
-            # if self.update:
-            #     self.run_setup_command("uninstall_vbox")
-            #     self.message("Virtualbox old version is uninstalled")
-            # self.run_setup_command("install_vbox")
-            # self.message("Installed. Unmounting vbox distro")
-            # self.run_setup_command("unmount_vbox_distro")
-            # self.message("Unmounted. Removing distro")
-            # self.run_setup_command("delete_vbox_distro")
-            # self.complete("Done.")
+            self.message("Mounted, installing virtualbox")
+            self.install_vbox()
+            self.message("Installed. Unmounting vbox distro")
+            self.unmount_vbox_distro()
+            self.message("Unmounted. Removing distro")
+            self.delete_vbox_distro()
+            self.message("Distro removed.")
+            self.complete()
         except IslandSetupError:
             self.error("Virtualbox installation didn't successfully finish. "
                        "Please try again...")
 
+    def mount_vbox_distro(self):
+        return Executor.exec_sync("hdiutil attach ~/Downloads/{imagename} -mountpoint ~/VirtualBox"
+                                       .format(imagename=self.config["vbox_installer_name"]))
+
+    # TODO async
+    def install_vbox(self):
+        res = Executor.exec_sync(
+            """osascript -e 'do shell script "installer -pkg {mpuntpoint}VirtualBox.pkg -target / " with administrator privileges' """.format(
+                mpuntpoint=self.config['vbox_distro_mountpoint'])
+        )
+
+    # TODO
+    def uninstall_vbox(self):
+        raise NotImplementedError
+
+    def unmount_vbox_distro(self):
+        res = Executor.exec_sync(
+            "hdiutil detach {mountpoint}".format(mountpoint=self.config["vbox_distro_mountpoint"]))
+        return res
+
+    def delete_vbox_distro(self):
+        res = Executor.exec_sync("rm -rf ~/virtualbox.dmg")
+        return res

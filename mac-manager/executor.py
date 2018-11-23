@@ -61,35 +61,43 @@ class ShellExecutor:
 
 
 
+    # @staticmethod
+    # def exec_sync(cmd, verbose=False):
+    #     stdout = []
+    #     stderr = []
+    #
+    #     def on_data(data):
+    #         stdout.append(data)
+    #         if verbose:
+    #             print("==DATA: %s" % data)
+    #
+    #     def on_error(data):
+    #         stderr.append(data)
+    #         if verbose:
+    #             print("==ERROR: %s" % data)
+    #
+    #     res = ShellExecutor.__execute(cmd, on_data, on_error)
+    #     if verbose:
+    #         print("==RETURN CODE: %d" % res)
+    #     stdout = "".join(stdout)
+    #     stderr = "".join(stderr)
+    #     return res, stdout, stderr
+
     @staticmethod
     def exec_sync(cmd, verbose=False):
-        stdout = []
-        stderr = []
-
-        def on_data(data):
-            stdout.append(data)
-            if verbose:
-                print("==DATA: %s" % data)
-
-        def on_error(data):
-            stderr.append(data)
-            if verbose:
-                print("==ERROR: %s" % data)
-
-        res = ShellExecutor.__execute(cmd, on_data, on_error)
-        if verbose:
-            print("==RETURN CODE: %d" % res)
-        stdout = "".join(stdout)
-        stderr = "".join(stderr)
-        return res, stdout, stderr
-
-    @staticmethod
-    def exec_sync_safe(cmd):
-        with Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE, bufsize=1, universal_newlines=True) as proc:
+        out = ""
+        err = ""
+        res = None
+        proc = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE, bufsize=1, universal_newlines=True)
+        while proc.poll() is None:
             for line in proc.stderr:
-                print("STDERR:" + line, end="")
+                err += line
+            for line in proc.stdout:
+                out += line
+        res = proc.returncode
+        return res, out, err
 
-        print("After POPEN")
+
 
 
 

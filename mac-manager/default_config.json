@@ -4,6 +4,7 @@
     "vm_sha1": "",
     "vboxmanage": "/usr/local/bin/vboxmanage",
     "vbox_installer_name": "virtualbox.dmg",
+    "vbox_distro_mountpoint": "~/VirtualBox/",
     "vmname": "Island",
     "root_password": "islands",
     "vmid": "",

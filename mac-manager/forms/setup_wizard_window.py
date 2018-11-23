@@ -12,6 +12,7 @@ class SetupWizardWindow(QObject):
     #
     output = pyqtSignal(str, int)
     progress = pyqtSignal(int, str, str, str, str, bool)
+    update = pyqtSignal()
 
     def __init__(self, parent, config,  island_manager, setup):
         QObject.__init__(self)
@@ -113,6 +114,7 @@ class SetupWizardWindow(QObject):
         self.window.keyPressEvent = self.key_press_handler()
         self.output.connect(self.appender)
         self.progress.connect(self.progress_bar_handler)
+        self.update.connect(self.update_ui_state)
 
         #TEST
         self.ui.test_button.clicked.connect(self.test_output)
@@ -294,13 +296,13 @@ class SetupWizardWindow(QObject):
             self.update_ui_state()
         return on_errror
 
-    def get_on_complete_handler(self, msg, console, action=None, ):
+    def get_on_complete_handler(self, msg, console):
         def on_complete(size=14, color='green', ):
             self.output.emit('<p style="color: color; font-size: {size}"> {msg} </p>'
                              .format(msg=msg, size=size, color=color), console)
-            self.update_ui_state()
-            if action:
-                action()
+            self.update.emit()
+            # if action:
+            #     action()
         return on_complete
     # Console event handlers
 
