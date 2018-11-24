@@ -105,7 +105,7 @@ class VMInstaller:
 
     def wait_guest_additions(self):
         for i in range(40):
-            res = Executor.exec_sync("""vboxmanage guestcontrol Island run --exe "/bin/ls" --username root --password islands  --wait-stdout -- ls "/" """)
+            res = Executor.exec_sync("""{vboxmanage} guestcontrol Island run --exe "/bin/ls" --username root --password islands  --wait-stdout -- ls "/" """.format(vboxmanage=self.config["vboxmanage"]))
             if res[0] == 0:
                 print("Looks like guestcontrol is available on Islands VM! Returning...")
                 return
@@ -131,14 +131,14 @@ class VMInstaller:
     # Otherwise there is some other error and we raise it
     @check_output
     def setup_host_only_adapter(self):
-        res = Executor.exec_sync("vboxmanage hostonlyif ipconfig vboxnet0")
+        res = Executor.exec_sync("{vboxmanage} hostonlyif ipconfig vboxnet0".format(vboxmanage=self.config['vboxmanage']))
         if res[0] == 1:
-            Executor.exec_sync("vboxmanage hostonlyif create")
+            Executor.exec_sync("{vboxmanage} hostonlyif create".format(vboxmanage=self.config['vboxmanage']))
         elif res[0] != 2:
-            raise res[2]
+            raise Exception(res[2])
         # Installing adapter onto vm
-        return Executor.exec_sync("vboxmanage modifyvm {vmname} --nic2 hostonly --cableconnected2 on"
-                           " --hostonlyadapter2 vboxnet0".format(vmname=self.config["vmname"]))
+        return Executor.exec_sync("{vboxmanage} modifyvm {vmname} --nic2 hostonly --cableconnected2 on"
+                           " --hostonlyadapter2 vboxnet0".format(vboxmanage=self.config['vboxmanage'], vmname=self.config["vmname"]))
 
     # Sets up shareed folder for the imported vm
     @check_output
@@ -146,8 +146,8 @@ class VMInstaller:
         fullpath = self.setup.parse_shared_folder_path(data_folder_path)
         if not path.exists(fullpath):
             makedirs(fullpath)
-        return Executor.exec_sync("vboxmanage sharedfolder add Island "
-                                  "--name islandsData -hostpath {hostpath} -automount".format(hostpath=fullpath))
+        return Executor.exec_sync("{vboxmanage} sharedfolder add Island "
+                                  "--name islandsData -hostpath {hostpath} -automount".format(vboxmanage=self.config['vboxmanage'], hostpath=fullpath))
 
     @check_output
     def start_vm(self, headless=True):
@@ -157,10 +157,10 @@ class VMInstaller:
 
     @check_output
     def insert_guest_additions_image(self):
-        return Executor.exec_sync("vboxmanage storageattach Island "
+        return Executor.exec_sync("{vboxmanage} storageattach Island "
                                   "--storagectl IDE --port 1 --device 0 "
                                   "--type dvddrive "
-                                  "--medium /Applications/VirtualBox.app/Contents/MacOS/VBoxGuestAdditions.iso")
+                                  "--medium /Applications/VirtualBox.app/Contents/MacOS/VBoxGuestAdditions.iso".format(vboxmanage=self.config['vboxmanage']))
 
     @check_output
     def setup_port_forwarding(self, port):
@@ -179,12 +179,12 @@ class VMInstaller:
     @check_output
     def onvm_get_setup_script(self):
         return Executor.exec_sync(
-            """vboxmanage guestcontrol Island run --exe "/usr/bin/wget" --username root --password islands --wait-stdout --wait-stderr -- wget "https://raw.githubusercontent.com/viocost/islands/dev/installer/vbox_full_setup.sh" -O "/root/isetup.sh" """)
+            """{vboxmanage} guestcontrol Island run --exe "/usr/bin/wget" --username root --password islands --wait-stdout --wait-stderr -- wget "https://raw.githubusercontent.com/viocost/islands/dev/installer/vbox_full_setup.sh" -O "/root/isetup.sh" """.format(vboxmanage=self.config['vboxmanage']))
 
     @check_output
     def onvm_chmodx_install_script(self):
         return (Executor.exec_sync(
-            """vboxmanage guestcontrol Island run --exe "/bin/chmod" --username root --password islands --wait-stdout --wait-stderr -- chmod +x /root/isetup.sh """))
+            """{vboxmanage} guestcontrol Island run --exe "/bin/chmod" --username root --password islands --wait-stdout --wait-stderr -- chmod +x /root/isetup.sh """.format(vboxmanage=self.config['vboxmanage'])))
 
     @check_output
     def onvm_launch_setup_script(self):
@@ -192,13 +192,13 @@ class VMInstaller:
             self.message(msg=msg, size=8, color="black")
 
         return Executor.exec_stream(
-            """vboxmanage guestcontrol Island run --exe "/bin/bash" --username root --password islands --wait-stdout --wait-stderr -- bash /root/isetup.sh -b dev""",
+            """{vboxmanage} guestcontrol Island run --exe "/bin/bash" --username root --password islands --wait-stdout --wait-stderr -- bash /root/isetup.sh -b dev""".format(vboxmanage=self.config['vboxmanage']),
             on_data=on_data, on_error=on_data)
 
 
     @check_output
     def shutdown_vm(self):
-        return Executor.exec_sync("""vboxmanage controlvm Island acpipowerbutton""")
+        return Executor.exec_sync("""{vboxmanage} controlvm Island acpipowerbutton""".format(vboxmanage=self.config['vboxmanage']))
 
     def first_boot(self):
         for i in range(10):
