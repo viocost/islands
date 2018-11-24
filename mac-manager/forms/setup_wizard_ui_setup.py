@@ -16,7 +16,7 @@ class Ui_IslandSetupWizzard(object):
         IslandSetupWizzard.setMinimumSize(QtCore.QSize(712, 525))
         IslandSetupWizzard.setModal(True)
         IslandSetupWizzard.setWizardStyle(QtWidgets.QWizard.MacStyle)
-        IslandSetupWizzard.setOptions(QtWidgets.QWizard.NoCancelButton|QtWidgets.QWizard.NoDefaultButton)
+        IslandSetupWizzard.setOptions(QtWidgets.QWizard.NoBackButtonOnLastPage|QtWidgets.QWizard.NoBackButtonOnStartPage|QtWidgets.QWizard.NoCancelButton|QtWidgets.QWizard.NoDefaultButton)
         self.page_vbox_install_1 = QtWidgets.QWizardPage()
         self.page_vbox_install_1.setObjectName("page_vbox_install_1")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.page_vbox_install_1)

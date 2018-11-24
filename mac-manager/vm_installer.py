@@ -56,7 +56,8 @@ class VMInstaller:
                 self.finalize_progres_bar()
                 self.message(msg="Download complete", size=20)
             self.message("Importing VM...")
-            self.import_vm(self.image_path if self.image_path else "~/Downloads/Island.ova", self.message, self.error)
+            vm_image_default_dest = path.expanduser(self.config['downloads_path'] + self.config["vm_image_name"])
+            self.import_vm(self.image_path if self.image_path else vm_image_default_dest, self.message, self.message)
             self.message("Image imported. Configuring...")
             self.setup_host_only_adapter()
             self.message("Network configured..")
@@ -77,7 +78,6 @@ class VMInstaller:
             self.message("Guest additions are installed. Fetching Islands setup script..")
             self.onvm_get_setup_script()
             self.onvm_chmodx_install_script()
-
             self.message("Installation in progress. This step takes a while... Grab some tea")
             self.onvm_launch_setup_script()
             self.message("Setup completed. Restarting Islands...")
@@ -151,9 +151,9 @@ class VMInstaller:
 
     @check_output
     def start_vm(self, headless=True):
-        return Executor.exec_sync("{vboxmanage} startvm Island {headless}").format(
-            vboxmanage=self.config["vboxmanage"],
-            headless="--type headless" if headless else "")
+        headless = " --type headless " if headless else ""
+        cmd = "{vboxmanage} startvm Island {headless}".format(vboxmanage=self.config["vboxmanage"], headless=headless)
+        return Executor.exec_sync(cmd)
 
     @check_output
     def insert_guest_additions_image(self):
@@ -205,6 +205,7 @@ class VMInstaller:
             sleep(3)
             try:
                 self.start_vm()
+                return
             except CmdExecutionError:
                 print("Unsuccessful launch %d" %i)
                 continue

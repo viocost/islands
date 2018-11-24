@@ -129,6 +129,7 @@ class SetupWizardWindow(QObject):
                     self.window.close()
         return handler
 
+
     # Clear window outputs
     def exec(self):
         self.reset_consoles()
@@ -210,21 +211,21 @@ class SetupWizardWindow(QObject):
     def get_on_message_handler(self, console):
         def on_message(msg, size=12, color='blue'):
             print("GOT MESSAGE: %s" % msg)
-            self.output.emit('<p style="color: {color}; font-size: {size}"> {msg} </p>'
+            self.output.emit('<p style="color: {color}; font-size: {size}px"> {msg} </p>'
                              .format(msg=msg, size=size, color=color), console)
         return on_message
 
     def get_on_error_handler(self, console):
         def on_errror(msg, size=12, color='red'):
             print("GOT MESSAGE: %s" % msg)
-            self.output.emit('<p style="color: {color}; font-size: {size}"> {msg} </p>'
+            self.output.emit('<p style="color: {color}; font-size: {size}px"> {msg} </p>'
                              .format(msg=msg, size=size, color=color), console)
             self.update_ui_state()
         return on_errror
 
     def get_on_complete_handler(self, msg, console, handler = None):
-        def on_complete(size=16, color='green', ):
-            self.output.emit('<p style="color: {color}; font-size: {size}"> {msg} </p>'
+        def on_complete(size=18, color='green', ):
+            self.output.emit('<p style="color: {color}; font-size: {size}px"> {msg} </p>'
                              .format(msg=msg, size=size, color=color), console)
             self.update_elements.emit()
             if handler:
@@ -273,6 +274,7 @@ class SetupWizardWindow(QObject):
     # END progress bar handlers
 
     def process_vbox_install(self):
+        self.consoles[0].setText("")
         self.ui.button_install_vbox.setEnabled(False)
         vbox_installed = self.setup.is_vbox_installed()
 
@@ -295,6 +297,7 @@ class SetupWizardWindow(QObject):
 
     # Starts islands install process with choose image option
     def select_islands_image(self):
+        self.consoles[1].setText("")
         res = QFileDialog.getOpenFileName(self.window, "Select Islands image", environ["HOME"], "Virtual Appliance (*.ova)")
         if res == ('', ''):
             print("Cancelled")
@@ -309,6 +312,7 @@ class SetupWizardWindow(QObject):
 
     # Starts islands install process with image download option
     def download_install_islands(self):
+        self.consoles[1].setText("")
         data_path = self.ui.data_folder_path.text()
         if util.is_file_exist(self.config['downloads_path'] + self.config['vm_image_name']):
             use_local = QM.question(self.window, "Islands setup", "Islands image found on this computer. "
@@ -394,6 +398,7 @@ class SetupWizardWindow(QObject):
            VM installed, not installed
 
         """
+        self.window.button(self.window.BackButton).setEnabled(False)
         current_page_id = self.get_active_page_id()
         vbox_installed = self.setup.is_vbox_installed()
         vbox_up_to_date = False if not vbox_installed else self.setup.is_vbox_up_to_date()

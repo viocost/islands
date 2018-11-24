@@ -164,3 +164,25 @@ class TestConfig(unittest.TestCase):
         Executor.exec_stream(
             """vboxmanage guestcontrol Island run --exe "/bin/bash" --username root --password islands --wait-stdout --wait-stderr -- bash /root/isetup.sh -b dev""",
             on_data=output, on_error=output, verbose=True)
+
+
+    def test_first_boot_start(self):
+        from time import sleep
+
+        def start_vm(headless=True):
+            headless = " --type headless " if headless else ""
+            cmd = "{vboxmanage} startvm Island {headless}".format(vboxmanage=self.config["vboxmanage"],
+                                                                  headless=headless)
+            return Executor.exec_sync(cmd)
+
+        def first_boot():
+            for i in range(10):
+                sleep(3)
+                try:
+                    res = start_vm()
+                except Exception as e:
+                    print("Unsuccessful launch %d" % i)
+                    continue
+            raise Exception("VM launch unsuccessfull")
+
+        first_boot()
