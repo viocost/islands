@@ -14,3 +14,7 @@ class IslandsImageNotFound(Exception):
 
 class ImportVMError(Exception):
     pass
+
+
+class CmdExecutionError(Exception):
+    pass

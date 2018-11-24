@@ -144,11 +144,6 @@ class Ui_IslandSetupWizzard(object):
         self.verticalLayout_4.addLayout(self.verticalLayout_3)
         IslandSetupWizzard.addPage(self.page_complete_3)
 
-        # TEST
-        self.test_button = QtWidgets.QPushButton(self.page_vbox_install_1)
-        self.test_button.setText("Run test")
-        # END
-
         self.retranslateUi(IslandSetupWizzard)
         QtCore.QMetaObject.connectSlotsByName(IslandSetupWizzard)
 

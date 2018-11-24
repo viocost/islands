@@ -116,26 +116,6 @@ class SetupWizardWindow(QObject):
         self.update_elements.connect(self.update_ui_state)
         self.vbox_instal_complete.connect(self.prepare_vm_setup_page)
 
-        #TEST
-        self.ui.test_button.clicked.connect(self.test_output)
-
-    #TEST
-    def test_output(self):
-
-        from time import sleep
-        from threading import Thread
-
-        def run_test():
-
-            self.progress.emit(0, "init", "Testing progress bar", "0", "", True)
-            for i in range(101):
-                self.progress.emit(0, "update", "", str(i), '%d/100' % i, True)
-                sleep(.05)
-
-            self.progress.emit(0, "finalize", "", "", "", True)
-        p = Thread(target=run_test,  group=None)
-        p.start()
-    #END TEST
 
     def key_press_handler(self):
         def handler(event):
