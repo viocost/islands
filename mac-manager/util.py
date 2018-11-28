@@ -15,3 +15,8 @@ def is_file_exist(path):
 
 def get_full_path(path):
     return os.path.expanduser(path)
+
+
+def get_version():
+    with open("version", "r") as vfile:
+        return vfile.readline()

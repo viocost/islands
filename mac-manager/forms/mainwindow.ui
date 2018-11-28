@@ -506,8 +506,10 @@
     <property name="title">
      <string>Menu</string>
     </property>
-    <addaction name="actionMinimize"/>
-    <addaction name="actionExit"/>
+    <addaction name="actionInfo"/>
+    <addaction name="separator"/>
+    <addaction name="actionMinimize_2"/>
+    <addaction name="actionClose"/>
    </widget>
    <addaction name="menuOptions"/>
   </widget>
@@ -520,10 +522,39 @@
    <property name="text">
     <string>Exit</string>
    </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
+   </property>
   </action>
   <action name="actionMinimize">
    <property name="text">
     <string>Minimize</string>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionInfo">
+   <property name="text">
+    <string>Info</string>
+   </property>
+  </action>
+  <action name="actionMinimize_2">
+   <property name="text">
+    <string>Minimize</string>
+   </property>
+  </action>
+  <action name="actionClose">
+   <property name="text">
+    <string>Close</string>
    </property>
   </action>
  </widget>

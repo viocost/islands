@@ -17,7 +17,6 @@ class IslandManager:
             # emit state launching
             # await for completeness
             # emit state launched
-
             return Executor.exec_sync(self.__launch_cmd())
 
     def is_starting_up(self):

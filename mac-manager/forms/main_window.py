@@ -2,6 +2,7 @@ from forms.main_window_ui_setup import Ui_MainWindow
 from forms.setup_wizard_window import SetupWizardWindow as SetupWindow
 from PyQt5.QtWidgets import QMainWindow, QMessageBox as QM
 from PyQt5.QtCore import QObject, pyqtSignal
+from util import get_version
 
 
 class MainWindow(QObject):
@@ -21,6 +22,7 @@ class MainWindow(QObject):
         self.set_state("unknown")
         self.setup_window = None
         self.refresh_island_status()
+        self.set_main_window_title()
 
 
     def show(self):
@@ -33,13 +35,6 @@ class MainWindow(QObject):
         try:
             if self.setup.is_setup_required():
                 self.set_state("setup_required")
-
-            # elif self.island_manager.is_running():
-            #     self.set_state("running")
-            #
-            # elif self.island_manager.is_starting_up():
-            #     self.set_state("starting_up")
-            #     self.island_manager.await_island_startup(self, 20)
             else:
                 self.island_manager.emit_islands_current_state(self)
                 #self.set_state("not_running")
@@ -70,6 +65,11 @@ class MainWindow(QObject):
         self.ui.restartIslandButton.clicked.connect(self.get_main_control_handler("restart"))
         self.ui.button_launch_setup.clicked.connect(self.launch_setup)
         self.current_state.connect(self.set_state)
+        self.ui.actionInfo.triggered.connect(self.show_app_info)
+        self.ui.actionClose.triggered.connect(self.on_close)
+        self.ui.actionMinimize.triggered.connect(self.minimize_main_window)
+
+
 
     def get_main_control_handler(self, cmd):
         cmds = {
@@ -112,6 +112,20 @@ class MainWindow(QObject):
             raise KeyError("Invalid main window state.")
         self.states[state]()
 
+    """MENU HANDLERS"""
+    def minimize_main_window(self):
+        self.window.showMinimized()
+
+    def show_app_info(self):
+        QM.about(self.window, "", "Islands Virtual Machine Manager\nVersion: %s" % get_version())
+
+    def on_close(self):
+        pass
+
+    def set_main_window_title(self):
+        self.window.setWindowTitle("Island Manager %s" % "v"+get_version())
+
+    """END"""
 
     """ STATE SETTERS """
     def set_setup_required(self):
