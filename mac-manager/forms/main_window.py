@@ -1,10 +1,15 @@
 from forms.main_window_ui_setup import Ui_MainWindow
 from forms.setup_wizard_window import SetupWizardWindow as SetupWindow
 from PyQt5.QtWidgets import QMainWindow, QMessageBox as QM
+from PyQt5.QtCore import QObject, pyqtSignal
 
 
-class MainWindow:
+class MainWindow(QObject):
+
+    current_state = pyqtSignal(str)
+
     def __init__(self, config, islands_manager, setup):
+        QObject.__init__(self)
         self.config = config
         self.setup = setup
         self.island_manager = islands_manager
@@ -29,10 +34,15 @@ class MainWindow:
             if self.setup.is_setup_required():
                 self.set_state("setup_required")
 
-            elif self.island_manager.is_running():
-                self.set_state("running")
+            # elif self.island_manager.is_running():
+            #     self.set_state("running")
+            #
+            # elif self.island_manager.is_starting_up():
+            #     self.set_state("starting_up")
+            #     self.island_manager.await_island_startup(self, 20)
             else:
-                self.set_state("not_running")
+                self.island_manager.emit_islands_current_state(self)
+                #self.set_state("not_running")
         except Exception as e:
             print(e)
             self.set_state("unknown")
@@ -42,6 +52,7 @@ class MainWindow:
             "setup_required": self.set_setup_required,
             "running": self.set_running,
             "not_running": self.set_not_running,
+            "starting_up": self.set_starting_up,
             "unknown": self.set_unknown
         }
 
@@ -58,6 +69,7 @@ class MainWindow:
         self.ui.shutdownIslandButton.clicked.connect(self.get_main_control_handler("stop"))
         self.ui.restartIslandButton.clicked.connect(self.get_main_control_handler("restart"))
         self.ui.button_launch_setup.clicked.connect(self.launch_setup)
+        self.current_state.connect(self.set_state)
 
     def get_main_control_handler(self, cmd):
         cmds = {
@@ -123,6 +135,17 @@ class MainWindow:
             self.ui.island_access_address.setText(self.config["local_access"])
         self.ui.islandStatus.setText("Running")
         self.ui.islandStatus.setStyleSheet('color: green')
+        self.ui.restartIslandButton.setEnabled(True)
+        self.ui.shutdownIslandButton.setEnabled(True)
+        self.ui.launchIslandButton.setEnabled(False)
+        self.ui.groupBox.setEnabled(False)
+        self.ui.groupBox.hide()
+
+    def set_starting_up(self):
+        self.ui.island_access_label.setVisible(False)
+        self.ui.island_access_address.setVisible(False)
+        self.ui.islandStatus.setText("Starting up...")
+        self.ui.islandStatus.setStyleSheet('color: blue')
         self.ui.restartIslandButton.setEnabled(True)
         self.ui.shutdownIslandButton.setEnabled(True)
         self.ui.launchIslandButton.setEnabled(False)

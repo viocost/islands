@@ -1,4 +1,6 @@
 import re
+from threading import Thread
+import time
 from executor import ShellExecutor as Executor
 
 
@@ -8,11 +10,18 @@ class IslandManager:
         self.__config = config
 
     """ Main API methods """
+
     def launch_island(self):
         if not self.is_running():
+            # start island
+            # emit state launching
+            # await for completeness
+            # emit state launched
+
             return Executor.exec_sync(self.__launch_cmd())
 
-
+    def is_starting_up(self):
+        return False
 
     def stop_island(self):
         if self.is_running():
@@ -39,6 +48,33 @@ class IslandManager:
 
     def get_vmid(self):
         return self.__config['vmid']
+
+    def await_island_startup(self, window, time_limit_sec):
+        def worker():
+            start = time.time()
+            while time.time() - start <= time_limit_sec:
+                if self.is_running():
+                    window.state_changed.emit()
+                    return
+        thread = Thread(target=worker)
+        thread.start()
+
+
+    def emit_islands_current_state(self, window):
+        if self.is_running():
+            window.current_state.emit("running")
+
+        elif self.is_starting_up():
+            window.current_state.emit("starting_up")
+            #self.island_manager.await_island_startup(self, 20)
+        else:
+            window.current_state.emit("not_running")
+
+
+
+
+
+
     """END Main API"""
 
     """HELPERS 
