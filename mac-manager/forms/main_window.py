@@ -67,7 +67,7 @@ class MainWindow(QObject):
         self.current_state.connect(self.set_state)
         self.ui.actionInfo.triggered.connect(self.show_app_info)
         self.ui.actionClose.triggered.connect(self.on_close)
-        self.ui.actionMinimize.triggered.connect(self.minimize_main_window)
+        self.ui.actionMinimize_2.triggered.connect(self.minimize_main_window)
 
 
 
@@ -114,13 +114,15 @@ class MainWindow(QObject):
 
     """MENU HANDLERS"""
     def minimize_main_window(self):
+        print("Minimizing")
         self.window.showMinimized()
 
     def show_app_info(self):
         QM.about(self.window, "", "Islands Virtual Machine Manager\nVersion: %s" % get_version())
 
     def on_close(self):
-        pass
+        self.window.close()
+
 
     def set_main_window_title(self):
         self.window.setWindowTitle("Island Manager %s" % "v"+get_version())

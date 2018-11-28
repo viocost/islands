@@ -6,7 +6,7 @@
     "vmname": "Island",
     "vm_image_name": "Island.ova",
     "downloads_path": "~/Downloads/",
-    "vm_download": "https://sourceforge.net/projects/islands-image/files/Island.ova/download",
+    "vm_download": "https://sourceforge.net/projects/islands-image/files/Islands_vm_v0.0.011.ova/download",
     "vm_sha1": "",
     "root_password": "islands",
     "vmid": "",
