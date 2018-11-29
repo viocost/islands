@@ -1,4 +1,5 @@
 import os
+import platform
 
 def sizeof_fmt(num, suffix='b'):
     num = int(num)
@@ -20,3 +21,6 @@ def get_full_path(path):
 def get_version():
     with open("version", "r") as vfile:
         return vfile.readline()
+
+
+platform.system()

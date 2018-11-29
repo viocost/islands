@@ -79,7 +79,7 @@ gpg --no-tty --export A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89 | apt-key add -
 apt update
 apt install tor deb.torproject.org-keyring -y
 echo Configuring and starting TOR...
-phash=$(tor --hash-password 'TheP@$sw0rd' | grep 16\:.*)
+phash=$(tor --hash-password 'TheP@$sw0rd' | egrep -o 16\:.{58})
 sleep 1s
 echo 'ControlPort 9051' | tee -a /etc/tor/torrc
 sleep 1s
