@@ -9,7 +9,7 @@ import util
 
 class TestConfig(unittest.TestCase):
     def setUp(self):
-        self.config = IMConfig("../default_config.json", "../config.json")
+        self.config = IMConfig("win32" ,"../", "../", "../os_defaults")
         self.setup = IslandSetup(self.config)
         self.island_manager = IslandManager(self.setup)
 

@@ -1,0 +1,7 @@
+{
+  "vbox_download": "https://download.virtualbox.org/virtualbox/5.2.20/VirtualBox-5.2.20-125813-OSX.dmg",
+  "vboxmanage": "/usr/local/bin/vboxmanage",
+  "vbox_installer_name": "virtualbox.dmg",
+  "vbox_distro_mountpoint": "~/VirtualBox/",
+  "downloads_path": "~/Downloads/"
+}

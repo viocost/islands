@@ -2,10 +2,21 @@ import os
 import json
 
 
+DEFAULT_CONFIG="default_config.json"
+OS_SPECIFIC_DEFAULTS={
+    "darwin": "mac.json",
+    "win32": "windows.json",
+    "linux": "linux.json"
+}
+
+CUSTOM_CONFIG = "config.json"
+
+
 class IMConfig:
-    def __init__(self, default_config_path="default_config.json", config_path="config.json" ):
-        self.__default = self.__get_default(default_config_path)
-        self.__custom = self.__load(config_path)
+    def __init__(self, os_env, default_config_path="", config_path="", os_defaults_path=""):
+        self.__default = self.__get_default("".join((default_config_path, DEFAULT_CONFIG)))
+        self.load_os_specific_defaults(os_env, os_defaults_path)
+        self.__custom = self.__load("".join((config_path, CUSTOM_CONFIG)))
 
     def save(self):
         with open("config.json", "w") as f:
@@ -40,6 +51,15 @@ class IMConfig:
                 return json.load(f)
         else:
             raise MissingDefaultConfig
+
+    def load_os_specific_defaults(self, os_env, os_defaults_path):
+        if os_env not in OS_SPECIFIC_DEFAULTS:
+            raise KeyError("Invalid OS name or unupported OS")
+        with open("".join((os_defaults_path, OS_SPECIFIC_DEFAULTS[os_env])), "r") as f:
+            self.__default.update(json.load(f))
+
+
+
 
 
 class MissingDefaultConfig(Exception):

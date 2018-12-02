@@ -17,13 +17,15 @@ from island_manager import IslandManager
 from island_setup import IslandSetup
 from forms.main_window import MainWindow
 from im_config import IMConfig
+from commander import Commander
 
 
 class Application:
     def __init__(self, default_config_path="default_config.json", config_path="config.json"):
+        self.commander = Commander()
         self.app = self.prepare_app()
         self.config = IMConfig(default_config_path, config_path)
-        self.island_manager = IslandManager(self.config)
+        self.island_manager = IslandManager(self.config, self.commander)
         self.setup = IslandSetup(self.config)
         self.main_window = MainWindow(self.config, self.island_manager, self.setup)
 

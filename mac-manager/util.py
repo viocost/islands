@@ -23,4 +23,8 @@ def get_version():
         return vfile.readline()
 
 
+def get_current_path():
+    print(os.getcwd())
+
+
 platform.system()

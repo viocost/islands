@@ -48,6 +48,7 @@ class MainWindow(QObject):
             "running": self.set_running,
             "not_running": self.set_not_running,
             "starting_up": self.set_starting_up,
+            "shutting_down": self.set_shutting_down,
             "unknown": self.set_unknown
         }
 
@@ -167,6 +168,9 @@ class MainWindow(QObject):
         self.ui.launchIslandButton.setEnabled(False)
         self.ui.groupBox.setEnabled(False)
         self.ui.groupBox.hide()
+
+    def set_shutting_down(self):
+        raise NotImplemented
 
     def set_not_running(self):
         self.ui.island_access_label.setVisible(False)

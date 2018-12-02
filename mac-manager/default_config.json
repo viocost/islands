@@ -1,11 +1,8 @@
 {
-    "vboxmanage": "/usr/local/bin/vboxmanage",
-    "vbox_download": "https://download.virtualbox.org/virtualbox/5.2.20/VirtualBox-5.2.20-125813-OSX.dmg",
-    "vbox_installer_name": "virtualbox.dmg",
-    "vbox_distro_mountpoint": "~/VirtualBox/",
+
+
     "vmname": "Island",
     "vm_image_name": "Island.ova",
-    "downloads_path": "~/Downloads/",
     "vm_download": "https://sourceforge.net/projects/islands-image/files/Islands_vm_v0.0.011.ova/download",
     "vm_sha1": "",
     "root_password": "islands",

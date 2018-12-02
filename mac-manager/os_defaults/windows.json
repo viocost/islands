@@ -1,0 +1,4 @@
+{
+  "vboxmanage": "%PROGRAMFILES%\\Oracle\\VirtualBox\\vboxmanage.exe",
+  "vbox_installer_name": "vboxsetup.exe"
+}
