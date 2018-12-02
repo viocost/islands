@@ -18,27 +18,27 @@ class IslandManager:
             # emit state launching
             # await for completeness
             # emit state launched
-            return Executor.exec_sync(self.__launch_cmd())
+            return Executor.exec_sync(self.commander.start_vm())
 
     def is_starting_up(self):
         return False
 
     def stop_island(self):
         if self.is_running():
-            return Executor.exec_sync(self.__stop_cmd())[1]
+            return Executor.exec_sync(self.commander.shutdown_vm())
 
 
     def restart_island(self):
         if self.is_running():
-            stop_res = Executor.exec_sync(self.stop_island())
+            stop_res = Executor.exec_sync(self.commander.poweroff_vm())
             assert stop_res[0] == 0
-            return Executor.exec_sync(self.__launch_cmd())
-
+            return Executor.exec_sync(self.commander.start_vm())
 
     def is_running(self):
-        running_ptrn = re.compile(r"^(?=.*State)(?=.*running)(?=.*since).+")
         res = Executor.exec_sync(self.commander.is_running())
+        running_ptrn = re.compile(r"^(?=.*State)(?=.*running)(?=.*since).+")
         return res[0] == 0 and running_ptrn.search(res[1]) is not None
+
 
     def get_vboxmanage_path(self):
         return self.config['vboxmanage']
@@ -70,49 +70,6 @@ class IslandManager:
         else:
             window.current_state.emit("not_running")
 
-
-
-
-
-
-    """END Main API"""
-
-    """HELPERS 
-    """
-
-    def get_command(self, cmd):
-        commands = {
-            "launch": self.__launch_cmd,
-            "stop": self.__stop_cmd
-        }
-        if cmd not in commands:
-            raise KeyError
-        return commands[cmd]()
-
-    # HELPERS return full shell command
-    def __launch_cmd(self):
-        return "{vboxmanage} startvm {vmname} --type headless".format(
-            vboxmanage=self.config['vboxmanage'],
-            vmname=self.config['vmname']
-        )
-
-    def __stop_cmd(self):
-        return "{vboxmanage} controlvm {vmname} poweroff ".format(
-            vboxmanage=self.config['vboxmanage'],
-            vmname=self.config['vmname']
-        )
-
-    def __restart_cmd(self):
-        return "{vboxmanage} controlvm {vmname} reset ".format(
-            vboxmanage=self.config['vboxmanage'],
-            vmname=self.config['vmname']
-        )
-
-    def __is_vm_running_cmd(self):
-        return "{vboxmanage} showvminfo \"{vmname}\" | grep running || true ".format(
-            vboxmanage=self.config['vboxmanage'],
-            vmname=self.config['vmname']
-        )
 
 
 

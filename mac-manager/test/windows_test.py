@@ -7,9 +7,8 @@ import json
 class TestConfig(unittest.TestCase):
 
 
-    def test_init(self):
-
-        c = IMConfig("darwin", "../", "../", "../os_defaults/")
-        cmd = Cmd(c, "darwin")
-        print(cmd.start_vm())
+    def test_commander(self):
+        c = IMConfig("win32", "../", "../", "../os_defaults/")
+        cmd = Cmd(c, "win32  ")
+        assert(cmd.start_vm() == "%PROGRAMFILES%\\Oracle\VirtualBox\\vboxmanage.exe startvm Island --type headless")
 

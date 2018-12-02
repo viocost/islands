@@ -3,16 +3,19 @@
 class Commander:
     """This class contains all possible commands for executing in cmd or shell depending on OS"""
 
+    """CMD TEMPLATES"""
     __start_vm = "{vboxmanage} startvm {vmname} {headless}"
     __shutdown_vm = "{vboxmanage} controlvm {vmname} acpipowerbutton"
     __poweroff_vm = "{vboxmanage} controlvm {vmname} poweroff"
     __ip_a = '{vboxmanage} guestcontrol {vmname} run --exe "/sbin/ip" --username {username} --password {password}  --wait-stdout -- ip a'
     __vboxmanage_version = "{vboxmanage} -v"
+    __list_vms = "{vboxmanage} list vms"
+    __vminfo = "{vboxmanage} showvminfo {vmname}"
 
 
-    def __init__(self, config, os):
+    def __init__(self, config, platform):
         self.config = config
-        self.os = os
+        self.platform = platform
 
     def start_vm(self, headless=True):
         headless = "--type headless" if headless else ""
@@ -40,6 +43,17 @@ class Commander:
             vboxmanage=self.config['vboxmanage']
         )
 
+
+    def listvms(self):
+        return self.__list_vms.format(
+            vboxmanage=self.config['vboxmanage']
+        )
+
+    def vminfo(self):
+        return self.__vminfo.format(
+            vboxmanage=self.config['vboxmanage'],
+            vmname=self.config['vmname']
+        )
 
     # Config commands
 

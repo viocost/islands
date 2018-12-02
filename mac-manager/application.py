@@ -9,6 +9,7 @@
 """
 
 """
+
 import sys
 import forms.resources_rc
 from PyQt5.QtWidgets import QApplication, QMessageBox as qm
@@ -20,13 +21,14 @@ from im_config import IMConfig
 from commander import Commander
 
 
+
 class Application:
-    def __init__(self, default_config_path="default_config.json", config_path="config.json"):
-        self.commander = Commander()
+    def __init__(self):
+        self.config = IMConfig(sys.platform)
+        self.commander = Commander(self.config, sys.platform)
         self.app = self.prepare_app()
-        self.config = IMConfig(default_config_path, config_path)
         self.island_manager = IslandManager(self.config, self.commander)
-        self.setup = IslandSetup(self.config)
+        self.setup = IslandSetup(self.config, self.commander)
         self.main_window = MainWindow(self.config, self.island_manager, self.setup)
 
 

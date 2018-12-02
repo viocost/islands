@@ -13,9 +13,9 @@ CUSTOM_CONFIG = "config.json"
 
 
 class IMConfig:
-    def __init__(self, os_env, default_config_path="", config_path="", os_defaults_path=""):
+    def __init__(self, platform, default_config_path="", config_path="", os_defaults_path="./os_defaults/"):
         self.__default = self.__get_default("".join((default_config_path, DEFAULT_CONFIG)))
-        self.load_os_specific_defaults(os_env, os_defaults_path)
+        self.load_os_specific_defaults(platform, os_defaults_path)
         self.__custom = self.__load("".join((config_path, CUSTOM_CONFIG)))
 
     def save(self):
@@ -52,10 +52,10 @@ class IMConfig:
         else:
             raise MissingDefaultConfig
 
-    def load_os_specific_defaults(self, os_env, os_defaults_path):
-        if os_env not in OS_SPECIFIC_DEFAULTS:
+    def load_os_specific_defaults(self, platform, os_defaults_path):
+        if platform not in OS_SPECIFIC_DEFAULTS:
             raise KeyError("Invalid OS name or unupported OS")
-        with open("".join((os_defaults_path, OS_SPECIFIC_DEFAULTS[os_env])), "r") as f:
+        with open("".join((os_defaults_path, OS_SPECIFIC_DEFAULTS[platform])), "r") as f:
             self.__default.update(json.load(f))
 
 

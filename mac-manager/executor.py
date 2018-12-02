@@ -1,6 +1,9 @@
 import asyncio
-from  subprocess import Popen, PIPE
+from  subprocess import Popen, PIPE, run
 from multiprocessing import Process
+
+import io
+import sys
 from time import sleep
 from threading import Thread
 
@@ -61,30 +64,26 @@ class ShellExecutor:
 
 
 
-    # @staticmethod
-    # def exec_sync(cmd, verbose=False):
-    #     stdout = []
-    #     stderr = []
-    #
-    #     def on_data(data):
-    #         stdout.append(data)
-    #         if verbose:
-    #             print("==DATA: %s" % data)
-    #
-    #     def on_error(data):
-    #         stderr.append(data)
-    #         if verbose:
-    #             print("==ERROR: %s" % data)
-    #
-    #     res = ShellExecutor.__execute(cmd, on_data, on_error)
-    #     if verbose:
-    #         print("==RETURN CODE: %d" % res)
-    #     stdout = "".join(stdout)
-    #     stderr = "".join(stderr)
-    #     return res, stdout, stderr
-
     @staticmethod
     def exec_sync(cmd, verbose=False):
+        if sys.platform == 'darvin':
+            return ShellExecutor.exec_sync_mac(cmd, verbose)
+        elif sys.platform == 'win32':
+            return ShellExecutor.exec_sync_win(cmd, verbose)
+
+
+    @staticmethod
+    def exec_sync_win(cmd, verbose=False):
+        proc = run(cmd, shell=True, encoding='cp866', stdout=PIPE, stderr=PIPE, bufsize=1)
+        if verbose:
+            print("RETURN CODE: %d" % proc.returncode)
+            print("STDOUT: %s" % proc.stdout)
+            print("STDERR: %s" % proc.stderr)
+        return proc.returncode, proc.stdout, proc.stderr
+
+
+    @staticmethod
+    def exec_sync_mac(cmd, verbose=False):
         out = ""
         err = ""
         res = None
@@ -100,6 +99,7 @@ class ShellExecutor:
                     print("STDOUT: " + line)
         res = proc.returncode
         return res, out, err
+
 
     @staticmethod
     def exec_stream(cmd, on_data, on_error, verbose=False):
