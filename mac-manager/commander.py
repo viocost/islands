@@ -33,10 +33,10 @@ class Commander:
     }
     __ls_on_guest = '{vboxmanage} guestcontrol {vmname} run --exe "/bin/ls" ' \
                     '--username {username} --password {password}  --wait-stdout -- ls "/"'
-    __hostonly_config='{vboxmanage} hostonlyif ipconfig {adapter}'
+    __hostonly_config='{vboxmanage} hostonlyif ipconfig "{adapter}"'
     __hostonly_create='{vboxmanage} hostonlyif create'
     __hostonly_setup='{vboxmanage} modifyvm {vmname} --nic2 hostonly --cableconnected2 on'\
-                     ' --hostonlyadapter2 {adapter}'
+                     ' --hostonlyadapter2 "{adapter}"'
     __import_vm = "{vboxmanage} import {path}"
     __sharedfolder_setup='{vboxmanage} sharedfolder add {vmname} ' \
                          '--name {shared_folder_name} -hostpath {hostpath} -automount '

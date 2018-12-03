@@ -25,7 +25,7 @@ from commander import Commander
 class Application:
     def __init__(self):
         self.config = IMConfig(sys.platform)
-        self.commander = Commander(self.config, sys.platform)
+        self.commander = Commander(self.config)
         self.app = self.prepare_app()
         self.island_manager = IslandManager(self.config, self.commander)
         self.setup = IslandSetup(self.config, self.commander)

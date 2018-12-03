@@ -9,7 +9,6 @@
     "vm_password": "islands",
     "shared_folder_name": "islandsData",
     "vbox_island_setup_script_url": "https://raw.githubusercontent.com/viocost/islands/dev/installer/vbox_full_setup.sh",
-    "hostonly_adapter": "vboxnet0",
     "onguest_island_setup_script_path": "/root/isetup.sh",
     "island_setup_script_branch_param": "-b dev",
     "natpf_name": "Island_pf",

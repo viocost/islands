@@ -5,5 +5,6 @@
   "vbox_distro_mountpoint": "~/VirtualBox/",
   "downloads_path": "~/Downloads/",
   "data_folder": "~/islandsData",
-  "guest_additions_path": "/Applications/VirtualBox.app/Contents/MacOS/VBoxGuestAdditions.iso"
+  "guest_additions_path": "/Applications/VirtualBox.app/Contents/MacOS/VBoxGuestAdditions.iso",
+  "hostonly_adapter": "vboxnet0"
 }

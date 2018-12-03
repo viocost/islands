@@ -4,5 +4,6 @@
   "vbox_installer_name": "vboxsetup.exe",
   "downloads_path": "%USERPROFILE%\\Downloads\\",
   "data_folder": "%USERPROFILE%\\islandsData\\",
-  "guest_additions_path": ""
+  "guest_additions_path": "\"%programw6432%\\Oracle\\VirtualBox\\VBoxGuestAdditions.iso\"",
+  "hostonly_adapter": "VirtualBox Host-Only Ethernet Adapter"
 }
