@@ -3,5 +3,6 @@
   "vboxmanage": "\"%programw6432%\\Oracle\\VirtualBox\\VBoxManage.exe\"",
   "vbox_installer_name": "vboxsetup.exe",
   "downloads_path": "%USERPROFILE%\\Downloads\\",
-  "data_dir": "%USERPROFILE%\\islandsData\\"
+  "data_folder": "%USERPROFILE%\\islandsData\\",
+  "guest_additions_path": ""
 }

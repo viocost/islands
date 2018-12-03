@@ -14,8 +14,9 @@ def is_file_exist(path):
     full_path = get_full_path(path)
     return os.path.isfile(full_path)
 
+
 def get_full_path(path):
-    return os.path.expanduser(path)
+    return os.path.expandvars(os.path.expanduser(path))
 
 
 def get_version():

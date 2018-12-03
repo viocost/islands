@@ -1,4 +1,4 @@
-from os import environ
+from os import environ, path
 from PyQt5.QtWidgets import QMessageBox as QM, QWizard, QFileDialog
 from PyQt5.QtCore import QObject, pyqtSignal, Qt
 from forms.setup_wizard_ui_setup import Ui_IslandSetupWizzard as UI_setup
@@ -192,8 +192,6 @@ class SetupWizardWindow(QObject):
         if res:
             self.ui.data_folder_path.setText(res)
 
-
-
     def prepare_vm_setup_page(self):
         console = self.ui.vm_install_output_console
         if self.setup.is_islands_vm_exist():
@@ -202,6 +200,7 @@ class SetupWizardWindow(QObject):
         else:
             console.append(SetupMessages.vm_not_found())
             console.append(SetupMessages.vm_not_found_instructions())
+        self.ui.data_folder_path.setText(path.expandvars(self.config['data_folder']))
 
 
 

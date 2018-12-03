@@ -7,7 +7,8 @@ class Commander:
     __start_vm = "{vboxmanage} startvm {vmname} {headless}"
     __shutdown_vm = "{vboxmanage} controlvm {vmname} acpipowerbutton"
     __poweroff_vm = "{vboxmanage} controlvm {vmname} poweroff"
-    __ip_a = '{vboxmanage} guestcontrol {vmname} run --exe "/sbin/ip" --username {username} --password {password}  --wait-stdout -- ip a'
+    __ip_a = '{vboxmanage} guestcontrol {vmname} run --exe "/sbin/ip" ' \
+             '--username {username} --password {password}  --wait-stdout -- ip a'
     __vboxmanage_version = "{vboxmanage} -v"
     __list_vms = "{vboxmanage} list vms"
     __vminfo = "{vboxmanage} showvminfo {vmname}"
@@ -30,14 +31,77 @@ class Commander:
     __unmount_vbox_distro = {
         "darwin": "hdiutil detach {mountpoint}"
     }
+    __ls_on_guest = '{vboxmanage} guestcontrol {vmname} run --exe "/bin/ls" ' \
+                    '--username {username} --password {password}  --wait-stdout -- ls "/"'
+    __hostonly_config='{vboxmanage} hostonlyif ipconfig {adapter}'
+    __hostonly_create='{vboxmanage} hostonlyif create'
+    __hostonly_setup='{vboxmanage} modifyvm {vmname} --nic2 hostonly --cableconnected2 on'\
+                     ' --hostonlyadapter2 {adapter}'
+    __import_vm = "{vboxmanage} import {path}"
+    __sharedfolder_setup='{vboxmanage} sharedfolder add {vmname} ' \
+                         '--name {shared_folder_name} -hostpath {hostpath} -automount '
+    __insert_guest_additions='{vboxmanage} storageattach {vmname} '\
+                             '--storagectl IDE --port 1 --device 0 '\
+                             '--type dvddrive ' \
+                             '--medium {medium}'
+    __setup_port_forwarding='{vboxmanage} controlvm {vmname} natpf1 "r1, tcp, 127.0.0.1, {port},' \
+                            ' {island_ip}, 4000"'
 
+    __onvm_get_setup_script= '{vboxmanage} guestcontrol {vmname} run --exe ' \
+                             '"/usr/bin/wget" --username {username} ' \
+                             '--password {password} --wait-stdout --wait-stderr ' \
+                             '-- wget {scripturl} ' \
+                             '-O "{onguest_path}"'
 
+    __onvm_chmodx_install_script= '{vboxmanage} guestcontrol {vmname}' \
+                                  ' run --exe "/bin/chmod" --username  {username}' \
+                                  ' --password {password} --wait-stdout --wait-stderr ' \
+                                  '-- chmod +x {onguest_path} '
 
+    __onvm_launch_setup_script='{vboxmanage} guestcontrol {vmname} ' \
+                               'run --exe "/bin/bash" --username {username} ' \
+                               '--password {password} --wait-stdout --wait-stderr' \
+                               ' -- bash {onguest_path}  {branch}'
 
+    def onvm_launch_setup_script(self):
+        return self.__onvm_chmodx_install_script.format(
+            vboxmanage=self.config['vboxmanage'],
+            vmname=self.config['vmname'],
+            username=self.config['vm_username'],
+            password=self.config["vm_password"],
+            onguest_path=self.config["onguest_island_setup_script_path"],
+            branch=self.config["island_setup_script_branch_param"]
+        )
 
-    def __init__(self, config, platform):
+    def onvm_chmodx_install_script(self):
+        return self.__onvm_chmodx_install_script.format(
+            vboxmanage=self.config['vboxmanage'],
+            vmname=self.config['vmname'],
+            username=self.config['vm_username'],
+            password=self.config["vm_password"],
+            onguest_path=self.config["onguest_island_setup_script_path"]
+        )
+
+    def onvm_get_setup_script(self):
+        return self.__onvm_get_setup_script.format(
+            vboxmanage=self.config['vboxmanage'],
+            vmname=self.config['vmname'],
+            username=self.config['vm_username'],
+            password=self.config["vm_password"],
+            scripturl=self.config["vbox_island_setup_script_url"],
+            onguest_path=self.config["onguest_island_setup_script_path"]
+        )
+
+    def setup_port_forwarding(self, island_ip, port):
+        return self.__setup_port_forwarding.format(
+            vboxmanage=self.config['vboxmanage'],
+            vmname=self.config['vmname'],
+            island_ip=island_ip,
+            port=port
+        )
+
+    def __init__(self, config):
         self.config = config
-        self.platform = platform
 
     def start_vm(self, headless=True):
         headless = "--type headless" if headless else ""
@@ -98,5 +162,52 @@ class Commander:
         return self.__mount_vbox_distro[platform].format(
             mountpoint=self.config["vbox_distro_mountpoint"],
             distrpath=distrpath
+        )
+
+    def import_vm(self, path_to_image):
+        return self.__import_vm.format(
+            vboxmanage=self.config['vboxmanage'],
+            path=path_to_image
+        )
+
+    def ls_on_guest(self):
+        return self.__ls_on_guest.format(
+            vboxmanage=self.config['vboxmanage'],
+            username=self.config['vm_username'],
+            password=self.config["vm_password"],
+            vmname=self.config["vmname"]
+        )
+
+    def hostonly_config(self):
+        return self.__hostonly_config.format(
+            vboxmanage=self.config['vboxmanage'],
+            adapter=self.config['hostonly_adapter']
+        )
+
+    def hostonly_create(self):
+        return self.__hostonly_create.format(
+            vboxmanage=self.config['vboxmanage']
+        )
+
+    def hostonly_setup(self):
+        return self.__hostonly_setup.format(
+            vboxmanage=self.config['vboxmanage'],
+            adapter=self.config['hostonly_adapter'],
+            vmname=self.config["vmname"]
+        )
+
+    def sharedfolder_setup(self, data_folder_path):
+        return self.__sharedfolder_setup.format(
+            vboxmanage=self.config['vboxmanage'],
+            hostpath=data_folder_path,
+            vmname=self.config["vmname"],
+            shared_folder_name=self.config["shared_folder_name"]
+        )
+
+    def insert_guest_additions(self):
+        return self.__insert_guest_additions.format(
+            vboxmanage=self.config['vboxmanage'],
+            vmname=self.config['vmname'],
+            medium=self.config['guest_additions_path'],
         )
 
