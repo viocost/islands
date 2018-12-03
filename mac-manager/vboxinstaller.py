@@ -99,7 +99,7 @@ class VBoxInstaller:
         self.finalize_progres_bar()
         self.message("Download complete. Installing...")
         self.install_vbox(path_to_vbox_distr)
-        self.await_installation()
+        self.message("Instalation complete!")
         self.delete_vbox_distro(path_to_vbox_distr)
         self.message("Distro removed.")
         self.complete()
@@ -107,23 +107,16 @@ class VBoxInstaller:
     def linux_install(self):
         pass
 
-    def await_installation(self):
-        t1 = time.time()
-        while True:
-            if self.setup.is_vbox_set_up():
-                return True,
-            if time.time() - t1 >= 30:
-                return False, "Timeout"
-            time.sleep(7)
+
 
     @check_output
-    def mount_vbox_distro(self):
-        return Executor.exec_sync("hdiutil attach ~/Downloads/{imagename} -mountpoint ~/VirtualBox"
-                                       .format(imagename=self.config["vbox_installer_name"]))
+    def mount_vbox_distro(self, path_to_installer):
+        return Executor.exec_sync(self.cmd.mount_vbox_distro(path_to_installer))
 
     @check_output
     def install_vbox(self, path_to_installer):
-        return Executor.exec_stream(self.cmd.install_vbox(path_to_installer), self.message, self.error)
+        cmd = self.cmd.install_vbox(path_to_installer)
+        return Executor.exec_stream(cmd, self.message, self.error)
 
     @check_output
     def uninstall_vbox(self):
@@ -135,7 +128,7 @@ class VBoxInstaller:
 
     @check_output
     def delete_vbox_distro(self, distrpath):
-        return Executor.exec_sync(self.cmd.delete_vbox_distro, distrpath)
+        return Executor.exec_sync(self.cmd.delete_vbox_distro(distrpath))
 
 
 class UnsupportedPlatform(Exception):
