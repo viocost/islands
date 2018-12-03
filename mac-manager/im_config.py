@@ -23,7 +23,7 @@ class IMConfig:
             json.dump(self.__custom, f)
 
     def __getitem__(self, item):
-        result =  self.__custom.get(item) or self.__default.get(item)
+        result = self.__custom.get(item) or self.__default.get(item)
         if result is not None:
             return result
         raise KeyError
@@ -33,6 +33,10 @@ class IMConfig:
             self.__custom[key] = value
         else:
             raise KeyError
+
+    def __contains__(self, item):
+        return item in self.__custom or item in self.__default
+
 
     def __load(self, config_path):
         if os.path.exists(config_path):

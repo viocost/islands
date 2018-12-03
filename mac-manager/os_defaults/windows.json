@@ -1,4 +1,6 @@
 {
+  "vbox_download": "https://download.virtualbox.org/virtualbox/5.2.22/VirtualBox-5.2.22-126460-Win.exe",
   "vboxmanage": "\"%programw6432%\\Oracle\\VirtualBox\\VBoxManage.exe\"",
-  "vbox_installer_name": "vboxsetup.exe"
+  "vbox_installer_name": "vboxsetup.exe",
+  "downloads_path": "%USERPROFILE%\\Downloads\\"
 }

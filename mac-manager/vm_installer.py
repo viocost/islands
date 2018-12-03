@@ -41,6 +41,7 @@ class VMInstaller:
         self.data_path = data_path
         self.image_path = image_path
         self.port = port
+        self.cmd = setup.cmd
         if not download:
             assert(bool(image_path))
 

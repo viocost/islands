@@ -1,4 +1,4 @@
-
+from sys import platform
 
 class Commander:
     """This class contains all possible commands for executing in cmd or shell depending on OS"""
@@ -11,6 +11,23 @@ class Commander:
     __vboxmanage_version = "{vboxmanage} -v"
     __list_vms = "{vboxmanage} list vms"
     __vminfo = "{vboxmanage} showvminfo {vmname}"
+    __uninstall_vbox = {
+        "darwin": """osascript -e 'do shell script "{mpuntpoint}VirtualBox_Uninstall.tool --unattended" with administrator privileges' """
+    }
+    __install_vbox = {
+        "darwin": """osascript -e 'do shell script "installer -pkg {mpuntpoint}VirtualBox.pkg -target / " with administrator privileges' """,
+        "win32": "{distrpath} --silent"
+    }
+    __delete_vbox_distr = {
+        "darwin": "rm -rf {distrpath}",
+        "win32": "DEL {distrpath} /F /S"
+    }
+    __unmount_vbox_distro = {
+        "darwin": "hdiutil detach {mountpoint}"
+    }
+
+
+
 
 
     def __init__(self, config, platform):
@@ -54,6 +71,21 @@ class Commander:
             vboxmanage=self.config['vboxmanage'],
             vmname=self.config['vmname']
         )
+
+    def install_vbox(self, path_to_installer):
+        mountpoint = "" if 'vbox_distro_mountpoint' not in self.config else self.config['vbox_distro_mountpoint']
+        return self.__install_vbox[platform].format(mountpoint=mountpoint,
+                                                    distrpath=path_to_installer)
+
+    def uninstall_vbox(self):
+        return self.__uninstall_vbox[platform].format(mountpoint=self.config['vbox_distro_mountpoint'])
+
+    def delete_vbox_distro(self, distrpath):
+        return self.__delete_vbox_distr[platform].format(distrpath=distrpath)
+
+    def unmount_vbox_distro(self):
+        return self.__unmount_vbox_distro[platform].format(mountpoint=self.config["vbox_distro_mountpoint"])
+
 
     # Config commands
 

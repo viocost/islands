@@ -8,7 +8,7 @@ class Downloader:
         pass
 
     @staticmethod
-    def get(url, filename=None, dest="~/Downloads/", on_update=None):
+    def get(url, dest_path, filename=None, on_update=None):
         http = urllib.PoolManager()
         response = http.request('GET', url, preload_content=False)
         if response.status != 200:
@@ -18,9 +18,10 @@ class Downloader:
         if not filename:
             filename = url.split("/")[-1]
 
-        dl_path = os.path.expanduser(dest) + filename
+        dl_path = os.path.expanduser(dest_path) + filename
         blocksize = 8192 * 192
         filesize = int(response.headers.get('Content-length'))
+        print(response.headers.get('Content-Disposition'))
         downloaded = 0
         progress = 0
 
@@ -35,7 +36,7 @@ class Downloader:
                 progress = math.floor(downloaded/(filesize * 0.01))
                 if on_update:
                     on_update(progress=progress, downloaded=downloaded, total_size=filesize)
-
+        return dl_path
 
 
 
