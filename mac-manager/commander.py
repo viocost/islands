@@ -7,8 +7,7 @@ class Commander:
     __start_vm = "{vboxmanage} startvm {vmname} {headless}"
     __shutdown_vm = "{vboxmanage} controlvm {vmname} acpipowerbutton"
     __poweroff_vm = "{vboxmanage} controlvm {vmname} poweroff"
-    __ip_a = '{vboxmanage} guestcontrol {vmname} run --exe "/sbin/ip" ' \
-             '--username {username} --password {password}  --wait-stdout -- ip a'
+
     __vboxmanage_version = "{vboxmanage} -v"
     __list_vms = "{vboxmanage} list vms"
     __vminfo = "{vboxmanage} showvminfo {vmname}"
@@ -33,38 +32,53 @@ class Commander:
     }
     __ls_on_guest = '{vboxmanage} guestcontrol {vmname} run --exe "/bin/ls" ' \
                     '--username {username} --password {password}  --wait-stdout -- ls "/"'
-    __hostonly_config='{vboxmanage} hostonlyif ipconfig "{adapter}"'
-    __hostonly_create='{vboxmanage} hostonlyif create'
-    __hostonly_setup='{vboxmanage} modifyvm {vmname} --nic2 hostonly --cableconnected2 on'\
-                     ' --hostonlyadapter2 "{adapter}"'
+
+    __ip_a_eth1_on_guest = '{vboxmanage} guestcontrol {vmname} run --exe "/sbin/ip" ' \
+                           '--username  {username} --password {password}   --wait-stdout -- ip a'
+
+    __hostonly_config = '{vboxmanage} hostonlyif ipconfig "{adapter}"'
+    __hostonly_create = '{vboxmanage} hostonlyif create '
+    __hostonly_setup = '{vboxmanage} modifyvm {vmname} --nic2 hostonly --cableconnected2 on'\
+                       ' --hostonlyadapter2 "{adapter}"'
+    __hostonly_switch_to_dhcp = '{vboxmanage} hostonlyif ipconfig "{adapter}" --dhcp'
+    __hostonly_enable_dhcp = '{vboxmanage} dhcpserver modify --ifname "{adapter}" --enable'
+
     __import_vm = "{vboxmanage} import {path}"
-    __sharedfolder_setup='{vboxmanage} sharedfolder add {vmname} ' \
-                         '--name {shared_folder_name} -hostpath {hostpath} -automount '
-    __insert_guest_additions='{vboxmanage} storageattach {vmname} '\
-                             '--storagectl IDE --port 1 --device 0 '\
-                             '--type dvddrive ' \
-                             '--medium {medium}'
-    __setup_port_forwarding='{vboxmanage} controlvm {vmname} natpf1 "r1, tcp, 127.0.0.1, {port},' \
-                            ' {island_ip}, 4000"'
+    __sharedfolder_setup = '{vboxmanage} sharedfolder add {vmname} ' \
+                           '--name {shared_folder_name} -hostpath {hostpath} -automount '
+    __insert_guest_additions = '{vboxmanage} storageattach {vmname} '\
+                               '--storagectl IDE --port 1 --device 0 '\
+                               '--type dvddrive ' \
+                               '--medium {medium}'
+    __setup_port_forwarding = '{vboxmanage} controlvm {vmname} natpf1 "r1, tcp, 127.0.0.1, {port},' \
+                              ' {island_ip}, 4000"'
 
-    __onvm_get_setup_script= '{vboxmanage} guestcontrol {vmname} run --exe ' \
-                             '"/usr/bin/wget" --username {username} ' \
-                             '--password {password} --wait-stdout --wait-stderr ' \
-                             '-- wget {scripturl} ' \
-                             '-O "{onguest_path}"'
+    __onvm_get_setup_script = '{vboxmanage} guestcontrol {vmname} run --exe ' \
+                              '"/usr/bin/wget" --username {username} ' \
+                              '--password {password} --wait-stdout --wait-stderr ' \
+                              '-- wget {scripturl} ' \
+                              '-O "{onguest_path}"'
 
-    __onvm_chmodx_install_script= '{vboxmanage} guestcontrol {vmname}' \
-                                  ' run --exe "/bin/chmod" --username  {username}' \
-                                  ' --password {password} --wait-stdout --wait-stderr ' \
-                                  '-- chmod +x {onguest_path} '
+    __onvm_chmodx_install_script = '{vboxmanage} guestcontrol {vmname}' \
+                                   ' run --exe "/bin/chmod" --username  {username}' \
+                                   ' --password {password} --wait-stdout --wait-stderr ' \
+                                   '-- chmod +x {onguest_path} '
 
-    __onvm_launch_setup_script='{vboxmanage} guestcontrol {vmname} ' \
-                               'run --exe "/bin/bash" --username {username} ' \
-                               '--password {password} --wait-stdout --wait-stderr' \
-                               ' -- bash {onguest_path}  {branch}'
+    __onvm_launch_setup_script = '{vboxmanage} guestcontrol {vmname} ' \
+                                 'run --exe "/bin/bash" --username {username} ' \
+                                 '--password {password} --wait-stdout --wait-stderr' \
+                                 ' -- bash {onguest_path}  {branch}'
+
+    def ip_a_eth1_onguest(self):
+        return self.__ip_a_eth1_on_guest.format(
+            vboxmanage=self.config['vboxmanage'],
+            vmname=self.config['vmname'],
+            username=self.config['vm_username'],
+            password=self.config["vm_password"]
+        )
 
     def onvm_launch_setup_script(self):
-        return self.__onvm_chmodx_install_script.format(
+        return self.__onvm_launch_setup_script.format(
             vboxmanage=self.config['vboxmanage'],
             vmname=self.config['vmname'],
             username=self.config['vm_username'],
@@ -194,6 +208,18 @@ class Commander:
             vboxmanage=self.config['vboxmanage'],
             adapter=self.config['hostonly_adapter'],
             vmname=self.config["vmname"]
+        )
+
+    def hostonly_swithc_to_dhcp(self):
+        return self.__hostonly_switch_to_dhcp.format(
+            vboxmanage=self.config['vboxmanage'],
+            adapter=self.config['hostonly_adapter']
+        )
+
+    def hostonly_enable_dhcp(self):
+        return self.__hostonly_enable_dhcp.format(
+            vboxmanage=self.config['vboxmanage'],
+            adapter=self.config['hostonly_adapter']
         )
 
     def sharedfolder_setup(self, data_folder_path):

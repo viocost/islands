@@ -31,18 +31,13 @@ class IslandSetup:
         self.vbox_installer = VBoxInstaller(*args, **kwargs)
         self.vbox_installer.start()
 
-
-
-
-
     def get_islands_ip(self):
-        res = Executor.exec_sync('{vboxmanage} guestcontrol Island run --exe "/sbin/ip" '
-                            '--username root --password islands  --wait-stdout -- ip a  | grep eth1'.format(vboxmanage=self.__config["vboxmanage"]))
-        print("Island IP address request result: \nreturn: "+ str(res[0])+ "\nstdout: " + res[1]+ "stderr: " + res[2])
-        return re.search(r'(\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b)', res[1]).group()
-
-
-
+        res = Executor.exec_sync(self.cmd.ip_a_eth1_onguest())
+        response = [line for line in res[1].split('\n') if "eth1" in line]
+        for line in response:
+            search_res = re.search(r'(\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b)', line)
+            if search_res:
+                return search_res.group()
 
     def sha1(self, fname):
         hash_sha1 = hashlib.sha1()

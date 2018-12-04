@@ -137,6 +137,8 @@ class VMInstaller:
         elif res[0] != 2:
             raise Exception(res[2])
         # Installing adapter onto vm
+        self.message("Enabling DHCP...")
+        Executor.exec_sync(self.cmd.hostonly_enable_dhcp())
         return Executor.exec_sync(self.cmd.hostonly_setup())
 
     # Sets up shareed folder for the imported vm
@@ -155,17 +157,15 @@ class VMInstaller:
     def insert_guest_additions_image(self):
         return Executor.exec_sync(self.cmd.insert_guest_additions())
 
-    @check_output
     def setup_port_forwarding(self, port):
+        print("Setting up port forwarding")
         island_ip = self.setup.get_islands_ip()
         if not island_ip:
             raise PortForwardingException("Was not able to determine ip address of Islands VM")
-        res = Executor.exec_sync(self.cmd.setup_port_forwarding(island_ip, port))
+        self.config["local_access"] = "<a href='http://{island_ip}:4000'>http://{island_ip}:4000</a>"\
+            .format(island_ip=island_ip)
+        self.config.save()
 
-        if res[0] == 0:
-            self.config["local_access"] = "<a href='http://{island_ip}:4000'>http://{island_ip}:4000".format(island_ip=island_ip)
-            self.config.save()
-        return res
 
     @check_output
     def onvm_get_setup_script(self):
@@ -173,7 +173,7 @@ class VMInstaller:
 
     @check_output
     def onvm_chmodx_install_script(self):
-        return Executor.exec_sync(self.cmd.onvm_chmodx_install_script)
+        return Executor.exec_sync(self.cmd.onvm_chmodx_install_script())
 
     @check_output
     def onvm_launch_setup_script(self):

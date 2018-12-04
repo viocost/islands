@@ -36,11 +36,13 @@ class SetupWizardWindow(QObject):
 
     # Handler for output signal
     def appender(self, msg, console_index):
-
+        print("Appending message")
         if console_index not in self.consoles:
             raise InvalidConsoleIndex
         self.consoles[console_index].append(msg)
         self.scroll_to_end(self.ui.vm_install_output_console)
+
+
 
 
     # TODO Refactor
@@ -297,7 +299,10 @@ class SetupWizardWindow(QObject):
     # Starts islands install process with choose image option
     def select_islands_image(self):
         self.consoles[1].setText("")
-        res = QFileDialog.getOpenFileName(self.window, "Select Islands image", environ["HOME"], "Virtual Appliance (*.ova)")
+        res = QFileDialog.getOpenFileName(self.window,
+                                          "Select Islands image",
+                                          util.get_full_path(self.config['homedir']),
+                                          "Virtual Appliance (*.ova)")
         if res == ('', ''):
             print("Cancelled")
             return
@@ -338,7 +343,6 @@ class SetupWizardWindow(QObject):
         self.window.button(QWizard.BackButton).setEnabled(False)
         self.window.button(QWizard.NextButton).setEnabled(False)
 
-
         port = self.ui.local_port.text() if self.ui.port_forwarding_enabled.isChecked() else False
         self.setup.run_vm_installer(on_message=self.get_on_message_handler(console=1),
                                     on_complete=self.get_on_complete_handler(msg="Click \"continue\" to proceed", console=1),
@@ -352,25 +356,6 @@ class SetupWizardWindow(QObject):
                                     config=self.config,
                                     data_path=data_path,
                                     port=port)
-        # def on_message(msg, size=12):
-        #     self.output.emit('<p style="color: blue; font-size: {size}"> {msg} </p>'.format(msg=msg, size=size), 1)
-        #
-        # def on_complete(msg):
-        #     self.output.emit('<p style="color: green;"> {msg} </p>'.format(msg=msg), 1)
-        #     self.output.emit('<p style="color: green; font-size: 16px;"> '
-        #                                              'Click "continue" to proceed >> </p>', 1)
-        #     self.set_vm_page_buttons_enabled(False)
-        #     self.window.button(QWizard.BackButton).setEnabled(False)
-        #     self.window.page(1).completeChanged.emit()
-        #
-        # def on_error(err):
-        #     self.set_vm_page_buttons_enabled(True)
-        #     self.window.button(QWizard.BackButton).setEnabled(True)
-        #     if err:
-        #         self.ui.vm_install_output_console.append('<p style="color: red"> {msg} </p>'.format(msg=str(err)))
-
-
-
 
     def vboxpage_prepare_text(self):
         self.ui.vbox_setup_output_console.append(SetupMessages.checking_vbox())
@@ -386,7 +371,6 @@ class SetupWizardWindow(QObject):
             self.ui.vbox_setup_output_console.append(SetupMessages.virtualbox_found())
             self.ui.vbox_setup_output_console.append(SetupMessages.vb_installed_instructions())
             self.prepare_vm_setup_page()
-
 
     def update_ui_state(self):
         """Checks setup condition and updates ALL elements accordingly

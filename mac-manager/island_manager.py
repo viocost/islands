@@ -36,8 +36,9 @@ class IslandManager:
 
     def is_running(self):
         res = Executor.exec_sync(self.commander.vminfo())
-        running_ptrn = re.compile(r"^(?=.*State)(?=.*running)(?=.*since).+")
-        return res[0] == 0 and running_ptrn.search(res[1]) is not None
+        running_ptrn = re.compile(r"(?=.*State)(?=.*running)(?=.*since).+")
+        found = running_ptrn.search(res[1])
+        return res[0] == 0 and found is not None
 
     def get_vboxmanage_path(self):
         return self.config['vboxmanage']

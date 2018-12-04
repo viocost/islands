@@ -1,11 +1,13 @@
 import unittest
 import util
 from im_config import IMConfig
-#from commander import Commander as Cmd
+from commander import Commander as Cmd
 import json
 from downloader import Downloader as dl
 from os import path
+import re
 
+from executor import ShellExecutor as Exec
 class TestConfig(unittest.TestCase):
 
 
@@ -21,5 +23,12 @@ class TestConfig(unittest.TestCase):
 
     def test_config(self):
         c = IMConfig("win32", "../", "../", "../os_defaults/")
-        if "downloads_path" in c:
-            print("Yeah")
+        cmd = Cmd(c)
+        command = cmd.ip_a_eth1_onguest()
+        res = Exec.exec_sync(command)
+        response = [line for line in res[1].split("\n") if "eth1" in line]
+        for line in response:
+            search_res = re.search(r'(\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b)', line)
+            if search_res:
+                ip =  search_res.group()
+                print (ip)

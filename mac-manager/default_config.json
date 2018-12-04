@@ -1,6 +1,4 @@
 {
-
-
     "vmname": "Island",
     "vm_image_name": "Island.ova",
     "vm_download": "https://sourceforge.net/projects/islands-image/files/Islands_vm_v0.0.011.ova/download",
@@ -16,5 +14,6 @@
     "natpf_host_ip": "127.0.0.1",
     "natpf_host_port": "4000",
     "natpf_guest_ip": "0.0.0.0",
-    "natpf_guest_port": "4000"
+    "natpf_guest_port": "4000",
+    "local_access": ""
 }

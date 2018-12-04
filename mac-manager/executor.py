@@ -104,7 +104,7 @@ class ShellExecutor:
     @staticmethod
     def exec_stream(cmd, on_data, on_error, verbose=False):
         res = None
-        proc = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE, bufsize=1, universal_newlines=True)
+        proc = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE, errors='ignore', bufsize=1, universal_newlines=True)
         while proc.poll() is None:
             for line in proc.stdout:
                 on_data(line)
