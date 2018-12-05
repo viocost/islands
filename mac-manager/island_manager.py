@@ -12,25 +12,26 @@ class IslandManager:
 
     """ Main API methods """
 
-    def launch_island(self):
+    def launch_island(self, headless=True):
         if not self.is_running():
+            print("Launching service")
             # start island
             # emit state launching
             # await for completeness
             # emit state launched
-            return Executor.exec_sync(self.commander.start_vm())
+            return Executor.exec_sync(self.commander.start_vm(headless))
 
     def is_starting_up(self):
         return False
 
-    def stop_island(self):
+    def stop_island(self, force=False):
         if self.is_running():
-            return Executor.exec_sync(self.commander.shutdown_vm())
+            return Executor.exec_sync(self.commander.shutdown_vm(force))
 
 
     def restart_island(self):
         if self.is_running():
-            stop_res = Executor.exec_sync(self.commander.poweroff_vm())
+            stop_res = Executor.exec_sync(self.commander.shutdown_vm(True))
             assert stop_res[0] == 0
             return Executor.exec_sync(self.commander.start_vm())
 

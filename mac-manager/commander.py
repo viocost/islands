@@ -5,9 +5,7 @@ class Commander:
 
     """CMD TEMPLATES"""
     __start_vm = "{vboxmanage} startvm {vmname} {headless}"
-    __shutdown_vm = "{vboxmanage} controlvm {vmname} acpipowerbutton"
-    __poweroff_vm = "{vboxmanage} controlvm {vmname} poweroff"
-
+    __shutdown_vm = "{vboxmanage} controlvm {vmname} {mode}"
     __vboxmanage_version = "{vboxmanage} -v"
     __list_vms = "{vboxmanage} list vms"
     __vminfo = "{vboxmanage} showvminfo {vmname}"
@@ -125,16 +123,12 @@ class Commander:
             headless=headless
         )
 
-    def poweroff_vm(self):
-        return self.__poweroff_vm.format(
-            vboxmanage=self.config['vboxmanage'],
-            vmname=self.config['vmname']
-        )
-
-    def shutdown_vm(self):
+    def shutdown_vm(self, force=False):
+        mode = "poweroff" if force else "acpishutdown"
         return self.__shutdown_vm.format(
             vboxmanage=self.config['vboxmanage'],
-            vmname=self.config['vmname']
+            vmname=self.config['vmname'],
+            mode=mode
         )
 
 

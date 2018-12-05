@@ -66,7 +66,7 @@ class ShellExecutor:
 
     @staticmethod
     def exec_sync(cmd, verbose=False):
-        if sys.platform == 'darvin':
+        if sys.platform == 'darwin':
             return ShellExecutor.exec_sync_mac(cmd, verbose)
         elif sys.platform == 'win32':
             return ShellExecutor.exec_sync_win(cmd, verbose)

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'forms/setup_wizard.ui'
 #
-# Created by: PyQt5 UI code generator 5.10.1
+# Created by: PyQt5 UI code generator 5.11.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -12,7 +12,7 @@ class Ui_IslandSetupWizzard(object):
     def setupUi(self, IslandSetupWizzard):
         IslandSetupWizzard.setObjectName("IslandSetupWizzard")
         IslandSetupWizzard.setWindowModality(QtCore.Qt.WindowModal)
-        IslandSetupWizzard.resize(712, 525)
+        IslandSetupWizzard.resize(867, 584)
         IslandSetupWizzard.setMinimumSize(QtCore.QSize(712, 525))
         IslandSetupWizzard.setModal(True)
         IslandSetupWizzard.setWizardStyle(QtWidgets.QWizard.MacStyle)
@@ -73,19 +73,6 @@ class Ui_IslandSetupWizzard(object):
         self.vm_install_output_console = QtWidgets.QTextBrowser(self.page_vm_install_2)
         self.vm_install_output_console.setObjectName("vm_install_output_console")
         self.verticalLayout_2.addWidget(self.vm_install_output_console)
-        self.horizontalLayout_4 = QtWidgets.QHBoxLayout()
-        self.horizontalLayout_4.setObjectName("horizontalLayout_4")
-        self.label_6 = QtWidgets.QLabel(self.page_vm_install_2)
-        self.label_6.setObjectName("label_6")
-        self.horizontalLayout_4.addWidget(self.label_6)
-        self.local_port = QtWidgets.QLineEdit(self.page_vm_install_2)
-        self.local_port.setObjectName("local_port")
-        self.horizontalLayout_4.addWidget(self.local_port)
-        self.port_forwarding_enabled = QtWidgets.QCheckBox(self.page_vm_install_2)
-        self.port_forwarding_enabled.setChecked(True)
-        self.port_forwarding_enabled.setObjectName("port_forwarding_enabled")
-        self.horizontalLayout_4.addWidget(self.port_forwarding_enabled)
-        self.verticalLayout_2.addLayout(self.horizontalLayout_4)
         self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
         self.label_5 = QtWidgets.QLabel(self.page_vm_install_2)
@@ -97,6 +84,7 @@ class Ui_IslandSetupWizzard(object):
         font.setWeight(75)
         self.data_folder_path.setFont(font)
         self.data_folder_path.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.data_folder_path.setText("")
         self.data_folder_path.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
         self.data_folder_path.setReadOnly(True)
         self.data_folder_path.setObjectName("data_folder_path")
@@ -154,20 +142,16 @@ class Ui_IslandSetupWizzard(object):
         self.vbox_setup_output_console.setHtml(_translate("IslandSetupWizzard", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'.SF NS Text\'; font-size:13pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:\'.SF NS Text\'; font-size:13pt;\"><br /></p></body></html>"))
         self.button_path_to_vboxmanage.setText(_translate("IslandSetupWizzard", "Path to vboxmanage "))
         self.button_install_vbox.setText(_translate("IslandSetupWizzard", "Download and isntall Virtualbox"))
         self.label_2.setText(_translate("IslandSetupWizzard", "Step 2 - Islands virtual machine setup"))
-        self.label_6.setText(_translate("IslandSetupWizzard", "Island local access port: "))
-        self.local_port.setText(_translate("IslandSetupWizzard", "4000"))
-        self.port_forwarding_enabled.setText(_translate("IslandSetupWizzard", "Enabled"))
         self.label_5.setText(_translate("IslandSetupWizzard", "Data folder: "))
-        self.data_folder_path.setText(_translate("IslandSetupWizzard", "~/islandsData"))
         self.button_select_data_path.setText(_translate("IslandSetupWizzard", "Select"))
         self.button_import_ova.setText(_translate("IslandSetupWizzard", "Import Islands VM"))
         self.button_install_islands.setText(_translate("IslandSetupWizzard", "Install Islands VM"))
         self.label_3.setText(_translate("IslandSetupWizzard", "Setup complete!"))
-        self.label_4.setText(_translate("IslandSetupWizzard", "Press \"Done\" to exit setup wizzard"))
+        self.label_4.setText(_translate("IslandSetupWizzard", "Press \"Done\" to exit setup wizard"))
 
 import forms.resources_rc

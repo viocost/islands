@@ -338,12 +338,8 @@ class SetupWizardWindow(QObject):
         self.ui.button_import_ova.setEnabled(False)
         self.ui.data_folder_path.setEnabled(False)
         self.ui.button_select_data_path.setEnabled(False)
-        self.ui.port_forwarding_enabled.setEnabled(False)
-        self.ui.local_port.setEnabled(False)
         self.window.button(QWizard.BackButton).setEnabled(False)
         self.window.button(QWizard.NextButton).setEnabled(False)
-
-        port = self.ui.local_port.text() if self.ui.port_forwarding_enabled.isChecked() else False
         self.setup.run_vm_installer(on_message=self.get_on_message_handler(console=1),
                                     on_complete=self.get_on_complete_handler(msg="Click \"continue\" to proceed", console=1),
                                     on_error=self.get_on_error_handler(console=1),
@@ -354,8 +350,7 @@ class SetupWizardWindow(QObject):
                                     setup=self.setup,
                                     image_path=vm_image_path,
                                     config=self.config,
-                                    data_path=data_path,
-                                    port=port)
+                                    data_path=data_path)
 
     def vboxpage_prepare_text(self):
         self.ui.vbox_setup_output_console.append(SetupMessages.checking_vbox())
@@ -404,8 +399,6 @@ class SetupWizardWindow(QObject):
         self.ui.button_install_islands.setVisible(vm_install_ready)
         self.ui.data_folder_path.setEnabled(vm_install_ready)
         self.ui.button_select_data_path.setEnabled(vm_install_ready)
-        self.ui.local_port.setEnabled(vm_install_ready)
-        self.ui.port_forwarding_enabled.setEnabled(vm_install_ready)
         self.window.button(QWizard.BackButton).setEnabled(not vm_install_ready or current_page_id != 0
                                                           or not islands_vm_installed)
         self.window.button(QWizard.NextButton).setEnabled((current_page_id == 0 and vbox_installed and vbox_up_to_date)

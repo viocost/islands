@@ -37,7 +37,7 @@ class MainWindow(QObject):
                 self.set_state("setup_required")
             else:
                 self.island_manager.emit_islands_current_state(self)
-                #self.set_state("not_running")
+
         except Exception as e:
             print(e)
             self.set_state("unknown")
@@ -78,15 +78,34 @@ class MainWindow(QObject):
             "stop": "stop_island",
             "restart": "restart_island",
         }
+
+        params = {
+            "Quiet": "",
+            "Normal": "False",
+            "Soft": "",
+            "Force": "True"
+
+        }
+
+        def get_param(cmd):
+            if cmd == "launch":
+                return params[self.ui.launchMode.currentText()]
+            elif cmd == "stop":
+                return params[self.ui.stopMode.currentText()]
+
         if cmd not in cmds:
             raise KeyError
 
         def handler():
             try:
                 print("Command: %s" % cmd)
-                res = eval("self.island_manager.%s()" % (cmds[cmd]))
+                command = ("self.island_manager.{cmd}({param})".format(
+                    cmd=cmds[cmd],
+                    param=get_param(cmd)))
+                res = eval(command)
                 print(res)
             except Exception as e:
+                print("Error occured")
                 print(e)
             self.refresh_island_status()
 
@@ -99,7 +118,7 @@ class MainWindow(QObject):
         self.setup_window.set_islands_vm_checker(self.setup.is_islands_vm_exist)
 
         res = self.setup_window.exec()
-        print("WIZZARD RESULT IS {res}".format(res=res))
+        print("WIZARD RESULT IS {res}".format(res=res))
         self.refresh_island_status()
 
 
@@ -150,6 +169,9 @@ class MainWindow(QObject):
             self.ui.island_access_label.setVisible(True)
             self.ui.island_access_address.setVisible(True)
             self.ui.island_access_address.setText(self.config["local_access"])
+            self.ui.island_admin_access_label.setVisible(True)
+            self.ui.island_admin_access_address.setText(self.config["local_access_admin"])
+            self.ui.island_admin_access_address.setVisible(True)
         self.ui.islandStatus.setText("Running")
         self.ui.islandStatus.setStyleSheet('color: green')
         self.ui.restartIslandButton.setEnabled(True)
@@ -161,6 +183,8 @@ class MainWindow(QObject):
     def set_starting_up(self):
         self.ui.island_access_label.setVisible(False)
         self.ui.island_access_address.setVisible(False)
+        self.ui.island_admin_access_label.setVisible(False)
+        self.ui.island_admin_access_address.setVisible(False)
         self.ui.islandStatus.setText("Starting up...")
         self.ui.islandStatus.setStyleSheet('color: blue')
         self.ui.restartIslandButton.setEnabled(True)
@@ -170,11 +194,15 @@ class MainWindow(QObject):
         self.ui.groupBox.hide()
 
     def set_shutting_down(self):
+        self.ui.island_admin_access_label.setVisible(False)
+        self.ui.island_admin_access_address.setVisible(False)
         raise NotImplemented
 
     def set_not_running(self):
         self.ui.island_access_label.setVisible(False)
         self.ui.island_access_address.setVisible(False)
+        self.ui.island_admin_access_label.setVisible(False)
+        self.ui.island_admin_access_address.setVisible(False)
         self.ui.islandStatus.setText("Not running")
         self.ui.islandStatus.setStyleSheet('color: red')
         self.ui.restartIslandButton.setEnabled(False)
@@ -186,6 +214,8 @@ class MainWindow(QObject):
     def set_unknown(self):
         self.ui.island_access_label.setVisible(False)
         self.ui.island_access_address.setVisible(False)
+        self.ui.island_admin_access_label.setVisible(False)
+        self.ui.island_admin_access_address.setVisible(False)
         self.ui.islandStatus.setText("Unknown")
         self.ui.islandStatus.setStyleSheet('color: gray')
         self.ui.restartIslandButton.setEnabled(False)

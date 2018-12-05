@@ -3,7 +3,7 @@ from executor import ShellExecutor as Executor
 from time import sleep
 from downloader import Downloader as Dl
 from os import path, makedirs
-from installer_exceptions import IslandsImageNotFound, IslandSetupError, CmdExecutionError, PortForwardingException
+from installer_exceptions import IslandsImageNotFound, IslandSetupError, CmdExecutionError
 from util import get_full_path
 
 def check_output(func):
@@ -26,8 +26,7 @@ class VMInstaller:
                  config,
                  finalize_progres_bar,
                  download=False,
-                 image_path=None,
-                 port=False):
+                 image_path=None):
         self.thread = None
         self.setup = setup
         self.message = on_message
@@ -40,7 +39,6 @@ class VMInstaller:
         self.download = download
         self.data_path = data_path
         self.image_path = image_path
-        self.port = port
         self.cmd = setup.cmd
         if not download:
             assert(bool(image_path))
@@ -74,8 +72,7 @@ class VMInstaller:
             self.wait_guest_additions()
             sleep(3)
             self.wait_guest_additions()
-            if self.port:
-                self.setup_port_forwarding(self.port)
+            self.save_island_ip()
             self.message("Guest additions are installed. Fetching Islands setup script..")
             self.onvm_get_setup_script()
             self.onvm_chmodx_install_script()
@@ -157,11 +154,11 @@ class VMInstaller:
     def insert_guest_additions_image(self):
         return Executor.exec_sync(self.cmd.insert_guest_additions())
 
-    def setup_port_forwarding(self, port):
-        print("Setting up port forwarding")
+    def save_island_ip(self):
+        print("Saving island ip")
         island_ip = self.setup.get_islands_ip()
         if not island_ip:
-            raise PortForwardingException("Was not able to determine ip address of Islands VM")
+            raise IslandSetupError("Was not able to determine ip address of Islands VM")
         self.config["local_access"] = "<a href='http://{island_ip}:4000'>http://{island_ip}:4000</a>"\
             .format(island_ip=island_ip)
         self.config.save()

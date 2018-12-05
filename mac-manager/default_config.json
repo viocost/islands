@@ -15,5 +15,6 @@
     "natpf_host_port": "4000",
     "natpf_guest_ip": "0.0.0.0",
     "natpf_guest_port": "4000",
-    "local_access": ""
+    "local_access": "",
+    "local_access_admin": ""
 }
