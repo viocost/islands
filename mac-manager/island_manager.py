@@ -2,41 +2,107 @@ import re
 from threading import Thread
 import time
 from executor import ShellExecutor as Executor
+from island_states import IslandStates as States
 
 
 class IslandManager:
 
-    def __init__(self, config, commander):
+    def __init__(self, config, commander, setup):
         self.config = config
-        self.commander = commander
+        self.cmd = commander
+        self.setup = setup
 
     """ Main API methods """
 
-    def launch_island(self, headless=True):
-        if not self.is_running():
-            print("Launching service")
-            # start island
-            # emit state launching
-            # await for completeness
-            # emit state launched
-            return Executor.exec_sync(self.commander.start_vm(headless))
+    def launch_island(self, state_emitter, headless=True, timeout=80):
+        def worker():
+            if self.setup.is_setup_required():
+                state_emitter(States.SETUP_REQUIRED)
+                return
+            if not self.is_running():
+                state_emitter(States.STARTING_UP)
+                Executor.exec_sync(self.cmd.start_vm(headless))
+                t1 = time.time()
+                while not self.is_boot_complete() and (time.time() - t1) < timeout:
+                    if self.setup.is_setup_required():
+                        state_emitter(States.SETUP_REQUIRED)
+                        return
+                    time.sleep(4)
+                if self.is_running():
+                    state_emitter(States.RUNNING)
+                elif self.setup.is_setup_required():
+                    state_emitter(States.SETUP_REQUIRED)
+                else:
+                    print("Startup error. VM hasn't started up")
+                    state_emitter(States.UNKNOWN)
+        t = Thread(target=worker)
+        t.start()
 
-    def is_starting_up(self):
-        return False
+    def is_boot_complete(self):
+        res = Executor.exec_sync(self.cmd.ls_on_guest())
+        if res[0] == 0:
+            print("Looks like boot complete")
+            return True
+        else:
+            return False
 
-    def stop_island(self, force=False):
-        if self.is_running():
-            return Executor.exec_sync(self.commander.shutdown_vm(force))
 
+    def stop_island(self, state_emitter, force=False, timeout=60):
+        def worker():
+            if self.setup.is_setup_required():
+                state_emitter(States.SETUP_REQUIRED)
+                return
+            if self.is_running():
+                state_emitter(States.SHUTTING_DOWN)
+                Executor.exec_sync(self.cmd.shutdown_vm(force))
+            t1 = time.time()
+            while self.is_running() and time.time() - t1 < timeout:
+                if self.setup.is_setup_required():
+                    state_emitter(States.SETUP_REQUIRED)
+                    return
+                else:
+                    time.sleep(4)
+            if self.setup.is_setup_required():
+                state_emitter(States.SETUP_REQUIRED)
+            elif not self.is_running():
+                state_emitter(States.NOT_RUNNING)
+            elif self.is_running():
+                print("ERROR shutting down")
+                state_emitter(States.RUNNING)
+            else:
+                print("Fatal error")
+                state_emitter(States.UNKNOWN)
+        t = Thread(target=worker)
+        t.start()
 
-    def restart_island(self):
-        if self.is_running():
-            stop_res = Executor.exec_sync(self.commander.shutdown_vm(True))
-            assert stop_res[0] == 0
-            return Executor.exec_sync(self.commander.start_vm())
-
+    def restart_island(self, state_emitter, headless=True, timeout=100):
+        def worker():
+            if self.setup.is_setup_required():
+                state_emitter(States.SETUP_REQUIRED)
+                return
+            state_emitter(States.RESTARTING)
+            if self.is_running():
+                Executor.exec_sync(self.cmd.shutdown_vm(True))
+                time.sleep(1)
+            Executor.exec_sync(self.cmd.start_vm(headless))
+            t1 = time.time()
+            while not self.is_boot_complete() and time.time() - t1 < timeout:
+                if self.setup.is_setup_required():
+                    state_emitter(States.SETUP_REQUIRED)
+                    return
+                time.sleep(4)
+            if self.is_running():
+                state_emitter(States.RUNNING)
+            elif self.setup.is_setup_required():
+                state_emitter(States.SETUP_REQUIRED)
+            else:
+                print("Startup error. VM hasn't started up")
+                state_emitter(States.UNKNOWN)
+        t = Thread(target=worker)
+        t.start()
+            
     def is_running(self):
-        res = Executor.exec_sync(self.commander.vminfo())
+        res = Executor.exec_sync(self.cmd.vminfo())
         running_ptrn = re.compile(r"(?=.*State)(?=.*running)(?=.*since).+")
         found = running_ptrn.search(res[1])
         return res[0] == 0 and found is not None
@@ -50,29 +116,8 @@ class IslandManager:
     def get_vmid(self):
         return self.config['vmid']
 
-    def await_island_startup(self, window, time_limit_sec):
-        def worker():
-            start = time.time()
-            while time.time() - start <= time_limit_sec:
-                if self.is_running():
-                    window.state_changed.emit()
-                    return
-        thread = Thread(target=worker)
-        thread.start()
-
-
-    def emit_islands_current_state(self, window):
+    def emit_islands_current_state(self, state_emitter):
         if self.is_running():
-            window.current_state.emit("running")
-
-        elif self.is_starting_up():
-            window.current_state.emit("starting_up")
-            #self.island_manager.await_island_startup(self, 20)
+            state_emitter(States.RUNNING)
         else:
-            window.current_state.emit("not_running")
-
-
-
-
-
-
+            state_emitter(States.NOT_RUNNING)

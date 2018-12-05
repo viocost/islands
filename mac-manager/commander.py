@@ -124,7 +124,7 @@ class Commander:
         )
 
     def shutdown_vm(self, force=False):
-        mode = "poweroff" if force else "acpishutdown"
+        mode = "poweroff" if force else "acpipowerbutton"
         return self.__shutdown_vm.format(
             vboxmanage=self.config['vboxmanage'],
             vmname=self.config['vmname'],

@@ -3,11 +3,13 @@ from forms.setup_wizard_window import SetupWizardWindow as SetupWindow
 from PyQt5.QtWidgets import QMainWindow, QMessageBox as QM
 from PyQt5.QtCore import QObject, pyqtSignal
 from util import get_version
-
+from island_states import IslandStates as States
 
 class MainWindow(QObject):
 
-    current_state = pyqtSignal(str)
+    current_state = pyqtSignal(object)
+    processing = pyqtSignal()
+    state_changed = pyqtSignal()
 
     def __init__(self, config, islands_manager, setup):
         QObject.__init__(self)
@@ -19,7 +21,7 @@ class MainWindow(QObject):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self.window)
         self.assign_handlers()
-        self.set_state("unknown")
+        self.set_state(States.UNKNOWN)
         self.setup_window = None
         self.refresh_island_status()
         self.set_main_window_title()
@@ -34,22 +36,23 @@ class MainWindow(QObject):
     def refresh_island_status(self):
         try:
             if self.setup.is_setup_required():
-                self.set_state("setup_required")
+                self.set_state(States.SETUP_REQUIRED)
             else:
-                self.island_manager.emit_islands_current_state(self)
+                self.island_manager.emit_islands_current_state(self.state_emitter)
 
         except Exception as e:
             print(e)
-            self.set_state("unknown")
+            self.set_state(States.UNKNOWN)
 
     def prepare_states(self):
         return {
-            "setup_required": self.set_setup_required,
-            "running": self.set_running,
-            "not_running": self.set_not_running,
-            "starting_up": self.set_starting_up,
-            "shutting_down": self.set_shutting_down,
-            "unknown": self.set_unknown
+            States.SETUP_REQUIRED: self.set_setup_required,
+            States.RUNNING: self.set_running,
+            States.NOT_RUNNING: self.set_not_running,
+            States.STARTING_UP: self.set_starting_up,
+            States.SHUTTING_DOWN: self.set_shutting_down,
+            States.RESTARTING: self.set_restarting,
+            States.UNKNOWN: self.set_unknown
         }
 
     def request_to_run_setup(self):
@@ -69,8 +72,11 @@ class MainWindow(QObject):
         self.ui.actionInfo.triggered.connect(self.show_app_info)
         self.ui.actionClose.triggered.connect(self.on_close)
         self.ui.actionMinimize_2.triggered.connect(self.minimize_main_window)
+        self.processing.connect(self.set_working)
+        self.state_changed.connect(self.refresh_island_status)
 
-
+    def state_emitter(self, state):
+        self.current_state.emit(state)
 
     def get_main_control_handler(self, cmd):
         cmds = {
@@ -78,17 +84,15 @@ class MainWindow(QObject):
             "stop": "stop_island",
             "restart": "restart_island",
         }
-
         params = {
             "Quiet": "",
-            "Normal": "False",
+            "Normal": ", False",
             "Soft": "",
-            "Force": "True"
+            "Force": ", True"
 
         }
-
         def get_param(cmd):
-            if cmd == "launch":
+            if cmd == "launch" or cmd == "restart":
                 return params[self.ui.launchMode.currentText()]
             elif cmd == "stop":
                 return params[self.ui.stopMode.currentText()]
@@ -97,18 +101,18 @@ class MainWindow(QObject):
             raise KeyError
 
         def handler():
+            self.set_working()
             try:
                 print("Command: %s" % cmd)
-                command = ("self.island_manager.{cmd}({param})".format(
+                param = get_param(cmd)
+                command = ("self.island_manager.{cmd}(self.state_emitter{param})".format(
                     cmd=cmds[cmd],
-                    param=get_param(cmd)))
+                    param=param if param else ""))
                 res = eval(command)
                 print(res)
             except Exception as e:
                 print("Error occured")
                 print(e)
-            self.refresh_island_status()
-
         return handler
 
     def launch_setup(self):
@@ -162,6 +166,8 @@ class MainWindow(QObject):
         self.ui.groupBox.setEnabled(True)
         self.ui.setup_required_reason.setText(reason)
         self.ui.groupBox.show()
+        self.ui.launchMode.setEnabled(False)
+        self.ui.stopMode.setEnabled(False)
 
 
     def set_running(self):
@@ -179,6 +185,8 @@ class MainWindow(QObject):
         self.ui.launchIslandButton.setEnabled(False)
         self.ui.groupBox.setEnabled(False)
         self.ui.groupBox.hide()
+        self.ui.launchMode.setEnabled(False)
+        self.ui.stopMode.setEnabled(True)
 
     def set_starting_up(self):
         self.ui.island_access_label.setVisible(False)
@@ -187,16 +195,25 @@ class MainWindow(QObject):
         self.ui.island_admin_access_address.setVisible(False)
         self.ui.islandStatus.setText("Starting up...")
         self.ui.islandStatus.setStyleSheet('color: blue')
-        self.ui.restartIslandButton.setEnabled(True)
-        self.ui.shutdownIslandButton.setEnabled(True)
+        self.ui.restartIslandButton.setEnabled(False)
+        self.ui.shutdownIslandButton.setEnabled(False)
         self.ui.launchIslandButton.setEnabled(False)
         self.ui.groupBox.setEnabled(False)
         self.ui.groupBox.hide()
+        self.ui.launchMode.setEnabled(False)
+        self.ui.stopMode.setEnabled(False)
 
     def set_shutting_down(self):
+        self.ui.islandStatus.setText("Shutting down...")
+        self.ui.islandStatus.setStyleSheet('color: orange')
+        self.ui.island_access_label.setVisible(False)
+        self.ui.island_access_address.setVisible(False)
         self.ui.island_admin_access_label.setVisible(False)
         self.ui.island_admin_access_address.setVisible(False)
-        raise NotImplemented
+        self.ui.groupBox.setEnabled(False)
+        self.ui.groupBox.hide()
+        self.set_working()
+
 
     def set_not_running(self):
         self.ui.island_access_label.setVisible(False)
@@ -210,6 +227,8 @@ class MainWindow(QObject):
         self.ui.launchIslandButton.setEnabled(True)
         self.ui.groupBox.setEnabled(False)
         self.ui.groupBox.hide()
+        self.ui.launchMode.setEnabled(True)
+        self.ui.stopMode.setEnabled(False)
 
     def set_unknown(self):
         self.ui.island_access_label.setVisible(False)
@@ -223,5 +242,26 @@ class MainWindow(QObject):
         self.ui.launchIslandButton.setEnabled(False)
         self.ui.groupBox.setEnabled(False)
         self.ui.groupBox.hide()
+        self.ui.launchMode.setEnabled(False)
+        self.ui.stopMode.setEnabled(False)
+
+    def set_restarting(self):
+        self.ui.island_access_label.setVisible(False)
+        self.ui.island_access_address.setVisible(False)
+        self.ui.island_admin_access_label.setVisible(False)
+        self.ui.island_admin_access_address.setVisible(False)
+        self.ui.islandStatus.setText("Restarting...")
+        self.ui.islandStatus.setStyleSheet('color: blue')
+        self.set_working()
+
+
+    def set_working(self):
+        self.ui.restartIslandButton.setEnabled(False)
+        self.ui.shutdownIslandButton.setEnabled(False)
+        self.ui.launchIslandButton.setEnabled(False)
+        self.ui.launchMode.setEnabled(False)
+        self.ui.stopMode.setEnabled(False)
+
+
     """ ~ END STATES """
 

@@ -27,8 +27,9 @@ class Application:
         self.config = IMConfig(sys.platform)
         self.commander = Commander(self.config)
         self.app = self.prepare_app()
-        self.island_manager = IslandManager(self.config, self.commander)
         self.setup = IslandSetup(self.config, self.commander)
+        self.island_manager = IslandManager(self.config, self.commander, self.setup)
+
         self.main_window = MainWindow(self.config, self.island_manager, self.setup)
 
 
