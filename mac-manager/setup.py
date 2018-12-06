@@ -18,7 +18,11 @@ DATA_FILES = [
     'version'
 ]
 PLIST = {'CFBundleDisplayName': 'Islands', 'CFBundleName': 'Islands'}
-OPTIONS = {'iconfile': 'images/icon.icns', 'plist': PLIST}
+OPTIONS = {
+    'iconfile': 'images/icon.icns',
+    'plist': PLIST,
+    'resources': ['os_defaults']
+}
 
 setup(
     app=APP,

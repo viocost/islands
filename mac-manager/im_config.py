@@ -13,7 +13,7 @@ CUSTOM_CONFIG = "config.json"
 
 
 class IMConfig:
-    def __init__(self, platform, default_config_path="", config_path="", os_defaults_path="./os_defaults/"):
+    def __init__(self, platform, default_config_path="", config_path="", os_defaults_path="os_defaults/"):
         self.__default = self.__get_default("".join((default_config_path, DEFAULT_CONFIG)))
         self.load_os_specific_defaults(platform, os_defaults_path)
         self.__custom = self.__load("".join((config_path, CUSTOM_CONFIG)))

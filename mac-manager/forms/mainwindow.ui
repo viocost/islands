@@ -26,7 +26,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="resources.qrc">
-    <normaloff>:/images/icons/island32.png</normaloff>:/images/icons/island32.png</iconset>
+    <normaloff>:/images/icons/island128.png</normaloff>:/images/icons/island128.png</iconset>
   </property>
   <property name="locale">
    <locale language="English" country="UnitedStates"/>
