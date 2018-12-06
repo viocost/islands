@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'forms/mainwindow.ui'
 #
-# Created by: PyQt5 UI code generator 5.11.3
+# Created by: PyQt5 UI code generator 5.10.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -105,7 +105,7 @@ class Ui_MainWindow(object):
         font.setFamily("Arial")
         font.setPointSize(20)
         self.islandStatus.setFont(font)
-        self.islandStatus.setStyleSheet(" ")
+        self.islandStatus.setStyleSheet("")
         self.islandStatus.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.islandStatus.setObjectName("islandStatus")
         self.horizontalLayout_2.addWidget(self.islandStatus)
@@ -133,17 +133,14 @@ class Ui_MainWindow(object):
         self.horizontalLayout_8.setContentsMargins(-1, -1, -1, 0)
         self.horizontalLayout_8.setSpacing(6)
         self.horizontalLayout_8.setObjectName("horizontalLayout_8")
-        self.island_admin_access_label = QtWidgets.QLabel(self.tabIslandManagement)
-        self.island_admin_access_label.setLayoutDirection(QtCore.Qt.LeftToRight)
-        self.island_admin_access_label.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
-        self.island_admin_access_label.setObjectName("island_admin_access_label")
-        self.horizontalLayout_8.addWidget(self.island_admin_access_label)
         self.island_admin_access_address = QtWidgets.QLabel(self.tabIslandManagement)
         font = QtGui.QFont()
         font.setUnderline(True)
         self.island_admin_access_address.setFont(font)
+        self.island_admin_access_address.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.island_admin_access_address.setStyleSheet("")
         self.island_admin_access_address.setText("")
+        self.island_admin_access_address.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.island_admin_access_address.setOpenExternalLinks(True)
         self.island_admin_access_address.setObjectName("island_admin_access_address")
         self.horizontalLayout_8.addWidget(self.island_admin_access_address)
@@ -227,6 +224,7 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.shutdownIslandButton.sizePolicy().hasHeightForWidth())
         self.shutdownIslandButton.setSizePolicy(sizePolicy)
+        self.shutdownIslandButton.setStyleSheet("padding: 15px")
         icon3 = QtGui.QIcon()
         icon3.addPixmap(QtGui.QPixmap(":/images/stop"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.shutdownIslandButton.setIcon(icon3)
@@ -293,7 +291,7 @@ class Ui_MainWindow(object):
         self.vboxmanagePathLabel.setObjectName("vboxmanagePathLabel")
         self.horizontalLayout_11.addWidget(self.vboxmanagePathLabel)
         self.vboxmanagePathLineEdit = QtWidgets.QLineEdit(self.tabIslandSettings)
-        self.vboxmanagePathLineEdit.setMinimumSize(QtCore.QSize(300, 0))
+        self.vboxmanagePathLineEdit.setMinimumSize(QtCore.QSize(200, 0))
         self.vboxmanagePathLineEdit.setObjectName("vboxmanagePathLineEdit")
         self.horizontalLayout_11.addWidget(self.vboxmanagePathLineEdit)
         self.vboxmanageSelectPath = QtWidgets.QPushButton(self.tabIslandSettings)
@@ -339,7 +337,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout.addWidget(self.tabWidget)
         MainWindow.setCentralWidget(self.centralWidget)
         self.menuBar = QtWidgets.QMenuBar(MainWindow)
-        self.menuBar.setGeometry(QtCore.QRect(0, 0, 774, 21))
+        self.menuBar.setGeometry(QtCore.QRect(0, 0, 774, 22))
         self.menuBar.setObjectName("menuBar")
         self.menuOptions = QtWidgets.QMenu(self.menuBar)
         self.menuOptions.setObjectName("menuOptions")
@@ -370,7 +368,7 @@ class Ui_MainWindow(object):
         self.menuBar.addAction(self.menuOptions.menuAction())
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -379,7 +377,6 @@ class Ui_MainWindow(object):
         self.islandStatusLabel.setText(_translate("MainWindow", "Island status: "))
         self.islandStatus.setText(_translate("MainWindow", "unknown"))
         self.island_access_label.setText(_translate("MainWindow", "Access:"))
-        self.island_admin_access_label.setText(_translate("MainWindow", "Admin Access: "))
         self.setup_required_reason.setText(_translate("MainWindow", "Island VM not found"))
         self.button_launch_setup.setText(_translate("MainWindow", "Run setup"))
         self.launchIslandButton.setWhatsThis(_translate("MainWindow", "<html><head/><body><p>Launch island. </p></body></html>"))

@@ -45,7 +45,7 @@ class Application:
         appicon.addPixmap(QPixmap(":/images/icons/island64"))
         appicon.addPixmap(QPixmap(":/images/icons/island128"))
         appicon.addPixmap(QPixmap(":/images/icons/island256"))
-        app.setWindowIcon(QIcon("island24.png"))
+        app.setWindowIcon(appicon)
 
         # This is needed for proper icon display in Windows task bar
         if sys.platform == "win32":

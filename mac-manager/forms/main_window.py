@@ -192,7 +192,6 @@ class MainWindow(QObject):
             self.ui.island_access_label.setVisible(True)
             self.ui.island_access_address.setVisible(True)
             self.ui.island_access_address.setText(self.config["local_access"])
-            self.ui.island_admin_access_label.setVisible(True)
             self.ui.island_admin_access_address.setText(self.config["local_access_admin"])
             self.ui.island_admin_access_address.setVisible(True)
         self.ui.islandStatus.setText("Running")
@@ -208,7 +207,7 @@ class MainWindow(QObject):
     def set_starting_up(self):
         self.ui.island_access_label.setVisible(False)
         self.ui.island_access_address.setVisible(False)
-        self.ui.island_admin_access_label.setVisible(False)
+
         self.ui.island_admin_access_address.setVisible(False)
         self.ui.islandStatus.setText("Starting up...")
         self.ui.islandStatus.setStyleSheet('color: blue')
@@ -225,7 +224,7 @@ class MainWindow(QObject):
         self.ui.islandStatus.setStyleSheet('color: orange')
         self.ui.island_access_label.setVisible(False)
         self.ui.island_access_address.setVisible(False)
-        self.ui.island_admin_access_label.setVisible(False)
+
         self.ui.island_admin_access_address.setVisible(False)
         self.ui.groupBox.setEnabled(False)
         self.ui.groupBox.hide()
@@ -235,7 +234,7 @@ class MainWindow(QObject):
     def set_not_running(self):
         self.ui.island_access_label.setVisible(False)
         self.ui.island_access_address.setVisible(False)
-        self.ui.island_admin_access_label.setVisible(False)
+
         self.ui.island_admin_access_address.setVisible(False)
         self.ui.islandStatus.setText("Not running")
         self.ui.islandStatus.setStyleSheet('color: red')
@@ -250,7 +249,7 @@ class MainWindow(QObject):
     def set_unknown(self):
         self.ui.island_access_label.setVisible(False)
         self.ui.island_access_address.setVisible(False)
-        self.ui.island_admin_access_label.setVisible(False)
+
         self.ui.island_admin_access_address.setVisible(False)
         self.ui.islandStatus.setText("Unknown")
         self.ui.islandStatus.setStyleSheet('color: gray')
@@ -265,7 +264,7 @@ class MainWindow(QObject):
     def set_restarting(self):
         self.ui.island_access_label.setVisible(False)
         self.ui.island_access_address.setVisible(False)
-        self.ui.island_admin_access_label.setVisible(False)
+        
         self.ui.island_admin_access_address.setVisible(False)
         self.ui.islandStatus.setText("Restarting...")
         self.ui.islandStatus.setStyleSheet('color: blue')

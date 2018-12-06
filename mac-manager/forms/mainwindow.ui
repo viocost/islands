@@ -42,7 +42,7 @@
        </size>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tabIslandManagement">
        <attribute name="title">
@@ -202,7 +202,7 @@
                  </font>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true"> </string>
+                 <string notr="true"/>
                 </property>
                 <property name="text">
                  <string>unknown</string>
@@ -264,30 +264,23 @@
                <number>0</number>
               </property>
               <item>
-               <widget class="QLabel" name="island_admin_access_label">
-                <property name="layoutDirection">
-                 <enum>Qt::LeftToRight</enum>
-                </property>
-                <property name="text">
-                 <string>Admin Access: </string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item>
                <widget class="QLabel" name="island_admin_access_address">
                 <property name="font">
                  <font>
                   <underline>true</underline>
                  </font>
                 </property>
+                <property name="layoutDirection">
+                 <enum>Qt::LeftToRight</enum>
+                </property>
                 <property name="styleSheet">
                  <string notr="true"/>
                 </property>
                 <property name="text">
                  <string notr="true"/>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                 </property>
                 <property name="openExternalLinks">
                  <bool>true</bool>
@@ -459,6 +452,9 @@
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
+              <property name="styleSheet">
+               <string notr="true">padding: 15px</string>
+              </property>
               <property name="text">
                <string>Shutdown Island</string>
               </property>
@@ -602,7 +598,7 @@
            <widget class="QLineEdit" name="vboxmanagePathLineEdit">
             <property name="minimumSize">
              <size>
-              <width>300</width>
+              <width>200</width>
               <height>0</height>
              </size>
             </property>
@@ -722,7 +718,7 @@
      <x>0</x>
      <y>0</y>
      <width>774</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuOptions">

@@ -164,6 +164,8 @@ class VMInstaller:
             raise IslandSetupError("Was not able to determine ip address of Islands VM")
         self.config["local_access"] = "<a href='http://{island_ip}:4000'>http://{island_ip}:4000</a>"\
             .format(island_ip=island_ip)
+        self.config["local_access_admin"] = "<a href='http://{island_ip}:4000/admin'>Admin access</a>"\
+            .format(island_ip=island_ip)
         self.config.save()
 
 

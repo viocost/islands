@@ -76,7 +76,8 @@ class VBoxInstaller:
                                     on_update=self.update_progres_bar)
         self.finalize_progres_bar()
         self.message("Download complete. Mounting...")
-        self.mount_vbox_distro()  # OS SPECIFIC!!!
+        #path_to_image = self.config["downloads_path"] + self.config["vbox_installer_name"]
+        self.mount_vbox_distro(path_to_vbox_distr)  # OS SPECIFIC!!!
         if self.update:
             self.uninstall_vbox()
             self.message("Virtualbox old version is uninstalled")
@@ -84,7 +85,7 @@ class VBoxInstaller:
         self.message("Installing Virtualbox")
         self.install_vbox(path_to_vbox_distr)
         self.message("Installed. Unmounting vbox distro")
-        self.unmount_vbox_distro()
+        self.unmount_vbox_distro(self.config["vbox_distro_mountpoint"])
         self.message("Unmounted. Removing distro")
         self.delete_vbox_distro(path_to_vbox_distr)
         self.message("Distro removed.")
@@ -123,8 +124,8 @@ class VBoxInstaller:
         return Executor.exec_sync(self.cmd.uninstall_vbox())
 
     @check_output
-    def unmount_vbox_distro(self):
-        return Executor.exec_sync(self.cmd.unmount_vbox_distro())
+    def unmount_vbox_distro(self, mountpoint):
+        return Executor.exec_sync(self.cmd.unmount_vbox_distro(mountpoint))
 
     @check_output
     def delete_vbox_distro(self, distrpath):
