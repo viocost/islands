@@ -8,10 +8,18 @@ Usage:
 from setuptools import setup
 
 APP = ['main.py']
-DATA_FILES = ['images/icon.icns', 'default_config.json', 'version']
+
+DATA_FILES = [
+    'images/icon.icns',
+    'os_defaults/linux.json',
+    'os_defaults/mac.json',
+    'os_defaults/windows.json',
+    'default_config.json',
+    'version'
+]
 PLIST = {'CFBundleDisplayName': 'Islands', 'CFBundleName': 'Islands'}
 OPTIONS = {'iconfile': 'images/icon.icns', 'plist': PLIST}
-# '--iconfile',
+
 setup(
     app=APP,
     data_files=DATA_FILES,

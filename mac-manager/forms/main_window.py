@@ -264,7 +264,7 @@ class MainWindow(QObject):
     def set_restarting(self):
         self.ui.island_access_label.setVisible(False)
         self.ui.island_access_address.setVisible(False)
-        
+
         self.ui.island_admin_access_address.setVisible(False)
         self.ui.islandStatus.setText("Restarting...")
         self.ui.islandStatus.setStyleSheet('color: blue')
