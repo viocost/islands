@@ -100,7 +100,7 @@ class IslandManager:
                 state_emitter(States.UNKNOWN)
         t = Thread(target=worker)
         t.start()
-            
+
     def is_running(self):
         res = Executor.exec_sync(self.cmd.vminfo())
         running_ptrn = re.compile(r"(?=.*State)(?=.*running)(?=.*since).+")

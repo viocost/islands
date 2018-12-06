@@ -25,8 +25,8 @@
    <string>Island Manager</string>
   </property>
   <property name="windowIcon">
-   <iconset>
-    <normaloff>:/images/resources/island.ico</normaloff>:/images/resources/island.ico</iconset>
+   <iconset resource="resources.qrc">
+    <normaloff>:/images/icons/island32.png</normaloff>:/images/icons/island32.png</iconset>
   </property>
   <property name="locale">
    <locale language="English" country="UnitedStates"/>
@@ -67,7 +67,7 @@
                  <string/>
                 </property>
                 <property name="pixmap">
-                 <pixmap resource="resources.qrc">:/images/island</pixmap>
+                 <pixmap resource="resources.qrc">:/images/icons/island256.png</pixmap>
                 </property>
                 <property name="scaledContents">
                  <bool>true</bool>
@@ -96,13 +96,16 @@
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,0">
               <property name="spacing">
-               <number>6</number>
+               <number>9</number>
               </property>
               <property name="sizeConstraint">
                <enum>QLayout::SetMaximumSize</enum>
               </property>
+              <property name="topMargin">
+               <number>2</number>
+              </property>
               <property name="bottomMargin">
-               <number>0</number>
+               <number>24</number>
               </property>
               <item>
                <widget class="QLabel" name="islandStatusLabel">
@@ -120,6 +123,7 @@
                 </property>
                 <property name="font">
                  <font>
+                  <family>Arial</family>
                   <pointsize>20</pointsize>
                  </font>
                 </property>
@@ -133,7 +137,7 @@
                  <bool>false</bool>
                 </property>
                 <property name="alignment">
-                 <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                 </property>
                 <property name="margin">
                  <number>0</number>
@@ -193,14 +197,21 @@
                 </property>
                 <property name="font">
                  <font>
+                  <family>Arial</family>
                   <pointsize>20</pointsize>
                  </font>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true"> </string>
                 </property>
                 <property name="text">
                  <string>unknown</string>
                 </property>
                 <property name="alignment">
-                 <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+                <property name="margin">
+                 <number>0</number>
                 </property>
                </widget>
               </item>
@@ -208,6 +219,9 @@
             </item>
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_6">
+              <property name="topMargin">
+               <number>14</number>
+              </property>
               <property name="bottomMargin">
                <number>0</number>
               </property>
@@ -510,58 +524,114 @@
        <attribute name="title">
         <string>Settings</string>
        </attribute>
-       <layout class="QFormLayout" name="formLayout">
-        <item row="0" column="0">
-         <widget class="QLabel" name="vMnameLabel">
-          <property name="text">
-           <string>Island VM name:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QLineEdit" name="vmnameLineEdit">
-          <property name="minimumSize">
-           <size>
-            <width>300</width>
-            <height>0</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="vboxmanagePathLabel">
-          <property name="text">
-           <string>Path to vboxmanage:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QLineEdit" name="vboxmanagePathLineEdit">
-          <property name="minimumSize">
-           <size>
-            <width>300</width>
-            <height>0</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="1">
-         <layout class="QHBoxLayout" name="horizontalLayout_10">
+       <layout class="QVBoxLayout" name="verticalLayout_7">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_11">
+          <item>
+           <widget class="QLabel" name="vboxmanagePathLabel">
+            <property name="minimumSize">
+             <size>
+              <width>125</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Path to vboxmanage:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="vboxmanagePathLineEdit">
+            <property name="minimumSize">
+             <size>
+              <width>300</width>
+              <height>0</height>
+             </size>
+            </property>
+           </widget>
+          </item>
           <item>
            <widget class="QPushButton" name="pushButton_2">
             <property name="text">
-             <string>Save</string>
+             <string>PushButton</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_10">
+          <item>
+           <widget class="QLabel" name="vMnameLabel">
+            <property name="minimumSize">
+             <size>
+              <width>125</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Island VM name:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="vmnameLineEdit">
+            <property name="minimumSize">
+             <size>
+              <width>300</width>
+              <height>0</height>
+             </size>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QPushButton" name="pushButton">
             <property name="text">
-             <string>Restore default</string>
+             <string>PushButton</string>
             </property>
            </widget>
           </item>
          </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_12">
+          <item>
+           <widget class="QLabel" name="label_2">
+            <property name="minimumSize">
+             <size>
+              <width>125</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Data folder path:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="lineEdit"/>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_3">
+            <property name="text">
+             <string>PushButton</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
         </item>
        </layout>
       </widget>
