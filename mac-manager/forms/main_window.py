@@ -41,7 +41,6 @@ class MainWindow(QObject):
                 self.set_state(States.SETUP_REQUIRED)
             else:
                 self.island_manager.emit_islands_current_state(self.state_emitter)
-
         except Exception as e:
             print(e)
             self.set_state(States.UNKNOWN)
@@ -87,8 +86,11 @@ class MainWindow(QObject):
         self.ui.vboxmanageSave.clicked.connect(self.save_vboxmanage_path)
         self.ui.vmnameLineEdit.textChanged.connect(self.vmname_process_change)
         self.ui.vboxmanagePathLineEdit.textChanged.connect(self.vboxmanage_process_change)
+        self.ui.dfLineEdit.textChanged.connect(self.df_process_change)
         self.ui.vboxmanageSelectPath.clicked.connect(self.vboxmanage_select_path)
         self.ui.dfSelectPath.clicked.connect(self.df_select_path)
+        self.ui.dfDefault.clicked.connect(self.restore_default_data_folder_path)
+        self.ui.dfSave.clicked.connect(self.save_datafolder_path)
 
     def state_emitter(self, state):
         self.current_state.emit(state)
@@ -104,7 +106,6 @@ class MainWindow(QObject):
             "Normal": ", False",
             "Soft": "",
             "Force": ", True"
-
         }
         def get_param(cmd):
             if cmd == "launch" or cmd == "restart":
@@ -296,22 +297,31 @@ class MainWindow(QObject):
     def restore_default_data_folder_path(self):
         #Check if custom path is different from default
         #confirm
-        return
-        # res = QM.question(self.window,
-        #                   "Confirm",
-        #                   "This will require stopping Islands. Continue?",
-        #                   QM.Yes | QM.No)
-        # if res == QM.No:
-        #     return
-        # self.setup.restore_default_df_path(self.ui.dfLineEdit.text())
+        if self.config.is_default("data_folder"):
+            print("Already default")
+            return
+        res = QM.question(self.window,
+                          "Confirm",
+                          "This will require stopping Islands. Continue?",
+                          QM.Yes | QM.No)
+        if res == QM.No:
+            return
+        print("Restoring default data folder")
+        self.island_manager.restore_default_df_path()
+        self.ui.dfLineEdit.setText(get_full_path(self.config['data_folder']))
+        self.state_changed.emit()
 
-        #shut off vm
-        #destroy shared folder
-        #create default one
-        # set up shared folder
-        #save config
-        #done
-        # pass
+    def save_datafolder_path(self):
+        res = QM.question(self.window,
+                          "Confirm",
+                          "This will require stopping Islands. Continue?",
+                          QM.Yes | QM.No)
+        if res == QM.No:
+            return
+        print("saving new data folder")
+        self.island_manager.set_new_datafolder(self.ui.dfLineEdit.text())
+        self.ui.dfLineEdit.setText(get_full_path(self.config['data_folder']))
+        self.state_changed.emit()
 
     def save_vboxmanage_path(self):
         try:
@@ -331,8 +341,7 @@ class MainWindow(QObject):
         self.ui.vmnameSave.setEnabled(False)
         self.refresh_island_status()
 
-    def save_datafolder_path(self):
-        pass
+
 
     def show_notification(self, text):
         QM.warning(self.window, None, "Warning", text, buttons=QM.Ok)
@@ -349,6 +358,10 @@ class MainWindow(QObject):
             self.ui.vboxmanagePathLineEdit.text() != get_full_path(self.config['vboxmanage'])
         )
 
+    def df_process_change(self):
+        self.ui.dfSave.setEnabled(
+            self.ui.dfLineEdit.text() != get_full_path(get_full_path(self.config['data_folder']))
+        )
 
     def vboxmanage_select_path(self):
 
@@ -361,4 +374,8 @@ class MainWindow(QObject):
             self.ui.vboxmanagePathLineEdit.setText(get_full_path(self.config['vboxmanage']))
 
     def df_select_path(self):
-        pass
+        f_dialog = QFileDialog()
+        f_dialog.setFileMode(QFileDialog.Directory)
+        res = f_dialog.getExistingDirectory(self.window)
+        if res:
+            self.ui.dfLineEdit.setText(get_full_path(res))

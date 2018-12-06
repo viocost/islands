@@ -6,6 +6,7 @@ from os import path, makedirs
 from installer_exceptions import IslandsImageNotFound, IslandSetupError, CmdExecutionError
 from util import get_full_path
 
+
 def check_output(func):
     def wrapper(*args, **kwargs):
         res = func(*args, **kwargs)
@@ -13,6 +14,7 @@ def check_output(func):
             raise CmdExecutionError(*res)
         return res
     return wrapper
+
 
 class VMInstaller:
     def __init__(self,
@@ -119,21 +121,22 @@ class VMInstaller:
         return Executor.exec_stream(self.cmd.import_vm(path_to_image=path_to_image),
             on_data=on_data, on_error=on_error)
 
-
-    # This assumes that VM is already imported
-    # There is no way to check whether vboxnet0 interface exists,
-    # so we issue erroneous command to modify it
-    # if exitcode is 1 - interface doesn't exists, so we create it
-    # if exitcode is 2 - interface found and we can add it to our VM
-    # Otherwise there is some other error and we raise it
     @check_output
     def setup_host_only_adapter(self):
+        """
+        This assumes that VM is already imported
+        There is no way to check whether vboxnet0 interface exists,
+        so we issue erroneous command to modify it
+        if exitcode is 1 - interface doesn't exists, so we create it
+        if exitcode is 2 - interface found and we can add it to our VM
+        Otherwise there is some other error and we raise it
+        """
         res = Executor.exec_sync(self.cmd.hostonly_config())
         if res[0] == 1:
             Executor.exec_sync(self.cmd.hostonly_create())
         elif res[0] != 2:
             raise Exception(res[2])
-        # Installing adapter onto vm
+        """Installing adapter onto vm """
         self.message("Enabling DHCP...")
         Executor.exec_sync(self.cmd.hostonly_enable_dhcp())
         return Executor.exec_sync(self.cmd.hostonly_setup())

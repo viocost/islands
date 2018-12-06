@@ -1,6 +1,8 @@
 import re
-from threading import Thread
 import time
+import os, sys
+from threading import Thread
+from util import get_full_path
 from executor import ShellExecutor as Executor
 from island_states import IslandStates as States
 
@@ -121,3 +123,36 @@ class IslandManager:
             state_emitter(States.RUNNING)
         else:
             state_emitter(States.NOT_RUNNING)
+
+    def restore_default_df_path(self):
+        if self.is_running():
+            Executor.exec_sync(self.cmd.shutdown_vm(force=True))
+            time.sleep(3)
+        Executor.exec_sync(self.cmd.sharedfolder_remove())
+        self.config.restore_default("data_folder")
+        fullpath = get_full_path(self.config["data_folder"])
+        if not os.path.exists(fullpath):
+            os.makedirs(fullpath)
+        res = Executor.exec_sync(self.cmd.sharedfolder_setup(fullpath))
+        if res[0] != 0:
+            raise IslandManagerException("Datafolder reset finished with error: %s" % res[2])
+
+    def set_new_datafolder(self, new_path):
+        if self.is_running():
+            Executor.exec_sync(self.cmd.shutdown_vm(force=True))
+            time.sleep(3)
+        new_path_full = get_full_path(new_path)
+        if not os.path.exists(new_path_full):
+            os.makedirs(new_path_full)
+        Executor.exec_sync(self.cmd.sharedfolder_remove())
+        self.config['data_folder'] = new_path_full
+        self.config.save()
+        res = Executor.exec_sync(self.cmd.sharedfolder_setup(new_path_full))
+        if res[0] != 0:
+            raise IslandManagerException("Datafolder setup finished with error: %s" % res[2])
+
+
+
+
+class IslandManagerException(Exception):
+    pass

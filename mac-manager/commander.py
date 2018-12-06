@@ -44,6 +44,10 @@ class Commander:
     __import_vm = "{vboxmanage} import {path}"
     __sharedfolder_setup = '{vboxmanage} sharedfolder add {vmname} ' \
                            '--name {shared_folder_name} -hostpath {hostpath} -automount '
+
+    __sharedfolder_remove = '{vboxmanage} sharedfolder remove {vmname} ' \
+                            '--name {shared_folder_name}'
+
     __insert_guest_additions = '{vboxmanage} storageattach {vmname} '\
                                '--storagectl IDE --port 1 --device 0 '\
                                '--type dvddrive ' \
@@ -220,6 +224,13 @@ class Commander:
         return self.__sharedfolder_setup.format(
             vboxmanage=self.config['vboxmanage'],
             hostpath=data_folder_path,
+            vmname=self.config["vmname"],
+            shared_folder_name=self.config["shared_folder_name"]
+        )
+
+    def sharedfolder_remove(self):
+        return self.__sharedfolder_remove.format(
+            vboxmanage=self.config['vboxmanage'],
             vmname=self.config["vmname"],
             shared_folder_name=self.config["shared_folder_name"]
         )

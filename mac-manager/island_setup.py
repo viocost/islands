@@ -115,7 +115,6 @@ class IslandSetup:
 
 
 
-
 # Attach guest additions spell:
 # vboxmanage storageattach <vmname> --storagectl IDE --port 1 --device 0 --type dvddrive --medium /Applications/VirtualBox.app/Contents/MacOS/VBoxGuestAdditions.iso
 

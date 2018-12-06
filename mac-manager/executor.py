@@ -118,6 +118,5 @@ class ShellExecutor:
         return res, proc.stdout, proc.stderr
 
 
-
 class IllegalStateException(Exception):
     pass

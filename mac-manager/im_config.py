@@ -68,7 +68,10 @@ class IMConfig:
         with open("".join((os_defaults_path, OS_SPECIFIC_DEFAULTS[platform])), "r") as f:
             self.__default.update(json.load(f))
 
-
+    def is_default(self, key):
+        if key not in self.__default:
+            raise KeyError("Non-existent config property %s" % key)
+        return key not in self.__custom
 
 
 
