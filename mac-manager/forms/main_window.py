@@ -1,6 +1,6 @@
 from forms.main_window_ui_setup import Ui_MainWindow
 from forms.setup_wizard_window import SetupWizardWindow as SetupWindow
-from PyQt5.QtWidgets import QMainWindow, QMessageBox as QM
+from PyQt5.QtWidgets import QMainWindow, QFileDialog, QMessageBox as QM
 from PyQt5.QtCore import QObject, pyqtSignal
 from util import get_version, get_full_path
 from island_states import IslandStates as States
@@ -87,6 +87,8 @@ class MainWindow(QObject):
         self.ui.vboxmanageSave.clicked.connect(self.save_vboxmanage_path)
         self.ui.vmnameLineEdit.textChanged.connect(self.vmname_process_change)
         self.ui.vboxmanagePathLineEdit.textChanged.connect(self.vboxmanage_process_change)
+        self.ui.vboxmanageSelectPath.clicked.connect(self.vboxmanage_select_path)
+        self.ui.dfSelectPath.clicked.connect(self.df_select_path)
 
     def state_emitter(self, state):
         self.current_state.emit(state)
@@ -287,8 +289,8 @@ class MainWindow(QObject):
 
     def restore_default_vboxmanage_path(self):
         self.config.restore_default("vboxmanage")
-        self.ui.vmnameLineEdit.setText(get_full_path(self.config["vboxmanage"]))
-        self.ui.vmnameSave.setEnabled(False)
+        self.ui.vboxmanagePathLineEdit.setText(get_full_path(self.config["vboxmanage"]))
+        self.ui.vboxmanageSave.setEnabled(False)
         self.refresh_island_status()
 
     def restore_default_data_folder_path(self):
@@ -346,3 +348,17 @@ class MainWindow(QObject):
         self.ui.vboxmanageSave.setEnabled(
             self.ui.vboxmanagePathLineEdit.text() != get_full_path(self.config['vboxmanage'])
         )
+
+
+    def vboxmanage_select_path(self):
+
+        res = QFileDialog.getOpenFileName(parent=self.window,
+                                          filter='vboxmanage.exe',
+                                          directory=get_full_path(self.config['homedir']))
+        if res != ('', ''):
+            self.config['vboxmanage'] = get_full_path(res[0])
+            self.config.save()
+            self.ui.vboxmanagePathLineEdit.setText(get_full_path(self.config['vboxmanage']))
+
+    def df_select_path(self):
+        pass
