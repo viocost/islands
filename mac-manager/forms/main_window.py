@@ -2,8 +2,9 @@ from forms.main_window_ui_setup import Ui_MainWindow
 from forms.setup_wizard_window import SetupWizardWindow as SetupWindow
 from PyQt5.QtWidgets import QMainWindow, QMessageBox as QM
 from PyQt5.QtCore import QObject, pyqtSignal
-from util import get_version
+from util import get_version, get_full_path
 from island_states import IslandStates as States
+import re
 
 class MainWindow(QObject):
 
@@ -25,6 +26,7 @@ class MainWindow(QObject):
         self.setup_window = None
         self.refresh_island_status()
         self.set_main_window_title()
+        self.load_settings()
 
 
     def show(self):
@@ -62,6 +64,11 @@ class MainWindow(QObject):
             self.launch_setup()
 
 
+    def load_settings(self):
+        self.ui.vmnameLineEdit.setText(self.config['vmname'])
+        self.ui.vboxmanagePathLineEdit.setText(get_full_path(self.config['vboxmanage']))
+        self.ui.dfLineEdit.setText(get_full_path(self.config['data_folder']))
+
     # Connects UI element with handler
     def assign_handlers(self):
         self.ui.launchIslandButton.clicked.connect(self.get_main_control_handler("launch"))
@@ -74,6 +81,12 @@ class MainWindow(QObject):
         self.ui.actionMinimize_2.triggered.connect(self.minimize_main_window)
         self.processing.connect(self.set_working)
         self.state_changed.connect(self.refresh_island_status)
+        self.ui.vmnameSave.clicked.connect(self.save_vmname)
+        self.ui.vmnameDefault.clicked.connect(self.restore_default_vmname)
+        self.ui.vboxmanageDefault.clicked.connect(self.restore_default_vboxmanage_path)
+        self.ui.vboxmanageSave.clicked.connect(self.save_vboxmanage_path)
+        self.ui.vmnameLineEdit.textChanged.connect(self.vmname_process_change)
+        self.ui.vboxmanagePathLineEdit.textChanged.connect(self.vboxmanage_process_change)
 
     def state_emitter(self, state):
         self.current_state.emit(state)
@@ -120,10 +133,11 @@ class MainWindow(QObject):
         self.set_setup_window_onclose_handler(self.setup_window)
         self.setup_window.set_vbox_checker(self.setup.is_vbox_set_up)
         self.setup_window.set_islands_vm_checker(self.setup.is_islands_vm_exist)
-
         res = self.setup_window.exec()
         print("WIZARD RESULT IS {res}".format(res=res))
         self.refresh_island_status()
+
+
 
 
     def set_setup_window_onclose_handler(self, window):
@@ -262,6 +276,73 @@ class MainWindow(QObject):
         self.ui.launchMode.setEnabled(False)
         self.ui.stopMode.setEnabled(False)
 
-
     """ ~ END STATES """
 
+
+    def restore_default_vmname(self):
+        self.config.restore_default("vmname")
+        self.ui.vmnameLineEdit.setText(self.config["vmname"])
+        self.ui.vmnameSave.setEnabled(False)
+        self.refresh_island_status()
+
+    def restore_default_vboxmanage_path(self):
+        self.config.restore_default("vboxmanage")
+        self.ui.vmnameLineEdit.setText(get_full_path(self.config["vboxmanage"]))
+        self.ui.vmnameSave.setEnabled(False)
+        self.refresh_island_status()
+
+    def restore_default_data_folder_path(self):
+        #Check if custom path is different from default
+        #confirm
+        return
+        # res = QM.question(self.window,
+        #                   "Confirm",
+        #                   "This will require stopping Islands. Continue?",
+        #                   QM.Yes | QM.No)
+        # if res == QM.No:
+        #     return
+        # self.setup.restore_default_df_path(self.ui.dfLineEdit.text())
+
+        #shut off vm
+        #destroy shared folder
+        #create default one
+        # set up shared folder
+        #save config
+        #done
+        # pass
+
+    def save_vboxmanage_path(self):
+        try:
+            self.setup.set_vboxmanage_path(self.ui.vboxmanagePathLineEdit.text())
+            self.refresh_island_status()
+        except Exception as e:
+            self.show_notification("Error setting vboxmanage path: %s" % str(e))
+
+    def save_vmname(self):
+        val = self.ui.vmnameLineEdit.text().strip()
+        ptrn = re.compile('[A-z]+')
+        if not ptrn.match(val):
+            self.show_notification("Invalid name for virtual machine")
+            return
+        self.config['vmname'] = val
+        self.config.save()
+        self.ui.vmnameSave.setEnabled(False)
+        self.refresh_island_status()
+
+    def save_datafolder_path(self):
+        pass
+
+    def show_notification(self, text):
+        QM.warning(self.window, None, "Warning", text, buttons=QM.Ok)
+
+
+    def vmname_process_change(self):
+        self.ui.vmnameSave.setEnabled(
+            self.ui.vmnameLineEdit.text() != self.config['vmname']
+        )
+
+
+    def vboxmanage_process_change(self):
+        self.ui.vboxmanageSave.setEnabled(
+            self.ui.vboxmanagePathLineEdit.text() != get_full_path(self.config['vboxmanage'])
+        )

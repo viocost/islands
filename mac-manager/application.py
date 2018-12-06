@@ -40,14 +40,19 @@ class Application:
     def prepare_app(self):
         app = QApplication(sys.argv)
         appicon = QIcon()
-
         appicon.addPixmap(QPixmap(":/images/icons/island24"))
         appicon.addPixmap(QPixmap(":/images/icons/island32"))
         appicon.addPixmap(QPixmap(":/images/icons/island64"))
         appicon.addPixmap(QPixmap(":/images/icons/island128"))
         appicon.addPixmap(QPixmap(":/images/icons/island256"))
-
         app.setWindowIcon(QIcon("island24.png"))
+
+        # This is needed for proper icon display in Windows task bar
+        if sys.platform == "win32":
+            import ctypes
+            myappid = u'islands.manager.v00185'  # arbitrary string
+            ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+
 
         return app
 

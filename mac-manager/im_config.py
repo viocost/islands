@@ -45,8 +45,14 @@ class IMConfig:
         else:
             return dict()
 
-    def restore_default(self):
-        self.__custom = {}
+    def restore_default(self, key=None):
+        if key:
+            if key not in self.__default:
+                raise KeyError("Non-existent config property %s" % key)
+            if key in self.__custom:
+                del self.__custom[key]
+        else:
+            self.__custom = {}
         self.save()
 
     def __get_default(self, config_path):
