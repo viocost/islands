@@ -18,7 +18,7 @@ clean:
 	
 build:
 	if [ -f setup.py ]; then
-		python3 setup.py py2app --packages=PyQt5
+		python3 setup.py py2app
 	else
 		echo "setup.py not found. Run \"make\" first"
 	fi

@@ -1,6 +1,6 @@
 {
   "title": "Islands",
-  "icon": "./forms/icons/island.png",
+  "icon": "./forms/icons/island256.png",
   "background": "/Users/konstantin/islands/mac-manager/images/Background.png",
   "icon-size": 80,
   "window": {
