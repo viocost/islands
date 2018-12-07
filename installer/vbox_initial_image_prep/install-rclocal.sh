@@ -37,3 +37,13 @@ exit 0
 
 chmod +x /etc/rc.local
 systemctl enable rc-local
+
+# Prepare network
+
+sed -i 's/GRUB_CMDLINE_LINUX=""/GRUB_CMDLINE_LINUX="net.ifnames=0 biosdevname=0"/g' /etc/default/grub
+grub-mkconfig -o /boot/grub/grub.cfg
+
+IFACE=$(ls /sys/class/net/ | egrep !(lo))
+
+sed -i "s/allow-hotplug $IFACE/allow-hotplug eth0/g" /etc/network/interfaces
+sed -i "s/iface $IFACE inet dhcp/iface eth0 inet dhcp/g" /etc/network/interfaces
