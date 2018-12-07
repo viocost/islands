@@ -2,6 +2,7 @@ echo "
 [Unit]
  Description=/etc/rc.local Compatibility
  ConditionPathExists=/etc/rc.local
+ After=network-online.target	
  
 [Service]
  Type=forking

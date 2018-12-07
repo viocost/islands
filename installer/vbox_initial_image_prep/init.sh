@@ -10,6 +10,8 @@
 # For virtualbox it installs guest additions, for Vmware - vmware tools
 # If any tool appear to be installed - script removes itself from startup and exits
 
+sleep 4s
+
 install_guest_additions()
 {
 	apt update -y
