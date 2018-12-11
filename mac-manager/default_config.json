@@ -1,7 +1,7 @@
 {
     "vmname": "Island",
     "vm_image_name": "Island.ova",
-    "vm_download": "https://sourceforge.net/projects/islands-image/files/Islands_vm_v0.0.011.ova/download",
+    "vm_download": "https://sourceforge.net/projects/islands-image/files/Island_vm_0.0.022.ova/download",
     "vm_sha1": "",
     "vm_username": "root",
     "vm_password": "islands",
