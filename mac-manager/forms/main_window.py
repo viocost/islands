@@ -1,10 +1,12 @@
+import re
+import time
 from forms.main_window_ui_setup import Ui_MainWindow
 from forms.setup_wizard_window import SetupWizardWindow as SetupWindow
 from PyQt5.QtWidgets import QMainWindow, QFileDialog, QMessageBox as QM
 from PyQt5.QtCore import QObject, pyqtSignal
 from util import get_version, get_full_path
 from island_states import IslandStates as States
-import re
+
 
 class MainWindow(QObject):
 
@@ -31,6 +33,7 @@ class MainWindow(QObject):
 
     def show(self):
         self.window.show()
+
 
     def hide(self):
         self.window.hide()
@@ -91,6 +94,7 @@ class MainWindow(QObject):
         self.ui.dfSelectPath.clicked.connect(self.df_select_path)
         self.ui.dfDefault.clicked.connect(self.restore_default_data_folder_path)
         self.ui.dfSave.clicked.connect(self.save_datafolder_path)
+        self.ui.deleteIslandButton.clicked.connect(self.process_delete_vm_request)
 
     def state_emitter(self, state):
         self.current_state.emit(state)
@@ -168,6 +172,29 @@ class MainWindow(QObject):
     def set_main_window_title(self):
         self.window.setWindowTitle("Island Manager %s" % "v"+get_version())
 
+
+
+
+
+    def process_delete_vm_request(self):
+        res = QM.warning(self.window, "Delete Island", "This is going to unregister Island virtual machine, "
+                                                       "wipe its files and reset VM settings to default. "
+                                                       "Data files will be saved. Continue?", QM.Yes | QM.No)
+        if res == QM.Yes:
+            try:
+                if self.island_manager.is_running():
+                    self.island_manager.stop_island_sync(force=True)
+                    time.sleep(3)
+                self.setup.delete_islands_vm()
+                self.setup.reset_vm_config()
+                self.window.statusBar().showMessage("Island virtual machine has been deleted", 5000)
+                self.refresh_island_status()
+            except Exception as e:
+                errmsg = "Island deletion error: %s " % e.args[2]
+                self.window.statusBar().showMessage(errmsg, 10000)
+
+
+
     """END"""
 
     """ STATE SETTERS """
@@ -185,6 +212,7 @@ class MainWindow(QObject):
         self.ui.groupBox.show()
         self.ui.launchMode.setEnabled(False)
         self.ui.stopMode.setEnabled(False)
+        self.ui.deleteIslandButton.setEnabled(False)
 
 
     def set_running(self):
@@ -203,11 +231,11 @@ class MainWindow(QObject):
         self.ui.groupBox.hide()
         self.ui.launchMode.setEnabled(False)
         self.ui.stopMode.setEnabled(True)
+        self.ui.deleteIslandButton.setEnabled(True)
 
     def set_starting_up(self):
         self.ui.island_access_label.setVisible(False)
         self.ui.island_access_address.setVisible(False)
-
         self.ui.island_admin_access_address.setVisible(False)
         self.ui.islandStatus.setText("Starting up...")
         self.ui.islandStatus.setStyleSheet('color: blue')
@@ -218,23 +246,24 @@ class MainWindow(QObject):
         self.ui.groupBox.hide()
         self.ui.launchMode.setEnabled(False)
         self.ui.stopMode.setEnabled(False)
+        self.ui.deleteIslandButton.setEnabled(False)
 
     def set_shutting_down(self):
         self.ui.islandStatus.setText("Shutting down...")
         self.ui.islandStatus.setStyleSheet('color: orange')
         self.ui.island_access_label.setVisible(False)
         self.ui.island_access_address.setVisible(False)
-
         self.ui.island_admin_access_address.setVisible(False)
         self.ui.groupBox.setEnabled(False)
         self.ui.groupBox.hide()
         self.set_working()
+        self.ui.deleteIslandButton.setEnabled(False)
 
 
     def set_not_running(self):
         self.ui.island_access_label.setVisible(False)
         self.ui.island_access_address.setVisible(False)
-
+        self.ui.deleteIslandButton.setEnabled(True)
         self.ui.island_admin_access_address.setVisible(False)
         self.ui.islandStatus.setText("Not running")
         self.ui.islandStatus.setStyleSheet('color: red')
@@ -249,7 +278,6 @@ class MainWindow(QObject):
     def set_unknown(self):
         self.ui.island_access_label.setVisible(False)
         self.ui.island_access_address.setVisible(False)
-
         self.ui.island_admin_access_address.setVisible(False)
         self.ui.islandStatus.setText("Unknown")
         self.ui.islandStatus.setStyleSheet('color: gray')
@@ -260,11 +288,12 @@ class MainWindow(QObject):
         self.ui.groupBox.hide()
         self.ui.launchMode.setEnabled(False)
         self.ui.stopMode.setEnabled(False)
+        self.ui.deleteIslandButton.setEnabled(False)
 
     def set_restarting(self):
         self.ui.island_access_label.setVisible(False)
         self.ui.island_access_address.setVisible(False)
-
+        self.ui.deleteIslandButton.setEnabled(False)
         self.ui.island_admin_access_address.setVisible(False)
         self.ui.islandStatus.setText("Restarting...")
         self.ui.islandStatus.setStyleSheet('color: blue')

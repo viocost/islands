@@ -1,5 +1,6 @@
 import os
 import platform
+from exceptions import CmdExecutionError
 
 def sizeof_fmt(num, suffix='b'):
     num = int(num)
@@ -29,3 +30,12 @@ def get_current_path():
 
 
 platform.system()
+
+def check_output(func):
+    def wrapper(*args, **kwargs):
+        res = func(*args, **kwargs)
+        if res[0] != 0:
+            raise CmdExecutionError(*res)
+        return res
+    return wrapper
+

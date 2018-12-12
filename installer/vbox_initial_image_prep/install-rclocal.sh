@@ -47,3 +47,7 @@ IFACE=$( ls /sys/class/net/ | egrep -v lo | xargs )
 
 sed -i "s/allow-hotplug $IFACE/allow-hotplug eth0/g" /etc/network/interfaces
 sed -i "s/iface.*$IFACE.*inet dhcp/iface eth0 inet dhcp/g" /etc/network/interfaces
+
+echo "allow-hotplug eth1" >> /etc/network/interfaces
+echo "iface eth1 inet dhcp" >> /etc/network/interfaces
+

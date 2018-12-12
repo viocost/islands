@@ -1,8 +1,8 @@
 import re
 import time
-import os, sys
+import os
 from threading import Thread
-from util import get_full_path
+from util import get_full_path, check_output
 from executor import ShellExecutor as Executor
 from island_states import IslandStates as States
 
@@ -49,6 +49,7 @@ class IslandManager:
             return False
 
 
+
     def stop_island(self, state_emitter, force=False, timeout=60):
         def worker():
             if self.setup.is_setup_required():
@@ -76,6 +77,10 @@ class IslandManager:
                 state_emitter(States.UNKNOWN)
         t = Thread(target=worker)
         t.start()
+
+    @check_output
+    def stop_island_sync(self, force=True):
+        return Executor.exec_sync(self.cmd.shutdown_vm(force))
 
     def restart_island(self, state_emitter, headless=True, timeout=100):
         def worker():

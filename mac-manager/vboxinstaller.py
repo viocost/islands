@@ -1,8 +1,8 @@
 from threading import Thread
 from downloader import Downloader as Dl
-from installer_exceptions import IslandSetupError
+from exceptions import IslandSetupError
 from executor import ShellExecutor as Executor
-from installer_exceptions import CmdExecutionError
+from exceptions import CmdExecutionError
 from os import path
 import sys
 import time

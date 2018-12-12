@@ -42,6 +42,7 @@ class Commander:
     __hostonly_enable_dhcp = '{vboxmanage} dhcpserver modify --ifname "{adapter}" --enable'
 
     __import_vm = "{vboxmanage} import {path}"
+    __delete_vm = "{vboxmanage} unregistervm {vmname} --delete"
     __sharedfolder_setup = '{vboxmanage} sharedfolder add {vmname} ' \
                            '--name {shared_folder_name} -hostpath {hostpath} -automount '
 
@@ -180,6 +181,12 @@ class Commander:
         return self.__import_vm.format(
             vboxmanage=self.config['vboxmanage'],
             path=path_to_image
+        )
+
+    def delete_vm(self):
+        return self.__delete_vm.format(
+            vboxmanage=self.config['vboxmanage'],
+            vmname=self.config["vmname"]
         )
 
     def ls_on_guest(self):

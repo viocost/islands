@@ -3,17 +3,10 @@ from executor import ShellExecutor as Executor
 from time import sleep
 from downloader import Downloader as Dl
 from os import path, makedirs
-from installer_exceptions import IslandsImageNotFound, IslandSetupError, CmdExecutionError
-from util import get_full_path
+from exceptions import IslandsImageNotFound, IslandSetupError, CmdExecutionError
+from util import get_full_path, check_output
 
 
-def check_output(func):
-    def wrapper(*args, **kwargs):
-        res = func(*args, **kwargs)
-        if res[0] != 0:
-            raise CmdExecutionError(*res)
-        return res
-    return wrapper
 
 
 class VMInstaller:
@@ -86,15 +79,18 @@ class VMInstaller:
             self.first_boot()
             self.complete()
         except CmdExecutionError as e:
+            self.emergency_wipe()
             print("CMD execution error: " + str(e))
             error_message = "CmdExecutionError.\nReturn code: {retcode}" \
                             "\nstderr: {stderr}" \
                             "\nstdout: {stdout}".format(retcode=e.args[0], stderr=e.args[1], stdout=e.args[2])
             self.error(msg=error_message, size=16)
         except IslandsImageNotFound as e:
+            self.emergency_wipe()
             error_message = "Islands image was not found. Please restart setup."
             self.error(msg=error_message, size=16)
         except Exception as e:
+            self.emergency_wipe()
             error_message = "Islands VM installation error: \n{msg}".format(msg=str(e))
             self.error(msg=error_message, size=16)
 
@@ -187,8 +183,8 @@ class VMInstaller:
 
 
     @check_output
-    def shutdown_vm(self):
-        return Executor.exec_sync(self.cmd.shutdown_vm())
+    def shutdown_vm(self, force=False):
+        return Executor.exec_sync(self.cmd.shutdown_vm(force=force))
 
     def first_boot(self):
         for i in range(10):
@@ -197,8 +193,27 @@ class VMInstaller:
                 self.start_vm()
                 return
             except CmdExecutionError:
-                print("Unsuccessful launch %d" %i)
+                print("Unsuccessful launch %d" % i )
                 continue
         raise Exception("VM launch unsuccessfull")
+
+    def emergency_wipe(self):
+        try:
+            print("Performing emergency wipe")
+            self.shutdown_vm(force=True)
+        except Exception as e:
+            print("Emergency shutdown returned nonzero exit code")
+            print("Error: %s " % e.args[2])
+        finally:
+            sleep(3)
+
+        try:
+            self.setup.delete_islands_vm()
+        except Exception as e:
+            print("Emergency vm wipe returned nonzero exit code")
+            print("VM deletion error: %s " % e.args[2])
+
+        self.setup.reset_vm_config()
+        print("Emergency wipe completed")
 
 

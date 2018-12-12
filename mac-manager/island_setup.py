@@ -1,12 +1,10 @@
 import re
 import hashlib
-from threading import Thread
-from time import sleep
 from vboxinstaller import VBoxInstaller
 from vm_installer import VMInstaller
-from installer_exceptions import *
+from exceptions import *
 from executor import ShellExecutor as Executor
-
+from util import check_output
 
 
 
@@ -111,12 +109,15 @@ class IslandSetup:
             print("is_islands_vm_exist EXCEPTION!: " + str(e))
             return False
 
+    @check_output
+    def delete_islands_vm(self):
+        return Executor.exec_sync(self.cmd.delete_vm())
 
-
-
-
-# Attach guest additions spell:
-# vboxmanage storageattach <vmname> --storagectl IDE --port 1 --device 0 --type dvddrive --medium /Applications/VirtualBox.app/Contents/MacOS/VBoxGuestAdditions.iso
-
-# Port forwarding spell:
-# vboxmanage controlvm   Island natpf1 "r1, tcp, 127.0.0.1, 4000, 192.168.56.102, 4000"
+    def reset_vm_config(self):
+        self.__config.restore_default("vmname")
+        self.__config.restore_default("local_access")
+        self.__config.restore_default("local_access_admin")
+        self.__config.restore_default("hostonly_adapter")
+        self.__config.restore_default("vm_password")
+        self.__config.restore_default("vm_username")
+        self.__config.save()

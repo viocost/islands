@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'forms/mainwindow.ui'
 #
-# Created by: PyQt5 UI code generator 5.10.1
+# Created by: PyQt5 UI code generator 5.11.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -333,11 +333,24 @@ class Ui_MainWindow(object):
         self.verticalLayout_7.addLayout(self.horizontalLayout_12)
         spacerItem3 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_7.addItem(spacerItem3)
+        self.horizontalLayout_9 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_9.setSpacing(6)
+        self.horizontalLayout_9.setObjectName("horizontalLayout_9")
+        self.deleteIslandButton = QtWidgets.QPushButton(self.tabIslandSettings)
+        self.deleteIslandButton.setMinimumSize(QtCore.QSize(0, 50))
+        icon6 = QtGui.QIcon()
+        icon6.addPixmap(QtGui.QPixmap(":/images/error"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.deleteIslandButton.setIcon(icon6)
+        self.deleteIslandButton.setObjectName("deleteIslandButton")
+        self.horizontalLayout_9.addWidget(self.deleteIslandButton)
+        spacerItem4 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_9.addItem(spacerItem4)
+        self.verticalLayout_7.addLayout(self.horizontalLayout_9)
         self.tabWidget.addTab(self.tabIslandSettings, "")
         self.horizontalLayout.addWidget(self.tabWidget)
         MainWindow.setCentralWidget(self.centralWidget)
         self.menuBar = QtWidgets.QMenuBar(MainWindow)
-        self.menuBar.setGeometry(QtCore.QRect(0, 0, 774, 22))
+        self.menuBar.setGeometry(QtCore.QRect(0, 0, 774, 21))
         self.menuBar.setObjectName("menuBar")
         self.menuOptions = QtWidgets.QMenu(self.menuBar)
         self.menuOptions.setObjectName("menuOptions")
@@ -399,6 +412,7 @@ class Ui_MainWindow(object):
         self.dfSelectPath.setText(_translate("MainWindow", "Browse..."))
         self.dfSave.setText(_translate("MainWindow", "Save"))
         self.dfDefault.setText(_translate("MainWindow", "Restore default"))
+        self.deleteIslandButton.setText(_translate("MainWindow", "Delete Island VM"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabIslandSettings), _translate("MainWindow", "Settings"))
         self.menuOptions.setTitle(_translate("MainWindow", "Menu"))
         self.actionExit.setText(_translate("MainWindow", "Exit"))
