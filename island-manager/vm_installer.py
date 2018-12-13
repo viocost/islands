@@ -45,7 +45,7 @@ class VMInstaller:
     def install(self):
         try:
             if self.download:
-                self.init_progres_bar("Downloading Islands Virtual Machine...")
+                self.init_progres_bar("Downloading Islands Virtual Machine from \n%s\n\n" % self.config['vm_download'] )
                 self.download_vm()
                 self.finalize_progres_bar()
                 self.message(msg="Download complete", size=20)
