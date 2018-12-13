@@ -17,6 +17,27 @@ let soundsOnOfIcons = {
 
 let sendLock = false;
 
+let mainMenuItems = [
+     {
+        index: 0,
+        subtitle: "Login",
+        selector: "#login-container",
+        active: true
+     },
+     {
+         index: 1,
+         subtitle: "Join",
+         selector: "#join-by-invite-container",
+         active: false
+     },
+     {
+         index: 2,
+         subtitle: "New",
+         selector: "#new-topic-container",
+         active: false
+     }
+
+];
 
 let tempName;
 
@@ -43,6 +64,9 @@ document.addEventListener('DOMContentLoaded', (event)=>{
     document.querySelector('#attach-file').addEventListener('change', processAttachmentChosen);
     document.querySelector('#re-connect').addEventListener('click', attemptReconnection);
     document.querySelector('#sounds-switch').addEventListener('click', switchSounds);
+    document.querySelector('.right-arrow-wrap').addEventListener('click', processMainMenuSwitch);
+    document.querySelector('.left-arrow-wrap').addEventListener('click', processMainMenuSwitch);
+
     $('#new-msg').keydown(function (e) {
         if (!e.ctrlKey && e.keyCode === 13) {
             event.preventDefault();
@@ -1494,4 +1518,43 @@ function lockSend(val){
     let newMsgField = document.querySelector('#new-msg');
     sendLock ? buttonLoadingOn(sendButton) : buttonLoadingOff(sendButton);
     sendLock ? newMsgField.setAttribute("disabled", true) : newMsgField.removeAttribute("disabled");
+}
+
+
+function processMainMenuSwitch(ev){
+    let menuLength = mainMenuItems.length;
+    let activeIndex = mainMenuItems.filter((item)=>{
+        return item.active
+    })[0].index;
+    let newActive = (ev.currentTarget.classList.contains("right-arrow-wrap") ? activeIndex + 1 : activeIndex - 1) % menuLength;
+    if (newActive < 0){
+        newActive = menuLength + newActive
+    }
+    mainMenuItems[activeIndex].active = false;
+    mainMenuItems[newActive].active = true;
+    $(mainMenuItems[activeIndex].selector).hide("fast");
+    $(mainMenuItems[newActive].selector).show("fast");
+
+    let nextIndex = (newActive + 1) % menuLength;
+    let previousIndex = (newActive -1) % menuLength;
+    if (previousIndex<0){
+        previousIndex = menuLength + previousIndex
+    }
+
+    document.querySelector("#left-arrow-text").innerHTML = mainMenuItems[previousIndex].subtitle;
+    document.querySelector("#right-arrow-text").innerHTML = mainMenuItems[nextIndex].subtitle;
+
+
+
+
+
+
+
+    // active = get active
+    // if arrow right:
+       //activate next
+    // else
+        //activate previous
+
+    //set subtitles
 }

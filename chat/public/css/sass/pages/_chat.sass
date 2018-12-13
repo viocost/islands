@@ -685,11 +685,88 @@ pre
       transition: filter .2s ease
       &:hover
         filter:  drop-shadow(1px 1px 2px rgb(137, 140, 151))
-
     .disabled
       filter: grayscale(100%)
 
 
 
 
+
+.main-menu-container
+  display: flex
+  flex-direction: row
+  width: 100%
+  min-width: 85rem
+  margin-top: 10%
+  justify-content: center
+  .left-arrow-wrap
+    display: flex
+    flex-direction: row
+    margin-right: 5rem
+    align-items: center
+    height: 30rem
+    width: 13rem
+    img
+      margin: auto 0
+      opacity: .3
+      transition: filter .2s ease
+      &:hover
+        opacity: .9
+        filter: drop-shadow(1px 1px 2px rgb(137, 140, 151))
+    div
+      text-align: center
+
+  .right-arrow-wrap
+    display: flex
+    flex-direction: row
+    margin-left: 5rem
+    align-items: center
+    height: 30rem
+    width: 13rem
+    img
+      margin: auto 0
+      opacity: .3
+      transition: filter .2s ease
+      &:hover
+        opacity: .9
+        filter: drop-shadow(1px 1px 2px rgb(137, 140, 151)) opacity(1)
+    div
+      text-align: center
+  .main-menu-elements-container
+    width: 27%
+    display: flex
+    justify-content: center
+    margin: 2rem
+    padding: 2rem
+
+
+.arrow-subtitle
+  font-size: 1.9rem
+  color: gray
+  padding: 1.5rem
+  min-width: 8rem
+
+
+#login-container
+  display: block
+
+#join-by-invite-container
+  display: none
+
+#new-topic-container
+  display: none
+
+#footer
+  display: flex
+  .copyright
+    width: 100%
+    display: flex
+    justify-content: center
+  #view-logs
+    width: 100%
+    text-align: right
+    color: gray
+    &:hover
+      color: blue
+      cursor: pointer
 

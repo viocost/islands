@@ -1,21 +1,36 @@
 .container
     .enter-chat-options-wrapper#auth-wrapper
-        .register-join-wrapper
-            .new-topic-wrapper
-                p: h3 Start new topic
-                p: input#new-topic-nickname(type='text', placeholder='Enter your nickname')
-                p: input#new-topic-name(type='text', placeholder='Enter topic name')
-                button.btn#create-topic Create topic
-            .join-by-invite-wrapper
-                p: h3 Join topic by invite code
-                p: input#invite-code(type='text', placeholder="Invite code")
-                p: input#join-nickname(type='text', placeholder='Enter your nickname')
-                button.btn#join-topic Join topic
-        .topic-login-wrapper
-            .join-login
-                p: h3 Login into existing topic
-                p: textarea#private-key(placeholder='Private key')
-                p: button.btn#login-topic Login
+        .main-menu-container
+            .left-arrow-wrap.arrow-switch
+                #left-arrow-text.arrow-subtitle New
+                .left-arrow-image
+                    img(src="/img/left-arrow.png")
+
+            .main-menu-elements-container
+                #new-topic-container
+                    p: h3 CREATE NEW TOPIC
+                    p: input#new-topic-nickname(type='text', placeholder='Enter your nickname')
+                    p: input#new-topic-name(type='text', placeholder='Enter topic name')
+                    button.btn#create-topic Create topic
+                #join-by-invite-container
+                    p: h3 JOIN TOPIC
+                    p: input#invite-code(type='text', placeholder="Invite code")
+                    p: input#join-nickname(type='text', placeholder='Enter your nickname')
+                    button.btn#join-topic Join topic
+                #login-container
+                    p: h3 LOGIN
+                    p: textarea#private-key(placeholder='Private key')
+                    p: button.btn#login-topic Login
+
+
+            .right-arrow-wrap.arrow-switch
+                .right-arrow-image
+                    img(src="/img/right-arrow.png")
+                #right-arrow-text.arrow-subtitle Join
+
+            .register-join-wrapper
+            .topic-login-wrapper
+
 
     #you_online
         .user-name--wrap
