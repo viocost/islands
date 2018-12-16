@@ -1,3 +1,5 @@
+import 'babel-polyfill'
+
 let chat;
 
 const DAYSOFWEEK = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
