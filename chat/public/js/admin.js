@@ -1,8 +1,10 @@
-let adminSession;
-let filterFieldSelector;
-let logTableBody;
+'use strict';
 
-document.addEventListener('DOMContentLoaded', event => {
+var adminSession = void 0;
+var filterFieldSelector = void 0;
+var logTableBody = void 0;
+
+document.addEventListener('DOMContentLoaded', function (event) {
 
     $('#admin-login').click(adminLogin);
     $('#island-setup').click(setupIslandAdmin);
@@ -27,7 +29,7 @@ document.addEventListener('DOMContentLoaded', event => {
     }
     $('#login-setup--wrapper').css('display', "block");
 
-    $('.update-option').each((index, el) => {
+    $('.update-option').each(function (index, el) {
         $(el).click(switchUpdateOption);
     });
     logTableBody = document.querySelector("#log-content").lastElementChild;
@@ -44,18 +46,18 @@ document.addEventListener('DOMContentLoaded', event => {
  * @param {Array} hiddenServices
  */
 function updateHiddenServicesList(hiddenServices) {
-    let hsContainer = document.querySelector("#hidden-services-wrap");
+    var hsContainer = document.querySelector("#hidden-services-wrap");
     hsContainer.innerHTML = "";
-    for (let i in hiddenServices) {
-        let hsWrap = document.createElement("div");
-        let num = document.createElement("div");
-        let val = document.createElement("div");
-        let del = document.createElement("div");
+    for (var i in hiddenServices) {
+        var hsWrap = document.createElement("div");
+        var num = document.createElement("div");
+        var val = document.createElement("div");
+        var del = document.createElement("div");
         hsWrap.classList.add("hidden-service");
         num.classList.add("hs-num");
         val.classList.add("hs-val");
         del.classList.add("hs-del");
-        let enumer = parseInt(i) + 1;
+        var enumer = parseInt(i) + 1;
         num.innerHTML = "#" + enumer;
         val.innerHTML = hiddenServices[i].substring(0, 16) + ".onion";
         del.innerHTML = "Delete";
@@ -69,32 +71,32 @@ function updateHiddenServicesList(hiddenServices) {
 
 function processNewIslandHiddenServiceAdd(data, response) {
     //UPDATE HS list
-    let hiddenServices = data.hiddenServices;
+    var hiddenServices = data.hiddenServices;
     updateHiddenServicesList(hiddenServices);
-    let newHS = data.newHS;
+    var newHS = data.newHS;
     //SHOW new HS info in modal box if it was added
     if (newHS) {
-        let privK = iCrypto.base64ToPEM(newHS.privateKey.substr(8));
+        var privK = iCrypto.base64ToPEM(newHS.privateKey.substr(8));
         showModalNotification("Hidden service launched!", "Onion address: " + newHS.hsid + "\n\nPrivate key:\n" + privK);
     }
 }
 
 function processIslandHiddenServiceDeletion(data, response) {
-    let hiddenServices = data.hiddenServices;
+    var hiddenServices = data.hiddenServices;
     updateHiddenServicesList(hiddenServices);
     toastr.info("Hidden service has been taken down");
 }
 
 function onionAddressFromPrivateKey(privateKey) {
-    let ic = new iCrypto();
+    var ic = new iCrypto();
     ic.setRSAKey("privk", privateKey, "private").publicFromPrivate("privk", "pubk");
-    let pkraw = forge.pki.publicKeyFromPem(ic.get("pubk"));
-    let pkfp = forge.pki.getPublicKeyFingerprint(pkraw, { encoding: 'hex', md: forge.md.sha1.create() });
+    var pkraw = forge.pki.publicKeyFromPem(ic.get("pubk"));
+    var pkfp = forge.pki.getPublicKeyFingerprint(pkraw, { encoding: 'hex', md: forge.md.sha1.create() });
     if (pkfp.length % 2 !== 0) {
         s = '0' + s;
     }
-    let bytes = [];
-    for (let i = 0; i < pkfp.length / 2; i = i + 2) {
+    var bytes = [];
+    for (var i = 0; i < pkfp.length / 2; i = i + 2) {
         bytes.push(parseInt(pkfp.slice(i, i + 2), 16));
     }
 
@@ -102,17 +104,17 @@ function onionAddressFromPrivateKey(privateKey) {
 }
 
 function launchHiddenService() {
-    let hsPrivK = document.querySelector("#island-service-private-key").value.trim();
+    var hsPrivK = document.querySelector("#island-service-private-key").value.trim();
     if (!adminSession) {
         toastr.warning("Login required. Please login to continue");
         return;
     }
-    let privKey = adminSession.privateKey;
-    let pkfp = adminSession.pkfp;
-    let ic = new iCrypto();
+    var privKey = adminSession.privateKey;
+    var pkfp = adminSession.pkfp;
+    var ic = new iCrypto();
     ic.createNonce('n').setRSAKey("pk", privKey, 'private').privateKeySign('n', 'pk', 'sign').bytesToHex('n', 'nhex');
 
-    let onionAddress;
+    var onionAddress = void 0;
     try {
         if (hsPrivK) {
             onionAddress = onionAddressFromPrivateKey(hsPrivK);
@@ -131,8 +133,8 @@ function launchHiddenService() {
                 onion: onionAddress
             },
             success: processNewIslandHiddenServiceAdd,
-            err: err => {
-                console.log("Error generating hidden service: " + err);
+            err: function err(_err) {
+                console.log("Error generating hidden service: " + _err);
             }
         });
     } catch (err) {
@@ -142,11 +144,11 @@ function launchHiddenService() {
 
 //TODO finish method!
 function deleteHiddenService(ev) {
-    let onion = ev.target.previousSibling.innerHTML;
+    var onion = ev.target.previousSibling.innerHTML;
 
-    let privKey = adminSession.privateKey;
-    let pkfp = adminSession.pkfp;
-    let ic = new iCrypto();
+    var privKey = adminSession.privateKey;
+    var pkfp = adminSession.pkfp;
+    var ic = new iCrypto();
     ic.createNonce('n').setRSAKey("pk", privKey, 'private').privateKeySign('n', 'pk', 'sign').bytesToHex('n', 'nhex');
 
     $.ajax({
@@ -161,20 +163,20 @@ function deleteHiddenService(ev) {
             onion: onion
         },
         success: processIslandHiddenServiceDeletion,
-        err: err => {
-            console.log("Error deleting hidden service: " + err);
+        err: function err(_err2) {
+            console.log("Error deleting hidden service: " + _err2);
         }
     });
 }
 
 function adminLogin() {
     try {
-        let privKey = document.querySelector('#admin-private-key').value;
+        var privKey = document.querySelector('#admin-private-key').value;
         if (privKey == "") {
             toastr['warning']("You must provide admin's private key");
             return;
         }
-        let ic = new iCrypto();
+        var ic = new iCrypto();
         ic.createNonce('n').setRSAKey("pk", privKey, 'private').privateKeySign('n', 'pk', 'sign').bytesToHex('n', 'nhex').publicFromPrivate("pk", "pub").getPublicKeyFingerprint("pub", "pkfp");
 
         $.ajax({
@@ -187,7 +189,7 @@ function adminLogin() {
                 sign: ic.get('sign'),
                 pkfp: ic.get("pkfp")
             },
-            success: res => {
+            success: function success(res) {
                 clearAdminPrivateKey();
                 adminSession = {
                     publicKey: ic.get('pub'),
@@ -202,7 +204,7 @@ function adminLogin() {
                 processLoginData(res);
                 displayAdminMenu(true);
             },
-            error: err => {
+            error: function error(err) {
                 clearAdminPrivateKey();
                 toastr.warning("Error: \n" + err.responseText);
             }
@@ -214,8 +216,8 @@ function adminLogin() {
 }
 
 function processLoginData(res) {
-    let loggerState = res.loggerInfo.enabled === "true" || res.loggerInfo.enabled === true;
-    let loggerLevel = res.loggerInfo.level;
+    var loggerState = res.loggerInfo.enabled === "true" || res.loggerInfo.enabled === true;
+    var loggerLevel = res.loggerInfo.level;
     $("#logs-state").val(loggerState ? "true" : "false");
     $("#log-highest-level").val(loggerLevel);
 }
@@ -223,17 +225,17 @@ function processLoginData(res) {
 function setupIslandAdmin() {
     loadingOn();
     $('#island-setup').addClass('btn-loading');
-    setupAdminContinuation().then(() => {
+    setupAdminContinuation().then(function () {
         toastr.info("Setup successfull!!");
         switchView("admin");
-    }).catch(err => {
+    }).catch(function (err) {
         toastr.error(err);
     });
 }
 
 function setupAdminContinuation() {
-    return new Promise((resolve, reject) => {
-        let ic = new iCrypto();
+    return new Promise(function (resolve, reject) {
+        var ic = new iCrypto();
         ic.generateRSAKeyPair("kp").createNonce("n").privateKeySign("n", "kp", "sign").bytesToHex("n", "nhex");
 
         $.ajax({
@@ -246,15 +248,15 @@ function setupAdminContinuation() {
                 nonce: ic.get('nhex'),
                 sign: ic.get("sign")
             },
-            success: () => {
+            success: function success() {
                 loadingOff();
                 adminSession = {
                     publicKey: ic.get('kp').publicKey,
                     privateKey: ic.get('kp').privateKey
                 };
-                let bodyWrapper = document.createElement("div");
-                let pkWrapper = document.createElement("div");
-                let tempWrap = document.createElement("div");
+                var bodyWrapper = document.createElement("div");
+                var pkWrapper = document.createElement("div");
+                var tempWrap = document.createElement("div");
                 pkWrapper.innerHTML = "<br><b>Your private key:</b> <br> <textarea class='key-display'>" + adminSession.privateKey + "</textarea>";
                 bodyWrapper.appendChild(pkWrapper);
                 tempWrap.appendChild(bodyWrapper);
@@ -262,7 +264,7 @@ function setupAdminContinuation() {
                 $('#island-setup').removeClass('btn-loading');
                 resolve();
             },
-            error: err => {
+            error: function error(err) {
                 loadingOff();
                 reject("Fail!" + err);
                 $('#island-setup').removeClass('btn-loading');
@@ -272,8 +274,8 @@ function setupAdminContinuation() {
 }
 
 function switchView(view) {
-    let views = {
-        admin: () => {
+    var views = {
+        admin: function admin() {
             $('#admin-login--wrapper').css('display', "flex");
             $('#setup--wrapper').hide();
         }
@@ -282,20 +284,20 @@ function switchView(view) {
 }
 
 function showModalNotification(headingText, bodyContent) {
-    let wrapper = document.createElement("div");
+    var wrapper = document.createElement("div");
     wrapper.classList.add("modal-notification--wrapper");
-    let heading = document.createElement("h3");
+    var heading = document.createElement("h3");
     heading.classList.add("modal-notification--heading");
-    let body = document.createElement("div");
+    var body = document.createElement("div");
     body.classList.add("modal-notification--body");
     heading.innerText = headingText;
     body.innerHTML = bodyContent;
     wrapper.appendChild(heading);
     wrapper.appendChild(body);
-    let modalContent = document.querySelector('#code--content');
+    var modalContent = document.querySelector('#code--content');
     modalContent.innerHTML = "";
     modalContent.appendChild(wrapper);
-    let modalView = document.querySelector('#code-view');
+    var modalView = document.querySelector('#code-view');
     modalView.style.display = "block";
 }
 
@@ -316,13 +318,13 @@ function switchUpdateMode() {
 }
 
 function processUpdateFile() {
-    let file = document.querySelector("#update-file").files[0];
-    getUpdateFileData(file).then(filedata => {
-        let signature = signUpdateFile(filedata);
+    var file = document.querySelector("#update-file").files[0];
+    getUpdateFileData(file).then(function (filedata) {
+        var signature = signUpdateFile(filedata);
         document.querySelector("#pkfp").value = adminSession.pkfp;
         document.querySelector("#sign").value = signature;
         document.querySelector("#select-file").innerText = "SELECTED: " + file.name;
-    }).catch(err => {
+    }).catch(function (err) {
         throw err;
     });
 }
@@ -341,21 +343,21 @@ function launchUpdate() {
 }
 
 function updateFromFile() {
-    let file = document.querySelector("#update-file").files[0];
-    getUpdateFileData(file).then(filedata => {
-        let signature = signUpdateFile(filedata);
+    var file = document.querySelector("#update-file").files[0];
+    getUpdateFileData(file).then(function (filedata) {
+        var signature = signUpdateFile(filedata);
         sendUpdateFromFileRequest(file, signature);
-    }).catch(err => {
+    }).catch(function (err) {
         throw err;
     });
 }
 
 function getUpdateFileData(file) {
-    return new Promise((resolve, reject) => {
+    return new Promise(function (resolve, reject) {
         try {
-            let reader = new FileReader();
+            var reader = new FileReader();
 
-            reader.onload = () => {
+            reader.onload = function () {
                 resolve(reader.result);
             };
             reader.readAsBinaryString(file);
@@ -366,21 +368,21 @@ function getUpdateFileData(file) {
 }
 
 function signUpdateFile(filedata) {
-    let ic = new iCrypto();
+    var ic = new iCrypto();
     ic.setRSAKey("pk", adminSession.privateKey, "private").addBlob("f", filedata).privateKeySign("f", "pk", "sign");
     return ic.get("sign");
 }
 
 function getSelectedUpdateBranch() {
-    let branchSelect = document.querySelector("#gh-update-branch-select");
+    var branchSelect = document.querySelector("#gh-update-branch-select");
     return branchSelect.options[branchSelect.options.selectedIndex].value;
 }
 
 function updateFromGithub() {
-    let ic = new iCrypto();
+    var ic = new iCrypto();
 
     ic.setRSAKey("pk", adminSession.privateKey, "private").createNonce("n").bytesToHex("n", "nhex").privateKeySign("n", "pk", "sign");
-    let data = new FormData();
+    var data = new FormData();
     data.append("action", "update_from_github");
     data.append("branch", getSelectedUpdateBranch());
     data.append("pkfp", adminSession.pkfp);
@@ -390,7 +392,7 @@ function updateFromGithub() {
 }
 
 function sendUpdateFromFileRequest(filedata, signature) {
-    let data = new FormData();
+    var data = new FormData();
     data.append("action", "update_from_file");
     data.append("pkfp", adminSession.pkfp);
     data.append("file", document.querySelector("#update-file").files[0]);
@@ -400,10 +402,10 @@ function sendUpdateFromFileRequest(filedata, signature) {
 }
 
 function sendUpdateRequest(data) {
-    let request = new XMLHttpRequest();
+    var request = new XMLHttpRequest();
     request.open("POST", window.location.href, true);
     request.send(data);
-    request.onreadystatechange = () => {
+    request.onreadystatechange = function () {
         if (request.readyState === XMLHttpRequest.DONE) {
             //
             console.log("Handling response");
@@ -426,12 +428,12 @@ function delayedPageReload(seconds) {
         window.location.href = "/";
         return;
     }
-    setTimeout(() => {
+    setTimeout(function () {
         delayedPageReload(seconds);
     }, 1000);
 }
 function loadingOnPromise() {
-    return new Promise((resolve, reject) => {
+    return new Promise(function (resolve, reject) {
         try {
             loadingOn();
             resolve();
@@ -458,7 +460,7 @@ function switchUpdateOption(event) {
         return;
     }
 
-    $(".update-option").each((index, el) => {
+    $(".update-option").each(function (index, el) {
         if (!$(el).hasClass("active") && $(el).attr("id") === "update-from-file") {
             $("#update-file--wrapper").css("display", "flex");
         } else if ($(el).hasClass("active") && $(el).attr("id") === "update-from-file") {
@@ -490,7 +492,7 @@ function displayAdminMenu(on) {
 }
 
 function prepareAdminMenuListeners() {
-    document.querySelector("#island-admin-main-menu").childNodes.forEach(node => {
+    document.querySelector("#island-admin-main-menu").childNodes.forEach(function (node) {
         node.addEventListener("click", processMainMenuClick);
     });
 }
@@ -499,17 +501,63 @@ function processMainMenuClick(ev) {
     if (ev.target.classList.contains("active")) {
         return;
     }
-    let menu = document.querySelector("#island-admin-main-menu");
-    for (let item of menu.children) {
-        item.classList.remove("active");
-    };
+    var menu = document.querySelector("#island-admin-main-menu");
+    var _iteratorNormalCompletion = true;
+    var _didIteratorError = false;
+    var _iteratorError = undefined;
 
-    let pages = document.querySelector("#admin-pages");
-    for (let item of pages.children) {
-        item.classList.remove("active");
-    };
+    try {
+        for (var _iterator = menu.children[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var item = _step.value;
 
-    let index = getElementIndex(ev.target);
+            item.classList.remove("active");
+        }
+    } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+    } finally {
+        try {
+            if (!_iteratorNormalCompletion && _iterator.return) {
+                _iterator.return();
+            }
+        } finally {
+            if (_didIteratorError) {
+                throw _iteratorError;
+            }
+        }
+    }
+
+    ;
+
+    var pages = document.querySelector("#admin-pages");
+    var _iteratorNormalCompletion2 = true;
+    var _didIteratorError2 = false;
+    var _iteratorError2 = undefined;
+
+    try {
+        for (var _iterator2 = pages.children[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+            var _item = _step2.value;
+
+            _item.classList.remove("active");
+        }
+    } catch (err) {
+        _didIteratorError2 = true;
+        _iteratorError2 = err;
+    } finally {
+        try {
+            if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                _iterator2.return();
+            }
+        } finally {
+            if (_didIteratorError2) {
+                throw _iteratorError2;
+            }
+        }
+    }
+
+    ;
+
+    var index = getElementIndex(ev.target);
 
     pages.children[index].classList.add("active");
     menu.children[index].classList.add("active");
@@ -521,17 +569,19 @@ function clearAdminPrivateKey() {
 }
 
 function getElementIndex(node) {
-    let index = 0;
+    var index = 0;
     while (node = node.previousElementSibling) {
         index++;
     }
     return index;
 }
 
-function loadLogs(errorsOnly = false) {
-    let privKey = adminSession.privateKey;
-    let pkfp = adminSession.pkfp;
-    let ic = new iCrypto();
+function loadLogs() {
+    var errorsOnly = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
+    var privKey = adminSession.privateKey;
+    var pkfp = adminSession.pkfp;
+    var ic = new iCrypto();
     ic.createNonce('n').setRSAKey("pk", privKey, 'private').privateKeySign('n', 'pk', 'sign').bytesToHex('n', 'nhex');
 
     $.ajax({
@@ -546,68 +596,111 @@ function loadLogs(errorsOnly = false) {
             errorsOnly: errorsOnly
         },
         success: processLogsLoaded,
-        err: err => {
-            toastr.warning("Error loading logs: " + err);
+        err: function err(_err3) {
+            toastr.warning("Error loading logs: " + _err3);
         }
     });
 }
 
 function processLogsLoaded(res) {
-    let records = res.records.split("\n");
-    let table = document.querySelector("#log-content").lastElementChild;
+    var records = res.records.split("\n");
+    var table = document.querySelector("#log-content").lastElementChild;
     table.innerHTML = "";
-    for (let record of records) {
-        let parsed;
-        try {
-            parsed = JSON.parse(record);
-        } catch (err) {
-            continue;
-        }
+    var _iteratorNormalCompletion3 = true;
+    var _didIteratorError3 = false;
+    var _iteratorError3 = undefined;
 
-        let row = document.createElement("tr");
-        row.classList.add(parsed.level);
-        let ts = document.createElement("td");
-        let level = document.createElement("td");
-        let msg = document.createElement("td");
-        ts.classList.add("log-timestamp");
-        level.classList.add("log-level");
-        msg.classList.add("log-msg");
-        ts.innerHTML = parsed.timestamp;
-        level.innerHTML = parsed.level;
-        msg.innerHTML = parsed.message;
-        row.append(ts);
-        row.append(level);
-        row.append(msg);
-        let additionalValues = new CuteSet(Object.keys(parsed)).minus(["level", "message", "timestamp"]);
-        if (additionalValues.length() > 0) {
-            let addCell = document.createElement("td");
-            for (let key of additionalValues) {
-                let wrap = document.createElement("div");
-                wrap.classList.add("log-add-value");
-                let k = document.createElement("div");
-                let b = document.createElement("b");
-                k.classList.add("log-key");
-                let v = document.createElement("div");
-                v.classList.add("log-val");
-                b.innerHTML = key;
-                k.appendChild(b);
-                v.innerHTML = parsed[key];
-                wrap.appendChild(k);
-                wrap.appendChild(v);
-                addCell.appendChild(wrap);
-                row.appendChild(addCell);
+    try {
+        for (var _iterator3 = records[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+            var record = _step3.value;
+
+            var parsed = void 0;
+            try {
+                parsed = JSON.parse(record);
+            } catch (err) {
+                continue;
+            }
+
+            var row = document.createElement("tr");
+            row.classList.add(parsed.level);
+            var ts = document.createElement("td");
+            var level = document.createElement("td");
+            var msg = document.createElement("td");
+            ts.classList.add("log-timestamp");
+            level.classList.add("log-level");
+            msg.classList.add("log-msg");
+            ts.innerHTML = parsed.timestamp;
+            level.innerHTML = parsed.level;
+            msg.innerHTML = parsed.message;
+            row.append(ts);
+            row.append(level);
+            row.append(msg);
+            var additionalValues = new CuteSet(Object.keys(parsed)).minus(["level", "message", "timestamp"]);
+            if (additionalValues.length() > 0) {
+                var addCell = document.createElement("td");
+                var _iteratorNormalCompletion4 = true;
+                var _didIteratorError4 = false;
+                var _iteratorError4 = undefined;
+
+                try {
+                    for (var _iterator4 = additionalValues[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+                        var key = _step4.value;
+
+                        var wrap = document.createElement("div");
+                        wrap.classList.add("log-add-value");
+                        var k = document.createElement("div");
+                        var b = document.createElement("b");
+                        k.classList.add("log-key");
+                        var v = document.createElement("div");
+                        v.classList.add("log-val");
+                        b.innerHTML = key;
+                        k.appendChild(b);
+                        v.innerHTML = parsed[key];
+                        wrap.appendChild(k);
+                        wrap.appendChild(v);
+                        addCell.appendChild(wrap);
+                        row.appendChild(addCell);
+                    }
+                } catch (err) {
+                    _didIteratorError4 = true;
+                    _iteratorError4 = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion4 && _iterator4.return) {
+                            _iterator4.return();
+                        }
+                    } finally {
+                        if (_didIteratorError4) {
+                            throw _iteratorError4;
+                        }
+                    }
+                }
+            }
+            table.appendChild(row);
+        }
+    } catch (err) {
+        _didIteratorError3 = true;
+        _iteratorError3 = err;
+    } finally {
+        try {
+            if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                _iterator3.return();
+            }
+        } finally {
+            if (_didIteratorError3) {
+                throw _iteratorError3;
             }
         }
-        table.appendChild(row);
     }
+
     toastr.info("Logs loaded successfully");
 }
 
 function requestLoggerStateChange(ev) {
-    let selectedElement = ev.target.options[ev.target.selectedIndex];
-    let privKey = adminSession.privateKey;
-    let pkfp = adminSession.pkfp;
-    let ic = new iCrypto();
+    var selectedElement = ev.target.options[ev.target.selectedIndex];
+    var privKey = adminSession.privateKey;
+    var pkfp = adminSession.pkfp;
+    var ic = new iCrypto();
     ic.createNonce('n').setRSAKey("pk", privKey, 'private').privateKeySign('n', 'pk', 'sign').bytesToHex('n', 'nhex');
 
     $.ajax({
@@ -622,21 +715,21 @@ function requestLoggerStateChange(ev) {
             pkfp: pkfp
 
         },
-        success: () => {
-            let message = "Logger has been successfully " + (selectedElement.value === "true" ? "enabled" : "disabled");
+        success: function success() {
+            var message = "Logger has been successfully " + (selectedElement.value === "true" ? "enabled" : "disabled");
             toastr.info(message);
         },
-        err: err => {
-            toastr.warning("Error loading logs: " + err);
+        err: function err(_err4) {
+            toastr.warning("Error loading logs: " + _err4);
         }
     });
 }
 
 function requestLoggerLevelChange(ev) {
-    let selectedElement = ev.target.options[ev.target.selectedIndex];
-    let privKey = adminSession.privateKey;
-    let pkfp = adminSession.pkfp;
-    let ic = new iCrypto();
+    var selectedElement = ev.target.options[ev.target.selectedIndex];
+    var privKey = adminSession.privateKey;
+    var pkfp = adminSession.pkfp;
+    var ic = new iCrypto();
     ic.createNonce('n').setRSAKey("pk", privKey, 'private').privateKeySign('n', 'pk', 'sign').bytesToHex('n', 'nhex');
 
     $.ajax({
@@ -651,21 +744,21 @@ function requestLoggerLevelChange(ev) {
             pkfp: pkfp
 
         },
-        success: () => {
+        success: function success() {
             toastr.info("Log level has been changed to: " + selectedElement.value);
         },
-        err: err => {
-            toastr.warning("Error loading logs: " + err);
+        err: function err(_err5) {
+            toastr.warning("Error loading logs: " + _err5);
         }
     });
 }
 
 function prepareLogPageListeners() {
-    document.querySelector("#load-logs").addEventListener("click", () => {
+    document.querySelector("#load-logs").addEventListener("click", function () {
         loadLogs();
     });
 
-    document.querySelector("#load-error-logs").addEventListener("click", () => {
+    document.querySelector("#load-error-logs").addEventListener("click", function () {
         loadLogs(true);
     });
 
@@ -675,13 +768,13 @@ function prepareLogPageListeners() {
 
 function reverseLogList() {
 
-    for (let i = 0; i < logTableBody.childNodes.length; i++) {
+    for (var i = 0; i < logTableBody.childNodes.length; i++) {
         logTableBody.insertBefore(logTableBody.childNodes[i], logTableBody.firstChild);
     }
 }
 
 function filterLogs(ev) {
-    let filter;
+    var filter = void 0;
     try {
         filter = new RegExp(ev.target.value);
         if (!filter || filter.length === 0) {
@@ -691,11 +784,11 @@ function filterLogs(ev) {
         return;
     }
 
-    for (let i = 0; i < logTableBody.childNodes.length; i++) {
+    for (var i = 0; i < logTableBody.childNodes.length; i++) {
 
-        let selectedField = parseInt(filterFieldSelector.options[filterFieldSelector.selectedIndex].value);
-        let row = logTableBody.childNodes[i];
-        let testingField;
+        var selectedField = parseInt(filterFieldSelector.options[filterFieldSelector.selectedIndex].value);
+        var row = logTableBody.childNodes[i];
+        var testingField = void 0;
         if (!isNaN(selectedField)) {
             testingField = row.children[selectedField] ? row.children[selectedField].innerHTML : "";
         } else {
@@ -706,9 +799,9 @@ function filterLogs(ev) {
 }
 
 function clearLogs(ev) {
-    let privKey = adminSession.privateKey;
-    let pkfp = adminSession.pkfp;
-    let ic = new iCrypto();
+    var privKey = adminSession.privateKey;
+    var pkfp = adminSession.pkfp;
+    var ic = new iCrypto();
     ic.createNonce('n').setRSAKey("pk", privKey, 'private').privateKeySign('n', 'pk', 'sign').bytesToHex('n', 'nhex');
 
     $.ajax({
@@ -721,12 +814,12 @@ function clearLogs(ev) {
             sign: ic.get('sign'),
             pkfp: pkfp
         },
-        success: () => {
+        success: function success() {
             logTableBody.innerHTML = "";
             toastr.info("Log level have been cleared");
         },
-        err: err => {
-            toastr.warning("Error clearing logs: " + err);
+        err: function err(_err6) {
+            toastr.warning("Error clearing logs: " + _err6);
         }
     });
 }

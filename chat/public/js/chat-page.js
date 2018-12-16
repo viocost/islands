@@ -1,23 +1,26 @@
-let chat;
+"use strict";
 
-const DAYSOFWEEK = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+var chat = void 0;
+
+var DAYSOFWEEK = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 //variables to create new topic
-let nickname, topicName;
+var nickname = void 0,
+    topicName = void 0;
 
 //variables to topic login
-let topicID;
+var topicID = void 0;
 
-let sounds = {};
+var sounds = {};
 
-let soundsOnOfIcons = {
+var soundsOnOfIcons = {
     on: "/img/sound-on.png",
     off: "/img/sound-off.png"
 };
 
-let sendLock = false;
+var sendLock = false;
 
-let mainMenuItems = [{
+var mainMenuItems = [{
     index: 0,
     subtitle: "Login",
     selector: "#login-container",
@@ -34,14 +37,14 @@ let mainMenuItems = [{
     active: false
 }];
 
-let tempName;
+var tempName = void 0;
 
-let recording = false;
+var recording = false;
 
 //variables to display new topic data
 //let newPubKey, newPrivKey, newNickname, newTopicID, newTopicName;
 
-document.addEventListener('DOMContentLoaded', event => {
+document.addEventListener('DOMContentLoaded', function (event) {
     console.log('initializing chat....');
     chat = new ChatClient();
     loadSounds();
@@ -74,19 +77,19 @@ document.addEventListener('DOMContentLoaded', event => {
         }
     });
     $('#chat_window').scroll(processChatScroll);
-    $('#private-key').keyup(async e => {
+    $('#private-key').keyup(async function (e) {
         if (e.keyCode === 13) {
             await topicLogin();
         }
     });
 
-    $('#join-nickname, #invite-code').keyup(async e => {
+    $('#join-nickname, #invite-code').keyup(async function (e) {
         if (e.keyCode === 13) {
             await joinTopic();
         }
     });
 
-    $('#new-topic-nickname, #new-topic-name').keyup(async e => {
+    $('#new-topic-nickname, #new-topic-name').keyup(async function (e) {
         if (e.keyCode === 13) {
             createTopic();
         }
@@ -96,15 +99,36 @@ document.addEventListener('DOMContentLoaded', event => {
 });
 
 function loadSounds() {
-    let sMap = {
+    var sMap = {
         "incoming_message": "message_incoming.mp3",
         "message_sent": "message_sent.mp3",
         "user_online": "user_online.mp3"
     };
 
-    for (let s of Object.keys(sMap)) {
-        sounds[s] = new Audio("/sounds/" + sMap[s]);
-        sounds[s].load();
+    var _iteratorNormalCompletion = true;
+    var _didIteratorError = false;
+    var _iteratorError = undefined;
+
+    try {
+        for (var _iterator = Object.keys(sMap)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var s = _step.value;
+
+            sounds[s] = new Audio("/sounds/" + sMap[s]);
+            sounds[s].load();
+        }
+    } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+    } finally {
+        try {
+            if (!_iteratorNormalCompletion && _iterator.return) {
+                _iterator.return();
+            }
+        } finally {
+            if (_didIteratorError) {
+                throw _iteratorError;
+            }
+        }
     }
 }
 
@@ -127,7 +151,7 @@ function moveCursorToEnd(el) {
         el.selectionStart = el.selectionEnd = el.value.length;
     } else if (typeof el.createTextRange != "undefined") {
         el.focus();
-        let range = el.createTextRange();
+        var range = el.createTextRange();
         range.collapse(false);
         range.select();
     }
@@ -138,7 +162,7 @@ function moveCursorToStart(el) {
         el.selectionStart = el.selectionEnd = 0;
     } else if (typeof el.createTextRange != "undefined") {
         el.focus();
-        let range = el.createTextRange();
+        var range = el.createTextRange();
         range.collapse(false);
         range.select();
     }
@@ -148,11 +172,11 @@ function createTopic() {
     nickname = document.querySelector('#new-topic-nickname').value.trim();
     topicName = document.querySelector('#new-topic-name').value.trim();
     loadingOn();
-    chat.initTopic(nickname, topicName).then(data => {
+    chat.initTopic(nickname, topicName).then(function (data) {
         console.log("Topic create attempt successful");
         nickname.value = "";
         topicName.value = "";
-    }).catch(err => {
+    }).catch(function (err) {
         console.log("Error creating topic: " + err);
         loadingOff();
     });
@@ -161,17 +185,17 @@ function createTopic() {
 async function topicLogin() {
     loadingOn();
     console.log("called topic login");
-    let privKey = document.querySelector('#private-key').value;
+    var privKey = document.querySelector('#private-key').value;
     clearLoginPrivateKey();
     await chat.topicLogin(privKey);
 }
 
 async function joinTopic() {
-    let inviteCode = document.querySelector('#invite-code').value.trim();
-    let nickname = document.querySelector('#join-nickname').value.trim();
+    var inviteCode = document.querySelector('#invite-code').value.trim();
+    var nickname = document.querySelector('#join-nickname').value.trim();
     loadingOn();
     try {
-        let data = await chat.initTopicJoin(nickname, inviteCode);
+        var data = await chat.initTopicJoin(nickname, inviteCode);
     } catch (err) {
         toastr.error("Topic was not created. Error: " + err);
         loadingOff();
@@ -179,12 +203,12 @@ async function joinTopic() {
 }
 
 function setupChatListeners(chat) {
-    chat.on("init_topic_success", data => {
+    chat.on("init_topic_success", function (data) {
         loadingOff();
         displayNewTopicData(data);
     });
-    chat.on("init_topic_error", err => {
-        let msg;
+    chat.on("init_topic_error", function (err) {
+        var msg = void 0;
         if (err instanceof Error) {
             msg = err.message;
         } else {
@@ -194,7 +218,7 @@ function setupChatListeners(chat) {
         toastr.error("Topic was not created. Error: " + msg);
     });
 
-    chat.on("login_success", messages => {
+    chat.on("login_success", function (messages) {
         document.querySelector('#sounds-switch').src = chat.session.settings.soundsOn ? soundsOnOfIcons.on : soundsOnOfIcons.off;
         loadingOff();
         clearAllInputs();
@@ -203,119 +227,119 @@ function setupChatListeners(chat) {
         toastr.success("You are now online!");
     });
 
-    chat.on("unknown_error", err => {
+    chat.on("unknown_error", function (err) {
         console.log("unknown_error emited by chat: " + err);
         toastr.error("Chat error: " + err);
     });
-    chat.on("login_fail", err => {
+    chat.on("login_fail", function (err) {
         clearLoginPrivateKey();
         loadingOff();
         console.log("Login fail emited by chat: " + err);
         toastr.error("Login fail: " + err);
     });
 
-    chat.on('request_invite_success', inviteID => {
+    chat.on('request_invite_success', function (inviteID) {
         buttonLoadingOff(document.querySelector("#new-invite"));
         showInviteCode(inviteID);
     });
 
-    chat.on('invite_updated', () => {
+    chat.on('invite_updated', function () {
         toastr.info("Invite updated!");
     });
 
-    chat.on("new_member_joined", data => {
+    chat.on("new_member_joined", function (data) {
         processNewMemberJoin(data);
     });
 
-    chat.on("settings_updated", () => {
+    chat.on("settings_updated", function () {
         updateParticipants();
         syncPendingInvites();
         updateLoadedMessages();
     });
 
-    chat.on("participant_booted", message => {
+    chat.on("participant_booted", function (message) {
         updateParticipants();
         toastr.info(message);
     });
 
-    chat.on("metadata_updated", () => {
+    chat.on("metadata_updated", function () {
         updateParticipants();
         updateLoadedMessages();
     });
 
-    chat.on("boot_participant_success", message => {
+    chat.on("boot_participant_success", function (message) {
         updateParticipants();
         toastr.info(message);
     });
 
-    chat.on("u_booted", message => {
+    chat.on("u_booted", function (message) {
         toastr.warning(message);
     });
 
-    chat.on("boot_participant_fail", message => {
+    chat.on("boot_participant_fail", function (message) {
         toastr.warning("Participant booting failed: " + message);
     });
 
-    chat.on("topic_join_success", data => {
+    chat.on("topic_join_success", function (data) {
         processTopicJoinSuccess(data);
     });
 
-    chat.on("del_invite_fail", () => {
+    chat.on("del_invite_fail", function () {
         toastr.warning("Error deleting invite");
     });
 
-    chat.on("del_invite_success", () => {
+    chat.on("del_invite_success", function () {
         syncPendingInvites();
         toastr.info("Invite was deleted");
     });
 
-    chat.on("chat_message", data => {
+    chat.on("chat_message", function (data) {
         processIncomingMessage(data);
         playSound("incoming_message");
     });
 
-    chat.on("send_success", message => {
+    chat.on("send_success", function (message) {
         playSound("message_sent");
         messageSendSuccess(message);
     });
 
-    chat.on("send_fail", message => {
+    chat.on("send_fail", function (message) {
         messageSendFail(message);
     });
 
-    chat.on("service_record", record => {
+    chat.on("service_record", function (record) {
         processServiceRecord(record);
     });
 
-    chat.on("sync_invites_success", () => {
+    chat.on("sync_invites_success", function () {
         refreshInvitesSuccess();
     });
 
-    chat.on("sync_invites_error", msg => {
+    chat.on("sync_invites_error", function (msg) {
         buttonLoadingOff(document.querySelector('#refresh-invites'));
         toastr.warning("Invite request failed: " + msg);
     });
 
-    chat.on("request_invite_error", msg => {
+    chat.on("request_invite_error", function (msg) {
         buttonLoadingOff(document.querySelector('#new-invite'));
         toastr.warning("Invite request failed: " + msg);
     });
 
-    chat.on("messages_loaded", messages => {
+    chat.on("messages_loaded", function (messages) {
         processMessagesLoaded(messages);
     });
 
-    chat.on("connected_to_island", () => {
+    chat.on("connected_to_island", function () {
         switchConnectionStatus(true);
     });
 
-    chat.on("disconnected_from_island", () => {
+    chat.on("disconnected_from_island", function () {
         switchConnectionStatus(false);
     });
 
-    chat.on("download_complete", res => {
-        let fileInfo = JSON.parse(res.fileInfo);
-        let fileData = res.fileData;
+    chat.on("download_complete", function (res) {
+        var fileInfo = JSON.parse(res.fileInfo);
+        var fileData = res.fileData;
         if (/audio/.test(fileInfo.type)) {
             loadAudio(fileInfo, fileData);
         } else {
@@ -324,15 +348,15 @@ function setupChatListeners(chat) {
     });
 }
 function processIncomingMessage(message) {
-    let pkfp = message.header.author;
-    let storedNickname = chat.getMemberNickname(pkfp);
+    var pkfp = message.header.author;
+    var storedNickname = chat.getMemberNickname(pkfp);
     if (storedNickname !== message.header.nickname) {
         chat.setMemberNickname(pkfp, message.header.nickname);
         storedNickname = chat.getMemberNickname(pkfp);
         chat.saveClientSettings(chat.session.publicKeyFingerprint);
     }
-    let alias = chat.getMemberAlias(pkfp);
-    let timestamp = message.header.timestamp;
+    var alias = chat.getMemberAlias(pkfp);
+    var timestamp = message.header.timestamp;
     appendMessageToChat({
         nickname: storedNickname,
         alias: alias,
@@ -349,8 +373,8 @@ function processIncomingMessage(message) {
 }
 
 function processServiceRecord(record) {
-    let timestamp = record.header.timestamp;
-    let pkfp = record.header.author;
+    var timestamp = record.header.timestamp;
+    var pkfp = record.header.author;
     appendMessageToChat({
         nickname: "Service",
         timestamp: timestamp,
@@ -368,10 +392,10 @@ function sendMessage() {
         return;
     }
     lockSend(true);
-    let message = document.querySelector('#new-msg');
-    let attachments = document.querySelector('#attach-file').files;
-    let addresseeSelect = document.querySelector("#select-member");
-    let addressee = addresseeSelect[addresseeSelect.selectedIndex].value;
+    var message = document.querySelector('#new-msg');
+    var attachments = document.querySelector('#attach-file').files;
+    var addresseeSelect = document.querySelector("#select-member");
+    var addressee = addresseeSelect[addresseeSelect.selectedIndex].value;
 
     if (message.value.trim() === "" && attachments.length === 0) {
         lockSend(false);
@@ -379,16 +403,16 @@ function sendMessage() {
     }
 
     if (addressee === "ALL") {
-        chat.shoutMessage(message.value.trim(), attachments).then(() => {
+        chat.shoutMessage(message.value.trim(), attachments).then(function () {
             console.log("Send message resolved");
-        }).catch(err => {
+        }).catch(function (err) {
             console.log("Error sending message" + err.message);
             lockSend(false);
         });
     } else {
-        chat.whisperMessage(addressee, message.value.trim()).then(() => {
+        chat.whisperMessage(addressee, message.value.trim()).then(function () {
             console.log("Done whispering message!");
-        }).catch(err => {
+        }).catch(function (err) {
             console.log("Error sending message" + err.message);
             lockSend(false);
         });
@@ -398,10 +422,10 @@ function sendMessage() {
 }
 
 function messageSendSuccess(message) {
-    let pkfp = message.header.author;
-    let nickname = chat.getMemberNickname(pkfp) || message.header.nickname;
+    var pkfp = message.header.author;
+    var nickname = chat.getMemberNickname(pkfp) || message.header.nickname;
 
-    let timestamp = message.header.timestamp;
+    var timestamp = message.header.timestamp;
 
     appendMessageToChat({
         nickname: nickname,
@@ -423,13 +447,13 @@ function messageSendFail(message) {
 }
 
 function get_current_time() {
-    let d = new Date();
+    var d = new Date();
     return padWithZeroes(2, d.getHours()) + ':' + padWithZeroes(2, d.getMinutes());
 }
 
 function getChatFormatedDate(timestamp) {
-    let d = new Date(timestamp);
-    let today = new Date();
+    var d = new Date(timestamp);
+    var today = new Date();
     if (Math.floor((today - d) / 1000) <= 64000) {
         return d.getHours() + ':' + padWithZeroes(2, d.getMinutes());
     } else {
@@ -438,7 +462,7 @@ function getChatFormatedDate(timestamp) {
 }
 
 function padWithZeroes(requiredLength, value) {
-    let res = "0".repeat(requiredLength) + String(value).trim();
+    var res = "0".repeat(requiredLength) + String(value).trim();
     return res.substr(res.length - requiredLength);
 }
 
@@ -460,8 +484,8 @@ function processNewMemberJoin() {
 function bootParticipant(event) {
     console.log("About to boot participant");
     ensureConnected();
-    let participantPkfp = event.target.parentElement.parentElement.lastElementChild.innerHTML;
-    let participant = chat.session.settings.membersData[participantPkfp];
+    var participantPkfp = event.target.parentElement.parentElement.lastElementChild.innerHTML;
+    var participant = chat.session.settings.membersData[participantPkfp];
 
     if (participantPkfp == chat.session.publicKeyFingerprint) {
         if (confirm("Are you sure you want to leave this topic?")) {
@@ -477,19 +501,19 @@ function bootParticipant(event) {
 
 function addParticipantToSettings(key) {
 
-    let records = document.querySelector("#participants-records");
-    let participant = chat.session.metadata.participants[key];
+    var records = document.querySelector("#participants-records");
+    var participant = chat.session.metadata.participants[key];
     if (!participant) {
         console.error("Error adding participant");
         return;
     }
 
-    let wrapper = document.createElement("div");
-    let id = document.createElement("div");
-    let nickname = document.createElement("div");
-    let rights = document.createElement("div");
-    let actions = document.createElement("div");
-    let delButton = document.createElement("div");
+    var wrapper = document.createElement("div");
+    var id = document.createElement("div");
+    var nickname = document.createElement("div");
+    var rights = document.createElement("div");
+    var actions = document.createElement("div");
+    var delButton = document.createElement("div");
 
     id.setAttribute("class", "participant-id");
     wrapper.setAttribute("class", "participant-wrapper");
@@ -517,54 +541,76 @@ function updateParticipants() {
     $('#participants-records').html("");
     $('#participants--topic-name').html("Topic: " + chat.session.settings.topicName);
 
-    let mypkfp = chat.session.publicKeyFingerprint;
-    let participantsKeys = Object.keys(chat.session.metadata.participants).filter(val => {
+    var mypkfp = chat.session.publicKeyFingerprint;
+    var participantsKeys = Object.keys(chat.session.metadata.participants).filter(function (val) {
         return val !== mypkfp;
     });
 
-    let recipientChoice = document.querySelector("#select-member");
-    let defaultRecipient = document.createElement("option");
+    var recipientChoice = document.querySelector("#select-member");
+    var defaultRecipient = document.createElement("option");
     defaultRecipient.setAttribute("value", "ALL");
     defaultRecipient.innerText = "All";
     recipientChoice.innerHTML = "";
     recipientChoice.appendChild(defaultRecipient);
 
-    for (let pkfp of participantsKeys) {
-        addParticipantToSettings(pkfp);
-        let participantId = document.createElement("span");
-        participantId.classList.add("online-user-id");
-        participantId.innerText = pkfp;
-        let status = document.createElement("img");
-        status.classList.add("participant-status");
-        status.setAttribute("src", "/img/online.png");
+    var _iteratorNormalCompletion2 = true;
+    var _didIteratorError2 = false;
+    var _iteratorError2 = undefined;
 
-        let pName = document.createElement("input");
+    try {
+        for (var _iterator2 = participantsKeys[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+            var pkfp = _step2.value;
 
-        pName.value = chat.getMemberAlias(pkfp) || chat.getMemberNickname(pkfp) || "Anonymous";
-        pName.addEventListener("change", participantAliasChange);
-        pName.classList.add("participant-alias");
+            addParticipantToSettings(pkfp);
+            var participantId = document.createElement("span");
+            participantId.classList.add("online-user-id");
+            participantId.innerText = pkfp;
+            var status = document.createElement("img");
+            status.classList.add("participant-status");
+            status.setAttribute("src", "/img/online.png");
 
-        let pRow = document.createElement("div");
-        pRow.classList.add("online-user-row");
-        pRow.appendChild(participantId);
-        pRow.appendChild(status);
-        pRow.appendChild(pName);
+            var pName = document.createElement("input");
 
-        if (chat.getMemberAlias(pkfp)) {
-            let chosenName = document.createElement("span");
-            chosenName.innerText = "(" + (chat.getMemberNickname(pkfp) || "Anonymous") + ")";
-            pRow.appendChild(chosenName);
+            pName.value = chat.getMemberAlias(pkfp) || chat.getMemberNickname(pkfp) || "Anonymous";
+            pName.addEventListener("change", participantAliasChange);
+            pName.classList.add("participant-alias");
+
+            var pRow = document.createElement("div");
+            pRow.classList.add("online-user-row");
+            pRow.appendChild(participantId);
+            pRow.appendChild(status);
+            pRow.appendChild(pName);
+
+            if (chat.getMemberAlias(pkfp)) {
+                var chosenName = document.createElement("span");
+                chosenName.innerText = "(" + (chat.getMemberNickname(pkfp) || "Anonymous") + ")";
+                pRow.appendChild(chosenName);
+            }
+
+            document.querySelector("#online-users-list").appendChild(pRow);
+
+            //Adding to list of recipients
+            var recipientOption = document.createElement("option");
+            recipientOption.setAttribute("value", pkfp);
+            recipientOption.innerText = pName.value + " (" + chat.getMemberNickname(pkfp) + ")";
+            recipientChoice.appendChild(recipientOption);
         }
-
-        document.querySelector("#online-users-list").appendChild(pRow);
-
-        //Adding to list of recipients
-        let recipientOption = document.createElement("option");
-        recipientOption.setAttribute("value", pkfp);
-        recipientOption.innerText = pName.value + " (" + chat.getMemberNickname(pkfp) + ")";
-        recipientChoice.appendChild(recipientOption);
+    } catch (err) {
+        _didIteratorError2 = true;
+        _iteratorError2 = err;
+    } finally {
+        try {
+            if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                _iterator2.return();
+            }
+        } finally {
+            if (_didIteratorError2) {
+                throw _iteratorError2;
+            }
+        }
     }
-    let participantsRecords = document.querySelector("#participants-records");
+
+    var participantsRecords = document.querySelector("#participants-records");
     if (participantsRecords.children.length > 0) {
         participantsRecords.lastChild.classList.add("participant-wrapper-last");
     }
@@ -572,7 +618,7 @@ function updateParticipants() {
 
 function updateLoadedMessages() {
 
-    document.querySelector("#chat_window").childNodes.forEach(msg => {
+    document.querySelector("#chat_window").childNodes.forEach(function (msg) {
         if (msg.classList.contains("service-record")) {
             return;
         } else if (msg.classList.contains("my_message")) {
@@ -580,17 +626,17 @@ function updateLoadedMessages() {
                 return;
             }
             try {
-                let heading = msg.firstChild;
-                let pkfp = heading.querySelector(".m-recipient-id").innerHTML;
+                var heading = msg.firstChild;
+                var pkfp = heading.querySelector(".m-recipient-id").innerHTML;
                 heading.querySelector(".private-mark").innerText = "(private to " + chat.getMemberAlias(pkfp) + ")";
             } catch (err) {
                 console.error(err);
             }
         } else {
             try {
-                let heading = msg.firstChild;
-                let pkfp = heading.querySelector(".m-author-id").innerHTML;
-                heading.querySelector(".m-alias").innerText = chat.getMemberAlias(pkfp);
+                var _heading = msg.firstChild;
+                var _pkfp = _heading.querySelector(".m-author-id").innerHTML;
+                _heading.querySelector(".m-alias").innerText = chat.getMemberAlias(_pkfp);
             } catch (err) {
                 console.error(err);
             }
@@ -600,7 +646,7 @@ function updateLoadedMessages() {
 
 function processLogin(messages) {
     setView("chat");
-    let nickName = chat.session.settings.nickname;
+    var nickName = chat.session.settings.nickname;
     $('#user-name').val(nickName);
     $('#topic-name').val(chat.session.settings.topicName);
     if (chat.session.metadata.topicName) document.title = chat.session.metadata.topicName;
@@ -613,15 +659,15 @@ function processLogin(messages) {
 
 function processMessagesLoaded(messages) {
     while (messages.length > 0) {
-        let message = messages.shift();
+        var message = messages.shift();
         try {
             message = typeof message === "string" ? JSON.parse(message) : message;
         } catch (err) {
             console.log("Could not parse json. Message: " + messages[messages.length - i - 1]);
             continue;
         }
-        let authorPkfp = message.header.author;
-        let alias = isMyMessage(authorPkfp) ? chat.getMemberNickname(authorPkfp) : chat.getMemberRepr(authorPkfp);
+        var authorPkfp = message.header.author;
+        var alias = isMyMessage(authorPkfp) ? chat.getMemberNickname(authorPkfp) : chat.getMemberRepr(authorPkfp);
         appendMessageToChat({
             nickname: message.header.nickname,
             alias: alias,
@@ -646,30 +692,30 @@ function processLogout() {
 }
 
 function setNavbarListeners() {
-    $('#chat-view-button').click(() => {
+    $('#chat-view-button').click(function () {
         setView("chat");
     });
-    $('#settings-view-button').click(() => {
+    $('#settings-view-button').click(function () {
         setView("settings");
     });
 
-    $('#logout-button').click(() => {
+    $('#logout-button').click(function () {
         processLogout();
     });
 }
 
 function onLoginLoadMessages(messages) {
     document.querySelector("#chat_window").innerHTML = "";
-    for (let i = 0; i < messages.length; ++i) {
-        let message;
+    for (var _i = 0; _i < messages.length; ++_i) {
+        var message = void 0;
         try {
-            message = typeof messages[messages.length - i - 1] === "string" ? JSON.parse(messages[messages.length - i - 1]) : messages[messages.length - i - 1];
+            message = typeof messages[messages.length - _i - 1] === "string" ? JSON.parse(messages[messages.length - _i - 1]) : messages[messages.length - _i - 1];
         } catch (err) {
-            console.log("Could not parse json. Message: " + messages[messages.length - i - 1]);
+            console.log("Could not parse json. Message: " + messages[messages.length - _i - 1]);
             continue;
         }
-        const pkfp = message.header.author;
-        const alias = isMyMessage(pkfp) ? chat.getMemberNickname(pkfp) : chat.getMemberRepr(pkfp);
+        var pkfp = message.header.author;
+        var alias = isMyMessage(pkfp) ? chat.getMemberNickname(pkfp) : chat.getMemberRepr(pkfp);
 
         appendMessageToChat({
             nickname: message.header.nickname,
@@ -696,14 +742,16 @@ function onLoginFillParticipants() {}
  *  pkfp: pkfp
  * }
  */
-function appendMessageToChat(message, toHead = false) {
-    let chatWindow = document.querySelector('#chat_window');
-    let msg = document.createElement('div');
-    let message_id = document.createElement('div');
-    let message_body = document.createElement('div');
+function appendMessageToChat(message) {
+    var toHead = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+    var chatWindow = document.querySelector('#chat_window');
+    var msg = document.createElement('div');
+    var message_id = document.createElement('div');
+    var message_body = document.createElement('div');
 
     message_body.classList.add('msg-body');
-    let message_heading = buildMessageHeading(message);
+    var message_heading = buildMessageHeading(message);
 
     if (isMyMessage(message.pkfp)) {
         // My message
@@ -713,13 +761,13 @@ function appendMessageToChat(message, toHead = false) {
     } else {
         //Not my Message
         msg.classList.add('message');
-        let author = document.createElement('div');
+        var author = document.createElement('div');
         author.classList.add("m-author-id");
         author.innerHTML = message.pkfp;
         message_heading.appendChild(author);
     }
     if (message.private) {
-        let privateMark = preparePrivateMark(message);
+        var privateMark = preparePrivateMark(message);
         message_heading.appendChild(privateMark);
         msg.classList.add('private-message');
     }
@@ -731,7 +779,7 @@ function appendMessageToChat(message, toHead = false) {
     //msg.innerHTML = '<b>'+message.author +'</b><br>' + message.message;
 
     //processing attachments
-    let attachments = processAttachments(message.attachments);
+    var attachments = processAttachments(message.attachments);
     msg.appendChild(message_heading);
     msg.appendChild(message_body);
     if (attachments !== undefined) {
@@ -747,10 +795,11 @@ function appendMessageToChat(message, toHead = false) {
 }
 
 function buildMessageHeading(message) {
-    let message_heading = document.createElement('div');
+    var message_heading = document.createElement('div');
     message_heading.classList.add('msg-heading');
 
-    let alias, aliasNicknameDevisor;
+    var alias = void 0,
+        aliasNicknameDevisor = void 0;
     if (message.alias) {
         alias = document.createElement("b");
         alias.classList.add("m-alias");
@@ -759,11 +808,11 @@ function buildMessageHeading(message) {
         aliasNicknameDevisor.innerText = "  --  ";
     }
 
-    let nickname = document.createElement("b");
+    var nickname = document.createElement("b");
     nickname.innerText = message.nickname;
     nickname.classList.add("m-nickname");
 
-    let time_stamp = document.createElement('span');
+    var time_stamp = document.createElement('span');
     time_stamp.innerHTML = getChatFormatedDate(message.timestamp);
     time_stamp.classList.add('msg-time-stamp');
 
@@ -783,7 +832,7 @@ function buildMessageHeading(message) {
         message_heading.appendChild(time_stamp);
     }
     if (message.recipient && message.recipient !== "ALL") {
-        let recipientId = document.createElement("div");
+        var recipientId = document.createElement("div");
         recipientId.innerHTML = message.recipient;
         recipientId.classList.add("m-recipient-id");
         message_heading.appendChild(recipientId);
@@ -792,11 +841,11 @@ function buildMessageHeading(message) {
 }
 
 function preparePrivateMark(message) {
-    let privateMark = document.createElement("span");
+    var privateMark = document.createElement("span");
     privateMark.classList.add("private-mark");
     if (isMyMessage(message.pkfp)) {
         privateMark.innerText = "(private to: ";
-        let recipientName = chat.getMemberRepr(message.recipient);
+        var recipientName = chat.getMemberRepr(message.recipient);
         privateMark.innerText += recipientName + ")";
     } else {
         privateMark.innerText = "(private)";
@@ -812,7 +861,7 @@ function preparePrivateMark(message) {
 
 async function downloadOnClick(ev) {
     console.log("Download event triggered!");
-    let target = ev.target;
+    var target = ev.target;
     while (target && !target.classList.contains("att-view")) {
         target = target.parentNode;
     }
@@ -820,9 +869,9 @@ async function downloadOnClick(ev) {
     if (!target) {
         throw "att-view container not found...";
     }
-    let fileInfo = target.nextSibling.innerHTML; //Extract fileInfo from message
+    var fileInfo = target.nextSibling.innerHTML; //Extract fileInfo from message
     console.log("obtained fileinfo: " + fileInfo);
-    let file = await chat.downloadAttachment(fileInfo); //download file
+    var file = await chat.downloadAttachment(fileInfo); //download file
 }
 
 /**
@@ -837,8 +886,8 @@ function processAttachments(attachments) {
         return undefined;
     }
 
-    let getAttachmentSize = function (size) {
-        let res = "";
+    var getAttachmentSize = function getAttachmentSize(size) {
+        var res = "";
         size = parseInt(size);
         if (size < 1000) {
             res = size.toString() + "b";
@@ -852,58 +901,80 @@ function processAttachments(attachments) {
         return res;
     };
 
-    let attachmentsWrapper = document.createElement("div");
+    var attachmentsWrapper = document.createElement("div");
     attachmentsWrapper.classList.add("msg-attachments");
 
-    for (let att of attachments) {
-        let attachment = document.createElement("div");
-        let attView = document.createElement("div");
-        let attInfo = document.createElement("div");
-        let attSize = document.createElement("span");
-        let attName = document.createElement("span");
-        let attIcon = document.createElement("span");
-        let iconImage = document.createElement("img");
+    var _iteratorNormalCompletion3 = true;
+    var _didIteratorError3 = false;
+    var _iteratorError3 = undefined;
 
-        // //State icons
-        let attState = document.createElement("div");
-        attState.classList.add("att-state");
+    try {
+        for (var _iterator3 = attachments[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+            var att = _step3.value;
 
-        let spinner = document.createElement("img");
-        spinner.classList.add("spinner");
-        spinner.src = "/img/spinner.gif";
-        spinner.display = "none";
+            var attachment = document.createElement("div");
+            var attView = document.createElement("div");
+            var attInfo = document.createElement("div");
+            var attSize = document.createElement("span");
+            var attName = document.createElement("span");
+            var attIcon = document.createElement("span");
+            var iconImage = document.createElement("img");
 
-        attState.appendChild(spinner);
+            // //State icons
+            var attState = document.createElement("div");
+            attState.classList.add("att-state");
 
-        iconImage.src = "/img/attachment.png";
-        attSize.classList.add("att-size");
-        attView.classList.add("att-view");
-        attInfo.classList.add("att-info");
-        attName.classList.add("att-name");
-        iconImage.classList.add("att-icon");
-        attIcon.appendChild(iconImage);
-        attInfo.innerHTML = JSON.stringify(att);
-        attName.innerText = att.name;
-        attSize.innerHTML = getAttachmentSize(att.size);
+            var spinner = document.createElement("img");
+            spinner.classList.add("spinner");
+            spinner.src = "/img/spinner.gif";
+            spinner.display = "none";
 
-        //Appending elements to attachment view
-        attView.appendChild(attState);
-        attView.appendChild(attIcon);
-        attView.appendChild(attName);
-        attView.appendChild(attSize);
-        attView.addEventListener("click", downloadOnClick);
-        attachment.appendChild(attView);
-        attachment.appendChild(attInfo);
-        attachmentsWrapper.appendChild(attachment);
+            attState.appendChild(spinner);
+
+            iconImage.src = "/img/attachment.png";
+            attSize.classList.add("att-size");
+            attView.classList.add("att-view");
+            attInfo.classList.add("att-info");
+            attName.classList.add("att-name");
+            iconImage.classList.add("att-icon");
+            attIcon.appendChild(iconImage);
+            attInfo.innerHTML = JSON.stringify(att);
+            attName.innerText = att.name;
+            attSize.innerHTML = getAttachmentSize(att.size);
+
+            //Appending elements to attachment view
+            attView.appendChild(attState);
+            attView.appendChild(attIcon);
+            attView.appendChild(attName);
+            attView.appendChild(attSize);
+            attView.addEventListener("click", downloadOnClick);
+            attachment.appendChild(attView);
+            attachment.appendChild(attInfo);
+            attachmentsWrapper.appendChild(attachment);
+        }
+    } catch (err) {
+        _didIteratorError3 = true;
+        _iteratorError3 = err;
+    } finally {
+        try {
+            if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                _iterator3.return();
+            }
+        } finally {
+            if (_didIteratorError3) {
+                throw _iteratorError3;
+            }
+        }
     }
+
     return attachmentsWrapper;
 }
 
 function processMessageBody(text) {
     text = text.trim();
-    let result = document.createElement("div");
-    let startPattern = /__code/;
-    let endPattern = /__end/;
+    var result = document.createElement("div");
+    var startPattern = /__code/;
+    var endPattern = /__end/;
 
     //no code
     if (text.search(startPattern) === -1) {
@@ -911,24 +982,24 @@ function processMessageBody(text) {
         return result;
     }
     //first occurrence of the code
-    let firstOccurrence = text.search(startPattern);
+    var firstOccurrence = text.search(startPattern);
     if (text.substring(0, firstOccurrence).length > 0) {
         result.appendChild(document.createTextNode(text.substring(0, firstOccurrence)));
         text = text.substr(firstOccurrence);
     }
-    let substrings = text.split(startPattern).filter(el => {
+    var substrings = text.split(startPattern).filter(function (el) {
         return el.length !== 0;
     });
-    for (let i = 0; i < substrings.length; ++i) {
-        let pre = document.createElement("pre");
-        let code = document.createElement("code");
-        let afterText = null;
-        let endCode = substrings[i].search(endPattern);
+    for (var _i2 = 0; _i2 < substrings.length; ++_i2) {
+        var pre = document.createElement("pre");
+        var code = document.createElement("code");
+        var afterText = null;
+        var endCode = substrings[_i2].search(endPattern);
         if (endCode === -1) {
-            code.innerText = processCodeBlock(substrings[i]);
+            code.innerText = processCodeBlock(substrings[_i2]);
         } else {
-            code.innerText = processCodeBlock(substrings[i].substring(0, endCode));
-            let rawAfterText = substrings[i].substr(endCode + 5).trim();
+            code.innerText = processCodeBlock(substrings[_i2].substring(0, endCode));
+            var rawAfterText = substrings[_i2].substr(endCode + 5).trim();
             if (rawAfterText.length > 0) afterText = document.createTextNode(rawAfterText);
         }
         //highliter:
@@ -944,9 +1015,9 @@ function processMessageBody(text) {
 }
 
 function showCodeView(event) {
-    let pre = document.createElement("pre");
+    var pre = document.createElement("pre");
     pre.innerHTML = event.target.innerHTML;
-    let div = document.createElement("div");
+    var div = document.createElement("div");
     div.appendChild(pre);
     showModalNotification("Code:", div.innerHTML);
 }
@@ -958,20 +1029,20 @@ function closeCodeView() {
 
 function processCodeBlock(code) {
     code = code.trim();
-    let separator = code.match(/\r?\n/) ? code.match(/\r?\n/)[0] : "\r\n";
-    let lines = code.split(/\r?\n/);
-    let min = Infinity;
-    for (let i = 1; i < lines.length; ++i) {
-        if (lines[i] === "") continue;
+    var separator = code.match(/\r?\n/) ? code.match(/\r?\n/)[0] : "\r\n";
+    var lines = code.split(/\r?\n/);
+    var min = Infinity;
+    for (var _i3 = 1; _i3 < lines.length; ++_i3) {
+        if (lines[_i3] === "") continue;
         try {
-            min = Math.min(lines[i].match(/^\s+/)[0].length, min);
+            min = Math.min(lines[_i3].match(/^\s+/)[0].length, min);
         } catch (err) {
             //found a line with no spaces, therefore returning the entire block as is
             return lines.join(separator);
         }
     }
-    for (let i = 1; i < lines.length; ++i) {
-        lines[i] = lines[i].substr(min);
+    for (var _i4 = 1; _i4 < lines.length; ++_i4) {
+        lines[_i4] = lines[_i4].substr(min);
     }
     return lines.join(separator);
 }
@@ -984,29 +1055,29 @@ function generateInvite(ev) {
 }
 
 function addNewParticipant() {
-    let nickname = document.querySelector('#new-participant-nickname').value;
-    let pubKey = document.querySelector('#new-participant-public-key').value;
-    let residence = document.querySelector('#new-participant-residence').value;
-    let rights = document.querySelector('#new-participant-rights').value;
+    var nickname = document.querySelector('#new-participant-nickname').value;
+    var pubKey = document.querySelector('#new-participant-public-key').value;
+    var residence = document.querySelector('#new-participant-residence').value;
+    var rights = document.querySelector('#new-participant-rights').value;
     chat.addNewParticipant(nickname, pubKey, residence, rights);
 }
 
 function broadcastNewMessage() {
-    let newMessage = document.querySelector('#new-message').value;
+    var newMessage = document.querySelector('#new-message').value;
     chat.shoutMessage(newMessage);
 }
 
 function displayNewTopicData(data, heading, toastrMessage) {
     heading = heading ? heading : "Your new topic data. SAVE YOUR PRIVATE KEY!!!";
     toastrMessage = toastrMessage ? toastrMessage : "Topic was created successfully!";
-    let nicknameWrapper = document.createElement("div");
-    let pkWrapper = document.createElement("div");
-    let bodyWrapper = document.createElement("div");
+    var nicknameWrapper = document.createElement("div");
+    var pkWrapper = document.createElement("div");
+    var bodyWrapper = document.createElement("div");
     nicknameWrapper.innerHTML = "<b>Nickname: </b>" + data.nickname;
     pkWrapper.innerHTML = "<br><b>Your private key:</b> <br> <textarea class='key-display'>" + data.privateKey + "</textarea>";
     bodyWrapper.appendChild(nicknameWrapper);
     bodyWrapper.appendChild(pkWrapper);
-    let tempWrap = document.createElement("div");
+    var tempWrap = document.createElement("div");
     tempWrap.appendChild(bodyWrapper);
     showModalNotification(heading, tempWrap.innerHTML);
     toastr.success(toastrMessage);
@@ -1019,20 +1090,20 @@ function showInviteCode(newInvite) {
 }
 
 function showModalNotification(headingText, bodyContent) {
-    let wrapper = document.createElement("div");
+    var wrapper = document.createElement("div");
     wrapper.classList.add("modal-notification--wrapper");
-    let heading = document.createElement("h3");
+    var heading = document.createElement("h3");
     heading.classList.add("modal-notification--heading");
-    let body = document.createElement("div");
+    var body = document.createElement("div");
     body.classList.add("modal-notification--body");
     heading.innerText = headingText;
     body.innerHTML = bodyContent;
     wrapper.appendChild(heading);
     wrapper.appendChild(body);
-    let modalContent = document.querySelector('#code--content');
+    var modalContent = document.querySelector('#code--content');
     modalContent.innerHTML = "";
     modalContent.appendChild(wrapper);
-    let modalView = document.querySelector('#code-view');
+    var modalView = document.querySelector('#code-view');
     modalView.style.display = "block";
 }
 
@@ -1088,18 +1159,18 @@ function syncPendingInvites() {
         chat.settingsInitInvites();
         return;
     }
-    let invites = Object.keys(chat.session.settings.invites);
-    let container = document.querySelector('#pending-invites');
+    var invites = Object.keys(chat.session.settings.invites);
+    var container = document.querySelector('#pending-invites');
     container.innerHTML = "";
-    for (let i in invites) {
-        let inviteWrap = document.createElement("div");
-        let inviteNum = document.createElement("div");
-        let inviteRep = document.createElement("input");
-        let inviteCopy = document.createElement("div");
-        let inviteDel = document.createElement("div");
-        let inviteID = document.createElement("div");
-        let inviteCopyButton = document.createElement("button");
-        let inviteDelButton = document.createElement("button");
+    for (var _i5 in invites) {
+        var inviteWrap = document.createElement("div");
+        var inviteNum = document.createElement("div");
+        var inviteRep = document.createElement("input");
+        var inviteCopy = document.createElement("div");
+        var inviteDel = document.createElement("div");
+        var inviteID = document.createElement("div");
+        var inviteCopyButton = document.createElement("button");
+        var inviteDelButton = document.createElement("button");
         inviteWrap.classList.add("invite-wrap");
         inviteRep.classList.add("invite-rep");
         inviteID.classList.add("invite-id");
@@ -1112,11 +1183,11 @@ function syncPendingInvites() {
         inviteCopyButton.innerText = 'Copy invite code';
         inviteDelButton.onclick = deleteInvite;
 
-        inviteID.innerText = invites[i];
+        inviteID.innerText = invites[_i5];
 
-        inviteRep.value = chat.session.settings.invites[invites[i]].name ? chat.session.settings.invites[invites[i]].name : "New member";
+        inviteRep.value = chat.session.settings.invites[invites[_i5]].name ? chat.session.settings.invites[invites[_i5]].name : "New member";
 
-        inviteNum.innerText = "#" + (parseInt(i) + 1);
+        inviteNum.innerText = "#" + (parseInt(_i5) + 1);
         inviteDel.appendChild(inviteDelButton);
         inviteCopy.appendChild(inviteCopyButton);
         inviteWrap.appendChild(inviteNum);
@@ -1147,7 +1218,7 @@ function inviteEditingProcessKeyPress(event) {
 }
 
 function processInviteeNameInput(event) {
-    let newName = event.target.value.trim();
+    var newName = event.target.value.trim();
     if (newName === "") {
         event.target.value = tempName;
         return;
@@ -1158,9 +1229,9 @@ function processInviteeNameInput(event) {
 }
 
 function copyInviteCode(event) {
-    let inviteElement = event.target.parentNode.parentNode.lastChild;
-    let inviteID = inviteElement.innerHTML;
-    let textArea = document.createElement("textarea");
+    var inviteElement = event.target.parentNode.parentNode.lastChild;
+    var inviteID = inviteElement.innerHTML;
+    var textArea = document.createElement("textarea");
     textArea.value = inviteID;
     document.body.appendChild(textArea);
     textArea.focus();
@@ -1176,24 +1247,46 @@ function copyInviteCode(event) {
 
 function deleteInvite(event) {
     ensureConnected();
-    let button = event.target;
-    let inviteID = button.parentNode.parentNode.lastChild.innerHTML;
+    var button = event.target;
+    var inviteID = button.parentNode.parentNode.lastChild.innerHTML;
     chat.deleteInvite(inviteID);
 }
 
 function processTopicJoinSuccess(data) {
     clearInviteInputs();
     loadingOff();
-    let heading = "You have joined topic successfully, and can now login. SAVE YOUR PRIVATE KEY!!!";
-    let toastrMessage = "Topic was created successfully!";
+    var heading = "You have joined topic successfully, and can now login. SAVE YOUR PRIVATE KEY!!!";
+    var toastrMessage = "Topic was created successfully!";
     displayNewTopicData(data, heading, toastrMessage);
 }
 
 function enableSettingsMenuListeners() {
-    let menuItems = document.querySelector("#settings-menu").children;
-    for (let i of menuItems) {
-        i.addEventListener("click", processSettingsMenuClick);
+    var menuItems = document.querySelector("#settings-menu").children;
+    var _iteratorNormalCompletion4 = true;
+    var _didIteratorError4 = false;
+    var _iteratorError4 = undefined;
+
+    try {
+        for (var _iterator4 = menuItems[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+            var _i6 = _step4.value;
+
+            _i6.addEventListener("click", processSettingsMenuClick);
+        }
+    } catch (err) {
+        _didIteratorError4 = true;
+        _iteratorError4 = err;
+    } finally {
+        try {
+            if (!_iteratorNormalCompletion4 && _iterator4.return) {
+                _iterator4.return();
+            }
+        } finally {
+            if (_didIteratorError4) {
+                throw _iteratorError4;
+            }
+        }
     }
+
     document.querySelector("#invites-container").style.display = "flex";
     document.querySelector("#chat-settings").style.display = "none";
     document.querySelector("#participants-container").style.display = "none";
@@ -1201,11 +1294,33 @@ function enableSettingsMenuListeners() {
 }
 
 function processSettingsMenuClick(event) {
-    let menuItems = document.querySelector("#settings-menu").children;
-    for (let i of menuItems) {
-        i.classList.remove("active");
+    var menuItems = document.querySelector("#settings-menu").children;
+    var _iteratorNormalCompletion5 = true;
+    var _didIteratorError5 = false;
+    var _iteratorError5 = undefined;
+
+    try {
+        for (var _iterator5 = menuItems[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+            var _i7 = _step5.value;
+
+            _i7.classList.remove("active");
+        }
+    } catch (err) {
+        _didIteratorError5 = true;
+        _iteratorError5 = err;
+    } finally {
+        try {
+            if (!_iteratorNormalCompletion5 && _iterator5.return) {
+                _iterator5.return();
+            }
+        } finally {
+            if (_didIteratorError5) {
+                throw _iteratorError5;
+            }
+        }
     }
-    let target = event.target;
+
+    var target = event.target;
     target.classList.add("active");
     document.querySelector("#invites-container").style.display = target.innerText === "INVITES" ? "flex" : "none";
     document.querySelector("#participants-container").style.display = target.innerText === "PARTICIPANTS" ? "flex" : "none";
@@ -1214,11 +1329,11 @@ function processSettingsMenuClick(event) {
 }
 
 function processChatScroll(event) {
-    let chatWindow = event.target;
+    var chatWindow = event.target;
     if (!chatWindow.firstChild) return;
     if ($(event.target).scrollTop() <= 1) {
         //load more messages
-        let lastLoadedMessageID = chatWindow.firstChild.querySelector(".message-id").innerText;
+        var lastLoadedMessageID = chatWindow.firstChild.querySelector(".message-id").innerText;
         chat.loadMoreMessages(lastLoadedMessageID);
     }
 }
@@ -1259,8 +1374,8 @@ function downloadURI(uri, name) {
 
 ///Testing blob download
 function downloadAttachment(fileName, data) {
-    let arr = new Uint8Array(data);
-    let fileURL = URL.createObjectURL(new Blob([arr]));
+    var arr = new Uint8Array(data);
+    var fileURL = URL.createObjectURL(new Blob([arr]));
     downloadURI(fileURL, fileName);
 }
 
@@ -1269,31 +1384,52 @@ function downloadAttachment(fileName, data) {
  * @param id
  */
 function findMessage(id) {
-    let chatWindow = document.querySelector("#chat_window");
-    for (let msg of chatWindow.children) {
+    var chatWindow = document.querySelector("#chat_window");
+    var _iteratorNormalCompletion6 = true;
+    var _didIteratorError6 = false;
+    var _iteratorError6 = undefined;
 
-        if (msg.getElementsByClassName("message-id")[0].innerHTML == id) {
-            console.log("Message found");
-            return msg;
+    try {
+        for (var _iterator6 = chatWindow.children[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+            var msg = _step6.value;
+
+
+            if (msg.getElementsByClassName("message-id")[0].innerHTML == id) {
+                console.log("Message found");
+                return msg;
+            }
+        }
+    } catch (err) {
+        _didIteratorError6 = true;
+        _iteratorError6 = err;
+    } finally {
+        try {
+            if (!_iteratorNormalCompletion6 && _iterator6.return) {
+                _iterator6.return();
+            }
+        } finally {
+            if (_didIteratorError6) {
+                throw _iteratorError6;
+            }
         }
     }
 }
 
 async function loadAudio(fileInfo, fileData) {
     //search right message
-    let message = findMessage(fileInfo.messageID);
+    var message = findMessage(fileInfo.messageID);
     if (!message) {
         console.error("Message not found");
         return;
     }
 
-    let audio = document.createElement("audio");
-    let arr = new Uint8Array(fileData);
-    let fileURL = URL.createObjectURL(new Blob([arr]));
+    var audio = document.createElement("audio");
+    var arr = new Uint8Array(fileData);
+    var fileURL = URL.createObjectURL(new Blob([arr]));
     audio.setAttribute("controls", "");
     audio.setAttribute("src", fileURL);
 
-    let viewWrap = message.getElementsByClassName("att-view")[0];
+    var viewWrap = message.getElementsByClassName("att-view")[0];
     viewWrap.innerHTML = "";
     viewWrap.appendChild(audio);
     console.log("Removing even listener");
@@ -1301,20 +1437,20 @@ async function loadAudio(fileInfo, fileData) {
 }
 
 function processAttachmentChosen(ev) {
-    let attachemtsWrapper = document.querySelector("#chosen-files");
-    let fileData = ev.target.files[0];
+    var attachemtsWrapper = document.querySelector("#chosen-files");
+    var fileData = ev.target.files[0];
     attachemtsWrapper.innerHTML = "";
     if (!fileData) {
         return;
     }
 
-    let attWrapper = document.createElement("div");
+    var attWrapper = document.createElement("div");
     attWrapper.classList.add("chosen-file-wrap");
 
-    let chosenFileTxt = document.createElement("div");
+    var chosenFileTxt = document.createElement("div");
     chosenFileTxt.classList.add("chosen-file");
     chosenFileTxt.innerText = fileData.name;
-    let closeImg = document.createElement("img");
+    var closeImg = document.createElement("img");
     closeImg.setAttribute("src", "/img/close.png");
     closeImg.addEventListener("click", clearAttachments);
 
@@ -1324,14 +1460,14 @@ function processAttachmentChosen(ev) {
 }
 
 function clearAttachments() {
-    let attachemtsInput = document.querySelector("#attach-file");
+    var attachemtsInput = document.querySelector("#attach-file");
     attachemtsInput.value = "";
-    let attachemtsWrapper = document.querySelector("#chosen-files");
+    var attachemtsWrapper = document.querySelector("#chosen-files");
     attachemtsWrapper.innerHTML = "";
 }
 
 function editMyNickname(ev) {
-    let newNickname = ev.target.value.trim();
+    var newNickname = ev.target.value.trim();
     if (!newNickname || newNickname === chat.session.settings.nickname) {
         ev.target.value = chat.session.settings.nickname;
         ev.target.blur();
@@ -1343,7 +1479,7 @@ function editMyNickname(ev) {
 }
 
 function editTopicName(ev) {
-    let newTopicName = ev.target.value.trim();
+    var newTopicName = ev.target.value.trim();
     if (!newTopicName || newTopicName === chat.session.settings.topicName) {
         ev.target.value = chat.session.settings.topicName;
         ev.target.blur();
@@ -1377,8 +1513,8 @@ function refreshInvitesSuccess() {
 }
 
 function switchConnectionStatus(connected) {
-    let positive = document.querySelector("#connection-status--connected");
-    let negative = document.querySelector("#connection-status--disconnected");
+    var positive = document.querySelector("#connection-status--connected");
+    var negative = document.querySelector("#connection-status--disconnected");
     if (connected) {
         $(positive).show();
         $(negative).hide();
@@ -1389,7 +1525,7 @@ function switchConnectionStatus(connected) {
 }
 
 function attemptReconnection() {
-    chat.attemptReconnection().then(() => {}).catch(err => {
+    chat.attemptReconnection().then(function () {}).catch(function (err) {
         console.trace(err);
     });
 }
@@ -1407,8 +1543,8 @@ function switchSounds(ev) {
 function participantAliasChange(ev) {
     console.log("Processing participant alias change");
     ensureConnected();
-    let id = ev.target.parentNode.firstChild.innerText;
-    let newAlias = ev.target.value.trim();
+    var id = ev.target.parentNode.firstChild.innerText;
+    var newAlias = ev.target.value.trim();
     if (!newAlias) {
         chat.deleteMemberAlias(id);
     } else {
@@ -1426,18 +1562,18 @@ function ensureConnected() {
 
 function lockSend(val) {
     sendLock = !!val;
-    let sendButton = document.querySelector('#send-new-msg');
-    let newMsgField = document.querySelector('#new-msg');
+    var sendButton = document.querySelector('#send-new-msg');
+    var newMsgField = document.querySelector('#new-msg');
     sendLock ? buttonLoadingOn(sendButton) : buttonLoadingOff(sendButton);
     sendLock ? newMsgField.setAttribute("disabled", true) : newMsgField.removeAttribute("disabled");
 }
 
 function processMainMenuSwitch(ev) {
-    let menuLength = mainMenuItems.length;
-    let activeIndex = mainMenuItems.filter(item => {
+    var menuLength = mainMenuItems.length;
+    var activeIndex = mainMenuItems.filter(function (item) {
         return item.active;
     })[0].index;
-    let newActive = (ev.currentTarget.classList.contains("right-arrow-wrap") ? activeIndex + 1 : activeIndex - 1) % menuLength;
+    var newActive = (ev.currentTarget.classList.contains("right-arrow-wrap") ? activeIndex + 1 : activeIndex - 1) % menuLength;
     if (newActive < 0) {
         newActive = menuLength + newActive;
     }
@@ -1446,8 +1582,8 @@ function processMainMenuSwitch(ev) {
     $(mainMenuItems[activeIndex].selector).hide("fast");
     $(mainMenuItems[newActive].selector).show("fast");
 
-    let nextIndex = (newActive + 1) % menuLength;
-    let previousIndex = (newActive - 1) % menuLength;
+    var nextIndex = (newActive + 1) % menuLength;
+    var previousIndex = (newActive - 1) % menuLength;
     if (previousIndex < 0) {
         previousIndex = menuLength + previousIndex;
     }

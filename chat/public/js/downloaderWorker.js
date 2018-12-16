@@ -1,3 +1,5 @@
+"use strict";
+
 importScripts("/js/iCrypto.js");
 importScripts("/js/socket.io.js");
 importScripts("/js/forge.min.js");
@@ -6,11 +8,11 @@ importScripts("/js/socket.io-stream.js");
 importScripts("/js/lzma-worker.min.js");
 importScripts("/js/chacha.js");
 
-let commandHandlers = {
+var commandHandlers = {
     "download": processDownload
 };
 
-onmessage = ev => {
+onmessage = function onmessage(ev) {
     console.log("Downloader received message from main thread: " + ev.command);
     processMessage(ev.data);
 };
@@ -21,10 +23,10 @@ function processMessage(msg) {
 }
 
 function parseFileLink(link) {
-    let ic = new iCrypto();
+    var ic = new iCrypto();
     ic.addBlob('l', link).base64Decode("l", "ls");
-    let parsed = ic.get("ls");
-    let splitted = parsed.split("/");
+    var parsed = ic.get("ls");
+    var splitted = parsed.split("/");
     return {
         onion: splitted[0],
         pkfp: splitted[1],
@@ -38,52 +40,52 @@ function parseFileLink(link) {
  * @param buffer2
  * @returns {ArrayBufferLike}
  */
-let appendBuffer = function (buffer1, buffer2) {
-    let tmp = new Uint8Array(buffer1.byteLength + buffer2.byteLength);
+var appendBuffer = function appendBuffer(buffer1, buffer2) {
+    var tmp = new Uint8Array(buffer1.byteLength + buffer2.byteLength);
     tmp.set(new Uint8Array(buffer1), 0);
     tmp.set(new Uint8Array(buffer2), buffer1.byteLength);
     return tmp.buffer;
 };
 
 function processDownload(data) {
-    return new Promise(async (resolve, reject) => {
-        const fileInfo = JSON.parse(data.fileInfo);
-        const link = parseFileLink(fileInfo.link);
-        const myPkfp = data.myPkfp;
-        const privk = data.privk;
-        const ownerPubk = data.pubk;
-        const metaID = fileInfo.metaID;
+    return new Promise(async function (resolve, reject) {
+        var fileInfo = JSON.parse(data.fileInfo);
+        var link = parseFileLink(fileInfo.link);
+        var myPkfp = data.myPkfp;
+        var privk = data.privk;
+        var ownerPubk = data.pubk;
+        var metaID = fileInfo.metaID;
 
-        let fileSocket = await establishConnection();
+        var fileSocket = await establishConnection();
         /**
          * event triggered by Island when file is ready to be transferred to the client
          * key is encrypted shared SYM key to decrypt file
          */
 
-        fileSocket.on("download_ready", key => {
+        fileSocket.on("download_ready", function (key) {
             //prepare file
-            let symk = key[metaID];
+            var symk = key[metaID];
 
             console.log("download_ready triggered. shared key found: " + symk);
-            let dataBuffer = new ArrayBuffer(0);
-            ss(fileSocket).on("file", stream => {
+            var dataBuffer = new ArrayBuffer(0);
+            ss(fileSocket).on("file", function (stream) {
 
                 console.log("File download in progress!");
-                let ic = new iCrypto();
+                var ic = new iCrypto();
                 ic.addBlob("k", symk).asym.setKey("privk", privk, "private").asym.decrypt("k", "privk", "symk", "hex");
                 ic.createHash("h");
 
                 ic.ssym.init("stc", ic.get("symk"), false);
 
-                stream.on('data', data => {
+                stream.on('data', function (data) {
 
                     console.log("ENCRYPTED: " + new Uint8Array(data.slice(0, 32)));
-                    let chunk = ic.ssym.decrypt("stc", data.buffer);
+                    var chunk = ic.ssym.decrypt("stc", data.buffer);
                     console.log("UNENCRYPTED: " + new Uint8Array(chunk.slice(0, 32)));
                     ic.updateHash("h", new Uint8Array(chunk));
                     dataBuffer = iCrypto.concatArrayBuffers(dataBuffer, chunk);
                 });
-                stream.on('end', () => {
+                stream.on('end', function () {
                     ic.digestHash("h", "hres").addBlob("sign", fileInfo.signUnencrypted).asym.setKey("pubk", ownerPubk, "public").asym.verify("hres", "sign", "pubk", "vres");
 
                     if (!ic.get("vres")) {
@@ -117,9 +119,9 @@ function processDownload(data) {
 }
 
 function establishConnection() {
-    return new Promise((resolve, reject) => {
+    return new Promise(function (resolve, reject) {
         console.log("Connecting to file socket");
-        let fileSocket = io('/file', {
+        var fileSocket = io('/file', {
             'reconnection': true,
             'forceNew': true,
             'reconnectionDelay': 1000,
@@ -127,12 +129,12 @@ function establishConnection() {
             'reconnectionAttempts': 5
         });
 
-        fileSocket.on("connect", () => {
+        fileSocket.on("connect", function () {
             console.log("File transfer connection established");
             resolve(fileSocket);
         });
 
-        fileSocket.on("connect_error", err => {
+        fileSocket.on("connect_error", function (err) {
             console.log('Island connection failed: ' + err.message);
             reject(err);
         });
