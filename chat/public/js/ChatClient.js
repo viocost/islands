@@ -4,6 +4,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var ChatClient = function () {
@@ -136,47 +138,93 @@ var ChatClient = function () {
         value: function initTopic(nickname, topicName) {
             var _this = this;
 
-            return new Promise(async function (resolve, reject) {
-                try {
-                    var _self = _this;
-                    nickname = String(nickname).trim();
-                    if (!nickname || nickname.length < 3) {
-                        reject("Nickname entered is invalid");
-                        return;
-                    }
+            return new Promise(function () {
+                var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(resolve, reject) {
+                    var _self, ic, newTopic, request, body;
 
-                    //CREATE NEW TOPIC PENDING
-                    var ic = new iCrypto();
-                    //Generate keypairs one for user, other for topic
-                    ic = await ic.asym.asyncCreateKeyPair('owner-keys');
-                    ic = await ic.asym.asyncCreateKeyPair('topic-keys');
-                    ic.getPublicKeyFingerprint("owner-keys", "owner-pkfp");
-                    ic.getPublicKeyFingerprint("topic-keys", "topic-pkfp");
-                    var newTopic = {
-                        ownerKeyPair: ic.get("owner-keys"),
-                        topicKeyPair: ic.get("topic-keys"),
-                        ownerPkfp: ic.get("owner-pkfp"),
-                        topicID: ic.get("topic-pkfp"),
-                        ownerNickName: nickname,
-                        topicName: topicName
-                    };
+                    return regeneratorRuntime.wrap(function _callee$(_context) {
+                        while (1) {
+                            switch (_context.prev = _context.next) {
+                                case 0:
+                                    _context.prev = 0;
+                                    _self = _this;
 
-                    //Request island to init topic creation and get one-time key.
-                    var request = new Message();
-                    request.headers.command = "new_topic_get_token";
-                    var body = {
-                        topicID: newTopic.topicID,
-                        ownerPublicKey: ic.get('owner-keys').publicKey
-                    };
-                    request.set("body", body);
-                    _self.newTopicPending[newTopic.topicID] = newTopic;
-                    await _this.establishIslandConnection();
-                    _this.chatSocket.emit("request", request);
-                    resolve();
-                } catch (err) {
-                    throw err;
-                }
-            });
+                                    nickname = String(nickname).trim();
+
+                                    if (!(!nickname || nickname.length < 3)) {
+                                        _context.next = 6;
+                                        break;
+                                    }
+
+                                    reject("Nickname entered is invalid");
+                                    return _context.abrupt("return");
+
+                                case 6:
+
+                                    //CREATE NEW TOPIC PENDING
+                                    ic = new iCrypto();
+                                    //Generate keypairs one for user, other for topic
+
+                                    _context.next = 9;
+                                    return ic.asym.asyncCreateKeyPair('owner-keys');
+
+                                case 9:
+                                    ic = _context.sent;
+                                    _context.next = 12;
+                                    return ic.asym.asyncCreateKeyPair('topic-keys');
+
+                                case 12:
+                                    ic = _context.sent;
+
+                                    ic.getPublicKeyFingerprint("owner-keys", "owner-pkfp");
+                                    ic.getPublicKeyFingerprint("topic-keys", "topic-pkfp");
+                                    newTopic = {
+                                        ownerKeyPair: ic.get("owner-keys"),
+                                        topicKeyPair: ic.get("topic-keys"),
+                                        ownerPkfp: ic.get("owner-pkfp"),
+                                        topicID: ic.get("topic-pkfp"),
+                                        ownerNickName: nickname,
+                                        topicName: topicName
+                                    };
+
+                                    //Request island to init topic creation and get one-time key.
+
+                                    request = new Message();
+
+                                    request.headers.command = "new_topic_get_token";
+                                    body = {
+                                        topicID: newTopic.topicID,
+                                        ownerPublicKey: ic.get('owner-keys').publicKey
+                                    };
+
+                                    request.set("body", body);
+                                    _self.newTopicPending[newTopic.topicID] = newTopic;
+                                    _context.next = 23;
+                                    return _this.establishIslandConnection();
+
+                                case 23:
+                                    _this.chatSocket.emit("request", request);
+                                    resolve();
+                                    _context.next = 30;
+                                    break;
+
+                                case 27:
+                                    _context.prev = 27;
+                                    _context.t0 = _context["catch"](0);
+                                    throw _context.t0;
+
+                                case 30:
+                                case "end":
+                                    return _context.stop();
+                            }
+                        }
+                    }, _callee, _this, [[0, 27]]);
+                }));
+
+                return function (_x, _x2) {
+                    return _ref.apply(this, arguments);
+                };
+            }());
         }
 
         /**
@@ -259,56 +307,106 @@ var ChatClient = function () {
         }
     }, {
         key: "topicLogin",
-        value: async function topicLogin(privateKey) {
-            var success = true;
-            var error = void 0;
+        value: function () {
+            var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(privateKey) {
+                var success, error, ic, body, request;
+                return regeneratorRuntime.wrap(function _callee2$(_context2) {
+                    while (1) {
+                        switch (_context2.prev = _context2.next) {
+                            case 0:
+                                success = true;
+                                error = void 0;
 
-            privateKey = String(privateKey).trim();
 
-            if (this.session && this.session.status === "active" && this.islandConnectionStatus) {
-                this.emit("login_success");
-                return;
+                                privateKey = String(privateKey).trim();
+
+                                if (!(this.session && this.session.status === "active" && this.islandConnectionStatus)) {
+                                    _context2.next = 6;
+                                    break;
+                                }
+
+                                this.emit("login_success");
+                                return _context2.abrupt("return");
+
+                            case 6:
+                                _context2.prev = 6;
+                                _context2.next = 9;
+                                return this.establishIslandConnection();
+
+                            case 9:
+                                ic = new iCrypto();
+
+                                ic.setRSAKey('pk', privateKey, "private").publicFromPrivate('pk', 'pub').getPublicKeyFingerprint('pub', 'pkfp').createNonce('nonce').bytesToHex('nonce', "noncehex");
+
+                                this.session = {
+                                    sessionID: ic.get("noncehex"),
+                                    publicKey: ic.get("pub"),
+                                    privateKey: ic.get('pk'),
+                                    publicKeyFingerprint: ic.get("pkfp"),
+                                    status: 'off'
+                                };
+
+                                body = {
+                                    publicKey: ic.get("pub"),
+                                    sessionID: ic.get("noncehex")
+                                };
+                                request = new Message();
+
+                                request.set("body", body);
+                                request.headers.command = "init_login";
+                                request.headers.pkfpSource = ic.get("pkfp");
+                                request.signMessage(ic.get("pk"));
+                                this.chatSocket.emit("request", request);
+                                _context2.next = 25;
+                                break;
+
+                            case 21:
+                                _context2.prev = 21;
+                                _context2.t0 = _context2["catch"](6);
+
+                                success = false;
+                                error = _context2.t0.message;
+
+                            case 25:
+                                if (success) {
+                                    _context2.next = 37;
+                                    break;
+                                }
+
+                                _context2.prev = 26;
+                                _context2.next = 29;
+                                return this.terminateIslandConnection();
+
+                            case 29:
+                                _context2.next = 34;
+                                break;
+
+                            case 31:
+                                _context2.prev = 31;
+                                _context2.t1 = _context2["catch"](26);
+
+                                console.log("ERROR terminating island connection: " + _context2.t1);
+
+                            case 34:
+                                _context2.prev = 34;
+
+                                this.emit("login_fail", error);
+                                return _context2.finish(34);
+
+                            case 37:
+                            case "end":
+                                return _context2.stop();
+                        }
+                    }
+                }, _callee2, this, [[6, 21], [26, 31, 34, 37]]);
+            }));
+
+            function topicLogin(_x4) {
+                return _ref2.apply(this, arguments);
             }
-            try {
-                await this.establishIslandConnection();
-                var ic = new iCrypto();
-                ic.setRSAKey('pk', privateKey, "private").publicFromPrivate('pk', 'pub').getPublicKeyFingerprint('pub', 'pkfp').createNonce('nonce').bytesToHex('nonce', "noncehex");
 
-                this.session = {
-                    sessionID: ic.get("noncehex"),
-                    publicKey: ic.get("pub"),
-                    privateKey: ic.get('pk'),
-                    publicKeyFingerprint: ic.get("pkfp"),
-                    status: 'off'
-                };
-
-                var body = {
-                    publicKey: ic.get("pub"),
-                    sessionID: ic.get("noncehex")
-                };
-
-                var request = new Message();
-                request.set("body", body);
-                request.headers.command = "init_login";
-                request.headers.pkfpSource = ic.get("pkfp");
-                request.signMessage(ic.get("pk"));
-                this.chatSocket.emit("request", request);
-            } catch (err) {
-                success = false;
-                error = err.message;
-            }
-
-            //On error try to disconnect
-            if (!success) {
-                try {
-                    await this.terminateIslandConnection();
-                } catch (err) {
-                    console.log("ERROR terminating island connection: " + err);
-                } finally {
-                    this.emit("login_fail", error);
-                }
-            }
-        }
+            return topicLogin;
+        }()
 
         /**
          * Islnad request to decrypt data while logging in
@@ -630,9 +728,29 @@ var ChatClient = function () {
         }
     }, {
         key: "attemptReconnection",
-        value: async function attemptReconnection() {
-            await this.topicLogin(this.session.privateKey);
-        }
+        value: function () {
+            var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+                return regeneratorRuntime.wrap(function _callee3$(_context3) {
+                    while (1) {
+                        switch (_context3.prev = _context3.next) {
+                            case 0:
+                                _context3.next = 2;
+                                return this.topicLogin(this.session.privateKey);
+
+                            case 2:
+                            case "end":
+                                return _context3.stop();
+                        }
+                    }
+                }, _callee3, this);
+            }));
+
+            function attemptReconnection() {
+                return _ref3.apply(this, arguments);
+            }
+
+            return attemptReconnection;
+        }()
     }, {
         key: "loadMoreMessages",
         value: function loadMoreMessages(lastLoadedMessageID) {
@@ -743,62 +861,93 @@ var ChatClient = function () {
 
     }, {
         key: "initTopicJoin",
-        value: async function initTopicJoin(nickname, inviteCode) {
-            console.log("joining topic with nickname: " + nickname + " | Invite code: " + inviteCode);
+        value: function () {
+            var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(nickname, inviteCode) {
+                var clientSettings, ic, invite, inviterResidence, inviterID, inviteID, headers, body, request, topicData;
+                return regeneratorRuntime.wrap(function _callee4$(_context4) {
+                    while (1) {
+                        switch (_context4.prev = _context4.next) {
+                            case 0:
+                                console.log("joining topic with nickname: " + nickname + " | Invite code: " + inviteCode);
 
-            var clientSettings = new ClientSettings();
-            clientSettings;
+                                clientSettings = new ClientSettings();
 
-            await this.establishIslandConnection();
-            var ic = new iCrypto();
-            ic.asym.createKeyPair("rsa").getPublicKeyFingerprint('rsa', 'pkfp').addBlob("invite64", inviteCode.trim()).base64Decode("invite64", "invite");
+                                clientSettings;
 
-            var invite = ic.get("invite").split("/");
-            var inviterResidence = invite[0];
-            var inviterID = invite[1];
-            var inviteID = invite[2];
+                                _context4.next = 5;
+                                return this.establishIslandConnection();
 
-            if (!this.inviteRequestValid(inviterResidence, inviterID, inviteID)) {
-                this.emit("join_topic_fail");
-                throw "Invite request is invalid";
+                            case 5:
+                                ic = new iCrypto();
+
+                                ic.asym.createKeyPair("rsa").getPublicKeyFingerprint('rsa', 'pkfp').addBlob("invite64", inviteCode.trim()).base64Decode("invite64", "invite");
+
+                                invite = ic.get("invite").split("/");
+                                inviterResidence = invite[0];
+                                inviterID = invite[1];
+                                inviteID = invite[2];
+
+                                if (this.inviteRequestValid(inviterResidence, inviterID, inviteID)) {
+                                    _context4.next = 14;
+                                    break;
+                                }
+
+                                this.emit("join_topic_fail");
+                                throw "Invite request is invalid";
+
+                            case 14:
+
+                                this.pendingTopicJoins[inviteID] = {
+                                    publicKey: ic.get('rsa').publicKey,
+                                    privateKey: ic.get('rsa').privateKey,
+                                    nickname: nickname,
+                                    inviterID: inviterID,
+                                    inviterResidence: inviterResidence
+                                };
+
+                                headers = {
+                                    command: "join_topic",
+                                    pkfpDest: inviterID,
+                                    pkfpSource: ic.get('pkfp')
+
+                                };
+                                body = {
+                                    inviteString: inviteCode.trim(),
+                                    inviteCode: inviteID,
+                                    destination: inviterResidence,
+                                    invitee: {
+                                        publicKey: ic.get('rsa').publicKey,
+                                        nickname: nickname,
+                                        pkfp: ic.get('pkfp')
+                                    }
+                                };
+                                request = new Message();
+
+                                request.set('headers', headers);
+                                request.set("body", body);
+                                request.signMessage(ic.get('rsa').privateKey);
+                                this.chatSocket.emit("request", request);
+                                topicData = {
+                                    newPublicKey: ic.get('rsa').publicKey,
+                                    newPrivateKey: ic.get('rsa').privateKey
+
+                                };
+                                return _context4.abrupt("return", topicData);
+
+                            case 24:
+                            case "end":
+                                return _context4.stop();
+                        }
+                    }
+                }, _callee4, this);
+            }));
+
+            function initTopicJoin(_x8, _x9) {
+                return _ref4.apply(this, arguments);
             }
 
-            this.pendingTopicJoins[inviteID] = {
-                publicKey: ic.get('rsa').publicKey,
-                privateKey: ic.get('rsa').privateKey,
-                nickname: nickname,
-                inviterID: inviterID,
-                inviterResidence: inviterResidence
-            };
-
-            var headers = {
-                command: "join_topic",
-                pkfpDest: inviterID,
-                pkfpSource: ic.get('pkfp')
-
-            };
-            var body = {
-                inviteString: inviteCode.trim(),
-                inviteCode: inviteID,
-                destination: inviterResidence,
-                invitee: {
-                    publicKey: ic.get('rsa').publicKey,
-                    nickname: nickname,
-                    pkfp: ic.get('pkfp')
-                }
-            };
-            var request = new Message();
-            request.set('headers', headers);
-            request.set("body", body);
-            request.signMessage(ic.get('rsa').privateKey);
-            this.chatSocket.emit("request", request);
-            var topicData = {
-                newPublicKey: ic.get('rsa').publicKey,
-                newPrivateKey: ic.get('rsa').privateKey
-
-            };
-            return topicData;
-        }
+            return initTopicJoin;
+        }()
     }, {
         key: "initSettingsOnTopicJoin",
         value: function initSettingsOnTopicJoin(topicInfo, request) {
@@ -967,55 +1116,107 @@ var ChatClient = function () {
         value: function uploadAttachments(filesAttached, messageID, metaID) {
             var _this2 = this;
 
-            return new Promise(async function (resolve, reject) {
-                var self = _this2;
+            return new Promise(function () {
+                var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(resolve, reject) {
+                    var self, filesProcessed, pkfp, privk, symk, residence, _iteratorNormalCompletion2, _didIteratorError2, _iteratorError2, _iterator2, _step2, file, filesInfo;
 
-                if (Worker === undefined) {
-                    reject(null, "Client does not support web workers.");
-                    return;
-                }
+                    return regeneratorRuntime.wrap(function _callee5$(_context5) {
+                        while (1) {
+                            switch (_context5.prev = _context5.next) {
+                                case 0:
+                                    self = _this2;
 
-                var filesProcessed = [];
+                                    if (!(Worker === undefined)) {
+                                        _context5.next = 4;
+                                        break;
+                                    }
 
-                var pkfp = self.session.publicKeyFingerprint;
-                var privk = self.session.privateKey;
-                var symk = self.session.metadata.sharedKey;
-                var residence = self.session.metadata.participants[self.session.publicKeyFingerprint].residence;
+                                    reject(null, "Client does not support web workers.");
+                                    return _context5.abrupt("return");
 
-                var _iteratorNormalCompletion2 = true;
-                var _didIteratorError2 = false;
-                var _iteratorError2 = undefined;
+                                case 4:
+                                    filesProcessed = [];
+                                    pkfp = self.session.publicKeyFingerprint;
+                                    privk = self.session.privateKey;
+                                    symk = self.session.metadata.sharedKey;
+                                    residence = self.session.metadata.participants[self.session.publicKeyFingerprint].residence;
+                                    _iteratorNormalCompletion2 = true;
+                                    _didIteratorError2 = false;
+                                    _iteratorError2 = undefined;
+                                    _context5.prev = 12;
 
-                try {
-                    for (var _iterator2 = filesAttached[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                        var file = _step2.value;
 
-                        console.log("Calling worker function");
-                        filesProcessed.push(self.uploadAttachmentWithWorker(file, pkfp, privk, symk, messageID, metaID, residence));
-                    }
-                } catch (err) {
-                    _didIteratorError2 = true;
-                    _iteratorError2 = err;
-                } finally {
-                    try {
-                        if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                            _iterator2.return();
+                                    for (_iterator2 = filesAttached[Symbol.iterator](); !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                                        file = _step2.value;
+
+                                        console.log("Calling worker function");
+                                        filesProcessed.push(self.uploadAttachmentWithWorker(file, pkfp, privk, symk, messageID, metaID, residence));
+                                    }
+
+                                    _context5.next = 20;
+                                    break;
+
+                                case 16:
+                                    _context5.prev = 16;
+                                    _context5.t0 = _context5["catch"](12);
+                                    _didIteratorError2 = true;
+                                    _iteratorError2 = _context5.t0;
+
+                                case 20:
+                                    _context5.prev = 20;
+                                    _context5.prev = 21;
+
+                                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                                        _iterator2.return();
+                                    }
+
+                                case 23:
+                                    _context5.prev = 23;
+
+                                    if (!_didIteratorError2) {
+                                        _context5.next = 26;
+                                        break;
+                                    }
+
+                                    throw _iteratorError2;
+
+                                case 26:
+                                    return _context5.finish(23);
+
+                                case 27:
+                                    return _context5.finish(20);
+
+                                case 28:
+                                    _context5.prev = 28;
+                                    _context5.next = 31;
+                                    return Promise.all(filesProcessed);
+
+                                case 31:
+                                    filesInfo = _context5.sent;
+
+                                    resolve(filesInfo);
+                                    _context5.next = 39;
+                                    break;
+
+                                case 35:
+                                    _context5.prev = 35;
+                                    _context5.t1 = _context5["catch"](28);
+
+                                    console.log("ERROR DURING UPLOAD ATTACHMENTS: " + _context5.t1);
+                                    reject(_context5.t1);
+
+                                case 39:
+                                case "end":
+                                    return _context5.stop();
+                            }
                         }
-                    } finally {
-                        if (_didIteratorError2) {
-                            throw _iteratorError2;
-                        }
-                    }
-                }
+                    }, _callee5, _this2, [[12, 16, 20, 28], [21,, 23, 27], [28, 35]]);
+                }));
 
-                try {
-                    var filesInfo = await Promise.all(filesProcessed);
-                    resolve(filesInfo);
-                } catch (err) {
-                    console.log("ERROR DURING UPLOAD ATTACHMENTS: " + err);
-                    reject(err);
-                }
-            });
+                return function (_x10, _x11) {
+                    return _ref5.apply(this, arguments);
+                };
+            }());
         }
 
         /**
@@ -1083,57 +1284,103 @@ var ChatClient = function () {
         value: function downloadAttachment(fileInfo) {
             var _this3 = this;
 
-            return new Promise(async function (resolve, reject) {
-                var self = _this3;
-                var privk = self.session.privateKey; //To decrypt SYM key
+            return new Promise(function () {
+                var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(resolve, reject) {
+                    var self, privk, parsedFileInfo, fileOwnerPublicKey, err, myPkfp, fileData;
+                    return regeneratorRuntime.wrap(function _callee6$(_context6) {
+                        while (1) {
+                            switch (_context6.prev = _context6.next) {
+                                case 0:
+                                    self = _this3;
+                                    privk = self.session.privateKey; //To decrypt SYM key
 
-                //Getting public key of
-                var parsedFileInfo = JSON.parse(fileInfo);
+                                    //Getting public key of
 
-                var fileOwnerPublicKey = self.session.metadata.participants[parsedFileInfo.pkfp].publicKey;
+                                    parsedFileInfo = JSON.parse(fileInfo);
+                                    fileOwnerPublicKey = self.session.metadata.participants[parsedFileInfo.pkfp].publicKey;
 
-                if (Worker === undefined) {
-                    var err = "Worker is not defined.Cannot download file.";
-                    console.log(err);
-                    reject(err);
-                }
-                var myPkfp = self.session.publicKeyFingerprint;
-                var fileData = await self.downloadAttachmentWithWorker(fileInfo, myPkfp, privk, fileOwnerPublicKey);
-                self.emit("download_complete", { fileInfo: fileInfo, fileData: fileData });
-            });
+
+                                    if (Worker === undefined) {
+                                        err = "Worker is not defined.Cannot download file.";
+
+                                        console.log(err);
+                                        reject(err);
+                                    }
+                                    myPkfp = self.session.publicKeyFingerprint;
+                                    _context6.next = 8;
+                                    return self.downloadAttachmentWithWorker(fileInfo, myPkfp, privk, fileOwnerPublicKey);
+
+                                case 8:
+                                    fileData = _context6.sent;
+
+                                    self.emit("download_complete", { fileInfo: fileInfo, fileData: fileData });
+
+                                case 10:
+                                case "end":
+                                    return _context6.stop();
+                            }
+                        }
+                    }, _callee6, _this3);
+                }));
+
+                return function (_x12, _x13) {
+                    return _ref6.apply(this, arguments);
+                };
+            }());
         }
     }, {
         key: "downloadAttachmentWithWorker",
         value: function downloadAttachmentWithWorker(fileInfo, myPkfp, privk, ownerPubk) {
-            return new Promise(async function (resolve, reject) {
-                var downloader = new Worker("/js/downloaderWorker.js");
-                var downloadComplete = function downloadComplete(fileBuffer) {
-                    resolve(fileBuffer);
-                    downloader.terminate();
-                };
+            var _this4 = this;
 
-                var messageHandlers = {
-                    "download_complete": downloadComplete
-                };
+            return new Promise(function () {
+                var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(resolve, reject) {
+                    var downloader, downloadComplete, messageHandlers, processMessage;
+                    return regeneratorRuntime.wrap(function _callee7$(_context7) {
+                        while (1) {
+                            switch (_context7.prev = _context7.next) {
+                                case 0:
+                                    downloader = new Worker("/js/downloaderWorker.js");
 
-                var processMessage = function processMessage(msg) {
-                    messageHandlers[msg.result](msg.data);
-                };
+                                    downloadComplete = function downloadComplete(fileBuffer) {
+                                        resolve(fileBuffer);
+                                        downloader.terminate();
+                                    };
 
-                downloader.onmessage = function (ev) {
-                    processMessage(ev.data);
-                };
+                                    messageHandlers = {
+                                        "download_complete": downloadComplete
+                                    };
 
-                downloader.postMessage({
-                    command: "download",
-                    data: {
-                        fileInfo: fileInfo,
-                        myPkfp: myPkfp,
-                        privk: privk,
-                        pubk: ownerPubk
-                    }
-                });
-            });
+                                    processMessage = function processMessage(msg) {
+                                        messageHandlers[msg.result](msg.data);
+                                    };
+
+                                    downloader.onmessage = function (ev) {
+                                        processMessage(ev.data);
+                                    };
+
+                                    downloader.postMessage({
+                                        command: "download",
+                                        data: {
+                                            fileInfo: fileInfo,
+                                            myPkfp: myPkfp,
+                                            privk: privk,
+                                            pubk: ownerPubk
+                                        }
+                                    });
+
+                                case 6:
+                                case "end":
+                                    return _context7.stop();
+                            }
+                        }
+                    }, _callee7, _this4);
+                }));
+
+                return function (_x14, _x15) {
+                    return _ref7.apply(this, arguments);
+                };
+            }());
         }
 
         /**************************************************
@@ -1147,10 +1394,10 @@ var ChatClient = function () {
     }, {
         key: "prepareMessage",
         value: function prepareMessage(messageContent, recipientPkfp) {
-            var _this4 = this;
+            var _this5 = this;
 
             return new Promise(function (resolve, reject) {
-                var self = _this4;
+                var self = _this5;
                 console.log("Preparing message: " + messageContent);
                 if (!self.isLoggedIn()) {
                     self.emit("login_required");
@@ -1158,8 +1405,8 @@ var ChatClient = function () {
                 }
                 //Preparing chat message
                 var chatMessage = new ChatMessage();
-                chatMessage.header.metadataID = _this4.session.metadata.id;
-                chatMessage.header.author = _this4.session.publicKeyFingerprint;
+                chatMessage.header.metadataID = _this5.session.metadata.id;
+                chatMessage.header.author = _this5.session.publicKeyFingerprint;
                 chatMessage.header.recipient = recipientPkfp ? recipientPkfp : "ALL";
                 chatMessage.header.private = !!recipientPkfp;
                 chatMessage.header.nickname = self.session.settings.nickname;
@@ -1179,88 +1426,163 @@ var ChatClient = function () {
     }, {
         key: "shoutMessage",
         value: function shoutMessage(messageContent, filesAttached) {
-            var _this5 = this;
+            var _this6 = this;
 
-            return new Promise(async function (resolve, reject) {
-                var self = _this5;
+            return new Promise(function () {
+                var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(resolve, reject) {
+                    var self, attachmentsInfo, metaID, chatMessage, _iteratorNormalCompletion3, _didIteratorError3, _iteratorError3, _iterator3, _step3, att, message, userPrivateKey;
 
-                var attachmentsInfo = void 0;
+                    return regeneratorRuntime.wrap(function _callee8$(_context8) {
+                        while (1) {
+                            switch (_context8.prev = _context8.next) {
+                                case 0:
+                                    self = _this6;
+                                    attachmentsInfo = void 0;
+                                    metaID = self.session.metadata.id;
+                                    _context8.next = 5;
+                                    return self.prepareMessage(messageContent);
 
-                var metaID = self.session.metadata.id;
-                var chatMessage = await self.prepareMessage(messageContent);
+                                case 5:
+                                    chatMessage = _context8.sent;
 
-                if (filesAttached && filesAttached.length > 0) {
-                    attachmentsInfo = await self.uploadAttachments(filesAttached, chatMessage.header.id, metaID);
-                    var _iteratorNormalCompletion3 = true;
-                    var _didIteratorError3 = false;
-                    var _iteratorError3 = undefined;
+                                    if (!(filesAttached && filesAttached.length > 0)) {
+                                        _context8.next = 29;
+                                        break;
+                                    }
 
-                    try {
-                        for (var _iterator3 = attachmentsInfo[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-                            var att = _step3.value;
+                                    _context8.next = 9;
+                                    return self.uploadAttachments(filesAttached, chatMessage.header.id, metaID);
 
-                            chatMessage.addAttachmentInfo(att);
-                        }
-                    } catch (err) {
-                        _didIteratorError3 = true;
-                        _iteratorError3 = err;
-                    } finally {
-                        try {
-                            if (!_iteratorNormalCompletion3 && _iterator3.return) {
-                                _iterator3.return();
+                                case 9:
+                                    attachmentsInfo = _context8.sent;
+                                    _iteratorNormalCompletion3 = true;
+                                    _didIteratorError3 = false;
+                                    _iteratorError3 = undefined;
+                                    _context8.prev = 13;
+
+                                    for (_iterator3 = attachmentsInfo[Symbol.iterator](); !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                                        att = _step3.value;
+
+                                        chatMessage.addAttachmentInfo(att);
+                                    }
+                                    _context8.next = 21;
+                                    break;
+
+                                case 17:
+                                    _context8.prev = 17;
+                                    _context8.t0 = _context8["catch"](13);
+                                    _didIteratorError3 = true;
+                                    _iteratorError3 = _context8.t0;
+
+                                case 21:
+                                    _context8.prev = 21;
+                                    _context8.prev = 22;
+
+                                    if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                                        _iterator3.return();
+                                    }
+
+                                case 24:
+                                    _context8.prev = 24;
+
+                                    if (!_didIteratorError3) {
+                                        _context8.next = 27;
+                                        break;
+                                    }
+
+                                    throw _iteratorError3;
+
+                                case 27:
+                                    return _context8.finish(24);
+
+                                case 28:
+                                    return _context8.finish(21);
+
+                                case 29:
+
+                                    chatMessage.encryptMessage(_this6.session.metadata.sharedKey);
+                                    chatMessage.sign(_this6.session.privateKey);
+
+                                    //Preparing request
+                                    message = new Message();
+
+                                    message.headers.pkfpSource = _this6.session.publicKeyFingerprint;
+                                    message.headers.command = "broadcast_message";
+                                    message.body.message = chatMessage.toBlob();
+                                    userPrivateKey = _this6.session.privateKey;
+
+                                    message.signMessage(userPrivateKey);
+                                    //console.log("Message ready: " + JSON.stringify(message));
+                                    _this6.chatSocket.emit("request", message);
+                                    resolve();
+
+                                case 39:
+                                case "end":
+                                    return _context8.stop();
                             }
-                        } finally {
-                            if (_didIteratorError3) {
-                                throw _iteratorError3;
-                            }
                         }
-                    }
-                }
+                    }, _callee8, _this6, [[13, 17, 21, 29], [22,, 24, 28]]);
+                }));
 
-                chatMessage.encryptMessage(_this5.session.metadata.sharedKey);
-                chatMessage.sign(_this5.session.privateKey);
-
-                //Preparing request
-                var message = new Message();
-                message.headers.pkfpSource = _this5.session.publicKeyFingerprint;
-                message.headers.command = "broadcast_message";
-                message.body.message = chatMessage.toBlob();
-                var userPrivateKey = _this5.session.privateKey;
-                message.signMessage(userPrivateKey);
-                //console.log("Message ready: " + JSON.stringify(message));
-                _this5.chatSocket.emit("request", message);
-                resolve();
-            });
+                return function (_x16, _x17) {
+                    return _ref8.apply(this, arguments);
+                };
+            }());
         }
     }, {
         key: "whisperMessage",
         value: function whisperMessage(pkfp, messageContent, filesAttached) {
-            var _this6 = this;
+            var _this7 = this;
 
-            return new Promise(async function (resolve, reject) {
-                var self = _this6;
+            return new Promise(function () {
+                var _ref9 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9(resolve, reject) {
+                    var self, chatMessage, keys, message, userPrivateKey;
+                    return regeneratorRuntime.wrap(function _callee9$(_context9) {
+                        while (1) {
+                            switch (_context9.prev = _context9.next) {
+                                case 0:
+                                    self = _this7;
+                                    _context9.next = 3;
+                                    return self.prepareMessage(messageContent, pkfp);
 
-                var chatMessage = await self.prepareMessage(messageContent, pkfp);
+                                case 3:
+                                    chatMessage = _context9.sent;
 
-                //Will be enabled in the next version
 
-                var keys = [self.session.publicKey];
-                keys.push(self.session.metadata.participants[pkfp].publicKey);
-                chatMessage.encryptPrivateMessage(keys);
-                chatMessage.sign(_this6.session.privateKey);
+                                    //Will be enabled in the next version
 
-                //Preparing request
-                var message = new Message();
-                message.headers.pkfpSource = _this6.session.publicKeyFingerprint;
-                message.headers.pkfpDest = pkfp;
-                message.headers.command = "send_message";
-                message.headers.private = true;
-                message.body.message = chatMessage.toBlob();
-                var userPrivateKey = _this6.session.privateKey;
-                message.signMessage(userPrivateKey);
-                _this6.chatSocket.emit("request", message);
-                resolve();
-            });
+                                    keys = [self.session.publicKey];
+
+                                    keys.push(self.session.metadata.participants[pkfp].publicKey);
+                                    chatMessage.encryptPrivateMessage(keys);
+                                    chatMessage.sign(_this7.session.privateKey);
+
+                                    //Preparing request
+                                    message = new Message();
+
+                                    message.headers.pkfpSource = _this7.session.publicKeyFingerprint;
+                                    message.headers.pkfpDest = pkfp;
+                                    message.headers.command = "send_message";
+                                    message.headers.private = true;
+                                    message.body.message = chatMessage.toBlob();
+                                    userPrivateKey = _this7.session.privateKey;
+
+                                    message.signMessage(userPrivateKey);
+                                    _this7.chatSocket.emit("request", message);
+                                    resolve();
+
+                                case 18:
+                                case "end":
+                                    return _context9.stop();
+                            }
+                        }
+                    }, _callee9, _this7);
+                }));
+
+                return function (_x18, _x19) {
+                    return _ref9.apply(this, arguments);
+                };
+            }());
         }
     }, {
         key: "processIncomingMessage",
@@ -1306,27 +1628,59 @@ var ChatClient = function () {
         }
     }, {
         key: "messageSendSuccess",
-        value: async function messageSendSuccess(response, self) {
-            var chatMessage = new ChatMessage(response.body.message);
-            var author = self.session.metadata.participants[chatMessage.header.author];
-            if (!author) {
-                throw "Author is not found in the current version of metadata!";
-            }
-            if (!chatMessage.verify(author.publicKey)) {
-                self.emit("error", "Received message with invalid signature!");
-            }
-            if (!chatMessage.header.private && chatMessage.header.metadataID !== self.session.metadata.id) {
-                throw "current metadata cannot decrypt this message";
+        value: function () {
+            var _ref10 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10(response, self) {
+                var chatMessage, author;
+                return regeneratorRuntime.wrap(function _callee10$(_context10) {
+                    while (1) {
+                        switch (_context10.prev = _context10.next) {
+                            case 0:
+                                chatMessage = new ChatMessage(response.body.message);
+                                author = self.session.metadata.participants[chatMessage.header.author];
+
+                                if (author) {
+                                    _context10.next = 4;
+                                    break;
+                                }
+
+                                throw "Author is not found in the current version of metadata!";
+
+                            case 4:
+                                if (!chatMessage.verify(author.publicKey)) {
+                                    self.emit("error", "Received message with invalid signature!");
+                                }
+
+                                if (!(!chatMessage.header.private && chatMessage.header.metadataID !== self.session.metadata.id)) {
+                                    _context10.next = 7;
+                                    break;
+                                }
+
+                                throw "current metadata cannot decrypt this message";
+
+                            case 7:
+
+                                if (chatMessage.header.private) {
+                                    chatMessage.decryptPrivateMessage(self.session.privateKey);
+                                } else {
+                                    chatMessage.decryptMessage(self.session.metadata.sharedKey);
+                                }
+
+                                self.emit("send_success", chatMessage);
+
+                            case 9:
+                            case "end":
+                                return _context10.stop();
+                        }
+                    }
+                }, _callee10, this);
+            }));
+
+            function messageSendSuccess(_x20, _x21) {
+                return _ref10.apply(this, arguments);
             }
 
-            if (chatMessage.header.private) {
-                chatMessage.decryptPrivateMessage(self.session.privateKey);
-            } else {
-                chatMessage.decryptMessage(self.session.metadata.sharedKey);
-            }
-
-            self.emit("send_success", chatMessage);
-        }
+            return messageSendSuccess;
+        }()
     }, {
         key: "messageSendFail",
         value: function messageSendFail(response, self) {
@@ -1563,82 +1917,124 @@ var ChatClient = function () {
 
     }, {
         key: "establishIslandConnection",
-        value: async function establishIslandConnection() {
-            var _this7 = this;
+        value: function () {
+            var _ref11 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
+                var _this8 = this;
 
-            var option = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "chat";
+                var option = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "chat";
+                return regeneratorRuntime.wrap(function _callee11$(_context11) {
+                    while (1) {
+                        switch (_context11.prev = _context11.next) {
+                            case 0:
+                                return _context11.abrupt("return", new Promise(function (resolve, reject) {
+                                    if (option === "chat") {
+                                        if (_this8.chatSocket && _this8.chatSocket.connected) {
+                                            resolve();
+                                            return;
+                                        }
+                                        _this8.chatSocket = io('/chat', {
+                                            reconnection: false,
+                                            forceNew: true,
+                                            transports: ['websocket', "longpoll"],
+                                            pingInterval: 10000,
+                                            pingTimeout: 5000
+                                        });
+                                        _this8.chatSocket.on('connect', function () {
+                                            _this8.finishSocketSetup();
+                                            console.log("Island connection established");
+                                            _this8.islandConnectionStatus = true;
+                                            _this8.emit("connected_to_island");
+                                            resolve();
+                                        });
 
-            return new Promise(function (resolve, reject) {
-                if (option === "chat") {
-                    if (_this7.chatSocket && _this7.chatSocket.connected) {
-                        resolve();
-                        return;
+                                        _this8.chatSocket.on("disconnect", function () {
+                                            console.log("Island disconnected.");
+                                            _this8.islandConnectionStatus = false;
+                                            _this8.emit("disconnected_from_island");
+                                        });
+
+                                        _this8.chatSocket.on('connect_error', function (err) {
+                                            console.log('Connection Failed');
+                                            reject(err);
+                                        });
+                                    } else if (option === "file") {
+                                        console.log("Connecting to file socket");
+                                        if (_this8.fileSocket && _this8.fileSocket.connected) {
+                                            console.log("File socket already connected! returning");
+                                            resolve();
+                                            return;
+                                        }
+
+                                        _this8.fileSocket = io('/file', {
+                                            'reconnection': true,
+                                            'forceNew': true,
+                                            'reconnectionDelay': 1000,
+                                            'reconnectionDelayMax': 5000,
+                                            'reconnectionAttempts': 5
+                                        });
+
+                                        _this8.fileSocket.on("connect", function () {
+                                            _this8.setupFileTransferListeners();
+                                            console.log("File transfer connectiopn established");
+                                            resolve();
+                                        });
+
+                                        _this8.fileSocket.on("connect_error", function (err) {
+                                            console.log('Island connection failed: ' + err.message);
+                                            reject(err);
+                                        });
+                                    }
+                                }));
+
+                            case 1:
+                            case "end":
+                                return _context11.stop();
+                        }
                     }
-                    _this7.chatSocket = io('/chat', {
-                        reconnection: false,
-                        forceNew: true,
-                        transports: ['websocket', "longpoll"],
-                        pingInterval: 10000,
-                        pingTimeout: 5000
-                    });
-                    _this7.chatSocket.on('connect', function () {
-                        _this7.finishSocketSetup();
-                        console.log("Island connection established");
-                        _this7.islandConnectionStatus = true;
-                        _this7.emit("connected_to_island");
-                        resolve();
-                    });
+                }, _callee11, this);
+            }));
 
-                    _this7.chatSocket.on("disconnect", function () {
-                        console.log("Island disconnected.");
-                        _this7.islandConnectionStatus = false;
-                        _this7.emit("disconnected_from_island");
-                    });
+            function establishIslandConnection() {
+                return _ref11.apply(this, arguments);
+            }
 
-                    _this7.chatSocket.on('connect_error', function (err) {
-                        console.log('Connection Failed');
-                        reject(err);
-                    });
-                } else if (option === "file") {
-                    console.log("Connecting to file socket");
-                    if (_this7.fileSocket && _this7.fileSocket.connected) {
-                        console.log("File socket already connected! returning");
-                        resolve();
-                        return;
-                    }
-
-                    _this7.fileSocket = io('/file', {
-                        'reconnection': true,
-                        'forceNew': true,
-                        'reconnectionDelay': 1000,
-                        'reconnectionDelayMax': 5000,
-                        'reconnectionAttempts': 5
-                    });
-
-                    _this7.fileSocket.on("connect", function () {
-                        _this7.setupFileTransferListeners();
-                        console.log("File transfer connectiopn established");
-                        resolve();
-                    });
-
-                    _this7.fileSocket.on("connect_error", function (err) {
-                        console.log('Island connection failed: ' + err.message);
-                        reject(err);
-                    });
-                }
-            });
-        }
+            return establishIslandConnection;
+        }()
     }, {
         key: "terminateIslandConnection",
-        value: async function terminateIslandConnection() {
-            try {
-                if (this.chatSocket && this.chatSocket.connected) {
-                    this.chatSocket.disconnect();
-                }
-            } catch (err) {
-                throw "Error terminating connection with island: " + err;
+        value: function () {
+            var _ref12 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
+                return regeneratorRuntime.wrap(function _callee12$(_context12) {
+                    while (1) {
+                        switch (_context12.prev = _context12.next) {
+                            case 0:
+                                _context12.prev = 0;
+
+                                if (this.chatSocket && this.chatSocket.connected) {
+                                    this.chatSocket.disconnect();
+                                }
+                                _context12.next = 7;
+                                break;
+
+                            case 4:
+                                _context12.prev = 4;
+                                _context12.t0 = _context12["catch"](0);
+                                throw "Error terminating connection with island: " + _context12.t0;
+
+                            case 7:
+                            case "end":
+                                return _context12.stop();
+                        }
+                    }
+                }, _callee12, this, [[0, 4]]);
+            }));
+
+            function terminateIslandConnection() {
+                return _ref12.apply(this, arguments);
             }
-        }
+
+            return terminateIslandConnection;
+        }()
 
         //TODO implement method
 
@@ -1653,7 +2049,7 @@ var ChatClient = function () {
     }, {
         key: "initChatListeners",
         value: function initChatListeners() {
-            var _this8 = this;
+            var _this9 = this;
 
             this.chatSocket.on('message', function (message) {
 
@@ -1662,24 +2058,24 @@ var ChatClient = function () {
 
             this.chatSocket.on('request', function (request) {
                 console.log("Received new incoming request");
-                _this8.processRequest(request, _this8);
+                _this9.processRequest(request, _this9);
             });
 
             this.chatSocket.on("response", function (response) {
-                _this8.processResponse(response, _this8);
+                _this9.processResponse(response, _this9);
             });
 
             this.chatSocket.on("service", function (message) {
-                _this8.processServiceMessage(message, _this8);
+                _this9.processServiceMessage(message, _this9);
             });
 
             this.chatSocket.on("service_record", function (message) {
                 console.log("Got SERVICE RECORD!");
-                _this8.processServiceRecord(message, _this8);
+                _this9.processServiceRecord(message, _this9);
             });
 
             this.chatSocket.on("message", function (message) {
-                _this8.processIncomingMessage(message, _this8);
+                _this9.processIncomingMessage(message, _this9);
             });
 
             this.chatSocket.on('reconnect', function (attemptNumber) {
@@ -1687,7 +2083,7 @@ var ChatClient = function () {
             });
 
             this.chatSocket.on('metadata_update', function (meta) {
-                _this8.processMetadataUpdate(meta);
+                _this9.processMetadataUpdate(meta);
             });
 
             /*
@@ -1719,7 +2115,7 @@ var ChatClient = function () {
     }, {
         key: "broadcastMetadataUpdate",
         value: function broadcastMetadataUpdate(metadata) {
-            var _this9 = this;
+            var _this10 = this;
 
             var newMetadata = this.session.metadata.toBlob(true);
             var updateRequest = {
@@ -1732,8 +2128,8 @@ var ChatClient = function () {
             Object.keys(this.session.metadata.participants).forEach(function (key) {
                 //TODO encrypt
                 var encryptedMeta = newMetadata;
-                var fp = _this9.session.metadata.participants[key].publicKeyFingerprint;
-                var residence = _this9.session.metadata.participants[key].residence;
+                var fp = _this10.session.metadata.participants[key].publicKeyFingerprint;
+                var residence = _this10.session.metadata.participants[key].residence;
                 updateRequest.recipients[key] = {
                     residence: residence,
                     metadata: newMetadata

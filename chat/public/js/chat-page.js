@@ -1,5 +1,180 @@
 "use strict";
 
+var topicLogin = function () {
+    var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
+        var privKey;
+        return regeneratorRuntime.wrap(function _callee4$(_context4) {
+            while (1) {
+                switch (_context4.prev = _context4.next) {
+                    case 0:
+                        loadingOn();
+                        console.log("called topic login");
+                        privKey = document.querySelector('#private-key').value;
+
+                        clearLoginPrivateKey();
+                        _context4.next = 6;
+                        return chat.topicLogin(privKey);
+
+                    case 6:
+                    case "end":
+                        return _context4.stop();
+                }
+            }
+        }, _callee4, this);
+    }));
+
+    return function topicLogin() {
+        return _ref4.apply(this, arguments);
+    };
+}();
+
+var joinTopic = function () {
+    var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
+        var inviteCode, nickname, data;
+        return regeneratorRuntime.wrap(function _callee5$(_context5) {
+            while (1) {
+                switch (_context5.prev = _context5.next) {
+                    case 0:
+                        inviteCode = document.querySelector('#invite-code').value.trim();
+                        nickname = document.querySelector('#join-nickname').value.trim();
+
+                        loadingOn();
+                        _context5.prev = 3;
+                        _context5.next = 6;
+                        return chat.initTopicJoin(nickname, inviteCode);
+
+                    case 6:
+                        data = _context5.sent;
+                        _context5.next = 13;
+                        break;
+
+                    case 9:
+                        _context5.prev = 9;
+                        _context5.t0 = _context5["catch"](3);
+
+                        toastr.error("Topic was not created. Error: " + _context5.t0);
+                        loadingOff();
+
+                    case 13:
+                    case "end":
+                        return _context5.stop();
+                }
+            }
+        }, _callee5, this, [[3, 9]]);
+    }));
+
+    return function joinTopic() {
+        return _ref5.apply(this, arguments);
+    };
+}();
+
+/**
+ * Click handler when user clicks on attached file
+ * @param ev
+ * @returns {Promise<void>}
+ */
+
+var downloadOnClick = function () {
+    var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(ev) {
+        var target, fileInfo, file;
+        return regeneratorRuntime.wrap(function _callee6$(_context6) {
+            while (1) {
+                switch (_context6.prev = _context6.next) {
+                    case 0:
+                        console.log("Download event triggered!");
+                        target = ev.target;
+
+                        while (target && !target.classList.contains("att-view")) {
+                            target = target.parentNode;
+                        }
+
+                        if (target) {
+                            _context6.next = 5;
+                            break;
+                        }
+
+                        throw "att-view container not found...";
+
+                    case 5:
+                        fileInfo = target.nextSibling.innerHTML; //Extract fileInfo from message
+
+                        console.log("obtained fileinfo: " + fileInfo);
+                        _context6.next = 9;
+                        return chat.downloadAttachment(fileInfo);
+
+                    case 9:
+                        file = _context6.sent;
+
+                    case 10:
+                    case "end":
+                        return _context6.stop();
+                }
+            }
+        }, _callee6, this);
+    }));
+
+    return function downloadOnClick(_x5) {
+        return _ref6.apply(this, arguments);
+    };
+}();
+
+/**
+ * Processes all the attachments and returns
+ * attachments wrapper which can be appended to a message
+ * If no attachments are passed - returns undefined
+ * @param attachments
+ * @returns {*}
+ */
+
+
+var loadAudio = function () {
+    var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(fileInfo, fileData) {
+        var message, audio, arr, fileURL, viewWrap;
+        return regeneratorRuntime.wrap(function _callee7$(_context7) {
+            while (1) {
+                switch (_context7.prev = _context7.next) {
+                    case 0:
+                        //search right message
+                        message = findMessage(fileInfo.messageID);
+
+                        if (message) {
+                            _context7.next = 4;
+                            break;
+                        }
+
+                        console.error("Message not found");
+                        return _context7.abrupt("return");
+
+                    case 4:
+                        audio = document.createElement("audio");
+                        arr = new Uint8Array(fileData);
+                        fileURL = URL.createObjectURL(new Blob([arr]));
+
+                        audio.setAttribute("controls", "");
+                        audio.setAttribute("src", fileURL);
+
+                        viewWrap = message.getElementsByClassName("att-view")[0];
+
+                        viewWrap.innerHTML = "";
+                        viewWrap.appendChild(audio);
+                        console.log("Removing even listener");
+                        viewWrap.removeEventListener("click", downloadOnClick);
+
+                    case 14:
+                    case "end":
+                        return _context7.stop();
+                }
+            }
+        }, _callee7, this);
+    }));
+
+    return function loadAudio(_x6, _x7) {
+        return _ref7.apply(this, arguments);
+    };
+}();
+
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+
 var chat = void 0;
 
 var DAYSOFWEEK = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -77,23 +252,82 @@ document.addEventListener('DOMContentLoaded', function (event) {
         }
     });
     $('#chat_window').scroll(processChatScroll);
-    $('#private-key').keyup(async function (e) {
-        if (e.keyCode === 13) {
-            await topicLogin();
-        }
-    });
+    $('#private-key').keyup(function () {
+        var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(e) {
+            return regeneratorRuntime.wrap(function _callee$(_context) {
+                while (1) {
+                    switch (_context.prev = _context.next) {
+                        case 0:
+                            if (!(e.keyCode === 13)) {
+                                _context.next = 3;
+                                break;
+                            }
 
-    $('#join-nickname, #invite-code').keyup(async function (e) {
-        if (e.keyCode === 13) {
-            await joinTopic();
-        }
-    });
+                            _context.next = 3;
+                            return topicLogin();
 
-    $('#new-topic-nickname, #new-topic-name').keyup(async function (e) {
-        if (e.keyCode === 13) {
-            createTopic();
-        }
-    });
+                        case 3:
+                        case "end":
+                            return _context.stop();
+                    }
+                }
+            }, _callee, undefined);
+        }));
+
+        return function (_x) {
+            return _ref.apply(this, arguments);
+        };
+    }());
+
+    $('#join-nickname, #invite-code').keyup(function () {
+        var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(e) {
+            return regeneratorRuntime.wrap(function _callee2$(_context2) {
+                while (1) {
+                    switch (_context2.prev = _context2.next) {
+                        case 0:
+                            if (!(e.keyCode === 13)) {
+                                _context2.next = 3;
+                                break;
+                            }
+
+                            _context2.next = 3;
+                            return joinTopic();
+
+                        case 3:
+                        case "end":
+                            return _context2.stop();
+                    }
+                }
+            }, _callee2, undefined);
+        }));
+
+        return function (_x2) {
+            return _ref2.apply(this, arguments);
+        };
+    }());
+
+    $('#new-topic-nickname, #new-topic-name').keyup(function () {
+        var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(e) {
+            return regeneratorRuntime.wrap(function _callee3$(_context3) {
+                while (1) {
+                    switch (_context3.prev = _context3.next) {
+                        case 0:
+                            if (e.keyCode === 13) {
+                                createTopic();
+                            }
+
+                        case 1:
+                        case "end":
+                            return _context3.stop();
+                    }
+                }
+            }, _callee3, undefined);
+        }));
+
+        return function (_x3) {
+            return _ref3.apply(this, arguments);
+        };
+    }());
 
     enableSettingsMenuListeners();
 });
@@ -180,26 +414,6 @@ function createTopic() {
         console.log("Error creating topic: " + err);
         loadingOff();
     });
-}
-
-async function topicLogin() {
-    loadingOn();
-    console.log("called topic login");
-    var privKey = document.querySelector('#private-key').value;
-    clearLoginPrivateKey();
-    await chat.topicLogin(privKey);
-}
-
-async function joinTopic() {
-    var inviteCode = document.querySelector('#invite-code').value.trim();
-    var nickname = document.querySelector('#join-nickname').value.trim();
-    loadingOn();
-    try {
-        var data = await chat.initTopicJoin(nickname, inviteCode);
-    } catch (err) {
-        toastr.error("Topic was not created. Error: " + err);
-        loadingOff();
-    }
 }
 
 function setupChatListeners(chat) {
@@ -851,37 +1065,7 @@ function preparePrivateMark(message) {
         privateMark.innerText = "(private)";
     }
     return privateMark;
-}
-
-/**
- * Click handler when user clicks on attached file
- * @param ev
- * @returns {Promise<void>}
- */
-
-async function downloadOnClick(ev) {
-    console.log("Download event triggered!");
-    var target = ev.target;
-    while (target && !target.classList.contains("att-view")) {
-        target = target.parentNode;
-    }
-
-    if (!target) {
-        throw "att-view container not found...";
-    }
-    var fileInfo = target.nextSibling.innerHTML; //Extract fileInfo from message
-    console.log("obtained fileinfo: " + fileInfo);
-    var file = await chat.downloadAttachment(fileInfo); //download file
-}
-
-/**
- * Processes all the attachments and returns
- * attachments wrapper which can be appended to a message
- * If no attachments are passed - returns undefined
- * @param attachments
- * @returns {*}
- */
-function processAttachments(attachments) {
+}function processAttachments(attachments) {
     if (attachments === undefined) {
         return undefined;
     }
@@ -1413,27 +1597,6 @@ function findMessage(id) {
             }
         }
     }
-}
-
-async function loadAudio(fileInfo, fileData) {
-    //search right message
-    var message = findMessage(fileInfo.messageID);
-    if (!message) {
-        console.error("Message not found");
-        return;
-    }
-
-    var audio = document.createElement("audio");
-    var arr = new Uint8Array(fileData);
-    var fileURL = URL.createObjectURL(new Blob([arr]));
-    audio.setAttribute("controls", "");
-    audio.setAttribute("src", fileURL);
-
-    var viewWrap = message.getElementsByClassName("att-view")[0];
-    viewWrap.innerHTML = "";
-    viewWrap.appendChild(audio);
-    console.log("Removing even listener");
-    viewWrap.removeEventListener("click", downloadOnClick);
 }
 
 function processAttachmentChosen(ev) {

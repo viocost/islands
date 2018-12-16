@@ -1,5 +1,44 @@
 "use strict";
 
+var uploadAttachment = function () {
+    var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(msg) {
+        var attachment, pkfp, privK, symk, fileSocket;
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+            while (1) {
+                switch (_context.prev = _context.next) {
+                    case 0:
+                        attachment = msg.attachment;
+                        pkfp = msg.pkfp;
+                        privK = msg.privk;
+                        symk = msg.symk;
+                        _context.next = 6;
+                        return establishConnection();
+
+                    case 6:
+                        fileSocket = _context.sent;
+                        _context.next = 9;
+                        return processUpload(attachment, pkfp, privK, symk, fileSocket);
+
+                    case 9:
+                        console.log("Upload successfull");
+                        //TODO Send message to main thread
+                        postMessage(["upload_complete"]);
+
+                    case 11:
+                    case "end":
+                        return _context.stop();
+                }
+            }
+        }, _callee, this);
+    }));
+
+    return function uploadAttachment(_x) {
+        return _ref.apply(this, arguments);
+    };
+}();
+
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+
 importScripts("/js/iCrypto.js");
 importScripts("/js/socket.io.js");
 importScripts("/js/forge.min.js");
@@ -153,18 +192,6 @@ function finishOnError(fileSocket, result, errorMsg) {
         result: result,
         data: errorMsg
     });
-}
-
-async function uploadAttachment(msg) {
-    var attachment = msg.attachment;
-    var pkfp = msg.pkfp;
-    var privK = msg.privk;
-    var symk = msg.symk;
-    var fileSocket = await establishConnection();
-    await processUpload(attachment, pkfp, privK, symk, fileSocket);
-    console.log("Upload successfull");
-    //TODO Send message to main thread
-    postMessage(["upload_complete"]);
 }
 
 function establishConnection() {

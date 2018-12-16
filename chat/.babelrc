@@ -1,6 +1,23 @@
 {
-  "presets":  [
-    "es2015"
+  "presets": [
+    [ "env", {
+      "targets": {
+        "chrome": 49,
+        "edge": 12,
+        "firefox": 48,
+        "ie": 9,
+        "ios": 10,
+        "safari": 9
+      },
+      "useBuiltIns": false,
+      "loose": false,
+      "spec": false,
+      "uglify": false,
+      "debug": false,
+      "modules": "commonjs",
+      "include": [],
+      "exclude": []
+    }]
   ]
 
 }
