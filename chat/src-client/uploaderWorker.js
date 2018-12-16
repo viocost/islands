@@ -6,19 +6,25 @@ importScripts("/js/socket.io-stream.js");
 importScripts("/js/lzma-worker.min.js");
 importScripts("/js/chacha.js");
 
+
+
 let commandHandlers = {
     "upload": uploadAttachment
 };
 
-onmessage = ev => {
+
+onmessage = (ev)=>{
     console.log("Received message from main thread: " + ev.data.command);
     processMessage(ev.data);
 };
 
-function processMessage(msg) {
+
+function processMessage(msg){
     console.log("Processing message from main thread..");
     commandHandlers[msg.command](msg);
+
 }
+
 
 /**
  * Uploads and encrypts a file to the Island and
@@ -30,8 +36,8 @@ function processMessage(msg) {
  * @param fileSocket
  * @returns {Promise<any>}
  */
-function processUpload(file, pkfp, privK, symk, fileSocket) {
-    return new Promise((resolve, reject) => {
+function processUpload(file, pkfp, privK, symk, fileSocket){
+    return new Promise((resolve, reject)=>{
         console.log("Processing upload");
         let stream = ss.createStream();
 
@@ -40,16 +46,20 @@ function processUpload(file, pkfp, privK, symk, fileSocket) {
         let bufferSize = 1024 * 64;
         let fileSize = file.size;
         let ic = new iCrypto();
-        ic.ssym.init("cha", symk).createHash("unenc") //hash of unencrypted
-        .createHash("enc") //has of encrypted
-        .createNonce("nonce", 8).asym.setKey("privk", privK, "private").privateKeySign("nonce", "privk", "sign").bytesToHex("nonce", "noncehex");
+        ic.ssym.init("cha", symk)
+            .createHash("unenc")  //hash of unencrypted
+            .createHash("enc")   //has of encrypted
+            .createNonce("nonce", 8)
+            .asym.setKey("privk", privK, "private")
+            .privateKeySign("nonce", "privk", "sign")
+            .bytesToHex("nonce", "noncehex");
 
         console.log("NONCE: " + ic.get('noncehex'));
 
-        fileSocket.on("invalid_request", () => {
+        fileSocket.on("invalid_request", ()=>{
             console.error("WORKER: Invalid request event received");
             finishOnError(fileSocket, "invalid_request");
-            reject("invalid_request");
+            reject("invalid_request")
         });
 
         /**
@@ -57,7 +67,7 @@ function processUpload(file, pkfp, privK, symk, fileSocket) {
          * renamed and saved.
          * Closing connection, notifying main thread.
          */
-        fileSocket.on("upload_success", () => {
+        fileSocket.on("upload_success", ()=>{
             console.log("upload successfull!");
             fileSocket.disconnect();
             postMessage({
@@ -66,36 +76,36 @@ function processUpload(file, pkfp, privK, symk, fileSocket) {
                     hashEncrypted: ic.get("encres"),
                     hashUnencrypted: ic.get("unencres")
                 }
-            });
+            })
         });
 
-        fileSocket.on("upload_ready", () => {
+        fileSocket.on("upload_ready", ()=>{
             console.log("received upload_ready. Pumping data");
-            chunkReaderBlock(offset, bufferSize, file);
+            chunkReaderBlock(offset, bufferSize, file)
         });
 
-        fileSocket.on("upload_error", err => {
+        fileSocket.on("upload_error", (err)=>{
             console.log("WORKER Upload error: " + err);
             finishOnError(fileSocket, "upload_error", err);
-            reject(err);
+            reject(err)
         });
 
         /**
          * Event emited by Island after hash received
          * and file is ready to be renamed
          */
-        fileSocket.on("end_stream", () => {
+        fileSocket.on("end_stream", ()=>{
             stream.end();
         });
 
-        let errorEventHandler = ev => {
+        let errorEventHandler = (ev)=>{
             console.error("Error processing upload: " + ev.target.error);
             reject(ev.target.error);
         };
 
-        let readEventHandler = ev => {
+        let readEventHandler = (ev)=>{
 
-            if (ev.target.error === null) {
+            if(ev.target.error === null){
                 offset = Math.min(offset + bufferSize, fileSize);
                 handleBlock(ev.target.result);
             } else {
@@ -105,17 +115,17 @@ function processUpload(file, pkfp, privK, symk, fileSocket) {
                 return;
             }
 
-            if (offset >= fileSize) {
+            if(offset >= fileSize){
                 ic.digestHash("unenc", "unencres");
                 ic.digestHash("enc", "encres");
                 ic.asym.sign("unencres", "privk", "unencressign");
-                fileSocket.emit("finalize_upload", { hashUnencrypted: ic.get("unencres") });
+                fileSocket.emit("finalize_upload", {hashUnencrypted: ic.get("unencres")})
                 return;
             }
-            chunkReaderBlock(offset, bufferSize, file);
+            chunkReaderBlock(offset, bufferSize, file)
         };
 
-        let chunkReaderBlock = (_offset, bufferSize, _file) => {
+        let chunkReaderBlock = (_offset, bufferSize, _file)=>{
             let reader = new FileReader();
             let upperBound = Math.min(_offset + bufferSize, fileSize);
             let blob = _file.slice(_offset, upperBound);
@@ -124,7 +134,9 @@ function processUpload(file, pkfp, privK, symk, fileSocket) {
             reader.readAsArrayBuffer(blob);
         };
 
-        let handleBlock = chunk => {
+
+
+        let handleBlock = (chunk)=>{
             ic.updateHash("unenc", chunk);
             let encrypted = ic.ssym.encrypt("cha", chunk);
             ic.updateHash("enc", encrypted);
@@ -140,20 +152,23 @@ function processUpload(file, pkfp, privK, symk, fileSocket) {
             nonce: ic.get("noncehex"),
             sign: ic.get("sign")
         });
-    });
+
+
+    })
 }
 
-function finishOnError(fileSocket, result, errorMsg) {
-    if (fileSocket && fileSocket.connected) {
+function finishOnError(fileSocket, result, errorMsg ){
+    if (fileSocket && fileSocket.connected){
         fileSocket.disconnect();
     }
     postMessage({
         result: result,
         data: errorMsg
-    });
+    })
 }
 
-async function uploadAttachment(msg) {
+
+async function uploadAttachment(msg){
     let attachment = msg.attachment;
     let pkfp = msg.pkfp;
     let privK = msg.privk;
@@ -162,44 +177,51 @@ async function uploadAttachment(msg) {
     await processUpload(attachment, pkfp, privK, symk, fileSocket);
     console.log("Upload successfull");
     //TODO Send message to main thread
-    postMessage(["upload_complete"]);
+    postMessage(["upload_complete"])
 }
 
-function establishConnection() {
-    return new Promise((resolve, reject) => {
+
+
+function establishConnection(){
+    return new Promise((resolve, reject)=>{
         console.log("Connecting to file socket");
         let fileSocket = io('/file', {
             'reconnection': true,
             'forceNew': true,
             'reconnectionDelay': 1000,
-            'reconnectionDelayMax': 5000,
+            'reconnectionDelayMax' : 5000,
             'reconnectionAttempts': 5
         });
 
-        fileSocket.on("connect", () => {
+        fileSocket.on("connect", ()=>{
             console.log("File transfer connectiopn established");
-            resolve(fileSocket);
+            resolve(fileSocket)
         });
 
-        fileSocket.on("connect_error", err => {
+        fileSocket.on("connect_error", (err)=>{
             console.log('Island connection failed: ' + err.message);
             reject(err);
         });
-    });
+    })
+
 }
+
+
+
+
 
 /**
  * Encrypts and uploads file chunk by chunk
  * @param file
  */
-function encryptAndUpload(msg) {
+function encryptAndUpload(msg){
     console.log("encryptUpload in worker called");
     let file = msg[1];
     let fileSize = file.size;
     let bufferSize = 128 * 1024;
     let offset = 0;
 
-    let chunkReaderBlock = (_offset, bufferLength, _file) => {
+    let chunkReaderBlock = (_offset, bufferLength, _file)=>{
         let reader = new FileReader();
         let blob = _file.slice(_offset, _offset + bufferLength);
 
@@ -208,28 +230,37 @@ function encryptAndUpload(msg) {
         reader.readAsArrayBuffer(blob);
     };
 
-    let handleBlock = block => {};
 
-    let readEventHandler = ev => {
-        if (ev.target.error === null) {
+    let handleBlock = (block)=>{
+
+    };
+
+    let readEventHandler = (ev)=>{
+        if(ev.target.error === null){
             offset += bufferSize;
             handleBlock(ev.target.result);
         } else {
             console.log("Read error: " + ev.target.error);
             return;
         }
-        if (offset >= fileSize) {
+        if(offset >= fileSize){
             console.log("Done reading file");
             return;
         }
 
-        chunkReaderBlock(offset, bufferSize, file);
-    };
+        chunkReaderBlock(offset, bufferSize, file)
+    }
 
-    let errorEventHandler = ev => {
+    let errorEventHandler = (ev)=>{
         console.log("Read error: " + ev.target.error);
     };
+
+
+
+
+
 }
+
 
 function chachaEncrypt(file = undefined) {
     let ic = new iCrypto();
@@ -239,24 +270,30 @@ function chachaEncrypt(file = undefined) {
     let key = forge.util.hexToBytes(keyStruct.key);
     let arr = str2ab(txt);
     if (file) {
-        let fr = new FileReader();
+        let fr = new FileReader;
         fr.readAsArrayBuffer(file);
         fr.onload = () => {
             console.log("File loaded! Encrypting!");
-            let ab = fr.result;
+            let ab = fr.result
             let chacha = new JSChaCha20(new Uint8Array(str2ab(key).slice(0, 32)), new Uint8Array(str2ab(iv)).slice(0, 12), undefined);
             let offset = 0;
             let bufferSize = 1024 * 64;
             let res = new Uint8Array(0);
             let t1 = performance.now();
             while (offset < ab.byteLength) {
-                let chunk = chacha.encrypt(new Uint8Array(ab.slice(offset, Math.min(offset + bufferSize, ab.byteLength))));
+                let chunk = chacha.encrypt(new Uint8Array(ab.slice(offset, Math.min(offset + bufferSize, ab.byteLength))))
                 offset += bufferSize;
                 console.log("Appending chunk from " + offset + " to " + Math.min(offset + bufferSize, ab.byteLength));
                 //res = concat2Uint8Arrays(res, chunk);
             }
             let t2 = performance.now();
             console.log("All chunks are encrypted! That took: " + (t2 - t1));
+
         };
+
     }
 }
+
+
+
+

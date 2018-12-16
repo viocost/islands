@@ -1,6 +1,6 @@
 var BiMap;
 
-BiMap = function () {
+BiMap = (function() {
   BiMap.prototype.klength = 0;
 
   BiMap.prototype.vlength = 0;
@@ -21,23 +21,23 @@ BiMap = function () {
     }
   }
 
-  BiMap.prototype.push = function (k, v) {
+  BiMap.prototype.push = function(k, v) {
     return this.insert(k, v, "push");
   };
 
-  BiMap.prototype.appendKey = function (k, v) {
+  BiMap.prototype.appendKey = function(k, v) {
     return this.insert(k, v, "appendKey");
   };
 
-  BiMap.prototype.appendVal = function (k, v) {
+  BiMap.prototype.appendVal = function(k, v) {
     return this.insert(k, v, "appendVal");
   };
 
-  BiMap.prototype.set = function (k, v) {
+  BiMap.prototype.set = function(k, v) {
     return this.insert(k, v, "set");
   };
 
-  BiMap.prototype.type = function (a) {
+  BiMap.prototype.type = function(a) {
     var t;
     t = typeof a;
     if (t === "number" && a !== a) {
@@ -61,7 +61,7 @@ BiMap = function () {
     }
   };
 
-  BiMap.prototype._assign = function (k, v, type, reverse) {
+  BiMap.prototype._assign = function(k, v, type, reverse) {
     var dir, i, rdir, _i, _len;
     if (type == null) {
       type = "push";
@@ -75,7 +75,7 @@ BiMap = function () {
     dir = reverse ? "vk" : "kv";
     rdir = dir === "vk" ? "kv" : "vk";
     if (type === "push") {
-      if (!(this[dir][k] != null || this[rdir][void 0] === k || this[rdir][null] === k)) {
+      if (!((this[dir][k] != null) || this[rdir][void 0] === k || this[rdir][null] === k)) {
         this[dir][k] = v;
         return true;
       } else {
@@ -112,7 +112,7 @@ BiMap = function () {
     }
   };
 
-  BiMap.prototype.insert = function (k, v, type) {
+  BiMap.prototype.insert = function(k, v, type) {
     var ktype, vtype;
     if (type == null) {
       type = "push";
@@ -123,7 +123,7 @@ BiMap = function () {
     ktype = this.type(k);
     if (v == null) {
       if ("array" === this.type(k)) {
-        return function () {
+        return (function() {
           var _i, _len, _results;
           _results = [];
           for (_i = 0, _len = k.length; _i < _len; _i++) {
@@ -131,11 +131,11 @@ BiMap = function () {
             _results.push(this.insert(++this.kindex - 1, v, type));
           }
           return _results;
-        }.call(this);
+        }).call(this);
       } else if ("object" === this.type(k)) {
-        return this.traverse(k, function (v, path) {
+        return this.traverse(k, (function(v, path) {
           return this.insert(path, v, type);
-        }.bind(this));
+        }).bind(this));
       } else {
         return this.insert(++this.kindex - 1, k, type);
       }
@@ -144,9 +144,9 @@ BiMap = function () {
     }
     vtype = this.type(v);
     if (vtype === "object") {
-      return this.traverse(v, function (v, path) {
+      return this.traverse(v, (function(v, path) {
         return this.insert("" + k + "." + path, v, type);
-      }.bind(this));
+      }).bind(this));
     } else if (vtype === "array") {
       if (ktype === "array") {
         this.insertArray(v, k, type, true);
@@ -162,7 +162,7 @@ BiMap = function () {
     }
   };
 
-  BiMap.prototype.insertArray = function (k, array, type, reverse) {
+  BiMap.prototype.insertArray = function(k, array, type, reverse) {
     var i, r, _i, _len;
     if (type == null) {
       type = "push";
@@ -173,7 +173,7 @@ BiMap = function () {
     if (this.type(k) !== "array") {
       this._assign(k, array, type, reverse);
     }
-    r = function () {
+    r = (function() {
       var _i, _len, _results;
       _results = [];
       for (_i = 0, _len = array.length; _i < _len; _i++) {
@@ -181,7 +181,7 @@ BiMap = function () {
         _results.push(this._assign(i, k, type, !reverse));
       }
       return _results;
-    }.call(this);
+    }).call(this);
     for (_i = 0, _len = r.length; _i < _len; _i++) {
       i = r[_i];
       if (!i) {
@@ -191,7 +191,7 @@ BiMap = function () {
     return true;
   };
 
-  BiMap.prototype.traverse = function (obj, cb) {
+  BiMap.prototype.traverse = function(obj, cb) {
     var k, npath, path, v, _results;
     path = arguments[2] || "";
     if ("object" === this.type(obj)) {
@@ -211,21 +211,21 @@ BiMap = function () {
     }
   };
 
-  BiMap.prototype.setNull = function (k, v) {
+  BiMap.prototype.setNull = function(k, v) {
     this.kv[k] = v;
     this.vk[v] = k;
     this.kindex++;
     return true;
   };
 
-  BiMap.prototype.error = function (e) {
+  BiMap.prototype.error = function(e) {
     if (this.throwOnError) {
       throw new Error(e);
     }
     return false;
   };
 
-  BiMap.prototype.removeKey = function (k) {
+  BiMap.prototype.removeKey = function(k) {
     var i, index, _i, _len, _ref;
     if (this.type(this.kv[k]) === "array") {
       _ref = this.kv[k];
@@ -248,7 +248,7 @@ BiMap = function () {
     return delete this.kv[k];
   };
 
-  BiMap.prototype.removeVal = function (v) {
+  BiMap.prototype.removeVal = function(v) {
     var i, index, _i, _len, _ref;
     if (this.type(this.vk[v]) === "array") {
       _ref = this.vk[v];
@@ -271,15 +271,16 @@ BiMap = function () {
     return delete this.vk[v];
   };
 
-  BiMap.prototype.key = function (k) {
+  BiMap.prototype.key = function(k) {
     return this.kv[k];
   };
 
-  BiMap.prototype.val = function (v) {
+  BiMap.prototype.val = function(v) {
     return this.vk[v];
   };
 
   return BiMap;
-}();
 
-typeof module === "undefined" || module === null || (module.exports = BiMap);
+})();
+
+(typeof module === "undefined" || module === null) || (module.exports = BiMap);
