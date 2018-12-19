@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "unbuild": "rm -rf node_modules || rd /s /q node_modules",
-    "build": "npm run unbuild && npm install && babel --presets env src-client -d public/js/"
+    "build": "npm run unbuild && npm install"
   },
   "author": "Konstantin Rybakov <viocost@gmail.com>",
   "license": "ISC",

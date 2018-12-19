@@ -1,6 +1,6 @@
 {
   "presets": [
-    [ "env", {
+    [ {
       "targets": {
         "chrome": 49,
         "edge": 12,
@@ -18,6 +18,6 @@
       "include": [],
       "exclude": []
     }]
-  ],
-  "plugins": ["@babel/plugin-transform-regenerator"]
+  ]
+
 }

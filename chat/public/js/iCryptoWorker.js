@@ -1,14 +1,12 @@
-"use strict";
-
 importScripts("/js/forge.min.js");
 importScripts("/js/sjcl.js");
 importScripts("/js/iCrypto.js");
 
-var commandHandlers = {
+let commandHandlers = {
     "hashFile": processHashFile
 };
 
-onmessage = function onmessage(ev) {
+onmessage = ev => {
     console.log("iCrypto worker received message: " + ev.data[0]);
     processMessage(ev.data);
 };
@@ -19,32 +17,32 @@ function processMessage(msg) {
 }
 
 function processHashFile(msg) {
-    getHash(msg[1]).then(function (hash) {
+    getHash(msg[1]).then(hash => {
         //return hash to main thread
         postMessage(["success", hash]);
-    }).catch(function (err) {
+    }).catch(err => {
         //return error to main thread
         postMessage(["error", err]);
     });
 }
 
 function getHash(file) {
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
         if (!file) {
             reject("getHash worker: File is not defined");
             return;
         }
         console.log("Calculating hash...");
-        var offset = 0;
-        var fileSize = file.size;
-        var bufferSize = 1024 * 256;
-        var ic = new iCrypto();
+        let offset = 0;
+        let fileSize = file.size;
+        let bufferSize = 1024 * 256;
+        let ic = new iCrypto();
         ic.createHash("h");
-        var errorEventHandler = function errorEventHandler(ev) {
+        let errorEventHandler = ev => {
             console.log("Read error: " + ev.target.error);
         };
 
-        var readEventHandler = function readEventHandler(ev) {
+        let readEventHandler = ev => {
             if (ev.target.error === null) {
                 offset = Math.min(offset + bufferSize, fileSize);
                 handleBlock(ev.target.result);
@@ -62,14 +60,14 @@ function getHash(file) {
             chunkReaderBlock(offset, bufferSize, file);
         };
 
-        var chunkReaderBlock = function chunkReaderBlock(_offset, bufferSize, _file) {
-            var reader = new FileReader();
-            var blob = _file.slice(_offset, Math.min(_offset + bufferSize, fileSize));
+        let chunkReaderBlock = (_offset, bufferSize, _file) => {
+            let reader = new FileReader();
+            let blob = _file.slice(_offset, Math.min(_offset + bufferSize, fileSize));
             reader.onload = readEventHandler;
             reader.onerror = errorEventHandler;
             reader.readAsBinaryString(blob);
         };
-        var handleBlock = function handleBlock(blob) {
+        let handleBlock = blob => {
             ic.updateHash("h", blob);
         };
 

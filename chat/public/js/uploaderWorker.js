@@ -1,44 +1,3 @@
-"use strict";
-
-var uploadAttachment = function () {
-    var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(msg) {
-        var attachment, pkfp, privK, symk, fileSocket;
-        return regeneratorRuntime.wrap(function _callee$(_context) {
-            while (1) {
-                switch (_context.prev = _context.next) {
-                    case 0:
-                        attachment = msg.attachment;
-                        pkfp = msg.pkfp;
-                        privK = msg.privk;
-                        symk = msg.symk;
-                        _context.next = 6;
-                        return establishConnection();
-
-                    case 6:
-                        fileSocket = _context.sent;
-                        _context.next = 9;
-                        return processUpload(attachment, pkfp, privK, symk, fileSocket);
-
-                    case 9:
-                        console.log("Upload successfull");
-                        //TODO Send message to main thread
-                        postMessage(["upload_complete"]);
-
-                    case 11:
-                    case "end":
-                        return _context.stop();
-                }
-            }
-        }, _callee, this);
-    }));
-
-    return function uploadAttachment(_x) {
-        return _ref.apply(this, arguments);
-    };
-}();
-
-function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
-
 importScripts("/js/iCrypto.js");
 importScripts("/js/socket.io.js");
 importScripts("/js/forge.min.js");
@@ -47,11 +6,11 @@ importScripts("/js/socket.io-stream.js");
 importScripts("/js/lzma-worker.min.js");
 importScripts("/js/chacha.js");
 
-var commandHandlers = {
+let commandHandlers = {
     "upload": uploadAttachment
 };
 
-onmessage = function onmessage(ev) {
+onmessage = ev => {
     console.log("Received message from main thread: " + ev.data.command);
     processMessage(ev.data);
 };
@@ -72,22 +31,22 @@ function processMessage(msg) {
  * @returns {Promise<any>}
  */
 function processUpload(file, pkfp, privK, symk, fileSocket) {
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
         console.log("Processing upload");
-        var stream = ss.createStream();
+        let stream = ss.createStream();
 
         console.log("Uploading and encrypting chunk by chunk");
-        var offset = 0;
-        var bufferSize = 1024 * 64;
-        var fileSize = file.size;
-        var ic = new iCrypto();
+        let offset = 0;
+        let bufferSize = 1024 * 64;
+        let fileSize = file.size;
+        let ic = new iCrypto();
         ic.ssym.init("cha", symk).createHash("unenc") //hash of unencrypted
         .createHash("enc") //has of encrypted
         .createNonce("nonce", 8).asym.setKey("privk", privK, "private").privateKeySign("nonce", "privk", "sign").bytesToHex("nonce", "noncehex");
 
         console.log("NONCE: " + ic.get('noncehex'));
 
-        fileSocket.on("invalid_request", function () {
+        fileSocket.on("invalid_request", () => {
             console.error("WORKER: Invalid request event received");
             finishOnError(fileSocket, "invalid_request");
             reject("invalid_request");
@@ -98,7 +57,7 @@ function processUpload(file, pkfp, privK, symk, fileSocket) {
          * renamed and saved.
          * Closing connection, notifying main thread.
          */
-        fileSocket.on("upload_success", function () {
+        fileSocket.on("upload_success", () => {
             console.log("upload successfull!");
             fileSocket.disconnect();
             postMessage({
@@ -110,12 +69,12 @@ function processUpload(file, pkfp, privK, symk, fileSocket) {
             });
         });
 
-        fileSocket.on("upload_ready", function () {
+        fileSocket.on("upload_ready", () => {
             console.log("received upload_ready. Pumping data");
             chunkReaderBlock(offset, bufferSize, file);
         });
 
-        fileSocket.on("upload_error", function (err) {
+        fileSocket.on("upload_error", err => {
             console.log("WORKER Upload error: " + err);
             finishOnError(fileSocket, "upload_error", err);
             reject(err);
@@ -125,16 +84,16 @@ function processUpload(file, pkfp, privK, symk, fileSocket) {
          * Event emited by Island after hash received
          * and file is ready to be renamed
          */
-        fileSocket.on("end_stream", function () {
+        fileSocket.on("end_stream", () => {
             stream.end();
         });
 
-        var errorEventHandler = function errorEventHandler(ev) {
+        let errorEventHandler = ev => {
             console.error("Error processing upload: " + ev.target.error);
             reject(ev.target.error);
         };
 
-        var readEventHandler = function readEventHandler(ev) {
+        let readEventHandler = ev => {
 
             if (ev.target.error === null) {
                 offset = Math.min(offset + bufferSize, fileSize);
@@ -156,20 +115,20 @@ function processUpload(file, pkfp, privK, symk, fileSocket) {
             chunkReaderBlock(offset, bufferSize, file);
         };
 
-        var chunkReaderBlock = function chunkReaderBlock(_offset, bufferSize, _file) {
-            var reader = new FileReader();
-            var upperBound = Math.min(_offset + bufferSize, fileSize);
-            var blob = _file.slice(_offset, upperBound);
+        let chunkReaderBlock = (_offset, bufferSize, _file) => {
+            let reader = new FileReader();
+            let upperBound = Math.min(_offset + bufferSize, fileSize);
+            let blob = _file.slice(_offset, upperBound);
             reader.onload = readEventHandler;
             reader.onerror = errorEventHandler;
             reader.readAsArrayBuffer(blob);
         };
 
-        var handleBlock = function handleBlock(chunk) {
+        let handleBlock = chunk => {
             ic.updateHash("unenc", chunk);
-            var encrypted = ic.ssym.encrypt("cha", chunk);
+            let encrypted = ic.ssym.encrypt("cha", chunk);
             ic.updateHash("enc", encrypted);
-            var b = new ss.Buffer(encrypted);
+            let b = new ss.Buffer(encrypted);
             stream.write(b);
         };
 
@@ -194,10 +153,22 @@ function finishOnError(fileSocket, result, errorMsg) {
     });
 }
 
+async function uploadAttachment(msg) {
+    let attachment = msg.attachment;
+    let pkfp = msg.pkfp;
+    let privK = msg.privk;
+    let symk = msg.symk;
+    let fileSocket = await establishConnection();
+    await processUpload(attachment, pkfp, privK, symk, fileSocket);
+    console.log("Upload successfull");
+    //TODO Send message to main thread
+    postMessage(["upload_complete"]);
+}
+
 function establishConnection() {
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
         console.log("Connecting to file socket");
-        var fileSocket = io('/file', {
+        let fileSocket = io('/file', {
             'reconnection': true,
             'forceNew': true,
             'reconnectionDelay': 1000,
@@ -205,12 +176,12 @@ function establishConnection() {
             'reconnectionAttempts': 5
         });
 
-        fileSocket.on("connect", function () {
+        fileSocket.on("connect", () => {
             console.log("File transfer connectiopn established");
             resolve(fileSocket);
         });
 
-        fileSocket.on("connect_error", function (err) {
+        fileSocket.on("connect_error", err => {
             console.log('Island connection failed: ' + err.message);
             reject(err);
         });
@@ -223,23 +194,23 @@ function establishConnection() {
  */
 function encryptAndUpload(msg) {
     console.log("encryptUpload in worker called");
-    var file = msg[1];
-    var fileSize = file.size;
-    var bufferSize = 128 * 1024;
-    var offset = 0;
+    let file = msg[1];
+    let fileSize = file.size;
+    let bufferSize = 128 * 1024;
+    let offset = 0;
 
-    var chunkReaderBlock = function chunkReaderBlock(_offset, bufferLength, _file) {
-        var reader = new FileReader();
-        var blob = _file.slice(_offset, _offset + bufferLength);
+    let chunkReaderBlock = (_offset, bufferLength, _file) => {
+        let reader = new FileReader();
+        let blob = _file.slice(_offset, _offset + bufferLength);
 
         reader.onload = readEventHandler;
         reader.onerror = errorEventHandler;
         reader.readAsArrayBuffer(blob);
     };
 
-    var handleBlock = function handleBlock(block) {};
+    let handleBlock = block => {};
 
-    var readEventHandler = function readEventHandler(ev) {
+    let readEventHandler = ev => {
         if (ev.target.error === null) {
             offset += bufferSize;
             handleBlock(ev.target.result);
@@ -255,38 +226,36 @@ function encryptAndUpload(msg) {
         chunkReaderBlock(offset, bufferSize, file);
     };
 
-    var errorEventHandler = function errorEventHandler(ev) {
+    let errorEventHandler = ev => {
         console.log("Read error: " + ev.target.error);
     };
 }
 
-function chachaEncrypt() {
-    var file = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : undefined;
-
-    var ic = new iCrypto();
-    var self = chat;
-    var keyStruct = self.session.metadata.sharedKey;
-    var iv = forge.util.hexToBytes(keyStruct.iv);
-    var key = forge.util.hexToBytes(keyStruct.key);
-    var arr = str2ab(txt);
+function chachaEncrypt(file = undefined) {
+    let ic = new iCrypto();
+    let self = chat;
+    let keyStruct = self.session.metadata.sharedKey;
+    let iv = forge.util.hexToBytes(keyStruct.iv);
+    let key = forge.util.hexToBytes(keyStruct.key);
+    let arr = str2ab(txt);
     if (file) {
-        var fr = new FileReader();
+        let fr = new FileReader();
         fr.readAsArrayBuffer(file);
-        fr.onload = function () {
+        fr.onload = () => {
             console.log("File loaded! Encrypting!");
-            var ab = fr.result;
-            var chacha = new JSChaCha20(new Uint8Array(str2ab(key).slice(0, 32)), new Uint8Array(str2ab(iv)).slice(0, 12), undefined);
-            var offset = 0;
-            var bufferSize = 1024 * 64;
-            var res = new Uint8Array(0);
-            var t1 = performance.now();
+            let ab = fr.result;
+            let chacha = new JSChaCha20(new Uint8Array(str2ab(key).slice(0, 32)), new Uint8Array(str2ab(iv)).slice(0, 12), undefined);
+            let offset = 0;
+            let bufferSize = 1024 * 64;
+            let res = new Uint8Array(0);
+            let t1 = performance.now();
             while (offset < ab.byteLength) {
-                var chunk = chacha.encrypt(new Uint8Array(ab.slice(offset, Math.min(offset + bufferSize, ab.byteLength))));
+                let chunk = chacha.encrypt(new Uint8Array(ab.slice(offset, Math.min(offset + bufferSize, ab.byteLength))));
                 offset += bufferSize;
                 console.log("Appending chunk from " + offset + " to " + Math.min(offset + bufferSize, ab.byteLength));
                 //res = concat2Uint8Arrays(res, chunk);
             }
-            var t2 = performance.now();
+            let t2 = performance.now();
             console.log("All chunks are encrypted! That took: " + (t2 - t1));
         };
     }

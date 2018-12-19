@@ -1,7 +1,3 @@
-"use strict";
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
 var BiMap;
 
 BiMap = function () {
@@ -43,7 +39,7 @@ BiMap = function () {
 
   BiMap.prototype.type = function (a) {
     var t;
-    t = typeof a === "undefined" ? "undefined" : _typeof(a);
+    t = typeof a;
     if (t === "number" && a !== a) {
       return "NaN";
     }
