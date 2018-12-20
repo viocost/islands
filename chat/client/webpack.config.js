@@ -7,13 +7,25 @@ module.exports = {
         path: path.resolve(__dirname, "dist"),
         filename: "bundle.js"
     },
-    externals: {
-        jquery: 'jQuery',
 
-    },
 
     optimization: {
         minimize: false
+    },
+
+    module: {
+        rules:[
+            {
+                test: /\.js$/,
+                exclude: /node_modules/,
+                use: [
+                    {
+                        loader: 'babel-loader',
+
+                    }
+                ]
+            }
+        ]
     },
 
     plugins: [
