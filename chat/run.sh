@@ -79,7 +79,7 @@ if [[ -z  ${DATAFOLDER+x} ]]; then
 fi
 
 cd client && npm run build && cd ../
-cp  client/dist/bundle.js public/js
+cp  client/dist/bundle.js  public/js
 
 RUNCOMMAND="$RUNCOMMAND  --mount type=bind,source=${DATAFOLDER},target=/islandsData  islands:chat"
 

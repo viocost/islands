@@ -7,6 +7,9 @@ import { CuteSet } from "cute-set";
 //import { waitMe } from "./lib/waitMe.min"
 //import { WildEmitter } from "./chat/WildEmitter";
 
+import { iCrypto } from "./lib/iCrypto";
+window.iCrypto = iCrypto
+
 const ChatClient = require("./chat/ChatClient").default;
 
 

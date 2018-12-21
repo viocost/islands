@@ -1,9 +1,9 @@
 'use strict';
-import { JSChaCha20 } from 'js-chacha20'
+//import { JSChaCha20 } from 'js-chacha20'
 
-const lzma = require('lzma');
-const forge = require('node-forge');
-const sjcl = require("./sjcl.js");
+//const lzma = require('lzma');
+//const forge = require('node-forge');
+//const sjcl = require("./sjcl.js");
 const Base32 = require("./Base32.js");
 
 
@@ -26,7 +26,7 @@ class iCryptoFactory{
 
 
 
-class iCrypto {
+export class iCrypto {
     constructor(settings){
         let self = this;
         self.settings = {};
@@ -1262,66 +1262,3 @@ class iCrypto {
 }
 
 
-// class Base32{
-//     constructor(){
-//
-//         this.RFC4648 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'
-//         this.RFC4648_HEX = '0123456789ABCDEFGHIJKLMNOPQRSTUV'
-//         this.CROCKFORD = '0123456789ABCDEFGHJKMNPQRSTVWXYZ'
-//     }
-//
-//     encode (buffer, variant) {
-//         var alphabet, padding;
-//
-//         switch (variant) {
-//             case 'RFC3548':
-//             case 'RFC4648':
-//                 alphabet = this.RFC4648;
-//                 padding = true;
-//                 break;
-//             case 'RFC4648-HEX':
-//                 alphabet =  this.RFC4648_HEX;
-//                 padding = true;
-//                 break;
-//             case 'CROCKFORD':
-//                 alphabet =  this.CROCKFORD;
-//                 padding = false;
-//                 break;
-//             default:
-//                 throw new Error('Unknown base32 variant: ' + variant)
-//         }
-//
-//         var length = buffer.byteLength;
-//         var view = new Uint8Array(buffer);
-//
-//         var bits = 0;
-//         var value = 0;
-//         var output = '';
-//
-//         for (var i = 0; i < length; i++) {
-//             value = (value << 8) | view[i];
-//             bits += 8;
-//
-//             while (bits >= 5) {
-//                 output += alphabet[(value >>> (bits - 5)) & 31]
-//                 bits -= 5
-//             }
-//         }
-//
-//         if (bits > 0) {
-//             output += alphabet[(value << (5 - bits)) & 31]
-//         }
-//
-//         if (padding) {
-//             while ((output.length % 8) !== 0) {
-//                 output += '='
-//             }
-//         }
-//
-//         return output
-//     }
-//
-// }
-
-
-module.exports = iCrypto;

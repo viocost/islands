@@ -7,6 +7,8 @@ import { Message } from "./Message";
 import  { Metadata } from "./Metadata";
 import  { Participant}  from "./Participant";
 import  { AttachmentInfo } from "./AttachmentInfo";
+import { ClientSettings } from  "./ClientSettings";
+
 
 
 
