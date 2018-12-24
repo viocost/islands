@@ -1,4 +1,4 @@
-#!/bin/bash
+mv per  #!/bin/bash
 
 echo submitting changes to github!
 

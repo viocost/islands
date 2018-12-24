@@ -1,14 +1,16 @@
 //Viendors
 import { CuteSet } from "cute-set";
 //import { $ } from "jquery";
-//import { toastr } from "toastr";
-//import { io } from "socket.io-client";
+import * as toastr from "toastr";
+//
 //import { bar } from "loading-bar";
 //import { waitMe } from "./lib/waitMe.min"
-//import { WildEmitter } from "./chat/WildEmitter";
+
+import { WildEmitter } from "./chat/WildEmitter";
 
 import { iCrypto } from "./lib/iCrypto";
-window.iCrypto = iCrypto
+window.iCrypto = iCrypto;
+window.toastr = toastr;
 
 const ChatClient = require("./chat/ChatClient").default;
 

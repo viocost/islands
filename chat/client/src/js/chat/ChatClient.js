@@ -8,9 +8,9 @@ import  { Metadata } from "./Metadata";
 import  { Participant}  from "./Participant";
 import  { AttachmentInfo } from "./AttachmentInfo";
 import { ClientSettings } from  "./ClientSettings";
-
-
-
+import { iCrypto } from "../lib/iCrypto";
+import * as io from "socket.io-client";
+import { WildEmitter } from "./WildEmitter";
 
 class ChatClient {
 

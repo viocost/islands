@@ -1,5 +1,5 @@
 
-
+import { AttachmentInfo } from "./AttachmentInfo";
 
 /**
  * Represents chat message

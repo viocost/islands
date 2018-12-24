@@ -1,10 +1,10 @@
 'use strict';
-//import { JSChaCha20 } from 'js-chacha20'
+import { JSChaCha20 } from 'js-chacha20'
 
-//const lzma = require('lzma');
-//const forge = require('node-forge');
-//const sjcl = require("./sjcl.js");
-const Base32 = require("./Base32.js");
+
+const forge = require('node-forge');
+const sjcl = require("./sjcl.js");
+//const Base32 = require("./Base32.js");
 
 
 
@@ -926,13 +926,13 @@ export class iCrypto {
     /***#### COMPRESSION ####***/
 
     asyncCompress(target, nameToSave){
-        return new Promise((resolve, reject)=>{
-            try{
-                resolve(this.compress(target, nameToSave));
-            } catch(err){
-                reject(err);
-            }
-        })
+        // return new Promise((resolve, reject)=>{
+        //     try{
+        //         resolve(this.compress(target, nameToSave));
+        //     } catch(err){
+        //         reject(err);
+        //     }
+        // })
     }
 
     /**
@@ -946,20 +946,20 @@ export class iCrypto {
      *  otherwise the compression will happen in-place
      */
     compress(target = iCrypto.pRequired("compress"), nameToSave = iCrypto.pRequired("compress")){
-        let compressed = LZMA.compress(this.get(target));
-        this.set(nameToSave, compressed);
-        return this;
+        //let compressed = LZMA.compress(this.get(target));
+        // this.set(nameToSave, compressed);
+        // return this;
     }
 
     asyncDecompress(target, nameToSave){
-        return new Promise((resolve, reject)=>{
-            try{
-                resolve(this.decompress(target, nameToSave));
-            } catch(err){
-                reject(err);
-            }
-
-        })
+        // return new Promise((resolve, reject)=>{
+        //     try{
+        //         resolve(this.decompress(target, nameToSave));
+        //     } catch(err){
+        //         reject(err);
+        //     }
+        //
+        // })
     }
 
     /**
@@ -974,9 +974,9 @@ export class iCrypto {
      */
     decompress(target = iCrypto.pRequired("decompress"),
                nameToSave = iCrypto.pRequired("decompress")){
-        let decompressed = LZMA.decompress(this.get(target));
-        this.set(nameToSave, decompressed);
-        return this;
+        // let decompressed = LZMA.decompress(this.get(target));
+        // this.set(nameToSave, decompressed);
+        // return this;
     }
 
 

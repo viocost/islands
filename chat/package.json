@@ -6,11 +6,14 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "unbuild": "rm -rf node_modules || rd /s /q node_modules",
-    "build": "npm run unbuild && npm install"
+    "build": "npm run unbuild && npm install",
+    "build-front": "webpack"
   },
   "author": "Konstantin Rybakov <viocost@gmail.com>",
   "license": "ISC",
   "dependencies": {
+    "@babel/plugin-transform-runtime": "^7.2.0",
+    "@babel/polyfill": "^7.2.3",
     "base32": "0.0.6",
     "bimap": "0.0.15",
     "body-parser": "^1.18.2",
@@ -19,21 +22,32 @@
     "express": "^4.16.2",
     "express-fileupload": "^0.4.0",
     "fs-extra": "^7.0.0",
+    "js-chacha20": "^1.1.0",
     "js-middleware": "^0.3.1",
     "lzma": "^2.3.2",
     "node-forge": "^0.7.6",
     "node-input-validator": "^2.0.3",
     "pug": "^2.0.0-rc.4",
     "socket.io": "^2.0.4",
+    "socket.io-client": "^2.2.0",
     "socket.io-stream": "^0.9.1",
     "socks-proxy-agent": "^3.0.1",
+    "toastr": "^2.1.4",
     "tor-control": "^0.0.3",
+    "webpack-visualizer-plugin": "^0.1.11",
     "winston": "^3.1.0"
   },
   "devDependencies": {
     "chai": "^4.2.0",
     "mocha": "^5.2.0",
     "morgan": "^1.9.0",
-    "shelljs": "^0.8.1"
+    "shelljs": "^0.8.1",
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.2.3",
+    "@babel/runtime": "^7.2.0",
+    "babel-loader": "^8.0.4",
+    "webpack": "^4.27.1",
+    "webpack-cli": "^3.1.2"
   }
 }

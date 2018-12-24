@@ -1,7 +1,3 @@
-
-
-
-
 export function WildEmitter() { }
 
 WildEmitter.mixin = function (constructor) {

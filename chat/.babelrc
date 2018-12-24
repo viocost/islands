@@ -1,23 +1,23 @@
 {
   "presets": [
-    [ {
-      "targets": {
-        "chrome": 49,
-        "edge": 12,
-        "firefox": 48,
-        "ie": 9,
-        "ios": 10,
-        "safari": 9
-      },
-      "useBuiltIns": false,
-      "loose": false,
-      "spec": false,
-      "uglify": false,
-      "debug": false,
-      "modules": "commonjs",
-      "include": [],
-      "exclude": []
-    }]
+    [
+      "@babel/env",
+      {
+        "modules": false,
+        "targets": {
+          "browsers": [
+            "> 1%",
+            "last 3 versions",
+            "ie >= 9",
+            "ios >= 8",
+            "android >= 4.2"
+          ]
+        },
+        "useBuiltIns": false
+      }
+    ]
+  ],
+  "plugins": [
+    "@babel/plugin-transform-runtime"
   ]
-
 }

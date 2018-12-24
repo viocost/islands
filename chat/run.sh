@@ -78,8 +78,7 @@ if [[ -z  ${DATAFOLDER+x} ]]; then
     DATAFOLDER="${PWD}/islandsData" ;
 fi
 
-cd client && npm run build && cd ../
-cp  client/dist/bundle.js  public/js
+npm run build-front
 
 RUNCOMMAND="$RUNCOMMAND  --mount type=bind,source=${DATAFOLDER},target=/islandsData  islands:chat"
 

@@ -31,7 +31,7 @@ RUN phash=$(tor --hash-password 'TheP@$sw0rd' | grep 16\:.*) \
 
 #Create app directory
 WORKDIR /usr/src/app
-COPY config/config.json ./data/islandsData/
+COPY server/config/config.json ./data/islandsData/
 COPY package*.json ./
 RUN npm install \
     #&& npm install -g forever\
@@ -47,8 +47,8 @@ STOPSIGNAL SIGTERM
 CMD service tor start && \
     sed -i -e 's/\r$//' /usr/src/app/scripts/updategh.sh &&\
     sed -i -e 's/\r$//' /usr/src/app/scripts/update.sh &&\
-    #forever -c  "node --inspect=0.0.0.0:9229" app.js -c /usr/src/app/config.json &&\
-    pm2 start app.js --node-args="--inspect=0.0.0.0:9229 --experimental-worker" -- -c /usr/src/app/config.json &&\
+
+    pm2 start server/app.js --node-args="--inspect=0.0.0.0:9229 --experimental-worker" -- -c /usr/src/app/server/config/config.json &&\
     pm2 attach 0 &&\
     #pm2  start  app.js -- -c /usr/src/app/config.json &&\
 

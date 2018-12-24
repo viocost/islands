@@ -24,7 +24,7 @@ let HOST = '0.0.0.0';
 global.DEBUG = true;
 
 
-let configPath = 'config.json';
+let configPath = './config/config.json';
 let historyPath = "../history/";
 let adminKeysPath = "../keys/";
 let servicePath = "../service/";
@@ -46,8 +46,7 @@ process.argv.forEach((val, index, array)=>{
 let config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
 historyPath = config.historyPath || historyPath;
 let updatePath = config.updatePath || "../update";
-//console.log("History set to: " + config.historyPath);
-//console.log(JSON.stringify(config));
+
 let adminKeyPath = config.adminKeyPath || "../keys";
 adminServer.setKeyFolder(adminKeyPath, updatePath);
 servicePath = config.servicePath || "../service/";
@@ -64,7 +63,7 @@ if (app.get('env') === 'development'){
     app.locals.pretty = true;
 }
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '../public')));
 
 app.get("/", (req, res)=>{
     res.render("chat", {title:"Islands chat", version: VERSION});
