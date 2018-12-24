@@ -109,7 +109,7 @@ pm2 update
 
 #starting app
 
-pm2 start /usr/src/app/app.js --node-args="--experimental-worker" -- -c /usr/src/app/configvbox.json
+pm2 start /usr/src/app/server/app.js --node-args="--experimental-worker" -- -c /usr/src/app/server/configvbox.json
 pm2 save
 pm2 startup
 
