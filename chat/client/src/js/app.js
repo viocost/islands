@@ -1,15 +1,16 @@
+
 //Viendors
 import { CuteSet } from "cute-set";
-//import { $ } from "jquery";
-import * as toastr from "toastr";
+
 //
 //import { bar } from "loading-bar";
-//import { waitMe } from "./lib/waitMe.min"
 
-import { WildEmitter } from "./chat/WildEmitter";
 
-import { iCrypto } from "./lib/iCrypto";
-window.iCrypto = iCrypto;
+//import { WildEmitter } from "./chat/WildEmitter";
+
+import '../css/main.sass';
+
+import * as toastr from "toastr";
 window.toastr = toastr;
 
 const ChatClient = require("./chat/ChatClient").default;
@@ -83,6 +84,8 @@ document.addEventListener('DOMContentLoaded', event => {
     document.querySelector('#sounds-switch').addEventListener('click', switchSounds);
     document.querySelector('.right-arrow-wrap').addEventListener('click', processMainMenuSwitch);
     document.querySelector('.left-arrow-wrap').addEventListener('click', processMainMenuSwitch);
+
+
 
     $('#new-msg').keydown(function (e) {
         if (!e.ctrlKey && e.keyCode === 13) {
@@ -1485,3 +1488,5 @@ function processMainMenuSwitch(ev) {
 
     //set subtitles
 }
+
+

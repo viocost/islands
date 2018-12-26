@@ -1,3 +1,5 @@
+import { iCrypto } from "../lib/iCrypto";
+
 export class Metadata{
     static parseMetadata(blob){
         if(typeof (blob) === "string"){

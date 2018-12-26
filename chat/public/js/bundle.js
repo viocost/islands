@@ -147,1526 +147,14 @@
 /******/
 /******/
 /******/ 	// add entry module to deferred list
-/******/ 	deferredModules.push([139,1]);
+/******/ 	deferredModules.push([137,1]);
 /******/ 	// run deferred modules when ready
 /******/ 	return checkDeferredModules();
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 10:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return iCrypto; });
-/* harmony import */ var _babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(13);
-/* harmony import */ var _babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7);
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(8);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var js_chacha20__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(75);
-/* harmony import */ var js_chacha20__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(js_chacha20__WEBPACK_IMPORTED_MODULE_3__);
-
-
-
-
-
-
-
-var forge = __webpack_require__(146);
-
-var sjcl = __webpack_require__(160); //const Base32 = require("./Base32.js");
-
-
-var iCryptoFactory =
-/*#__PURE__*/
-function () {
-  function iCryptoFactory(settings) {
-    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1___default()(this, iCryptoFactory);
-
-    this.readSettings();
-  }
-
-  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2___default()(iCryptoFactory, [{
-    key: "createICryptor",
-    value: function createICryptor() {
-      return new iCrypto(this.settings);
-    }
-  }, {
-    key: "readSettings",
-    value: function readSettings() {
-      console.log("readubg settings");
-      this.settings = null;
-    }
-  }]);
-
-  return iCryptoFactory;
-}();
-
-var iCrypto =
-/*#__PURE__*/
-function () {
-  function iCrypto(settings) {
-    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1___default()(this, iCrypto);
-
-    var self = this;
-    self.settings = {};
-    self.locked = false;
-    self.setEncodersAndDecoders();
-    self.symCiphers = ['aes'];
-    self.streamCiphers = ['chacha'];
-    self.asymCiphers = ['rsa'];
-    self.store = {};
-    self.rsa = {
-      createKeyPair: function createKeyPair() {
-        return self.generateRSAKeyPair.apply(self, arguments);
-      },
-      asyncCreateKeyPair: function asyncCreateKeyPair() {
-        return self.asyncGenerateRSAKeyPair.apply(self, arguments);
-      },
-      encrypt: function encrypt() {
-        return self.publicKeyEncrypt.apply(self, arguments);
-      },
-      decrypt: function decrypt() {
-        return self.privateKeyDecrypt.apply(self, arguments);
-      },
-      sign: function sign() {
-        return self.privateKeySign.apply(self, arguments);
-      },
-      verify: function verify() {
-        return self.publicKeyVerify.apply(self, arguments);
-      },
-      setKey: function setKey() {
-        return self.setRSAKey.apply(self, arguments);
-      },
-      getSettings: function getSettings() {
-        return "RSA";
-      }
-    };
-    self.aes = {
-      modes: ['CBC', 'CFB', 'CTR'],
-      mode: 'CBC',
-      ivLength: 16,
-      keySize: 32,
-      createKey: function createKey() {
-        return self.createSYMKey.apply(self, arguments);
-      },
-      encrypt: function encrypt() {
-        return self.AESEncrypt.apply(self, arguments);
-      },
-      decrypt: function decrypt() {
-        return self.AESDecrypt.apply(self, arguments);
-      },
-      setKey: function setKey() {
-        return self.setSYMKey.apply(self, arguments);
-      },
-      getSettings: function getSettings() {
-        return "AES";
-      }
-    };
-    self.chacha = {
-      init: function init() {
-        return self.initStreamCryptor.apply(self, arguments);
-      },
-      encrypt: function encrypt() {
-        return self.streamCryptorEncrypt.apply(self, arguments);
-      },
-      decrypt: function decrypt() {
-        return self.streamCryptorDecrypt.apply(self, arguments);
-      },
-      getSettings: function getSettings() {
-        return "ChaCha";
-      }
-    };
-    self.setAsymCipher('rsa');
-    self.setSymCipher('aes');
-    self.setStreamCipher('chacha');
-  }
-  /***************** SETTING CIPHERS API *******************/
-
-
-  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2___default()(iCrypto, [{
-    key: "setSymCipher",
-    value: function setSymCipher() {
-      var self = this;
-
-      for (var _len = arguments.length, opts = new Array(_len), _key = 0; _key < _len; _key++) {
-        opts[_key] = arguments[_key];
-      }
-
-      if (!self.symCiphers.includes(opts[0])) {
-        throw "setSymCipher: Invalid or unsupported algorithm";
-      }
-
-      self.sym = self[opts[0]];
-    }
-  }, {
-    key: "setAsymCipher",
-    value: function setAsymCipher() {
-      var self = this;
-
-      for (var _len2 = arguments.length, opts = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-        opts[_key2] = arguments[_key2];
-      }
-
-      if (!self.asymCiphers.includes(opts[0])) {
-        throw "setSymCipher: Invalid or unsupported algorithm";
-      }
-
-      self.asym = self[opts[0]];
-    }
-  }, {
-    key: "setStreamCipher",
-    value: function setStreamCipher() {
-      var self = this;
-
-      for (var _len3 = arguments.length, opts = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
-        opts[_key3] = arguments[_key3];
-      }
-
-      if (!self.streamCiphers.includes(opts[0])) {
-        throw "setSymCipher: Invalid or unsupported algorithm";
-      }
-
-      self.ssym = self[opts[0]];
-    }
-    /***************** END **********************************/
-
-  }, {
-    key: "setEncodersAndDecoders",
-    value: function setEncodersAndDecoders() {
-      this.encoders = {
-        hex: iCrypto.hexEncode,
-        base64: iCrypto.base64Encode
-      };
-      this.decoders = {
-        hex: iCrypto.hexDecode,
-        base64: iCrypto.base64Decode
-      };
-    }
-    /*********MAIN METHODS**************/
-
-    /**********************$$*****************************/
-
-    /***####NONCES PLAIN TEXT####***/
-
-  }, {
-    key: "asyncCreateNonce",
-    value: function asyncCreateNonce(nameToSave) {
-      var _this = this;
-
-      var length = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 32;
-      return new Promise(function (resolve, reject) {
-        try {
-          resolve(_this.createNonce(nameToSave, length));
-        } catch (err) {
-          reject(err);
-        }
-      });
-    }
-    /**
-     * Creates nonce of the given length and
-     * saves it under the provided name.
-     * Default is 32 bytes
-     *
-     * @param {string} nameToSave
-     * @param {number} length
-     * @returns {iCrypto}
-     */
-
-  }, {
-    key: "createNonce",
-    value: function createNonce() {
-      var nameToSave = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("createNonce");
-      var length = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 32;
-      var self = this;
-      this.set(nameToSave, iCrypto.getBytes(length));
-      return this;
-    }
-  }, {
-    key: "asyncAddBlob",
-    value: function asyncAddBlob(nameToSave, plainText) {
-      var _this2 = this;
-
-      return new Promise(function (resolve, reject) {
-        try {
-          resolve(_this2.addBlob(nameToSave, plainText));
-        } catch (err) {
-          reject(err);
-        }
-      });
-    }
-  }, {
-    key: "addBlob",
-    value: function addBlob() {
-      var nameToSave = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("addBlob");
-      var plainText = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("addBlob");
-      this.set(nameToSave, plainText.toString().trim());
-      return this;
-    }
-    /**********************$$*****************************/
-
-    /***#### KEYS CRYPTO ####***/
-
-  }, {
-    key: "asyncCreateSYMKey",
-    value: function asyncCreateSYMKey(nameToSave) {
-      var _this3 = this;
-
-      var ivLength = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 16;
-      var keyLength = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 32;
-      return new Promise(function (resolve, reject) {
-        try {
-          resolve(_this3.createSYMKey(nameToSave, ivLength, keyLength));
-        } catch (err) {
-          reject(err);
-        }
-      });
-    }
-    /**
-     * Creates hex-encoded SYM key, which is just some random hex-encoded bytes
-     * @param nameToSave
-     * @param keyLength
-     * @returns {iCrypto}
-     */
-
-  }, {
-    key: "createSYMKey",
-    value: function createSYMKey() {
-      var nameToSave = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("createSYMKey");
-      var keyLength = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 32;
-      var self = this;
-      var key = iCrypto.getBytes(keyLength);
-      self.set(nameToSave, forge.util.bytesToHex(key));
-      return self;
-    }
-    /**
-     * Sets passed SYM key inside the object
-     * @param nameToSave
-     * @param {string} key Must be hexified string
-     */
-
-  }, {
-    key: "setSYMKey",
-    value: function setSYMKey() {
-      var nameToSave = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("setSYMKey");
-      var key = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("setSYMKey");
-      this.set(nameToSave, key);
-      return this;
-    }
-    /**
-     * requires object of similar structure for key as being created by createSYMKey
-     * @param target
-     * @param key
-     * @param nameToSave
-     * @returns {Promise}
-     */
-
-  }, {
-    key: "asyncAESEncrypt",
-    value: function asyncAESEncrypt(target, key, nameToSave, hexify, mode, encoding) {
-      var _this4 = this;
-
-      return new Promise(function (resolve, reject) {
-        try {
-          resolve(_this4.AESEncrypt(target, key, nameToSave, hexify, mode, encoding));
-        } catch (err) {
-          reject(err);
-        }
-      });
-    }
-    /**
-     * Encrypts blob identified by "target" parameter.
-     * Target must be set inside iCrypto object
-     * IV is randomly generated and appended to the cipher blob
-     * @param {string} target
-     * @param {string} key
-     * @param {string} nameToSave
-     * @param {boolean} hexify - Specifies the encoding of the resulting cipher. Default: hex.
-     * @param {string} mode - specifies AES mode. Default - CBC
-     * @param {number} ivLength - specifies length of initialization vector
-     *  The initialization vector of specified length will be generated and
-     *  appended to the end of resulting cipher. IV blob will be encoded according to
-     *  outputEncoding parameter, and its length will be last 3 bytes of the cipher string.
-     *
-     */
-
-  }, {
-    key: "AESEncrypt",
-    value: function AESEncrypt() {
-      var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("AESEncrypt");
-      var key = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("AESEncrypt");
-      var nameToSave = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : iCrypto.pRequired("AESEncrypt");
-      var hexify = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
-      var mode = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 'CBC';
-      var encoding = arguments.length > 5 ? arguments[5] : undefined;
-      var self = this;
-
-      if (!self.aes.modes.includes(mode.toUpperCase())) {
-        throw "AESencrypt: Invalid AES mode";
-      }
-
-      mode = "AES-" + mode.toUpperCase(); //Creating random 16 bytes IV
-
-      var iv = iCrypto.getBytes(16);
-      var AESkey = forge.util.hexToBytes(self.get(key));
-      var cipher = forge.cipher.createCipher(mode, AESkey);
-      cipher.start({
-        iv: iv
-      });
-      cipher.update(forge.util.createBuffer(this.get(target), encoding));
-      cipher.finish();
-      this.set(nameToSave, hexify ? forge.util.bytesToHex(iv) + cipher.output.toHex() : iv + cipher.output);
-      return this;
-    }
-  }, {
-    key: "asyncAESDecrypt",
-    value: function asyncAESDecrypt(target, key, nameToSave) {
-      var _this5 = this;
-
-      return new Promise(function (resolve, reject) {
-        try {
-          resolve(_this5.AESDecrypt(target, key, nameToSave));
-        } catch (err) {
-          reject(err);
-        }
-      });
-    }
-    /**
-     * Decrypts the blob loaded into iCrypto object and specified by targe parameter
-     * Assumes that initialization vector is PREPENDED to the cipher text
-     * and its length is 16 bytes
-     *
-     * @param {string} target - ciphertext within iCrypto object
-     * @param {string} key - Symmetric AES key in form of hex string
-     * @param {string} nameToSave
-     * @param {boolean} dehexify
-     * @param {string} mode AES mode
-     * @param {string} encoding - resulting plain text encoding default (UTF8)
-     */
-
-  }, {
-    key: "AESDecrypt",
-    value: function AESDecrypt() {
-      var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("AESDecrypt");
-      var key = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("AESDecrypt");
-      var nameToSave = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : iCrypto.pRequired("AESDecrypt");
-      var dehexify = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-      var mode = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : "CBC";
-      var encoding = arguments.length > 5 ? arguments[5] : undefined;
-      var self = this;
-      var cipherWOIV;
-
-      if (!self.aes.modes.includes(mode.toUpperCase())) {
-        throw "AESencrypt: Invalid AES mode";
-      }
-
-      mode = "AES-" + mode.toUpperCase();
-      var cipher = self.get(target);
-      var iv;
-
-      if (dehexify) {
-        iv = forge.util.hexToBytes(cipher.substring(0, 32));
-        cipherWOIV = forge.util.hexToBytes(cipher.substr(32));
-      } else {
-        //Assuming cipher is a binary string
-        cipherWOIV = cipher.substr(16);
-        iv = cipher.substring(0, 16);
-      }
-
-      var AESkey = forge.util.hexToBytes(this.get(key));
-      var decipher = forge.cipher.createDecipher(mode, AESkey);
-      decipher.start({
-        iv: iv
-      });
-      decipher.update(forge.util.createBuffer(cipherWOIV));
-      decipher.finish();
-      this.set(nameToSave, decipher.output.toString('utf8'));
-      return this;
-    }
-  }, {
-    key: "asyncHash",
-    value: function asyncHash(target, nameToSave) {
-      var _this6 = this;
-
-      var algorithm = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "sha256";
-      return new Promise(function (resolve, reject) {
-        try {
-          resolve(_this6.hash(target, nameToSave, algorithm));
-        } catch (err) {
-          reject(err);
-        }
-      });
-    }
-    /**
-     * This function meant to be used on large files
-     * It is asynchronous, uses web workers,
-     * and it calculates hash of a large file without loading it
-     * fully into memory
-     * @param file  -  value of an input of type file
-     * @param nameToSave - name to store resulting hash
-     * @param algorithm - sha256 is default
-     */
-
-  }, {
-    key: "hashFileWorker",
-    value: function hashFileWorker() {
-      var _this7 = this;
-
-      var file = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("fileHashWorker file");
-      var nameToSave = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("fileHashWorker nameToSave");
-      var algorithm = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "sha256";
-      return new Promise(function (resolve, reject) {
-        var self = _this7;
-
-        if (Worker === undefined) {
-          throw "Web workers are not supported in current environment";
-        }
-
-        var worker = new Worker("/js/iCryptoWorker.js");
-
-        worker.onmessage = function (ev) {
-          if (ev.data[0] === "success") {
-            self.set(nameToSave, ev.data[1]);
-            resolve(self);
-            worker.terminate();
-          } else {
-            reject(ev.data[1]);
-            worker.terminate();
-          }
-        };
-
-        worker.postMessage(["hashFile", file]);
-      });
-    }
-    /**
-     * Initializes stream encryptor or decryptor
-     *
-     * Supported algorithm is chacha20 only
-     * Single instance of a single stream cryptor can be used
-     * only one time, one way, and only for a single stream.
-     * Meaning you can take a single stream and encrypt it chunk by chunk,
-     * but then, if you want to decrypt the stream,  you have to
-     * re-initialize cryptor instance or use a new one,
-     * otherwise the output will be meaningless.
-     *
-     * All the chunks must flow in sequence.
-     *
-     * !!!Important
-     *
-     * Encryption:
-     * Stream cryptor handles initialization vector (iv)
-     * by prepending them to cipher. So, to encrypt the data -
-     * just pass the key and new iv will be created automatically
-     * and prepended to the cipher
-     *
-     * Decryption:
-     * On Decryption the algorithm ASSUMES that first 6 bytes of
-     * the ciphertext is iv.
-     * So, it will treat first 6 bytes as iv regardles of chunks,
-     * and will begin decryption starting from byte 7
-     *
-     * @param {String} nameToSave - Stream cryptor will be saved inside iCrypto instance
-     * @param {String} key String of bytes in hex - Symmetric key used to encrypt/decrypt data
-     *  The algorithm requires key to be 32 bytes precisely
-        Only first 32 bytes (after decoding hex) will be taken
-     * @param {Boolean} isEncryptionMode - flag encryption mode - true
-     * @param {String} algorithm Supports only chacha20 for now
-     */
-
-  }, {
-    key: "initStreamCryptor",
-    value: function initStreamCryptor() {
-      var nameToSave = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("initStreamEncryptor");
-      var key = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("initStreamEncryptor");
-      var isEncryptionMode = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-      var algorithm = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : "chacha20";
-      var self = this;
-      var ivRaw, ivHex, keyRaw, cryptor, ivBuffer;
-      var mode = "enc";
-      keyRaw = iCrypto.hexDecode(key);
-
-      if (keyRaw.length < 16) {
-        throw "chacha20: invalid key size: " + keyRaw.length + " key length must be 32 bytes";
-      }
-
-      var keyBuffer = iCrypto.stringToArrayBuffer(keyRaw).slice(0, 32);
-
-      if (isEncryptionMode) {
-        ivRaw = iCrypto.getBytes(6);
-        ivHex = iCrypto.hexEncode(ivRaw);
-        ivBuffer = iCrypto.stringToArrayBuffer(ivRaw).slice(0, 12);
-        cryptor = new js_chacha20__WEBPACK_IMPORTED_MODULE_3__["JSChaCha20"](new Uint8Array(keyBuffer), new Uint8Array(ivBuffer), 0);
-      } else {
-        mode = "dec";
-        ivBuffer = new ArrayBuffer(0);
-      }
-
-      var res = new function () {
-        var self = this;
-        self.cryptor = cryptor;
-        self.key = key;
-        self.iv = ivHex;
-        self.mode = mode;
-
-        self.encryptionMode = function () {
-          return self.mode === "enc";
-        };
-
-        self.decryptionMode = function () {
-          return self.mode === "dec";
-        };
-
-        self.encrypt = function (input) {
-          var blob = typeof input === "string" ? iCrypto.stringToArrayBuffer(input) : input;
-
-          if (!(blob instanceof ArrayBuffer) && !(blob instanceof Uint8Array)) {
-            throw "StreamCryptor encrypt: input type is invalid";
-          }
-
-          if (self.cryptor._byteCounter === 0) {
-            //First check if counter is 0.
-            //If so - it is a first encryption block and we need to prepend IV
-            var encrypted = self.cryptor.encrypt(new Uint8Array(blob));
-            return iCrypto.concatUint8Arrays(new Uint8Array(ivBuffer), encrypted);
-          } else {
-            //Just encrypting the blob
-            return self.cryptor.encrypt(new Uint8Array(blob));
-          }
-        };
-
-        self.decrypt = function (input) {
-          var blob = typeof input === "string" ? iCrypto.stringToArrayBuffer(input) : input;
-
-          if (!(blob instanceof ArrayBuffer)) {
-            throw "StreamCryptor encrypt: input type is invalid";
-          }
-
-          if (self.cryptor === undefined) {
-            //decryptor was not initialized yet because
-            //Initalization vecotor (iv)was not yet obtained
-            //IV assumed to be first 6 bytes prepended to cipher
-            var currentIVLength = ivBuffer.byteLength;
-
-            if (currentIVLength + blob.byteLength <= 12) {
-              ivBuffer = iCrypto.concatArrayBuffers(ivBuffer, blob); //Still gathering iv, so returning empty array
-
-              return new Uint8Array();
-            } else {
-              var remainingIVBytes = 12 - ivBuffer.byteLength;
-              ivBuffer = iCrypto.concatArrayBuffers(ivBuffer, blob.slice(0, remainingIVBytes));
-              self.iv = iCrypto.hexEncode(iCrypto.arrayBufferToString(ivBuffer));
-              self.cryptor = new js_chacha20__WEBPACK_IMPORTED_MODULE_3__["JSChaCha20"](new Uint8Array(keyBuffer), new Uint8Array(ivBuffer), 0);
-              var chunk = new Uint8Array(blob.slice(remainingIVBytes, blob.byteLength));
-              return self.cryptor.decrypt(chunk);
-            }
-          } else {
-            //Decrypto is initialized.
-            // Just decrypting the blob and returning result
-            return self.cryptor.decrypt(new Uint8Array(blob));
-          }
-        };
-      }();
-      self.set(nameToSave, res);
-      return self;
-    }
-  }, {
-    key: "streamCryptorGetIV",
-    value: function streamCryptorGetIV() {
-      var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("streamCryptorGetIV");
-      var self = this;
-      var cryptor = self.get(target);
-      return cryptor.iv;
-    }
-  }, {
-    key: "streamCryptorEncrypt",
-    value: function streamCryptorEncrypt() {
-      var cryptorID = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("streamCryptorEncrypt");
-      var blob = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("streamCryptorEncrypt");
-      var encoding = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "raw";
-      var self = this;
-      var input;
-      var cryptor = self.get(cryptorID);
-
-      if (!cryptor.encryptionMode()) {
-        throw "streamCryptorEncrypt error: mode is invalid";
-      }
-
-      if (blob instanceof ArrayBuffer) {
-        input = blob;
-      } else if (blob instanceof Uint8Array) {
-        input = blob.buffer;
-      } else if (typeof blob === "string") {
-        input = iCrypto.stringToArrayBuffer(blob);
-      } else {
-        throw "streamCryptorEncrypt: invalid format input";
-      }
-
-      if (encoding === undefined || encoding === "raw") {
-        return cryptor.encrypt(input).buffer;
-      } else {
-        throw "NOT IMPLEMENTED";
-      }
-    }
-  }, {
-    key: "streamCryptorDecrypt",
-    value: function streamCryptorDecrypt() {
-      var cryptorID = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("streamCryptorEncrypt");
-      var blob = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("streamCryptorEncrypt");
-      var encoding = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "raw";
-      var self = this;
-      var cryptor = self.get(cryptorID);
-      var input;
-
-      if (!cryptor.decryptionMode()) {
-        throw "streamCryptorEncrypt error: mode is invalid";
-      }
-
-      if (blob instanceof ArrayBuffer) {
-        input = blob;
-      } else if (blob instanceof Uint8Array) {
-        input = blob.buffer;
-      } else if (typeof blob === "string") {
-        input = iCrypto.stringToArrayBuffer(blob);
-      } else {
-        throw "streamCryptorEncrypt: invalid format input";
-      }
-
-      if (encoding === undefined || encoding === "raw") {
-        return cryptor.decrypt(input).buffer;
-      } else {
-        throw "NOT IMPLEMENTED";
-      }
-    }
-    /**
-     *
-     * @param target
-     * @param nameToSave
-     * @param algorithm
-     */
-
-  }, {
-    key: "hash",
-    value: function hash() {
-      var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("hash");
-      var nameToSave = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("hash");
-      var algorithm = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "sha256";
-      var self = this;
-      var blob = self.get(target);
-
-      if (typeof blob !== "string") {
-        throw "hash: invalid target type: " + _babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0___default()(blob) + "  Target must be string.";
-      }
-
-      algorithm = algorithm.toLowerCase();
-      var hash = forge.md.hasOwnProperty(algorithm) ? forge.md[algorithm].create() : this.throwError("Wrong hash algorithm");
-      hash.update(blob);
-      this.set(nameToSave, hash.digest().toHex());
-      return self;
-    }
-  }, {
-    key: "createHash",
-    value: function createHash() {
-      var nameToSave = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("createHash");
-      var algorithm = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "sha256";
-      var hash = sjcl.hash.hasOwnProperty(algorithm) ? new sjcl.hash[algorithm]() : this.throwError("Wrong hash algorithm");
-      this.set(nameToSave, hash);
-      return this;
-    }
-    /**
-     *
-     * @param target
-     * @param {} blob can be binary string or arrayBuffer
-     * @returns {iCrypto}
-     */
-
-  }, {
-    key: "updateHash",
-    value: function updateHash() {
-      var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("updateHash: target");
-      var blob = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("updateHash: blob");
-      var self = this;
-      var input;
-
-      if (typeof blob === "string") {
-        input = iCrypto.stringToArrayBuffer(blob);
-      } else if (blob instanceof Uint8Array) {
-        input = blob.buffer;
-      } else if (blob instanceof ArrayBuffer) {
-        input = blob;
-      } else {
-        throw "invalid input format!";
-      }
-
-      var hash = self.get(target);
-      hash.update(sjcl.codec.arrayBuffer.toBits(input));
-      return self;
-    }
-  }, {
-    key: "digestHash",
-    value: function digestHash() {
-      var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("digestHash");
-      var nameToSave = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("digestHash");
-      var hexify = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-      var self = this;
-      var hRes = self.get(target);
-      var res = hexify ? sjcl.codec.hex.fromBits(hRes.finalize()) : sjcl.codec.arrayBuffer.fromBits(hRes.finalize());
-      this.set(nameToSave, res);
-      return self;
-    }
-  }, {
-    key: "asyncGenerateRSAKeyPair",
-    value: function asyncGenerateRSAKeyPair() {
-      var _this8 = this;
-
-      var nameToSave = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("asyncGenerateRSAKeyPair");
-      var length = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 2048;
-      return new Promise(function (resolve, reject) {
-        var self = _this8;
-        forge.rsa.generateKeyPair({
-          bits: length,
-          workers: -1
-        }, function (err, pair) {
-          if (err) reject(err);else {
-            try {
-              var pubKey = forge.pki.publicKeyToPem(pair.publicKey);
-              var privKey = forge.pki.privateKeyToPem(pair.privateKey);
-              self.set(nameToSave, {
-                publicKey: pubKey,
-                privateKey: privKey
-              });
-              resolve(_this8);
-            } catch (err) {
-              reject(err);
-            }
-          }
-        });
-      });
-    }
-    /**
-     * Generates RSA key pair.
-     * Key saved in PEM format
-     * resulting object has publicKey, privateKey, keyType, length
-     * @param nameToSave
-     * @param length
-     * @returns {iCrypto}
-     */
-
-  }, {
-    key: "generateRSAKeyPair",
-    value: function generateRSAKeyPair() {
-      var nameToSave = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("generateRSAKeyPair");
-      var length = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 2048;
-      var self = this;
-      var pair = forge.pki.rsa.generateKeyPair({
-        bits: length,
-        e: 0x10001
-      });
-      var pubKey = forge.pki.publicKeyToPem(pair.publicKey);
-      var privKey = forge.pki.privateKeyToPem(pair.privateKey);
-      self.set(nameToSave, {
-        publicKey: pubKey,
-        privateKey: privKey
-      });
-      return self;
-    }
-    /**
-     * Takes previously saved RSA private key in PEM format,
-     * extracts its public key
-     * and saves it in PEM format under the name specified
-     * @param target
-     * @param nameToSave
-     * @returns {iCrypto}
-     */
-
-  }, {
-    key: "publicFromPrivate",
-    value: function publicFromPrivate() {
-      var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("publicFromPrivate");
-      var nameToSave = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("publicFromPrivate");
-      var forgePrivateKey = forge.pki.privateKeyFromPem(this.get(target));
-      this.set(nameToSave, forge.pki.publicKeyToPem(forgePrivateKey));
-      return this;
-    }
-    /**
-     * Accepts as an input RSA key and saves it inside an object under the name specified.
-     * Key must be provided either in PEM or in raw base64.
-     * @param {String} nameToSave
-     * @param {String} keyData: public or private RSA key either in raw base64 or PEM format
-     * @param {String} type: must be either "public" or "private"
-     *
-     * @returns {iCrypto}
-     */
-
-  }, {
-    key: "setRSAKey",
-    value: function setRSAKey() {
-      var nameToSave = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("setRSAPublicKey");
-      var keyData = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("setRSAPublicKey");
-      var type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : iCrypto.pRequired("setRSAPublicKey");
-
-      if (type !== "public" && type !== "private") {
-        throw "Invalid key type";
-      }
-
-      if (!iCrypto.isRSAPEMValid(keyData, type)) {
-        keyData = iCrypto.base64ToPEM(keyData, type);
-      }
-
-      type === "public" ? forge.pki.publicKeyFromPem(keyData) : forge.pki.privateKeyFromPem(keyData);
-      this.set(nameToSave, keyData);
-      return this;
-    }
-    /**
-     * For internal use only. Takes key data in form of a string
-     * and checks whether it matches RSA PEM key format
-     * @param {string} keyData
-     * @param {string}type ENUM "public", "private"
-     * @returns {boolean}
-     */
-
-  }, {
-    key: "asyncPublicKeyEncrypt",
-    value: function asyncPublicKeyEncrypt(target, keyPair, nameToSave, encoding) {
-      var _this9 = this;
-
-      return new Promise(function (resolve, reject) {
-        try {
-          resolve(_this9.publicKeyEncrypt(target, keyPair, nameToSave));
-        } catch (err) {
-          reject(err);
-        }
-      });
-    }
-    /**
-     * creates and saves public key fingerprint
-     * @param target - public key, either keypair or public key
-     * @param nameToSave
-     * @param hashAlgorithm
-     * @returns {iCrypto}
-     */
-
-  }, {
-    key: "getPublicKeyFingerprint",
-    value: function getPublicKeyFingerprint() {
-      var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("getPublicKeyFingerpint");
-      var nameToSave = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("getPublicKeyFingerpint");
-      var hashAlgorithm = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "sha256";
-      var key = this.validateExtractRSAKey(this.get(target), "public");
-      var forgeKey = forge.pki.publicKeyFromPem(key);
-      var fingerprint = forge.pki.getPublicKeyFingerprint(forgeKey, {
-        encoding: 'hex',
-        md: forge.md[hashAlgorithm].create()
-      });
-      this.set(nameToSave, fingerprint);
-      return this;
-    }
-  }, {
-    key: "publicKeyEncrypt",
-    value: function publicKeyEncrypt() {
-      var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("publicKeyEncrypt");
-      var key = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("publicKeyEncrypt");
-      var nameToSave = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : iCrypto.pRequired("publicKeyEncrypt");
-      var encoding = arguments.length > 3 ? arguments[3] : undefined;
-      key = this.validateExtractRSAKey(this.get(key), "public");
-      var publicKey = forge.pki.publicKeyFromPem(key);
-      var result = publicKey.encrypt(this.get(target));
-
-      if (encoding) {
-        result = this._encodeBlob(result, encoding);
-      }
-
-      this.set(nameToSave, result);
-      return this;
-    }
-    /**
-     * For internal use. Encode the blob in format specified
-     * @param blob
-     * @param encoding
-     * @private
-     */
-
-  }, {
-    key: "_encodeBlob",
-    value: function _encodeBlob() {
-      var blob = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("_encodeBlob");
-      var encoding = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("_encodeBlob");
-      var self = this;
-
-      if (!this.encoders.hasOwnProperty(encoding)) {
-        throw "_encodeBlob: Invalid encoding: " + encoding;
-      }
-
-      return self.encoders[encoding](blob);
-    }
-  }, {
-    key: "_decodeBlob",
-    value: function _decodeBlob() {
-      var blob = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("_encodeBlob");
-      var encoding = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("_encodeBlob");
-      var self = this;
-
-      if (!this.encoders.hasOwnProperty(encoding)) {
-        throw "_decodeBlob: Invalid encoding: " + encoding;
-      }
-
-      return this.decoders[encoding](blob);
-    }
-  }, {
-    key: "asyncPrivateKeyDecrypt",
-    value: function asyncPrivateKeyDecrypt(target, key, nameToSave) {
-      var _this10 = this;
-
-      return new Promise(function (resolve, reject) {
-        try {
-          resolve(_this10.privateKeyDecrypt(target, key, nameToSave));
-        } catch (err) {
-          reject(err);
-        }
-      });
-    }
-  }, {
-    key: "privateKeyDecrypt",
-    value: function privateKeyDecrypt() {
-      var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("privateKeyDecrypt");
-      var key = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("privateKeyDecrypt");
-      var nameToSave = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : iCrypto.pRequired("privateKeyDecrypt");
-      var encoding = arguments.length > 3 ? arguments[3] : undefined;
-      key = this.validateExtractRSAKey(this.get(key), "private");
-      var privateKey = forge.pki.privateKeyFromPem(key);
-      var cipher = this.get(target);
-
-      if (encoding) {
-        cipher = this._decodeBlob(cipher, encoding);
-      }
-
-      this.set(nameToSave, privateKey.decrypt(cipher));
-      return this;
-    }
-  }, {
-    key: "asyncPrivateKeySign",
-    value: function asyncPrivateKeySign(target, keyPair, nameToSave) {
-      var _this11 = this;
-
-      return new Promise(function (resolve, reject) {
-        try {
-          resolve(_this11.privateKeySign(target, keyPair, nameToSave));
-        } catch (err) {
-          reject(err);
-        }
-      });
-    }
-  }, {
-    key: "privateKeySign",
-    value: function privateKeySign() {
-      var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("privateKeyEncrypt");
-      var key = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("privateKeyEncrypt");
-      var nameToSave = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : iCrypto.pRequired("privateKeyEncrypt");
-      var hashAlgorithm = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : "sha256";
-      var hexifySign = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : true;
-      key = this.validateExtractRSAKey(this.get(key), "private");
-      var privateKey = forge.pki.privateKeyFromPem(key);
-      var md = forge.md[hashAlgorithm].create();
-      md.update(this.get(target));
-      var signature = privateKey.sign(md);
-      signature = hexifySign ? forge.util.bytesToHex(signature) : signature;
-      this.set(nameToSave, signature);
-      return this;
-    }
-  }, {
-    key: "asyncPublicKeyVerify",
-    value: function asyncPublicKeyVerify(target, signature, key, nameToSave) {
-      var _this12 = this;
-
-      return new Promise(function (resolve, reject) {
-        try {
-          resolve(_this12.publicKeyVerify(target, signature, key, nameToSave));
-        } catch (err) {
-          reject(err);
-        }
-      });
-    }
-  }, {
-    key: "publicKeyVerify",
-    value: function publicKeyVerify() {
-      var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("publicKeyVerify");
-      var signature = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("publicKeyVerify");
-      var key = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : iCrypto.pRequired("publicKeyVerify");
-      var nameToSave = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : iCrypto.pRequired("publicKeyVerify");
-      var dehexifySignRequired = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : true;
-      key = this.validateExtractRSAKey(this.get(key), "public");
-      var publicKey = forge.pki.publicKeyFromPem(key);
-      var md = forge.md.sha256.create();
-      md.update(this.get(target));
-      var sign = this.get(signature);
-      sign = dehexifySignRequired ? forge.util.hexToBytes(sign) : sign;
-      var verified = publicKey.verify(md.digest().bytes(), sign);
-      this.set(nameToSave, verified);
-      return this;
-    }
-    /**
-     * Validates and extracts RSA key from either keypair
-     * or separate private or public keys saved previously within the object.
-     * Checks PEM structure and returns requested key in PEM format
-     * or throws error if something wrong
-     * @param key - target key
-     * @param type - "public" or "private"
-     * @return public or private key in PEM format
-     */
-
-  }, {
-    key: "validateExtractRSAKey",
-    value: function validateExtractRSAKey() {
-      var key = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("validateAndExtractRSAKey");
-      var keyType = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("validateAndExtractRSAKey");
-      var keyTypes = {
-        public: "publicKey",
-        private: "privateKey"
-      };
-      if (!Object.keys(keyTypes).includes(keyType)) throw "validateExtractRSAKey: key type is invalid!";
-
-      if (key[keyTypes[keyType]]) {
-        key = key[keyTypes[keyType]];
-      }
-
-      if (!iCrypto.isRSAPEMValid(key, keyType)) {
-        console.log(keyType);
-        console.log(key);
-        throw "validateExtractRSAKey: Invalid key format";
-      }
-
-      return key;
-    }
-  }, {
-    key: "pemToBase64",
-    value: function pemToBase64() {
-      var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("pemToBase64");
-      var nameToSave = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("pemToBase64");
-      var keyType = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : iCrypto.pRequired("pemToBase64");
-      var key = this.get(target);
-
-      if (!iCrypto.isRSAPEMValid(key, keyType)) {
-        console.log(keyType);
-        console.log(key);
-        throw "validateExtractRSAKey: Invalid key format";
-      }
-
-      key = key.trim().split(/\r?\n/).slice(1, -1).join("");
-      this.set(nameToSave, key);
-    }
-    /***#### COMPRESSION ####***/
-
-  }, {
-    key: "asyncCompress",
-    value: function asyncCompress(target, nameToSave) {} // return new Promise((resolve, reject)=>{
-    //     try{
-    //         resolve(this.compress(target, nameToSave));
-    //     } catch(err){
-    //         reject(err);
-    //     }
-    // })
-
-    /**
-     * Compresses data under key name
-     * @param target
-     *  type: String
-     *  Key to data that needed to be compressed
-     * @param nameToSave
-     *  type: String
-     *  if passed - function will save the result of compression under this key
-     *  otherwise the compression will happen in-place
-     */
-
-  }, {
-    key: "compress",
-    value: function compress() {//let compressed = LZMA.compress(this.get(target));
-      // this.set(nameToSave, compressed);
-      // return this;
-
-      var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("compress");
-      var nameToSave = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("compress");
-    }
-  }, {
-    key: "asyncDecompress",
-    value: function asyncDecompress(target, nameToSave) {} // return new Promise((resolve, reject)=>{
-    //     try{
-    //         resolve(this.decompress(target, nameToSave));
-    //     } catch(err){
-    //         reject(err);
-    //     }
-    //
-    // })
-
-    /**
-     * Decompresses data under key name
-     * @param target
-     *  type: String
-     *  Key to data that needed to be compressed
-     * @param nameToSave
-     *  type: String
-     *  if passed - function will save the result of compression under this key
-     *  otherwise decompression will happen in-place
-     */
-
-  }, {
-    key: "decompress",
-    value: function decompress() {
-      var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("decompress");
-      var nameToSave = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("decompress");
-    } // let decompressed = LZMA.decompress(this.get(target));
-    // this.set(nameToSave, decompressed);
-    // return this;
-
-    /***#### UTILS ####***/
-
-  }, {
-    key: "encode",
-    value: function encode() {
-      var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("encode");
-      var encoding = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("encode");
-      var nameToSave = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : iCrypto.pRequired("encode");
-      var self = this;
-      self.set(nameToSave, self._encodeBlob(this.get(target), encoding));
-      return this;
-    }
-  }, {
-    key: "base64Encode",
-    value: function base64Encode() {
-      var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("base64Encode");
-      var nameToSave = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("base64Encode");
-      var stringify = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-      var target = stringify ? JSON.stringify(this.get(name)) : this.get(name);
-      this.set(nameToSave, iCrypto.base64Encode(target));
-      return this;
-    }
-  }, {
-    key: "base64Decode",
-    value: function base64Decode() {
-      var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("base64decode");
-      var nameToSave = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("base64decode");
-      var jsonParse = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-      var decoded = iCrypto.base64Decode(this.get(name));
-      decoded = jsonParse ? JSON.parse(decoded) : decoded;
-      this.set(nameToSave, decoded);
-      return this;
-    }
-    /*
-        base32Encode(name = this.pRequired("base32Encode"),
-                     nameToSave = this.pRequired("base32Encode")){
-            let base32 = new Base32();
-            let encoded = base32.encode(this.get(name));
-            this.set(nameToSave, encoded);
-            return this;
-        }
-          base32Decode(name = this.pRequired("base64decode"),
-                     nameToSave = this.pRequired("base64decode")){
-            let base32 = new Base32();
-            let decoded = base32.decode(this.get(name));
-            this.set(nameToSave, decoded);
-            return this;
-        }
-    /**/
-
-  }, {
-    key: "bytesToHex",
-    value: function bytesToHex() {
-      var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("bytesToHex");
-      var nameToSave = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("bytesToHex");
-      var stringify = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-      var target = stringify ? JSON.stringify(this.get(name)) : this.get(name);
-      this.set(nameToSave, iCrypto.hexEncode(target));
-      return this;
-    }
-  }, {
-    key: "hexToBytes",
-    value: function hexToBytes() {
-      var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("hexToBytes");
-      var nameToSave = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("hexToBytes");
-      var jsonParse = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-      var decoded = iCrypto.hexDecode(this.get(name));
-      decoded = jsonParse ? JSON.parse(decoded) : decoded;
-      this.set(nameToSave, decoded);
-      return this;
-    }
-  }, {
-    key: "stringifyJSON",
-    value: function stringifyJSON() {
-      var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("stringify");
-      var nameToSave = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("stringify");
-      var target = this.get(name);
-
-      if (_babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0___default()(target) !== "object") {
-        throw "stringifyJSON: target invalid";
-      }
-
-      this.set(nameToSave, JSON.stringify(target));
-      return this;
-    }
-  }, {
-    key: "parseJSON",
-    value: function parseJSON() {
-      var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("stringify");
-      var nameToSave = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("stringify");
-      var target = this.get(name);
-
-      if (typeof target !== "string") {
-        throw "stringifyJSON: target invalid";
-      }
-
-      this.set(nameToSave, JSON.parse(target));
-      return this;
-    }
-    /**
-     * Merges elements into a single string
-     * if name passed - saves the merge result inside the object
-     * under key <name>.
-     * @param things
-     *     type: array
-     *     array of strings. Each string is a key.
-     * @param name
-     *     type: string
-     *     name of the key under which to save the merge result
-     */
-
-  }, {
-    key: "merge",
-    value: function merge() {
-      var things = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("merge");
-      var nameToSave = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("merge");
-      if (!this.keysExist(things)) throw "merge: some or all objects with such keys not found ";
-      console.log("Mergin' things");
-      var result = "";
-
-      for (var i = 0; i < things.length; ++i) {
-        var candidate = this.get(things[i]);
-        if (typeof candidate === "string" || typeof candidate === "number") result += candidate;else throw "Object " + things[i] + " is not mergeable";
-      }
-
-      this.set(nameToSave, result);
-      return this;
-    }
-  }, {
-    key: "encodeBlobLength",
-    value: function encodeBlobLength() {
-      var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("encodeBlobLength");
-      var targetLength = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("encodeBlobLength");
-      var paddingChar = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : iCrypto.pRequired("encodeBlobLength");
-      var nameToSave = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : iCrypto.pRequired("encodeBlobLength");
-
-      if (typeof paddingChar !== "string") {
-        throw "encodeBlobLength: Invalid padding char";
-      }
-
-      var l = String(this.get(target).length);
-      var paddingLength = targetLength - l.length;
-
-      if (paddingLength < 0) {
-        throw "encodeBlobLength: String length exceedes target length";
-      }
-
-      var padding = paddingChar[0].repeat(paddingLength);
-      this.set(nameToSave, padding + l);
-      return this;
-    }
-    /************SERVICE FUNCTIONS**************/
-
-  }, {
-    key: "get",
-    value: function get(name) {
-      if (this.keysExist(name)) return this.store[name];
-      throw "Property " + name + " not found";
-    }
-  }, {
-    key: "set",
-    value: function set(name, value) {
-      if (this.locked) throw "Cannot add property: object locked";
-      this.assertKeysAvailable(name);
-      this.store[name] = value;
-    }
-  }, {
-    key: "lock",
-    value: function lock() {
-      this.locked = true;
-    }
-  }, {
-    key: "unlock",
-    value: function unlock() {
-      this.locked = false;
-    }
-  }, {
-    key: "assertKeysAvailable",
-    value: function assertKeysAvailable(keys) {
-      if (this.keysExist(keys)) throw "Cannot add property: " + keys.toString() + " property with such name already exists";
-    }
-  }, {
-    key: "keysExist",
-    value: function keysExist(keys) {
-      if (!keys) throw "keysExist: Missing required arguments";
-      if (typeof keys === "string" || typeof keys === "number") return this._keyExists(keys);
-      if (_babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0___default()(keys) !== "object") throw "keysExist: unsupported type";
-      if (keys.length < 1) throw "array must have at least one key";
-      var currentKeys = Object.keys(this.store);
-
-      for (var i = 0; i < keys.length; ++i) {
-        if (!currentKeys.includes(keys[i].toString())) return false;
-      }
-
-      return true;
-    }
-  }, {
-    key: "_keyExists",
-    value: function _keyExists(key) {
-      if (!key) throw "keyExists: Missing required arguments";
-      return Object.keys(this.store).includes(key.toString());
-    }
-  }, {
-    key: "throwError",
-    value: function throwError() {
-      var message = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "Unknown error";
-      throw message;
-    }
-  }], [{
-    key: "isRSAPEMValid",
-    value: function isRSAPEMValid(keyData, type) {
-      keyData = keyData.trim();
-      var headerPattern = type === "public" ? /^-{4,5}BEGIN.*PUBLIC.*KEY.*-{4,5}/ : /^-{4,5}BEGIN.*PRIVATE.*KEY.*-{4,5}/;
-      var footerPattern = type === "public" ? /^-{4,5}END.*PUBLIC.*KEY.*-{4,5}/ : /^-{4,5}END.*PRIVATE.*KEY.*-{4,5}/;
-      var valid = true;
-      keyData = keyData.replace(/\r?\n$/, "");
-      var keyDataArr = keyData.split(/\r?\n/);
-      valid = valid && keyDataArr.length > 2 && headerPattern.test(keyDataArr[0]) && footerPattern.test(keyDataArr[keyDataArr.length - 1]);
-      return valid;
-    }
-  }, {
-    key: "base64ToPEM",
-    value: function base64ToPEM(keyData, type) {
-      var header = type === "public" ? "-----BEGIN PUBLIC KEY-----" : "-----BEGIN RSA PRIVATE KEY-----";
-      var footer = type === "public" ? "-----END PUBLIC KEY-----" : "-----END RSA PRIVATE KEY-----";
-      var result = header;
-
-      for (var i = 0; i < keyData.length; ++i) {
-        result += i % 64 === 0 ? "\r\n" + keyData[i] : keyData[i];
-      }
-
-      result += "\r\n" + footer;
-      return result;
-    }
-  }, {
-    key: "arrayBufferToString",
-    value: function arrayBufferToString(buf) {
-      return String.fromCharCode.apply(null, new Uint16Array(buf));
-    }
-  }, {
-    key: "stringToArrayBuffer",
-    value: function stringToArrayBuffer(str) {
-      var buf = new ArrayBuffer(str.length * 2); // 2 bytes for each char
-
-      var bufView = new Uint16Array(buf);
-
-      for (var i = 0, strLen = str.length; i < strLen; i++) {
-        bufView[i] = str.charCodeAt(i);
-      }
-
-      return buf;
-    }
-    /**
-     * TODO make it universal and for arbitrary number of arrays     *
-     * @param arr1
-     * @param arr2
-     * @returns {Uint8Array}
-     */
-
-  }, {
-    key: "concatUint8Arrays",
-    value: function concatUint8Arrays(arr1, arr2) {
-      var res = new Uint8Array(arr1.byteLength + arr2.byteLength);
-      res.set(arr1, 0);
-      res.set(arr2, arr1.byteLength);
-      return res;
-    }
-    /**
-     * Concatinates 2 array buffers in order buffer1 + buffer2
-     * @param {ArrayBuffer} buffer1
-     * @param {ArrayBuffer} buffer2
-     * @returns {ArrayBufferLike}
-     */
-
-  }, {
-    key: "concatArrayBuffers",
-    value: function concatArrayBuffers(buffer1, buffer2) {
-      var tmp = new Uint8Array(buffer1.byteLength + buffer2.byteLength);
-      tmp.set(new Uint8Array(buffer1), 0);
-      tmp.set(new Uint8Array(buffer2), buffer1.byteLength);
-      return tmp.buffer;
-    }
-  }, {
-    key: "getBytes",
-    value: function getBytes(length) {
-      return forge.random.getBytesSync(length);
-    }
-  }, {
-    key: "hexEncode",
-    value: function hexEncode(blob) {
-      return forge.util.bytesToHex(blob);
-    }
-  }, {
-    key: "hexDecode",
-    value: function hexDecode(blob) {
-      return forge.util.hexToBytes(blob);
-    }
-  }, {
-    key: "base64Encode",
-    value: function base64Encode(blob) {
-      return forge.util.encode64(blob);
-    }
-  }, {
-    key: "base64Decode",
-    value: function base64Decode(blob) {
-      return forge.util.decode64(blob);
-    }
-    /**
-     * Returns random integer
-     * @param a
-     * @param b
-     */
-
-  }, {
-    key: "randInt",
-    value: function randInt(min, max) {
-      if (max === undefined) {
-        max = min;
-        min = 0;
-      }
-
-      if (typeof min !== 'number' || typeof max !== 'number') {
-        throw new TypeError('Expected all arguments to be numbers');
-      }
-
-      return Math.floor(Math.random() * (max - min + 1) + min);
-    }
-  }, {
-    key: "createRandomHexString",
-    value: function createRandomHexString(length) {
-      var bytes = iCrypto.getBytes(length);
-      var hex = iCrypto.hexEncode(bytes);
-      var offset = iCrypto.randInt(0, hex.length - length);
-      return hex.substring(offset, offset + length);
-    }
-  }, {
-    key: "pRequired",
-    value: function pRequired() {
-      var functionName = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "iCrypto function";
-      throw functionName + ": missing required parameter!";
-    }
-  }]);
-
-  return iCrypto;
-}();
-
-/***/ }),
-
-/***/ 139:
+/***/ 137:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1675,27 +163,24 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(9);
 /* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var cute_set__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(142);
+/* harmony import */ var cute_set__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(140);
 /* harmony import */ var cute_set__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(cute_set__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var toastr__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(6);
-/* harmony import */ var toastr__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(toastr__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _chat_WildEmitter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(74);
-/* harmony import */ var _lib_iCrypto__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(10);
+/* harmony import */ var _css_main_sass__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(142);
+/* harmony import */ var _css_main_sass__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_css_main_sass__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var toastr__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(6);
+/* harmony import */ var toastr__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(toastr__WEBPACK_IMPORTED_MODULE_4__);
 
 
 //Viendors
- //import { $ } from "jquery";
-
  //
 //import { bar } from "loading-bar";
-//import { waitMe } from "./lib/waitMe.min"
+//import { WildEmitter } from "./chat/WildEmitter";
 
 
 
-window.iCrypto = _lib_iCrypto__WEBPACK_IMPORTED_MODULE_5__[/* iCrypto */ "a"];
-window.toastr = toastr__WEBPACK_IMPORTED_MODULE_3__;
+window.toastr = toastr__WEBPACK_IMPORTED_MODULE_4__;
 
-var ChatClient = __webpack_require__(268).default; //chat page
+var ChatClient = __webpack_require__(270).default; //chat page
 
 
 var chat;
@@ -1975,7 +460,7 @@ function _joinTopic() {
           case 9:
             _context5.prev = 9;
             _context5.t0 = _context5["catch"](3);
-            toastr__WEBPACK_IMPORTED_MODULE_3__["error"]("Topic was not created. Error: " + _context5.t0);
+            toastr__WEBPACK_IMPORTED_MODULE_4__["error"]("Topic was not created. Error: " + _context5.t0);
             loadingOff();
 
           case 13:
@@ -2003,7 +488,7 @@ function setupChatListeners(chat) {
     }
 
     loadingOff();
-    toastr__WEBPACK_IMPORTED_MODULE_3__["error"]("Topic was not created. Error: " + msg);
+    toastr__WEBPACK_IMPORTED_MODULE_4__["error"]("Topic was not created. Error: " + msg);
   });
   chat.on("login_success", function (messages) {
     document.querySelector('#sounds-switch').src = chat.session.settings.soundsOn ? soundsOnOfIcons.on : soundsOnOfIcons.off;
@@ -2011,24 +496,24 @@ function setupChatListeners(chat) {
     clearAllInputs();
     processLogin(messages);
     playSound("user_online");
-    toastr__WEBPACK_IMPORTED_MODULE_3__["success"]("You are now online!");
+    toastr__WEBPACK_IMPORTED_MODULE_4__["success"]("You are now online!");
   });
   chat.on("unknown_error", function (err) {
     console.log("unknown_error emited by chat: " + err);
-    toastr__WEBPACK_IMPORTED_MODULE_3__["error"]("Chat error: " + err);
+    toastr__WEBPACK_IMPORTED_MODULE_4__["error"]("Chat error: " + err);
   });
   chat.on("login_fail", function (err) {
     clearLoginPrivateKey();
     loadingOff();
     console.log("Login fail emited by chat: " + err);
-    toastr__WEBPACK_IMPORTED_MODULE_3__["error"]("Login fail: " + err);
+    toastr__WEBPACK_IMPORTED_MODULE_4__["error"]("Login fail: " + err);
   });
   chat.on('request_invite_success', function (inviteID) {
     buttonLoadingOff(document.querySelector("#new-invite"));
     showInviteCode(inviteID);
   });
   chat.on('invite_updated', function () {
-    toastr__WEBPACK_IMPORTED_MODULE_3__["info"]("Invite updated!");
+    toastr__WEBPACK_IMPORTED_MODULE_4__["info"]("Invite updated!");
   });
   chat.on("new_member_joined", function (data) {
     processNewMemberJoin(data);
@@ -2040,7 +525,7 @@ function setupChatListeners(chat) {
   });
   chat.on("participant_booted", function (message) {
     updateParticipants();
-    toastr__WEBPACK_IMPORTED_MODULE_3__["info"](message);
+    toastr__WEBPACK_IMPORTED_MODULE_4__["info"](message);
   });
   chat.on("metadata_updated", function () {
     updateParticipants();
@@ -2048,23 +533,23 @@ function setupChatListeners(chat) {
   });
   chat.on("boot_participant_success", function (message) {
     updateParticipants();
-    toastr__WEBPACK_IMPORTED_MODULE_3__["info"](message);
+    toastr__WEBPACK_IMPORTED_MODULE_4__["info"](message);
   });
   chat.on("u_booted", function (message) {
-    toastr__WEBPACK_IMPORTED_MODULE_3__["warning"](message);
+    toastr__WEBPACK_IMPORTED_MODULE_4__["warning"](message);
   });
   chat.on("boot_participant_fail", function (message) {
-    toastr__WEBPACK_IMPORTED_MODULE_3__["warning"]("Participant booting failed: " + message);
+    toastr__WEBPACK_IMPORTED_MODULE_4__["warning"]("Participant booting failed: " + message);
   });
   chat.on("topic_join_success", function (data) {
     processTopicJoinSuccess(data);
   });
   chat.on("del_invite_fail", function () {
-    toastr__WEBPACK_IMPORTED_MODULE_3__["warning"]("Error deleting invite");
+    toastr__WEBPACK_IMPORTED_MODULE_4__["warning"]("Error deleting invite");
   });
   chat.on("del_invite_success", function () {
     syncPendingInvites();
-    toastr__WEBPACK_IMPORTED_MODULE_3__["info"]("Invite was deleted");
+    toastr__WEBPACK_IMPORTED_MODULE_4__["info"]("Invite was deleted");
   });
   chat.on("chat_message", function (data) {
     processIncomingMessage(data);
@@ -2085,11 +570,11 @@ function setupChatListeners(chat) {
   });
   chat.on("sync_invites_error", function (msg) {
     buttonLoadingOff(document.querySelector('#refresh-invites'));
-    toastr__WEBPACK_IMPORTED_MODULE_3__["warning"]("Invite request failed: " + msg);
+    toastr__WEBPACK_IMPORTED_MODULE_4__["warning"]("Invite request failed: " + msg);
   });
   chat.on("request_invite_error", function (msg) {
     buttonLoadingOff(document.querySelector('#new-invite'));
-    toastr__WEBPACK_IMPORTED_MODULE_3__["warning"]("Invite request failed: " + msg);
+    toastr__WEBPACK_IMPORTED_MODULE_4__["warning"]("Invite request failed: " + msg);
   });
   chat.on("messages_loaded", function (messages) {
     processMessagesLoaded(messages);
@@ -2135,7 +620,7 @@ function processIncomingMessage(message) {
     recipient: message.header.recipient,
     attachments: message.attachments
   });
-  toastr__WEBPACK_IMPORTED_MODULE_3__["info"]("New message from " + chat.getMemberRepr(pkfp));
+  toastr__WEBPACK_IMPORTED_MODULE_4__["info"]("New message from " + chat.getMemberRepr(pkfp));
 }
 
 function processServiceRecord(record) {
@@ -2246,7 +731,7 @@ function processNewMemberJoin() {
   console.log("NEW MEMBER JOINED. UPDATING INFO");
   updateParticipants();
   syncPendingInvites();
-  toastr__WEBPACK_IMPORTED_MODULE_3__["info"]("New member just joined the channel!");
+  toastr__WEBPACK_IMPORTED_MODULE_4__["info"]("New member just joined the channel!");
 }
 
 function bootParticipant(event) {
@@ -2451,7 +936,7 @@ function processLogout() {
   document.querySelector('#chat_window').innerHTML = "";
   chat.logout();
   setView("auth");
-  toastr__WEBPACK_IMPORTED_MODULE_3__["info"]("You have successfully logged out!");
+  toastr__WEBPACK_IMPORTED_MODULE_4__["info"]("You have successfully logged out!");
 }
 
 function setNavbarListeners() {
@@ -2887,13 +1372,13 @@ function displayNewTopicData(data, heading, toastrMessage) {
   var tempWrap = document.createElement("div");
   tempWrap.appendChild(bodyWrapper);
   showModalNotification(heading, tempWrap.innerHTML);
-  toastr__WEBPACK_IMPORTED_MODULE_3__["success"](toastrMessage);
+  toastr__WEBPACK_IMPORTED_MODULE_4__["success"](toastrMessage);
 }
 
 function showInviteCode(newInvite) {
   syncPendingInvites();
   showModalNotification("Here is your invite code:", newInvite);
-  toastr__WEBPACK_IMPORTED_MODULE_3__["success"]("New invite was generated successfully!");
+  toastr__WEBPACK_IMPORTED_MODULE_4__["success"]("New invite was generated successfully!");
 }
 
 function showModalNotification(headingText, bodyContent) {
@@ -3048,9 +1533,9 @@ function copyInviteCode(event) {
 
   try {
     document.execCommand("copy");
-    toastr__WEBPACK_IMPORTED_MODULE_3__["info"]("Invite code was copied to the clipboard");
+    toastr__WEBPACK_IMPORTED_MODULE_4__["info"]("Invite code was copied to the clipboard");
   } catch (err) {
-    toastr__WEBPACK_IMPORTED_MODULE_3__["error"]("Error copying invite code to the clipboard");
+    toastr__WEBPACK_IMPORTED_MODULE_4__["error"]("Error copying invite code to the clipboard");
   }
 
   textArea.remove();
@@ -3349,7 +1834,7 @@ function refreshInvites(ev) {
 
 function refreshInvitesSuccess() {
   buttonLoadingOff(document.querySelector("#refresh-invites"));
-  toastr__WEBPACK_IMPORTED_MODULE_3__["success"]("Invites re-synced");
+  toastr__WEBPACK_IMPORTED_MODULE_4__["success"]("Invites re-synced");
 }
 
 function switchConnectionStatus(connected) {
@@ -3398,7 +1883,7 @@ function participantAliasChange(ev) {
 
 function ensureConnected() {
   if (!chat.islandConnectionStatus) {
-    toastr__WEBPACK_IMPORTED_MODULE_3__["warning"]("You are disconnected from the island. Please reconnect to continue");
+    toastr__WEBPACK_IMPORTED_MODULE_4__["warning"]("You are disconnected from the island. Please reconnect to continue");
     throw "No island connection";
   }
 }
@@ -3444,12 +1929,45 @@ function processMainMenuSwitch(ev) {
 
 /***/ }),
 
-/***/ 160:
+/***/ 142:
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(143);
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(144)(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
+/***/ 143:
+/***/ (function(module, exports, __webpack_require__) {
+
+// extracted by mini-css-extract-plugin
+
+/***/ }),
+
+/***/ 162:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* WEBPACK VAR INJECTION */(function(module) {/* harmony import */ var _babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(13);
+/* WEBPACK VAR INJECTION */(function(module) {/* harmony import */ var _babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(12);
 /* harmony import */ var _babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0__);
 
 
@@ -5155,7 +3673,7 @@ a: try {
     var ja;
 
     try {
-      ja = __webpack_require__(162);
+      ja = __webpack_require__(164);
     } catch (a) {
       ja = null;
     }
@@ -6595,14 +5113,7 @@ sjcl.codec.arrayBuffer = {
 "function" === typeof define && define([], function () {
   return sjcl;
 });
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(161)(module)))
-
-/***/ }),
-
-/***/ 164:
-/***/ (function(module, exports) {
-
-/* (ignored) */
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(163)(module)))
 
 /***/ }),
 
@@ -6613,35 +5124,42 @@ sjcl.codec.arrayBuffer = {
 
 /***/ }),
 
-/***/ 200:
+/***/ 168:
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
 
-/***/ 201:
+/***/ 202:
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
 
-/***/ 265:
+/***/ 203:
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
 
-/***/ 268:
+/***/ 267:
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+
+/***/ 270:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/typeof.js
-var helpers_typeof = __webpack_require__(13);
+var helpers_typeof = __webpack_require__(12);
 var typeof_default = /*#__PURE__*/__webpack_require__.n(helpers_typeof);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/regenerator/index.js
@@ -6660,6 +5178,1506 @@ var classCallCheck_default = /*#__PURE__*/__webpack_require__.n(classCallCheck);
 var createClass = __webpack_require__(8);
 var createClass_default = /*#__PURE__*/__webpack_require__.n(createClass);
 
+// EXTERNAL MODULE: ./node_modules/js-chacha20/src/jschacha20.js
+var jschacha20 = __webpack_require__(73);
+
+// CONCATENATED MODULE: ./client/src/js/lib/iCrypto.js
+
+
+
+
+
+
+
+var iCrypto_forge = __webpack_require__(148);
+
+var sjcl = __webpack_require__(162); //const Base32 = require("./Base32.js");
+
+
+var iCrypto_iCryptoFactory =
+/*#__PURE__*/
+function () {
+  function iCryptoFactory(settings) {
+    classCallCheck_default()(this, iCryptoFactory);
+
+    this.readSettings();
+  }
+
+  createClass_default()(iCryptoFactory, [{
+    key: "createICryptor",
+    value: function createICryptor() {
+      return new iCrypto_iCrypto(this.settings);
+    }
+  }, {
+    key: "readSettings",
+    value: function readSettings() {
+      console.log("readubg settings");
+      this.settings = null;
+    }
+  }]);
+
+  return iCryptoFactory;
+}();
+
+var iCrypto_iCrypto =
+/*#__PURE__*/
+function () {
+  function iCrypto(settings) {
+    classCallCheck_default()(this, iCrypto);
+
+    var self = this;
+    self.settings = {};
+    self.locked = false;
+    self.setEncodersAndDecoders();
+    self.symCiphers = ['aes'];
+    self.streamCiphers = ['chacha'];
+    self.asymCiphers = ['rsa'];
+    self.store = {};
+    self.rsa = {
+      createKeyPair: function createKeyPair() {
+        return self.generateRSAKeyPair.apply(self, arguments);
+      },
+      asyncCreateKeyPair: function asyncCreateKeyPair() {
+        return self.asyncGenerateRSAKeyPair.apply(self, arguments);
+      },
+      encrypt: function encrypt() {
+        return self.publicKeyEncrypt.apply(self, arguments);
+      },
+      decrypt: function decrypt() {
+        return self.privateKeyDecrypt.apply(self, arguments);
+      },
+      sign: function sign() {
+        return self.privateKeySign.apply(self, arguments);
+      },
+      verify: function verify() {
+        return self.publicKeyVerify.apply(self, arguments);
+      },
+      setKey: function setKey() {
+        return self.setRSAKey.apply(self, arguments);
+      },
+      getSettings: function getSettings() {
+        return "RSA";
+      }
+    };
+    self.aes = {
+      modes: ['CBC', 'CFB', 'CTR'],
+      mode: 'CBC',
+      ivLength: 16,
+      keySize: 32,
+      createKey: function createKey() {
+        return self.createSYMKey.apply(self, arguments);
+      },
+      encrypt: function encrypt() {
+        return self.AESEncrypt.apply(self, arguments);
+      },
+      decrypt: function decrypt() {
+        return self.AESDecrypt.apply(self, arguments);
+      },
+      setKey: function setKey() {
+        return self.setSYMKey.apply(self, arguments);
+      },
+      getSettings: function getSettings() {
+        return "AES";
+      }
+    };
+    self.chacha = {
+      init: function init() {
+        return self.initStreamCryptor.apply(self, arguments);
+      },
+      encrypt: function encrypt() {
+        return self.streamCryptorEncrypt.apply(self, arguments);
+      },
+      decrypt: function decrypt() {
+        return self.streamCryptorDecrypt.apply(self, arguments);
+      },
+      getSettings: function getSettings() {
+        return "ChaCha";
+      }
+    };
+    self.setAsymCipher('rsa');
+    self.setSymCipher('aes');
+    self.setStreamCipher('chacha');
+  }
+  /***************** SETTING CIPHERS API *******************/
+
+
+  createClass_default()(iCrypto, [{
+    key: "setSymCipher",
+    value: function setSymCipher() {
+      var self = this;
+
+      for (var _len = arguments.length, opts = new Array(_len), _key = 0; _key < _len; _key++) {
+        opts[_key] = arguments[_key];
+      }
+
+      if (!self.symCiphers.includes(opts[0])) {
+        throw "setSymCipher: Invalid or unsupported algorithm";
+      }
+
+      self.sym = self[opts[0]];
+    }
+  }, {
+    key: "setAsymCipher",
+    value: function setAsymCipher() {
+      var self = this;
+
+      for (var _len2 = arguments.length, opts = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+        opts[_key2] = arguments[_key2];
+      }
+
+      if (!self.asymCiphers.includes(opts[0])) {
+        throw "setSymCipher: Invalid or unsupported algorithm";
+      }
+
+      self.asym = self[opts[0]];
+    }
+  }, {
+    key: "setStreamCipher",
+    value: function setStreamCipher() {
+      var self = this;
+
+      for (var _len3 = arguments.length, opts = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+        opts[_key3] = arguments[_key3];
+      }
+
+      if (!self.streamCiphers.includes(opts[0])) {
+        throw "setSymCipher: Invalid or unsupported algorithm";
+      }
+
+      self.ssym = self[opts[0]];
+    }
+    /***************** END **********************************/
+
+  }, {
+    key: "setEncodersAndDecoders",
+    value: function setEncodersAndDecoders() {
+      this.encoders = {
+        hex: iCrypto.hexEncode,
+        base64: iCrypto.base64Encode
+      };
+      this.decoders = {
+        hex: iCrypto.hexDecode,
+        base64: iCrypto.base64Decode
+      };
+    }
+    /*********MAIN METHODS**************/
+
+    /**********************$$*****************************/
+
+    /***####NONCES PLAIN TEXT####***/
+
+  }, {
+    key: "asyncCreateNonce",
+    value: function asyncCreateNonce(nameToSave) {
+      var _this = this;
+
+      var length = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 32;
+      return new Promise(function (resolve, reject) {
+        try {
+          resolve(_this.createNonce(nameToSave, length));
+        } catch (err) {
+          reject(err);
+        }
+      });
+    }
+    /**
+     * Creates nonce of the given length and
+     * saves it under the provided name.
+     * Default is 32 bytes
+     *
+     * @param {string} nameToSave
+     * @param {number} length
+     * @returns {iCrypto}
+     */
+
+  }, {
+    key: "createNonce",
+    value: function createNonce() {
+      var nameToSave = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("createNonce");
+      var length = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 32;
+      var self = this;
+      this.set(nameToSave, iCrypto.getBytes(length));
+      return this;
+    }
+  }, {
+    key: "asyncAddBlob",
+    value: function asyncAddBlob(nameToSave, plainText) {
+      var _this2 = this;
+
+      return new Promise(function (resolve, reject) {
+        try {
+          resolve(_this2.addBlob(nameToSave, plainText));
+        } catch (err) {
+          reject(err);
+        }
+      });
+    }
+  }, {
+    key: "addBlob",
+    value: function addBlob() {
+      var nameToSave = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("addBlob");
+      var plainText = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("addBlob");
+      this.set(nameToSave, plainText.toString().trim());
+      return this;
+    }
+    /**********************$$*****************************/
+
+    /***#### KEYS CRYPTO ####***/
+
+  }, {
+    key: "asyncCreateSYMKey",
+    value: function asyncCreateSYMKey(nameToSave) {
+      var _this3 = this;
+
+      var ivLength = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 16;
+      var keyLength = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 32;
+      return new Promise(function (resolve, reject) {
+        try {
+          resolve(_this3.createSYMKey(nameToSave, ivLength, keyLength));
+        } catch (err) {
+          reject(err);
+        }
+      });
+    }
+    /**
+     * Creates hex-encoded SYM key, which is just some random hex-encoded bytes
+     * @param nameToSave
+     * @param keyLength
+     * @returns {iCrypto}
+     */
+
+  }, {
+    key: "createSYMKey",
+    value: function createSYMKey() {
+      var nameToSave = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("createSYMKey");
+      var keyLength = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 32;
+      var self = this;
+      var key = iCrypto.getBytes(keyLength);
+      self.set(nameToSave, iCrypto_forge.util.bytesToHex(key));
+      return self;
+    }
+    /**
+     * Sets passed SYM key inside the object
+     * @param nameToSave
+     * @param {string} key Must be hexified string
+     */
+
+  }, {
+    key: "setSYMKey",
+    value: function setSYMKey() {
+      var nameToSave = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("setSYMKey");
+      var key = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("setSYMKey");
+      this.set(nameToSave, key);
+      return this;
+    }
+    /**
+     * requires object of similar structure for key as being created by createSYMKey
+     * @param target
+     * @param key
+     * @param nameToSave
+     * @returns {Promise}
+     */
+
+  }, {
+    key: "asyncAESEncrypt",
+    value: function asyncAESEncrypt(target, key, nameToSave, hexify, mode, encoding) {
+      var _this4 = this;
+
+      return new Promise(function (resolve, reject) {
+        try {
+          resolve(_this4.AESEncrypt(target, key, nameToSave, hexify, mode, encoding));
+        } catch (err) {
+          reject(err);
+        }
+      });
+    }
+    /**
+     * Encrypts blob identified by "target" parameter.
+     * Target must be set inside iCrypto object
+     * IV is randomly generated and appended to the cipher blob
+     * @param {string} target
+     * @param {string} key
+     * @param {string} nameToSave
+     * @param {boolean} hexify - Specifies the encoding of the resulting cipher. Default: hex.
+     * @param {string} mode - specifies AES mode. Default - CBC
+     * @param {number} ivLength - specifies length of initialization vector
+     *  The initialization vector of specified length will be generated and
+     *  appended to the end of resulting cipher. IV blob will be encoded according to
+     *  outputEncoding parameter, and its length will be last 3 bytes of the cipher string.
+     *
+     */
+
+  }, {
+    key: "AESEncrypt",
+    value: function AESEncrypt() {
+      var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("AESEncrypt");
+      var key = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("AESEncrypt");
+      var nameToSave = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : iCrypto.pRequired("AESEncrypt");
+      var hexify = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
+      var mode = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 'CBC';
+      var encoding = arguments.length > 5 ? arguments[5] : undefined;
+      var self = this;
+
+      if (!self.aes.modes.includes(mode.toUpperCase())) {
+        throw "AESencrypt: Invalid AES mode";
+      }
+
+      mode = "AES-" + mode.toUpperCase(); //Creating random 16 bytes IV
+
+      var iv = iCrypto.getBytes(16);
+      var AESkey = iCrypto_forge.util.hexToBytes(self.get(key));
+      var cipher = iCrypto_forge.cipher.createCipher(mode, AESkey);
+      cipher.start({
+        iv: iv
+      });
+      cipher.update(iCrypto_forge.util.createBuffer(this.get(target), encoding));
+      cipher.finish();
+      this.set(nameToSave, hexify ? iCrypto_forge.util.bytesToHex(iv) + cipher.output.toHex() : iv + cipher.output);
+      return this;
+    }
+  }, {
+    key: "asyncAESDecrypt",
+    value: function asyncAESDecrypt(target, key, nameToSave) {
+      var _this5 = this;
+
+      return new Promise(function (resolve, reject) {
+        try {
+          resolve(_this5.AESDecrypt(target, key, nameToSave));
+        } catch (err) {
+          reject(err);
+        }
+      });
+    }
+    /**
+     * Decrypts the blob loaded into iCrypto object and specified by targe parameter
+     * Assumes that initialization vector is PREPENDED to the cipher text
+     * and its length is 16 bytes
+     *
+     * @param {string} target - ciphertext within iCrypto object
+     * @param {string} key - Symmetric AES key in form of hex string
+     * @param {string} nameToSave
+     * @param {boolean} dehexify
+     * @param {string} mode AES mode
+     * @param {string} encoding - resulting plain text encoding default (UTF8)
+     */
+
+  }, {
+    key: "AESDecrypt",
+    value: function AESDecrypt() {
+      var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("AESDecrypt");
+      var key = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("AESDecrypt");
+      var nameToSave = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : iCrypto.pRequired("AESDecrypt");
+      var dehexify = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+      var mode = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : "CBC";
+      var encoding = arguments.length > 5 ? arguments[5] : undefined;
+      var self = this;
+      var cipherWOIV;
+
+      if (!self.aes.modes.includes(mode.toUpperCase())) {
+        throw "AESencrypt: Invalid AES mode";
+      }
+
+      mode = "AES-" + mode.toUpperCase();
+      var cipher = self.get(target);
+      var iv;
+
+      if (dehexify) {
+        iv = iCrypto_forge.util.hexToBytes(cipher.substring(0, 32));
+        cipherWOIV = iCrypto_forge.util.hexToBytes(cipher.substr(32));
+      } else {
+        //Assuming cipher is a binary string
+        cipherWOIV = cipher.substr(16);
+        iv = cipher.substring(0, 16);
+      }
+
+      var AESkey = iCrypto_forge.util.hexToBytes(this.get(key));
+      var decipher = iCrypto_forge.cipher.createDecipher(mode, AESkey);
+      decipher.start({
+        iv: iv
+      });
+      decipher.update(iCrypto_forge.util.createBuffer(cipherWOIV));
+      decipher.finish();
+      this.set(nameToSave, decipher.output.toString('utf8'));
+      return this;
+    }
+  }, {
+    key: "asyncHash",
+    value: function asyncHash(target, nameToSave) {
+      var _this6 = this;
+
+      var algorithm = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "sha256";
+      return new Promise(function (resolve, reject) {
+        try {
+          resolve(_this6.hash(target, nameToSave, algorithm));
+        } catch (err) {
+          reject(err);
+        }
+      });
+    }
+    /**
+     * This function meant to be used on large files
+     * It is asynchronous, uses web workers,
+     * and it calculates hash of a large file without loading it
+     * fully into memory
+     * @param file  -  value of an input of type file
+     * @param nameToSave - name to store resulting hash
+     * @param algorithm - sha256 is default
+     */
+
+  }, {
+    key: "hashFileWorker",
+    value: function hashFileWorker() {
+      var _this7 = this;
+
+      var file = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("fileHashWorker file");
+      var nameToSave = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("fileHashWorker nameToSave");
+      var algorithm = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "sha256";
+      return new Promise(function (resolve, reject) {
+        var self = _this7;
+
+        if (Worker === undefined) {
+          throw "Web workers are not supported in current environment";
+        }
+
+        var worker = new Worker("/js/iCryptoWorker.js");
+
+        worker.onmessage = function (ev) {
+          if (ev.data[0] === "success") {
+            self.set(nameToSave, ev.data[1]);
+            resolve(self);
+            worker.terminate();
+          } else {
+            reject(ev.data[1]);
+            worker.terminate();
+          }
+        };
+
+        worker.postMessage(["hashFile", file]);
+      });
+    }
+    /**
+     * Initializes stream encryptor or decryptor
+     *
+     * Supported algorithm is chacha20 only
+     * Single instance of a single stream cryptor can be used
+     * only one time, one way, and only for a single stream.
+     * Meaning you can take a single stream and encrypt it chunk by chunk,
+     * but then, if you want to decrypt the stream,  you have to
+     * re-initialize cryptor instance or use a new one,
+     * otherwise the output will be meaningless.
+     *
+     * All the chunks must flow in sequence.
+     *
+     * !!!Important
+     *
+     * Encryption:
+     * Stream cryptor handles initialization vector (iv)
+     * by prepending them to cipher. So, to encrypt the data -
+     * just pass the key and new iv will be created automatically
+     * and prepended to the cipher
+     *
+     * Decryption:
+     * On Decryption the algorithm ASSUMES that first 6 bytes of
+     * the ciphertext is iv.
+     * So, it will treat first 6 bytes as iv regardles of chunks,
+     * and will begin decryption starting from byte 7
+     *
+     * @param {String} nameToSave - Stream cryptor will be saved inside iCrypto instance
+     * @param {String} key String of bytes in hex - Symmetric key used to encrypt/decrypt data
+     *  The algorithm requires key to be 32 bytes precisely
+        Only first 32 bytes (after decoding hex) will be taken
+     * @param {Boolean} isEncryptionMode - flag encryption mode - true
+     * @param {String} algorithm Supports only chacha20 for now
+     */
+
+  }, {
+    key: "initStreamCryptor",
+    value: function initStreamCryptor() {
+      var nameToSave = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("initStreamEncryptor");
+      var key = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("initStreamEncryptor");
+      var isEncryptionMode = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+      var algorithm = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : "chacha20";
+      var self = this;
+      var ivRaw, ivHex, keyRaw, cryptor, ivBuffer;
+      var mode = "enc";
+      keyRaw = iCrypto.hexDecode(key);
+
+      if (keyRaw.length < 16) {
+        throw "chacha20: invalid key size: " + keyRaw.length + " key length must be 32 bytes";
+      }
+
+      var keyBuffer = iCrypto.stringToArrayBuffer(keyRaw).slice(0, 32);
+
+      if (isEncryptionMode) {
+        ivRaw = iCrypto.getBytes(6);
+        ivHex = iCrypto.hexEncode(ivRaw);
+        ivBuffer = iCrypto.stringToArrayBuffer(ivRaw).slice(0, 12);
+        cryptor = new jschacha20["JSChaCha20"](new Uint8Array(keyBuffer), new Uint8Array(ivBuffer), 0);
+      } else {
+        mode = "dec";
+        ivBuffer = new ArrayBuffer(0);
+      }
+
+      var res = new function () {
+        var self = this;
+        self.cryptor = cryptor;
+        self.key = key;
+        self.iv = ivHex;
+        self.mode = mode;
+
+        self.encryptionMode = function () {
+          return self.mode === "enc";
+        };
+
+        self.decryptionMode = function () {
+          return self.mode === "dec";
+        };
+
+        self.encrypt = function (input) {
+          var blob = typeof input === "string" ? iCrypto.stringToArrayBuffer(input) : input;
+
+          if (!(blob instanceof ArrayBuffer) && !(blob instanceof Uint8Array)) {
+            throw "StreamCryptor encrypt: input type is invalid";
+          }
+
+          if (self.cryptor._byteCounter === 0) {
+            //First check if counter is 0.
+            //If so - it is a first encryption block and we need to prepend IV
+            var encrypted = self.cryptor.encrypt(new Uint8Array(blob));
+            return iCrypto.concatUint8Arrays(new Uint8Array(ivBuffer), encrypted);
+          } else {
+            //Just encrypting the blob
+            return self.cryptor.encrypt(new Uint8Array(blob));
+          }
+        };
+
+        self.decrypt = function (input) {
+          var blob = typeof input === "string" ? iCrypto.stringToArrayBuffer(input) : input;
+
+          if (!(blob instanceof ArrayBuffer)) {
+            throw "StreamCryptor encrypt: input type is invalid";
+          }
+
+          if (self.cryptor === undefined) {
+            //decryptor was not initialized yet because
+            //Initalization vecotor (iv)was not yet obtained
+            //IV assumed to be first 6 bytes prepended to cipher
+            var currentIVLength = ivBuffer.byteLength;
+
+            if (currentIVLength + blob.byteLength <= 12) {
+              ivBuffer = iCrypto.concatArrayBuffers(ivBuffer, blob); //Still gathering iv, so returning empty array
+
+              return new Uint8Array();
+            } else {
+              var remainingIVBytes = 12 - ivBuffer.byteLength;
+              ivBuffer = iCrypto.concatArrayBuffers(ivBuffer, blob.slice(0, remainingIVBytes));
+              self.iv = iCrypto.hexEncode(iCrypto.arrayBufferToString(ivBuffer));
+              self.cryptor = new jschacha20["JSChaCha20"](new Uint8Array(keyBuffer), new Uint8Array(ivBuffer), 0);
+              var chunk = new Uint8Array(blob.slice(remainingIVBytes, blob.byteLength));
+              return self.cryptor.decrypt(chunk);
+            }
+          } else {
+            //Decrypto is initialized.
+            // Just decrypting the blob and returning result
+            return self.cryptor.decrypt(new Uint8Array(blob));
+          }
+        };
+      }();
+      self.set(nameToSave, res);
+      return self;
+    }
+  }, {
+    key: "streamCryptorGetIV",
+    value: function streamCryptorGetIV() {
+      var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("streamCryptorGetIV");
+      var self = this;
+      var cryptor = self.get(target);
+      return cryptor.iv;
+    }
+  }, {
+    key: "streamCryptorEncrypt",
+    value: function streamCryptorEncrypt() {
+      var cryptorID = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("streamCryptorEncrypt");
+      var blob = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("streamCryptorEncrypt");
+      var encoding = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "raw";
+      var self = this;
+      var input;
+      var cryptor = self.get(cryptorID);
+
+      if (!cryptor.encryptionMode()) {
+        throw "streamCryptorEncrypt error: mode is invalid";
+      }
+
+      if (blob instanceof ArrayBuffer) {
+        input = blob;
+      } else if (blob instanceof Uint8Array) {
+        input = blob.buffer;
+      } else if (typeof blob === "string") {
+        input = iCrypto.stringToArrayBuffer(blob);
+      } else {
+        throw "streamCryptorEncrypt: invalid format input";
+      }
+
+      if (encoding === undefined || encoding === "raw") {
+        return cryptor.encrypt(input).buffer;
+      } else {
+        throw "NOT IMPLEMENTED";
+      }
+    }
+  }, {
+    key: "streamCryptorDecrypt",
+    value: function streamCryptorDecrypt() {
+      var cryptorID = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("streamCryptorEncrypt");
+      var blob = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("streamCryptorEncrypt");
+      var encoding = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "raw";
+      var self = this;
+      var cryptor = self.get(cryptorID);
+      var input;
+
+      if (!cryptor.decryptionMode()) {
+        throw "streamCryptorEncrypt error: mode is invalid";
+      }
+
+      if (blob instanceof ArrayBuffer) {
+        input = blob;
+      } else if (blob instanceof Uint8Array) {
+        input = blob.buffer;
+      } else if (typeof blob === "string") {
+        input = iCrypto.stringToArrayBuffer(blob);
+      } else {
+        throw "streamCryptorEncrypt: invalid format input";
+      }
+
+      if (encoding === undefined || encoding === "raw") {
+        return cryptor.decrypt(input).buffer;
+      } else {
+        throw "NOT IMPLEMENTED";
+      }
+    }
+    /**
+     *
+     * @param target
+     * @param nameToSave
+     * @param algorithm
+     */
+
+  }, {
+    key: "hash",
+    value: function hash() {
+      var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("hash");
+      var nameToSave = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("hash");
+      var algorithm = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "sha256";
+      var self = this;
+      var blob = self.get(target);
+
+      if (typeof blob !== "string") {
+        throw "hash: invalid target type: " + typeof_default()(blob) + "  Target must be string.";
+      }
+
+      algorithm = algorithm.toLowerCase();
+      var hash = iCrypto_forge.md.hasOwnProperty(algorithm) ? iCrypto_forge.md[algorithm].create() : this.throwError("Wrong hash algorithm");
+      hash.update(blob);
+      this.set(nameToSave, hash.digest().toHex());
+      return self;
+    }
+  }, {
+    key: "createHash",
+    value: function createHash() {
+      var nameToSave = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("createHash");
+      var algorithm = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "sha256";
+      var hash = sjcl.hash.hasOwnProperty(algorithm) ? new sjcl.hash[algorithm]() : this.throwError("Wrong hash algorithm");
+      this.set(nameToSave, hash);
+      return this;
+    }
+    /**
+     *
+     * @param target
+     * @param {} blob can be binary string or arrayBuffer
+     * @returns {iCrypto}
+     */
+
+  }, {
+    key: "updateHash",
+    value: function updateHash() {
+      var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("updateHash: target");
+      var blob = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("updateHash: blob");
+      var self = this;
+      var input;
+
+      if (typeof blob === "string") {
+        input = iCrypto.stringToArrayBuffer(blob);
+      } else if (blob instanceof Uint8Array) {
+        input = blob.buffer;
+      } else if (blob instanceof ArrayBuffer) {
+        input = blob;
+      } else {
+        throw "invalid input format!";
+      }
+
+      var hash = self.get(target);
+      hash.update(sjcl.codec.arrayBuffer.toBits(input));
+      return self;
+    }
+  }, {
+    key: "digestHash",
+    value: function digestHash() {
+      var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("digestHash");
+      var nameToSave = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("digestHash");
+      var hexify = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+      var self = this;
+      var hRes = self.get(target);
+      var res = hexify ? sjcl.codec.hex.fromBits(hRes.finalize()) : sjcl.codec.arrayBuffer.fromBits(hRes.finalize());
+      this.set(nameToSave, res);
+      return self;
+    }
+  }, {
+    key: "asyncGenerateRSAKeyPair",
+    value: function asyncGenerateRSAKeyPair() {
+      var _this8 = this;
+
+      var nameToSave = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("asyncGenerateRSAKeyPair");
+      var length = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 2048;
+      return new Promise(function (resolve, reject) {
+        var self = _this8;
+        iCrypto_forge.rsa.generateKeyPair({
+          bits: length,
+          workers: -1
+        }, function (err, pair) {
+          if (err) reject(err);else {
+            try {
+              var pubKey = iCrypto_forge.pki.publicKeyToPem(pair.publicKey);
+              var privKey = iCrypto_forge.pki.privateKeyToPem(pair.privateKey);
+              self.set(nameToSave, {
+                publicKey: pubKey,
+                privateKey: privKey
+              });
+              resolve(_this8);
+            } catch (err) {
+              reject(err);
+            }
+          }
+        });
+      });
+    }
+    /**
+     * Generates RSA key pair.
+     * Key saved in PEM format
+     * resulting object has publicKey, privateKey, keyType, length
+     * @param nameToSave
+     * @param length
+     * @returns {iCrypto}
+     */
+
+  }, {
+    key: "generateRSAKeyPair",
+    value: function generateRSAKeyPair() {
+      var nameToSave = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("generateRSAKeyPair");
+      var length = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 2048;
+      var self = this;
+      var pair = iCrypto_forge.pki.rsa.generateKeyPair({
+        bits: length,
+        e: 0x10001
+      });
+      var pubKey = iCrypto_forge.pki.publicKeyToPem(pair.publicKey);
+      var privKey = iCrypto_forge.pki.privateKeyToPem(pair.privateKey);
+      self.set(nameToSave, {
+        publicKey: pubKey,
+        privateKey: privKey
+      });
+      return self;
+    }
+    /**
+     * Takes previously saved RSA private key in PEM format,
+     * extracts its public key
+     * and saves it in PEM format under the name specified
+     * @param target
+     * @param nameToSave
+     * @returns {iCrypto}
+     */
+
+  }, {
+    key: "publicFromPrivate",
+    value: function publicFromPrivate() {
+      var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("publicFromPrivate");
+      var nameToSave = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("publicFromPrivate");
+      var forgePrivateKey = iCrypto_forge.pki.privateKeyFromPem(this.get(target));
+      this.set(nameToSave, iCrypto_forge.pki.publicKeyToPem(forgePrivateKey));
+      return this;
+    }
+    /**
+     * Accepts as an input RSA key and saves it inside an object under the name specified.
+     * Key must be provided either in PEM or in raw base64.
+     * @param {String} nameToSave
+     * @param {String} keyData: public or private RSA key either in raw base64 or PEM format
+     * @param {String} type: must be either "public" or "private"
+     *
+     * @returns {iCrypto}
+     */
+
+  }, {
+    key: "setRSAKey",
+    value: function setRSAKey() {
+      var nameToSave = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("setRSAPublicKey");
+      var keyData = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("setRSAPublicKey");
+      var type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : iCrypto.pRequired("setRSAPublicKey");
+
+      if (type !== "public" && type !== "private") {
+        throw "Invalid key type";
+      }
+
+      if (!iCrypto.isRSAPEMValid(keyData, type)) {
+        keyData = iCrypto.base64ToPEM(keyData, type);
+      }
+
+      type === "public" ? iCrypto_forge.pki.publicKeyFromPem(keyData) : iCrypto_forge.pki.privateKeyFromPem(keyData);
+      this.set(nameToSave, keyData);
+      return this;
+    }
+    /**
+     * For internal use only. Takes key data in form of a string
+     * and checks whether it matches RSA PEM key format
+     * @param {string} keyData
+     * @param {string}type ENUM "public", "private"
+     * @returns {boolean}
+     */
+
+  }, {
+    key: "asyncPublicKeyEncrypt",
+    value: function asyncPublicKeyEncrypt(target, keyPair, nameToSave, encoding) {
+      var _this9 = this;
+
+      return new Promise(function (resolve, reject) {
+        try {
+          resolve(_this9.publicKeyEncrypt(target, keyPair, nameToSave));
+        } catch (err) {
+          reject(err);
+        }
+      });
+    }
+    /**
+     * creates and saves public key fingerprint
+     * @param target - public key, either keypair or public key
+     * @param nameToSave
+     * @param hashAlgorithm
+     * @returns {iCrypto}
+     */
+
+  }, {
+    key: "getPublicKeyFingerprint",
+    value: function getPublicKeyFingerprint() {
+      var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("getPublicKeyFingerpint");
+      var nameToSave = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("getPublicKeyFingerpint");
+      var hashAlgorithm = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "sha256";
+      var key = this.validateExtractRSAKey(this.get(target), "public");
+      var forgeKey = iCrypto_forge.pki.publicKeyFromPem(key);
+      var fingerprint = iCrypto_forge.pki.getPublicKeyFingerprint(forgeKey, {
+        encoding: 'hex',
+        md: iCrypto_forge.md[hashAlgorithm].create()
+      });
+      this.set(nameToSave, fingerprint);
+      return this;
+    }
+  }, {
+    key: "publicKeyEncrypt",
+    value: function publicKeyEncrypt() {
+      var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("publicKeyEncrypt");
+      var key = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("publicKeyEncrypt");
+      var nameToSave = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : iCrypto.pRequired("publicKeyEncrypt");
+      var encoding = arguments.length > 3 ? arguments[3] : undefined;
+      key = this.validateExtractRSAKey(this.get(key), "public");
+      var publicKey = iCrypto_forge.pki.publicKeyFromPem(key);
+      var result = publicKey.encrypt(this.get(target));
+
+      if (encoding) {
+        result = this._encodeBlob(result, encoding);
+      }
+
+      this.set(nameToSave, result);
+      return this;
+    }
+    /**
+     * For internal use. Encode the blob in format specified
+     * @param blob
+     * @param encoding
+     * @private
+     */
+
+  }, {
+    key: "_encodeBlob",
+    value: function _encodeBlob() {
+      var blob = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("_encodeBlob");
+      var encoding = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("_encodeBlob");
+      var self = this;
+
+      if (!this.encoders.hasOwnProperty(encoding)) {
+        throw "_encodeBlob: Invalid encoding: " + encoding;
+      }
+
+      return self.encoders[encoding](blob);
+    }
+  }, {
+    key: "_decodeBlob",
+    value: function _decodeBlob() {
+      var blob = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("_encodeBlob");
+      var encoding = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("_encodeBlob");
+      var self = this;
+
+      if (!this.encoders.hasOwnProperty(encoding)) {
+        throw "_decodeBlob: Invalid encoding: " + encoding;
+      }
+
+      return this.decoders[encoding](blob);
+    }
+  }, {
+    key: "asyncPrivateKeyDecrypt",
+    value: function asyncPrivateKeyDecrypt(target, key, nameToSave) {
+      var _this10 = this;
+
+      return new Promise(function (resolve, reject) {
+        try {
+          resolve(_this10.privateKeyDecrypt(target, key, nameToSave));
+        } catch (err) {
+          reject(err);
+        }
+      });
+    }
+  }, {
+    key: "privateKeyDecrypt",
+    value: function privateKeyDecrypt() {
+      var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("privateKeyDecrypt");
+      var key = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("privateKeyDecrypt");
+      var nameToSave = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : iCrypto.pRequired("privateKeyDecrypt");
+      var encoding = arguments.length > 3 ? arguments[3] : undefined;
+      key = this.validateExtractRSAKey(this.get(key), "private");
+      var privateKey = iCrypto_forge.pki.privateKeyFromPem(key);
+      var cipher = this.get(target);
+
+      if (encoding) {
+        cipher = this._decodeBlob(cipher, encoding);
+      }
+
+      this.set(nameToSave, privateKey.decrypt(cipher));
+      return this;
+    }
+  }, {
+    key: "asyncPrivateKeySign",
+    value: function asyncPrivateKeySign(target, keyPair, nameToSave) {
+      var _this11 = this;
+
+      return new Promise(function (resolve, reject) {
+        try {
+          resolve(_this11.privateKeySign(target, keyPair, nameToSave));
+        } catch (err) {
+          reject(err);
+        }
+      });
+    }
+  }, {
+    key: "privateKeySign",
+    value: function privateKeySign() {
+      var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("privateKeyEncrypt");
+      var key = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("privateKeyEncrypt");
+      var nameToSave = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : iCrypto.pRequired("privateKeyEncrypt");
+      var hashAlgorithm = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : "sha256";
+      var hexifySign = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : true;
+      key = this.validateExtractRSAKey(this.get(key), "private");
+      var privateKey = iCrypto_forge.pki.privateKeyFromPem(key);
+      var md = iCrypto_forge.md[hashAlgorithm].create();
+      md.update(this.get(target));
+      var signature = privateKey.sign(md);
+      signature = hexifySign ? iCrypto_forge.util.bytesToHex(signature) : signature;
+      this.set(nameToSave, signature);
+      return this;
+    }
+  }, {
+    key: "asyncPublicKeyVerify",
+    value: function asyncPublicKeyVerify(target, signature, key, nameToSave) {
+      var _this12 = this;
+
+      return new Promise(function (resolve, reject) {
+        try {
+          resolve(_this12.publicKeyVerify(target, signature, key, nameToSave));
+        } catch (err) {
+          reject(err);
+        }
+      });
+    }
+  }, {
+    key: "publicKeyVerify",
+    value: function publicKeyVerify() {
+      var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("publicKeyVerify");
+      var signature = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("publicKeyVerify");
+      var key = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : iCrypto.pRequired("publicKeyVerify");
+      var nameToSave = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : iCrypto.pRequired("publicKeyVerify");
+      var dehexifySignRequired = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : true;
+      key = this.validateExtractRSAKey(this.get(key), "public");
+      var publicKey = iCrypto_forge.pki.publicKeyFromPem(key);
+      var md = iCrypto_forge.md.sha256.create();
+      md.update(this.get(target));
+      var sign = this.get(signature);
+      sign = dehexifySignRequired ? iCrypto_forge.util.hexToBytes(sign) : sign;
+      var verified = publicKey.verify(md.digest().bytes(), sign);
+      this.set(nameToSave, verified);
+      return this;
+    }
+    /**
+     * Validates and extracts RSA key from either keypair
+     * or separate private or public keys saved previously within the object.
+     * Checks PEM structure and returns requested key in PEM format
+     * or throws error if something wrong
+     * @param key - target key
+     * @param type - "public" or "private"
+     * @return public or private key in PEM format
+     */
+
+  }, {
+    key: "validateExtractRSAKey",
+    value: function validateExtractRSAKey() {
+      var key = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("validateAndExtractRSAKey");
+      var keyType = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("validateAndExtractRSAKey");
+      var keyTypes = {
+        public: "publicKey",
+        private: "privateKey"
+      };
+      if (!Object.keys(keyTypes).includes(keyType)) throw "validateExtractRSAKey: key type is invalid!";
+
+      if (key[keyTypes[keyType]]) {
+        key = key[keyTypes[keyType]];
+      }
+
+      if (!iCrypto.isRSAPEMValid(key, keyType)) {
+        console.log(keyType);
+        console.log(key);
+        throw "validateExtractRSAKey: Invalid key format";
+      }
+
+      return key;
+    }
+  }, {
+    key: "pemToBase64",
+    value: function pemToBase64() {
+      var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("pemToBase64");
+      var nameToSave = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("pemToBase64");
+      var keyType = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : iCrypto.pRequired("pemToBase64");
+      var key = this.get(target);
+
+      if (!iCrypto.isRSAPEMValid(key, keyType)) {
+        console.log(keyType);
+        console.log(key);
+        throw "validateExtractRSAKey: Invalid key format";
+      }
+
+      key = key.trim().split(/\r?\n/).slice(1, -1).join("");
+      this.set(nameToSave, key);
+    }
+    /***#### COMPRESSION ####***/
+
+  }, {
+    key: "asyncCompress",
+    value: function asyncCompress(target, nameToSave) {} // return new Promise((resolve, reject)=>{
+    //     try{
+    //         resolve(this.compress(target, nameToSave));
+    //     } catch(err){
+    //         reject(err);
+    //     }
+    // })
+
+    /**
+     * Compresses data under key name
+     * @param target
+     *  type: String
+     *  Key to data that needed to be compressed
+     * @param nameToSave
+     *  type: String
+     *  if passed - function will save the result of compression under this key
+     *  otherwise the compression will happen in-place
+     */
+
+  }, {
+    key: "compress",
+    value: function compress() {//let compressed = LZMA.compress(this.get(target));
+      // this.set(nameToSave, compressed);
+      // return this;
+
+      var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("compress");
+      var nameToSave = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("compress");
+    }
+  }, {
+    key: "asyncDecompress",
+    value: function asyncDecompress(target, nameToSave) {} // return new Promise((resolve, reject)=>{
+    //     try{
+    //         resolve(this.decompress(target, nameToSave));
+    //     } catch(err){
+    //         reject(err);
+    //     }
+    //
+    // })
+
+    /**
+     * Decompresses data under key name
+     * @param target
+     *  type: String
+     *  Key to data that needed to be compressed
+     * @param nameToSave
+     *  type: String
+     *  if passed - function will save the result of compression under this key
+     *  otherwise decompression will happen in-place
+     */
+
+  }, {
+    key: "decompress",
+    value: function decompress() {
+      var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("decompress");
+      var nameToSave = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("decompress");
+    } // let decompressed = LZMA.decompress(this.get(target));
+    // this.set(nameToSave, decompressed);
+    // return this;
+
+    /***#### UTILS ####***/
+
+  }, {
+    key: "encode",
+    value: function encode() {
+      var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("encode");
+      var encoding = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("encode");
+      var nameToSave = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : iCrypto.pRequired("encode");
+      var self = this;
+      self.set(nameToSave, self._encodeBlob(this.get(target), encoding));
+      return this;
+    }
+  }, {
+    key: "base64Encode",
+    value: function base64Encode() {
+      var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("base64Encode");
+      var nameToSave = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("base64Encode");
+      var stringify = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+      var target = stringify ? JSON.stringify(this.get(name)) : this.get(name);
+      this.set(nameToSave, iCrypto.base64Encode(target));
+      return this;
+    }
+  }, {
+    key: "base64Decode",
+    value: function base64Decode() {
+      var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("base64decode");
+      var nameToSave = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("base64decode");
+      var jsonParse = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+      var decoded = iCrypto.base64Decode(this.get(name));
+      decoded = jsonParse ? JSON.parse(decoded) : decoded;
+      this.set(nameToSave, decoded);
+      return this;
+    }
+    /*
+        base32Encode(name = this.pRequired("base32Encode"),
+                     nameToSave = this.pRequired("base32Encode")){
+            let base32 = new Base32();
+            let encoded = base32.encode(this.get(name));
+            this.set(nameToSave, encoded);
+            return this;
+        }
+          base32Decode(name = this.pRequired("base64decode"),
+                     nameToSave = this.pRequired("base64decode")){
+            let base32 = new Base32();
+            let decoded = base32.decode(this.get(name));
+            this.set(nameToSave, decoded);
+            return this;
+        }
+    /**/
+
+  }, {
+    key: "bytesToHex",
+    value: function bytesToHex() {
+      var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("bytesToHex");
+      var nameToSave = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("bytesToHex");
+      var stringify = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+      var target = stringify ? JSON.stringify(this.get(name)) : this.get(name);
+      this.set(nameToSave, iCrypto.hexEncode(target));
+      return this;
+    }
+  }, {
+    key: "hexToBytes",
+    value: function hexToBytes() {
+      var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("hexToBytes");
+      var nameToSave = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("hexToBytes");
+      var jsonParse = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+      var decoded = iCrypto.hexDecode(this.get(name));
+      decoded = jsonParse ? JSON.parse(decoded) : decoded;
+      this.set(nameToSave, decoded);
+      return this;
+    }
+  }, {
+    key: "stringifyJSON",
+    value: function stringifyJSON() {
+      var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("stringify");
+      var nameToSave = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("stringify");
+      var target = this.get(name);
+
+      if (typeof_default()(target) !== "object") {
+        throw "stringifyJSON: target invalid";
+      }
+
+      this.set(nameToSave, JSON.stringify(target));
+      return this;
+    }
+  }, {
+    key: "parseJSON",
+    value: function parseJSON() {
+      var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("stringify");
+      var nameToSave = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("stringify");
+      var target = this.get(name);
+
+      if (typeof target !== "string") {
+        throw "stringifyJSON: target invalid";
+      }
+
+      this.set(nameToSave, JSON.parse(target));
+      return this;
+    }
+    /**
+     * Merges elements into a single string
+     * if name passed - saves the merge result inside the object
+     * under key <name>.
+     * @param things
+     *     type: array
+     *     array of strings. Each string is a key.
+     * @param name
+     *     type: string
+     *     name of the key under which to save the merge result
+     */
+
+  }, {
+    key: "merge",
+    value: function merge() {
+      var things = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("merge");
+      var nameToSave = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("merge");
+      if (!this.keysExist(things)) throw "merge: some or all objects with such keys not found ";
+      console.log("Mergin' things");
+      var result = "";
+
+      for (var i = 0; i < things.length; ++i) {
+        var candidate = this.get(things[i]);
+        if (typeof candidate === "string" || typeof candidate === "number") result += candidate;else throw "Object " + things[i] + " is not mergeable";
+      }
+
+      this.set(nameToSave, result);
+      return this;
+    }
+  }, {
+    key: "encodeBlobLength",
+    value: function encodeBlobLength() {
+      var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("encodeBlobLength");
+      var targetLength = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("encodeBlobLength");
+      var paddingChar = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : iCrypto.pRequired("encodeBlobLength");
+      var nameToSave = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : iCrypto.pRequired("encodeBlobLength");
+
+      if (typeof paddingChar !== "string") {
+        throw "encodeBlobLength: Invalid padding char";
+      }
+
+      var l = String(this.get(target).length);
+      var paddingLength = targetLength - l.length;
+
+      if (paddingLength < 0) {
+        throw "encodeBlobLength: String length exceedes target length";
+      }
+
+      var padding = paddingChar[0].repeat(paddingLength);
+      this.set(nameToSave, padding + l);
+      return this;
+    }
+    /************SERVICE FUNCTIONS**************/
+
+  }, {
+    key: "get",
+    value: function get(name) {
+      if (this.keysExist(name)) return this.store[name];
+      throw "Property " + name + " not found";
+    }
+  }, {
+    key: "set",
+    value: function set(name, value) {
+      if (this.locked) throw "Cannot add property: object locked";
+      this.assertKeysAvailable(name);
+      this.store[name] = value;
+    }
+  }, {
+    key: "lock",
+    value: function lock() {
+      this.locked = true;
+    }
+  }, {
+    key: "unlock",
+    value: function unlock() {
+      this.locked = false;
+    }
+  }, {
+    key: "assertKeysAvailable",
+    value: function assertKeysAvailable(keys) {
+      if (this.keysExist(keys)) throw "Cannot add property: " + keys.toString() + " property with such name already exists";
+    }
+  }, {
+    key: "keysExist",
+    value: function keysExist(keys) {
+      if (!keys) throw "keysExist: Missing required arguments";
+      if (typeof keys === "string" || typeof keys === "number") return this._keyExists(keys);
+      if (typeof_default()(keys) !== "object") throw "keysExist: unsupported type";
+      if (keys.length < 1) throw "array must have at least one key";
+      var currentKeys = Object.keys(this.store);
+
+      for (var i = 0; i < keys.length; ++i) {
+        if (!currentKeys.includes(keys[i].toString())) return false;
+      }
+
+      return true;
+    }
+  }, {
+    key: "_keyExists",
+    value: function _keyExists(key) {
+      if (!key) throw "keyExists: Missing required arguments";
+      return Object.keys(this.store).includes(key.toString());
+    }
+  }, {
+    key: "throwError",
+    value: function throwError() {
+      var message = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "Unknown error";
+      throw message;
+    }
+  }], [{
+    key: "isRSAPEMValid",
+    value: function isRSAPEMValid(keyData, type) {
+      keyData = keyData.trim();
+      var headerPattern = type === "public" ? /^-{4,5}BEGIN.*PUBLIC.*KEY.*-{4,5}/ : /^-{4,5}BEGIN.*PRIVATE.*KEY.*-{4,5}/;
+      var footerPattern = type === "public" ? /^-{4,5}END.*PUBLIC.*KEY.*-{4,5}/ : /^-{4,5}END.*PRIVATE.*KEY.*-{4,5}/;
+      var valid = true;
+      keyData = keyData.replace(/\r?\n$/, "");
+      var keyDataArr = keyData.split(/\r?\n/);
+      valid = valid && keyDataArr.length > 2 && headerPattern.test(keyDataArr[0]) && footerPattern.test(keyDataArr[keyDataArr.length - 1]);
+      return valid;
+    }
+  }, {
+    key: "base64ToPEM",
+    value: function base64ToPEM(keyData, type) {
+      var header = type === "public" ? "-----BEGIN PUBLIC KEY-----" : "-----BEGIN RSA PRIVATE KEY-----";
+      var footer = type === "public" ? "-----END PUBLIC KEY-----" : "-----END RSA PRIVATE KEY-----";
+      var result = header;
+
+      for (var i = 0; i < keyData.length; ++i) {
+        result += i % 64 === 0 ? "\r\n" + keyData[i] : keyData[i];
+      }
+
+      result += "\r\n" + footer;
+      return result;
+    }
+  }, {
+    key: "arrayBufferToString",
+    value: function arrayBufferToString(buf) {
+      return String.fromCharCode.apply(null, new Uint16Array(buf));
+    }
+  }, {
+    key: "stringToArrayBuffer",
+    value: function stringToArrayBuffer(str) {
+      var buf = new ArrayBuffer(str.length * 2); // 2 bytes for each char
+
+      var bufView = new Uint16Array(buf);
+
+      for (var i = 0, strLen = str.length; i < strLen; i++) {
+        bufView[i] = str.charCodeAt(i);
+      }
+
+      return buf;
+    }
+    /**
+     * TODO make it universal and for arbitrary number of arrays     *
+     * @param arr1
+     * @param arr2
+     * @returns {Uint8Array}
+     */
+
+  }, {
+    key: "concatUint8Arrays",
+    value: function concatUint8Arrays(arr1, arr2) {
+      var res = new Uint8Array(arr1.byteLength + arr2.byteLength);
+      res.set(arr1, 0);
+      res.set(arr2, arr1.byteLength);
+      return res;
+    }
+    /**
+     * Concatinates 2 array buffers in order buffer1 + buffer2
+     * @param {ArrayBuffer} buffer1
+     * @param {ArrayBuffer} buffer2
+     * @returns {ArrayBufferLike}
+     */
+
+  }, {
+    key: "concatArrayBuffers",
+    value: function concatArrayBuffers(buffer1, buffer2) {
+      var tmp = new Uint8Array(buffer1.byteLength + buffer2.byteLength);
+      tmp.set(new Uint8Array(buffer1), 0);
+      tmp.set(new Uint8Array(buffer2), buffer1.byteLength);
+      return tmp.buffer;
+    }
+  }, {
+    key: "getBytes",
+    value: function getBytes(length) {
+      return iCrypto_forge.random.getBytesSync(length);
+    }
+  }, {
+    key: "hexEncode",
+    value: function hexEncode(blob) {
+      return iCrypto_forge.util.bytesToHex(blob);
+    }
+  }, {
+    key: "hexDecode",
+    value: function hexDecode(blob) {
+      return iCrypto_forge.util.hexToBytes(blob);
+    }
+  }, {
+    key: "base64Encode",
+    value: function base64Encode(blob) {
+      return iCrypto_forge.util.encode64(blob);
+    }
+  }, {
+    key: "base64Decode",
+    value: function base64Decode(blob) {
+      return iCrypto_forge.util.decode64(blob);
+    }
+    /**
+     * Returns random integer
+     * @param a
+     * @param b
+     */
+
+  }, {
+    key: "randInt",
+    value: function randInt(min, max) {
+      if (max === undefined) {
+        max = min;
+        min = 0;
+      }
+
+      if (typeof min !== 'number' || typeof max !== 'number') {
+        throw new TypeError('Expected all arguments to be numbers');
+      }
+
+      return Math.floor(Math.random() * (max - min + 1) + min);
+    }
+  }, {
+    key: "createRandomHexString",
+    value: function createRandomHexString(length) {
+      var bytes = iCrypto.getBytes(length);
+      var hex = iCrypto.hexEncode(bytes);
+      var offset = iCrypto.randInt(0, hex.length - length);
+      return hex.substring(offset, offset + length);
+    }
+  }, {
+    key: "pRequired",
+    value: function pRequired() {
+      var functionName = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "iCrypto function";
+      throw functionName + ": missing required parameter!";
+    }
+  }]);
+
+  return iCrypto;
+}();
 // CONCATENATED MODULE: ./client/src/js/chat/AttachmentInfo.js
 
 
@@ -6668,6 +6686,7 @@ var createClass_default = /*#__PURE__*/__webpack_require__.n(createClass);
  * Implements files attachments functionality
  * Constructor accepts a file element
  */
+
 var AttachmentInfo_AttachmentInfo =
 /*#__PURE__*/
 function () {
@@ -6724,7 +6743,7 @@ function () {
       }
 
       var rawLink = onion + "/" + pkfp + "/" + hash;
-      var ic = new iCrypto();
+      var ic = new iCrypto_iCrypto();
       ic.addBlob("l", rawLink).base64Encode("l", "l64");
       return ic.get("l64");
     }
@@ -6736,7 +6755,7 @@ function () {
       }
 
       var self = this;
-      var ic = new iCrypto();
+      var ic = new iCrypto_iCrypto();
       ic.addBlob("hu", self.hashUnencrypted).addBlob("he", self.hashEncrypted).asym.setKey("pk", privKey, "private").asym.sign("hu", "pk", "sign_u").asym.sign("he", "pk", "sign_e");
       self.signUnencrypted = ic.get("sign_u");
       self.signEncrypted = ic.get("sign_e");
@@ -6757,7 +6776,7 @@ function () {
   }, {
     key: "parseLink",
     value: function parseLink(link) {
-      var ic = new iCrypto();
+      var ic = new iCrypto_iCrypto();
       ic.addBlob("l", link).base64Decode("l", "lres");
       var elements = ic.get("lres").split("/");
       return {
@@ -6772,6 +6791,7 @@ function () {
 }();
 AttachmentInfo_AttachmentInfo.properties = ["name", "size", "type", "lastModified", "hashUnencrypted", "signUnencrypted", "hashEncrytped", "signEncrypted", "link", "metaID", "messageID", "hashAlgorithm"];
 // CONCATENATED MODULE: ./client/src/js/chat/ChatMessage.js
+
 
 
 
@@ -6816,7 +6836,7 @@ function () {
     key: "encryptMessage",
     value: function encryptMessage(key) {
       var self = this;
-      var ic = new iCrypto();
+      var ic = new iCrypto_iCrypto();
       ic.setSYMKey("k", key).addBlob("body", self.body).AESEncrypt("body", "k", "bodycip", true, "CBC", 'utf8');
 
       if (self.attachments) {
@@ -6835,7 +6855,7 @@ function () {
     key: "encryptPrivateMessage",
     value: function encryptPrivateMessage(keys) {
       var self = this;
-      var ic = new iCrypto();
+      var ic = new iCrypto_iCrypto();
       ic.sym.createKey("sym").addBlob("body", self.body).AESEncrypt("body", "sym", "bodycip", true, "CBC", 'utf8');
 
       if (self.header.nickname) {
@@ -6853,7 +6873,7 @@ function () {
       try {
         for (var _iterator = keys[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
           var key = _step.value;
-          var icn = new iCrypto();
+          var icn = new iCrypto_iCrypto();
           icn.asym.setKey("pubk", key, "public").addBlob("sym", ic.get("sym")).asym.encrypt("sym", "pubk", "symcip", "hex").getPublicKeyFingerprint("pubk", "pkfp");
           self.header.keys[icn.get("pkfp")] = icn.get("symcip");
         }
@@ -6876,7 +6896,7 @@ function () {
     key: "decryptPrivateMessage",
     value: function decryptPrivateMessage(privateKey) {
       try {
-        var ic = new iCrypto();
+        var ic = new iCrypto_iCrypto();
         ic.asym.setKey("priv", privateKey, "private").publicFromPrivate("priv", "pub").getPublicKeyFingerprint("pub", "pkfp").addBlob("symcip", this.header.keys[ic.get("pkfp")]).asym.decrypt("symcip", "priv", "sym", "hex").addBlob("bodycip", this.body).sym.decrypt("bodycip", "sym", "body", true);
         this.body = ic.get("body");
 
@@ -6897,7 +6917,7 @@ function () {
     key: "decryptMessage",
     value: function decryptMessage(key) {
       try {
-        var ic = new iCrypto();
+        var ic = new iCrypto_iCrypto();
         ic.sym.setKey("k", key).addBlob("bodycip", this.body).sym.decrypt("bodycip", "k", "body", true);
         this.body = ic.get("body");
 
@@ -6934,7 +6954,7 @@ function () {
   }, {
     key: "sign",
     value: function sign(privateKey) {
-      var ic = new iCrypto();
+      var ic = new iCrypto_iCrypto();
       var requestString = JSON.stringify(this.header) + JSON.stringify(this.body);
 
       if (this.attachments) {
@@ -6947,7 +6967,7 @@ function () {
   }, {
     key: "verify",
     value: function verify(publicKey) {
-      var ic = new iCrypto();
+      var ic = new iCrypto_iCrypto();
       var requestString = JSON.stringify(this.header) + JSON.stringify(this.body);
 
       if (this.attachments) {
@@ -6960,7 +6980,7 @@ function () {
   }, {
     key: "getNonce",
     value: function getNonce(size) {
-      var ic = new iCrypto();
+      var ic = new iCrypto_iCrypto();
       ic.createNonce("n", size ? parseInt(size) : 8).bytesToHex("n", "nh");
       return ic.get("nh");
     }
@@ -6979,6 +6999,7 @@ function () {
   return ChatMessage;
 }();
 // CONCATENATED MODULE: ./client/src/js/chat/ChatUtility.js
+
 
 
 var ChatUtility_ChatUtility =
@@ -7007,7 +7028,7 @@ function () {
       var symKeyLength = parseInt(blob.substr(blob.length - lengthSymLengthEncoded));
       var symKeyCipher = blob.substring(blob.length - lengthSymLengthEncoded - symKeyLength, blob.length - lengthSymLengthEncoded);
       var payloadCipher = blob.substring(0, blob.length - lengthSymLengthEncoded - symKeyLength);
-      var ic = new iCrypto();
+      var ic = new iCrypto_iCrypto();
       ic.addBlob("blobcip", payloadCipher).addBlob("symkcip", symKeyCipher).asym.setKey("privk", privateKey, "private").privateKeyDecrypt("symkcip", "privk", "symk", "hex").AESDecrypt("blobcip", "symk", "blob-raw", true, "CBC", "utf8");
       return ic.get("blob-raw");
     }
@@ -7017,7 +7038,7 @@ function () {
       var blob = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : Err.required();
       var publicKey = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : Err.required();
       var lengthSymLengthEncoded = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 4;
-      var ic = new iCrypto();
+      var ic = new iCrypto_iCrypto();
       ic.sym.createKey("symk").addBlob("payload", blob).asym.setKey("pubk", publicKey, "public").sym.encrypt("payload", "symk", "blobcip", true, "CBC", "utf8").asym.encrypt("symk", "pubk", "symcip", "hex").encodeBlobLength("symcip", lengthSymLengthEncoded, "0", "symciplength").merge(["blobcip", "symcip", "symciplength"], "res");
       return ic.get("res");
     }
@@ -7026,7 +7047,7 @@ function () {
     value: function publicKeyEncrypt() {
       var blob = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : Err.required();
       var publicKey = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : Err.required();
-      var ic = new iCrypto();
+      var ic = new iCrypto_iCrypto();
       ic.addBlob("blob", blob).asym.setKey("pubk", publicKey, "public").publicKeyEncrypt("blob", "pubk", "blobcip", "hex");
       return ic.get("blobcip");
     }
@@ -7034,7 +7055,7 @@ function () {
     key: "privateKeyDecrypt",
     value: function privateKeyDecrypt(blob, privateKey) {
       var encoding = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "hex";
-      var ic = new iCrypto();
+      var ic = new iCrypto_iCrypto();
       ic.addBlob("blobcip", blob).asym.setKey("priv", privateKey, "private").privateKeyDecrypt("blobcip", "priv", "blob", encoding);
       return ic.get("blob");
     }
@@ -7042,7 +7063,7 @@ function () {
     key: "symKeyEncrypt",
     value: function symKeyEncrypt(blob, key) {
       var hexify = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-      var ic = new iCrypto();
+      var ic = new iCrypto_iCrypto();
       ic.addBlob("b", blob).sym.setKey("sym", key).AESEncrypt("b", "sym", "cip", hexify, "CBC", "utf8");
       return ic.get("cip");
     }
@@ -7050,7 +7071,7 @@ function () {
     key: "symKeyDecrypt",
     value: function symKeyDecrypt(cip, key) {
       var dehexify = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-      var ic = new iCrypto();
+      var ic = new iCrypto_iCrypto();
       ic.addBlob("cip", cip).sym.setKey("sym", key).AESDecrypt("cip", "sym", "b", dehexify, "CBC", "utf8");
       return ic.get("b");
     }
@@ -7059,6 +7080,7 @@ function () {
   return ChatUtility;
 }();
 // CONCATENATED MODULE: ./client/src/js/chat/Invite.js
+
 
 
 var Invite_Invite =
@@ -7104,7 +7126,7 @@ function () {
     key: "decryptInvite",
     value: function decryptInvite(cipher, privateKey) {
       var symLengthEncoding = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 4;
-      var ic = new iCrypto();
+      var ic = new iCrypto_iCrypto();
       var symlength = parseInt(cipher.substr(cipher.length - symLengthEncoding));
       var symkcip = cipher.substring(cipher.length - symlength - symLengthEncoding, cipher.length - symLengthEncoding);
       var payloadcip = cipher.substring(0, cipher.length - symlength - symLengthEncoding);
@@ -7125,14 +7147,14 @@ function () {
 
     classCallCheck_default()(this, Invite);
 
-    var ic = new iCrypto();
+    var ic = new iCrypto_iCrypto();
     ic.createNonce("n").bytesToHex("n", "id");
     this.set('onionAddress', onionAddress);
     this.set('pkfp', pubKeyFingerprint);
     this.set('inviteID', ic.get('id'));
 
     if (hsPrivateKey) {
-      var _ic = new iCrypto();
+      var _ic = new iCrypto_iCrypto();
 
       _ic.setRSAKey("k", hsPrivateKey, "private");
 
@@ -7146,7 +7168,7 @@ function () {
       var result = this.get("onionAddress") + "/" + this.get("pkfp") + "/" + this.get("inviteID");
 
       if (encoding) {
-        var ic = new iCrypto();
+        var ic = new iCrypto_iCrypto();
 
         if (!ic.encoders.hasOwnProperty(encoding)) {
           throw "WRONG ENCODING";
@@ -7165,7 +7187,7 @@ function () {
         throw "Error at stringifyAndEncrypt: the object is invalid or public key is not provided";
       }
 
-      var ic = new iCrypto();
+      var ic = new iCrypto_iCrypto();
       var invite = {
         inviteCode: this.toBlob("base64"),
         hsPrivateKey: this.hsPrivateKey
@@ -7208,7 +7230,7 @@ function () {
   }], [{
     key: "constructFromExisting",
     value: function constructFromExisting(invite) {
-      var ic = new iCrypto();
+      var ic = new iCrypto_iCrypto();
       ic.addBlob("i", invite.inviteCode).base64Decode("i", "ir");
       var onion = ic.get("ir").split("/")[0];
       var newInvite = new Invite(onion, chat.session.publicKeyFingerprint, invite.hsPrivateKey);
@@ -7238,6 +7260,7 @@ Invite_Invite.properties = ["onionAddress", "hsPrivateKey", "pkfp", "inviteID"];
  *
  *
  */
+
 var Message_Message =
 /*#__PURE__*/
 function () {
@@ -7281,7 +7304,7 @@ function () {
   }, {
     key: "signMessage",
     value: function signMessage(privateKey) {
-      var ic = new iCrypto();
+      var ic = new iCrypto_iCrypto();
       var requestString = JSON.stringify(this.headers) + JSON.stringify(this.body);
       ic.addBlob("body", requestString).setRSAKey("priv", privateKey, "private").privateKeySign("body", "priv", "sign");
       this.signature = ic.get("sign");
@@ -7304,7 +7327,7 @@ function () {
   }, {
     key: "addNonce",
     value: function addNonce() {
-      var ic = new iCrypto();
+      var ic = new iCrypto_iCrypto();
       ic.createNonce("n").bytesToHex("n", "nhex");
       this.headers.nonce = ic.get("nhex");
     }
@@ -7326,7 +7349,7 @@ function () {
   }], [{
     key: "verifyMessage",
     value: function verifyMessage(publicKey, message) {
-      var ic = new iCrypto();
+      var ic = new iCrypto_iCrypto();
       var requestString = JSON.stringify(message.headers) + JSON.stringify(message.body);
       ic.setRSAKey("pubk", publicKey, "public").addBlob("sign", message.signature).hexToBytes('sign', "signraw").addBlob("b", requestString);
       ic.publicKeyVerify("b", "sign", "pubk", "v");
@@ -7338,6 +7361,7 @@ function () {
 }();
 Message_Message.properties = ["headers", "body", "signature"];
 // CONCATENATED MODULE: ./client/src/js/chat/Metadata.js
+
 
 
 var Metadata_Metadata =
@@ -7360,7 +7384,7 @@ function () {
     key: "extractSharedKey",
     value: function extractSharedKey(pkfp, privateKey, metadata) {
       var keyCipher = metadata.body.participants[pkfp].key;
-      var ic = new iCrypto();
+      var ic = new iCrypto_iCrypto();
       ic.addBlob("symcip", keyCipher).asym.setKey("priv", privateKey, "private").asym.decrypt("symcip", "priv", "sym", "hex");
       return ic.get("sym");
     }
@@ -7486,15 +7510,149 @@ var ClientSettings_ClientSettings = function ClientSettings() {
   this.nicknames = {};
   this.invites = {};
 };
-// EXTERNAL MODULE: ./client/src/js/lib/iCrypto.js
-var lib_iCrypto = __webpack_require__(10);
-
 // EXTERNAL MODULE: ./node_modules/socket.io-client/lib/index.js
-var lib = __webpack_require__(76);
+var lib = __webpack_require__(74);
 
-// EXTERNAL MODULE: ./client/src/js/chat/WildEmitter.js
-var WildEmitter = __webpack_require__(74);
+// CONCATENATED MODULE: ./client/src/js/chat/WildEmitter.js
+function WildEmitter() {}
 
+WildEmitter.mixin = function (constructor) {
+  var prototype = constructor.prototype || constructor;
+  prototype.isWildEmitter = true; // Listen on the given `event` with `fn`. Store a group name if present.
+
+  prototype.on = function (event, groupName, fn) {
+    this.callbacks = this.callbacks || {};
+    var hasGroup = arguments.length === 3,
+        group = hasGroup ? arguments[1] : undefined,
+        func = hasGroup ? arguments[2] : arguments[1];
+    func._groupName = group;
+    (this.callbacks[event] = this.callbacks[event] || []).push(func);
+    return this;
+  }; // Adds an `event` listener that will be invoked a single
+  // time then automatically removed.
+
+
+  prototype.once = function (event, groupName, fn) {
+    var self = this,
+        hasGroup = arguments.length === 3,
+        group = hasGroup ? arguments[1] : undefined,
+        func = hasGroup ? arguments[2] : arguments[1];
+
+    function on() {
+      self.off(event, on);
+      func.apply(this, arguments);
+    }
+
+    this.on(event, group, on);
+    return this;
+  }; // Unbinds an entire group
+
+
+  prototype.releaseGroup = function (groupName) {
+    this.callbacks = this.callbacks || {};
+    var item, i, len, handlers;
+
+    for (item in this.callbacks) {
+      handlers = this.callbacks[item];
+
+      for (i = 0, len = handlers.length; i < len; i++) {
+        if (handlers[i]._groupName === groupName) {
+          //console.log('removing');
+          // remove it and shorten the array we're looping through
+          handlers.splice(i, 1);
+          i--;
+          len--;
+        }
+      }
+    }
+
+    return this;
+  }; // Remove the given callback for `event` or all
+  // registered callbacks.
+
+
+  prototype.off = function (event, fn) {
+    this.callbacks = this.callbacks || {};
+    var callbacks = this.callbacks[event],
+        i;
+    if (!callbacks) return this; // remove all handlers
+
+    if (arguments.length === 1) {
+      delete this.callbacks[event];
+      return this;
+    } // remove specific handler
+
+
+    i = callbacks.indexOf(fn);
+    callbacks.splice(i, 1);
+
+    if (callbacks.length === 0) {
+      delete this.callbacks[event];
+    }
+
+    return this;
+  }; /// Emit `event` with the given args.
+  // also calls any `*` handlers
+
+
+  prototype.emit = function (event) {
+    this.callbacks = this.callbacks || {};
+    var args = [].slice.call(arguments, 1),
+        callbacks = this.callbacks[event],
+        specialCallbacks = this.getWildcardCallbacks(event),
+        i,
+        len,
+        item,
+        listeners;
+
+    if (callbacks) {
+      listeners = callbacks.slice();
+
+      for (i = 0, len = listeners.length; i < len; ++i) {
+        if (!listeners[i]) {
+          break;
+        }
+
+        listeners[i].apply(this, args);
+      }
+    }
+
+    if (specialCallbacks) {
+      len = specialCallbacks.length;
+      listeners = specialCallbacks.slice();
+
+      for (i = 0, len = listeners.length; i < len; ++i) {
+        if (!listeners[i]) {
+          break;
+        }
+
+        listeners[i].apply(this, [event].concat(args));
+      }
+    }
+
+    return this;
+  }; // Helper for for finding special wildcard event handlers that match the event
+
+
+  prototype.getWildcardCallbacks = function (eventName) {
+    this.callbacks = this.callbacks || {};
+    var item,
+        split,
+        result = [];
+
+    for (item in this.callbacks) {
+      split = item.split('*');
+
+      if (item === '*' || split.length === 2 && eventName.slice(0, split[0].length) === split[0]) {
+        result = result.concat(this.callbacks[item]);
+      }
+    }
+
+    return result;
+  };
+};
+
+WildEmitter.mixin(WildEmitter);
 // CONCATENATED MODULE: ./client/src/js/chat/ChatClient.js
 
 
@@ -7530,7 +7688,7 @@ function () {
     this.outgoingMessageQueue = {};
     this.attachmentsUploadQueue = {};
     this.setClientHandlers();
-    WildEmitter["a" /* WildEmitter */].mixin(this);
+    WildEmitter.mixin(this);
   }
   /*************************************************************
    * =====  Request Response and Notidication processing ======*
@@ -7666,7 +7824,7 @@ function () {
 
                 case 6:
                   //CREATE NEW TOPIC PENDING
-                  ic = new lib_iCrypto["a" /* iCrypto */](); //Generate keypairs one for user, other for topic
+                  ic = new iCrypto_iCrypto(); //Generate keypairs one for user, other for topic
 
                   _context.next = 9;
                   return ic.asym.asyncCreateKeyPair('owner-keys');
@@ -7768,7 +7926,7 @@ function () {
       };
 
       if (nickname) {
-        var ic = new lib_iCrypto["a" /* iCrypto */]();
+        var ic = new iCrypto_iCrypto();
         ic.asym.setKey("pubk", publicKey, "public").getPublicKeyFingerprint("pubk", "pkfp");
         settings.nickname = nickname;
         settings.membersData[ic.get("pkfp")] = {
@@ -7828,7 +7986,7 @@ function () {
                 return this.establishIslandConnection();
 
               case 8:
-                ic = new lib_iCrypto["a" /* iCrypto */]();
+                ic = new iCrypto_iCrypto();
                 ic.setRSAKey('pk', privateKey, "private").publicFromPrivate('pk', 'pub').getPublicKeyFingerprint('pub', 'pkfp').createNonce('nonce').bytesToHex('nonce', "noncehex");
                 this.session = {
                   sessionID: ic.get("noncehex"),
@@ -7910,7 +8068,7 @@ function () {
     value: function loginDecryptData(request, self) {
       var decryptBlob = function decryptBlob(privateKey, blob) {
         var lengthChars = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 4;
-        var icn = new lib_iCrypto["a" /* iCrypto */]();
+        var icn = new iCrypto_iCrypto();
         var symLength = parseInt(blob.substr(-lengthChars));
         var blobLength = blob.length;
         var symk = blob.substring(blobLength - symLength - lengthChars, blobLength - lengthChars);
@@ -7921,7 +8079,7 @@ function () {
 
       var encryptBlob = function encryptBlob(publicKey, blob) {
         var lengthChars = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 4;
-        var icn = new lib_iCrypto["a" /* iCrypto */]();
+        var icn = new iCrypto_iCrypto();
         icn.createSYMKey("sym").asym.setKey("pub", publicKey, "public").addBlob("blob-raw", blob).sym.encrypt("blob-raw", "sym", "blob-cip", true).asym.encrypt("sym", "pub", "symcip", "hex").encodeBlobLength("symcip", 4, "0", "symcipl").merge(["blob-cip", "symcip", "symcipl"], "res");
         return icn.get("res");
       };
@@ -7934,7 +8092,7 @@ function () {
       var clientHSPrivateKey, taPrivateKey, taHSPrivateKey;
       var token = request.body.token;
       var loginData = request.body.dataForDecryption;
-      var ic = new lib_iCrypto["a" /* iCrypto */]();
+      var ic = new iCrypto_iCrypto();
       ic.asym.setKey("priv", self.session.privateKey, "private"); //Decrypting client Hidden service key
 
       if (loginData.clientHSPrivateKey) {
@@ -8262,7 +8420,7 @@ function () {
       var metaIDs = Object.keys(keys);
 
       for (var i = 0; i < metaIDs.length; ++i) {
-        var ic = new lib_iCrypto["a" /* iCrypto */]();
+        var ic = new iCrypto_iCrypto();
         ic.addBlob('k', keys[metaIDs[i]]).hexToBytes("k", "kraw").setRSAKey("priv", this.session.privateKey, "private").privateKeyDecrypt("kraw", "priv", "kdec");
         keys[metaIDs[i]] = ic.get("kdec");
       }
@@ -8369,7 +8527,7 @@ function () {
                 return this.establishIslandConnection();
 
               case 5:
-                ic = new lib_iCrypto["a" /* iCrypto */]();
+                ic = new iCrypto_iCrypto();
                 ic.asym.createKeyPair("rsa").getPublicKeyFingerprint('rsa', 'pkfp').addBlob("invite64", inviteCode.trim()).base64Decode("invite64", "invite");
                 invite = ic.get("invite").split("/");
                 inviterResidence = invite[0];
@@ -8437,7 +8595,7 @@ function () {
     value: function initSettingsOnTopicJoin(topicInfo, request) {
       var privateKey = topicInfo.privateKey;
       var publicKey = topicInfo.publicKey;
-      var ic = new lib_iCrypto["a" /* iCrypto */]();
+      var ic = new iCrypto_iCrypto();
       ic.asym.setKey("pub", publicKey, "public").getPublicKeyFingerprint("pub", "pkfp");
       var pkfp = ic.get("pkfp");
       var topicName = ChatUtility_ChatUtility.decryptStandardMessage(request.body.topicName, privateKey);
@@ -8475,7 +8633,7 @@ function () {
         privateKey = this.session.privateKey;
       }
 
-      var ic = new lib_iCrypto["a" /* iCrypto */]();
+      var ic = new iCrypto_iCrypto();
       ic.asym.setKey("privk", privateKey, "private").publicFromPrivate("privk", "pub").getPublicKeyFingerprint("pub", "pkfp");
       var publicKey = ic.get("pub");
       var pkfp = ic.get("pkfp");
@@ -8564,7 +8722,7 @@ function () {
   }, {
     key: "addNewParticipant",
     value: function addNewParticipant(nickname, publicKey, residence, rights) {
-      var ic = new lib_iCrypto["a" /* iCrypto */]();
+      var ic = new iCrypto_iCrypto();
       ic.setRSAKey("pk", publicKey, "public").getPublicKeyFingerprint("pk", "fp");
       var participant = new Participant_Participant();
       participant.set('nickname', nickname);
@@ -9197,7 +9355,7 @@ function () {
   }, {
     key: "requestInvite",
     value: function requestInvite() {
-      var ic = new lib_iCrypto["a" /* iCrypto */]();
+      var ic = new iCrypto_iCrypto();
       ic.createNonce("n").bytesToHex("n", "nhex");
       var request = new Message_Message();
       var myNickNameEncrypted = ChatUtility_ChatUtility.encryptStandardMessage(this.session.settings.nickname, this.session.metadata.topicAuthority.publicKey);
@@ -9213,7 +9371,7 @@ function () {
   }, {
     key: "syncInvites",
     value: function syncInvites() {
-      var ic = new lib_iCrypto["a" /* iCrypto */]();
+      var ic = new iCrypto_iCrypto();
       ic.createNonce("n").bytesToHex("n", "nhex");
       var request = new Message_Message();
       request.headers.command = "sync_invites";
@@ -9241,7 +9399,7 @@ function () {
         return;
       }
 
-      var ic = new lib_iCrypto["a" /* iCrypto */]();
+      var ic = new iCrypto_iCrypto();
       ic.createNonce("iid").bytesToHex('iid', "iidhex");
       var body = {
         requestID: ic.get("iidhex"),
@@ -9720,14 +9878,14 @@ function () {
   }, {
     key: "signBlob",
     value: function signBlob(privateKey, blob) {
-      var ic = new lib_iCrypto["a" /* iCrypto */]();
+      var ic = new iCrypto_iCrypto();
       ic.setRSAKey("pk", privateKey, "private").addBlob("b", blob).privateKeySign("b", "pk", "sign");
       return ic.get("sign");
     }
   }, {
     key: "verifyBlob",
     value: function verifyBlob(publicKey, sign, blob) {
-      var ic = new lib_iCrypto["a" /* iCrypto */]();
+      var ic = new iCrypto_iCrypto();
       ic.setRSAKey("pubk", publicKey, "public").addBlob("sign", sign).addBlob("b", blob).publicKeyVerify("b", "sign", "pubk", "v");
       return ic.get("v");
     }
@@ -9765,7 +9923,7 @@ function () {
   }, {
     key: "onionAddressFromPrivateKey",
     value: function onionAddressFromPrivateKey(privateKey) {
-      var ic = new lib_iCrypto["a" /* iCrypto */]();
+      var ic = new iCrypto_iCrypto();
       ic.setRSAKey("privk", privateKey, "private").publicFromPrivate("privk", "pubk");
       var pkraw = forge.pki.publicKeyFromPem(ic.get("pubk"));
       var pkfp = forge.pki.getPublicKeyFingerprint(pkraw, {
@@ -9789,7 +9947,7 @@ function () {
     key: "extractFromInvite",
     value: function extractFromInvite(inviteString64) {
       var thingToExtract = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "all";
-      var ic = new lib_iCrypto["a" /* iCrypto */]();
+      var ic = new iCrypto_iCrypto();
       ic.addBlob("is64", inviteString64).base64Decode("is64", "is");
       var inviteParts = ic.get("is").split("/");
       var things = {
@@ -9829,154 +9987,7 @@ function () {
 
 /***/ }),
 
-/***/ 74:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return WildEmitter; });
-function WildEmitter() {}
-
-WildEmitter.mixin = function (constructor) {
-  var prototype = constructor.prototype || constructor;
-  prototype.isWildEmitter = true; // Listen on the given `event` with `fn`. Store a group name if present.
-
-  prototype.on = function (event, groupName, fn) {
-    this.callbacks = this.callbacks || {};
-    var hasGroup = arguments.length === 3,
-        group = hasGroup ? arguments[1] : undefined,
-        func = hasGroup ? arguments[2] : arguments[1];
-    func._groupName = group;
-    (this.callbacks[event] = this.callbacks[event] || []).push(func);
-    return this;
-  }; // Adds an `event` listener that will be invoked a single
-  // time then automatically removed.
-
-
-  prototype.once = function (event, groupName, fn) {
-    var self = this,
-        hasGroup = arguments.length === 3,
-        group = hasGroup ? arguments[1] : undefined,
-        func = hasGroup ? arguments[2] : arguments[1];
-
-    function on() {
-      self.off(event, on);
-      func.apply(this, arguments);
-    }
-
-    this.on(event, group, on);
-    return this;
-  }; // Unbinds an entire group
-
-
-  prototype.releaseGroup = function (groupName) {
-    this.callbacks = this.callbacks || {};
-    var item, i, len, handlers;
-
-    for (item in this.callbacks) {
-      handlers = this.callbacks[item];
-
-      for (i = 0, len = handlers.length; i < len; i++) {
-        if (handlers[i]._groupName === groupName) {
-          //console.log('removing');
-          // remove it and shorten the array we're looping through
-          handlers.splice(i, 1);
-          i--;
-          len--;
-        }
-      }
-    }
-
-    return this;
-  }; // Remove the given callback for `event` or all
-  // registered callbacks.
-
-
-  prototype.off = function (event, fn) {
-    this.callbacks = this.callbacks || {};
-    var callbacks = this.callbacks[event],
-        i;
-    if (!callbacks) return this; // remove all handlers
-
-    if (arguments.length === 1) {
-      delete this.callbacks[event];
-      return this;
-    } // remove specific handler
-
-
-    i = callbacks.indexOf(fn);
-    callbacks.splice(i, 1);
-
-    if (callbacks.length === 0) {
-      delete this.callbacks[event];
-    }
-
-    return this;
-  }; /// Emit `event` with the given args.
-  // also calls any `*` handlers
-
-
-  prototype.emit = function (event) {
-    this.callbacks = this.callbacks || {};
-    var args = [].slice.call(arguments, 1),
-        callbacks = this.callbacks[event],
-        specialCallbacks = this.getWildcardCallbacks(event),
-        i,
-        len,
-        item,
-        listeners;
-
-    if (callbacks) {
-      listeners = callbacks.slice();
-
-      for (i = 0, len = listeners.length; i < len; ++i) {
-        if (!listeners[i]) {
-          break;
-        }
-
-        listeners[i].apply(this, args);
-      }
-    }
-
-    if (specialCallbacks) {
-      len = specialCallbacks.length;
-      listeners = specialCallbacks.slice();
-
-      for (i = 0, len = listeners.length; i < len; ++i) {
-        if (!listeners[i]) {
-          break;
-        }
-
-        listeners[i].apply(this, [event].concat(args));
-      }
-    }
-
-    return this;
-  }; // Helper for for finding special wildcard event handlers that match the event
-
-
-  prototype.getWildcardCallbacks = function (eventName) {
-    this.callbacks = this.callbacks || {};
-    var item,
-        split,
-        result = [];
-
-    for (item in this.callbacks) {
-      split = item.split('*');
-
-      if (item === '*' || split.length === 2 && eventName.slice(0, split[0].length) === split[0]) {
-        result = result.concat(this.callbacks[item]);
-      }
-    }
-
-    return result;
-  };
-};
-
-WildEmitter.mixin(WildEmitter);
-
-/***/ }),
-
-/***/ 82:
+/***/ 80:
 /***/ (function(module, exports) {
 
 /* (ignored) */

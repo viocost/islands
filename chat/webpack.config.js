@@ -1,6 +1,8 @@
 const path = require('path');
 const webpack = require('webpack');
 var Visualizer = require('webpack-visualizer-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 
 //...
 
@@ -14,7 +16,10 @@ module.exports = {
 
 
     optimization: {
-        minimize: false,
+        minimize: true,
+        minimizer: [
+            new OptimizeCSSAssetsPlugin({})
+        ],
 
         splitChunks: {
             cacheGroups: {
@@ -28,6 +33,16 @@ module.exports = {
         },
     },
 
+    plugins: [
+        new MiniCssExtractPlugin({
+            // Options similar to the same options in webpackOptions.output
+            // both options are optional
+            filename: "../css/[name].min.css",
+            chunkFilename: "[id].min.css",
+            sourceMap: true
+        })
+    ],
+
     module: {
         rules:[
             {
@@ -38,7 +53,40 @@ module.exports = {
                         loader: 'babel-loader',
                     }
                 ]
-            }
+            },
+
+            {
+                test: /\.(sa|sc|c)ss$/,
+                use: [
+                    'style-loader',
+                    {
+                        loader:  MiniCssExtractPlugin.loader,
+                        options: {
+                            sourceMap: true
+                        }
+
+                    },
+
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            sourceMap: true
+                        }
+
+                    },
+
+                    {
+                        loader: 'sass-loader',
+                        options: {
+                            sourceMap: true
+                        }
+
+                    }
+                ],
+            },
+
+
+
         ]
     },
 

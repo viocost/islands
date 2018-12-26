@@ -1,5 +1,6 @@
 
 import { AttachmentInfo } from "./AttachmentInfo";
+import { iCrypto } from "../lib/iCrypto";
 
 /**
  * Represents chat message
