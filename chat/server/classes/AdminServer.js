@@ -418,7 +418,7 @@ module.exports.initAdminEnv = function(app, config, host, port){
     app.post("/admin", handleAdminRequest);
     appPort = port;
     appHost = host;
-    islandHiddenServiceManager = new HiddenServiceManager(islandConfig)
+    //islandHiddenServiceManager = new HiddenServiceManager(islandConfig)
 
 
 };
