@@ -1,4 +1,4 @@
-TorController = require("TorController");
+TorController = require("./TorController");
 
 class HiddenServiceManager{
     constructor(islandConfig, appHost, appPort){
