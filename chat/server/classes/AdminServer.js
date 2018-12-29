@@ -1,11 +1,10 @@
-//const VERSION = "0.0.01";
 const iCrypto = require('./libs/iCrypto');
 const fs = require('fs');
 const Logger = require("./libs/Logger.js");
+const HiddenServiceManager = require("./libs/HiddenServiceManager");
 
-//const SocketIO = require('socket.io');
-//const path = require('path');
-//const spawn = require('child_process').spawn;
+
+
 const shell = require('shelljs');
 const TorController = require('./libs/TorController.js');
 let keysFolderPath;
@@ -14,6 +13,7 @@ let islandHiddenServices = new Set();
 let islandConfig;
 let appPort;
 let appHost;
+let islandHiddenServiceManager;
 
 
 const handlers = {
@@ -100,7 +100,7 @@ function handleAdminRequest(req, res){
  * Launches Island hidden service, if it is not up already
  *
  * req.body must have following properties:
- *  pkfp - Publec Key Fingerprint of Island's Administrator
+ *  pkfp - Public Key Fingerprint of Island's Administrator
  *  nonce
  *  sign - signature of nonce done by Islands Administrator
  *  OPTIONAL:
@@ -418,6 +418,9 @@ module.exports.initAdminEnv = function(app, config, host, port){
     app.post("/admin", handleAdminRequest);
     appPort = port;
     appHost = host;
+    islandHiddenServiceManager = new HiddenServiceManager(islandConfig)
+
+
 };
 
 

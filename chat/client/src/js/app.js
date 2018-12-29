@@ -1,4 +1,4 @@
-
+import '@babel/polyfill';
 //Viendors
 import { CuteSet } from "cute-set";
 
