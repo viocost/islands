@@ -1,6 +1,5 @@
 const path = require('path');
-const webpack = require('webpack');
-var Visualizer = require('webpack-visualizer-plugin');
+
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 
@@ -8,10 +7,10 @@ const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 
 
 module.exports = {
-    entry: "./client/src/js/app.js",
+    entry: "./client/src/js/admin.js",
     output: {
         path: path.resolve(__dirname, "public/js"),
-        filename: "bundle.js"
+        filename: "admin.min.js"
     },
 
 

@@ -1,5 +1,5 @@
 window.onerror = processDocumentError;
-window
+
 
 document.addEventListener('DOMContentLoaded', function(event) {
     document.querySelector('#view-logs').addEventListener('click', showLogs);

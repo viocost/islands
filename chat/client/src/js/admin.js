@@ -1,3 +1,13 @@
+import '../css/main.sass';
+
+import * as toastr from "toastr";
+window.toastr = toastr;
+
+import { iCrypto } from "./lib/iCrypto";
+import * as forge from "node-forge";
+import * as CuteSet from "cute-set"
+
+
 let adminSession;
 let filterFieldSelector;
 let logTableBody;
@@ -547,6 +557,7 @@ function loadLogs(errorsOnly = false) {
         },
         success: processLogsLoaded,
         err: err => {
+            console.log("Error loading logs: " + err);
             toastr.warning("Error loading logs: " + err);
         }
     });

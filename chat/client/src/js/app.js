@@ -2,11 +2,7 @@
 //Viendors
 import { CuteSet } from "cute-set";
 
-//
-//import { bar } from "loading-bar";
 
-
-//import { WildEmitter } from "./chat/WildEmitter";
 
 import '../css/main.sass';
 
