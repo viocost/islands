@@ -1,5 +1,13 @@
 window.onerror = processDocumentError;
 
+(function(){
+    var oldLog = console.log;
+    console.log = function (message) {
+        // DO MESSAGE HERE.
+        appendClientLog("log: " + message);
+        oldLog.apply(console, arguments);
+    };
+})();
 
 document.addEventListener('DOMContentLoaded', function(event) {
     document.querySelector('#view-logs').addEventListener('click', showLogs);
