@@ -1434,7 +1434,6 @@ class ChatClient {
                 this.chatSocket = io('/chat', {
                     reconnection: false,
                     forceNew: true,
-                    transports: ['websocket', "longpoll"],
                     pingInterval: 10000,
                     pingTimeout: 5000,
                 });
