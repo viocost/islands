@@ -41,7 +41,7 @@ function appendClientLog(errMsg){
 
 
 function processDocumentError(errorMsg, url, lineNumber){
-    console.log("Processing error");
+    console.log("Processing error: " + lineNumber);
     //errorMsg += ("\n" + Error().stack);
     appendClientLog(errorMsg);
     return true;
