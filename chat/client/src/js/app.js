@@ -174,8 +174,8 @@ function createTopic() {
         nickname.value = "";
         topicName.value = "";
     }).catch(err => {
-        console.log("Error creating topic: " + err);
         loadingOff();
+        throw err;
     });
 }
 
