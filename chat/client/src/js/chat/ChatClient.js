@@ -1457,6 +1457,12 @@ class ChatClient {
                     console.log('Connection Failed');
                     reject(err);
                 });
+
+                this.chatSocket.on('connect_timeout', (err)=>{
+                    console.log('Chat connection timeout');
+                    reject(err);
+                });
+
             } else if (option === "file"){
                 console.log("Connecting to file socket");
                 if (this.fileSocket && this.fileSocket.connected){
@@ -1481,6 +1487,12 @@ class ChatClient {
 
                 this.fileSocket.on("connect_error", (err)=>{
                     console.log('Island connection failed: ' + err.message);
+                    reject(err);
+                });
+
+
+                this.fileSocket.on('connect_timeout', (err)=>{
+                    console.log('File connection timeout');
                     reject(err);
                 });
             }
