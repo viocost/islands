@@ -32,9 +32,9 @@ function appendClientLog(errMsg){
 }
 
 
-function processDocumentError(errorMsg, url, lineNumberv){
+function processDocumentError(errorMsg, url, lineNumber){
     console.log("Processing error");
-    errorMsg += ("\n" + Error().stack);
+    //errorMsg += ("\n" + Error().stack);
     appendClientLog(errorMsg);
     return true;
 }
