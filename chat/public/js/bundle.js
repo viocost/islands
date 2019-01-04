@@ -147,40 +147,71 @@
 /******/
 /******/
 /******/ 	// add entry module to deferred list
-/******/ 	deferredModules.push([137,1]);
+/******/ 	deferredModules.push([211,1]);
 /******/ 	// run deferred modules when ready
 /******/ 	return checkDeferredModules();
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 137:
+/***/ 154:
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+
+/***/ 211:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
-/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(9);
-/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var cute_set__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(140);
-/* harmony import */ var cute_set__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(cute_set__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _css_main_sass__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(142);
-/* harmony import */ var _css_main_sass__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_css_main_sass__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var toastr__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(6);
-/* harmony import */ var toastr__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(toastr__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(84);
+/* harmony import */ var core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(139);
+/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(33);
+/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var core_js_modules_es6_regexp_search__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(222);
+/* harmony import */ var core_js_modules_es6_regexp_search__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_search__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(53);
+/* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(70);
+/* harmony import */ var core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(71);
+/* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(34);
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(1);
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(144);
+/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(9);
+/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_10__);
+/* harmony import */ var cute_set__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(229);
+/* harmony import */ var cute_set__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(cute_set__WEBPACK_IMPORTED_MODULE_11__);
+/* harmony import */ var _css_main_sass__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(231);
+/* harmony import */ var _css_main_sass__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(_css_main_sass__WEBPACK_IMPORTED_MODULE_12__);
+/* harmony import */ var toastr__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(6);
+/* harmony import */ var toastr__WEBPACK_IMPORTED_MODULE_13___default = /*#__PURE__*/__webpack_require__.n(toastr__WEBPACK_IMPORTED_MODULE_13__);
+
+
+
+
+
+
+
+
+
 
 
 //Viendors
- //
-//import { bar } from "loading-bar";
-//import { WildEmitter } from "./chat/WildEmitter";
 
 
 
-window.toastr = toastr__WEBPACK_IMPORTED_MODULE_4__;
+window.toastr = toastr__WEBPACK_IMPORTED_MODULE_13__;
 
-var ChatClient = __webpack_require__(270).default; //chat page
+var ChatClient = __webpack_require__(368).default; //chat page
 
 
 var chat;
@@ -250,10 +281,10 @@ document.addEventListener('DOMContentLoaded', function (event) {
   $('#private-key').keyup(
   /*#__PURE__*/
   function () {
-    var _ref = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default()(
+    var _ref = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_10___default()(
     /*#__PURE__*/
-    _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee(e) {
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+    _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_8___default.a.mark(function _callee(e) {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_8___default.a.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
@@ -280,10 +311,10 @@ document.addEventListener('DOMContentLoaded', function (event) {
   $('#join-nickname, #invite-code').keyup(
   /*#__PURE__*/
   function () {
-    var _ref2 = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default()(
+    var _ref2 = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_10___default()(
     /*#__PURE__*/
-    _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2(e) {
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
+    _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_8___default.a.mark(function _callee2(e) {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_8___default.a.wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
@@ -310,10 +341,10 @@ document.addEventListener('DOMContentLoaded', function (event) {
   $('#new-topic-nickname, #new-topic-name').keyup(
   /*#__PURE__*/
   function () {
-    var _ref3 = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default()(
+    var _ref3 = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_10___default()(
     /*#__PURE__*/
-    _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3(e) {
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
+    _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_8___default.a.mark(function _callee3(e) {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_8___default.a.wrap(function _callee3$(_context3) {
         while (1) {
           switch (_context3.prev = _context3.next) {
             case 0:
@@ -397,8 +428,8 @@ function createTopic() {
     nickname.value = "";
     topicName.value = "";
   }).catch(function (err) {
-    console.log("Error creating topic: " + err);
     loadingOff();
+    throw err;
   });
 }
 
@@ -407,11 +438,11 @@ function topicLogin() {
 }
 
 function _topicLogin() {
-  _topicLogin = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default()(
+  _topicLogin = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_10___default()(
   /*#__PURE__*/
-  _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee4() {
+  _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_8___default.a.mark(function _callee4() {
     var privKey;
-    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee4$(_context4) {
+    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_8___default.a.wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
           case 0:
@@ -437,11 +468,11 @@ function joinTopic() {
 }
 
 function _joinTopic() {
-  _joinTopic = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default()(
+  _joinTopic = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_10___default()(
   /*#__PURE__*/
-  _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee5() {
+  _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_8___default.a.mark(function _callee5() {
     var inviteCode, nickname, data;
-    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee5$(_context5) {
+    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_8___default.a.wrap(function _callee5$(_context5) {
       while (1) {
         switch (_context5.prev = _context5.next) {
           case 0:
@@ -460,7 +491,7 @@ function _joinTopic() {
           case 9:
             _context5.prev = 9;
             _context5.t0 = _context5["catch"](3);
-            toastr__WEBPACK_IMPORTED_MODULE_4__["error"]("Topic was not created. Error: " + _context5.t0);
+            toastr__WEBPACK_IMPORTED_MODULE_13__["error"]("Topic was not created. Error: " + _context5.t0);
             loadingOff();
 
           case 13:
@@ -488,7 +519,7 @@ function setupChatListeners(chat) {
     }
 
     loadingOff();
-    toastr__WEBPACK_IMPORTED_MODULE_4__["error"]("Topic was not created. Error: " + msg);
+    toastr__WEBPACK_IMPORTED_MODULE_13__["error"]("Topic was not created. Error: " + msg);
   });
   chat.on("login_success", function (messages) {
     document.querySelector('#sounds-switch').src = chat.session.settings.soundsOn ? soundsOnOfIcons.on : soundsOnOfIcons.off;
@@ -496,24 +527,24 @@ function setupChatListeners(chat) {
     clearAllInputs();
     processLogin(messages);
     playSound("user_online");
-    toastr__WEBPACK_IMPORTED_MODULE_4__["success"]("You are now online!");
+    toastr__WEBPACK_IMPORTED_MODULE_13__["success"]("You are now online!");
   });
   chat.on("unknown_error", function (err) {
     console.log("unknown_error emited by chat: " + err);
-    toastr__WEBPACK_IMPORTED_MODULE_4__["error"]("Chat error: " + err);
+    toastr__WEBPACK_IMPORTED_MODULE_13__["error"]("Chat error: " + err);
   });
   chat.on("login_fail", function (err) {
     clearLoginPrivateKey();
     loadingOff();
     console.log("Login fail emited by chat: " + err);
-    toastr__WEBPACK_IMPORTED_MODULE_4__["error"]("Login fail: " + err);
+    toastr__WEBPACK_IMPORTED_MODULE_13__["error"]("Login fail: " + err);
   });
   chat.on('request_invite_success', function (inviteID) {
     buttonLoadingOff(document.querySelector("#new-invite"));
     showInviteCode(inviteID);
   });
   chat.on('invite_updated', function () {
-    toastr__WEBPACK_IMPORTED_MODULE_4__["info"]("Invite updated!");
+    toastr__WEBPACK_IMPORTED_MODULE_13__["info"]("Invite updated!");
   });
   chat.on("new_member_joined", function (data) {
     processNewMemberJoin(data);
@@ -525,7 +556,7 @@ function setupChatListeners(chat) {
   });
   chat.on("participant_booted", function (message) {
     updateParticipants();
-    toastr__WEBPACK_IMPORTED_MODULE_4__["info"](message);
+    toastr__WEBPACK_IMPORTED_MODULE_13__["info"](message);
   });
   chat.on("metadata_updated", function () {
     updateParticipants();
@@ -533,23 +564,23 @@ function setupChatListeners(chat) {
   });
   chat.on("boot_participant_success", function (message) {
     updateParticipants();
-    toastr__WEBPACK_IMPORTED_MODULE_4__["info"](message);
+    toastr__WEBPACK_IMPORTED_MODULE_13__["info"](message);
   });
   chat.on("u_booted", function (message) {
-    toastr__WEBPACK_IMPORTED_MODULE_4__["warning"](message);
+    toastr__WEBPACK_IMPORTED_MODULE_13__["warning"](message);
   });
   chat.on("boot_participant_fail", function (message) {
-    toastr__WEBPACK_IMPORTED_MODULE_4__["warning"]("Participant booting failed: " + message);
+    toastr__WEBPACK_IMPORTED_MODULE_13__["warning"]("Participant booting failed: " + message);
   });
   chat.on("topic_join_success", function (data) {
     processTopicJoinSuccess(data);
   });
   chat.on("del_invite_fail", function () {
-    toastr__WEBPACK_IMPORTED_MODULE_4__["warning"]("Error deleting invite");
+    toastr__WEBPACK_IMPORTED_MODULE_13__["warning"]("Error deleting invite");
   });
   chat.on("del_invite_success", function () {
     syncPendingInvites();
-    toastr__WEBPACK_IMPORTED_MODULE_4__["info"]("Invite was deleted");
+    toastr__WEBPACK_IMPORTED_MODULE_13__["info"]("Invite was deleted");
   });
   chat.on("chat_message", function (data) {
     processIncomingMessage(data);
@@ -570,11 +601,11 @@ function setupChatListeners(chat) {
   });
   chat.on("sync_invites_error", function (msg) {
     buttonLoadingOff(document.querySelector('#refresh-invites'));
-    toastr__WEBPACK_IMPORTED_MODULE_4__["warning"]("Invite request failed: " + msg);
+    toastr__WEBPACK_IMPORTED_MODULE_13__["warning"]("Invite request failed: " + msg);
   });
   chat.on("request_invite_error", function (msg) {
     buttonLoadingOff(document.querySelector('#new-invite'));
-    toastr__WEBPACK_IMPORTED_MODULE_4__["warning"]("Invite request failed: " + msg);
+    toastr__WEBPACK_IMPORTED_MODULE_13__["warning"]("Invite request failed: " + msg);
   });
   chat.on("messages_loaded", function (messages) {
     processMessagesLoaded(messages);
@@ -620,7 +651,7 @@ function processIncomingMessage(message) {
     recipient: message.header.recipient,
     attachments: message.attachments
   });
-  toastr__WEBPACK_IMPORTED_MODULE_4__["info"]("New message from " + chat.getMemberRepr(pkfp));
+  toastr__WEBPACK_IMPORTED_MODULE_13__["info"]("New message from " + chat.getMemberRepr(pkfp));
 }
 
 function processServiceRecord(record) {
@@ -731,7 +762,7 @@ function processNewMemberJoin() {
   console.log("NEW MEMBER JOINED. UPDATING INFO");
   updateParticipants();
   syncPendingInvites();
-  toastr__WEBPACK_IMPORTED_MODULE_4__["info"]("New member just joined the channel!");
+  toastr__WEBPACK_IMPORTED_MODULE_13__["info"]("New member just joined the channel!");
 }
 
 function bootParticipant(event) {
@@ -936,7 +967,7 @@ function processLogout() {
   document.querySelector('#chat_window').innerHTML = "";
   chat.logout();
   setView("auth");
-  toastr__WEBPACK_IMPORTED_MODULE_4__["info"]("You have successfully logged out!");
+  toastr__WEBPACK_IMPORTED_MODULE_13__["info"]("You have successfully logged out!");
 }
 
 function setNavbarListeners() {
@@ -1124,11 +1155,11 @@ function downloadOnClick(_x4) {
 
 
 function _downloadOnClick() {
-  _downloadOnClick = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default()(
+  _downloadOnClick = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_10___default()(
   /*#__PURE__*/
-  _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee6(ev) {
+  _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_8___default.a.mark(function _callee6(ev) {
     var target, fileInfo, file;
-    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee6$(_context6) {
+    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_8___default.a.wrap(function _callee6$(_context6) {
       while (1) {
         switch (_context6.prev = _context6.next) {
           case 0:
@@ -1372,13 +1403,13 @@ function displayNewTopicData(data, heading, toastrMessage) {
   var tempWrap = document.createElement("div");
   tempWrap.appendChild(bodyWrapper);
   showModalNotification(heading, tempWrap.innerHTML);
-  toastr__WEBPACK_IMPORTED_MODULE_4__["success"](toastrMessage);
+  toastr__WEBPACK_IMPORTED_MODULE_13__["success"](toastrMessage);
 }
 
 function showInviteCode(newInvite) {
   syncPendingInvites();
   showModalNotification("Here is your invite code:", newInvite);
-  toastr__WEBPACK_IMPORTED_MODULE_4__["success"]("New invite was generated successfully!");
+  toastr__WEBPACK_IMPORTED_MODULE_13__["success"]("New invite was generated successfully!");
 }
 
 function showModalNotification(headingText, bodyContent) {
@@ -1533,9 +1564,9 @@ function copyInviteCode(event) {
 
   try {
     document.execCommand("copy");
-    toastr__WEBPACK_IMPORTED_MODULE_4__["info"]("Invite code was copied to the clipboard");
+    toastr__WEBPACK_IMPORTED_MODULE_13__["info"]("Invite code was copied to the clipboard");
   } catch (err) {
-    toastr__WEBPACK_IMPORTED_MODULE_4__["error"]("Error copying invite code to the clipboard");
+    toastr__WEBPACK_IMPORTED_MODULE_13__["error"]("Error copying invite code to the clipboard");
   }
 
   textArea.remove();
@@ -1717,11 +1748,11 @@ function loadAudio(_x5, _x6) {
 }
 
 function _loadAudio() {
-  _loadAudio = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_1___default()(
+  _loadAudio = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_10___default()(
   /*#__PURE__*/
-  _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee7(fileInfo, fileData) {
+  _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_8___default.a.mark(function _callee7(fileInfo, fileData) {
     var message, audio, arr, fileURL, viewWrap;
-    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee7$(_context7) {
+    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_8___default.a.wrap(function _callee7$(_context7) {
       while (1) {
         switch (_context7.prev = _context7.next) {
           case 0:
@@ -1834,7 +1865,7 @@ function refreshInvites(ev) {
 
 function refreshInvitesSuccess() {
   buttonLoadingOff(document.querySelector("#refresh-invites"));
-  toastr__WEBPACK_IMPORTED_MODULE_4__["success"]("Invites re-synced");
+  toastr__WEBPACK_IMPORTED_MODULE_13__["success"]("Invites re-synced");
 }
 
 function switchConnectionStatus(connected) {
@@ -1883,7 +1914,7 @@ function participantAliasChange(ev) {
 
 function ensureConnected() {
   if (!chat.islandConnectionStatus) {
-    toastr__WEBPACK_IMPORTED_MODULE_4__["warning"]("You are disconnected from the island. Please reconnect to continue");
+    toastr__WEBPACK_IMPORTED_MODULE_13__["warning"]("You are disconnected from the island. Please reconnect to continue");
     throw "No island connection";
   }
 }
@@ -1929,11 +1960,11 @@ function processMainMenuSwitch(ev) {
 
 /***/ }),
 
-/***/ 142:
+/***/ 231:
 /***/ (function(module, exports, __webpack_require__) {
 
 
-var content = __webpack_require__(143);
+var content = __webpack_require__(232);
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -1947,7 +1978,7 @@ var options = {"hmr":true}
 options.transform = transform
 options.insertInto = undefined;
 
-var update = __webpack_require__(144)(content, options);
+var update = __webpack_require__(233)(content, options);
 
 if(content.locals) module.exports = content.locals;
 
@@ -1955,20 +1986,35 @@ if(false) {}
 
 /***/ }),
 
-/***/ 143:
+/***/ 232:
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
 
 /***/ }),
 
-/***/ 162:
+/***/ 259:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* WEBPACK VAR INJECTION */(function(module) {/* harmony import */ var _babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(12);
-/* harmony import */ var _babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0__);
+/* WEBPACK VAR INJECTION */(function(module) {/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(33);
+/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(139);
+/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(84);
+/* harmony import */ var core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var core_js_modules_es6_typed_uint32_array__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(261);
+/* harmony import */ var core_js_modules_es6_typed_uint32_array__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_typed_uint32_array__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(148);
+/* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(53);
+/* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_5__);
+
+
+
+
+
 
 
 
@@ -3503,7 +3549,7 @@ sjcl.prng.prototype = {
     void 0 === g && (g = this.X[d] = 0);
     this.X[d] = (this.X[d] + 1) % this.s.length;
 
-    switch (_babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0___default()(a)) {
+    switch (typeof a) {
       case "number":
         void 0 === b && (b = 1);
         this.s[g].update([c, this.ca++, 1, b, f, 1, a | 0]);
@@ -3673,7 +3719,7 @@ a: try {
     var ja;
 
     try {
-      ja = __webpack_require__(164);
+      ja = __webpack_require__(262);
     } catch (a) {
       ja = null;
     }
@@ -3760,7 +3806,7 @@ sjcl.json = {
         d += c + '"' + b + '":';
         c = ",";
 
-        switch (_babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0___default()(a[b])) {
+        switch (typeof a[b]) {
           case "number":
           case "boolean":
             d += a[b];
@@ -3867,7 +3913,7 @@ sjcl.bn.prototype = {
     var b = 0,
         d;
 
-    switch (_babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0___default()(a)) {
+    switch (typeof a) {
       case "object":
         this.limbs = a.limbs.slice(0);
         break;
@@ -3942,7 +3988,7 @@ sjcl.bn.prototype = {
     return "0x" + a;
   },
   addM: function addM(a) {
-    "object" !== _babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0___default()(a) && (a = new this.o(a));
+    "object" !== typeof a && (a = new this.o(a));
     var b = this.limbs,
         d = a.limbs;
 
@@ -3986,7 +4032,7 @@ sjcl.bn.prototype = {
     return this;
   },
   subM: function subM(a) {
-    "object" !== _babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0___default()(a) && (a = new this.o(a));
+    "object" !== typeof a && (a = new this.o(a));
     var b = this.limbs,
         d = a.limbs;
 
@@ -4414,7 +4460,7 @@ sjcl.bn.prime = {
 };
 
 sjcl.bn.random = function (a, b) {
-  "object" !== _babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0___default()(a) && (a = new sjcl.bn(a));
+  "object" !== typeof a && (a = new sjcl.bn(a));
 
   for (var d, c, e = a.limbs.length, f = a.limbs[e - 1] + 1, g = new sjcl.bn();;) {
     do {
@@ -4986,7 +5032,7 @@ sjcl.codec.arrayBuffer = {
       0 == c % 16 && (d += "\n" + c.toString(16) + "\t"), d += b(a.getUint16(c).toString(16)) + " ";
     }
 
-    void 0 === (typeof console === "undefined" ? "undefined" : _babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0___default()(console)) && (console = console || {
+    void 0 === typeof console && (console = console || {
       log: function log() {}
     });
     console.log(d.toUpperCase());
@@ -5113,62 +5159,79 @@ sjcl.codec.arrayBuffer = {
 "function" === typeof define && define([], function () {
   return sjcl;
 });
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(163)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(260)(module)))
 
 /***/ }),
 
-/***/ 166:
+/***/ 264:
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
 
-/***/ 168:
+/***/ 266:
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
 
-/***/ 202:
+/***/ 300:
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
 
-/***/ 203:
+/***/ 301:
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
 
-/***/ 267:
+/***/ 365:
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
 
-/***/ 270:
+/***/ 368:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 
-// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/typeof.js
-var helpers_typeof = __webpack_require__(12);
-var typeof_default = /*#__PURE__*/__webpack_require__.n(helpers_typeof);
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es7.array.includes.js
+var es7_array_includes = __webpack_require__(54);
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es7.symbol.async-iterator.js
+var es7_symbol_async_iterator = __webpack_require__(70);
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.symbol.js
+var es6_symbol = __webpack_require__(71);
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.split.js
+var es6_regexp_split = __webpack_require__(33);
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/web.dom.iterable.js
+var web_dom_iterable = __webpack_require__(34);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/regenerator/index.js
 var regenerator = __webpack_require__(1);
 var regenerator_default = /*#__PURE__*/__webpack_require__.n(regenerator);
 
+// EXTERNAL MODULE: ./node_modules/regenerator-runtime/runtime.js
+var runtime = __webpack_require__(144);
+
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/asyncToGenerator.js
 var asyncToGenerator = __webpack_require__(9);
 var asyncToGenerator_default = /*#__PURE__*/__webpack_require__.n(asyncToGenerator);
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.promise.js
+var es6_promise = __webpack_require__(145);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/classCallCheck.js
 var classCallCheck = __webpack_require__(7);
@@ -5178,8 +5241,20 @@ var classCallCheck_default = /*#__PURE__*/__webpack_require__.n(classCallCheck);
 var createClass = __webpack_require__(8);
 var createClass_default = /*#__PURE__*/__webpack_require__.n(createClass);
 
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.typed.uint16-array.js
+var es6_typed_uint16_array = __webpack_require__(244);
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.replace.js
+var es6_regexp_replace = __webpack_require__(148);
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.typed.uint8-array.js
+var es6_typed_uint8_array = __webpack_require__(84);
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.to-string.js
+var es6_regexp_to_string = __webpack_require__(53);
+
 // EXTERNAL MODULE: ./node_modules/js-chacha20/src/jschacha20.js
-var jschacha20 = __webpack_require__(73);
+var jschacha20 = __webpack_require__(120);
 
 // CONCATENATED MODULE: ./client/src/js/lib/iCrypto.js
 
@@ -5189,9 +5264,16 @@ var jschacha20 = __webpack_require__(73);
 
 
 
-var iCrypto_forge = __webpack_require__(148);
 
-var sjcl = __webpack_require__(162); //const Base32 = require("./Base32.js");
+
+
+
+
+
+
+var iCrypto_forge = __webpack_require__(245);
+
+var sjcl = __webpack_require__(259); //const Base32 = require("./Base32.js");
 
 
 var iCrypto_iCryptoFactory =
@@ -5871,7 +5953,7 @@ function () {
       var blob = self.get(target);
 
       if (typeof blob !== "string") {
-        throw "hash: invalid target type: " + typeof_default()(blob) + "  Target must be string.";
+        throw "hash: invalid target type: " + typeof blob + "  Target must be string.";
       }
 
       algorithm = algorithm.toLowerCase();
@@ -6411,7 +6493,7 @@ function () {
       var nameToSave = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("stringify");
       var target = this.get(name);
 
-      if (typeof_default()(target) !== "object") {
+      if (typeof target !== "object") {
         throw "stringifyJSON: target invalid";
       }
 
@@ -6519,7 +6601,7 @@ function () {
     value: function keysExist(keys) {
       if (!keys) throw "keysExist: Missing required arguments";
       if (typeof keys === "string" || typeof keys === "number") return this._keyExists(keys);
-      if (typeof_default()(keys) !== "object") throw "keysExist: unsupported type";
+      if (typeof keys !== "object") throw "keysExist: unsupported type";
       if (keys.length < 1) throw "array must have at least one key";
       var currentKeys = Object.keys(this.store);
 
@@ -6682,6 +6764,7 @@ function () {
 
 
 
+
 /**
  * Implements files attachments functionality
  * Constructor accepts a file element
@@ -6791,6 +6874,9 @@ function () {
 }();
 AttachmentInfo_AttachmentInfo.properties = ["name", "size", "type", "lastModified", "hashUnencrypted", "signUnencrypted", "hashEncrytped", "signEncrypted", "link", "metaID", "messageID", "hashAlgorithm"];
 // CONCATENATED MODULE: ./client/src/js/chat/ChatMessage.js
+
+
+
 
 
 
@@ -7083,6 +7169,12 @@ function () {
 
 
 
+
+
+
+
+
+
 var Invite_Invite =
 /*#__PURE__*/
 function () {
@@ -7246,6 +7338,8 @@ Invite_Invite.properties = ["onionAddress", "hsPrivateKey", "pkfp", "inviteID"];
 
 
 
+
+
 /**
  *
  *
@@ -7398,6 +7492,9 @@ function () {
 // CONCATENATED MODULE: ./client/src/js/chat/Participant.js
 
 
+
+
+
 var Participant_Participant =
 /*#__PURE__*/
 function () {
@@ -7511,9 +7608,10 @@ var ClientSettings_ClientSettings = function ClientSettings() {
   this.invites = {};
 };
 // EXTERNAL MODULE: ./node_modules/socket.io-client/lib/index.js
-var lib = __webpack_require__(74);
+var lib = __webpack_require__(121);
 
 // CONCATENATED MODULE: ./client/src/js/chat/WildEmitter.js
+
 function WildEmitter() {}
 
 WildEmitter.mixin = function (constructor) {
@@ -7654,6 +7752,12 @@ WildEmitter.mixin = function (constructor) {
 
 WildEmitter.mixin(WildEmitter);
 // CONCATENATED MODULE: ./client/src/js/chat/ChatClient.js
+
+
+
+
+
+
 
 
 
@@ -8638,7 +8742,7 @@ function () {
       var publicKey = ic.get("pub");
       var pkfp = ic.get("pkfp");
 
-      if (typeof_default()(settingsRaw) === "object") {
+      if (typeof settingsRaw === "object") {
         settingsRaw = JSON.stringify(settingsRaw);
       }
 
@@ -9984,13 +10088,6 @@ function () {
 }();
 
 /* harmony default export */ var chat_ChatClient = __webpack_exports__["default"] = (ChatClient_ChatClient);
-
-/***/ }),
-
-/***/ 80:
-/***/ (function(module, exports) {
-
-/* (ignored) */
 
 /***/ })
 
