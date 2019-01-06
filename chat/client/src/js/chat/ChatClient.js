@@ -1,8 +1,5 @@
-
-
 import { ChatMessage } from "./ChatMessage";
 import  { ChatUtility }  from "./ChatUtility";
-import  { Invite } from"./Invite";
 import { Message } from "./Message";
 import  { Metadata } from "./Metadata";
 import  { Participant}  from "./Participant";
@@ -13,7 +10,6 @@ import * as io from "socket.io-client";
 import { WildEmitter } from "./WildEmitter";
 
 class ChatClient {
-
     constructor(opts){
         this.islandConnectionStatus = false;
         this.allMessagesLoaded = false;
@@ -141,6 +137,7 @@ class ChatClient {
     /**
      * Called initially on topic creation
      * @param {String} nickname
+     * @param {String} topicName
      * @returns {Promise<any>}
      */
     initTopic(nickname, topicName){
@@ -152,10 +149,11 @@ class ChatClient {
                     reject("Nickname entered is invalid");
                     return;
                 }
-
+                console.log("Creating topic");
                 //CREATE NEW TOPIC PENDING
                 let ic = new iCrypto();
                 //Generate keypairs one for user, other for topic
+                console.log("Generating keys");
                 ic = await ic.asym.asyncCreateKeyPair('owner-keys');
                 ic = await ic.asym.asyncCreateKeyPair('topic-keys');
                 ic.getPublicKeyFingerprint("owner-keys", "owner-pkfp");
@@ -178,6 +176,7 @@ class ChatClient {
                 };
                 request.set("body", body);
                 self.newTopicPending[newTopic.topicID] = newTopic;
+                console.log("Establishing connection");
                 await this.establishIslandConnection();
                 this.chatSocket.emit("request", request);
                 resolve();

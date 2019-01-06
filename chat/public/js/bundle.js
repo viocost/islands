@@ -9671,7 +9671,6 @@ function () {
                     _this7.chatSocket = lib('/chat', {
                       reconnection: false,
                       forceNew: true,
-                      transports: ['websocket', "longpoll"],
                       pingInterval: 10000,
                       pingTimeout: 5000
                     });
@@ -9696,6 +9695,11 @@ function () {
 
                     _this7.chatSocket.on('connect_error', function (err) {
                       console.log('Connection Failed');
+                      reject(err);
+                    });
+
+                    _this7.chatSocket.on('connect_timeout', function (err) {
+                      console.log('Chat connection timeout');
                       reject(err);
                     });
                   } else if (option === "file") {
@@ -9724,6 +9728,11 @@ function () {
 
                     _this7.fileSocket.on("connect_error", function (err) {
                       console.log('Island connection failed: ' + err.message);
+                      reject(err);
+                    });
+
+                    _this7.fileSocket.on('connect_timeout', function (err) {
+                      console.log('File connection timeout');
                       reject(err);
                     });
                   }
