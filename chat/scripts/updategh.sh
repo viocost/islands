@@ -37,6 +37,7 @@ eval "$MVCOMMAND"
 rm -rf /tmp/islands
 cd  /usr/src/app
 npm install
+npm run build-front
 chmod +x /usr/src/app/scripts/update.sh
 sed -i -e 's/\r$//' /usr/src/app/scripts/update.sh
 chmod +x /usr/src/app/scripts/updategh.sh
