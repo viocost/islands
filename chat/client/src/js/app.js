@@ -168,7 +168,8 @@ function moveCursorToStart(el) {
 function createTopic() {
     nickname = document.querySelector('#new-topic-nickname').value.trim();
     topicName = document.querySelector('#new-topic-name').value.trim();
-    loadingOn();
+    //loadingOn();
+    console.log("About to create topic");
     chat.initTopic(nickname, topicName).then(data => {
         console.log("Topic create attempt successful");
         nickname.value = "";
