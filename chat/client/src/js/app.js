@@ -168,7 +168,7 @@ function moveCursorToStart(el) {
 function createTopic() {
 
     let nicknameEl = document.querySelector('#new-topic-nickname');
-    let topicNameEl = document.querySelector('#new-topic-name').value.trim();
+    let topicNameEl = document.querySelector('#new-topic-name');
     nickname = nicknameEl.value.trim();
     topicName = topicNameEl.value.trim();
     //loadingOn();
