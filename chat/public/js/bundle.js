@@ -86,6 +86,13 @@
 /************************************************************************/
 /******/ ([
 /* 0 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(227);
+
+
+/***/ }),
+/* 1 */
 /***/ (function(module, exports) {
 
 /**
@@ -101,13 +108,6 @@ module.exports = {
     usePureJavaScript: false
   }
 };
-
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(227);
 
 
 /***/ }),
@@ -150,7 +150,7 @@ if (typeof Object.create === 'function') {
  *
  * Copyright (c) 2010-2018 Digital Bazaar, Inc.
  */
-var forge = __webpack_require__(0);
+var forge = __webpack_require__(1);
 var baseN = __webpack_require__(250);
 
 /* Utilities API */
@@ -9303,7 +9303,7 @@ module.exports = __webpack_require__(17) ? function (object, key, value) {
  *
  * Copyright (c) 2009-2014 Digital Bazaar, Inc.
  */
-var forge = __webpack_require__(0);
+var forge = __webpack_require__(1);
 __webpack_require__(33);
 __webpack_require__(155);
 __webpack_require__(156);
@@ -9947,7 +9947,7 @@ exports.shr64_lo = shr64_lo;
  * The full OID (including ASN.1 tag and length of 6 bytes) is:
  * 0x06062A864886F70D
  */
-var forge = __webpack_require__(0);
+var forge = __webpack_require__(1);
 __webpack_require__(3);
 __webpack_require__(34);
 
@@ -11233,7 +11233,7 @@ asn1.prettyPrint = function(obj, level, indentation) {
  *
  * Copyright 2011-2017 Digital Bazaar, Inc.
  */
-var forge = __webpack_require__(0);
+var forge = __webpack_require__(1);
 
 module.exports = forge.md = forge.md || {};
 forge.md.algorithms = forge.md.algorithms || {};
@@ -11455,7 +11455,7 @@ module.exports = function (key) {
  *
  * Copyright (c) 2010-2014 Digital Bazaar, Inc.
  */
-var forge = __webpack_require__(0);
+var forge = __webpack_require__(1);
 __webpack_require__(98);
 __webpack_require__(150);
 __webpack_require__(3);
@@ -12542,7 +12542,7 @@ function _createCipher(options) {
  *
  * Copyright (c) 2010-2013 Digital Bazaar, Inc.
  */
-var forge = __webpack_require__(0);
+var forge = __webpack_require__(1);
 
 forge.pki = forge.pki || {};
 var oids = module.exports = forge.pki.oids = forge.oids = forge.oids || {};
@@ -13072,7 +13072,7 @@ for (var collections = getKeys(DOMIterables), i = 0; i < collections.length; i++
  *
  * body: the binary-encoded body.
  */
-var forge = __webpack_require__(0);
+var forge = __webpack_require__(1);
 __webpack_require__(3);
 
 // shortcut for pem API
@@ -14303,7 +14303,7 @@ module.exports = function (it, tag, stat) {
  *
  * Copyright (c) 2010-2012 Digital Bazaar, Inc. All rights reserved.
  */
-var forge = __webpack_require__(0);
+var forge = __webpack_require__(1);
 __webpack_require__(25);
 __webpack_require__(3);
 
@@ -14453,7 +14453,7 @@ hmac.create = function() {
  *
  * Copyright (c) 2010-2015 Digital Bazaar, Inc.
  */
-var forge = __webpack_require__(0);
+var forge = __webpack_require__(1);
 __webpack_require__(25);
 __webpack_require__(3);
 
@@ -15450,7 +15450,7 @@ __webpack_require__(135)('includes');
  * Copyright (c) 2012 Stefan Siegl <stesie@brokenpipe.de>
  * Copyright (c) 2012-2014 Digital Bazaar, Inc.
  */
-var forge = __webpack_require__(0);
+var forge = __webpack_require__(1);
 __webpack_require__(98);
 __webpack_require__(150);
 __webpack_require__(3);
@@ -15984,7 +15984,7 @@ function _createCipher(options) {
  *
  * The OID for the RSA key algorithm is: 1.2.840.113549.1.1.1
  */
-var forge = __webpack_require__(0);
+var forge = __webpack_require__(1);
 __webpack_require__(24);
 __webpack_require__(72);
 __webpack_require__(34);
@@ -17771,7 +17771,7 @@ Address all questions regarding this license to:
   Tom Wu
   tjw@cs.Stanford.EDU
 */
-var forge = __webpack_require__(0);
+var forge = __webpack_require__(1);
 
 module.exports = forge.jsbn = forge.jsbn || {};
 
@@ -20761,7 +20761,7 @@ module.exports = function(module) {
  *
  * Copyright (c) 2010-2014 Digital Bazaar, Inc.
  */
-var forge = __webpack_require__(0);
+var forge = __webpack_require__(1);
 __webpack_require__(3);
 
 module.exports = forge.cipher = forge.cipher || {};
@@ -20997,7 +20997,7 @@ BlockCipher.prototype.finish = function(pad) {
  *
  * Copyright (c) 2010-2014 Digital Bazaar, Inc.
  */
-var forge = __webpack_require__(0);
+var forge = __webpack_require__(1);
 __webpack_require__(25);
 __webpack_require__(3);
 
@@ -21294,7 +21294,7 @@ function _update(s, w, bytes) {
  *
  * Copyright (c) 2010-2013 Digital Bazaar, Inc.
  */
-var forge = __webpack_require__(0);
+var forge = __webpack_require__(1);
 __webpack_require__(53);
 __webpack_require__(25);
 __webpack_require__(3);
@@ -21612,7 +21612,7 @@ module.exports = forge.pbkdf2 = pkcs5.pbkdf2 = function(
  *   signature          BIT STRING
  * }
  */
-var forge = __webpack_require__(0);
+var forge = __webpack_require__(1);
 __webpack_require__(33);
 __webpack_require__(24);
 __webpack_require__(70);
@@ -24787,7 +24787,7 @@ pki.verifyCertificateChain = function(caStore, chain, verify) {
  *
  * Copyright (c) 2012 Stefan Siegl <stesie@brokenpipe.de>
  */
-var forge = __webpack_require__(0);
+var forge = __webpack_require__(1);
 __webpack_require__(19);
 __webpack_require__(3);
 
@@ -29577,7 +29577,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
  *
  * Copyright (c) 2010-2014 Digital Bazaar, Inc.
  */
-var forge = __webpack_require__(0);
+var forge = __webpack_require__(1);
 __webpack_require__(3);
 
 forge.cipher = forge.cipher || {};
@@ -30795,7 +30795,7 @@ function from64To32(num) {
  * due to the large block size of existing MACs and the small size of the
  * timing signal.
  */
-var forge = __webpack_require__(0);
+var forge = __webpack_require__(1);
 __webpack_require__(24);
 __webpack_require__(53);
 __webpack_require__(99);
@@ -34846,7 +34846,7 @@ forge.tls.createConnection = tls.createConnection;
  *
  * Copyright (c) 2010-2013 Digital Bazaar, Inc.
  */
-var forge = __webpack_require__(0);
+var forge = __webpack_require__(1);
 __webpack_require__(24);
 __webpack_require__(34);
 __webpack_require__(153);
@@ -34965,7 +34965,7 @@ pki.privateKeyInfoToPem = function(pki, maxline) {
  *
  * EncryptedData ::= OCTET STRING
  */
-var forge = __webpack_require__(0);
+var forge = __webpack_require__(1);
 __webpack_require__(33);
 __webpack_require__(24);
 __webpack_require__(70);
@@ -35990,7 +35990,7 @@ function createPbkdf2Params(salt, countBytes, dkLen, prfAlgorithm) {
  *
  * Copyright (c) 2010-2015 Digital Bazaar, Inc.
  */
-var forge = __webpack_require__(0);
+var forge = __webpack_require__(1);
 __webpack_require__(25);
 __webpack_require__(3);
 
@@ -36325,7 +36325,7 @@ function _update(s, w, bytes) {
  *
  * Copyright (c) 2010-2014 Digital Bazaar, Inc.
  */
-var forge = __webpack_require__(0);
+var forge = __webpack_require__(1);
 __webpack_require__(3);
 
 var _crypto = null;
@@ -36751,7 +36751,7 @@ prng.create = function(plugin) {
  * Information on the RC2 cipher is available from RFC #2268,
  * http://www.ietf.org/rfc/rfc2268.txt
  */
-var forge = __webpack_require__(0);
+var forge = __webpack_require__(1);
 __webpack_require__(3);
 
 var piTable = [
@@ -37202,7 +37202,7 @@ forge.rc2.createDecryptionCipher = function(key, bits) {
  *
  * Copyright (c) 2013-2014 Digital Bazaar, Inc.
  */
-var forge = __webpack_require__(0);
+var forge = __webpack_require__(1);
 __webpack_require__(3);
 __webpack_require__(19);
 __webpack_require__(54);
@@ -37446,7 +37446,7 @@ function rsa_mgf1(seed, maskLength, hash) {
  *
  * Copyright (c) 2014 Digital Bazaar, Inc.
  */
-var forge = __webpack_require__(0);
+var forge = __webpack_require__(1);
 __webpack_require__(3);
 __webpack_require__(72);
 __webpack_require__(19);
@@ -37837,7 +37837,7 @@ function getMillerRabinTests(bits) {
  *   ... -- For future extensions
  * }
  */
-var forge = __webpack_require__(0);
+var forge = __webpack_require__(1);
 __webpack_require__(24);
 __webpack_require__(53);
 __webpack_require__(34);
@@ -38931,7 +38931,7 @@ p12.generateKey = forge.pbe.generatePkcs12Key;
  *
  * EncryptedKey ::= OCTET STRING
  */
-var forge = __webpack_require__(0);
+var forge = __webpack_require__(1);
 __webpack_require__(24);
 __webpack_require__(3);
 
@@ -39246,7 +39246,7 @@ p7v.recipientInfoValidator = {
  * Copyright (c) 2012 Stefan Siegl <stesie@brokenpipe.de>
  * Copyright (c) 2014 Digital Bazaar, Inc.
  */
-var forge = __webpack_require__(0);
+var forge = __webpack_require__(1);
 __webpack_require__(3);
 
 forge.mgf = forge.mgf || {};
@@ -39307,7 +39307,7 @@ mgf1.create = function(md) {
  *
  * Copyright 2008-2013 Digital Bazaar, Inc.
  */
-var forge = __webpack_require__(0);
+var forge = __webpack_require__(1);
 
 /* DEBUG API */
 module.exports = forge.debug = forge.debug || {};
@@ -39396,7 +39396,7 @@ forge.debug.clear = function(cat, name) {
  *
  * Copyright (c) 2014-2015 Digital Bazaar, Inc.
  */
-var forge = __webpack_require__(0);
+var forge = __webpack_require__(1);
 __webpack_require__(25);
 __webpack_require__(3);
 
@@ -39958,7 +39958,7 @@ function _update(s, w, bytes) {
  *
  * Copyright (c) 2008-2013 Digital Bazaar, Inc.
  */
-var forge = __webpack_require__(0);
+var forge = __webpack_require__(1);
 __webpack_require__(3);
 
 /* LOG API */
@@ -45944,7 +45944,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_6__);
 /* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(42);
 /* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(1);
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(0);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_8__);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(144);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_9__);
@@ -46183,7 +46183,7 @@ function moveCursorToStart(el) {
 
 function createTopic() {
   var nicknameEl = document.querySelector('#new-topic-nickname');
-  var topicNameEl = document.querySelector('#new-topic-name').value.trim();
+  var topicNameEl = document.querySelector('#new-topic-name');
   nickname = nicknameEl.value.trim();
   topicName = topicNameEl.value.trim(); //loadingOn();
 
@@ -60515,7 +60515,7 @@ __webpack_require__(83)('Uint16', 2, function (init) {
  *
  * Copyright 2011-2016 Digital Bazaar, Inc.
  */
-module.exports = __webpack_require__(0);
+module.exports = __webpack_require__(1);
 __webpack_require__(33);
 __webpack_require__(251);
 __webpack_require__(24);
@@ -61202,7 +61202,7 @@ function _encodeWithByteBuffer(input, alphabet) {
  * Copyright (c) 2009-2015 Digital Bazaar, Inc.
  *
  */
-var forge = __webpack_require__(0);
+var forge = __webpack_require__(1);
 __webpack_require__(33);
 __webpack_require__(151);
 
@@ -61491,7 +61491,7 @@ function compareMacs(key, mac1, mac2) {
  *
  * Copyright 2012 Stefan Siegl <stesie@brokenpipe.de>
  */
-var forge = __webpack_require__(0);
+var forge = __webpack_require__(1);
 __webpack_require__(162);
 
 module.exports = forge.mgf = forge.mgf || {};
@@ -61512,7 +61512,7 @@ forge.mgf.mgf1 = forge.mgf1;
  *
  * https://github.com/dchest/tweetnacl-js
  */
-var forge = __webpack_require__(0);
+var forge = __webpack_require__(1);
 __webpack_require__(72);
 __webpack_require__(19);
 __webpack_require__(164);
@@ -62514,7 +62514,7 @@ function M(o, a, b) {
  * Copyright (c) 2014 Lautaro Cozzani <lautaro.cozzani@scytl.com>
  * Copyright (c) 2014 Digital Bazaar, Inc.
  */
-var forge = __webpack_require__(0);
+var forge = __webpack_require__(1);
 __webpack_require__(3);
 __webpack_require__(19);
 __webpack_require__(72);
@@ -62716,7 +62716,7 @@ __webpack_require__(164);
  * a separate file pkcs7asn1.js, since those are referenced from other
  * PKCS standards like PKCS #12.
  */
-var forge = __webpack_require__(0);
+var forge = __webpack_require__(1);
 __webpack_require__(33);
 __webpack_require__(24);
 __webpack_require__(70);
@@ -63971,7 +63971,7 @@ function _decryptContent(msg) {
  *
  * @author https://github.com/shellac
  */
-var forge = __webpack_require__(0);
+var forge = __webpack_require__(1);
 __webpack_require__(33);
 __webpack_require__(53);
 __webpack_require__(99);
@@ -64212,7 +64212,7 @@ function _sha1() {
  *
  * Copyright (c) 2009-2013 Digital Bazaar, Inc.
  */
-var forge = __webpack_require__(0);
+var forge = __webpack_require__(1);
 __webpack_require__(163);
 __webpack_require__(165);
 __webpack_require__(3);
@@ -80779,7 +80779,7 @@ var es6_regexp_split = __webpack_require__(41);
 var web_dom_iterable = __webpack_require__(42);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/regenerator/index.js
-var regenerator = __webpack_require__(1);
+var regenerator = __webpack_require__(0);
 var regenerator_default = /*#__PURE__*/__webpack_require__.n(regenerator);
 
 // EXTERNAL MODULE: ./node_modules/regenerator-runtime/runtime.js
@@ -85040,103 +85040,170 @@ function () {
      **************************************************/
 
   }, {
-    key: "establishIslandConnection",
+    key: "_establishChatConnection",
     value: function () {
-      var _establishIslandConnection = asyncToGenerator_default()(
+      var _establishChatConnection2 = asyncToGenerator_default()(
       /*#__PURE__*/
       regenerator_default.a.mark(function _callee11() {
         var _this7 = this;
 
-        var option,
+        var connectionAttempts,
+            reconnectionDelay,
             _args11 = arguments;
         return regenerator_default.a.wrap(function _callee11$(_context11) {
           while (1) {
             switch (_context11.prev = _context11.next) {
               case 0:
-                option = _args11.length > 0 && _args11[0] !== undefined ? _args11[0] : "chat";
+                connectionAttempts = _args11.length > 0 && _args11[0] !== undefined ? _args11[0] : 7;
+                reconnectionDelay = _args11.length > 1 && _args11[1] !== undefined ? _args11[1] : 8000;
                 return _context11.abrupt("return", new Promise(function (resolve, reject) {
-                  if (option === "chat") {
-                    if (_this7.chatSocket && _this7.chatSocket.connected) {
-                      resolve();
-                      return;
-                    }
+                  var self = _this7;
 
-                    _this7.chatSocket = lib('/chat', {
-                      reconnection: false,
-                      forceNew: true,
-                      pingInterval: 10000,
-                      pingTimeout: 5000
-                    });
+                  if (self.chatSocket && self.chatSocket.connected) {
+                    resolve();
+                    return;
+                  }
 
-                    _this7.chatSocket.on('connect', function () {
-                      _this7.finishSocketSetup();
+                  var attempted = 0;
 
-                      console.log("Island connection established");
-                      _this7.islandConnectionStatus = true;
+                  function attemptConnection() {
+                    console.log("Attempting island connection: " + attempted);
+                    self.chatSocket.open();
+                  }
 
-                      _this7.emit("connected_to_island");
+                  self.chatSocket = lib('/chat', {
+                    reconnection: false,
+                    forceNew: true,
+                    autoConnect: false,
+                    connection: 'Upgrade',
+                    upgrade: 'websocket',
+                    pingInterval: 10000,
+                    pingTimeout: 5000
+                  });
+                  self.chatSocket.on('connect', function () {
+                    _this7.finishSocketSetup();
 
-                      resolve();
-                    });
+                    console.log("Island connection established");
+                    _this7.islandConnectionStatus = true;
 
-                    _this7.chatSocket.on("disconnect", function () {
-                      console.log("Island disconnected.");
-                      _this7.islandConnectionStatus = false;
+                    _this7.emit("connected_to_island");
 
-                      _this7.emit("disconnected_from_island");
-                    });
+                    resolve();
+                  });
+                  self.chatSocket.on("disconnect", function () {
+                    console.log("Island disconnected.");
+                    _this7.islandConnectionStatus = false;
 
-                    _this7.chatSocket.on('connect_error', function (err) {
+                    _this7.emit("disconnected_from_island");
+                  });
+                  self.chatSocket.on('connect_error', function (err) {
+                    if (attempted < connectionAttempts) {
+                      console.log("Connection error on attempt: " + attempted + err);
+                      attempted += 1;
+                      setTimeout(establishConnection, reconnectionDelay);
+                    } else {
                       console.log('Connection Failed');
                       reject(err);
-                    });
-
-                    _this7.chatSocket.on('connect_timeout', function (err) {
-                      console.log('Chat connection timeout');
-                      reject(err);
-                    });
-                  } else if (option === "file") {
-                    console.log("Connecting to file socket");
-
-                    if (_this7.fileSocket && _this7.fileSocket.connected) {
-                      console.log("File socket already connected! returning");
-                      resolve();
-                      return;
                     }
-
-                    _this7.fileSocket = lib('/file', {
-                      'reconnection': true,
-                      'forceNew': true,
-                      'reconnectionDelay': 1000,
-                      'reconnectionDelayMax': 5000,
-                      'reconnectionAttempts': 5
-                    });
-
-                    _this7.fileSocket.on("connect", function () {
-                      _this7.setupFileTransferListeners();
-
-                      console.log("File transfer connectiopn established");
-                      resolve();
-                    });
-
-                    _this7.fileSocket.on("connect_error", function (err) {
-                      console.log('Island connection failed: ' + err.message);
-                      reject(err);
-                    });
-
-                    _this7.fileSocket.on('connect_timeout', function (err) {
-                      console.log('File connection timeout');
-                      reject(err);
-                    });
-                  }
+                  });
+                  self.chatSocket.on('connect_timeout', function (err) {
+                    console.log('Chat connection timeout');
+                    reject(err);
+                  });
+                  attemptConnection();
                 }));
 
-              case 2:
+              case 3:
               case "end":
                 return _context11.stop();
             }
           }
         }, _callee11, this);
+      }));
+
+      function _establishChatConnection() {
+        return _establishChatConnection2.apply(this, arguments);
+      }
+
+      return _establishChatConnection;
+    }()
+  }, {
+    key: "_establishFileConnection",
+    value: function _establishFileConnection() {
+      var _this8 = this;
+
+      var connectionAttempts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 7;
+      var reconnectionDelay = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 8000;
+      return new Promise(function (resolve, reject) {
+        console.log("Connecting to file socket");
+
+        if (_this8.fileSocket && _this8.fileSocket.connected) {
+          console.log("File socket already connected! returning");
+          resolve();
+          return;
+        }
+
+        _this8.fileSocket = lib('/file', {
+          'reconnection': true,
+          'forceNew': true,
+          'reconnectionDelay': 1000,
+          'reconnectionDelayMax': 5000,
+          'reconnectionAttempts': 5
+        });
+
+        _this8.fileSocket.on("connect", function () {
+          _this8.setupFileTransferListeners();
+
+          console.log("File transfer connectiopn established");
+          resolve();
+        });
+
+        _this8.fileSocket.on("connect_error", function (err) {
+          console.log('Island connection failed: ' + err.message);
+          reject(err);
+        });
+
+        _this8.fileSocket.on('connect_timeout', function (err) {
+          console.log('File connection timeout');
+          reject(err);
+        });
+      });
+    }
+  }, {
+    key: "establishIslandConnection",
+    value: function () {
+      var _establishIslandConnection = asyncToGenerator_default()(
+      /*#__PURE__*/
+      regenerator_default.a.mark(function _callee12() {
+        var option,
+            _args12 = arguments;
+        return regenerator_default.a.wrap(function _callee12$(_context12) {
+          while (1) {
+            switch (_context12.prev = _context12.next) {
+              case 0:
+                option = _args12.length > 0 && _args12[0] !== undefined ? _args12[0] : "chat";
+
+                if (!(option === "chat")) {
+                  _context12.next = 5;
+                  break;
+                }
+
+                return _context12.abrupt("return", this._establishChatConnection());
+
+              case 5:
+                if (!(option === "file")) {
+                  _context12.next = 7;
+                  break;
+                }
+
+                return _context12.abrupt("return", this._establishChatConnection());
+
+              case 7:
+              case "end":
+                return _context12.stop();
+            }
+          }
+        }, _callee12, this);
       }));
 
       function establishIslandConnection() {
@@ -85150,31 +85217,31 @@ function () {
     value: function () {
       var _terminateIslandConnection = asyncToGenerator_default()(
       /*#__PURE__*/
-      regenerator_default.a.mark(function _callee12() {
-        return regenerator_default.a.wrap(function _callee12$(_context12) {
+      regenerator_default.a.mark(function _callee13() {
+        return regenerator_default.a.wrap(function _callee13$(_context13) {
           while (1) {
-            switch (_context12.prev = _context12.next) {
+            switch (_context13.prev = _context13.next) {
               case 0:
-                _context12.prev = 0;
+                _context13.prev = 0;
 
                 if (this.chatSocket && this.chatSocket.connected) {
                   this.chatSocket.disconnect();
                 }
 
-                _context12.next = 7;
+                _context13.next = 7;
                 break;
 
               case 4:
-                _context12.prev = 4;
-                _context12.t0 = _context12["catch"](0);
-                throw "Error terminating connection with island: " + _context12.t0;
+                _context13.prev = 4;
+                _context13.t0 = _context13["catch"](0);
+                throw "Error terminating connection with island: " + _context13.t0;
 
               case 7:
               case "end":
-                return _context12.stop();
+                return _context13.stop();
             }
           }
-        }, _callee12, this, [[0, 4]]);
+        }, _callee13, this, [[0, 4]]);
       }));
 
       function terminateIslandConnection() {
@@ -85195,7 +85262,7 @@ function () {
   }, {
     key: "initChatListeners",
     value: function initChatListeners() {
-      var _this8 = this;
+      var _this9 = this;
 
       this.chatSocket.on('message', function (message) {
         console.log(JSON.stringify(message));
@@ -85203,27 +85270,27 @@ function () {
       this.chatSocket.on('request', function (request) {
         console.log("Received new incoming request");
 
-        _this8.processRequest(request, _this8);
+        _this9.processRequest(request, _this9);
       });
       this.chatSocket.on("response", function (response) {
-        _this8.processResponse(response, _this8);
+        _this9.processResponse(response, _this9);
       });
       this.chatSocket.on("service", function (message) {
-        _this8.processServiceMessage(message, _this8);
+        _this9.processServiceMessage(message, _this9);
       });
       this.chatSocket.on("service_record", function (message) {
         console.log("Got SERVICE RECORD!");
 
-        _this8.processServiceRecord(message, _this8);
+        _this9.processServiceRecord(message, _this9);
       });
       this.chatSocket.on("message", function (message) {
-        _this8.processIncomingMessage(message, _this8);
+        _this9.processIncomingMessage(message, _this9);
       });
       this.chatSocket.on('reconnect', function (attemptNumber) {
         console.log("Successfull reconnect client");
       });
       this.chatSocket.on('metadata_update', function (meta) {
-        _this8.processMetadataUpdate(meta);
+        _this9.processMetadataUpdate(meta);
       });
       /*
               this.chatSocket.on("chat_session_registered", (params)=>{
@@ -85253,7 +85320,7 @@ function () {
   }, {
     key: "broadcastMetadataUpdate",
     value: function broadcastMetadataUpdate(metadata) {
-      var _this9 = this;
+      var _this10 = this;
 
       var newMetadata = this.session.metadata.toBlob(true);
       var updateRequest = {
@@ -85265,8 +85332,8 @@ function () {
       Object.keys(this.session.metadata.participants).forEach(function (key) {
         //TODO encrypt
         var encryptedMeta = newMetadata;
-        var fp = _this9.session.metadata.participants[key].publicKeyFingerprint;
-        var residence = _this9.session.metadata.participants[key].residence;
+        var fp = _this10.session.metadata.participants[key].publicKeyFingerprint;
+        var residence = _this10.session.metadata.participants[key].residence;
         updateRequest.recipients[key] = {
           residence: residence,
           metadata: newMetadata

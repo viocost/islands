@@ -1423,81 +1423,129 @@ class ChatClient {
     /**************************************************
      * ====== ISLAND CONNECTION HANDLING  ============*
      **************************************************/
-    async establishIslandConnection(option = "chat"){
+
+    async _establishChatConnection(connectionAttempts = 7, reconnectionDelay = 8000){
         return new Promise((resolve, reject)=>{
-            if (option === "chat"){
-                if (this.chatSocket && this.chatSocket.connected){
-                    resolve();
-                    return;
-                }
-                this.chatSocket = io('/chat', {
-                    reconnection: false,
-                    forceNew: true,
-                    pingInterval: 10000,
-                    pingTimeout: 5000,
-                });
-                this.chatSocket.on('connect', ()=>{
-                    this.finishSocketSetup();
-                    console.log("Island connection established");
-                    this.islandConnectionStatus = true;
-                    this.emit("connected_to_island");
-                    resolve();
-                });
-
-
-
-                this.chatSocket.on("disconnect", ()=>{
-                    console.log("Island disconnected.");
-                    this.islandConnectionStatus = false;
-                    this.emit("disconnected_from_island");
-                });
-
-                this.chatSocket.on('connect_error', (err)=>{
-                    console.log('Connection Failed');
-                    reject(err);
-                });
-
-                this.chatSocket.on('connect_timeout', (err)=>{
-                    console.log('Chat connection timeout');
-                    reject(err);
-                });
-
-            } else if (option === "file"){
-                console.log("Connecting to file socket");
-                if (this.fileSocket && this.fileSocket.connected){
-                    console.log("File socket already connected! returning");
-                    resolve();
-                    return;
-                }
-
-                this.fileSocket = io('/file', {
-                    'reconnection': true,
-                    'forceNew': true,
-                    'reconnectionDelay': 1000,
-                    'reconnectionDelayMax' : 5000,
-                    'reconnectionAttempts': 5
-                });
-
-                this.fileSocket.on("connect", ()=>{
-                    this.setupFileTransferListeners();
-                    console.log("File transfer connectiopn established");
-                    resolve()
-                });
-
-                this.fileSocket.on("connect_error", (err)=>{
-                    console.log('Island connection failed: ' + err.message);
-                    reject(err);
-                });
-
-
-                this.fileSocket.on('connect_timeout', (err)=>{
-                    console.log('File connection timeout');
-                    reject(err);
-                });
+            let self = this;
+            if (self.chatSocket && self.chatSocket.connected){
+                resolve();
+                return;
             }
 
+            let attempted = 0;
 
+            function attemptConnection(){
+                console.log("Attempting island connection: " + attempted);
+                self.chatSocket.open()
+            }
+
+            self.chatSocket = io('/chat', {
+                reconnection: false,
+                forceNew: true,
+                autoConnect: false,
+                connection: 'Upgrade',
+                upgrade: 'websocket',
+                pingInterval: 10000,
+                pingTimeout: 5000,
+            });
+
+            self.chatSocket.on('connect', ()=>{
+                this.finishSocketSetup();
+                console.log("Island connection established");
+                this.islandConnectionStatus = true;
+                this.emit("connected_to_island");
+                resolve();
+            });
+
+
+
+            self.chatSocket.on("disconnect", ()=>{
+                console.log("Island disconnected.");
+                this.islandConnectionStatus = false;
+                this.emit("disconnected_from_island");
+            });
+
+            self.chatSocket.on('connect_error', (err)=>{
+                if (attempted < connectionAttempts){
+                    console.log("Connection error on attempt: " + attempted + err);
+                    attempted += 1;
+                    setTimeout(attemptConnection, reconnectionDelay);
+                } else {
+                    console.log('Connection Failed');
+                    reject(err);
+                }
+
+            });
+
+            self.chatSocket.on('connect_timeout', (err)=>{
+                console.log('Chat connection timeout');
+                reject(err);
+            });
+
+            attemptConnection();
         })
+    }
+
+    _establishFileConnection(connectionAttempts = 7, reconnectionDelay = 8000){
+        return new Promise((resolve, reject)=>{
+            let self = this;
+            console.log("Connecting to file socket");
+            if (self.fileSocket && self.fileSocket.connected){
+                console.log("File socket already connected! returning");
+                resolve();
+                return;
+            }
+
+            let attempted = 0;
+
+            function attemptConnection(){
+                console.log("Attempting island connection: " + attempted);
+                self.fileSocket.open()
+            }
+
+            self.fileSocket = io('/file', {
+                reconnection: false,
+                forceNew: true,
+                autoConnect: false,
+                connection: 'Upgrade',
+                upgrade: 'websocket',
+                pingInterval: 10000,
+                pingTimeout: 5000,
+            });
+
+            self.fileSocket.on("connect", ()=>{
+                this.setupFileTransferListeners();
+                console.log("File transfer connectiopn established");
+                resolve()
+            });
+
+            self.fileSocket.on("connect_error", (err)=>{
+                if (attempted < connectionAttempts){
+                    console.log("Connection error on attempt: " + attempted + err);
+                    attempted += 1;
+                    setTimeout(attemptConnection, reconnectionDelay);
+                } else {
+                    console.log('Connection Failed');
+                    reject(err);
+                }
+            });
+
+
+            self.fileSocket.on('connect_timeout', (err)=>{
+                console.log('File connection timeout');
+                reject(err);
+            });
+
+            attemptConnection();
+        })
+    }
+
+    async establishIslandConnection(option = "chat"){
+        if (option === "chat") {
+            return this._establishChatConnection();
+        } else if (option === "file"){
+                return this._establishChatConnection();
+        }
     }
 
 
