@@ -3,6 +3,7 @@
   "updatePath": "/islandsData/update/",
   "adminKeyPath": "/islandsData/keys/",
   "servicePath": "/islandsData/service/",
+  "hiddenServicesPath": "/islandsData/hs/",
   "basePath": "/islandsData/",
   "torConnector" :{
     "hiddenServiceHOST": "127.0.0.1",

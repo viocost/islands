@@ -1,21 +1,11 @@
-import '@babel/polyfill';
-//Viendors
+//Vendors
 import { CuteSet } from "cute-set";
-
-
-
 import '../css/main.sass';
 
 import * as toastr from "toastr";
 window.toastr = toastr;
 
 const ChatClient = require("./chat/ChatClient").default;
-
-
-
-
-//chat page
-
 
 let chat;
 

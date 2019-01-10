@@ -57,7 +57,8 @@ document.addEventListener('DOMContentLoaded', event => {
 function updateHiddenServicesList(hiddenServices) {
     let hsContainer = document.querySelector("#hidden-services-wrap");
     hsContainer.innerHTML = "";
-    for (let i in hiddenServices) {
+    let count = 0;
+    for (let key of Object.keys(hiddenServices)) {
         let hsWrap = document.createElement("div");
         let num = document.createElement("div");
         let val = document.createElement("div");
@@ -66,15 +67,16 @@ function updateHiddenServicesList(hiddenServices) {
         num.classList.add("hs-num");
         val.classList.add("hs-val");
         del.classList.add("hs-del");
-        let enumer = parseInt(i) + 1;
+        let enumer = count + 1;
         num.innerHTML = "#" + enumer;
-        val.innerHTML = hiddenServices[i].substring(0, 16) + ".onion";
+        val.innerHTML = hiddenServices[key].id.substring(0, 16) + ".onion";
         del.innerHTML = "Delete";
         del.addEventListener("click", deleteHiddenService);
         hsWrap.appendChild(num);
         hsWrap.appendChild(val);
         hsWrap.appendChild(del);
         hsContainer.appendChild(hsWrap);
+        count ++;
     }
 }
 
@@ -85,8 +87,13 @@ function processNewIslandHiddenServiceAdd(data, response) {
     let newHS = data.newHS;
     //SHOW new HS info in modal box if it was added
     if (newHS) {
-        let privK = iCrypto.base64ToPEM(newHS.privateKey.substr(8));
-        showModalNotification("Hidden service launched!", "Onion address: " + newHS.hsid + "\n\nPrivate key:\n" + privK);
+        let bodyWrapper = document.createElement("div");
+        let pkWrapper = document.createElement("div");
+        let tempWrap = document.createElement("div");
+        pkWrapper.innerHTML = "<br><b>Hidden service private key:</b> <br> <textarea class='key-display'>" + newHS.privateKey + "</textarea>";
+        bodyWrapper.appendChild(pkWrapper);
+        tempWrap.appendChild(bodyWrapper);
+        showModalNotification("Hidden service launched!", tempWrap.innerHTML);
     }
 }
 
@@ -139,7 +146,8 @@ function launchHiddenService() {
                 sign: ic.get('sign'),
                 pkfp: pkfp,
                 hsPrivateKey: hsPrivK,
-                onion: onionAddress
+                onion: onionAddress,
+                permanent: true
             },
             success: processNewIslandHiddenServiceAdd,
             err: err => {
@@ -229,6 +237,7 @@ function processLoginData(res) {
     let loggerLevel = res.loggerInfo.level;
     $("#logs-state").val(loggerState ? "true" : "false");
     $("#log-highest-level").val(loggerLevel);
+    updateHiddenServicesList(res.hiddenServices);
 }
 
 function setupIslandAdmin() {

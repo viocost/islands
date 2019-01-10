@@ -77,9 +77,11 @@ app.get("/admin", (req, res)=>{
     });
 });
 
+Logger.initLogger(config.servicePath, "debug");
+
 adminServer.initAdminEnv(app, config, HOST, PORT);
 
-Logger.initLogger(config.servicePath, "debug");
+
 
 let chat;
 //const server = app.listen(PORT, HOST, ()=>{

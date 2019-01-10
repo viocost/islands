@@ -13,7 +13,7 @@ class iCrypto {
         self.symCiphers = ['aes'];
         self.streamCiphers = ['chacha'];
         self.asymCiphers = ['rsa'];
-        self.store = {}
+        self.store = {};
 
         self.rsa = {
             createKeyPair: (...args)=>{ return self.generateRSAKeyPair(...args)},

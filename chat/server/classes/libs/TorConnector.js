@@ -19,7 +19,7 @@ const http = require("http");
 let hiddenServiceHOST = '127.0.0.1';
 let hiddenServicePORT = 4003;
 let torListenerPort = 80;
-let torControlHOST = '127.0.0.1';
+let torControlHost = '127.0.0.1';
 let torControlPort = 9051;
 let torControlPassword = "";
 
@@ -43,7 +43,7 @@ class TorConnector extends EventEmitter{
         this.httpPORT = torOpts.hiddenServicePORT || hiddenServicePORT;
         this.torListenerPort = torOpts.torListenerPort || torListenerPort;
         this.torControlPort = torOpts.torControlPort || 9051;
-        this.torControlHOST = torOpts.torControlHOST || torControlHOST;
+        this.torControlHost = torOpts.torControlHost || torControlHost;
         this.torControlPassword = torOpts.torControlPassword || torControlPassword;
         this.reconnnectAttempts = 7;
         this.reconnectDelay = 15000;
@@ -63,7 +63,7 @@ class TorConnector extends EventEmitter{
 
         console.log("Setting password for tor control to " + this.torControlPassword);
         this.torController = new TorController({
-            host: this.torControlHOST,
+            host: this.torControlHost,
             port: this.torControlPort,
             password: this.torControlPassword
         });

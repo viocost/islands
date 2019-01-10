@@ -1,12 +1,7 @@
 'use strict';
 import { JSChaCha20 } from 'js-chacha20'
-
-
-const forge = require('node-forge');
-const sjcl = require("./sjcl.js");
-//const Base32 = require("./Base32.js");
-
-
+import * as forge from 'node-forge';
+import * as sjcl from "./sjcl.js";
 
 class iCryptoFactory{
 

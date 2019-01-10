@@ -3,6 +3,7 @@
   "updatePath": "/mnt/hgfs/islandsData/update/",
   "adminKeyPath": "/mnt/hgfs/islandsData/keys/",
   "servicePath": "/mnt/hgfs/islandsData/service/",
+  "hiddenServicesPath": "/mnt/hgfs/islandsData/hs/",
   "basePath": "/mnt/hgfs/islandsData/",
   "torConnector" :{
     "hiddenServiceHOST": "127.0.0.1",

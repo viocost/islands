@@ -3,6 +3,7 @@
   "updatePath": "/media/sf_islandsData/update/",
   "adminKeyPath": "/media/sf_islandsData/keys/",
   "servicePath": "/media/sf_islandsData/service/",
+  "hiddenServicesPath": "/media/sf_islandsData/hs/",
   "basePath": "/media/sf_islandsData/",
   "torConnector" :{
     "hiddenServiceHOST": "127.0.0.1",

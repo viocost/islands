@@ -44,7 +44,8 @@ class TorController extends TorControl{
                 || !KEYTYPES.includes(params.keyType)
                 || !portPattern.test(params.port)
                 || (params.keyType !== "NEW" && !params.hasOwnProperty("keyContent"))){
-                reject("Invalid request.")
+                reject("Invalid request.");
+                return;
             }
             let request = "ADD_ONION ";
 

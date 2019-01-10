@@ -9,7 +9,7 @@ const shell = require('shelljs');
 const TorController = require('./libs/TorController.js');
 let keysFolderPath;
 let updatePath;
-let islandHiddenServices = new Set();
+
 let islandConfig;
 let appPort;
 let appHost;
@@ -119,9 +119,14 @@ async function  launchIslandHiddenService(req, res){
     let data = req.body;
 
     let returnSuccess = (newHS)=>{
-        if (newHS)
-        res.set('Content-Type', 'application/json');
-        res.status(200).send({message: "Login successfull", hiddenServices: Array.from(islandHiddenServices), newHS: newHS});
+        if (newHS){
+            res.set('Content-Type', 'application/json');
+            res.status(200).send({
+                message: "HS launch success",
+                hiddenServices: islandHiddenServiceManager.getHiddenServices(),
+                newHS: newHS});
+        }
+
     };
 
     let returnError = (err)=>{
@@ -129,56 +134,71 @@ async function  launchIslandHiddenService(req, res){
     };
 
     if(!verifyRequest(data.pkfp, data.nonce, data.sign)) {
-        returnError("Invalid request")
-    }
-    //LAUNCH SERVICE
-    let torControlOpts = {
-        password: islandConfig.torConnector.torControlPassword,
-        host: islandConfig.torConnector.torControlHost,
-        port:  islandConfig.torConnector.torControlPort
-    };
-
-    let torCon = new TorController(torControlOpts);
-    let keyType = data.privateKey ? "RSA1024" : "NEW";
-    let keyContent = data.hsPrivateKey;
-    let onion = data.onion;
-    let port = data.port ? data.port : "80";
-
-    port = port.toString().trim() + "," + appHost + ":" + appPort.toString();
-
-
-    //IF KEY PASSED - CHECK IF HS IS UP
-    if (keyContent){
-        let hsup = await torCon.isHSUp(onion);
-        if(hsup){
-            let hsid = onion.substring(0, 16);
-            islandHiddenServices.add(hsid)
-            returnSuccess({
-                hsid: hsid,
-                privateKey: keyContent
-            })
-        }
+        returnError("The request verification failed");
     }
 
-    let response = await torCon.createHiddenService({
-        detached: true,
-        port: port,
-        keyType: keyType,
-        keyContent: keyContent,
-    });
+    let launchRes = await islandHiddenServiceManager.launchIslandHiddenService(
+        !!data.permanent,
+        data.hsPrivateKey,
+        data.onion
+    );
 
-    if(response.code === 250){
-        let newHS = {
-            hsid: response.messages.ServiceID.substring(0, 16) + ".onion",
-            privateKey: response.messages.PrivateKey
+    launchRes.err ? returnError(launchRes.err) : returnSuccess(launchRes);
 
-        };
-        //ADD HIDDEN SERVICE TO THE LIST
-        let hsid = response.messages.ServiceID.substring(0, 16);
-        islandHiddenServices.add(hsid);
-        returnSuccess(newHS)
-    }
+
+    // //LAUNCH SERVICE
+    // let torControlOpts = {
+    //     password: islandConfig.torConnector.torControlPassword,
+    //     host: islandConfig.torConnector.torControlHost,
+    //     port:  islandConfig.torConnector.torControlPort
+    // };
+    //
+    // let torCon = new TorController(torControlOpts);
+    // let keyType = data.privateKey ? "RSA1024" : "NEW";
+    // let keyContent = data.hsPrivateKey;
+    // let onion = data.onion;
+    // let port = data.port ? data.port : "80";
+    //
+    //
+    // port = port.toString().trim() + "," + appHost + ":" + appPort.toString();
+    //
+    //
+    // //IF KEY PASSED - CHECK IF HS IS UP
+    // if (keyContent){
+    //     let hsup = await torCon.isHSUp(onion);
+    //     if(hsup){
+    //         let hsid = onion.substring(0, 16);
+    //         islandHiddenServices.add(hsid)
+    //         returnSuccess({
+    //             hsid: hsid,
+    //             privateKey: keyContent
+    //         })
+    //     }
+    // }
+    //
+    // let response = await torCon.createHiddenService({
+    //     detached: true,
+    //     port: port,
+    //     keyType: keyType,
+    //     keyContent: keyContent,
+    // });
+    //
+    // if(response.code === 250){
+    //     let newHS = {
+    //         hsid: response.messages.ServiceID.substring(0, 16) + ".onion",
+    //         privateKey: response.messages.PrivateKey
+    //
+    //     };
+    //     //ADD HIDDEN SERVICE TO THE LIST
+    //     let hsid = response.messages.ServiceID.substring(0, 16);
+    //     islandHiddenServices.add(hsid);
+    //     returnSuccess(newHS)
+    // }
 }
+
+
+
+
 
 async function deleteIslandHiddenService(req, res){
     console.log("Taking down island hidden service");
@@ -187,7 +207,10 @@ async function deleteIslandHiddenService(req, res){
     let hsToDelete = data.onion.substring(0, 16);
     let returnSuccess = ()=>{
         res.set('Content-Type', 'application/json');
-        res.status(200).send({message: "Hidden service has been taken down", hiddenServices: Array.from(islandHiddenServices)});
+        res.status(200).send({
+            message: "Hidden service has been taken down",
+            hiddenServices: islandHiddenServiceManager.getHiddenServices()
+        });
     };
 
     let returnError = (err)=>{
@@ -198,19 +221,8 @@ async function deleteIslandHiddenService(req, res){
         returnError("Invalid request");
     }
 
-    let torControlOpts = {
-        password: islandConfig.torConnector.torControlPassword,
-        host: islandConfig.torConnector.torControlHost,
-        port:  islandConfig.torConnector.torControlPort
-    };
+    await islandHiddenServiceManager.deleteHiddenService(data.onion);
 
-    let torCon = new TorController(torControlOpts);
-
-
-
-    await torCon.killHiddenService(hsToDelete);
-
-    islandHiddenServices.delete(hsToDelete);
     returnSuccess()
 
 }
@@ -243,7 +255,11 @@ function adminLogin(req, res){
         if(verifyRequest(data.pkfp, data.nonce, data.sign)){
             res.set('Content-Type', 'application/json');
             let loggerInfo = Logger.getLoggerInfo();
-            res.status(200).send({message: "Login successfull", loggerInfo: loggerInfo, hiddenServices: islandHiddenServices});
+            res.status(200).send({
+                message: "Login successfull",
+                loggerInfo: loggerInfo,
+                hiddenServices: islandHiddenServiceManager.getHiddenServices()
+            });
         } else{
             res.status(500).send("Login error: invalid key");
         }
@@ -418,8 +434,8 @@ module.exports.initAdminEnv = function(app, config, host, port){
     app.post("/admin", handleAdminRequest);
     appPort = port;
     appHost = host;
-    //islandHiddenServiceManager = new HiddenServiceManager(islandConfig)
-
+    islandHiddenServiceManager = new HiddenServiceManager(islandConfig, appHost, appPort);
+    islandHiddenServiceManager.init()
 
 };
 
