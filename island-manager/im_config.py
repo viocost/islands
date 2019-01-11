@@ -60,7 +60,7 @@ class IMConfig:
             with open(config_path) as f:
                 return json.load(f)
         else:
-            raise MissingDefaultConfig
+            raise MissingDefaultConfig("Attempt to open: %s" % config_path)
 
     def load_os_specific_defaults(self, platform, os_defaults_path):
         if platform not in OS_SPECIFIC_DEFAULTS:

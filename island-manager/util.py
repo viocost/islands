@@ -1,6 +1,11 @@
-import os
+import os, sys
 import platform
-from exceptions import CmdExecutionError
+from exceptions import CmdExecutionError, InvalidPlatformError
+
+if sys.platform == "win32":
+    import ctypes
+
+
 
 def sizeof_fmt(num, suffix='b'):
     num = int(num)
@@ -27,6 +32,11 @@ def get_version():
 
 def get_current_path():
     print(os.getcwd())
+
+def has_admin_rights_win32():
+    if sys.platform != "win32":
+        raise InvalidPlatformError("Attempt to check windows admin privileges on non-windows platform")
+    return ctypes.windll.shell32.IsUserAnAdmin() != 0
 
 
 platform.system()

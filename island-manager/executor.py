@@ -1,11 +1,8 @@
+import sys
 import asyncio
-from  subprocess import Popen, PIPE, run
+from subprocess import Popen, PIPE, run
 from multiprocessing import Process
 
-import io
-import sys
-from time import sleep
-from threading import Thread
 
 
 class ShellExecutor:
@@ -15,7 +12,6 @@ class ShellExecutor:
 
     @staticmethod
     def __execute(cmd, stdout_cb, stderr_cb):
-        loop = None
         try:
             loop = asyncio.get_event_loop()
         except RuntimeError:

@@ -4,10 +4,10 @@ block_cipher = None
 
 
 a = Analysis(['main.py'],
-             pathex=['D:\\islands\\mac-manager'],
+             pathex=['pyinstaller', 'C:\\Windows\\System32\\downlevel\\', 'D:\\Python\\Python37-32\\Lib\\site-packages' 'D:\\islands\\island-manager'],
              binaries=[],
-             datas=[],
-             hiddenimports=[],
+             datas=[('.\\os_defaults\\', 'os_defaults'),  ('default_config.json', '.'), ('version', '.')],
+             hiddenimports=['sip, cffi'],
              hookspath=[],
              runtime_hooks=[],
              excludes=[],
@@ -21,16 +21,16 @@ exe = EXE(pyz,
           a.scripts,
           [],
           exclude_binaries=True,
-          name='main',
+          name='islands',
           debug=False,
           bootloader_ignore_signals=False,
           strip=False,
           upx=True,
-          console=False )
+          console=False , icon='island.ico')
 coll = COLLECT(exe,
                a.binaries,
                a.zipfiles,
                a.datas,
                strip=False,
                upx=True,
-               name='main')
+               name='islands')

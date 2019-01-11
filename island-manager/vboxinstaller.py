@@ -5,7 +5,7 @@ from executor import ShellExecutor as Executor
 from exceptions import CmdExecutionError
 from os import path
 import sys
-import time
+
 
 
 def check_output(func):
@@ -57,8 +57,7 @@ class VBoxInstaller:
             elif sys.platform == "linux":
                 self.linux_install()
             else:
-                pass
-                #raise UnsupportedPlatform("Virtualbox setup: invalid platform name or unsupported platform: %s" % sys.platform)
+                raise UnsupportedPlatform("Virtualbox setup: invalid platform name or unsupported platform: %s" % sys.platform)
         except CmdExecutionError as e:
             error_message = "CmdExecutionError.\nReturn code: {retcode}" \
                             "\nstderr: {stderr}" \
@@ -117,7 +116,7 @@ class VBoxInstaller:
     @check_output
     def install_vbox(self, path_to_installer):
         cmd = self.cmd.install_vbox(path_to_installer)
-        return Executor.exec_stream(cmd, self.message, self.error)
+        return Executor.exec_stream(cmd, self.message, self.error, require_admin=True)
 
     @check_output
     def uninstall_vbox(self):

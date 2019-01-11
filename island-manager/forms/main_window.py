@@ -1,10 +1,11 @@
 import re
 import time
+import sys
 from forms.main_window_ui_setup import Ui_MainWindow
 from forms.setup_wizard_window import SetupWizardWindow as SetupWindow
 from PyQt5.QtWidgets import QMainWindow, QFileDialog, QMessageBox as QM
 from PyQt5.QtCore import QObject, pyqtSignal
-from util import get_version, get_full_path
+from util import get_version, get_full_path, has_admin_rights_win32
 from island_states import IslandStates as States
 
 
@@ -136,6 +137,11 @@ class MainWindow(QObject):
         return handler
 
     def launch_setup(self):
+        if sys.platform == "win32" and not has_admin_rights_win32():
+            QM.warning(self.window, "Admin rights required!",
+                                    "Running setup requires administrator privileges. "
+                                    "Please close island manager and start it as administrator.", QM.Ok)
+            return
         self.setup_window = SetupWindow(self.window, self.config, self.island_manager, self.setup)
         self.set_setup_window_onclose_handler(self.setup_window)
         self.setup_window.set_vbox_checker(self.setup.is_vbox_set_up)
