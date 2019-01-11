@@ -1,4 +1,5 @@
 window.onerror = processDocumentError;
+const LENGTHLIMIT = 500000;
 
 (function(){
     var oldLog = console.log;
@@ -28,15 +29,31 @@ function closeLogs(){
     document.querySelector("#view-logs").style.display = "block";
 }
 
-
+function shrinkLog(){
+    // let logContent = document.querySelector("#client-logs-content");
+    //
+    // if (logContent.innerHTML.length > LENGTHLIMIT ){
+    //
+    //     logContent.removeChild(logContent.children[0]);
+    //
+    // } else {
+    //     console.log("Log shrinked");
+    // }
+}
 
 function appendClientLog(errMsg){
     if (!errMsg){
         return;
     }
+    let logContent = document.querySelector("#client-logs-content")
     let newRecord = document.createElement("p");
     newRecord.innerHTML = errMsg;
-    document.querySelector("#client-logs-content").appendChild(newRecord)
+    logContent.appendChild(newRecord);
+    if (logContent.innerHTML.length > LENGTHLIMIT ){
+        console.log("Length: " + logContent.innerHTML.length + " Deleting old node");
+        shrinkLog();
+    }
+
 }
 
 

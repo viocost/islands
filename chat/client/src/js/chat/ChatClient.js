@@ -149,11 +149,10 @@ class ChatClient {
                     reject("Nickname entered is invalid");
                     return;
                 }
-                console.log("Creating topic");
+
                 //CREATE NEW TOPIC PENDING
                 let ic = new iCrypto();
                 //Generate keypairs one for user, other for topic
-                console.log("Generating keys");
                 ic = await ic.asym.asyncCreateKeyPair('owner-keys');
                 ic = await ic.asym.asyncCreateKeyPair('topic-keys');
                 ic.getPublicKeyFingerprint("owner-keys", "owner-pkfp");
@@ -1119,60 +1118,68 @@ class ChatClient {
      */
     shoutMessage(messageContent, filesAttached){
         return new Promise(async (resolve, reject)=>{
-            let self = this;
+            try{
+                let self = this;
 
-            let attachmentsInfo;
+                let attachmentsInfo;
 
-            const metaID = self.session.metadata.id;
-            const chatMessage = await self.prepareMessage(messageContent);
+                const metaID = self.session.metadata.id;
+                const chatMessage = await self.prepareMessage(messageContent);
 
-            if (filesAttached && filesAttached.length >0){
-                attachmentsInfo = await self.uploadAttachments(filesAttached, chatMessage.header.id, metaID);
-                for (let att of attachmentsInfo) {
-                    chatMessage.addAttachmentInfo(att)
+                if (filesAttached && filesAttached.length >0){
+                    attachmentsInfo = await self.uploadAttachments(filesAttached, chatMessage.header.id, metaID);
+                    for (let att of attachmentsInfo) {
+                        chatMessage.addAttachmentInfo(att)
+                    }
                 }
+
+                chatMessage.encryptMessage(this.session.metadata.sharedKey);
+                chatMessage.sign(this.session.privateKey);
+
+                //Preparing request
+                let message = new Message();
+                message.headers.pkfpSource = this.session.publicKeyFingerprint;
+                message.headers.command = "broadcast_message";
+                message.body.message = chatMessage.toBlob();
+                let userPrivateKey = this.session.privateKey;
+                message.signMessage(userPrivateKey);
+                //console.log("Message ready: " + JSON.stringify(message));
+                this.chatSocket.emit("request", message);
+                resolve();
+            }catch(err){
+                reject(err);
             }
-
-            chatMessage.encryptMessage(this.session.metadata.sharedKey);
-            chatMessage.sign(this.session.privateKey);
-
-            //Preparing request
-            let message = new Message();
-            message.headers.pkfpSource = this.session.publicKeyFingerprint;
-            message.headers.command = "broadcast_message";
-            message.body.message = chatMessage.toBlob();
-            let userPrivateKey = this.session.privateKey;
-            message.signMessage(userPrivateKey);
-            //console.log("Message ready: " + JSON.stringify(message));
-            this.chatSocket.emit("request", message);
-            resolve();
         })
     }
 
     whisperMessage(pkfp, messageContent, filesAttached){
         return new Promise(async (resolve, reject)=>{
-            let self = this;
+            try{
+                let self = this;
 
-            const chatMessage = await self.prepareMessage(messageContent, pkfp);
+                const chatMessage = await self.prepareMessage(messageContent, pkfp);
 
-            //Will be enabled in the next version
+                //Will be enabled in the next version
 
-            let keys = [self.session.publicKey];
-            keys.push(self.session.metadata.participants[pkfp].publicKey);
-            chatMessage.encryptPrivateMessage(keys);
-            chatMessage.sign(this.session.privateKey);
+                let keys = [self.session.publicKey];
+                keys.push(self.session.metadata.participants[pkfp].publicKey);
+                chatMessage.encryptPrivateMessage(keys);
+                chatMessage.sign(this.session.privateKey);
 
-            //Preparing request
-            let message = new Message();
-            message.headers.pkfpSource = this.session.publicKeyFingerprint;
-            message.headers.pkfpDest = pkfp;
-            message.headers.command = "send_message";
-            message.headers.private = true;
-            message.body.message = chatMessage.toBlob();
-            let userPrivateKey = this.session.privateKey;
-            message.signMessage(userPrivateKey);
-            this.chatSocket.emit("request", message);
-            resolve();
+                //Preparing request
+                let message = new Message();
+                message.headers.pkfpSource = this.session.publicKeyFingerprint;
+                message.headers.pkfpDest = pkfp;
+                message.headers.command = "send_message";
+                message.headers.private = true;
+                message.body.message = chatMessage.toBlob();
+                let userPrivateKey = this.session.privateKey;
+                message.signMessage(userPrivateKey);
+                this.chatSocket.emit("request", message);
+                resolve();
+            }catch(err){
+                reject(err)
+            }
         })
     }
 
@@ -1236,9 +1243,7 @@ class ChatClient {
         }else{
             chatMessage.decryptMessage(self.session.metadata.sharedKey);
         }
-
         self.emit("send_success", chatMessage);
-
     }
 
     messageSendFail(response, self){

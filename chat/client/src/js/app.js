@@ -47,8 +47,6 @@ let tempName;
 
 let recording = false;
 
-//variables to display new topic data
-//let newPubKey, newPrivKey, newNickname, newTopicID, newTopicName;
 
 document.addEventListener('DOMContentLoaded', event => {
     console.log('initializing chat....');
@@ -161,10 +159,8 @@ function createTopic() {
     let topicNameEl = document.querySelector('#new-topic-name');
     nickname = nicknameEl.value.trim();
     topicName = topicNameEl.value.trim();
-    //loadingOn();
-    console.log("About to create topic");
+    loadingOn();
     chat.initTopic(nickname, topicName).then(data => {
-        console.log("Topic create attempt successful");
         nicknameEl.value = "";
         topicNameEl.value = "";
     }).catch(err => {

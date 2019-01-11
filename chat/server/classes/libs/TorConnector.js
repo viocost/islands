@@ -13,6 +13,7 @@ const SocksProxyAgent = require('socks-proxy-agent');
 const proxy = process.env.socks_proxy || 'socks://127.0.0.1:9050';
 const http = require("http");
 
+
 //Address and port for tor facing server
 //This should be set to address and port of a hidden service
 
@@ -213,6 +214,7 @@ class TorConnector extends EventEmitter{
         });
 
         const agent = new SocksProxyAgent(proxy);
+     
         const endpoint = self.getWSOnionConnectionString(onionDest);
 
         let attempt = 1;
@@ -224,6 +226,7 @@ class TorConnector extends EventEmitter{
             reconnection: false,
             connection: 'Upgrade',
             upgrade: 'websocket',
+            requestTimeout: 10000,
             pingInterval: 10000,
             pingTimeout: 5000,
             query: onionOrig ? 'call_from=' + onionOrig : undefined

@@ -49213,9 +49213,7 @@ var mainMenuItems = [{
   active: false
 }];
 var tempName;
-var recording = false; //variables to display new topic data
-//let newPubKey, newPrivKey, newNickname, newTopicID, newTopicName;
-
+var recording = false;
 document.addEventListener('DOMContentLoaded', function (event) {
   console.log('initializing chat....');
   chat = new ChatClient();
@@ -49393,11 +49391,9 @@ function createTopic() {
   var nicknameEl = document.querySelector('#new-topic-nickname');
   var topicNameEl = document.querySelector('#new-topic-name');
   nickname = nicknameEl.value.trim();
-  topicName = topicNameEl.value.trim(); //loadingOn();
-
-  console.log("About to create topic");
+  topicName = topicNameEl.value.trim();
+  loadingOn();
   chat.initTopic(nickname, topicName).then(function (data) {
-    console.log("Topic create attempt successful");
     nicknameEl.value = "";
     topicNameEl.value = "";
   }).catch(function (err) {
@@ -82092,7 +82088,6 @@ function () {
       var things = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : iCrypto.pRequired("merge");
       var nameToSave = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : iCrypto.pRequired("merge");
       if (!this.keysExist(things)) throw "merge: some or all objects with such keys not found ";
-      console.log("Mergin' things");
       var result = "";
 
       for (var i = 0; i < things.length; ++i) {
@@ -83318,20 +83313,18 @@ function () {
                   return _context.abrupt("return");
 
                 case 6:
-                  console.log("Creating topic"); //CREATE NEW TOPIC PENDING
-
+                  //CREATE NEW TOPIC PENDING
                   ic = new iCrypto_iCrypto(); //Generate keypairs one for user, other for topic
 
-                  console.log("Generating keys");
-                  _context.next = 11;
+                  _context.next = 9;
                   return ic.asym.asyncCreateKeyPair('owner-keys');
 
-                case 11:
+                case 9:
                   ic = _context.sent;
-                  _context.next = 14;
+                  _context.next = 12;
                   return ic.asym.asyncCreateKeyPair('topic-keys');
 
-                case 14:
+                case 12:
                   ic = _context.sent;
                   ic.getPublicKeyFingerprint("owner-keys", "owner-pkfp");
                   ic.getPublicKeyFingerprint("topic-keys", "topic-pkfp");
@@ -83353,27 +83346,27 @@ function () {
                   request.set("body", body);
                   _self.newTopicPending[newTopic.topicID] = newTopic;
                   console.log("Establishing connection");
-                  _context.next = 26;
+                  _context.next = 24;
                   return _this.establishIslandConnection();
 
-                case 26:
+                case 24:
                   _this.chatSocket.emit("request", request);
 
                   resolve();
-                  _context.next = 33;
+                  _context.next = 31;
                   break;
 
-                case 30:
-                  _context.prev = 30;
+                case 28:
+                  _context.prev = 28;
                   _context.t0 = _context["catch"](0);
                   throw _context.t0;
 
-                case 33:
+                case 31:
                 case "end":
                   return _context.stop();
               }
             }
-          }, _callee, this, [[0, 30]]);
+          }, _callee, this, [[0, 28]]);
         }));
 
         return function (_x, _x2) {
@@ -84573,74 +84566,75 @@ function () {
         var _ref5 = asyncToGenerator_default()(
         /*#__PURE__*/
         regenerator_default.a.mark(function _callee8(resolve, reject) {
-          var self, attachmentsInfo, metaID, chatMessage, _iteratorNormalCompletion2, _didIteratorError2, _iteratorError2, _iterator2, _step2, att, message, userPrivateKey;
+          var _self2, attachmentsInfo, metaID, chatMessage, _iteratorNormalCompletion2, _didIteratorError2, _iteratorError2, _iterator2, _step2, att, message, userPrivateKey;
 
           return regenerator_default.a.wrap(function _callee8$(_context8) {
             while (1) {
               switch (_context8.prev = _context8.next) {
                 case 0:
-                  self = _this5;
-                  metaID = self.session.metadata.id;
-                  _context8.next = 4;
-                  return self.prepareMessage(messageContent);
+                  _context8.prev = 0;
+                  _self2 = _this5;
+                  metaID = _self2.session.metadata.id;
+                  _context8.next = 5;
+                  return _self2.prepareMessage(messageContent);
 
-                case 4:
+                case 5:
                   chatMessage = _context8.sent;
 
                   if (!(filesAttached && filesAttached.length > 0)) {
-                    _context8.next = 28;
+                    _context8.next = 29;
                     break;
                   }
 
-                  _context8.next = 8;
-                  return self.uploadAttachments(filesAttached, chatMessage.header.id, metaID);
+                  _context8.next = 9;
+                  return _self2.uploadAttachments(filesAttached, chatMessage.header.id, metaID);
 
-                case 8:
+                case 9:
                   attachmentsInfo = _context8.sent;
                   _iteratorNormalCompletion2 = true;
                   _didIteratorError2 = false;
                   _iteratorError2 = undefined;
-                  _context8.prev = 12;
+                  _context8.prev = 13;
 
                   for (_iterator2 = attachmentsInfo[Symbol.iterator](); !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
                     att = _step2.value;
                     chatMessage.addAttachmentInfo(att);
                   }
 
-                  _context8.next = 20;
+                  _context8.next = 21;
                   break;
 
-                case 16:
-                  _context8.prev = 16;
-                  _context8.t0 = _context8["catch"](12);
+                case 17:
+                  _context8.prev = 17;
+                  _context8.t0 = _context8["catch"](13);
                   _didIteratorError2 = true;
                   _iteratorError2 = _context8.t0;
 
-                case 20:
-                  _context8.prev = 20;
+                case 21:
                   _context8.prev = 21;
+                  _context8.prev = 22;
 
                   if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
                     _iterator2.return();
                   }
 
-                case 23:
-                  _context8.prev = 23;
+                case 24:
+                  _context8.prev = 24;
 
                   if (!_didIteratorError2) {
-                    _context8.next = 26;
+                    _context8.next = 27;
                     break;
                   }
 
                   throw _iteratorError2;
 
-                case 26:
-                  return _context8.finish(23);
-
                 case 27:
-                  return _context8.finish(20);
+                  return _context8.finish(24);
 
                 case 28:
+                  return _context8.finish(21);
+
+                case 29:
                   chatMessage.encryptMessage(_this5.session.metadata.sharedKey);
                   chatMessage.sign(_this5.session.privateKey); //Preparing request
 
@@ -84654,13 +84648,20 @@ function () {
                   _this5.chatSocket.emit("request", message);
 
                   resolve();
+                  _context8.next = 44;
+                  break;
 
-                case 38:
+                case 41:
+                  _context8.prev = 41;
+                  _context8.t1 = _context8["catch"](0);
+                  reject(_context8.t1);
+
+                case 44:
                 case "end":
                   return _context8.stop();
               }
             }
-          }, _callee8, this, [[12, 16, 20, 28], [21,, 23, 27]]);
+          }, _callee8, this, [[0, 41], [13, 17, 21, 29], [22,, 24, 28]]);
         }));
 
         return function (_x12, _x13) {
@@ -84679,20 +84680,22 @@ function () {
         var _ref6 = asyncToGenerator_default()(
         /*#__PURE__*/
         regenerator_default.a.mark(function _callee9(resolve, reject) {
-          var self, chatMessage, keys, message, userPrivateKey;
+          var _self3, chatMessage, keys, message, userPrivateKey;
+
           return regenerator_default.a.wrap(function _callee9$(_context9) {
             while (1) {
               switch (_context9.prev = _context9.next) {
                 case 0:
-                  self = _this6;
-                  _context9.next = 3;
-                  return self.prepareMessage(messageContent, pkfp);
+                  _context9.prev = 0;
+                  _self3 = _this6;
+                  _context9.next = 4;
+                  return _self3.prepareMessage(messageContent, pkfp);
 
-                case 3:
+                case 4:
                   chatMessage = _context9.sent;
                   //Will be enabled in the next version
-                  keys = [self.session.publicKey];
-                  keys.push(self.session.metadata.participants[pkfp].publicKey);
+                  keys = [_self3.session.publicKey];
+                  keys.push(_self3.session.metadata.participants[pkfp].publicKey);
                   chatMessage.encryptPrivateMessage(keys);
                   chatMessage.sign(_this6.session.privateKey); //Preparing request
 
@@ -84708,13 +84711,20 @@ function () {
                   _this6.chatSocket.emit("request", message);
 
                   resolve();
+                  _context9.next = 24;
+                  break;
 
-                case 18:
+                case 21:
+                  _context9.prev = 21;
+                  _context9.t0 = _context9["catch"](0);
+                  reject(_context9.t0);
+
+                case 24:
                 case "end":
                   return _context9.stop();
               }
             }
-          }, _callee9, this);
+          }, _callee9, this, [[0, 21]]);
         }));
 
         return function (_x14, _x15) {
