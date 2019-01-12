@@ -9,8 +9,8 @@ const TorController = require('./TorController.js');
 
 const Bimap = require('../libs/Bipartite.js');
 
-const SocksProxyAgent = require('socks-proxy-agent');
-const proxy = process.env.socks_proxy || 'socks://127.0.0.1:9050';
+var SocksProxyAgent = require('socks5-http-client/lib/Agent');
+
 const http = require("http");
 
 
@@ -23,6 +23,8 @@ let torListenerPort = 80;
 let torControlHost = '127.0.0.1';
 let torControlPort = 9051;
 let torControlPassword = "";
+let socksProxyHost = "127.0.0.1";
+let socksProxyPort = "9050";
 
 class TorConnector extends EventEmitter{
 
@@ -88,7 +90,7 @@ class TorConnector extends EventEmitter{
 
         const httpServer = http.createServer((req, res)=>{
             res.writeHead(404, {'Content-Type': 'text/plain'});
-            res.write("OOOPS... You found nothing here.... Keep looking!");
+            res.write("404 - ERROR\nOOOPS... You found nothing here.... Keep looking!\n");
             res.end();
         });
 
@@ -130,7 +132,10 @@ class TorConnector extends EventEmitter{
                 }
 
                 this.setPendingConnection(onionDest);
-                const agent = new SocksProxyAgent(proxy);
+                const agent = new SocksProxyAgent({
+                    socksHost: socksProxyHost,
+                    socksPort: socksProxyPort
+                });
                 const endpoint = this.getWSOnionConnectionString(onionDest);
                 let socket = ioClient(endpoint + '/file', {
                     agent: agent,
@@ -213,8 +218,11 @@ class TorConnector extends EventEmitter{
             destination: onionDest,
         });
 
-        const agent = new SocksProxyAgent(proxy);
-     
+        const agent = new SocksProxyAgent({
+            socksHost: socksProxyHost,
+            socksPort: socksProxyPort
+        });
+
         const endpoint = self.getWSOnionConnectionString(onionDest);
 
         let attempt = 1;
@@ -226,9 +234,6 @@ class TorConnector extends EventEmitter{
             reconnection: false,
             connection: 'Upgrade',
             upgrade: 'websocket',
-            requestTimeout: 10000,
-            pingInterval: 10000,
-            pingTimeout: 5000,
             query: onionOrig ? 'call_from=' + onionOrig : undefined
         });
 
