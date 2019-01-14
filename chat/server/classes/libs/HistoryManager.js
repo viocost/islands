@@ -536,7 +536,7 @@ class HistoryManager{
                     fs.renameSync(oldName, newName);
                     resolve();
                 }catch(err){
-                    if (err.code === 'EBUSY' && attempted < maxAttempts){
+                    if ((/BSY/i.test(err.code) || /BUSY/i.test(err.code)) && attempted < maxAttempts){
                         console.log("File is busy");
                         attempted++;
                         setTimeout(renameAttempt, timeout);
