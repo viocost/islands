@@ -557,6 +557,8 @@ class ChatClient {
         let memberRepr = self.getMemberRepr(request.headers.pkfpSource);
         let newNickname = broadcast ? ChatUtility.symKeyDecrypt(request.body.nickname, self.session.metadata.sharedKey) :
             ChatUtility.decryptStandardMessage(request.body.nickname, self.session.privateKey);
+        newNickname = newNickname.toString("utf8");
+        
         if( newNickname !== existingNickname){
             self.setMemberNickname(request.headers.pkfpSource, newNickname);
             self.saveClientSettings();
