@@ -1100,7 +1100,7 @@ class ChatClient {
             chatMessage.header.author = this.session.publicKeyFingerprint;
             chatMessage.header.recipient = recipientPkfp ? recipientPkfp : "ALL";
             chatMessage.header.private = !!recipientPkfp;
-            chatMessage.header.nickname = self.session.settings.nickname;
+            chatMessage.header.nickname = self.session.settings.nickname.toString("utf8");
             chatMessage.body = messageContent;
             resolve(chatMessage);
         })
