@@ -40,7 +40,7 @@ class FileUploader{
             console.log("HASH encrypted is " + ic.get("hres"));
             let tempName = data.nonce + ".temp";
             console.log("About to rename");
-            fileStream.end();
+            fileStream.end(); // to free the file
             await self.hm.renameTempUpload(data.pkfp, tempName, self.hashUnencrypted);
             socket.emit("upload_success");
         });

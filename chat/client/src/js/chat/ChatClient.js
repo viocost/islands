@@ -1728,7 +1728,7 @@ class ChatClient {
         if(!newNickName){
             return;
         }
-        newNickName = newNickName.trim();
+        newNickName = newNickName.trim().toString("utf8");
         let settings = this.session.settings;
         if (settings.nickname === newNickName){
             return;
@@ -1743,7 +1743,7 @@ class ChatClient {
         if(!newTopicName){
             return;
         }
-        newTopicName = newTopicName.trim();
+        newTopicName = newTopicName.trim().toString("utf8");
         let settings = this.session.settings;
         if (settings.topicName === newTopicName){
             return;
