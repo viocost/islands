@@ -51,6 +51,7 @@ let recording = false;
 document.addEventListener('DOMContentLoaded', event => {
     console.log('initializing chat....');
     chat = new ChatClient();
+    window.chat = chat;
     loadSounds();
     setView("auth");
     setupChatListeners(chat);
@@ -1342,7 +1343,7 @@ function clearAttachments() {
 }
 
 function editMyNickname(ev) {
-    let newNickname = ev.target.value.trim();
+    let newNickname = ev.target.value.trim().toString("utf8");
     if (!newNickname || newNickname === chat.session.settings.nickname) {
         ev.target.value = chat.session.settings.nickname;
         ev.target.blur();
