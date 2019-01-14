@@ -45,7 +45,7 @@ export class ChatMessage{
 
         if (self.header.nickname){
             ic.addBlob("nname", self.header.nickname)
-                .AESEncrypt("nname", "k", "nnamecip", true);
+                .AESEncrypt("nname", "k", "nnamecip", true,  "CBC", "utf8");
             self.header.nickname = ic.get("nnamecip")
         }
 
@@ -86,12 +86,12 @@ export class ChatMessage{
                 .addBlob("symcip", this.header.keys[ic.get("pkfp")])
                 .asym.decrypt("symcip", "priv", "sym", "hex")
                 .addBlob("bodycip", this.body)
-                .sym.decrypt("bodycip", "sym", "body", true);
+                .sym.decrypt("bodycip", "sym", "body", true,  "CBC", "utf8");
             this.body = ic.get("body");
 
             if(this.header.nickname){
                 ic.addBlob("nnamecip", this.header.nickname)
-                    .AESDecrypt("nnamecip", "sym", "nname", true);
+                    .AESDecrypt("nnamecip", "sym", "nname", true,  "CBC", "utf8");
                 this.header.nickname= ic.get("nname");
             }
         }catch(err){
@@ -113,12 +113,12 @@ export class ChatMessage{
             this.body = ic.get("body")
             if (this.attachments){
                 ic.addBlob("attachmentscip", this.attachments)
-                    .AESDecrypt("attachmentscip", "k", "attachments", true);
+                    .AESDecrypt("attachmentscip", "k", "attachments", true, "CBC", "utf8");
                 this.attachments = JSON.parse(ic.get("attachments"))
             }
             if(this.header.nickname){
                 ic.addBlob("nnamecip", this.header.nickname)
-                    .AESDecrypt("nnamecip", "k", "nname", true);
+                    .AESDecrypt("nnamecip", "k", "nname", true,  "CBC", "utf8");
                 this.header.nickname= ic.get("nname");
             }
         }catch(err){

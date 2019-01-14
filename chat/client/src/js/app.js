@@ -51,7 +51,6 @@ let recording = false;
 document.addEventListener('DOMContentLoaded', event => {
     console.log('initializing chat....');
     chat = new ChatClient();
-    window.chat = chat;
     loadSounds();
     setView("auth");
     setupChatListeners(chat);

@@ -34,7 +34,7 @@ export class ChatUtility{
         ic.sym.createKey("symk")
             .addBlob("payload", blob)
             .asym.setKey("pubk", publicKey, "public")
-            .sym.encrypt("payload", "symk", "blobcip", true, "CBC", "utf8")
+            .AESEncrypt("payload", "symk", "blobcip", true, "CBC", "utf8")
             .asym.encrypt("symk", "pubk", "symcip", "hex")
             .encodeBlobLength("symcip", lengthSymLengthEncoded, "0", "symciplength")
             .merge(["blobcip", "symcip", "symciplength"], "res");

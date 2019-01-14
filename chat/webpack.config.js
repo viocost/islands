@@ -16,21 +16,21 @@ module.exports = {
 
 
     optimization: {
-        minimize: false,
+        minimize: true,
         minimizer: [
             new OptimizeCSSAssetsPlugin({})
         ],
 
-        // splitChunks: {
-        //     cacheGroups: {
-        //         commons: {
-        //             test: /[\\/]node_modules[\\/]/,
-        //             name: "vendor",
-        //             chunks: "initial",
-        //         },
-        //     },
-        //     chunks: "initial",
-        // },
+        splitChunks: {
+            cacheGroups: {
+                commons: {
+                    test: /[\\/]node_modules[\\/]/,
+                    name: "vendor",
+                    chunks: "initial",
+                },
+            },
+            chunks: "initial",
+        },
     },
 
     plugins: [
