@@ -34,13 +34,14 @@ class FileUploader{
 
         let tempFileName = data.nonce + ".temp";
         let fileStream = self.hm.createAttachmentFileStream(data.pkfp, tempFileName);
-        stream.on("finish", ()=>{
+        stream.on("finish", async ()=>{
             console.log("Received end of stream. HashUnencrypted set to " + self.hashUnencrypted)
             ic.digestHash("h", "hres");
             console.log("HASH encrypted is " + ic.get("hres"));
             let tempName = data.nonce + ".temp";
             console.log("About to rename");
-            self.hm.renameTempUpload(data.pkfp, tempName, self.hashUnencrypted);
+            fileStream.end(); // to free the file
+            await self.hm.renameTempUpload(data.pkfp, tempName, self.hashUnencrypted);
             socket.emit("upload_success");
         });
 

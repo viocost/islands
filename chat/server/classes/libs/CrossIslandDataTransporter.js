@@ -55,7 +55,7 @@ class CrossIslandDataTransporter{
                 let stream =  self.hm.createAttachmentFileStream(data.myPkfp, tempName);
                 await self.transferAndVerifyFileFromPeer(socket, stream, data, data.hashEncrypted, data.signEncrypted, data.pubKey)
                 console.log("Renaming temp file");
-                self.hm.renameTempUpload(data.myPkfp, tempName, data.link.name);
+                await self.hm.renameTempUpload(data.myPkfp, tempName, data.link.name);
                 //All set. File transferred from peer
                 resolve()
             }catch(err){

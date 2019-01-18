@@ -521,20 +521,32 @@ class HistoryManager{
      * @param name
      */
     renameTempUpload(pkfp, tempName, name){
-        let self = this;
-        let path = this.getPath(pkfp, "files");
-        let oldName = path + tempName;
-        let newName = path+name;
+        return new Promise((resolve, reject)=>{
+            let self = this;
+            let path = this.getPath(pkfp, "files");
+            let oldName = path + tempName;
+            let newName = path+name;
+            let maxAttempts = 4;
+            let timeout = 1000;
+            let attempted = 0;
 
-        if(!self.fileExists(pkfp, tempName)){
-            throw "renameTempUpload: File " +(path+tempName) + " does not exist";
-        }
-        try{
-            console.log("File exists. Renaming...");
-            fs.renameSync(oldName, newName)
-        }catch(err){
-            throw new Error("renameTempUpload error" + err)
-        }
+            function renameAttempt(){
+                try{
+                    console.log("File exists. Renaming...");
+                    fs.renameSync(oldName, newName);
+                    resolve();
+                }catch(err){
+                    if ((/BSY/i.test(err.code) || /BUSY/i.test(err.code)) && attempted < maxAttempts){
+                        console.log("File is busy");
+                        attempted++;
+                        setTimeout(renameAttempt, timeout);
+                    }else {
+                        reject("renameTempUpload error: " + err);
+                    }
+                }
+            }
+            renameAttempt();
+        })
     }
 
     /**

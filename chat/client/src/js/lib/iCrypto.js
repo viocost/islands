@@ -1078,7 +1078,6 @@ export class iCrypto {
         if (!this.keysExist(things))
             throw "merge: some or all objects with such keys not found ";
 
-        console.log("Mergin' things");
         let result = "";
         for (let i= 0; i< things.length; ++i){
             let candidate = this.get(things[i]);

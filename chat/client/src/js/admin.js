@@ -1,4 +1,3 @@
-import '@babel/polyfill';
 import '../css/main.sass';
 
 import * as toastr from "toastr";

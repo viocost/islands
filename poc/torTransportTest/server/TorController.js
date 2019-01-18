@@ -1,8 +1,7 @@
 const TorControl = require('tor-control');
-const SocksProxyAgent = require("socks5-http-client/lib/Agent");
+const SocksProxyAgent = require('socks-proxy-agent');
 const ioClient = require('socket.io-client');
-let socksProxyHost = "127.0.0.1";
-let socksProxyPort = "9050";
+const proxy = process.env.socks_proxy || 'socks://127.0.0.1:9050';
 
 class TorController extends TorControl{
     constructor(opts){
@@ -108,10 +107,7 @@ class TorController extends TorControl{
         return new Promise((resolve, reject)=>{
             console.log("Awaiting publication!");
             let attempt = 0;
-            const agent = new SocksProxyAgent({
-                socksHost: socksProxyHost,
-                socksPort: socksProxyPort
-            });
+            let agent = new SocksProxyAgent(proxy);
             let endpoint = this.getWSOnionConnectionString(service);
 
             const socket = ioClient(endpoint + '/chat', {
