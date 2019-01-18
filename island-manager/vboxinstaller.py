@@ -116,7 +116,7 @@ class VBoxInstaller:
     @check_output
     def install_vbox(self, path_to_installer):
         cmd = self.cmd.install_vbox(path_to_installer)
-        return Executor.exec_stream(cmd, self.message, self.error, require_admin=True)
+        return Executor.exec_stream(cmd, self.message, self.error)
 
     @check_output
     def uninstall_vbox(self):
