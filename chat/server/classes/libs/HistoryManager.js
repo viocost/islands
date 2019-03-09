@@ -70,7 +70,6 @@ class HistoryManager{
     }
 
 
-
     /**
      * initializes new topic and history file. After completion history will be found in
      * historyDirectory/topicID/history
@@ -990,6 +989,11 @@ class HistoryManager{
         return data.toString();
     }
 
+    async deleteTopic(pkfp){
+        let path =  this.getPath(pkfp, "topicRoot");
+        await fs.remove(path)
+    }
+
 
     async taSaveInviteIndex(taPkfp, data){
         let path = this.getPath(taPkfp, "inviteIndex");
@@ -1133,7 +1137,7 @@ class HistoryManager{
 
     async fixHistory(pkfp){
         let historyFixer = new HistoryFixer("this.historyDirectory" + pkfp,  "/history_store")
-        await historyFixer.fixHistory()
+        await historyFixer.fixHistory();
         await historyFixer.finalize();
     }
 

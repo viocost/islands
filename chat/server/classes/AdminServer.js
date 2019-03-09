@@ -1,33 +1,67 @@
 const iCrypto = require('./libs/iCrypto');
 const fs = require('fs');
 const Logger = require("./libs/Logger.js");
+const VaultManager = require("./libs/VaultManager");
 const HiddenServiceManager = require("./libs/HiddenServiceManager");
-
-
-
+const HSMap = require("./libs/HSVaultMap");
 const shell = require('shelljs');
-const TorController = require('./libs/TorController.js');
+const AdminKey = require ("./libs/AdminKey");
+
 let keysFolderPath;
 let updatePath;
-
 let islandConfig;
 let appPort;
 let appHost;
 let islandHiddenServiceManager;
+let vaultManager;
+let VERSION;
+
+
+
+module.exports.initAdminEnv = function(app, config, host, port, version, hsManager){
+    AdminKey.init(config)
+    Logger.debug("initAdminEnv called");
+    islandConfig = config;
+    app.post("/admin", handleAdminRequest);
+    appPort = port;
+    appHost = host;
+    islandHiddenServiceManager  = new HiddenServiceManager(config, host, port);
+    islandHiddenServiceManager.init();
+    vaultManager = new VaultManager(config);
+    VERSION = version
+};
 
 
 const handlers = {
-  "set_admin": setAdmin,
+  "admin_setup": adminSetup,
   "admin_login": adminLogin,
   "update_from_file": islandUpdateFromFile,
   "update_from_github": islandUpdateFromGithub,
-  "launch_hidden_service": launchIslandHiddenService,
-  "delete_hidden_service": deleteIslandHiddenService,
+  "launch_admin_hidden_service": launchAdminHiddenService,
+  "create_guest": createGuest,
+  "enable_hidden_service": enableHiddenService,
+  "disable_hidden_service": disableHiddenService,
+  "delete_guest": deleteGuest,
+  "delete_hidden_service": deleteAdminHiddenService,
+  "update_hs_description": updateHSDescription,
   "load_logs": loadLogs,
   "log_level_change": changeLogLevel,
   "logger_state_change": changeLoggerState,
    "clear_logs": clearLogs
 };
+
+function handleAdminRequest(req, res){
+    console.log("Handling admin request...");
+    try{
+        handlers[req.body.action](req, res)
+    }catch(err){
+        console.log("Error handling admin request: " + err);
+        res.status = 400;
+        res.set('Content-Type', 'application/json');
+        res.end({error: err.message});
+    }
+}
+
 
 
 async function clearLogs(req, res){
@@ -81,24 +115,13 @@ function changeLoggerState(req, res){
 }
 
 
-function handleAdminRequest(req, res){
-    console.log("Handling admin request...");
-    try{
-        handlers[req.body.action](req, res)
-    }catch(err){
-        console.log("Error handling admin request: " + err);
-        res.status = 500;
-        res.set('Content-Type', 'text/html');
-        res.end('{"fail" : ' + err + '}');
-    }
-}
 
 
 
-/********ISLAND HIDDEN SERVICES ********/
+/********ISLAND HIDDEN SERVICES MANAGEMENT ********/
 /**
  * Launches Island hidden service, if it is not up already
- *
+ * Maps it to admin's vault
  * req.body must have following properties:
  *  pkfp - Public Key Fingerprint of Island's Administrator
  *  nonce
@@ -114,123 +137,290 @@ function handleAdminRequest(req, res){
  * @param res - standard response
  * @returns {Promise<void>}
  */
-async function  launchIslandHiddenService(req, res){
-    console.log("Launching hidden service");
+function  launchAdminHiddenService(req, res){
+    Logger.debug("Launching admin hidden service");
     let data = req.body;
 
-    let returnSuccess = (newHS)=>{
-        if (newHS){
-            res.set('Content-Type', 'application/json');
-            res.status(200).send({
-                message: "HS launch success",
-                hiddenServices: islandHiddenServiceManager.getHiddenServices(),
-                newHS: newHS});
-        }
-
+    let returnSuccess = (hiddenServices)=>{
+        Logger.debug("Success launching admin HS")
+        res.set('Content-Type', 'application/json');
+        res.status(200).send({
+                hiddenServices: hiddenServices
+            })
     };
 
+    let returnError = (err, status = 400)=>{
+        Logger.debug("Error launching admin HS: " + err.message);
+        res.status(status).send("Launch hidden servce error: " + err);
+    };
+    if(!verifyRequest(data.pkfp, data.requestString, data.sign, false)) {
+        Logger.warn("Request was not verified!")
+        returnError("Request verification failed", 401);
+    }
+    let requestData = JSON.parse(data.requestString);
+    islandHiddenServiceManager.launchIslandHiddenService(
+        true,
+        requestData.privateKey,
+        requestData.onion
+    )
+        .then((launchRes)=>{
+            if (launchRes.err){
+                returnError(launchRes.err);
+                return
+        }
+            //update HSVault map
+            HSMap.put(launchRes.fullAddress, data.pkfp, "", true);
+            //return result
+            returnSuccess(HSMap.getMapAsString());
+        }).catch(err=>{
+            Logger.debug(err.message);
+            returnError(err)
+        });
+}
+
+function deleteAdminHiddenService(req, res){
+    let returnSuccess = (hiddenServices)=>{
+        Logger.debug("Admin hidden service removed");
+        res.set('Content-Type', 'application/json');
+        res.status(200).send({
+            hiddenServices: hiddenServices
+        })
+    };
+
+    let returnError = (err, status = 400)=>{
+        Logger.debug("Error launching admin HS: " + err.message);
+        res.status(status).send("Launch hidden servce error: " + err);
+    };
+
+    let data = req.body;
+
+    if(!verifyRequest(data.pkfp, data.requestString, data.sign, false)) {
+        Logger.warn("Request was not verified!");
+        returnError("Request verification failed", 401);
+    }
+    let requestData = JSON.parse(data.requestString);
+    islandHiddenServiceManager.deleteHiddenService(requestData.onion)
+        .then(()=>{
+            HSMap.delOnion(requestData.onion);
+            returnSuccess(HSMap.getMapAsString())
+        })
+        .catch(err =>{
+            returnError(err, 500);
+        })
+}
+
+function deleteGuest(req, res){
+    let returnSuccess = (hiddenServices)=>{
+        Logger.debug("Guest hidden service and vault are removed");
+        res.set('Content-Type', 'application/json');
+        res.status(200).send({
+            hiddenServices: hiddenServices
+        })
+    };
+
+    let returnError = (err, status = 400)=>{
+        Logger.debug("Error launching admin HS: " + err.message);
+        res.status(status).send("Launch hidden servce error: " + err);
+    };
+    try{
+        let data = req.body;
+
+        if(!verifyRequest(data.pkfp, data.requestString, data.sign, false)) {
+            Logger.warn("Request was not verified!");
+            returnError("Request verification failed", 401);
+        }
+        let requestData = JSON.parse(data.requestString);
+        _deleteGuestHelper(requestData.onion)
+            .then(returnSuccess)
+            .catch(err=>{
+                returnError(err, 500)
+            })
+    }catch(err){
+        Logger.error("Error deleting guest: " + err);
+        returnError(err, 500);
+    }
+
+}
+
+/**
+ * Async helper. Deletes guest vault, disables and deletes guest hidden service
+ * Returns map of current hidden services
+ * @param onion
+ * @returns {Promise<*>}
+ * @private
+ */
+async function _deleteGuestHelper(onion){
+    await islandHiddenServiceManager.deleteHiddenService(onion);
+    await vaultManager.deleteVault(HSMap.getVaultId(onion));
+    HSMap.delOnion(onion);
+    return HSMap.getMapAsString()
+}
+
+//Crteates new guest vault and launches dedicated hidden service
+async function createGuest(req, res){
+    let data = req.body;
     let returnError = (err)=>{
         res.status(500).send("Launch hidden servce error: " + err);
     };
 
-    if(!verifyRequest(data.pkfp, data.nonce, data.sign)) {
-        returnError("The request verification failed");
-    }
-
-    let launchRes = await islandHiddenServiceManager.launchIslandHiddenService(
-        !!data.permanent,
-        data.hsPrivateKey,
-        data.onion
-    );
-
-    launchRes.err ? returnError(launchRes.err) : returnSuccess(launchRes);
-
-
-    // //LAUNCH SERVICE
-    // let torControlOpts = {
-    //     password: islandConfig.torConnector.torControlPassword,
-    //     host: islandConfig.torConnector.torControlHost,
-    //     port:  islandConfig.torConnector.torControlPort
-    // };
-    //
-    // let torCon = new TorController(torControlOpts);
-    // let keyType = data.privateKey ? "RSA1024" : "NEW";
-    // let keyContent = data.hsPrivateKey;
-    // let onion = data.onion;
-    // let port = data.port ? data.port : "80";
-    //
-    //
-    // port = port.toString().trim() + "," + appHost + ":" + appPort.toString();
-    //
-    //
-    // //IF KEY PASSED - CHECK IF HS IS UP
-    // if (keyContent){
-    //     let hsup = await torCon.isHSUp(onion);
-    //     if(hsup){
-    //         let hsid = onion.substring(0, 16);
-    //         islandHiddenServices.add(hsid)
-    //         returnSuccess({
-    //             hsid: hsid,
-    //             privateKey: keyContent
-    //         })
-    //     }
-    // }
-    //
-    // let response = await torCon.createHiddenService({
-    //     detached: true,
-    //     port: port,
-    //     keyType: keyType,
-    //     keyContent: keyContent,
-    // });
-    //
-    // if(response.code === 250){
-    //     let newHS = {
-    //         hsid: response.messages.ServiceID.substring(0, 16) + ".onion",
-    //         privateKey: response.messages.PrivateKey
-    //
-    //     };
-    //     //ADD HIDDEN SERVICE TO THE LIST
-    //     let hsid = response.messages.ServiceID.substring(0, 16);
-    //     islandHiddenServices.add(hsid);
-    //     returnSuccess(newHS)
-    // }
-}
-
-
-
-
-
-async function deleteIslandHiddenService(req, res){
-    console.log("Taking down island hidden service");
-
-    let data = req.body;
-    let hsToDelete = data.onion.substring(0, 16);
-    let returnSuccess = ()=>{
+    let returnSuccess = (hiddenServices)=>{
+        Logger.debug("Success launching guest HS");
         res.set('Content-Type', 'application/json');
         res.status(200).send({
-            message: "Hidden service has been taken down",
-            hiddenServices: islandHiddenServiceManager.getHiddenServices()
-        });
+            hiddenServices: hiddenServices
+        })
     };
 
-    let returnError = (err)=>{
-        res.status(500).send("Hidden servce deletion error: " + err);
-    };
+    let requestData = JSON.parse(data.requestString);
 
-    if(!verifyRequest(data.pkfp, data.nonce, data.sign)){
-        returnError("Invalid request");
+    if(!verifyRequest(data.pkfp, data.requestString, data.sign, false) ||
+       !verifyRequest(data.pkfp, requestData.vaultID, requestData.sign)) {
+        returnError("Request verification failed");
     }
+    islandHiddenServiceManager.launchIslandHiddenService()
+        .then((launchRes)=>{
+        if (launchRes.err){
+            returnError(launchRes.err);
+            return
+        }
+        vaultManager.createGuestVault(requestData.vaultID, requestData.sign);
+        HSMap.put(launchRes.fullAddress, requestData.vaultID);
+        returnSuccess(HSMap.getMapAsString())
+    })
+}
 
-    await islandHiddenServiceManager.deleteHiddenService(data.onion);
 
-    returnSuccess()
+async function enableHiddenService(req, res){
+    let data = req.body;
+    let returnSuccess = (hiddenServices)=>{
+        Logger.debug("Success enabling hidden service");
+        res.set('Content-Type', 'application/json');
+        res.status(200).send({
+            hiddenServices: hiddenServices
+        })
+    };
+
+    let returnError = (err, status = 400)=>{
+        Logger.debug("Error enabling hidden service " + err.message);
+        res.status(status).send("Enable hidden servce error: " + err);
+    };
+
+    try{
+        if(!verifyRequest(data.pkfp, data.requestString, data.sign, false)) {
+            Logger.warn("Request was not verified!");
+            returnError("Request verification failed", 401);
+        }
+
+        let requestData = JSON.parse(data.requestString);
+        islandHiddenServiceManager.enableSavedHiddenService(requestData.onion);
+        HSMap.setOnionState(requestData.onion, true);
+        returnSuccess(HSMap.getMapAsString())
+    }catch(err){
+        returnError(err, 500);
+    }
+}
+
+
+async function disableHiddenService(req, res){
+    let data = req.body;
+    let returnSuccess = (hiddenServices)=>{
+        Logger.debug("Success disabling hidden service");
+        res.set('Content-Type', 'application/json');
+        res.status(200).send({
+            hiddenServices: hiddenServices
+        })
+    };
+
+    let returnError = (err, status = 400)=>{
+        Logger.debug("Error disabling hidden service " + err.message);
+        res.status(status).send("Disable hidden servce error: " + err);
+    };
+    try{
+        if(!verifyRequest(data.pkfp, data.requestString, data.sign, false)) {
+            Logger.warn("Request was not verified!");
+            returnError("Request verification failed", 401);
+        }
+
+        let requestData = JSON.parse(data.requestString);
+        islandHiddenServiceManager.disableSavedHiddenService(requestData.onion);
+        HSMap.setOnionState(requestData.onion, false);
+
+        returnSuccess(HSMap.getMapAsString())
+    }catch(err){
+        returnError(err, 500)
+    }
 
 }
 
 
-/************** END *******************/
 
-function verifyRequest(pkfp, nonce, sign){
+
+async function updateHSDescription(req, res){
+    let data = req.body;
+    let returnSuccess = (hiddenServices)=>{
+        Logger.debug("Hidden service description updated");
+        res.set('Content-Type', 'application/json');
+        res.status(200).send({
+            hiddenServices: hiddenServices
+        })
+    };
+
+    let returnError = (err, status = 400)=>{
+        Logger.debug("Error updateing hidden service description: " + err.message);
+        res.status(status).send("Disable hidden servce error: " + err);
+    };
+
+    try{
+        if(!verifyRequest(data.pkfp, data.requestString, data.sign, false)) {
+            Logger.warn("Request was not verified!")
+            returnError("Request verification failed", 401);
+        }
+
+        let requestData = JSON.parse(data.requestString);
+        HSMap.setOnionDescription(requestData.onion, requestData.description);
+        returnSuccess(HSMap.getMapAsString())
+    }catch(err){
+        returnError(err, 500)
+    }
+
+
+}
+
+
+
+
+
+// async function deleteIslandHiddenService(req, res){
+//     console.log("Taking down island hidden service");
+//
+//     let data = req.body;
+//     let hsToDelete = data.onion.substring(0, 16);
+//     let returnSuccess = ()=>{
+//         res.set('Content-Type', 'application/json');
+//         res.status(200).send({
+//             message: "Hidden service has been taken down",
+//             hiddenServices: islandHiddenServiceManager.getHiddenServices()
+//         });
+//     };
+//
+//     let returnError = (err)=>{
+//         res.status(500).send("Hidden servce deletion error: " + err);
+//     };
+//
+//     if(!verifyRequest(data.pkfp, data.nonce, data.sign)){
+//         returnError("Invalid request");
+//     }
+//
+//     await islandHiddenServiceManager.deleteHiddenService(data.onion);
+//
+//     returnSuccess()
+//
+// }
+
+
+/********~ END ISLAND HIDDEN SERVICES MANAGEMENT ********/
+
+function verifyRequest(pkfp, nonce, sign, dehexify = true){
     let publicKey;
     try{
         publicKey = fs.readFileSync(keysFolderPath + pkfp, "utf8");
@@ -240,11 +430,15 @@ function verifyRequest(pkfp, nonce, sign){
     }
 
     let ic = new iCrypto();
-    ic.addBlob("nhex", nonce )
-        .setRSAKey("pubk", publicKey, "public")
-        .addBlob("sign", sign)
-        .hexToBytes("nhex", "n")
-        .publicKeyVerify("n", "sign", "pubk", "verified");
+    ic.setRSAKey("pubk", publicKey, "public")
+        .addBlob("sign", sign);
+    if(dehexify){
+        ic.addBlob("nhex", nonce )
+            .hexToBytes("nhex", "n")
+    } else{
+        ic.addBlob("n", nonce )
+    }
+    ic.publicKeyVerify("n", "sign", "pubk", "verified");
     return ic.get("verified")
 }
 
@@ -258,19 +452,20 @@ function adminLogin(req, res){
             res.status(200).send({
                 message: "Login successfull",
                 loggerInfo: loggerInfo,
-                hiddenServices: islandHiddenServiceManager.getHiddenServices()
+                hiddenServices: HSMap.getMapAsString()
             });
         } else{
             res.status(500).send("Login error: invalid key");
         }
     }catch(err){
         console.log("Admin login error: " + err);
-        res.status(500).send("Login error: unknown server error");
+        res.status(401).send("Request has not been verified");
     }
 
 }
 
-function setAdmin(req, res){
+function adminSetup(req, res){
+
     // make sure there is no keys or
     console.log("Setting admin");
 
@@ -278,11 +473,11 @@ function setAdmin(req, res){
         throw "Error setting admin: admin key is already registered"
     }
 
+    //Check public key and signature
     let data = req.body;
-
     let ic = new iCrypto();
     ic.addBlob("nhex", data.nonce )
-        .setRSAKey("pubk", data.publickKey, "public")
+        .setRSAKey("pubk", data.adminPublickKey, "public")
         .addBlob("sign", data.sign)
         .hexToBytes("nhex", "n")
         .publicKeyVerify("n", "sign", "pubk", "res");
@@ -291,15 +486,23 @@ function setAdmin(req, res){
         throw "Error setting admin: public key was not verified";
     }
 
+    //Check vault
+    let vaultBlob = data.vault;
+    let signature = data.vaultSign;
+    let publicKey = data.vaultPublicKey;
     ic.getPublicKeyFingerprint("pubk", "pkfp");
+    let vaultID = vaultManager.saveNewVault(vaultBlob, signature, publicKey, ic.get("pkfp"));
+
     try{
 
         let path = keysFolderPath + ic.get('pkfp');
         fs.writeFileSync(path, ic.get('pubk'));
-        res.set('Content-Type', 'text/html');
-        res.end('{"success" : "Public key is written", "status" : 200}');
+        res.set('Content-Type', 'application/json')
+            .status(200)
+            .send({vaultID: vaultID});
+            Logger.debug("Admin vault registered successfully!")
     }catch(err) {
-        throw "Error setting admin: " + err
+        Logger.error("Error setting admin: " + err)
     }
 }
 
@@ -428,15 +631,17 @@ module.exports.isSecured = function(){
 };
 
 
-module.exports.initAdminEnv = function(app, config, host, port){
-    console.log("initAdminEnv called");
-    islandConfig = config;
-    app.post("/admin", handleAdminRequest);
-    appPort = port;
-    appHost = host;
-    islandHiddenServiceManager = new HiddenServiceManager(islandConfig, appHost, appPort);
-    islandHiddenServiceManager.init()
+module.exports.getAdminVault = function(){
+    let pubKey = fs.readFileSync(keysFolderPath + fs.readdirSync(keysFolderPath)[0], "utf8");
+    if (!pubKey){
+        throw "Error: public key not found."
+    }
 
+    let ic = new iCrypto();
+    ic.setRSAKey("pubk", pubKey, "public")
+        .getPublicKeyFingerprint("pubk", "pkfp");
+    Logger.debug("Searching for vault with id: " + ic.get("pkfp"));
+    return vaultManager.getVault(ic.get("pkfp"));
 };
 
 
@@ -452,5 +657,17 @@ module.exports.setHSFolderPath = function(hsFolderPath){
 };
 
 
+module.exports.getAdminPublicKey = function(){
 
+    if (!fs.existsSync(keysFolderPath)){
+        fs.mkdirSync(keysFolderPath);
+        return false;
+    }
 
+    try{
+        let files = fs.readdirSync(keysFolderPath);
+        return files && files.length>0;
+    } catch(err){
+        throw err;
+    }
+};

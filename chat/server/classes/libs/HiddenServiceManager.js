@@ -2,6 +2,7 @@ const TorController = require("./TorController");
 const fs = require("fs-extra");
 const iCrypto = require("./iCrypto");
 const Logger = require("../libs/Logger.js");
+const HSMap = require("./HSVaultMap");
 
 class HiddenServiceManager{
 
@@ -19,15 +20,10 @@ class HiddenServiceManager{
 
         this.torCon = new TorController(torControlOpts);
         this.hiddenServices = {};
-        this.islandConfig = islandConfig;
         this.setHSFolderPath(islandConfig['hiddenServicesPath']);
-
         this.appPort = appPort;
         this.appHost = appHost;
-
         this.loadSavedHiddenServices();
-
-
     }
 
     init(){
@@ -48,28 +44,18 @@ class HiddenServiceManager{
     }
 
 
-
     async launchIslandHiddenService(permanent=true, hsPrivateKey, onion, port=80){
         let self = this;
         let keyType = hsPrivateKey ? "RSA1024" : "NEW";
         let keyContent = hsPrivateKey;
         port = port.toString().trim() + "," + self.appHost + ":" + self.appPort.toString();
 
-
-        if (hsPrivateKey){
-            let hsup = await torCon.isHSUp(onion);
-            if(hsup){
-                let hsid = onion.substring(0, 16);
-
-                //TODO Add hidden service
-                // islandHiddenServices.add(hsid)
-                return({
-                    hsid: hsid,
-                    privateKey: keyContent
-                })
-            }
+        if (hsPrivateKey && await this.torCon.isHSUp(onion)){
+            return({
+                hsid: onion.substring(0, 16),
+                privateKey: keyContent
+            })
         }
-
 
         let response = await self.torCon.createHiddenService({
             detached: true,
@@ -79,12 +65,14 @@ class HiddenServiceManager{
         });
 
         if(response.code === 250){
+            let privateKey = keyContent ? iCrypto.base64ToPEM(keyContent) :
+                iCrypto.base64ToPEM(response.messages.PrivateKey.substr(8));
+
             let newHS = new HiddenService({
                 onion: response.messages.ServiceID.substring(0, 16) + ".onion",
                 permanent: permanent,
-                privateKey: iCrypto.base64ToPEM(response.messages.PrivateKey.substr(8))
+                privateKey: privateKey
             });
-
             await self.addHiddenService(newHS);
             return newHS;
         } else {
@@ -92,23 +80,58 @@ class HiddenServiceManager{
         }
     }
 
-
     async addHiddenService(hs){
         this.hiddenServices[hs.id] = hs;
-        if(hs.permanent){
-            await this.saveNewHiddenService(hs)
+        if(hs.permanent && !this._isHSexist(hs.id)){
+            return this.saveNewHiddenService(hs)
         }
     }
 
-    async saveNewHiddenService(hs){
+    saveNewHiddenService(hs){
         return new Promise((resolve, reject)=>{
             let filepath = this.getHSFolderPath() + hs.id;
-            fs.writeFileSync(filepath, hs.privateKey,  (err)=>{
+            fs.writeFile(filepath, hs.privateKey,  (err)=>{
                 if(err) reject(err);
-                resolve(err);
+                resolve();
             })
         })
     }
+
+    enableSavedHiddenService(hs){
+        return new Promise(async (resolve, reject)=>{
+            try{
+                Logger.debug("Attempting to enable hidden service: " + hs);
+                if(await this.torCon.isHSUp(hs)){
+                    HSMap.setOnionState(hs, true);
+                    resolve();
+                    return;
+                }
+
+                let privKey = iCrypto.pemToBase64(this._getHSPrivateKey(hs));
+                await this.launchIslandHiddenService(true, privKey, hs);
+                resolve()
+            } catch(err){
+                Logger.error("Error enabling hidden service: " + hs + " \n" + err);
+                reject(err)
+            }
+        })
+    }
+
+
+    disableSavedHiddenService(hs){
+        return new Promise(async (resolve, reject)=>{
+            try{
+                if(await this.torCon.isHSUp(hs)){
+                    await this.torCon.killHiddenService(hs)
+                    resolve();
+                }
+            }catch(err){
+                reject(err);
+            }
+        })
+    }
+
+
 
     getHiddenServices(){
         let services = {};
@@ -128,8 +151,10 @@ class HiddenServiceManager{
 
     async deleteHiddenService(hsid){
         hsid = hsid.trim().substring(0, 16);
-        await this.torCon.killHiddenService(hsid);
-        if(this.hiddenServices[hsid].permanent){
+        if(await this.torCon.isHSUp(hsid)){
+            await this.torCon.killHiddenService(hsid);
+        }
+        if(fs.existsSync(this.getHSFolderPath() + hsid)){
             fs.unlinkSync(this.getHSFolderPath() + hsid);
         }
         delete this.hiddenServices[hsid];
@@ -140,7 +165,7 @@ class HiddenServiceManager{
 
         HSFolderPath = HSFolderPath.trim();
         this.ensureHSDirectoryExists(HSFolderPath);
-        this.islandHSFolderPath = HSFolderPath[-1] !== "/" ?
+        this.islandHSFolderPath = HSFolderPath[HSFolderPath.length - 1] !== "/" ?
              HSFolderPath + "/" :
              HSFolderPath;
     }
@@ -164,26 +189,47 @@ class HiddenServiceManager{
         }
     }
 
+
+    _getHSPrivateKey(hsid){
+        hsid = hsid.substring(0, 16);
+        let path = this.getHSFolderPath() + hsid
+        if(!fs.existsSync(path)){
+            throw "Hidden service private key is not found";
+        }
+        return fs.readFileSync(path, "utf8")
+    }
+
+    _isHSexist(hsid){
+        hsid = hsid.substring(0, 16);
+        return fs.existsSync(this.getHSFolderPath() + hsid);
+    }
+
+
     async ensureSavedHiddenServicesLaunched(){
         let self = this;
+        let map = HSMap.getMap();
+
         for (let hs of Object.keys(self.hiddenServices)){
-            console.log("Launching hs: " + hs);
-
             Logger.debug("Launching " + hs + "service");
-            if(await self.torCon.isHSUp(hs)){
-                continue
-            }
+            if(await self.torCon.isHSUp(hs) && !map[hs].enabled){
+                Logger.debug("Disabling hidden service: " + hs);
+                let response = await self.torCon.killHiddenService(hs);
+                if(response.code != 250){
+                    Logger.error("Error launching hs: " + hs , JSON.stringify(response));
+                }
+                //kill hidden service
+            } else if (map[hs].enabled && ! await self.torCon.isHSUp(hs)){
+                let keyContent = iCrypto.pemToBase64(self.hiddenServices[hs].privateKey);
 
-            let keyContent = iCrypto.pemToBase64(self.hiddenServices[hs].privateKey);
-
-            let response = await self.torCon.createHiddenService({
-                detached: true,
-                port: "80" + "," + self.appHost + ":" + self.appPort.toString(),
-                keyType: "RSA1024",
-                keyContent: keyContent,
-            });
-            if(response.code != 250){
-                Logger.error("Error launching hs: " + hs , JSON.stringify(response));
+                let response = await self.torCon.createHiddenService({
+                    detached: true,
+                    port: "80" + "," + self.appHost + ":" + self.appPort.toString(),
+                    keyType: "RSA1024",
+                    keyContent: keyContent,
+                });
+                if(response.code != 250){
+                    Logger.error("Error launching hs: " + hs , JSON.stringify(response));
+                }
             }
         }
     }

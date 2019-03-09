@@ -1,24 +1,65 @@
 import '../css/main.sass';
 
+
 import * as toastr from "toastr";
 window.toastr = toastr;
-
 import { iCrypto } from "./lib/iCrypto";
+import { Vault } from "./lib/Vault";
 import * as forge from "node-forge";
 import * as CuteSet from "cute-set"
+import * as dropdown from "./lib/dropdown";
+import * as editableField from "./lib/editable_field";
+import { ChatUtility } from "./chat/ChatUtility"
 
+
+
+
+import { verifyPassword } from "./lib/PasswordVerify";
+
+import * as util from "./lib/dom-util"
+
+window.iCrypto = iCrypto;
 
 let adminSession;
 let filterFieldSelector;
 let logTableBody;
 
+
+
+/**
+ * Closure for processing admin requests while admin logged in
+ * Initialized when admin logs in
+ * @data - Object with request data
+ * @onSuccess - success handler
+ * @onError - error handler
+ */
+let processAdminRequest = ()=>{throw"Admin session uninitialized"};
+
+
 document.addEventListener('DOMContentLoaded', event => {
 
+    if (!secured){
+        util.$('#island-setup').addEventListener("click", setupIslandAdmin);
+        util.$("#setup--wrapper").addEventListener("keyup", (ev)=>{
+            if (ev.which === 13 || ev.keyCode === 13) {
+                setupIslandAdmin();
+            }
+        });
+        util.displayFlex('#setup--wrapper');
+        return ;
+    }
     $('#admin-login').click(adminLogin);
-    $('#island-setup').click(setupIslandAdmin);
-    $('#close-code-view').click(closeCodeView);
+    util.$("#admin-login--wrapper").addEventListener("keyup", (ev)=>{
+        if (ev.which === 13 || ev.keyCode === 13) {
+            adminLogin();
+        }
+    })
+
+
     $('#run-update').click(launchUpdate);
-    $('#add-hidden-service').click(launchHiddenService);
+
+    $('#add-admin-service').click(addAdminHiddenService);
+    $('#add-guest-service').click(createGuest);
 
     $('#update-from-file').click(switchUpdateMode);
     $('#update-from-git').click(switchUpdateMode);
@@ -28,18 +69,16 @@ document.addEventListener('DOMContentLoaded', event => {
 
     $('#clear-logs').click(clearLogs);
     $('#update-file').change(processUpdateFile);
-    if (secured) {
-        $('#admin-login--wrapper').css('display', "flex");
-        $('#setup--wrapper').hide();
-    } else {
-        $('#admin-login--wrapper').hide();
-        $('#setup--wrapper').show();
-    }
+
+    $('#admin-login--wrapper').css('display', "flex");
+    $('#setup--wrapper').hide();
+
     $('#login-setup--wrapper').css('display', "block");
 
     $('.update-option').each((index, el) => {
         $(el).click(switchUpdateOption);
     });
+
     logTableBody = document.querySelector("#log-content").lastElementChild;
     filterFieldSelector = document.querySelector('#filter-field-selector');
     filterFieldSelector.addEventListener("change", filterLogs);
@@ -47,7 +86,179 @@ document.addEventListener('DOMContentLoaded', event => {
     $('#log-reverse').click(reverseLogList);
     prepareAdminMenuListeners();
     prepareLogPageListeners();
+    autoLogin();
 });
+
+
+function autoLogin(){
+
+    let url = new URL(window.location.href);
+    let id = url.searchParams.get("id");
+    if(!id) return;
+    loadingOn();
+    let token = url.searchParams.get("token");
+    let pkcipher = localStorage.getItem(id);
+    if (!pkcipher){
+        loadingOff();
+        throw ("Autologin failed: no private ley found in local storage");
+    }
+
+    let ic = new iCrypto();
+    ic.addBlob("pkcip", pkcipher)
+        .addBlob("key", token)
+        .AESDecrypt("pkcip", "key", "privk", true, "CBC", "utf8");
+    let privateKey = ic.get("privk");
+
+    requestAdminLogin(privateKey)
+        .then(()=>{})
+        .catch(()=>{});
+    localStorage.removeItem(id);
+}
+
+
+//*********ISLAND ACCESS SECTION*********************//
+
+function addAdminHiddenService(){
+    try{
+        processAdminRequest({
+            action: "launch_admin_hidden_service",
+            permanent: true
+        }, onHiddenServiceUpdate, displayServerRequestError)
+
+    } catch (err) {
+        toastr.warning("Error creating admin hidden service: " + err.message);
+
+    }
+}
+
+function createGuest() {
+    try{
+        let ic = new iCrypto();
+        ic.createNonce("n")
+            .setRSAKey("privk", adminSession.privateKey, "private")
+            .privateKeySign("n", "privk", "sign")
+            .bytesToHex("n", "nhex");
+        processAdminRequest({
+            action: "create_guest",
+            vaultID: ic.get("nhex"),
+            sign: ic.get("sign"),
+            permanent: true
+        }, onHiddenServiceUpdate, displayServerRequestError)
+
+    } catch (err) {
+        toastr.warning("Error creating admin hidden service: " + err.message);
+    }
+}
+
+
+function enableHiddenService(ev){
+    let onion = ev.target.parentNode.parentNode.parentNode.parentNode.children[1].innerText;
+
+    try{
+        processAdminRequest({
+            action: "enable_hidden_service",
+            onion: onion
+
+        }, onHiddenServiceUpdate, displayServerRequestError)
+    }catch(err){
+        displayServerRequestError(err)
+    }
+}
+
+function disableHiddenService(ev){
+    let onion = ev.target.parentNode.parentNode.parentNode.parentNode.children[1].innerText;
+
+    try{
+        processAdminRequest({
+            action: "disable_hidden_service",
+            onion: onion
+        }, onHiddenServiceUpdate, displayServerRequestError)
+    }catch(err){
+        displayServerRequestError(err)
+    }
+}
+
+
+
+/**
+ * Deactivates and deletes hidden service
+ * If it is guest hidden service - delet
+ *
+ * @param ev
+ */
+function deleteGuest(ev){
+    try{
+        let row = ev.target.parentNode.parentNode.parentNode.parentNode;
+        let onion = row.children[1].innerText;
+        let isAdmin = /admin/i.test(row.children[3].innerText);
+        if(isAdmin){
+            throw "Only applicable to guest hidden service";
+        }
+        if(!confirm("This will delete permanently hidden service and associated with it guest vault." +
+            "After this operation guest will no longer be able to access this island. \n\nProceed?")){
+            return
+        }
+        processAdminRequest({
+            action: "delete_guest",
+            onion: onion
+        }, onHiddenServiceUpdate, displayServerRequestError)
+    }catch(err){
+        toastr.warning("Error deleting guest: " + err);
+        console.error(err);
+    }
+}
+
+function deleteAdminHiddenService(ev){
+    let row = ev.target.parentNode.parentNode.parentNode.parentNode;
+    let onion = row.children[1].innerText;
+    let isAdmin = /admin/i.test(row.children[3].innerText);
+    try{
+        if(!isAdmin){
+            throw "Only applicable to admin hidden service";
+        }
+        processAdminRequest({
+            action: "delete_hidden_service",
+            onion: onion
+        }, onHiddenServiceUpdate, displayServerRequestError)
+    }catch(err){
+        toastr.warning("Error deleting guest: " + err);
+        console.error(err);
+    }
+}
+
+
+function displayServerRequestError(err){
+    toastr.warning("Error creating admin hidden service: " + err.responseText)
+}
+
+//TODO finish method!
+// function deleteHiddenService(ev) {
+//     let onion = ev.target.previousSibling.innerHTML;
+//
+//     let privKey = adminSession.privateKey;
+//     let pkfp = adminSession.pkfp;
+//     let ic = new iCrypto();
+//     ic.createNonce('n').setRSAKey("pk", privKey, 'private').privateKeySign('n', 'pk', 'sign').bytesToHex('n', 'nhex');
+//
+//     $.ajax({
+//         type: "POST",
+//         url: "/admin",
+//         dataType: "json",
+//         data: {
+//             action: "delete_hidden_service",
+//             nonce: ic.get('nhex'),
+//             sign: ic.get('sign'),
+//             pkfp: pkfp,
+//             onion: onion
+//         },
+//         success: processIslandHiddenServiceDeletion,
+//         err: err => {
+//             console.log("Error deleting hidden service: " + err);
+//         }
+//     });
+// }
+
+
 
 /**
  * Updates list of running Island hidden services
@@ -70,7 +281,7 @@ function updateHiddenServicesList(hiddenServices) {
         num.innerHTML = "#" + enumer;
         val.innerHTML = hiddenServices[key].id.substring(0, 16) + ".onion";
         del.innerHTML = "Delete";
-        del.addEventListener("click", deleteHiddenService);
+        del.addEventListener("click", deleteGuest);
         hsWrap.appendChild(num);
         hsWrap.appendChild(val);
         hsWrap.appendChild(del);
@@ -79,122 +290,206 @@ function updateHiddenServicesList(hiddenServices) {
     }
 }
 
-function processNewIslandHiddenServiceAdd(data, response) {
-    //UPDATE HS list
-    let hiddenServices = data.hiddenServices;
-    updateHiddenServicesList(hiddenServices);
-    let newHS = data.newHS;
-    //SHOW new HS info in modal box if it was added
-    if (newHS) {
-        let bodyWrapper = document.createElement("div");
-        let pkWrapper = document.createElement("div");
-        let tempWrap = document.createElement("div");
-        pkWrapper.innerHTML = "<br><b>Hidden service private key:</b> <br> <textarea class='key-display'>" + newHS.privateKey + "</textarea>";
-        bodyWrapper.appendChild(pkWrapper);
-        tempWrap.appendChild(bodyWrapper);
-        showModalNotification("Hidden service launched!", tempWrap.innerHTML);
+
+
+function onHiddenServiceUpdate(data) {
+
+    let hiddenServices = JSON.parse(data.hiddenServices);
+
+    let tableBody = util.$("#hidden-services-wrap");
+    tableBody.innerHTML = "";
+    let enumer = 1;
+    for (let key of Object.keys(hiddenServices)){
+        let isEnabled = hiddenServices[key].enabled;
+        let row = util.bake("tr");
+        let enumEl = util.bake("td", {classes: "hs-enum", text: enumer});
+        let link = util.bake("td", {classes: "hs-link", text: key + ".onion"});
+
+        let description = extractDescription(hiddenServices[key].description)
+
+        let hsDesc = bakeDescriptionElement(util.bake("td", {classes: "hs-desc"}), description);
+        let hsType = util.bake("td", {classes: "hs-type", text: hiddenServices[key].admin ? "Admin" : "User"});
+        let status = util.bake("td", {classes: ["hs-status", isEnabled ? "hs-status-enabled" : "hs-status-disabled" ],
+            text: isEnabled ? "Enabled" : "Disabled"});
+        let actions = bakeHsRecordActionsMenu(util.bake("td", {classes: "hs-actions"}),
+            hiddenServices[key].admin);
+        util.appendChildren(row, [enumEl, link, hsDesc, hsType, status, actions]);
+        tableBody.appendChild(row);
+        enumer++;
+        link.addEventListener("click", (ev)=>{
+            copyTextToBuffer(ev.target.innerText, "Onion link copied to clipboard")
+        })
     }
 }
 
-function processIslandHiddenServiceDeletion(data, response) {
-    let hiddenServices = data.hiddenServices;
-    updateHiddenServicesList(hiddenServices);
-    toastr.info("Hidden service has been taken down");
+
+function extractDescription(cipher){
+    if (cipher === undefined || cipher === ""){
+        return "";
+    }
+    return ChatUtility.decryptStandardMessage(cipher, adminSession.privateKey);
 }
 
-function onionAddressFromPrivateKey(privateKey) {
-    let ic = new iCrypto();
-    ic.setRSAKey("privk", privateKey, "private").publicFromPrivate("privk", "pubk");
-    let pkraw = forge.pki.publicKeyFromPem(ic.get("pubk"));
-    let pkfp = forge.pki.getPublicKeyFingerprint(pkraw, { encoding: 'hex', md: forge.md.sha1.create() });
-    if (pkfp.length % 2 !== 0) {
-        s = '0' + s;
-    }
-    let bytes = [];
-    for (let i = 0; i < pkfp.length / 2; i = i + 2) {
-        bytes.push(parseInt(pkfp.slice(i, i + 2), 16));
-    }
-
-    return base32.encode(bytes).toLowerCase() + ".onion";
+function bakeDescriptionElement(cell, description){
+    let field = editableField.bakeEditableField("Place for description",  "editable-field-gray");
+    field.addEventListener("change", updateHSDescription);
+    field.addEventListener("keyup", ev=>{
+        if (ev.which === 13 || ev.keyCode === 13) {
+            document.activeElement.blur();
+        }
+    });
+    field.value = description;
+    cell.appendChild(field);
+    return cell
 }
 
-function launchHiddenService() {
-    let hsPrivK = document.querySelector("#island-service-private-key").value.trim();
-    if (!adminSession) {
-        toastr.warning("Login required. Please login to continue");
+
+function updateHSDescription(ev){
+    let description = ev.target.value.trim();
+    let cipher = "";
+    let row = ev.target.parentNode.parentNode;
+    let onion = row.children[1].innerText;
+    if(description && description !== ""){
+        cipher = ChatUtility.encryptStandardMessage(description, adminSession.publicKey);
+    }
+
+    try{
+        processAdminRequest({
+            action: "update_hs_description",
+            onion: onion,
+            description: cipher
+        }, onHiddenServiceUpdate, displayServerRequestError)
+    }catch(err){
+        toastr.warning("Error deleting guest: " + err);
+        console.error(err);
+    }
+}
+
+/**
+ * Creates dropdown menu "Actions" for each hidden service running
+ * @param cell
+ * @isAdmin boolean
+ * @returns {*}
+ */
+function bakeHsRecordActionsMenu(cell, isAdmin){
+    cell.appendChild(dropdown.bakeDropdownMenu("Actions",
+        {
+            "Copy onion link": (ev)=>{
+                let text = ev.target.parentNode.parentNode.parentNode.parentNode.children[1].innerText;
+                copyTextToBuffer(text, "Onion link copied to clipboard")
+            },
+            "Enable" : enableHiddenService,
+            "Disable": disableHiddenService,
+            "Delete": isAdmin? deleteAdminHiddenService : deleteGuest
+        }));
+    return cell
+}
+
+
+/**
+ * Copies passed text to clipboard
+ * @param text - text to copy
+ * @param message - message to display
+ */
+function copyTextToBuffer(text, message){
+    let textArea = util.bake("textarea");
+    textArea.value = text;
+    textArea.setAttribute('readonly', '');
+    textArea.style.position = 'absolute';
+    textArea.style.left = '-9999px';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+        document.execCommand("copy");
+        toastr.info(message);
+    } catch (err) {
+        toastr.error("Error copying invite code to the clipboard");
+    }
+    textArea.remove();
+}
+
+
+
+
+
+//*********END ISLAND ACCESS SECTION*********************//
+
+
+// function onionAddressFromPrivateKey(privateKey) {
+//     let ic = new iCrypto();
+//     ic.setRSAKey("privk", privateKey, "private").publicFromPrivate("privk", "pubk");
+//     let pkraw = forge.pki.publicKeyFromPem(ic.get("pubk"));
+//     let pkfp = forge.pki.getPublicKeyFingerprint(pkraw, { encoding: 'hex', md: forge.md.sha1.create() });
+//     if (pkfp.length % 2 !== 0) {
+//         s = '0' + s;
+//     }
+//     let bytes = [];
+//     for (let i = 0; i < pkfp.length / 2; i = i + 2) {
+//         bytes.push(parseInt(pkfp.slice(i, i + 2), 16));
+//     }
+//
+//     return base32.encode(bytes).toLowerCase() + ".onion";
+// }
+
+
+
+function adminLogin() {
+    let password = document.querySelector("#admin-password").value.trim();
+    if(!password){
+        toastr.warning("Password is required!");
         return;
     }
-    let privKey = adminSession.privateKey;
-    let pkfp = adminSession.pkfp;
-    let ic = new iCrypto();
-    ic.createNonce('n').setRSAKey("pk", privKey, 'private').privateKeySign('n', 'pk', 'sign').bytesToHex('n', 'nhex');
+    loadingOn();
 
-    let onionAddress;
-    try {
-        if (hsPrivK) {
-            onionAddress = onionAddressFromPrivateKey(hsPrivK);
-        }
-
-        $.ajax({
-            type: "POST",
-            url: "/admin",
-            dataType: "json",
-            data: {
-                action: "launch_hidden_service",
-                nonce: ic.get('nhex'),
-                sign: ic.get('sign'),
-                pkfp: pkfp,
-                hsPrivateKey: hsPrivK,
-                onion: onionAddress,
-                permanent: true
-            },
-            success: processNewIslandHiddenServiceAdd,
-            err: err => {
-                console.log("Error generating hidden service: " + err);
-            }
-        });
-    } catch (err) {
-        throw "Error launching hidden service: " + err;
-    }
-}
-
-//TODO finish method!
-function deleteHiddenService(ev) {
-    let onion = ev.target.previousSibling.innerHTML;
-
-    let privKey = adminSession.privateKey;
-    let pkfp = adminSession.pkfp;
-    let ic = new iCrypto();
-    ic.createNonce('n').setRSAKey("pk", privKey, 'private').privateKeySign('n', 'pk', 'sign').bytesToHex('n', 'nhex');
-
+    //Request admin vault
     $.ajax({
-        type: "POST",
-        url: "/admin",
-        dataType: "json",
-        data: {
-            action: "delete_hidden_service",
-            nonce: ic.get('nhex'),
-            sign: ic.get('sign'),
-            pkfp: pkfp,
-            onion: onion
+        type: "GET",
+        url: "/admin/vault",
+        success: async res =>{
+            try{
+                let decryptedVault = await decryptVault(res.vault, password);
+                await requestAdminLogin(decryptedVault.adminKey);
+            }catch(err){
+                loadingOff();
+                toastr.warning("Login failed. Check the password and try again.");
+                console.log("Login error: " + err);
+            }
+
         },
-        success: processIslandHiddenServiceDeletion,
-        err: err => {
-            console.log("Error deleting hidden service: " + err);
+        error: async err=>{
+            loadingOff();
+            toastr.warning("Admin login error: " + err)
         }
     });
 }
 
-function adminLogin() {
-    try {
-        let privKey = document.querySelector('#admin-private-key').value;
-        if (privKey == "") {
-            toastr['warning']("You must provide admin's private key");
-            return;
-        }
-        let ic = new iCrypto();
-        ic.createNonce('n').setRSAKey("pk", privKey, 'private').privateKeySign('n', 'pk', 'sign').bytesToHex('n', 'nhex').publicFromPrivate("pk", "pub").getPublicKeyFingerprint("pub", "pkfp");
 
+/**
+ * Decrypt the vault, get admin record, process the normal login
+ * @param vaultCipher
+ * @param password
+ * @returns {Promise<void>}
+ */
+function decryptVault(vaultCipher, password){
+    return new Promise((resolve, reject)=>{
+        try{
+            let vault = new Vault();
+            vault.initSaved(vaultCipher, password);
+            if(!vault.admin || !vault.adminKey){
+                reject("Admin vault is invalid, or doesn't have a private key")
+            }
+            resolve(vault);
+        }catch(err){
+            reject(err);
+        }
+    })
+}
+
+async function requestAdminLogin (privateKey){
+    try {
+        let ic = new iCrypto();
+        ic.createNonce('n').setRSAKey("pk", privateKey, 'private').privateKeySign('n', 'pk', 'sign').bytesToHex('n', 'nhex').publicFromPrivate("pk", "pub").getPublicKeyFingerprint("pub", "pkfp");
         $.ajax({
             type: "POST",
             url: "/admin",
@@ -206,26 +501,30 @@ function adminLogin() {
                 pkfp: ic.get("pkfp")
             },
             success: res => {
-                clearAdminPrivateKey();
                 adminSession = {
                     publicKey: ic.get('pub'),
                     privateKey: ic.get('pk'),
                     pkfp: ic.get('pkfp')
                 };
 
-                toastr.info("Admin login successfull!");
+                processAdminRequest = prepareRequestProcessor(adminSession);
+
                 $('#admin-content-wrapper').css("display", "flex");
                 $('.heading__main').html("Rule your island");
                 $('#admin-login--wrapper').hide();
                 processLoginData(res);
                 displayAdminMenu(true);
+                loadingOff();
+                toastr.info("Admin login successfull!");
             },
+
             error: err => {
-                clearAdminPrivateKey();
+                loadingOff();
                 toastr.warning("Error: \n" + err.responseText);
             }
         });
     } catch (err) {
+        loadingOff();
         clearAdminPrivateKey();
         toastr.warning("Login error: \n" + err);
     }
@@ -236,48 +535,70 @@ function processLoginData(res) {
     let loggerLevel = res.loggerInfo.level;
     $("#logs-state").val(loggerState ? "true" : "false");
     $("#log-highest-level").val(loggerLevel);
-    updateHiddenServicesList(res.hiddenServices);
+    onHiddenServiceUpdate(res);
 }
 
 function setupIslandAdmin() {
-    loadingOn();
+
     $('#island-setup').addClass('btn-loading');
-    setupAdminContinuation().then(() => {
+
+    let password = document.querySelector('#new-admin-password').value;
+    let confirm = document.querySelector('#new-admin-password-confirm').value;
+    let error  = verifyPassword(password, confirm);
+    if(error){
+        toastr.warning(error);
+        loadingOff();
+        return;
+    }
+
+    setupAdminContinue(password).then(() => {
         toastr.info("Setup successfull!!");
-        switchView("admin");
     }).catch(err => {
         toastr.error(err);
     });
 }
 
-function setupAdminContinuation() {
+function setupAdminContinue(password) {
     return new Promise((resolve, reject) => {
+        loadingOn();
         let ic = new iCrypto();
-        ic.generateRSAKeyPair("kp").createNonce("n").privateKeySign("n", "kp", "sign").bytesToHex("n", "nhex");
+        ic.generateRSAKeyPair("adminkp")
+            .createNonce("n")
+            .privateKeySign("n", "adminkp", "sign")
+            .bytesToHex("n", "nhex");
+
+
+        let vault = new Vault();
+        vault.initAdmin(password, ic.get("adminkp").privateKey);
+
+
+        let vaultEncData = vault.pack();
+        let vaultPublicKey = vault.publicKey;
+        let adminPublicKey = ic.get("adminkp").publicKey;
 
         $.ajax({
             type: "POST",
             url: "/admin",
             dataType: "json",
             data: {
-                action: "set_admin",
-                publickKey: ic.get("kp").publicKey,
+                action: "admin_setup",
+                adminPublickKey: adminPublicKey,
                 nonce: ic.get('nhex'),
-                sign: ic.get("sign")
+                sign: ic.get("sign"),
+                vault: vaultEncData.vault,
+                vaultPublicKey: vaultPublicKey,
+                vaultSign: vaultEncData.sign
             },
             success: () => {
                 loadingOff();
                 adminSession = {
-                    publicKey: ic.get('kp').publicKey,
-                    privateKey: ic.get('kp').privateKey
+                    publicKey: ic.get('adminkp').publicKey,
+                    privateKey: ic.get('adminkp').privateKey
                 };
-                let bodyWrapper = document.createElement("div");
-                let pkWrapper = document.createElement("div");
-                let tempWrap = document.createElement("div");
-                pkWrapper.innerHTML = "<br><b>Your private key:</b> <br> <textarea class='key-display'>" + adminSession.privateKey + "</textarea>";
-                bodyWrapper.appendChild(pkWrapper);
-                tempWrap.appendChild(bodyWrapper);
-                showModalNotification("Success! Save your private key", tempWrap.innerHTML);
+                util.$("#setup--wrapper").style.display = "none";
+                util.$("#registration-complete--wrapper").style.display = "flex";
+
+
                 $('#island-setup').removeClass('btn-loading');
                 resolve();
             },
@@ -750,3 +1071,36 @@ function clearLogs(ev) {
         }
     });
 }
+
+
+function prepareRequestProcessor(adminSession){
+    return function (data, onSuccess, onError){
+        if (!data.action){
+            throw "Malformed request"
+        }
+        let privKey = adminSession.privateKey;
+        let pkfp = adminSession.pkfp;
+        let ic = new iCrypto();
+        ic.createNonce("n")
+            .bytesToHex("n", "nhex");
+        data.nonce = ic.get("nhex");
+        let requestString = JSON.stringify(data);
+        ic.addBlob('data', requestString)
+            .setRSAKey("pk", privKey, 'private')
+            .privateKeySign('data', 'pk', 'sign');
+        $.ajax({
+            type: "POST",
+            url: "/admin",
+            dataType: "json",
+            data: {
+                action: data.action,
+                requestString: requestString,
+                sign: ic.get('sign'),
+                pkfp: pkfp
+            },
+            success: onSuccess,
+            error: onError
+        });
+    };
+}
+

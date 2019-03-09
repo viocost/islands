@@ -1,119 +1,147 @@
 .container
-    .login-setup--wrapper
+    if !secured
+        .login-setup--wrapper
+            #setup--wrapper
+                h2 Create your password:
+                input#new-admin-password(type="password", placeholder="Enter new password")
+                input#new-admin-password-confirm(type="password", placeholder="Confirm new password")
+                button.btn#island-setup Create vault!
+
+            #registration-complete--wrapper
+                h1 Setup has completed successfully!
+                p Please <b>save your password!</b> There is no password recovery!
+                | Once you lose it - it's gone forever.
+                a(href="/") Proceed to login>>>
+    else
         #admin-login--wrapper
-            textarea#admin-private-key(placeholder="Enter your private key...")
-            button.btn#admin-login Admin login
-        #setup--wrapper
-            .not-secured--text
-                p This island has no trusted keys and therefore is not secured
-            button.btn#island-setup Setup Island Administrator!
+            div.form-border
+                p: h3 Admin login:
+                p: input#admin-password(placeholder="Enter password", type="password")
+                p: button.btn#admin-login Login
 
-    .admin-content#admin-content-wrapper
-        #admin-section-heading Hidden services
-        .admin-content-wrap
-            .menu-wrap#island-admin-main-menu
-                .nav-item.menu-item.active#page-two-button Hidden services
-                .nav-item.menu-item#page-one-button Updates
-                .nav-item.menu-item#page-three-button Logs
-            .pages-wrap#admin-pages
-                .page.active
-                    .admin-page-content-wrap.admin-content--row
-                        .hidden-service-setup-wrap
-
+        .admin-content#admin-content-wrapper
+            #admin-section-heading Hidden services
+            .admin-content-wrap
+                .menu-wrap#island-admin-main-menu
+                    .nav-item.menu-item.active#page-two-button Hidden services
+                    .nav-item.menu-item#page-one-button Updates
+                    .nav-item.menu-item#page-three-button Logs
+                .pages-wrap#admin-pages
+                    .page.active
+                        .admin-page-content-wrap
+                            h3 ISLAND ACCESS: HIDDEN SERVICES
                             .hidden-service-control-wrap
-                                #add-hidden-service Add hidden service   >>>
-                                textarea#island-service-private-key(placeholder="Enter private key (optional)")
-                        .active-hidden-services-container
-                            h3 ACTIVE HIDDEN SERVICES
-                            #hidden-services-wrap
-                .page
-                    .admin-page-content-wrap.updates-wrapper
+                                #add-admin-service Add admin service
+                                #add-guest-service Add guest service
 
-                        .update-mode
-                            .update-mode-options
-                                a.update-option.active#update-from-file From file
-                                a.update-option#update-from-git From Github
+                            .active-hidden-services-container
+                                table
+                                    thead.hs-table
+                                        tr
+                                            td.hs-enum.hs-head #
+                                            td.hs-link.hs-head Link
+                                            td.hs-desc.hs-head Description
+                                            td.hs-type.hs-head Type
+                                            td.hs-status.hs-head Status
+                                            td.hs-actions.hs-head Actions
+                                    tbody#hidden-services-wrap.hs-table
+                                        tr
+                                            td.hs-enum #1
+                                            td.hs-link hgkjhdshgkhsdkjghfkds.onion
+                                            td.hs-desc My access
+                                            td.hs-type Admin access
+                                            td.hs-status Enabled
+                                            td.hs-actions Actions
+                                                ul
+                                                    li Activate
+                                                    li Deactivate
+                                                    li Regenerate link
+                                                    li Delete
+                                        tr
+                                            td.hs-enum #2
+                                            td.hs-link hgkjhdshgkhsdkjghfkds.onion
+                                            td.hs-desc For John
+                                            td.hs-type User access
+                                            td.hs-status Disabled
+                                            td.hs-actions Actions
+                                                ul
+                                                    li Activate
+                                                    li Deactivate
+                                                    li Regenerate link
+                                                    li Delete
+                    .page
+                        .admin-page-content-wrap.updates-wrapper
 
-                        #github-update-options--wrap
-                            select#gh-update-branch-select
-                                option#branch-select
-                                    option(value="master") Stable
-                                    option(value="dev" selected) Dev
+                            .update-mode
+                                .update-mode-options
+                                    a.update-option.active#update-from-file From file
+                                    a.update-option#update-from-git From Github
 
-
-
-                        #update-file--wrapper
-                            form#update-from-file--form(action="admin/", enctype='multipart/form-data', method="post")
-                                input.inputfile#update-file(type="file" name="file" )
-                                label.visible-inputfile#select-file(for="update-file") Select a file
-                                input#pkfp(type="text", name="pkfp", hidden)
-                                input#sign(type="text", name="sign", hidden)
-
-                        .divider
-                        .control-wrapper
-                            a#run-update RUN UPDATE!
-                .page
-                    .admin-page-content-wrap.logs-control-wrap
-                        .log-control-item
-                            .log-control-button-row
-                                button#load-logs Load logs
-                                button#load-error-logs Load error logs
-                        .log-control-item
-                            h6 Logs status
-                            select.logs-settings#logs-state
-                                option(value="true") Enabled
-                                option(value="false" selected) Disabled
-                        .log-control-item
-                            h6 HIGHEST LOG LEVEL
-                            select.log-highest-level#log-highest-level
-                                option(value="error") error
-                                option(value="warn") warn
-                                option(value="info") info
-                                option(value="verbose") verbose
-                                option(value="debug") debug
-                                option(value="silly") silly
-                        .log-control-item
-                            .log-control-button-row
-                                button#log-reverse Reverse
-                        .log-control-item
-                            .filter-wrap
-                                input#log-filter(placeholder="Filter regex", type="text")
-                                .filter-field-selector-wrap
-                                    b Apply to:
-                                    select#filter-field-selector
-                                        option(value="all") Entire record
-                                        option(value="0") Timestamp
-                                        option(value="1") Level
-                                        option(value="2") Message
-                                        option(value="3") Context
-                        .log-control-item
-                            .log-control-button-row
-                                button#clear-logs Clear logs
-
-                    .admin-page-content-wrap.log-content-wrap
-                        table#log-content
-                            thead
-                                tr
-                                    td.log-timestamp Timestamp
-                                    td.log-level Level
-                                    td.log-msg Message
-                                    td Context
-                            tbody
+                            #github-update-options--wrap
+                                select#gh-update-branch-select
+                                    option#branch-select
+                                        option(value="master") Stable
+                                        option(value="dev" selected) Dev
 
 
 
+                            #update-file--wrapper
+                                form#update-from-file--form(action="admin/", enctype='multipart/form-data', method="post")
+                                    input.inputfile#update-file(type="file" name="file" )
+                                    label.visible-inputfile#select-file(for="update-file") Select a file
+                                    input#pkfp(type="text", name="pkfp", hidden)
+                                    input#sign(type="text", name="sign", hidden)
 
+                            .divider
+                            .control-wrapper
+                                a#run-update RUN UPDATE!
+                    .page
+                        .admin-page-content-wrap.logs-control-wrap
+                            .log-control-item
+                                .log-control-button-row
+                                    button#load-logs Load logs
+                                    button#load-error-logs Load error logs
+                            .log-control-item
+                                h6 Logs status
+                                select.logs-settings#logs-state
+                                    option(value="true") Enabled
+                                    option(value="false" selected) Disabled
+                            .log-control-item
+                                h6 HIGHEST LOG LEVEL
+                                select.log-highest-level#log-highest-level
+                                    option(value="error") error
+                                    option(value="warn") warn
+                                    option(value="info") info
+                                    option(value="verbose") verbose
+                                    option(value="debug") debug
+                                    option(value="silly") silly
+                            .log-control-item
+                                .log-control-button-row
+                                    button#log-reverse Reverse
+                            .log-control-item
+                                .filter-wrap
+                                    input#log-filter(placeholder="Filter regex", type="text")
+                                    .filter-field-selector-wrap
+                                        b Apply to:
+                                        select#filter-field-selector
+                                            option(value="all") Entire record
+                                            option(value="0") Timestamp
+                                            option(value="1") Level
+                                            option(value="2") Message
+                                            option(value="3") Context
+                            .log-control-item
+                                .log-control-button-row
+                                    button#clear-logs Clear logs
 
-
-
-
-#code-view
-    .code-view--content
-        span#close-code-view.close &times;
-        br
-        #code--content
-
+                        .admin-page-content-wrap.log-content-wrap
+                            table#log-content
+                                thead
+                                    tr
+                                        td.log-timestamp Timestamp
+                                        td.log-level Level
+                                        td.log-msg Message
+                                        td Context
+                                tbody
 .modal-loader
-
 
 

@@ -9,7 +9,7 @@ const TorController = require('./TorController.js');
 
 const Bimap = require('../libs/Bipartite.js');
 
-var SocksProxyAgent = require('socks5-http-client/lib/Agent');
+let SocksProxyAgent = require('socks5-http-client/lib/Agent');
 
 const http = require("http");
 

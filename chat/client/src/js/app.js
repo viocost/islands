@@ -1,11 +1,12 @@
 //Vendors
 import { CuteSet } from "cute-set";
+import { iCrypto } from "./lib/iCrypto"
 import '../css/main.sass';
 
 import * as toastr from "toastr";
 window.toastr = toastr;
 
-const ChatClient = require("./chat/ChatClient").default;
+import { ChatClient } from  "./chat/ChatClient";
 
 let chat;
 
@@ -50,13 +51,11 @@ let recording = false;
 
 document.addEventListener('DOMContentLoaded', event => {
     console.log('initializing chat....');
-    chat = new ChatClient();
+    chat = new ChatClient({version: version});
     loadSounds();
     setView("auth");
     setupChatListeners(chat);
-    document.querySelector('#create-topic').addEventListener('click', createTopic);
-    document.querySelector('#login-topic').addEventListener('click', topicLogin);
-    document.querySelector('#join-topic').addEventListener('click', joinTopic);
+
     document.querySelector('#send-new-msg').addEventListener('click', sendMessage);
     document.querySelector('#close-code-view').addEventListener('click', closeCodeView);
     document.querySelector('#new-invite').addEventListener('click', generateInvite);
@@ -66,9 +65,7 @@ document.addEventListener('DOMContentLoaded', event => {
     document.querySelector('#attach-file').addEventListener('change', processAttachmentChosen);
     document.querySelector('#re-connect').addEventListener('click', attemptReconnection);
     document.querySelector('#sounds-switch').addEventListener('click', switchSounds);
-    document.querySelector('.right-arrow-wrap').addEventListener('click', processMainMenuSwitch);
-    document.querySelector('.left-arrow-wrap').addEventListener('click', processMainMenuSwitch);
-
+    document.querySelector('#re-connect').addEventListener('click', attemptReconnection);
 
 
     $('#new-msg').keydown(function (e) {
@@ -83,26 +80,46 @@ document.addEventListener('DOMContentLoaded', event => {
         }
     });
     $('#chat_window').scroll(processChatScroll);
+
     $('#private-key').keyup(async e => {
         if (e.keyCode === 13) {
             await topicLogin();
         }
     });
 
-    $('#join-nickname, #invite-code').keyup(async e => {
-        if (e.keyCode === 13) {
-            await joinTopic();
-        }
-    });
 
-    $('#new-topic-nickname, #new-topic-name').keyup(async e => {
-        if (e.keyCode === 13) {
-            createTopic();
-        }
-    });
 
     enableSettingsMenuListeners();
+
+    autoLogin();
+
 });
+
+
+function autoLogin(){
+    let url = new URL(window.location.href);
+    let id = url.searchParams.get("id");
+    if(!id) return;
+    let token = url.searchParams.get("token");
+    let pkcipher = localStorage.getItem(id);
+    if (!pkcipher){
+        throw ("Autologin failed: no private ley found in local storage");
+    }
+
+    let ic = new iCrypto()
+    ic.addBlob("pkcip", pkcipher)
+        .addBlob("key", token)
+        .AESDecrypt("pkcip", "key", "privk", true, "CBC", "utf8")
+    let privateKey = ic.get("privk");
+
+    chat.topicLogin(privateKey)
+        .then(()=>{
+        })
+        .catch(()=>{});
+
+    localStorage.removeItem(id);
+
+}
 
 function loadSounds() {
     let sMap = {
@@ -334,6 +351,7 @@ function setupChatListeners(chat) {
         }
     });
 }
+
 function processIncomingMessage(message) {
     let pkfp = message.header.author;
     let storedNickname = chat.getMemberNickname(pkfp);
@@ -967,6 +985,10 @@ function closeCodeView() {
     document.querySelector("#code-view").style.display = "none";
 }
 
+function clearModal() {
+    document.querySelector("#code--content").innerHTML = "";
+}
+
 function processCodeBlock(code) {
     code = code.trim();
     let separator = code.match(/\r?\n/) ? code.match(/\r?\n/)[0] : "\r\n";
@@ -1208,7 +1230,7 @@ function enableSettingsMenuListeners() {
     document.querySelector("#invites-container").style.display = "flex";
     document.querySelector("#chat-settings").style.display = "none";
     document.querySelector("#participants-container").style.display = "none";
-    document.querySelector("#admin-tools-container").style.display = "none";
+
 }
 
 function processSettingsMenuClick(event) {
@@ -1221,7 +1243,7 @@ function processSettingsMenuClick(event) {
     document.querySelector("#invites-container").style.display = target.innerText === "INVITES" ? "flex" : "none";
     document.querySelector("#participants-container").style.display = target.innerText === "PARTICIPANTS" ? "flex" : "none";
     document.querySelector("#chat-settings").style.display = target.innerText === "CHAT SETTINGS" ? "flex" : "none";
-    document.querySelector("#admin-tools-container").style.display = target.innerText === "ADMIN TOOLS" ? "flex" : "none";
+
 }
 
 function processChatScroll(event) {
@@ -1234,9 +1256,7 @@ function processChatScroll(event) {
     }
 }
 
-function clearModal() {
-    $("#code--content").html("");
-}
+
 
 function clearInviteInputs() {
     $("#invite-code").val("");
@@ -1443,36 +1463,5 @@ function lockSend(val) {
     sendLock ? newMsgField.setAttribute("disabled", true) : newMsgField.removeAttribute("disabled");
 }
 
-function processMainMenuSwitch(ev) {
-    let menuLength = mainMenuItems.length;
-    let activeIndex = mainMenuItems.filter(item => {
-        return item.active;
-    })[0].index;
-    let newActive = (ev.currentTarget.classList.contains("right-arrow-wrap") ? activeIndex + 1 : activeIndex - 1) % menuLength;
-    if (newActive < 0) {
-        newActive = menuLength + newActive;
-    }
-    mainMenuItems[activeIndex].active = false;
-    mainMenuItems[newActive].active = true;
-    $(mainMenuItems[activeIndex].selector).hide("fast");
-    $(mainMenuItems[newActive].selector).show("fast");
-
-    let nextIndex = (newActive + 1) % menuLength;
-    let previousIndex = (newActive - 1) % menuLength;
-    if (previousIndex < 0) {
-        previousIndex = menuLength + previousIndex;
-    }
-
-    document.querySelector("#left-arrow-text").innerHTML = mainMenuItems[previousIndex].subtitle;
-    document.querySelector("#right-arrow-text").innerHTML = mainMenuItems[nextIndex].subtitle;
-
-    // active = get active
-    // if arrow right:
-    //activate next
-    // else
-    //activate previous
-
-    //set subtitles
-}
 
 

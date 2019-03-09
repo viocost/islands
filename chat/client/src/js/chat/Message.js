@@ -15,14 +15,18 @@ import { iCrypto } from "../lib/iCrypto";
  *
  */
 export class Message{
-    constructor(request){
+    constructor(version, request){
+        if(version === undefined || version === "") throw "Message init error: Software version is required!";
+
         if(typeof(request)==="string"){
             request = JSON.parse(request);
         }
         this.headers = request ? this.copyHeaders(request.headers) : {
             command: "",
-            response: ""
+            response: "",
+            version: version
         };
+
         this.body = request ? request.body : {};
         this.signature = request ? request.signature : "";
     }
@@ -54,6 +58,11 @@ export class Message{
             result[keys[i]] = headers[keys[i]];
         }
         return result;
+    }
+
+    setVersion(version){
+        if(version === undefined || version === "") throw "Error setting message version: version undefined";
+        this.headers.version = version;
     }
 
     signMessage(privateKey){

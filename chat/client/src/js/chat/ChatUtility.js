@@ -62,7 +62,7 @@ export class ChatUtility{
         const ic = new iCrypto();
         ic.addBlob("b", blob)
             .sym.setKey("sym", key)
-            .AESEncrypt("b", "sym", "cip", hexify, "CBC", "utf8")
+            .AESEncrypt("b", "sym", "cip", hexify, "CBC", "utf8");
         return ic.get("cip")
     }
 

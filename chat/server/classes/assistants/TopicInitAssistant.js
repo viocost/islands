@@ -88,7 +88,7 @@ class TopicInitAssistant{
      * and topic authority initialized
      *
      * @param request
-     * @param socket
+     * @param connectionId
      * @param self
      */
     async initTopic(request, connectionId, self){
@@ -125,10 +125,6 @@ class TopicInitAssistant{
         metadata.body.settings = request.body.settings;
         //Persist first metadata to history
         await self.hm.initHistory(request.headers.pkfpSource, metadata.toBlob());
-
-        //Persist client settings
-        //let clientSettingsManager = new ClientSettingsManager(self.hm);
-        //await clientSettingsManager.writeSettings(request.headers.pkfpSource, request.body.settings);
 
         //Deleting new pending topic token
         delete self.newTopicPending[request.body.topicID];

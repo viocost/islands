@@ -1,28 +1,14 @@
 'use strict';
 import { JSChaCha20 } from 'js-chacha20'
 import * as forge from 'node-forge';
-import * as sjcl from "./sjcl.js";
+const sjcl = require("./sjcl.js");
 
-class iCryptoFactory{
 
-    constructor(settings){
-        this.readSettings();
-    }
-
-    createICryptor(){
-        return new iCrypto(this.settings);
-    }
-
-    readSettings(){
-        console.log("readubg settings");
-        this.settings = null;
-    }
-}
 
 
 
 export class iCrypto {
-    constructor(settings){
+    constructor(){
         let self = this;
         self.settings = {};
         self.locked = false;
@@ -30,7 +16,7 @@ export class iCrypto {
         self.symCiphers = ['aes'];
         self.streamCiphers = ['chacha'];
         self.asymCiphers = ['rsa'];
-        self.store = {}
+        self.store = {};
 
         self.rsa = {
             createKeyPair: (...args)=>{ return self.generateRSAKeyPair(...args)},
@@ -202,6 +188,30 @@ export class iCrypto {
         this.set(nameToSave, key);
         return this;
     }
+
+
+    /**
+     * Given a password and a salt computes SYM key and saves it under given name in base64 format
+     * @param nameToSave
+     * @param password
+     * @param salt Must be previously sotre within the current iCrypto instance
+     *        Must be hex-encoded
+     * @param numIterations
+     * @param keyLength
+     */
+    createPasswordBasedSymKey(nameToSave = iCrypto.pRequired("createSYMKey"),
+                              password = iCrypto.pRequired("createSYMKey"),
+                              salt = iCrypto.pRequired("createSYMKey"),
+                              numIterations = 20000,
+                              keyLength = 32){
+        let self = this;
+        let sRaw = forge.util.hexToBytes(this.get(salt));
+        let key = forge.pkcs5.pbkdf2(password, sRaw, numIterations, keyLength);
+        let res = forge.util.bytesToHex(key);
+        self.set(nameToSave, res);
+        return self;
+    }
+
 
     /**
      * requires object of similar structure for key as being created by createSYMKey

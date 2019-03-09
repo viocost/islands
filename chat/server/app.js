@@ -5,8 +5,15 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const fs = require("fs");
 const fileUpload = require('express-fileupload');
-const adminServer = require('./classes/AdminServer');
+const HiddenServiceManager = require("./classes/libs/HiddenServiceManager");
+
 const Logger = require("./classes/libs/Logger.js");
+const helpRouter = require("./helpRouter.js");
+const vaultRouter = require("./vaultRouter");
+const adminRouter = require("./adminRouter");
+const chatRouter = require("./chatRouter");
+const HSVaultMap = require("./classes/libs/HSVaultMap");
+
 let VERSION;
 try{
     VERSION = "v" + JSON.parse(fs.readFileSync('./package.json').toString()).version
@@ -48,7 +55,7 @@ historyPath = config.historyPath || historyPath;
 let updatePath = config.updatePath || "../update";
 
 let adminKeyPath = config.adminKeyPath || "../keys";
-adminServer.setKeyFolder(adminKeyPath, updatePath);
+
 servicePath = config.servicePath || "../service/";
 
 app.set('views', path.join(__dirname, 'views'));
@@ -65,21 +72,21 @@ if (app.get('env') === 'development'){
 
 app.use(express.static(path.join(__dirname, '../public')));
 
-app.get("/", (req, res)=>{
-    res.render("chat", {title:"Islands chat", version: VERSION});
-});
-
-app.get("/admin", (req, res)=>{
-    res.render("admin", {
-        title:"Admin login",
-        secured: adminServer.isSecured(),
-        version: VERSION
-    });
-});
 
 Logger.initLogger(config.servicePath, "debug");
+HSVaultMap.init(config.hsVaultMap);
 
-adminServer.initAdminEnv(app, config, HOST, PORT);
+
+adminRouter.init(app, config, HOST, PORT, VERSION, adminKeyPath, updatePath);
+vaultRouter.init(config, VERSION);
+
+
+app.use("/", vaultRouter.router);
+
+app.use("/help", helpRouter);
+app.use("/chat", chatRouter.router);
+app.use("/admin", adminRouter.router);
+
 
 
 
@@ -90,6 +97,12 @@ const server = app.listen(PORT, HOST, async ()=>{
     chat = new Chat(server, config);
     await chat.runGlobalResync();
 });
+
+//
+// //TEST ONLY
+// let testws = require("./classes/poc/testws");
+// testws.init(server);
+//
 
 
 

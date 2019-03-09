@@ -3,6 +3,11 @@ const Err = require("../libs/IError.js");
 const iCrypto = require("../libs/iCrypto.js");
 
 class ClientResponse extends Message{
+    /**
+     *
+     * @param response String - response code to send to client
+     * @param request - original Client request
+     */
     constructor(response = Err.required(), request){
         super();
         if(request){

@@ -1,6 +1,7 @@
 const iCrypto = require("../libs/iCrypto");
 const Err = require("../libs/IError.js");
 const CuteSet = require("cute-set");
+const version = require ("../libs/Version");
 
 
 class MetadataFactory{
@@ -12,6 +13,7 @@ class MetadataFactory{
      */
     static createNewMetadata(){
         let metadata =  new Metadata();
+
         metadata.refreshId();
         metadata.body.timestamp = Date.now();
         return metadata;
@@ -122,6 +124,7 @@ class Metadata{
         this.body.participants = {};
         this.body.topicAuthority = {};
         this.signature = "";
+        this.body.version = version.getVersion();
     }
 
     /**

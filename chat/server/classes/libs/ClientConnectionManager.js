@@ -6,7 +6,7 @@ const Err = require("./IError.js");
 
 /**
  * Manages client->island connections
- * adds - removes listeners
+ * adds and removes listeners
  * keeps track of active sockets
  */
 class ClientConnectionManager extends EventEmitter{

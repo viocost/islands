@@ -1,10 +1,10 @@
 window.onerror = processDocumentError;
-const LENGTHLIMIT = 500000;
+const LENGTHLIMIT = 200;
+let logErrors = [];
 
 (function(){
-    var oldLog = console.log;
+    let oldLog = console.log;
     console.log = function (message) {
-        // DO MESSAGE HERE.
         appendClientLog("log: " + message);
         oldLog.apply(console, arguments);
     };
@@ -18,48 +18,40 @@ document.addEventListener('DOMContentLoaded', function(event) {
 
 
 function showLogs(){
+    let logContent = document.querySelector("#client-logs-content")
+    logContent.innerHTML = "";
+    logErrors.forEach(el=>{
+        let newRecord = document.createElement("p");
+        newRecord.innerHTML = el;
+        logContent.appendChild(newRecord);
+    });
     document.querySelector("#client-logs").style.display = "block";
     document.querySelector("#view-logs").style.display = "none";
-
 }
 
 
 function closeLogs(){
+    let logContent = document.querySelector("#client-logs-content")
+    logContent.innerHTML = "";
     document.querySelector("#client-logs").style.display = "none";
     document.querySelector("#view-logs").style.display = "block";
 }
 
-function shrinkLog(){
-    // let logContent = document.querySelector("#client-logs-content");
-    //
-    // if (logContent.innerHTML.length > LENGTHLIMIT ){
-    //
-    //     logContent.removeChild(logContent.children[0]);
-    //
-    // } else {
-    //     console.log("Log shrinked");
-    // }
-}
 
 function appendClientLog(errMsg){
     if (!errMsg){
         return;
     }
-    let logContent = document.querySelector("#client-logs-content")
-    let newRecord = document.createElement("p");
-    newRecord.innerHTML = errMsg;
-    logContent.appendChild(newRecord);
-    if (logContent.innerHTML.length > LENGTHLIMIT ){
-        console.log("Length: " + logContent.innerHTML.length + " Deleting old node");
-        shrinkLog();
+    logErrors.push(errMsg);
+
+    if (logErrors.length > LENGTHLIMIT){
+        logErrors.splice(0, 20);
     }
 
 }
 
-
 function processDocumentError(errorMsg, url, lineNumber){
     console.log("Processing error: " + lineNumber);
-    //errorMsg += ("\n" + Error().stack);
     appendClientLog(errorMsg);
     return true;
 }

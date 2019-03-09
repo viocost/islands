@@ -9,8 +9,12 @@ import { iCrypto } from "../lib/iCrypto";
 import * as io from "socket.io-client";
 import { WildEmitter } from "./WildEmitter";
 
-class ChatClient {
+export class ChatClient {
     constructor(opts){
+        if(!opts.version){
+            throw "Version required!";
+        }
+        this.version = opts.version;
         this.islandConnectionStatus = false;
         this.allMessagesLoaded = false;
         this.chatSocket = null;
@@ -45,6 +49,7 @@ class ChatClient {
             del_invite_success: this.delInviteSuccess,
             boot_participant_failed: this.bootParticipantFailed,
             send_fail: this.messageSendFail,
+            delete_topic_success: this.deleteTopicSuccess,
             default: this.processInvalidResponse
         };
 
@@ -56,7 +61,6 @@ class ChatClient {
             my_name_response: this.processNicknameResponse,
             nickname_change_broadcast: this.processNicknameChangeNote,
             default: this.processUnknownNote
-
         };
 
 
@@ -76,6 +80,7 @@ class ChatClient {
             init_topic_error: this.initTopicFail,
             request_invite_error: this.requestInviteError,
             sync_invites_error: this.syncInvitesError,
+            delete_topic_error: this.deleteTopicError,
             default: this.unknownError
         }
     }
@@ -94,13 +99,8 @@ class ChatClient {
         self.emit("service_record", record)
     }
 
-
-
-
-
-
     processResponse(response){
-        response = new Message(response);
+        response = new Message(self.version, response);
         if (response.headers.error){
             this.requestErrorHandlers.hasOwnProperty(response.headers.response) ?
                 this.requestErrorHandlers[response.headers.response](response, this) :
@@ -167,7 +167,7 @@ class ChatClient {
                 };
 
                 //Request island to init topic creation and get one-time key.
-                let request = new Message();
+                let request = new Message(self.version);
                 request.headers.command = "new_topic_get_token";
                 let body = {
                     topicID: newTopic.topicID,
@@ -184,6 +184,8 @@ class ChatClient {
             }
         })
     }
+
+
 
     /**
      * New token on init topic received. Proceeding with topic creation
@@ -210,10 +212,8 @@ class ChatClient {
             pendingTopic.topicName,
             pendingTopic.ownerKeyPair.publicKey);
 
-
-
         //Preparing request
-        let request = new Message();
+        let request = new Message(self.version);
         request.headers.command = "init_topic";
         request.headers.pkfpSource = pendingTopic.ownerPkfp;
         request.body.topicID = pendingTopic.topicID;
@@ -229,6 +229,7 @@ class ChatClient {
     prepareNewTopicSettings(nickname, topicName, publicKey, encrypt = true){
         //Creating and encrypting topic settings:
         let settings = {
+            version: version,
             membersData: {},
             soundsOn: true
         };
@@ -296,7 +297,7 @@ class ChatClient {
                 sessionID: ic.get("noncehex")
             };
 
-            let request = new Message();
+            let request = new Message(self.version);
             request.set("body", body);
             request.headers.command = "init_login";
             request.headers.pkfpSource = ic.get("pkfp");
@@ -396,7 +397,7 @@ class ChatClient {
             preDecrypted.topicAuthority.taHSPrivateKey = encryptBlob(token, taHSPrivateKey)
         }
 
-        let decReq = new Message();
+        let decReq = new Message(self.version);
         decReq.headers.pkfpSource = self.session.publicKeyFingerprint;
         decReq.body = request.body;
         decReq.body.preDecrypted = preDecrypted;
@@ -518,7 +519,7 @@ class ChatClient {
         if(!pkfp){
             throw "Missing required parameter"
         }
-        let request = new Message();
+        let request = new Message(self.version);
         request.setCommand("whats_your_name");
         request.setSource(this.session.publicKeyFingerprint);
         request.setDest(pkfp);
@@ -529,7 +530,7 @@ class ChatClient {
 
     broadcastNameChange(){
         let self = this;
-        let message = new Message();
+        let message = new Message(self.version);
         message.setCommand("nickname_change_broadcast");
         message.setSource(this.session.publicKeyFingerprint);
         message.addNonce();
@@ -575,7 +576,7 @@ class ChatClient {
     }
 
     createRegisterServiceRecord(event, message){
-        let request = new Message();
+        let request = new Message(self.version);
         request.addNonce();
         request.setSource(this.session.publicKeyFingerprint);
         request.setCommand("register_service_record");
@@ -587,13 +588,13 @@ class ChatClient {
     }
 
     processNicknameRequest(request, self){
-        let parsedRequest = new Message(request);
+        let parsedRequest = new Message(self.version, request);
         let publicKey = self.session.metadata.participants[request.headers.pkfpSource].publicKey;
         if(!Message.verifyMessage(publicKey, parsedRequest)){
             console.trace("Invalid signature");
             return
         }
-        let response = new Message();
+        let response = new Message(self.version);
         response.setCommand("my_name_response");
         response.setSource(self.session.publicKeyFingerprint);
         response.setDest(request.headers.pkfpSource);
@@ -616,7 +617,7 @@ class ChatClient {
 
     loadMoreMessages(lastLoadedMessageID){
         if(this.allMessagesLoaded) return;
-        let request = new Message();
+        let request = new Message(self.version);
         request.headers.command = "load_more_messages";
         request.headers.pkfpSource = this.session.publicKeyFingerprint;
         request.body.lastLoadedMessageID = lastLoadedMessageID;
@@ -661,6 +662,7 @@ class ChatClient {
 
     logout(){
         this.chatSocket.disconnect();
+        this.chatSocket.off();
         this.session = null;
         this.allMessagesLoaded = false;
     }
@@ -678,7 +680,7 @@ class ChatClient {
             return
         }
 
-        let request = new Message();
+        let request = new Message(self.version);
         request.headers.command = "boot_participant";
         request.headers.pkfpSource = self.session.publicKeyFingerprint;
         request.headers.pkfpDest = self.session.metadata.topicAuthority.pkfp;
@@ -766,7 +768,7 @@ class ChatClient {
                 pkfp: ic.get('pkfp')
             }
         };
-        let request = new Message();
+        let request = new Message(self.version);
         request.set('headers', headers);
         request.set("body", body);
         request.signMessage(ic.get('rsa').privateKey);
@@ -806,10 +808,13 @@ class ChatClient {
         let topicInfo = self.pendingTopicJoins[request.body.inviteCode];
         self.initSettingsOnTopicJoin(topicInfo, request);
         self.emit("topic_join_success", {
+            pkfp: topicInfo.pkfp,
             nickname: topicInfo.nickname,
             privateKey: topicInfo.privateKey
         })
     }
+
+
 
     saveClientSettings(settingsRaw, privateKey){
         if(!settingsRaw){
@@ -823,7 +828,7 @@ class ChatClient {
             .publicFromPrivate("privk", "pub")
             .getPublicKeyFingerprint("pub", "pkfp");
         let publicKey = ic.get("pub");
-        let pkfp = ic.get("pkfp")
+        let pkfp = ic.get("pkfp");
 
         if(typeof settingsRaw === "object"){
             settingsRaw = JSON.stringify(settingsRaw);
@@ -837,12 +842,51 @@ class ChatClient {
             settings: settingsEnc
         };
 
-        let request = new Message();
+        let request = new Message(self.version);
         request.set("headers", headers);
         request.set("body", body);
         request.signMessage(privateKey);
         console.log("Snding update settings request");
         this.chatSocket.emit("request", request);
+    }
+
+
+    /**
+     * Deletes entire history and metadata and logs out
+     * After this operation the topic is no longer accessible
+     *
+     * @returns {Promise<void>}
+     */
+    async deleteTopic(){
+        if(!this.session){
+            throw "User must be logged in"
+        }
+        let privateKey = this.session.privateKey;
+        let ic = new iCrypto();
+        ic.createNonce("n")
+            .bytesToHex("n", "nhex");
+
+        let headers = {
+            command: "delete_topic",
+            pkfpSource: this.session.publicKeyFingerprint,
+            nonce: ic.get("nhex")
+        };
+
+        let request = new Message(self.version);
+        request.set("headers", headers);
+        request.signMessage(privateKey);
+        this.chatSocket.emit("request", request);
+    }
+
+    deleteTopicSuccess(response, self){
+        console.log("Delete topic successful");
+        self.logout();
+        self.emit("delete_topic_success")
+    }
+
+    deleteTopicError(response, self){
+        console.log("Delete topic error");
+        self.emit("delete_topic_error", )
     }
 
     /**
@@ -1088,8 +1132,9 @@ class ChatClient {
      * ================ MESSAGE HANDLING  ============*
      **************************************************/
 
-    prepareMessage(messageContent, recipientPkfp) {
+    prepareMessage(version, messageContent, recipientPkfp) {
         return new Promise((resolve, reject) => {
+            if(version === undefined || version === "") throw "Chat message initialization error: Version is required";
             let self = this;
             console.log("Preparing message: " + messageContent);
             if (!self.isLoggedIn()) {
@@ -1098,6 +1143,7 @@ class ChatClient {
             }
             //Preparing chat message
             let chatMessage = new ChatMessage();
+            chatMessage.version = version;
             chatMessage.header.metadataID = this.session.metadata.id;
             chatMessage.header.author = this.session.publicKeyFingerprint;
             chatMessage.header.recipient = recipientPkfp ? recipientPkfp : "ALL";
@@ -1126,7 +1172,7 @@ class ChatClient {
                 let attachmentsInfo;
 
                 const metaID = self.session.metadata.id;
-                const chatMessage = await self.prepareMessage(messageContent);
+                const chatMessage = await self.prepareMessage(this.version, messageContent);
 
                 if (filesAttached && filesAttached.length >0){
                     attachmentsInfo = await self.uploadAttachments(filesAttached, chatMessage.header.id, metaID);
@@ -1139,7 +1185,8 @@ class ChatClient {
                 chatMessage.sign(this.session.privateKey);
 
                 //Preparing request
-                let message = new Message();
+                let message = new Message(self.version);
+
                 message.headers.pkfpSource = this.session.publicKeyFingerprint;
                 message.headers.command = "broadcast_message";
                 message.body.message = chatMessage.toBlob();
@@ -1159,7 +1206,7 @@ class ChatClient {
             try{
                 let self = this;
 
-                const chatMessage = await self.prepareMessage(messageContent, pkfp);
+                const chatMessage = await self.prepareMessage(this.version, messageContent, pkfp);
 
                 //Will be enabled in the next version
 
@@ -1169,7 +1216,7 @@ class ChatClient {
                 chatMessage.sign(this.session.privateKey);
 
                 //Preparing request
-                let message = new Message();
+                let message = new Message(self.version);
                 message.headers.pkfpSource = this.session.publicKeyFingerprint;
                 message.headers.pkfpDest = pkfp;
                 message.headers.command = "send_message";
@@ -1275,7 +1322,7 @@ class ChatClient {
         let ic = new iCrypto()
         ic.createNonce("n")
             .bytesToHex("n", "nhex");
-        let request = new Message();
+        let request = new Message(self.version);
         let myNickNameEncrypted = ChatUtility.encryptStandardMessage(this.session.settings.nickname,
             this.session.metadata.topicAuthority.publicKey);
         let topicNameEncrypted = ChatUtility.encryptStandardMessage(this.session.settings.topicName,
@@ -1287,14 +1334,13 @@ class ChatClient {
         request.body.topicName = topicNameEncrypted;
         request.signMessage(this.session.privateKey);
         this.chatSocket.emit("request", request);
-
     }
 
     syncInvites(){
         let ic = new iCrypto();
         ic.createNonce("n")
             .bytesToHex("n", "nhex");
-        let request = new Message();
+        let request = new Message(self.version);
         request.headers.command = "sync_invites";
         request.headers.pkfpSource = this.session.publicKeyFingerprint;
         request.headers.pkfpDest = this.session.metadata.topicAuthority.pkfp;
@@ -1325,7 +1371,7 @@ class ChatClient {
             pkfp: this.session.publicKeyFingerprint
         };
 
-        let request = new Message();
+        let request = new Message(self.version);
         request.headers.command = "request_invite";
         request.set("body", body);
         request.signMessage(this.session.privateKey);
@@ -1391,7 +1437,7 @@ class ChatClient {
 
     deleteInvite(id){
         console.log("About to delete invite: " + id);
-        let request = new Message();
+        let request = new Message(self.version);
         request.headers.command = "del_invite";
         request.headers.pkfpSource = this.session.publicKeyFingerprint;
         request.headers.pkfpDest = this.session.metadata.topicAuthority.pkfp
@@ -1567,12 +1613,6 @@ class ChatClient {
     }
 
 
-
-    //TODO implement method
-    setupFileTransferListeners(){
-
-    }
-
     finishSocketSetup(){
         this.initChatListeners();
     }
@@ -1617,18 +1657,6 @@ class ChatClient {
             this.processMetadataUpdate(meta);
         });
 
-
-        /*
-                this.chatSocket.on("chat_session_registered", (params)=>{
-                    if (params.success){
-                        this.session.status = "active";
-                        this.emit("chat_session_registered");
-                    }
-                });
-        */
-        // this.chatSocket.on("last_metadata",(data)=>{
-        //     this.processMetadataResponse(data);
-        // })
     }
 
     /**************************************************
@@ -1859,4 +1887,3 @@ class ChatClient {
 
 }
 
-export default ChatClient;
