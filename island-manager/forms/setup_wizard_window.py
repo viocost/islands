@@ -224,7 +224,7 @@ class SetupWizardWindow(QObject):
             self.update_ui_state()
         return on_errror
 
-    def get_on_complete_handler(self, msg, console, handler = None):
+    def get_on_complete_handler(self, msg, console, handler=None):
         def on_complete(size=18, color='green', ):
             self.output.emit('<p style="color: {color}; font-size: {size}px"> {msg} </p>'
                              .format(msg=msg, size=size, color=color), console)

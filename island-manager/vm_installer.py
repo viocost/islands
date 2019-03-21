@@ -61,22 +61,12 @@ class VMInstaller:
             self.start_vm(headless=False)
             self.message("VM started... You should see started Islands virtual machine window. "
                          "\nDo not close it until setup is finished!")
-            self.insert_guest_additions_image()
-            self.message("Guest additions mounted... Waiting for initial setup. \n"
-                            "This will take a while! Do not turn off your computer.")
-            self.wait_guest_additions()
-            sleep(3)
+
             self.wait_guest_additions()
             self.save_island_ip()
-            self.message("Guest additions are installed. Fetching Islands setup script..")
-            self.onvm_get_setup_script()
-            self.onvm_chmodx_install_script()
-            self.message("Installation in progress. This step takes a while... Grab some tea")
-            self.onvm_launch_setup_script()
             self.message("Setup completed. Restarting Islands...")
             sleep(1)
             self.shutdown_vm()
-            self.first_boot()
             self.complete()
         except CmdExecutionError as e:
             self.emergency_wipe()
