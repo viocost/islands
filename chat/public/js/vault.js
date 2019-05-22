@@ -46,6 +46,7 @@
 /******/ 				result = __webpack_require__(__webpack_require__.s = deferredModule[0]);
 /******/ 			}
 /******/ 		}
+/******/
 /******/ 		return result;
 /******/ 	}
 /******/
@@ -147,37 +148,40 @@
 /******/
 /******/
 /******/ 	// add entry module to deferred list
-/******/ 	deferredModules.push([362,1]);
+/******/ 	deferredModules.push([363,1]);
 /******/ 	// run deferred modules when ready
 /******/ 	return checkDeferredModules();
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 153:
+/***/ 154:
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
 
-/***/ 249:
+/***/ 250:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* WEBPACK VAR INJECTION */(function(module) {/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(52);
+/* WEBPACK VAR INJECTION */(function(module) {/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(53);
 /* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(251);
+/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(252);
 /* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(147);
+/* harmony import */ var core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(148);
 /* harmony import */ var core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var core_js_modules_es6_typed_uint32_array__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(252);
+/* harmony import */ var core_js_modules_es6_typed_uint32_array__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(253);
 /* harmony import */ var core_js_modules_es6_typed_uint32_array__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_typed_uint32_array__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(146);
+/* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(147);
 /* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(69);
+/* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(71);
 /* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(24);
+/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_6__);
+
 
 
 
@@ -1887,7 +1891,7 @@ a: try {
     var ja;
 
     try {
-      ja = __webpack_require__(253);
+      ja = __webpack_require__(254);
     } catch (a) {
       ja = null;
     }
@@ -3327,25 +3331,18 @@ sjcl.codec.arrayBuffer = {
 "function" === typeof define && define([], function () {
   return sjcl;
 });
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(250)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(251)(module)))
 
 /***/ }),
 
-/***/ 255:
+/***/ 256:
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
 
-/***/ 257:
-/***/ (function(module, exports) {
-
-/* (ignored) */
-
-/***/ }),
-
-/***/ 291:
+/***/ 258:
 /***/ (function(module, exports) {
 
 /* (ignored) */
@@ -3359,14 +3356,21 @@ sjcl.codec.arrayBuffer = {
 
 /***/ }),
 
-/***/ 356:
+/***/ 293:
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
 
-/***/ 361:
+/***/ 357:
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+
+/***/ 362:
 /***/ (function(module, exports) {
 
 /*
@@ -3582,7 +3586,7 @@ Github: https://github.com/vadimsva/waitMe
 
 /***/ }),
 
-/***/ 362:
+/***/ 363:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3593,32 +3597,35 @@ var regenerator = __webpack_require__(0);
 var regenerator_default = /*#__PURE__*/__webpack_require__.n(regenerator);
 
 // EXTERNAL MODULE: ./node_modules/regenerator-runtime/runtime.js
-var runtime = __webpack_require__(122);
+var runtime = __webpack_require__(123);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/asyncToGenerator.js
 var asyncToGenerator = __webpack_require__(10);
 var asyncToGenerator_default = /*#__PURE__*/__webpack_require__.n(asyncToGenerator);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.promise.js
-var es6_promise = __webpack_require__(82);
+var es6_promise = __webpack_require__(84);
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.object.to-string.js
+var es6_object_to_string = __webpack_require__(24);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es7.array.includes.js
-var es7_array_includes = __webpack_require__(65);
+var es7_array_includes = __webpack_require__(67);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es7.symbol.async-iterator.js
-var es7_symbol_async_iterator = __webpack_require__(90);
+var es7_symbol_async_iterator = __webpack_require__(91);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.symbol.js
-var es6_symbol = __webpack_require__(91);
+var es6_symbol = __webpack_require__(92);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.split.js
-var es6_regexp_split = __webpack_require__(52);
+var es6_regexp_split = __webpack_require__(53);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.to-string.js
-var es6_regexp_to_string = __webpack_require__(69);
+var es6_regexp_to_string = __webpack_require__(71);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/web.dom.iterable.js
-var web_dom_iterable = __webpack_require__(30);
+var web_dom_iterable = __webpack_require__(32);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/classCallCheck.js
 var classCallCheck = __webpack_require__(8);
@@ -3629,16 +3636,16 @@ var createClass = __webpack_require__(9);
 var createClass_default = /*#__PURE__*/__webpack_require__.n(createClass);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.typed.uint16-array.js
-var es6_typed_uint16_array = __webpack_require__(230);
+var es6_typed_uint16_array = __webpack_require__(231);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.replace.js
-var es6_regexp_replace = __webpack_require__(146);
+var es6_regexp_replace = __webpack_require__(147);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.typed.uint8-array.js
-var es6_typed_uint8_array = __webpack_require__(147);
+var es6_typed_uint8_array = __webpack_require__(148);
 
 // EXTERNAL MODULE: ./node_modules/js-chacha20/src/jschacha20.js
-var jschacha20 = __webpack_require__(120);
+var jschacha20 = __webpack_require__(121);
 
 // EXTERNAL MODULE: ./node_modules/node-forge/lib/index.js
 var lib = __webpack_require__(1);
@@ -3659,7 +3666,8 @@ var lib = __webpack_require__(1);
 
 
 
-var sjcl = __webpack_require__(249);
+
+var sjcl = __webpack_require__(250);
 
 var iCrypto_iCrypto =
 /*#__PURE__*/
@@ -5232,8 +5240,8 @@ function () {
     value: function verifyFileInfo(info) {
       var required = ["name", "size", "pkfp", "hashUnencrypted", "hashEncrypted", "signUnencrypted", "signEncrypted", "link", "metaID", "messageID", "hashAlgorithm"];
 
-      for (var _i = 0; _i < required.length; _i++) {
-        var i = required[_i];
+      for (var _i = 0, _required = required; _i < _required.length; _i++) {
+        var i = _required[_i];
 
         if (!info.hasOwnProperty(i)) {
           throw "Attachment verifyFileInfo: Missing required property: " + i;
@@ -5258,6 +5266,7 @@ function () {
 }();
 AttachmentInfo_AttachmentInfo.properties = ["name", "size", "type", "lastModified", "hashUnencrypted", "signUnencrypted", "hashEncrytped", "signEncrypted", "link", "metaID", "messageID", "hashAlgorithm"];
 // CONCATENATED MODULE: ./client/src/js/chat/ChatMessage.js
+
 
 
 
@@ -5555,6 +5564,7 @@ function () {
 
 
 
+
 /**
  *
  *
@@ -5719,6 +5729,7 @@ function () {
 
 
 
+
 var Participant_Participant =
 /*#__PURE__*/
 function () {
@@ -5832,7 +5843,7 @@ var ClientSettings_ClientSettings = function ClientSettings() {
   this.invites = {};
 };
 // EXTERNAL MODULE: ./node_modules/socket.io-client/lib/index.js
-var socket_io_client_lib = __webpack_require__(121);
+var socket_io_client_lib = __webpack_require__(122);
 
 // CONCATENATED MODULE: ./client/src/js/chat/WildEmitter.js
 
@@ -5976,6 +5987,7 @@ WildEmitter.mixin = function (constructor) {
 
 WildEmitter.mixin(WildEmitter);
 // CONCATENATED MODULE: ./client/src/js/chat/ChatClient.js
+
 
 
 
@@ -6211,7 +6223,7 @@ function () {
                   return _context.stop();
               }
             }
-          }, _callee, this, [[0, 28]]);
+          }, _callee, null, [[0, 28]]);
         }));
 
         return function (_x, _x2) {
@@ -6489,10 +6501,8 @@ function () {
   }, {
     key: "checkNicknames",
     value: function checkNicknames() {
-      var _arr = Object.keys(this.session.metadata.participants);
-
-      for (var _i = 0; _i < _arr.length; _i++) {
-        var pkfp = _arr[_i];
+      for (var _i = 0, _Object$keys = Object.keys(this.session.metadata.participants); _i < _Object$keys.length; _i++) {
+        var pkfp = _Object$keys[_i];
 
         if (!this.getMemberNickname(pkfp)) {
           this.requestNickname(pkfp);
@@ -7255,7 +7265,7 @@ function () {
                   return _context6.stop();
               }
             }
-          }, _callee6, this, [[12, 16, 20, 28], [21,, 23, 27], [28, 35]]);
+          }, _callee6, null, [[12, 16, 20, 28], [21,, 23, 27], [28, 35]]);
         }));
 
         return function (_x6, _x7) {
@@ -7365,7 +7375,7 @@ function () {
                   return _context7.stop();
               }
             }
-          }, _callee7, this);
+          }, _callee7);
         }));
 
         return function (_x8, _x9) {
@@ -7421,7 +7431,7 @@ function () {
                   return _context8.stop();
               }
             }
-          }, _callee8, this);
+          }, _callee8);
         }));
 
         return function (_x10, _x11) {
@@ -7578,7 +7588,7 @@ function () {
                   return _context9.stop();
               }
             }
-          }, _callee9, this, [[0, 41], [13, 17, 21, 29], [22,, 24, 28]]);
+          }, _callee9, null, [[0, 41], [13, 17, 21, 29], [22,, 24, 28]]);
         }));
 
         return function (_x12, _x13) {
@@ -7641,7 +7651,7 @@ function () {
                   return _context10.stop();
               }
             }
-          }, _callee10, this, [[0, 21]]);
+          }, _callee10, null, [[0, 21]]);
         }));
 
         return function (_x14, _x15) {
@@ -7744,7 +7754,7 @@ function () {
                 return _context11.stop();
             }
           }
-        }, _callee11, this);
+        }, _callee11);
       }));
 
       function messageSendSuccess(_x16, _x17) {
@@ -7908,10 +7918,8 @@ function () {
         }
       }
 
-      var _arr2 = Object.keys(this.session.settings.invites);
-
-      for (var _i3 = 0; _i3 < _arr2.length; _i3++) {
-        var _i4 = _arr2[_i3];
+      for (var _i3 = 0, _Object$keys2 = Object.keys(this.session.settings.invites); _i3 < _Object$keys2.length; _i3++) {
+        var _i4 = _Object$keys2[_i3];
 
         if (!userInvites.includes(_i4)) {
           delete this.session.settings.invites[_i4];
@@ -8046,7 +8054,7 @@ function () {
                 return _context12.stop();
             }
           }
-        }, _callee12, this);
+        }, _callee12);
       }));
 
       function _establishChatConnection() {
@@ -8539,6 +8547,7 @@ function () {
 
 
 
+
 /**
  * Represents key vault
  *
@@ -8730,10 +8739,10 @@ function () {
 //
 // };
 // EXTERNAL MODULE: ./client/src/js/lib/waitMe.min.js
-var waitMe_min = __webpack_require__(361);
+var waitMe_min = __webpack_require__(362);
 
 // EXTERNAL MODULE: ./node_modules/tingle.js/dist/tingle.min.js
-var tingle_min = __webpack_require__(211);
+var tingle_min = __webpack_require__(212);
 
 // CONCATENATED MODULE: ./client/src/js/lib/DynmaicModal.js
 
@@ -8755,19 +8764,16 @@ function prepareModal(content) {
 }
 // CONCATENATED MODULE: ./client/src/js/lib/PasswordVerify.js
 function verifyPassword(password, confirm) {
-  if (!password || !password.trim() || password.length < 8) {
-    return "Password is not long enough.";
+  if (!password || !password.trim() || password.length < 9) {
+    return "Password or passphrase must be at least 9 characters long";
   }
 
   if (password !== confirm) {
     return "Password and confirmation do not match.";
   }
-
-  if (!/^(?=.+[a-z])(?=.+[A-Z])(?=.+[0-9]).{8,}$/.test(password)) {
-    return "Password must be at least 8 characters long and " + "contain at least one lower case letter, " + "one upper case letter and one number digit";
-  }
 }
 // CONCATENATED MODULE: ./client/src/js/lib/dom-util.js
+
 
 
 
@@ -8826,10 +8832,8 @@ function bake(name, recipe) {
   }
 
   if (recipe.listeners) {
-    var _arr = Object.keys(recipe.listeners);
-
-    for (var _i = 0; _i < _arr.length; _i++) {
-      var ev = _arr[_i];
+    for (var _i = 0, _Object$keys = Object.keys(recipe.listeners); _i < _Object$keys.length; _i++) {
+      var ev = _Object$keys[_i];
       el.addEventListener(ev, recipe.listeners[ev]);
     }
   }
@@ -8839,10 +8843,8 @@ function bake(name, recipe) {
   }
 
   if (recipe.attributes) {
-    var _arr2 = Object.keys(recipe.attributes);
-
-    for (var _i2 = 0; _i2 < _arr2.length; _i2++) {
-      var key = _arr2[_i2];
+    for (var _i2 = 0, _Object$keys2 = Object.keys(recipe.attributes); _i2 < _Object$keys2.length; _i2++) {
+      var key = _Object$keys2[_i2];
       el.setAttribute(key, recipe.attributes[key]);
     }
   }
@@ -8897,6 +8899,7 @@ function displayFlex(selector) {
   dom_util_$(selector).style.display = "flex";
 }
 // CONCATENATED MODULE: ./client/src/js/lib/dropdown.js
+
 
 
 function dropdown_reset() {
@@ -8955,6 +8958,7 @@ function bakeEditableField(placeholder, userClasses) {
   });
 }
 // CONCATENATED MODULE: ./client/src/js/vault.js
+
 
 
 
@@ -9345,7 +9349,7 @@ function topicJoin() {
                 return _context.stop();
             }
           }
-        }, _callee, this);
+        }, _callee);
       }));
 
       return function (_x) {
@@ -9420,7 +9424,7 @@ function changePassword() {
                   return _context2.stop();
               }
             }
-          }, _callee2, this);
+          }, _callee2);
         }));
 
         function success(_x2) {
@@ -9486,7 +9490,7 @@ function _changePasswordProcess() {
             return _context7.stop();
         }
       }
-    }, _callee7, this, [[0, 15]]);
+    }, _callee7, null, [[0, 15]]);
   }));
   return _changePasswordProcess.apply(this, arguments);
 }
@@ -9527,7 +9531,7 @@ function topicCreate() {
               return _context3.stop();
           }
         }
-      }, _callee3, this);
+      }, _callee3);
     }));
 
     return function (_x6) {
@@ -9753,7 +9757,7 @@ function prepareTopicRecordDelete(pkfp) {
                 return _context4.stop();
             }
           }
-        }, _callee4, this, [[0, 7]]);
+        }, _callee4, null, [[0, 7]]);
       }));
 
       return function (_x7, _x8) {
@@ -9797,7 +9801,7 @@ function prepareTopicDelete(privateKey, pkfp) {
               return _context5.stop();
           }
         }
-      }, _callee5, this);
+      }, _callee5);
     })));
     chat.on("delete_topic_success",
     /*#__PURE__*/
@@ -9832,7 +9836,7 @@ function prepareTopicDelete(privateKey, pkfp) {
               return _context6.stop();
           }
         }
-      }, _callee6, this, [[0, 9]]);
+      }, _callee6, null, [[0, 9]]);
     })));
     chat.on("login_error", onError);
     chat.on("delete_topic_error", onError);

@@ -117,8 +117,8 @@ echo Installing TOR
 echo 'deb https://deb.torproject.org/torproject.org stretch main' | tee -a /etc/apt/sources.list
 echo 'deb-src https://deb.torproject.org/torproject.org stretch  main' | tee -a /etc/apt/sources.list
 
-gpg --keyserver keys.gnupg.net --recv A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89
-gpg --export A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89 | apt-key add -
+curl https://deb.torproject.org/torproject.org/A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89.asc | gpg --import
+gpg --no-tty --export A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89 | apt-key add -
 
 apt update
 apt install tor deb.torproject.org-keyring -y
@@ -143,7 +143,7 @@ pm2 update
 
 
 #starting app
-pm2 start /usr/src/app/app.js --node-args="--experimental-worker" -- -c /usr/src/app/configvmware.json
+pm2 start /usr/src/app/server/app.js --node-args="--experimental-worker" -- -c /usr/src/app/server/config/configvmware.json
 pm2 save
 pm2 startup
 

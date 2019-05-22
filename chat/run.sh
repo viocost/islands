@@ -18,6 +18,9 @@ USAGE="
 
     -dp | --debug-port
     Port number for attaching local debugger
+
+    -bf | --build-front
+    Run npm script to re-build front end
 "
 
 POSITIONAL=()
@@ -46,16 +49,26 @@ case $key in
     DEBUG=true
     shift
     ;;
+    -bf|--build-front)
+    BUILD_FRONT=true
+    shift
+    ;;
     -h | --help)
     HELP=true
     shift
     ;;
+
 esac
 done
 
 if [[ ${HELP} ]]; then
     echo "$USAGE";
     exit 0;
+fi
+
+if [[ ${BUILD_FRONT} ]]; then 
+    echo building front
+    npm run build-front;
 fi
 
 RUNCOMMAND="docker container run --rm -it "
@@ -77,8 +90,6 @@ if [[ -z  ${DATAFOLDER+x} ]]; then
     mkdir -p islandsData ;
     DATAFOLDER="${PWD}/islandsData" ;
 fi
-
-npm run build-front
 
 RUNCOMMAND="$RUNCOMMAND  --mount type=bind,source=${DATAFOLDER},target=/islandsData  islands:chat"
 

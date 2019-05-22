@@ -5,6 +5,7 @@
 Conversations/*
 *history/*
 gc.bat
+ltsession.dump
 run2.sh
 build-*
 **/dist/*

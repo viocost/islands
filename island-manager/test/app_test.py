@@ -2,7 +2,7 @@ import unittest
 from  multiprocessing import Process
 from time import sleep
 
-from application import Application
+from lib.application import Application
 
 class TestConfig(unittest.TestCase):
 

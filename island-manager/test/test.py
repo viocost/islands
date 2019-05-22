@@ -1,17 +1,29 @@
 import unittest
 import re
-from im_config import IMConfig
-from island_manager import IslandManager
-from island_setup import IslandSetup
-from executor import ShellExecutor as Executor
-from downloader import Downloader
-import util
+import lib.vendor.libtorrent as lt
+from lib.im_config import IMConfig
+from lib.island_manager import IslandManager
+from lib.island_setup import IslandSetup
+from lib.executor import ShellExecutor as Executor
+from lib.downloader import Downloader
+from lib import util
+import logging, sys
 
 class TestConfig(unittest.TestCase):
     def setUp(self):
-        self.config = IMConfig("win32" ,"../", "../", "../os_defaults")
-        self.setup = IslandSetup(self.config)
-        self.island_manager = IslandManager(self.setup)
+        # self.config = IMConfig("win32" ,"../", "../", "../os_defaults")
+        # self.setup = IslandSetup(self.config)
+        # self.island_manager = IslandManager(self.setup)
+        logger = logging.getLogger()
+
+        print("Setting logging to debug mode")
+        logger.setLevel(logging.DEBUG)
+        handler = logging.StreamHandler(sys.stdout)
+        formatter = logging.Formatter('%(asctime)s %(levelname)s %(name)s %(funcName)s(%(lineno)d) %(message)s')
+        handler.setFormatter(formatter)
+        logger.addHandler(handler)
+        logger.debug("Logger initialized.")
+
 
     def test_init(self):
         print("Test 1")
@@ -87,7 +99,7 @@ class TestConfig(unittest.TestCase):
 
     def test_path_parse(self  ):
         from os import environ
-        from island_setup import InvalidPathFormat
+        from lib.island_setup import InvalidPathFormat
         res = self.setup.parse_shared_folder_path("~/islandsData")
         assert res == (environ["HOME"] + "/islandsData/islandsData")
         res = self.setup.parse_shared_folder_path("/Users/kostia/islandsData")
@@ -124,7 +136,7 @@ class TestConfig(unittest.TestCase):
         link = self.config['vbox_download']
         Downloader.get(link)
         #res = Executor.exec('curl {link}  -o ~/Downloads/test.dmg'.format(link=self.config['vbox_download']))
-      #  print(res)
+        #  print(res)
 
     def test_safe_exec(self):
         a = Executor.exec_sync('curl {link}  -o ~/Downloads/test.dmg'.format(link=self.config['vbox_download']))
@@ -165,7 +177,6 @@ class TestConfig(unittest.TestCase):
             """vboxmanage guestcontrol Island run --exe "/bin/bash" --username root --password islands --wait-stdout --wait-stderr -- bash /root/isetup.sh -b dev""",
             on_data=output, on_error=output, verbose=True)
 
-
     def test_first_boot_start(self):
         from time import sleep
 
@@ -184,5 +195,45 @@ class TestConfig(unittest.TestCase):
                     print("Unsuccessful launch %d" % i)
                     continue
             raise Exception("VM launch unsuccessfull")
-
         first_boot()
+
+    def test_image_authoring(self):
+        from lib.image_authoring import ImageAuthoring
+        author = ImageAuthoring("1.0.0", None)
+        version = "1.2.32"
+        image_path = "c:\\Users\\Kostia\\Documents\\Island_vm_0.0.101.ova"
+        output_path = "c:\\Users\\Kostia\\test"
+        output_filename = "offspring.isld"
+        publisher="Kostia"
+        note="Hello world!"
+        key_path = "d:\\2\\A5EA859E23D857C6CFE5A1D154D0C514D653366635D2B44AC95ACAFA5731B5A9\\public.pem"
+        key_password = "123QWEasd"
+        author.author_image(
+            image_version=version,
+            islands_version="500.23.44",
+            path_to_image=image_path,
+            output_path=output_path,
+            output_filename=output_filename,
+            publisher=publisher,
+            note=note,
+
+            key_path=key_path,
+            key_password=key_password
+        )
+
+
+    def test_image_verification(self):
+        from lib.image_authoring import ImageAuthoring
+        image_path = "c:\\Users\\Kostia\\test\\islands_image1\\islands.ova"
+        info_path = "c:\\Users\\Kostia\\test\\islands_image1\\info.json"
+        sign_path = "c:\\Users\\Kostia\\test\\islands_image1\\info.signature"
+        ia = ImageAuthoring("1.0.0", None)
+        ia.verify_image(image_path, info_path, sign_path)
+
+
+    def test_libtorrent_infohash(self):
+        magnet = "magnet:?xt=urn:btih:41f2e9ff7752cb5e865e33a79c78de79a6bcf987&dn=offspring.isld"
+        info = lt.parse_magnet_uri(magnet)
+        infohash = info.info_hash
+        stringified = str(infohash)
+        print(stringified)
