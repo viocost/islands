@@ -22,13 +22,13 @@ class UpdateForm(QObject):
     update_ui = pyqtSignal()
     unknown_key_confirm_request = pyqtSignal()
 
-    def __init__(self, parent, config, islands_manager, setup):
+    def __init__(self, parent, config, island_manager, setup):
         QObject.__init__(self)
         log.debug("Initializing update form")
         self.parent = parent
         self.config = config
         self.setup = setup
-        self.islands_manager = islands_manager
+        self.island_manager = island_manager
         self.ui = Ui_IslandsUpdate()
         self.window = QDialog(parent)
         self.update_ui.connect(self.update_els_visibility)
@@ -62,7 +62,7 @@ class UpdateForm(QObject):
 
     def process_update_result(self, is_success, msg=""):
         if is_success:
-            QM.information(QM(self.window), "Update successful", "Update completed successfully!", QM.Ok)
+            QM.information(self.window, "Update successful", "Update completed successfully!", QM.Ok)
             self.close()
         else:
             self.lock_form(False)
@@ -103,7 +103,7 @@ class UpdateForm(QObject):
     def on_download_timeout(self):
         msg = "Download is stalled. It may be due to poor network connection " \
               "or torrent seeds are not reachable.\nWould you like abort download?"
-        res = QM.question(QM(self.window), "Download timeout", msg, QM.Yes | QM.No)
+        res = QM.question(self.window, "Download timeout", msg, QM.Yes | QM.No)
         if res == QM.Yes:
             self.setup.vm_installer.abort_download()
             self.download_timeout.disconnect()
@@ -133,9 +133,9 @@ class UpdateForm(QObject):
             log.debug(msg)
             show_user_error_window(self.window, msg)
             return
-        if self.islands_manager.is_running():
+        if self.island_manager.is_running():
             self.on_message("Islands currently running. Shutting down...")
-            self.islands_manager.stop_island_sync(force=True)
+            self.island_manager.stop_island_sync(force=True)
             self.on_message("Islands was shut down. Now updating...")
         data_path = get_full_path(self.config["data_folder"])
         self.lock_form()
@@ -154,6 +154,7 @@ class UpdateForm(QObject):
                               finalize_progres_bar=self.get_finalize_progress_bar_handler(),
                               download=self.ui.opt_download.isChecked(),
                               setup=self.setup,
+                              island_manager=self.island_manager,
                               on_download_timeout=lambda: self.download_timeout.emit(),
                               magnet_link=self.ui.magnet_link.text(),
                               on_confirm_required=lambda: self.unknown_key_confirm_request.emit(),
@@ -297,7 +298,7 @@ class UpdateForm(QObject):
     def untrusted_key_confirm(self):
         msg = "Warning, the public key of the image you are trying to use is not registered as trusted.\n" + \
             "Would you like to import image anyway? The public key will be registered as trusted."
-        res = QM.question(QM(self.window), "Unknown public key", msg, QM.Yes | QM.No)
+        res = QM.question(self.window, "Unknown public key", msg, QM.Yes | QM.No)
         if res == QM.Yes:
             self.setup.vm_installer.unknown_key_confirm_resume_update()
         else:

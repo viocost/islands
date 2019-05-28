@@ -2,7 +2,7 @@ import re
 import time
 import os
 from threading import Thread
-from lib.util import get_full_path, check_output
+from lib.util import get_full_path, check_output, parse_vminfo_output
 from lib.executor import ShellExecutor as Executor
 from lib.island_states import IslandStates as States
 import logging
@@ -123,9 +123,10 @@ class IslandManager:
 
     def is_running(self):
         res = Executor.exec_sync(self.cmd.vminfo())
-        running_ptrn = re.compile(r"(?=.*State)(?=.*running)(?=.*since).+")
-        found = running_ptrn.search(res[1])
-        return res[0] == 0 and found is not None
+        if res[0] != 0:
+            return False
+        vminfo = parse_vminfo_output(res[1])
+        return vminfo["VMState"] == "running"
 
     def get_vboxmanage_path(self):
         return self.config['vboxmanage']

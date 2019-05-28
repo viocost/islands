@@ -4,8 +4,10 @@ from lib.vboxinstaller import VBoxInstaller
 from lib.vm_installer import VMInstaller
 from lib.exceptions import *
 from lib.executor import ShellExecutor as Executor
-from lib.util import check_output, get_stack
+from lib.util import check_output, parse_vminfo_output, parse_vm_properties
 import logging
+
+
 
 log = logging.getLogger(__name__)
 
@@ -22,6 +24,7 @@ class IslandSetup:
         self.cmd = commander
         self.torrent_manager = torrent_manager
         self.__config = config
+        self.update_vm_config()
 
     def abort_vm_install(self):
         log.debug("Install setup: aborting install")
@@ -140,6 +143,19 @@ class IslandSetup:
             print("is_islands_vm_exist EXCEPTION!: " + str(e))
             return False
 
+    def get_vm_list(self):
+        try:
+            execres = Executor.exec_sync(self.cmd.listvms())
+            if execres[0] != 0:
+                return None
+            res = []
+            lines = execres[1].split("\n")
+            for line in lines:
+                res.append([i.strip("\"{}") for i in line.split(" ")])
+            return res
+        except Exception as e:
+            log.error("Error getting vms list: %s" % str(e))
+
     @check_output
     def delete_islands_vm(self):
         return Executor.exec_sync(self.cmd.delete_vm())
@@ -151,4 +167,107 @@ class IslandSetup:
         self.__config.restore_default("hostonly_adapter")
         self.__config.restore_default("vm_password")
         self.__config.restore_default("vm_username")
+        self.__config.restore_default("local_access_port")
         self.__config.save()
+
+    def update_vm_config(self):
+        log.debug("Updating config...")
+        vm_info = self.get_vm_info()
+        if vm_info is None:
+            log.info("VM info has not been found. Restoring VM settings to defaults")
+            self.reset_vm_config()
+        else:
+            if "Net1" in vm_info:
+                log.debug("Host-only adapter found")
+                self.__config["local_access"] = self._get_access_string(vm_info["Net1"][1])
+                self.__config["local_access_admin"] = self._get_access_string(vm_info["Net1"][1], True)
+            else:
+                log.debug("Host-only adapter not found")
+                self.__config.restore_default("local_access")
+                self.__config.restore_default("local_access_admin")
+            self.__config.save()
+
+    def _get_access_string(self, ip, admin=False):
+        return "http://{ip}:{port}{admin}".format(
+            ip=ip,
+            port=self.__config["local_access_port"],
+            admin="/admin" if admin else ""
+        )
+
+    def get_vm_info(self):
+        """
+        name
+        UUID
+        Guest OS
+        OS type
+        Additions version
+        Memory size
+        State
+        Shared folders
+        eth0 IP
+        eth1 IP
+        :param vmname:
+        :return:
+        """
+        log.debug("Getting vm info...")
+        vminfo, vm_guestprop = None, None
+        try:
+            exec_res = self._get_vminfo()
+            vminfo = parse_vminfo_output(exec_res[1])
+        except CmdExecutionError as e:
+            log.info("Vm info request returned non-zero exit code")
+            return None
+        except Exception as e:
+            log.error("Error requesting vminfo: %s" % str(e))
+
+        try:
+            exec_res = self._get_guest_properties()
+            vm_guestprop = parse_vm_properties(exec_res[1])
+        except CmdExecutionError as e:
+            log.info("Vm info request returned non-zero exit code")
+            return None
+        except Exception as e:
+            log.error("Error requesting vminfo: %s" % str(e))
+
+        res = dict()
+        res["Name"] = vminfo["name"]
+        res["UUID"] = vminfo["UUID"]
+        res["Guest OS"] = vminfo["GuestOSType"] if "GuestOSType" in vminfo else "unknown"
+        res["OS type"] = vminfo["ostype"] if "ostype" in vminfo else "unkown"
+        res["Additions version"] = vminfo["GuestAdditionsVersion"] if "GuestAdditionsVersion" in vminfo else "unknown"
+        res["Memory size"] = vminfo["memory"] if "memory" in vminfo else "unknown"
+        res["State"] = vminfo["VMState"] if "VMState" in vminfo else "unknown"
+        res["State change_time"] = vminfo["VMStateChangeTime"]
+        if all(key in vminfo for key in ("SharedFolderNameMachineMapping1", "SharedFolderPathMachineMapping1")):
+            res["Shared folder"] = {
+                "name": vminfo["SharedFolderNameMachineMapping1"],
+                "path": vminfo["SharedFolderPathMachineMapping1"]
+            }
+        if vm_guestprop is not None:
+            if all([i in vm_guestprop for i in
+                    ("/VirtualBox/GuestInfo/Net/0/V4/IP", "/VirtualBox/GuestInfo/Net/0/Name")]):
+                res["Net0"] = [
+                        vm_guestprop["/VirtualBox/GuestInfo/Net/0/Name"],
+                        vm_guestprop["/VirtualBox/GuestInfo/Net/0/V4/IP"]
+                ]
+
+            if all([i in vm_guestprop for i in
+                    ("/VirtualBox/GuestInfo/Net/1/V4/IP", "/VirtualBox/GuestInfo/Net/1/Name")]):
+                res["Net1"] = [
+                        vm_guestprop["/VirtualBox/GuestInfo/Net/1/Name"],
+                        vm_guestprop["/VirtualBox/GuestInfo/Net/1/V4/IP"]
+                ]
+        return res
+
+
+    @check_output
+    def _get_vminfo(self):
+        return Executor.exec_sync(self.cmd.vminfo())
+
+
+    @check_output
+    def _get_guest_properties(self):
+        return Executor.exec_sync(self.cmd.vm_guestproperty())
+
+    def get_vm_manager(self):
+        return self.vm_manager

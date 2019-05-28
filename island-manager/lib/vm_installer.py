@@ -27,6 +27,7 @@ class VMInstaller:
                  finalize_progres_bar,
                  file_manager,
                  torrent_manager,
+                 island_manager,
                  on_download_timeout=None,
                  magnet_link=None,
                  download=False,
@@ -52,6 +53,7 @@ class VMInstaller:
         self.message = on_message
         self.complete = on_complete
         self.error = on_error
+        self.island_manager = island_manager
         self.config = config
         self.init_progres_bar = init_progres_bar
         self.update_progres_bar = update_progres_bar
@@ -277,7 +279,8 @@ class VMInstaller:
         :return:
         """
         self.message("Importing virtual appliance..")
-        return Executor.exec_stream(self.cmd.import_vm(path_to_image=path_to_image),
+        return Executor.exec_stream(self.cmd.import_vm(path_to_image=path_to_image,
+                                                       vmname=self.config["vmname"]),
                                     on_data=on_data, on_error=on_error)
 
     def configure_vm(self):
@@ -288,7 +291,7 @@ class VMInstaller:
             self.setup_host_only_adapter()
             log.debug("Network configured..")
             self.message("Network configured..")
-            self.setup_shared_folder(self.data_path)
+            self.island_manager.set_new_datafolder(self.data_path)
             log.debug("Data folder set up... Launching VM")
             self.message("Data folder set up... Launching VM")
             # Start machine... Wait until controlvm is available then run scripts
@@ -370,7 +373,6 @@ class VMInstaller:
         Executor.exec_sync(self.cmd.hostonly_enable_dhcp())
         return Executor.exec_sync(self.cmd.hostonly_setup())
 
-    # Sets up shareed folder for the imported vm
     @check_output
     def setup_shared_folder(self, data_folder_path=""):
         fullpath = get_full_path(data_folder_path)

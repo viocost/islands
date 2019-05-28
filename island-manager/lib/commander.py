@@ -12,7 +12,11 @@ class Commander:
     __shutdown_vm = "{vboxmanage} controlvm {vmname} {mode}"
     __vboxmanage_version = "{vboxmanage} -v"
     __list_vms = "{vboxmanage} list vms"
-    __vminfo = "{vboxmanage} showvminfo {vmname}"
+    __vminfo = "{vboxmanage} showvminfo {vmname} --machinereadable"
+
+    __vm_guestproperty = "{vboxmanage} guestproperty get {vmname} {property}"
+    __vm_guestproperties = "{vboxmanage} guestproperty enumerate {vmname}"
+
     __uninstall_vbox = {
         "darwin": """osascript -e 'do shell script "{mpuntpoint}VirtualBox_Uninstall.tool --unattended" with administrator privileges' """
     }
@@ -46,10 +50,13 @@ class Commander:
     __hostonly_switch_to_dhcp = '{vboxmanage} hostonlyif ipconfig "{adapter}" --dhcp'
     __hostonly_enable_dhcp = '{vboxmanage} dhcpserver modify --ifname "{adapter}" --enable'
 
-    __import_vm = "{vboxmanage} import {path}"
+    __import_vm = "{vboxmanage} import {path} --vsys 0 --vmname {vmname}"
     __delete_vm = "{vboxmanage} unregistervm {vmname} --delete"
     __sharedfolder_setup = '{vboxmanage} sharedfolder add {vmname} ' \
                            '--name {shared_folder_name} -hostpath {hostpath} -automount '
+
+
+
 
     __sharedfolder_remove = '{vboxmanage} sharedfolder remove {vmname} ' \
                             '--name {shared_folder_name}'
@@ -79,6 +86,8 @@ class Commander:
                                  ' -- bash {onguest_path}  {branch}'
 
     __make_executable = 'chmod +x {filepath}'
+
+
 
     def ip_a_eth1_onguest(self):
         return self.__ip_a_eth1_on_guest.format(
@@ -154,11 +163,25 @@ class Commander:
             vboxmanage=self.config['vboxmanage']
         )
 
-    def vminfo(self):
+    def vminfo(self, name=None):
         return self.__vminfo.format(
             vboxmanage=self.config['vboxmanage'],
-            vmname=self.config['vmname']
+            vmname=name if name else self.config['vmname']
         )
+
+    def vm_guestproperty(self, property=None, vmname=None):
+        if property is None:
+            return self.__vm_guestproperties.format(
+                vboxmanage=self.config['vboxmanage'],
+                vmname=vmname if vmname else self.config['vmname'],
+            )
+        else:
+            return self.__vm_guestproperty.format(
+                vboxmanage=self.config['vboxmanage'],
+                vmname=vmname if vmname else self.config['vmname'],
+                property=property
+            )
+
 
     def install_vbox(self, path_to_installer):
         mountpoint = "" if 'vbox_distro_mountpoint' not in self.config else self.config['vbox_distro_mountpoint']
@@ -183,10 +206,11 @@ class Commander:
             distrpath=distrpath
         )
 
-    def import_vm(self, path_to_image):
+    def import_vm(self, path_to_image, vmname):
         return self.__import_vm.format(
             vboxmanage=self.config['vboxmanage'],
-            path=path_to_image
+            path=path_to_image,
+            vmname=vmname
         )
 
     def delete_vm(self):

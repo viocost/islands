@@ -2,11 +2,12 @@
 
 # Form implementation generated from reading ui file '../views/main_form/main_form.ui'
 #
-# Created by: PyQt5 UI code generator 5.11.3
+# Created by: PyQt5 UI code generator 5.12.2
 #
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -149,6 +150,7 @@ class Ui_MainWindow(object):
         self.groupBox.setLayoutDirection(QtCore.Qt.RightToLeft)
         self.groupBox.setStyleSheet("")
         self.groupBox.setTitle("")
+        self.groupBox.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.groupBox.setObjectName("groupBox")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.groupBox)
         self.verticalLayout.setContentsMargins(11, 11, 11, 11)
@@ -168,24 +170,31 @@ class Ui_MainWindow(object):
         self.setup_required_icon.setObjectName("setup_required_icon")
         self.horizontalLayout_5.addWidget(self.setup_required_icon)
         self.verticalLayout.addLayout(self.horizontalLayout_5)
+        self.horizontalLayout = QtWidgets.QHBoxLayout()
+        self.horizontalLayout.setContentsMargins(-1, -1, 0, 0)
+        self.horizontalLayout.setSpacing(0)
+        self.horizontalLayout.setObjectName("horizontalLayout")
         self.button_launch_setup = QtWidgets.QPushButton(self.groupBox)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.button_launch_setup.sizePolicy().hasHeightForWidth())
         self.button_launch_setup.setSizePolicy(sizePolicy)
-        self.button_launch_setup.setLayoutDirection(QtCore.Qt.RightToLeft)
-        self.button_launch_setup.setStyleSheet("")
+        self.button_launch_setup.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.button_launch_setup.setStyleSheet("width: 120px; height: 30px")
         icon1 = QtGui.QIcon()
         icon1.addPixmap(QtGui.QPixmap(":/images/gear"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.button_launch_setup.setIcon(icon1)
         self.button_launch_setup.setObjectName("button_launch_setup")
-        self.verticalLayout.addWidget(self.button_launch_setup)
+        self.horizontalLayout.addWidget(self.button_launch_setup)
+        spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout.addItem(spacerItem2)
+        self.verticalLayout.addLayout(self.horizontalLayout)
         self.verticalLayout_5.addWidget(self.groupBox)
         self.horizontalLayout_7.addLayout(self.verticalLayout_5)
         self.verticalLayout_6.addLayout(self.horizontalLayout_7)
-        spacerItem2 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        self.verticalLayout_6.addItem(spacerItem2)
+        spacerItem3 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.verticalLayout_6.addItem(spacerItem3)
         self.horizontalLayout_4 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_4.setSpacing(6)
         self.horizontalLayout_4.setObjectName("horizontalLayout_4")
@@ -250,7 +259,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_7.addLayout(self.verticalLayout_6)
         MainWindow.setCentralWidget(self.centralWidget)
         self.menuBar = QtWidgets.QMenuBar(MainWindow)
-        self.menuBar.setGeometry(QtCore.QRect(0, 0, 850, 22))
+        self.menuBar.setGeometry(QtCore.QRect(0, 0, 850, 21))
         self.menuBar.setObjectName("menuBar")
         self.menuOptions = QtWidgets.QMenu(self.menuBar)
         self.menuOptions.setObjectName("menuOptions")
@@ -343,5 +352,6 @@ class Ui_MainWindow(object):
         self.act_my_keys.setText(_translate("MainWindow", "My keys"))
         self.act_open_config.setText(_translate("MainWindow", "Open configuration..."))
         self.act_update_vm.setText(_translate("MainWindow", "Update Islands VM..."))
+
 
 import resources_rc

@@ -1,4 +1,4 @@
-.container
+.container.chat-container
     .enter-chat-options-wrapper#auth-wrapper
         .main-menu-container
             .main-menu-elements-container
@@ -11,6 +11,10 @@
             div
                 span.user-name--greeting Hi,
                 input.heading-name--input#user-name
+
+            div.user-id-display
+                span Your id:
+                span#user-id
             div.island-connection-status-wrap
                 div#connection-status--connected
                     img(src="/img/online.png")
@@ -31,30 +35,34 @@
             h3.online-users-heading Other participants:
             #online-users-list
                 .online-user-row
+        #chat-resizer
         .chat
             #chat_window
             .control-container
-                .attach-file-wrap
-                    #chosen-files
-                    input#attach-file(type="file" name="file" class="inputfile")
-                    label#attach-file-button(for="attach-file" )
-                        img(src="/img/clip-128.png")
-                .select-member-wrap
-                    h4 To:
-                    select#select-member(name="participant")
-                        option(value="ALL") All
-                .new-message-wrap
+                .control-col.new-msg-input
+                    .select-member-wrap
+                        h4 To:
+                        select#select-member(name="participant")
+                            option(value="ALL") All
                     .input-wrap
                         .button-column
                             img#sounds-switch(src="/img/sound-on.png")
-                        textarea#new-msg(placeholder='Enter your message')
+                        .flex-column.new-msg-input
+                            textarea#new-msg(placeholder='Enter your message')
+                            #chosen-files
+                .control-col.new-msg-buttons
                     .send-button-wrap
-                        .hint-wrap
-                            p.send-new-message-hint Enter - send. Ctrl+Enter - new line
-                            p.send-new-message-hint __code - start block of code. __end - end block of code
+                        //.hint-wrap
+                        //    p.send-new-message-hint Enter - send. Ctrl+Enter - new line
+                        //    p.send-new-message-hint __code - start block of code. __end - end block of code
                         button.btn.ld-ext-right#send-new-msg
                             | Send
                             .ld.ld-ring.ld-spin
+                                .attach-file-wrap
+                    input#attach-file(type="file" name="file" class="inputfile")
+                    label#attach-file-button(for="attach-file" )
+                        img(src="/img/clip-128.png")
+
     //MODAL DISPLAY
     #settings-view
         .settings-container

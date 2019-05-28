@@ -37,7 +37,11 @@ pre
 .chat-wrapper
   @include horizontal-flex-container
   justify-content: space-between
+  height: inherit
   min-width: 69rem
+
+.chat-container
+  height: 95%
 
 
 #chatArea
@@ -52,11 +56,13 @@ pre
   overflow-x: hidden
   overflow-y: auto
   min-height: 50vh
+  max-height: 75vh
   border: #cccccc 2px solid
   border-radius: 1rem
   padding: 1rem 2rem 1rem 2rem
-  max-height: 50vh
-  resize: both
+  resize: none
+  height: 100%
+
   .message
     @include message
     align-self: flex-start
@@ -111,6 +117,7 @@ pre
     min-width: 60%
     padding: 1rem
     border-radius: 0.5rem
+    resize: vertical
   .send-button-wrap
     display: flex
     flex-direction: row
@@ -163,8 +170,30 @@ pre
 .heading-name--input
   border: none
   width: auto
+  margin: 0
   &:focus
     border: 1px solid #3a47ad
+
+.user-id-display
+  font-size: 1rem
+  color: #999
+  margin-bottom: .5rem
+  span
+    margin-right: .5rem
+
+#chat-resizer
+  width: 10px
+  padding: 0
+  cursor: ew-resize
+  flex: 0 0 auto
+  &:before
+    content: ""
+    display: block
+    width: 2px
+    height: 100%
+    background: white
+    margin: 0 auto
+
 
 .participant-alias
   border: none
@@ -247,7 +276,9 @@ pre
 .chat
   @include vertical-flex-container
   align-content: space-between
-  width: 72%
+  width: 100%
+  min-width: 59rem
+
 
 .online_users
   @include vertical-flex-container
@@ -256,11 +287,9 @@ pre
   padding: 1rem
   border-radius: 1rem
   width: 28%
-  margin: 0  2rem 0 0
-  resize: horizontal
-
-
-
+  margin: 0
+  resize: none
+  max-height: 90vh
 
 .online-users-heading
   font-weight: 500
@@ -592,42 +621,58 @@ pre
   padding: 1rem
   border-radius: 0.5rem
 
-  #chosen-files
-    margin-right: 1.7rem
+.new-msg-buttons
+  width: 7rem
+  label
+    align-self: center
+    margin-top: 1.5rem
+    width: 4rem
+    height: 4rem
     display: flex
-    flex-direction: row
-    .chosen-file-wrap
-      background-color: #e1e1e1
-      padding: .2rem
-      border-radius: 1rem
-      height: inherit
-      display: flex
-      align-items: center
-      font-size: 1.8rem
-      font-weight: bolder
-      color: #1a2435
-      img
-        height: 20px
-        width: 20px
-        &:hover
-          filter:  drop-shadow(1px 1px 2px rgba(0,0,0,1))
 
-  .inputfile + label
+#chosen-files
+  margin-right: 1.7rem
+  display: flex
+  flex-direction: row
+  .chosen-file-wrap
+    background-color: #e1e1e1
+    padding: .2rem
+    border-radius: 1rem
+    height: inherit
     display: flex
-    flex-direction: row
+    align-items: center
+    font-size: 1.8rem
+    font-weight: bolder
+    color: #1a2435
     img
-      border-radius: 1rem
-      cursor: pointer
-      width: 32px
-      height: 32px
-      transition: filter .2s ease
+      height: 20px
+      width: 20px
       &:hover
         filter:  drop-shadow(1px 1px 2px rgba(0,0,0,1))
 
+.inputfile + label
+  display: flex
+  flex-direction: row
+  img
+    border-radius: 1rem
+    cursor: pointer
+    width: 32px
+    height: 32px
+    transition: filter .2s ease
+    &:hover
+      filter:  drop-shadow(1px 1px 2px rgba(0,0,0,1))
+
 .control-container
   display: flex
+  margin-top: 2rem
+  flex-direction: row
+  justify-content: flex-end
+
+.control-col
+  display: flex
   flex-direction: column
-  min-height: 190px
+  margin-left: 2rem
+
 
 
 .msg-attachments
@@ -666,11 +711,11 @@ pre
   margin: 0
 
   #new-msg
-    width: 40%
-    min-width: 44.2rem
+    width: 100%
     border-radius: .5rem 0 .5rem .5rem
     height: 6.5rem
-    margin: 0
+    margin: 0 0 .5rem 0
+    resize: vertical
   .button-column
     display: flex
     flex-direction: column
@@ -688,6 +733,8 @@ pre
       filter: grayscale(100%)
 
 
+.new-msg-input
+  width: 100%
 
 
 
@@ -772,7 +819,7 @@ pre
 #client-logs
   display: none
   width: 100vh
-  margin: 1rem
+  margin: 15rem 1rem 1rem 1rem
   padding: 2rem 0 2rem 0
   border-top: 1px #c6c6c6 solid
   border-bottom: 2px #c6c6c6 solid

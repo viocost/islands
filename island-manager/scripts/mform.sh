@@ -57,6 +57,13 @@ function do_update_form {
     echo done!
 }
 
+function do_select_vm_form {
+    echo doing select_vm_form
+    pyuic5 ../views/select_vm_form/select_vm_form.ui -o ../views/select_vm_form/select_vm_form.py
+    echo done!
+}
+
+
 
 if [[ $1 == "main" ]]; then
     do_main
@@ -76,6 +83,8 @@ elif [[ $1 == "torrents" ]]; then
     do_torrents_form
 elif [[ $1 == "update" ]]; then
     do_update_form
+elif [[ $1 == "select_vm" ]]; then
+    do_select_vm_form
 elif [[ $1 == "all" ]]; then
     do_main
     do_image_authoring_form

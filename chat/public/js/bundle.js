@@ -167,11 +167,11 @@
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* WEBPACK VAR INJECTION */(function(module) {/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(43);
+/* WEBPACK VAR INJECTION */(function(module) {/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(44);
 /* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(141);
 /* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(85);
+/* harmony import */ var core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(87);
 /* harmony import */ var core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var core_js_modules_es6_typed_uint32_array__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(255);
 /* harmony import */ var core_js_modules_es6_typed_uint32_array__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_typed_uint32_array__WEBPACK_IMPORTED_MODULE_3__);
@@ -179,7 +179,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(55);
 /* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(34);
+/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(31);
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_6__);
 
 
@@ -3410,13 +3410,13 @@ if(false) {}
 __webpack_require__.r(__webpack_exports__);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.typed.uint8-array.js
-var es6_typed_uint8_array = __webpack_require__(85);
+var es6_typed_uint8_array = __webpack_require__(87);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.match.js
 var es6_regexp_match = __webpack_require__(141);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.split.js
-var es6_regexp_split = __webpack_require__(43);
+var es6_regexp_split = __webpack_require__(44);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.search.js
 var es6_regexp_search = __webpack_require__(223);
@@ -3425,16 +3425,16 @@ var es6_regexp_search = __webpack_require__(223);
 var es6_regexp_to_string = __webpack_require__(55);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es7.symbol.async-iterator.js
-var es7_symbol_async_iterator = __webpack_require__(97);
+var es7_symbol_async_iterator = __webpack_require__(72);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.symbol.js
-var es6_symbol = __webpack_require__(98);
+var es6_symbol = __webpack_require__(73);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/web.dom.iterable.js
-var web_dom_iterable = __webpack_require__(44);
+var web_dom_iterable = __webpack_require__(35);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.object.to-string.js
-var es6_object_to_string = __webpack_require__(34);
+var es6_object_to_string = __webpack_require__(31);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/regenerator/index.js
 var regenerator = __webpack_require__(2);
@@ -3460,7 +3460,7 @@ var es6_regexp_replace = __webpack_require__(147);
 var es6_promise = __webpack_require__(148);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es7.array.includes.js
-var es7_array_includes = __webpack_require__(72);
+var es7_array_includes = __webpack_require__(74);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/classCallCheck.js
 var classCallCheck = __webpack_require__(11);
@@ -4981,6 +4981,132 @@ function () {
 // EXTERNAL MODULE: ./client/src/css/main.sass
 var main = __webpack_require__(340);
 
+// CONCATENATED MODULE: ./client/src/js/lib/dom-util.js
+
+
+
+
+
+/**
+ *
+ *
+ * Bakes DOM element as per request in data
+ *
+ * @param name - name of the element such as div, button etc
+ * recipe is a JSON object with following properties:
+ *  * id - string id
+ *  * classes - list of classes. Array or single entry
+ *  * attributes - object of attributes key vaule pairs
+ *  * html - inner html
+ *  * text - inner text
+ *  * val  - value
+ *  
+ *  
+ * @param recipe
+ */
+function bake(name, recipe) {
+  var el = document.createElement(name);
+  if (!recipe) return el;
+
+  if (recipe.classes) {
+    if (typeof recipe.classes === "object") {
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = recipe.classes[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var c = _step.value;
+          el.classList.add(c);
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return != null) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
+    } else if (typeof recipe.classes === "string") {
+      el.classList.add(recipe.classes);
+    } else {
+      throw "Bake parameters invalid";
+    }
+  }
+
+  if (recipe.listeners) {
+    for (var _i = 0, _Object$keys = Object.keys(recipe.listeners); _i < _Object$keys.length; _i++) {
+      var ev = _Object$keys[_i];
+      el.addEventListener(ev, recipe.listeners[ev]);
+    }
+  }
+
+  if (recipe.id) {
+    el.setAttribute("id", recipe.id);
+  }
+
+  if (recipe.attributes) {
+    for (var _i2 = 0, _Object$keys2 = Object.keys(recipe.attributes); _i2 < _Object$keys2.length; _i2++) {
+      var key = _Object$keys2[_i2];
+      el.setAttribute(key, recipe.attributes[key]);
+    }
+  }
+
+  if (recipe.html) el.innerHTML = recipe.html;
+  if (recipe.text) el.innerText = recipe.text;
+  if (recipe.val) el.value = recipe.val;
+  return el;
+}
+function appendChildren(parent, children) {
+  if (children instanceof Array) {
+    var _iteratorNormalCompletion2 = true;
+    var _didIteratorError2 = false;
+    var _iteratorError2 = undefined;
+
+    try {
+      for (var _iterator2 = children[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+        var child = _step2.value;
+        parent.appendChild(child);
+      }
+    } catch (err) {
+      _didIteratorError2 = true;
+      _iteratorError2 = err;
+    } finally {
+      try {
+        if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
+          _iterator2.return();
+        }
+      } finally {
+        if (_didIteratorError2) {
+          throw _iteratorError2;
+        }
+      }
+    }
+  } else {
+    parent.appendChild(children);
+  }
+}
+function dom_util_$(selector) {
+  return document.querySelector(selector);
+}
+function $$(selector) {
+  return document.querySelectorAll(selector);
+}
+function displayNone(selector) {
+  dom_util_$(selector).style.display = "none";
+}
+function displayBlock(selector) {
+  dom_util_$(selector).style.display = "block";
+}
+function displayFlex(selector) {
+  dom_util_$(selector).style.display = "flex";
+}
 // EXTERNAL MODULE: ./node_modules/toastr/toastr.js
 var toastr = __webpack_require__(7);
 
@@ -8340,6 +8466,7 @@ function () {
 
 
 
+
 window.toastr = toastr;
 
 var app_chat;
@@ -8349,6 +8476,7 @@ var app_nickname, app_topicName; //variables to topic login
 
 var topicID;
 var sounds = {};
+var isResizing = false;
 var soundsOnOfIcons = {
   on: "/img/sound-on.png",
   off: "/img/sound-off.png"
@@ -8390,6 +8518,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
   document.querySelector('#re-connect').addEventListener('click', app_attemptReconnection);
   document.querySelector('#sounds-switch').addEventListener('click', switchSounds);
   document.querySelector('#re-connect').addEventListener('click', app_attemptReconnection);
+  prepareResizer();
   $('#new-msg').keydown(function (e) {
     if (!e.ctrlKey && e.keyCode === 13) {
       event.preventDefault();
@@ -8435,6 +8564,32 @@ document.addEventListener('DOMContentLoaded', function (event) {
   enableSettingsMenuListeners();
   autoLogin();
 });
+
+function prepareResizer() {
+  var resizer = dom_util_$("#chat-resizer");
+  var chatWrapper = dom_util_$("#chat_room");
+  var usersList = chatWrapper.children[0];
+  var chatArea = chatWrapper.children[2];
+  document.addEventListener('mousedown', function (e) {
+    if (e.target === resizer) {
+      isResizing = true;
+    }
+  });
+  document.addEventListener("mousemove", function (e) {
+    if (!isResizing) {
+      return false;
+    }
+
+    var containerOffsetLeft = chatWrapper.offsetLeft;
+    var pointerRelativeXpos = e.clientX - containerOffsetLeft;
+    var usersListMinWidth = 300;
+    usersList.style.width = Math.max(usersListMinWidth, pointerRelativeXpos - 8) + 'px';
+    usersList.style.flexGrow = 0;
+  });
+  document.addEventListener("mouseup", function (e) {
+    isResizing = false;
+  });
+}
 
 function autoLogin() {
   var url = new URL(window.location.href);
@@ -9012,6 +9167,8 @@ function processLogin(messages) {
   var nickName = app_chat.session.settings.nickname;
   $('#user-name').val(nickName);
   $('#topic-name').val(app_chat.session.settings.topicName);
+  dom_util_$("#user-id").innerText = app_chat.session.publicKeyFingerprint;
+  console.log("USER PKFP: " + app_chat.session.publicKeyFingerprint);
   if (app_chat.session.metadata.topicName) document.title = app_chat.session.metadata.topicName;
   updateParticipants();
   setNavbarListeners();

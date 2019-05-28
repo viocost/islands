@@ -3,6 +3,7 @@ import { CuteSet } from "cute-set";
 import { iCrypto } from "./lib/iCrypto"
 import '../css/main.sass';
 
+import * as util from "./lib/dom-util"
 import * as toastr from "toastr";
 window.toastr = toastr;
 
@@ -19,7 +20,7 @@ let nickname, topicName;
 let topicID;
 
 let sounds = {};
-
+let isResizing = false;
 let soundsOnOfIcons = {
     on: "/img/sound-on.png",
     off: "/img/sound-off.png"
@@ -48,7 +49,6 @@ let tempName;
 
 let recording = false;
 
-
 document.addEventListener('DOMContentLoaded', event => {
     console.log('initializing chat....');
     chat = new ChatClient({version: version});
@@ -67,6 +67,7 @@ document.addEventListener('DOMContentLoaded', event => {
     document.querySelector('#sounds-switch').addEventListener('click', switchSounds);
     document.querySelector('#re-connect').addEventListener('click', attemptReconnection);
 
+    prepareResizer();
 
     $('#new-msg').keydown(function (e) {
         if (!e.ctrlKey && e.keyCode === 13) {
@@ -87,15 +88,42 @@ document.addEventListener('DOMContentLoaded', event => {
         }
     });
 
-
-
     enableSettingsMenuListeners();
-
     autoLogin();
 
 });
 
+function prepareResizer() {
+    let resizer = util.$("#chat-resizer");
 
+    let chatWrapper = util.$("#chat_room");
+    let usersList = chatWrapper.children[0];
+    let chatArea = chatWrapper.children[2];
+
+
+    document.addEventListener('mousedown', (e)=>{
+        if (e.target === resizer){
+           isResizing = true;
+        }
+    });
+
+    document.addEventListener("mousemove", (e)=>{
+        if(!isResizing){
+            return false
+        }
+
+        let containerOffsetLeft = chatWrapper.offsetLeft;
+        let pointerRelativeXpos = e.clientX - containerOffsetLeft;
+        let usersListMinWidth = 300;
+        usersList.style.width = (Math.max(usersListMinWidth, pointerRelativeXpos - 8)) + 'px';
+        usersList.style.flexGrow = 0
+
+    });
+
+    document.addEventListener("mouseup", (e)=>{
+        isResizing = false;
+    })
+}
 function autoLogin(){
     let url = new URL(window.location.href);
     let id = url.searchParams.get("id");
@@ -632,6 +660,9 @@ function processLogin(messages) {
     let nickName = chat.session.settings.nickname;
     $('#user-name').val(nickName);
     $('#topic-name').val(chat.session.settings.topicName);
+    util.$("#user-id").innerText = chat.session.publicKeyFingerprint;
+
+    console.log("USER PKFP: " + chat.session.publicKeyFingerprint);
     if (chat.session.metadata.topicName) document.title = chat.session.metadata.topicName;
     updateParticipants();
     setNavbarListeners();

@@ -11,6 +11,8 @@ from lib.island_states import IslandStates as States
 from controllers.image_authoring_form import ImageAuthoringForm
 from controllers.torrents_form import TorrentsForm
 from lib.key_manager import KeyManager
+from time import sleep
+from threading import Thread
 
 import logging
 
@@ -23,11 +25,11 @@ class MainWindow(QObject):
     processing = pyqtSignal()
     state_changed = pyqtSignal()
 
-    def __init__(self, config, islands_manager, setup, torrent_manager):
+    def __init__(self, config, island_manager, setup, torrent_manager):
         QObject.__init__(self)
         self.config = config
         self.setup = setup
-        self.island_manager = islands_manager
+        self.island_manager = island_manager
         self.window = QMainWindow()
         self.states = self.prepare_states()
         self.ui = Ui_MainWindow()
@@ -40,6 +42,8 @@ class MainWindow(QObject):
         self.refresh_island_status()
         self.set_main_window_title()
 
+        # island status refresh counter
+        self.refresh_count = 0
         log.debug("Main window controller initialized.")
 
     def show(self):
@@ -55,7 +59,7 @@ class MainWindow(QObject):
             else:
                 self.island_manager.emit_islands_current_state(self.state_emitter)
         except Exception as e:
-            print(e)
+            log.error("Error refreshing island statuus: %s" % str(e))
             self.set_state(States.UNKNOWN)
 
     def prepare_states(self):
@@ -71,7 +75,7 @@ class MainWindow(QObject):
 
     def request_to_run_setup(self):
         message = "Islands setup is required. Would you like to launch it now?"
-        res = QM.question(QM(self.window), '', message, QM.Yes | QM.No)
+        res = QM.question(self.window, '', message, QM.Yes | QM.No)
         if res == QM.Yes:
             self.launch_setup()
 
@@ -167,7 +171,7 @@ class MainWindow(QObject):
 
     def launch_setup(self):
         if sys.platform == "win32" and not has_admin_rights_win32():
-            QM.warning(QM(self.window), "Admin rights required!",
+            QM.warning(self.window, "Admin rights required!",
                        "Running setup requires administrator privileges. "
                        "Please close island manager and start it as administrator.", QM.Ok)
             return
@@ -209,12 +213,13 @@ class MainWindow(QObject):
         self.window.close()
 
     def set_main_window_title(self):
-        self.window.setWindowTitle("Island Manager %s" % "v"+get_version())
+        self.window.setWindowTitle("Islands Manager %s" % "v"+get_version())
 
     """ STATE SETTERS """
     def set_setup_required(self):
         self.ui.island_access_label.setVisible(False)
         self.ui.island_access_address.setVisible(False)
+        self.ui.island_admin_access_address.setVisible(False)
         reason = self.setup.is_setup_required()
         self.ui.islandStatus.setText("Setup required")
         self.ui.islandStatus.setStyleSheet('color: orange')
@@ -228,12 +233,17 @@ class MainWindow(QObject):
         self.ui.stopMode.setEnabled(False)
 
     def set_running(self):
+        self.setup.update_vm_config()
+        self.ui.island_access_label.setVisible(True)
+        self.ui.island_access_address.setVisible(True)
         if self.config["local_access"]:
-            self.ui.island_access_label.setVisible(True)
-            self.ui.island_access_address.setVisible(True)
-            self.ui.island_access_address.setText(self.config["local_access"])
-            self.ui.island_admin_access_address.setText(self.config["local_access_admin"])
+            self.ui.island_access_address.setText(self.get_local_access_html(self.config["local_access"]))
+            self.ui.island_admin_access_address.setText(self.get_local_access_html(self.config["local_access_admin"], True))
             self.ui.island_admin_access_address.setVisible(True)
+        else:
+            self.ui.island_access_address.setText('<span style="color: grey; text-decoration: none">not configured</span>')
+            self.ui.island_admin_access_address.setVisible(False)
+            self.run_delayed_config_load()
         self.ui.islandStatus.setText("Running")
         self.ui.islandStatus.setStyleSheet('color: green')
         self.ui.restartIslandButton.setEnabled(True)
@@ -271,7 +281,6 @@ class MainWindow(QObject):
     def set_not_running(self):
         self.ui.island_access_label.setVisible(False)
         self.ui.island_access_address.setVisible(False)
-
         self.ui.island_admin_access_address.setVisible(False)
         self.ui.islandStatus.setText("Not running")
         self.ui.islandStatus.setStyleSheet('color: red')
@@ -300,7 +309,6 @@ class MainWindow(QObject):
     def set_restarting(self):
         self.ui.island_access_label.setVisible(False)
         self.ui.island_access_address.setVisible(False)
-
         self.ui.island_admin_access_address.setVisible(False)
         self.ui.islandStatus.setText("Restarting...")
         self.ui.islandStatus.setStyleSheet('color: blue')
@@ -315,7 +323,23 @@ class MainWindow(QObject):
 
     """ ~ END STATES """
 
+    def run_delayed_config_load(self):
+        if self.refresh_count >= 5:
+            self.refresh_count = 0
+            return
+        self.refresh_count += 1
+
+        def worker():
+            sleep(self.refresh_count + 1)
+            self.refresh_island_status()
+        thread = Thread(target=worker)
+        thread.start()
+
     def show_notification(self, text):
-        QM.warning(QM(self.window), None, "Warning", text, buttons=QM.Ok)
+        QM.warning(self.window, None, "Warning", text, buttons=QM.Ok)
 
-
+    def get_local_access_html(self, connection_str, admin=False):
+        return '<a href="{connstr}">{content}</a>'.format(
+            connstr=connection_str,
+            content="Admin access" if admin else connection_str
+        )

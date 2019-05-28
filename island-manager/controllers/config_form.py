@@ -1,49 +1,62 @@
 from views.config_form.config_form import Ui_ConfigForm
-from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox as QM
+from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox as QM, QStatusBar, QVBoxLayout
+from PyQt5.QtCore import Qt
 from lib.util import get_full_path, show_notification, show_user_error_window, get_stack
+from controllers.update_form import UpdateForm
+from controllers.select_vm_form import SelectVMForm
 import time
 import re
 import logging
+from lib.island_manager import IslandManagerException
+from os.path import basename, normpath, join
 
 log = logging.getLogger(__name__)
 
 
 class ConfigForm:
-    def __init__(self, parent, config, setup, islands_manager):
+    def __init__(self, parent, config, setup, island_manager):
         self.config = config
         self.ui = Ui_ConfigForm()
-        self.window = QDialog(parent)
+        self.window = QDialog()
+        # self.status_bar = self.setup_status_bar()
         self.ui.setupUi(self.window)
-        self.island_manager = islands_manager
+        self.island_manager = island_manager
         self.setup = setup
         self.load_settings()
         self.state_changed = False
         self.refresh_required = False
-        self.ui.vmnameSave.clicked.connect(self.save_vmname)
-        self.ui.vmnameDefault.clicked.connect(self.restore_default_vmname)
-        self.ui.vboxmanageDefault.clicked.connect(self.restore_default_vboxmanage_path)
-        self.ui.vboxmanageSave.clicked.connect(self.save_vboxmanage_path)
-        self.ui.vmnameLineEdit.textChanged.connect(self.vmname_process_change)
-        self.ui.vboxmanagePathLineEdit.textChanged.connect(self.vboxmanage_process_change)
-        self.ui.dfLineEdit.textChanged.connect(self.df_process_change)
-        self.ui.vboxmanageSelectPath.clicked.connect(self.vboxmanage_select_path)
-        self.ui.dfSelectPath.clicked.connect(self.df_select_path)
-        self.ui.dfDefault.clicked.connect(self.restore_default_data_folder_path)
-        self.ui.dfSave.clicked.connect(self.save_datafolder_path)
-        self.ui.deleteIslandButton.clicked.connect(self.process_delete_vm_request)
+        self.vm_info = None
+        self.refresh_vm_info()
+        self.assign_handlers()
 
     def exec(self):
         self.window.exec()
 
+
+    def setup_status_bar(self):
+        ly = QVBoxLayout(self.window)
+        bar = QStatusBar(self.window)
+        ly.addWidget(bar)
+        return bar
+
     def load_settings(self):
-        self.ui.vmnameLineEdit.setText(self.config['vmname'])
         self.ui.vboxmanagePathLineEdit.setText(get_full_path(self.config['vboxmanage']))
-        self.ui.dfLineEdit.setText(get_full_path(self.config['data_folder']))
+
+
+    def assign_handlers(self):
+        self.ui.btn_refresh_info.clicked.connect(self.refresh_vm_info)
+        self.ui.btn_del_vm.clicked.connect(self.process_delete_vm_request)
+        self.ui.btn_update_vm.clicked.connect(self.process_vm_update)
+        self.ui.btn_select_vm.clicked.connect(self.process_select_vm)
+        self.ui.btn_configure_data.clicked.connect(self.configure_data_folder)
+        self.ui.vboxmanageSelectPath.clicked.connect(self.vboxmanage_select_path)
+        self.ui.vboxmanagePathLineEdit.textChanged.connect(self.vboxmanage_process_change)
+        self.ui.vboxmanageDefault.clicked.connect(self.restore_default_vboxmanage_path)
+        self.ui.vboxmanageSave.clicked.connect(self.save_vboxmanage_path)
+
 
     def restore_default_vmname(self):
         self.config.restore_default("vmname")
-        self.ui.vmnameLineEdit.setText(self.config["vmname"])
-        self.ui.vmnameSave.setEnabled(False)
         self.refresh_required = True
 
     def restore_default_vboxmanage_path(self):
@@ -58,7 +71,6 @@ class ConfigForm:
         if self.config.is_default("data_folder"):
             print("Already default")
             return
-
         res = QM.question(QM(self.window),
                           "Confirm",
                           "This will require stopping Islands. Continue?",
@@ -70,7 +82,7 @@ class ConfigForm:
         self.ui.dfLineEdit.setText(get_full_path(self.config['data_folder']))
 
     def process_delete_vm_request(self):
-        res = QM.warning(QM(self.window),
+        res = QM.warning(self.window,
                          "Delete Island",
                          "This is going to unregister Island virtual machine, "
                               "wipe its files and reset VM settings to default. " 
@@ -83,6 +95,7 @@ class ConfigForm:
                     time.sleep(3)
                 self.setup.delete_islands_vm()
                 self.setup.reset_vm_config()
+                self.refresh_vm_info()
                 show_notification(self.window, "Island virtual machine has been deleted")
 
             except Exception as e:
@@ -91,10 +104,64 @@ class ConfigForm:
                 log.exception(e)
                 show_user_error_window(self.window, errmsg)
 
+    def process_vm_update(self):
+        log.debug("opening update form")
+        update_form = UpdateForm(self.window, self.config, self.island_manager, self.setup)
+        update_form.exec()
+        self.refresh_vm_info()
+        log.debug("Update form is closed")
 
+    def process_select_vm(self):
+        log.debug("Selecting Islands VM...")
+        select_form = SelectVMForm(self.window, self.setup)
+        res = select_form.exec()
+        if res == 1:
+            selected_vm = str(select_form.ui.vms_list.currentText())
+            self.config["vmname"] = selected_vm
+            self.config.save()
+            self.setup.update_vm_config()
+            self.refresh_vm_info()
+
+    def configure_data_folder(self):
+        f_dialog = QFileDialog(self.window)
+        res = f_dialog.getExistingDirectory(self.window, "Select directory",
+                                            directory=get_full_path(self.config["homedir"]))
+        if not res:
+            return
+
+        if get_full_path(res) == get_full_path(self.config["manager_data_folder"]):
+            log.debug("Islands Manager data and Island data cannot be the same directory!")
+            QM.warning(self.window,
+                       "Error",
+                       "Islands Manager data and Island data cannot be the same directory!",
+                       QM.Ok)
+            return
+        if basename(normpath(res)) != self.config["shared_folder_name"]:
+            res = join(res, self.config["shared_folder_name"])
+        wmsg = "The virtual machine will be stopped now. Shared folder named islandsData will be unregistered " \
+               "and selected directory will be mounted under islandsData name.\n\nSelected directory: %s\n\n" \
+               "Proceed?" % res
+        if QM.question(self.window,
+                          "Confirm",
+                          wmsg,
+                          QM.Yes | QM.No) != QM.Yes:
+            log.debug("Data folder config cancelled. Returning...")
+            return
+        log.debug("Configuring data dir to " + res)
+        try:
+            self.island_manager.set_new_datafolder(res)
+            self.config["data_folder"] = res
+            self.config.save()
+            log.debug("Data folder configured")
+            self.refresh_vm_info()
+            QM.information(self.window, "Info", "Data folder configured successfully", QM.Ok)
+        except IslandManagerException as e:
+            errmsg = "Error configuring Island data directory: %s" % str(e)
+            log.error(errmsg)
+            QM.information(self.window, "Info", errmsg, QM.Ok)
 
     def save_datafolder_path(self):
-        res = QM.question(QM(self.window),
+        res = QM.question(self.window,
                           "Confirm",
                           "This will require stopping Islands. Continue?",
                           QM.Yes | QM.No)
@@ -104,7 +171,6 @@ class ConfigForm:
         self.island_manager.set_new_datafolder(self.ui.dfLineEdit.text())
         self.ui.dfLineEdit.setText(get_full_path(self.config['data_folder']))
 
-
     def save_vboxmanage_path(self):
         try:
             self.setup.set_vboxmanage_path(self.ui.vboxmanagePathLineEdit.text())
@@ -112,36 +178,9 @@ class ConfigForm:
         except Exception as e:
             show_notification(self.window, "Error setting vboxmanage path: %s" % str(e))
 
-
-
-    def save_vmname(self):
-        val = self.ui.vmnameLineEdit.text().strip()
-        ptrn = re.compile('[A-z]+')
-        if not ptrn.match(val):
-            show_notification("Invalid name for virtual machine")
-            return
-        self.config['vmname'] = val
-        self.config.save()
-        self.ui.vmnameSave.setEnabled(False)
-
-
-
-
-
-    def vmname_process_change(self):
-        self.ui.vmnameSave.setEnabled(
-            self.ui.vmnameLineEdit.text() != self.config['vmname']
-        )
-
-
     def vboxmanage_process_change(self):
         self.ui.vboxmanageSave.setEnabled(
             self.ui.vboxmanagePathLineEdit.text() != get_full_path(self.config['vboxmanage'])
-        )
-
-    def df_process_change(self):
-        self.ui.dfSave.setEnabled(
-            self.ui.dfLineEdit.text() != get_full_path(get_full_path(self.config['data_folder']))
         )
 
     def vboxmanage_select_path(self):
@@ -154,11 +193,29 @@ class ConfigForm:
             self.config.save()
             self.ui.vboxmanagePathLineEdit.setText(get_full_path(self.config['vboxmanage']))
 
-    def df_select_path(self):
-        f_dialog = QFileDialog()
-        f_dialog.setFileMode(QFileDialog.Directory)
-        res = f_dialog.getExistingDirectory(self.window, "Select directory", directory=get_full_path(self.config["homedir"]))
-        if res:
-            self.ui.dfLineEdit.setText(get_full_path(res))
+    def refresh_vm_info(self):
+        log.debug("Refreshing VM info")
+        vbox_set_up = self.setup.is_vbox_set_up()
+        if vbox_set_up:
+            self.vm_info = self.setup.get_vm_info()
+            if self.vm_info is None:
+                self.ui.lbl_vm_name.setText("not configured")
+                self.ui.lbl_vm_name.setStyleSheet("color: gray")
+                self.ui.vm_info.setText("")
 
+            else:
+                self.ui.lbl_vm_name.setText("%s  {%s}" % (self.vm_info["Name"], self.vm_info["UUID"]))
+                self.ui.lbl_vm_name.setStyleSheet("color: blue")
 
+                name = '<span style="color: black; margin-right: 5px; font-weight: 900"; font-size: 10px>{key}: </span>'
+                val = '<span style="color: blue; margin-left: 5px; font-weight: 900"; font-size: 10px>{val}</span>'
+                line = '<p>{content}</p>'
+                self.ui.vm_info.setText("")
+                for key in self.vm_info.keys():
+                    self.ui.vm_info.append(line.format(
+                        content="%s%s" % (name.format(key=key), val.format(val=str(self.vm_info[key])))
+                ))
+        self.ui.btn_del_vm.setEnabled(vbox_set_up and self.vm_info is not None)
+        self.ui.btn_configure_data.setEnabled(vbox_set_up and self.vm_info is not None)
+        self.ui.btn_update_vm.setEnabled(vbox_set_up)
+        self.ui.btn_select_vm.setEnabled(vbox_set_up)

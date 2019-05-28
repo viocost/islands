@@ -1,10 +1,11 @@
-from os import path
+from os import path, getuid
 from PyQt5.QtWidgets import QMessageBox as QM, QWizard, QFileDialog, QInputDialog, QLineEdit, QWidget
 from PyQt5.QtCore import QObject, pyqtSignal, Qt
 from views.setup_wizard.setup_wizard import Ui_IslandSetupWizard as UI_setup
 
 from PyQt5.QtGui import QTextCursor
 from lib import util
+import sys
 import logging
 
 log = logging.getLogger(__name__)
@@ -298,9 +299,22 @@ class SetupWizardWindow(QObject):
     # END progress bar handlers
 
     def process_vbox_install(self):
+        vbox_installed = self.setup.is_vbox_installed()
+
+        if vbox_installed:
+            return
+        elif sys.platform == "linux" and getuid() != 0:
+            # Asking user to either run as root or install virtualbox separately
+            log.debug("Virtulabox install: Not enough privileges")
+            QM.information(self.window, "Root required",
+                           "You need to be root in order to install Virtualbox."
+                           "Either install Virtualbox yourself or restart Islands Manager as root",
+                           QM.Ok)
+            return
+
+
         self.consoles[0].setText("")
         self.ui.button_install_vbox.setEnabled(False)
-        vbox_installed = self.setup.is_vbox_installed()
         self.setup.run_vbox_installer(
             config=self.config,
             setup=self.setup,
@@ -354,7 +368,7 @@ class SetupWizardWindow(QObject):
     def untrusted_key_confirm(self):
         msg = "Warning, the public key of the image you are trying to use is not registered as trusted.\n" + \
             "Would you like to import image anyway? The public key will be registered as trusted."
-        res = QM.question(QM(self.window), "Unknown public key", msg, QM.Yes | QM.No)
+        res = QM.question(self.window, "Unknown public key", msg, QM.Yes | QM.No)
         if res == QM.Yes:
             self.setup.vm_installer.unknown_key_confirm_resume()
         else:
@@ -435,6 +449,7 @@ class SetupWizardWindow(QObject):
                                     finalize_progres_bar=self.get_finalize_progress_bar_handler(console=1),
                                     download=not self.ui.opt_vm_local.isChecked(),
                                     setup=self.setup,
+                                    island_manager=self.island_manager,
                                     on_download_timeout=lambda: self.download_timeout.emit(),
                                     magnet_link=self.ui.magnet_link.text(),
                                     on_confirm_required=lambda: self.unknown_key_confirm_request.emit(),

@@ -128,27 +128,12 @@ class ShellExecutor:
         # proc.stdin.write("{}\n".format(p^asswd))
         stdout, stderr = proc.communicate("{}\n".format(passwd))
         log.debug("Process exited!")
-        # while proc.poll() is None:
-        #     for line in proc.stdout:
-        #         on_data(line)
-        #         if verbose:
-        #             print("STDOUT: " + line)
-        #     for line in proc.stderr:
-        #         on_error(line)
-        #         if verbose:
-        #             print("STDERR: " + line)
+
         res = proc.returncode
         log.debug("RETURN CODE: %d" % res)
         log.debug("stdout: %s" % stdout)
         log.debug("stderr: %s" % stderr)
-        # for line in stdout:
-        #     on_data(line)
-        #     if verbose:
-        #         print("STDOUT: " + line)
-        # for line in stderr:
-        #     on_error(line)
-        #     if verbose:
-        #         print("STDERR: " + line)
+
         return res, stdout, stderr
 
 

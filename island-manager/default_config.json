@@ -21,6 +21,7 @@
     "natpf_guest_port": "4000",
     "local_access": "",
     "local_access_admin": "",
+    "local_access_port": 4000,
     "torrent_port_range": [6881, 6891],
     "dht_routers": [
         ["router.utorrent.com", 6881],

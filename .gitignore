@@ -13,7 +13,7 @@ build-*
 **/.eggs/*
 .DS_Store
 **/__pycache__/*
-
+custom_config_link
 *.swp
 *.pyc
 *.autosave
