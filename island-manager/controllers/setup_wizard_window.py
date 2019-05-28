@@ -1,4 +1,4 @@
-from os import path, getuid
+from os import path
 from PyQt5.QtWidgets import QMessageBox as QM, QWizard, QFileDialog, QInputDialog, QLineEdit, QWidget
 from PyQt5.QtCore import QObject, pyqtSignal, Qt
 from views.setup_wizard.setup_wizard import Ui_IslandSetupWizard as UI_setup
@@ -10,6 +10,8 @@ import logging
 
 log = logging.getLogger(__name__)
 
+if sys.platform in ("linux", "darwin"):
+    from os import getuid
 
 class SetupWizardWindow(QObject):
 

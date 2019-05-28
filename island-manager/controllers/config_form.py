@@ -17,7 +17,7 @@ class ConfigForm:
     def __init__(self, parent, config, setup, island_manager):
         self.config = config
         self.ui = Ui_ConfigForm()
-        self.window = QDialog()
+        self.window = QDialog(parent)
         # self.status_bar = self.setup_status_bar()
         self.ui.setupUi(self.window)
         self.island_manager = island_manager
