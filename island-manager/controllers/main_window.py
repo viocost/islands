@@ -199,7 +199,10 @@ class MainWindow(QObject):
     def set_state(self, state):
         if state not in self.states:
             raise KeyError("Invalid main window state.")
-        self.states[state]()
+        try:
+            self.states[state]()
+        except Exception as e:
+            log.error("Error setting state %s: %s" % (state, str(e)))
 
     """MENU HANDLERS"""
     def minimize_main_window(self):

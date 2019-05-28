@@ -1,9 +1,10 @@
 from views.torrents_form.torrents_form import Ui_TorrentsForm
 from controllers.create_torrent_form import CreateTorrentForm
-from PyQt5.QtWidgets import QDialog, QHeaderView, QInputDialog, QLineEdit, QMenu, QAction, QMessageBox
+from PyQt5.QtWidgets import QDialog, QHeaderView, QInputDialog, QLineEdit, QMenu, QAction, QMessageBox, QApplication
 from PyQt5.QtCore import Qt, QProcess
 from models.TorrentsModel import TorrentsModel
 from lib.util import sizeof_fmt, show_user_error_window, get_stack
+from lib.app_ref import AppRef
 import os
 
 import logging
@@ -61,13 +62,17 @@ class TorrentsForm:
         resume = QAction("Resume", self.window)
         delete = QAction("Delete", self.window)
         show_content = QAction("Show content", self.window)
+        copy_magnet_link = QAction("Copy magnet link", self.window)
+        copy_infohash = QAction("Copy info hash", self.window)
 
         pause.triggered.connect(lambda: self.pause_torrent(infohash))
         resume.triggered.connect(lambda: self.resume_torrent(infohash))
         delete.triggered.connect(lambda: self.delete_torrent(infohash, name))
         show_content.triggered.connect(lambda: self.show_content(infohash))
+        copy_magnet_link.triggered.connect(lambda: self.copy_magnet_link(infohash))
+        copy_infohash.triggered.connect(lambda: self.copy_infohash(infohash))
 
-        menu.addActions([pause, resume, show_content, delete])
+        menu.addActions([pause, resume, show_content, copy_infohash,  copy_magnet_link,  delete])
         return menu
 
     def pause_torrent(self, infohash):
@@ -100,6 +105,17 @@ class TorrentsForm:
             log.error(msg)
             log.exception(e)
             show_user_error_window(self.window, msg)
+
+    def copy_magnet_link(self, infohash):
+        try:
+            log.debug("copying magnet to clipboard")
+            magnet_link = self.torrent_manager.get_magnet_link(infohash)
+            QApplication.clipboard().setText(magnet_link)
+        except Exception as e:
+            log.error("Error copying magnet link: %s " % str(e))
+
+    def copy_infohash(self, infohash):
+        QApplication.clipboard().setText(infohash)
 
     def show_content(self, infohash):
         save_path = self.torrent_manager.get_save_path(infohash)

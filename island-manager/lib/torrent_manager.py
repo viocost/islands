@@ -281,6 +281,17 @@ class TorrentManager:
         with open(t_info_path, "r") as fp:
             return json.load(fp)
 
+    def get_magnet_link(self, infohash):
+        """
+        Given infohash as string returns magnet link
+        :param infohash:
+        :return:
+        """
+        torrent_info = self.get_torrent_info(infohash)
+        return torrent_info["magnet"]
+
+
+
     def _get_torrent_info_path(self, infohash):
         return os.path.join(self.torrent_metadata_path, ("%s.json" % infohash))
 
