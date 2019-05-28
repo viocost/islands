@@ -24,7 +24,6 @@
             .admin-content-wrap
                 .menu-wrap#island-admin-main-menu
                     .nav-item.menu-item.active#page-two-button Hidden services
-                    .nav-item.menu-item#page-one-button Updates
                     .nav-item.menu-item#page-three-button Logs
                 .pages-wrap#admin-pages
                     .page.active
@@ -69,32 +68,7 @@
                                                     li Deactivate
                                                     li Regenerate link
                                                     li Delete
-                    .page
-                        .admin-page-content-wrap.updates-wrapper
 
-                            .update-mode
-                                .update-mode-options
-                                    a.update-option.active#update-from-file From file
-                                    a.update-option#update-from-git From Github
-
-                            #github-update-options--wrap
-                                select#gh-update-branch-select
-                                    option#branch-select
-                                        option(value="master") Stable
-                                        option(value="dev" selected) Dev
-
-
-
-                            #update-file--wrapper
-                                form#update-from-file--form(action="admin/", enctype='multipart/form-data', method="post")
-                                    input.inputfile#update-file(type="file" name="file" )
-                                    label.visible-inputfile#select-file(for="update-file") Select a file
-                                    input#pkfp(type="text", name="pkfp", hidden)
-                                    input#sign(type="text", name="sign", hidden)
-
-                            .divider
-                            .control-wrapper
-                                a#run-update RUN UPDATE!
                     .page
                         .admin-page-content-wrap.logs-control-wrap
                             .log-control-item
