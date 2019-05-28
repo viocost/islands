@@ -210,7 +210,9 @@ class MainWindow(QObject):
         self.window.showMinimized()
 
     def show_app_info(self):
-        QM.about(QM(self.window), "", "Islands Virtual Machine Manager\nVersion: %s" % get_version())
+        pos = self.window.pos()
+        self.window.show()
+        QM.about(self.window, "", "Islands Virtual Machine Manager\nVersion: %s" % get_version())
 
     def on_close(self):
         self.window.close()

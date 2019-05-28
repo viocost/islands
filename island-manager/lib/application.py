@@ -61,7 +61,6 @@ class Application:
             import ctypes
             myappid = u'islands.manager.v00185'  # arbitrary string
             ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
-        Application.app = app
         AppRef.set_app(app)
         return app
 

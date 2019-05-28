@@ -9,7 +9,7 @@
 from lib.application import Application
 from lib.im_config import IMConfig
 from logging.handlers import RotatingFileHandler
-from lib.util import get_full_path, get_stack
+from lib.util import get_full_path
 import sys, os
 import logging
 
@@ -35,7 +35,6 @@ def setup_logger(config):
     manager_path = get_full_path(config["manager_data_folder"])
     if not os.path.exists(manager_path):
         os.mkdir(manager_path)
-
     log_path = os.path.join(manager_path, "islands_manager.log")
     file_handler = RotatingFileHandler(log_path, mode="a", maxBytes=5*1024*1024, backupCount=2, encoding=None, delay=0)
     formatter = logging.Formatter('%(asctime)s %(levelname)s %(name)s %(funcName)s(%(lineno)d) %(message)s ')
