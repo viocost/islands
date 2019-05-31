@@ -318,9 +318,6 @@ function setupChatListeners(chat) {
         toastr.warning("Participant booting failed: " + message);
     });
 
-    chat.on("topic_join_success", data => {
-        processTopicJoinSuccess(data);
-    });
 
     chat.on("del_invite_fail", () => {
         toastr.warning("Error deleting invite");
@@ -906,7 +903,15 @@ async function downloadOnClick(ev) {
     }
     let fileInfo = target.nextSibling.innerHTML; //Extract fileInfo from message
     console.log("obtained fileinfo: " + fileInfo);
-    let file = await chat.downloadAttachment(fileInfo); //download file
+    target.childNodes[0].style.display = "inline-block";
+    try {
+        await chat.downloadAttachment(fileInfo); //download file
+        console.log("Download complete!");
+    } catch(err){
+        toastr.warning("file download unsuccessfull: " + err)
+    }finally {
+        target.childNodes[0].style.display = "none";
+    }
 }
 
 /**
@@ -955,7 +960,7 @@ function processAttachments(attachments) {
         let spinner = document.createElement("img");
         spinner.classList.add("spinner");
         spinner.src = "/img/spinner.gif";
-        spinner.display = "none";
+        spinner.display = "flex";
 
         attState.appendChild(spinner);
 
@@ -1071,34 +1076,23 @@ function generateInvite(ev) {
     chat.requestInvite();
 }
 
-function addNewParticipant() {
-    let nickname = document.querySelector('#new-participant-nickname').value;
-    let pubKey = document.querySelector('#new-participant-public-key').value;
-    let residence = document.querySelector('#new-participant-residence').value;
-    let rights = document.querySelector('#new-participant-rights').value;
-    chat.addNewParticipant(nickname, pubKey, residence, rights);
-}
 
-function broadcastNewMessage() {
-    let newMessage = document.querySelector('#new-message').value;
-    chat.shoutMessage(newMessage);
-}
-
-function displayNewTopicData(data, heading, toastrMessage) {
-    heading = heading ? heading : "Your new topic data. SAVE YOUR PRIVATE KEY!!!";
-    toastrMessage = toastrMessage ? toastrMessage : "Topic was created successfully!";
-    let nicknameWrapper = document.createElement("div");
-    let pkWrapper = document.createElement("div");
-    let bodyWrapper = document.createElement("div");
-    nicknameWrapper.innerHTML = "<b>Nickname: </b>" + data.nickname;
-    pkWrapper.innerHTML = "<br><b>Your private key:</b> <br> <textarea class='key-display'>" + data.privateKey + "</textarea>";
-    bodyWrapper.appendChild(nicknameWrapper);
-    bodyWrapper.appendChild(pkWrapper);
-    let tempWrap = document.createElement("div");
-    tempWrap.appendChild(bodyWrapper);
-    showModalNotification(heading, tempWrap.innerHTML);
-    toastr.success(toastrMessage);
-}
+// function displayNewTopicData(data, heading, toastrMessage) {
+//     heading = heading ? heading : "Your new topic data. SAVE YOUR PRIVATE KEY!!!";
+//     toastrMessage = toastrMessage ? toastrMessage : "Topic was created successfully!";
+//     let nicknameWrapper = document.createElement("div");
+//     let pkWrapper = document.createElement("div");
+//     let bodyWrapper = document.createElement("div");
+//     nicknameWrapper.innerHTML = "<b>Nickname: </b>" + data.nickname;
+//     pkWrapper.innerHTML = "<br><b>Your private key:</b> <br> <textarea class='key-display'>" + data.privateKey + "</textarea>";
+//     bodyWrapper.appendChild(nicknameWrapper);
+//     bodyWrapper.appendChild(pkWrapper);
+//     let tempWrap = document.createElement("div");
+//     tempWrap.appendChild(bodyWrapper);
+//     showModalNotification(heading, tempWrap.innerHTML);
+//     toastr.success(toastrMessage);
+//
+// }
 
 function showInviteCode(newInvite) {
     syncPendingInvites();
@@ -1269,13 +1263,12 @@ function deleteInvite(event) {
     chat.deleteInvite(inviteID);
 }
 
-function processTopicJoinSuccess(data) {
-    clearInviteInputs();
-    loadingOff();
-    let heading = "You have joined topic successfully, and can now login. SAVE YOUR PRIVATE KEY!!!";
-    let toastrMessage = "Topic was created successfully!";
-    displayNewTopicData(data, heading, toastrMessage);
-}
+// function processTopicJoinSuccess(data) {
+//     clearInviteInputs();
+//     let heading = "You have joined topic successfully, and can now login. SAVE YOUR PRIVATE KEY!!!";
+//     let toastrMessage = "Topic was created successfully!";
+//     displayNewTopicData(data, heading, toastrMessage);
+// }
 
 function enableSettingsMenuListeners() {
     let menuItems = document.querySelector("#settings-menu").children;

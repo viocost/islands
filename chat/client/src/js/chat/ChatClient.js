@@ -1070,56 +1070,81 @@ export class ChatClient {
      */
     downloadAttachment(fileInfo){
         return new Promise(async (resolve, reject)=>{
-            let self = this;
-            let privk = self.session.privateKey; //To decrypt SYM key
+            console.log("About to download the attachment");
+            try{
+                let self = this;
+                let privk = self.session.privateKey; //To decrypt SYM key
 
-            //Getting public key of
-            let parsedFileInfo = JSON.parse(fileInfo);
+                //Getting public key of
+                let parsedFileInfo = JSON.parse(fileInfo);
 
-            let fileOwnerPublicKey = self.session.metadata.participants[parsedFileInfo.pkfp].publicKey;
+                let fileOwnerPublicKey = self.session.metadata.participants[parsedFileInfo.pkfp].publicKey;
 
-            if(Worker === undefined){
-                const err = "Worker is not defined.Cannot download file."
-                console.log(err);
-                reject(err);
+                if(Worker === undefined){
+                    const err = "Worker is not defined.Cannot download file."
+                    console.log(err);
+                    reject(err);
+                } else {
+
+                    const myPkfp = self.session.publicKeyFingerprint;
+                    let fileData = await self.downloadAttachmentWithWorker(fileInfo, myPkfp, privk, fileOwnerPublicKey);
+                    self.emit("download_complete", {fileInfo: fileInfo, fileData: fileData});
+                    resolve()
+                }
+            } catch (err){
+                reject(err)
             }
-            const myPkfp = self.session.publicKeyFingerprint;
-            let fileData = await self.downloadAttachmentWithWorker(fileInfo, myPkfp, privk, fileOwnerPublicKey);
-            self.emit("download_complete", {fileInfo: fileInfo, fileData: fileData});
         })
 
     }
 
     downloadAttachmentWithWorker(fileInfo, myPkfp, privk, ownerPubk){
         return new Promise(async (resolve, reject)=>{
-            const downloader = new Worker("/js/downloaderWorker.js");
-            const downloadComplete = (fileBuffer)=>{
-                resolve(fileBuffer);
-                downloader.terminate();
-            };
+            try{
+                const downloader = new Worker("/js/downloaderWorker.js");
+                const downloadComplete = (fileBuffer)=>{
+                    resolve(fileBuffer);
+                    downloader.terminate();
+                };
 
+                const downloadFailed = (err)=>{
+                    reject(err);
+                    downloader.terminate()
+                };
 
-            const messageHandlers = {
-                "download_complete": downloadComplete
-            };
+                const messageHandlers = {
+                    "download_complete": downloadComplete,
+                    "download_failed": downloadFailed
+                };
 
-            const processMessage = (msg)=>{
-                messageHandlers[msg.result](msg.data)
-            };
+                const processMessage = (msg)=>{
+                    messageHandlers[msg.result](msg.data)
+                };
 
-            downloader.onmessage = (ev)=>{
-                processMessage(ev.data)
-            };
+                downloader.onmessage = (ev)=>{
+                    processMessage(ev.data)
+                };
 
-            downloader.postMessage({
-                command: "download",
-                data: {
-                    fileInfo: fileInfo,
-                    myPkfp: myPkfp,
-                    privk: privk,
-                    pubk: ownerPubk
-                }
-            })
+                downloader.onerror = (ev)=>{
+                    console.log(ev);
+                    reject("Downloader worker error");
+                    downloader.terminate()
+                };
+
+                downloader.postMessage({
+                    command: "download",
+                    data: {
+                        fileInfo: fileInfo,
+                        myPkfp: myPkfp,
+                        privk: privk,
+                        pubk: ownerPubk
+                    }
+                })
+            }catch (e) {
+
+                reject(e)
+            }
+
         })
     }
 

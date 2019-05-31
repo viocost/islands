@@ -7341,41 +7341,62 @@ function () {
         var _ref3 = asyncToGenerator_default()(
         /*#__PURE__*/
         regenerator_default.a.mark(function _callee7(resolve, reject) {
-          var self, privk, parsedFileInfo, fileOwnerPublicKey, err, myPkfp, fileData;
+          var _self2, privk, parsedFileInfo, fileOwnerPublicKey, err, myPkfp, fileData;
+
           return regenerator_default.a.wrap(function _callee7$(_context7) {
             while (1) {
               switch (_context7.prev = _context7.next) {
                 case 0:
-                  self = _this3;
-                  privk = self.session.privateKey; //To decrypt SYM key
+                  console.log("About to download the attachment");
+                  _context7.prev = 1;
+                  _self2 = _this3;
+                  privk = _self2.session.privateKey; //To decrypt SYM key
                   //Getting public key of
 
                   parsedFileInfo = JSON.parse(fileInfo);
-                  fileOwnerPublicKey = self.session.metadata.participants[parsedFileInfo.pkfp].publicKey;
+                  fileOwnerPublicKey = _self2.session.metadata.participants[parsedFileInfo.pkfp].publicKey;
 
-                  if (Worker === undefined) {
-                    err = "Worker is not defined.Cannot download file.";
-                    console.log(err);
-                    reject(err);
+                  if (!(Worker === undefined)) {
+                    _context7.next = 12;
+                    break;
                   }
 
-                  myPkfp = self.session.publicKeyFingerprint;
-                  _context7.next = 8;
-                  return self.downloadAttachmentWithWorker(fileInfo, myPkfp, privk, fileOwnerPublicKey);
+                  err = "Worker is not defined.Cannot download file.";
+                  console.log(err);
+                  reject(err);
+                  _context7.next = 18;
+                  break;
 
-                case 8:
+                case 12:
+                  myPkfp = _self2.session.publicKeyFingerprint;
+                  _context7.next = 15;
+                  return _self2.downloadAttachmentWithWorker(fileInfo, myPkfp, privk, fileOwnerPublicKey);
+
+                case 15:
                   fileData = _context7.sent;
-                  self.emit("download_complete", {
+
+                  _self2.emit("download_complete", {
                     fileInfo: fileInfo,
                     fileData: fileData
                   });
 
-                case 10:
+                  resolve();
+
+                case 18:
+                  _context7.next = 23;
+                  break;
+
+                case 20:
+                  _context7.prev = 20;
+                  _context7.t0 = _context7["catch"](1);
+                  reject(_context7.t0);
+
+                case 23:
                 case "end":
                   return _context7.stop();
               }
             }
-          }, _callee7);
+          }, _callee7, null, [[1, 20]]);
         }));
 
         return function (_x8, _x9) {
@@ -7392,41 +7413,57 @@ function () {
         var _ref4 = asyncToGenerator_default()(
         /*#__PURE__*/
         regenerator_default.a.mark(function _callee8(resolve, reject) {
-          var downloader, downloadComplete, messageHandlers, processMessage;
+          var downloader, downloadComplete, downloadFailed, messageHandlers, processMessage;
           return regenerator_default.a.wrap(function _callee8$(_context8) {
             while (1) {
               switch (_context8.prev = _context8.next) {
                 case 0:
-                  downloader = new Worker("/js/downloaderWorker.js");
+                  try {
+                    downloader = new Worker("/js/downloaderWorker.js");
 
-                  downloadComplete = function downloadComplete(fileBuffer) {
-                    resolve(fileBuffer);
-                    downloader.terminate();
-                  };
+                    downloadComplete = function downloadComplete(fileBuffer) {
+                      resolve(fileBuffer);
+                      downloader.terminate();
+                    };
 
-                  messageHandlers = {
-                    "download_complete": downloadComplete
-                  };
+                    downloadFailed = function downloadFailed(err) {
+                      reject(err);
+                      downloader.terminate();
+                    };
 
-                  processMessage = function processMessage(msg) {
-                    messageHandlers[msg.result](msg.data);
-                  };
+                    messageHandlers = {
+                      "download_complete": downloadComplete,
+                      "download_failed": downloadFailed
+                    };
 
-                  downloader.onmessage = function (ev) {
-                    processMessage(ev.data);
-                  };
+                    processMessage = function processMessage(msg) {
+                      messageHandlers[msg.result](msg.data);
+                    };
 
-                  downloader.postMessage({
-                    command: "download",
-                    data: {
-                      fileInfo: fileInfo,
-                      myPkfp: myPkfp,
-                      privk: privk,
-                      pubk: ownerPubk
-                    }
-                  });
+                    downloader.onmessage = function (ev) {
+                      processMessage(ev.data);
+                    };
 
-                case 6:
+                    downloader.onerror = function (ev) {
+                      console.log(ev);
+                      reject("Downloader worker error");
+                      downloader.terminate();
+                    };
+
+                    downloader.postMessage({
+                      command: "download",
+                      data: {
+                        fileInfo: fileInfo,
+                        myPkfp: myPkfp,
+                        privk: privk,
+                        pubk: ownerPubk
+                      }
+                    });
+                  } catch (e) {
+                    reject(e);
+                  }
+
+                case 1:
                 case "end":
                   return _context8.stop();
               }
@@ -7493,17 +7530,17 @@ function () {
         var _ref5 = asyncToGenerator_default()(
         /*#__PURE__*/
         regenerator_default.a.mark(function _callee9(resolve, reject) {
-          var _self2, attachmentsInfo, metaID, chatMessage, _iteratorNormalCompletion2, _didIteratorError2, _iteratorError2, _iterator2, _step2, att, message, userPrivateKey;
+          var _self3, attachmentsInfo, metaID, chatMessage, _iteratorNormalCompletion2, _didIteratorError2, _iteratorError2, _iterator2, _step2, att, message, userPrivateKey;
 
           return regenerator_default.a.wrap(function _callee9$(_context9) {
             while (1) {
               switch (_context9.prev = _context9.next) {
                 case 0:
                   _context9.prev = 0;
-                  _self2 = _this5;
-                  metaID = _self2.session.metadata.id;
+                  _self3 = _this5;
+                  metaID = _self3.session.metadata.id;
                   _context9.next = 5;
-                  return _self2.prepareMessage(_this5.version, messageContent);
+                  return _self3.prepareMessage(_this5.version, messageContent);
 
                 case 5:
                   chatMessage = _context9.sent;
@@ -7514,7 +7551,7 @@ function () {
                   }
 
                   _context9.next = 9;
-                  return _self2.uploadAttachments(filesAttached, chatMessage.header.id, metaID);
+                  return _self3.uploadAttachments(filesAttached, chatMessage.header.id, metaID);
 
                 case 9:
                   attachmentsInfo = _context9.sent;
@@ -7565,7 +7602,7 @@ function () {
                   chatMessage.encryptMessage(_this5.session.metadata.sharedKey);
                   chatMessage.sign(_this5.session.privateKey); //Preparing request
 
-                  message = new Message_Message(_self2.version);
+                  message = new Message_Message(_self3.version);
                   message.headers.pkfpSource = _this5.session.publicKeyFingerprint;
                   message.headers.command = "broadcast_message";
                   message.body.message = chatMessage.toBlob();
@@ -7607,25 +7644,25 @@ function () {
         var _ref6 = asyncToGenerator_default()(
         /*#__PURE__*/
         regenerator_default.a.mark(function _callee10(resolve, reject) {
-          var _self3, chatMessage, keys, message, userPrivateKey;
+          var _self4, chatMessage, keys, message, userPrivateKey;
 
           return regenerator_default.a.wrap(function _callee10$(_context10) {
             while (1) {
               switch (_context10.prev = _context10.next) {
                 case 0:
                   _context10.prev = 0;
-                  _self3 = _this6;
+                  _self4 = _this6;
                   _context10.next = 4;
-                  return _self3.prepareMessage(_this6.version, messageContent, pkfp);
+                  return _self4.prepareMessage(_this6.version, messageContent, pkfp);
 
                 case 4:
                   chatMessage = _context10.sent;
-                  keys = [_self3.session.publicKey];
-                  keys.push(_self3.session.metadata.participants[pkfp].publicKey);
+                  keys = [_self4.session.publicKey];
+                  keys.push(_self4.session.metadata.participants[pkfp].publicKey);
                   chatMessage.encryptPrivateMessage(keys);
                   chatMessage.sign(_this6.session.privateKey); //Preparing request
 
-                  message = new Message_Message(_self3.version);
+                  message = new Message_Message(_self4.version);
                   message.headers.pkfpSource = _this6.session.publicKeyFingerprint;
                   message.headers.pkfpDest = pkfp;
                   message.headers.command = "send_message";
@@ -9357,7 +9394,6 @@ function topicJoin() {
       };
     }());
     chat.initTopicJoin(nickname, inviteCode).then(function () {
-      loadingOff();
       toastr["success"]("You have joined the topic successfully.");
       console.log("Topic creation initiated!: ");
     }).catch(function (err) {

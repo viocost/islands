@@ -374,7 +374,6 @@ function topicJoin(){
 
         chat.initTopicJoin(nickname, inviteCode)
             .then(()=>{
-                loadingOff();
                 toastr.success("You have joined the topic successfully.");
                 console.log("Topic creation initiated!: ");
 

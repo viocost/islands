@@ -7,12 +7,13 @@ importScripts("/js/lzma-worker.min.js");
 importScripts("/js/chacha.js");
 
 let commandHandlers = {
-    "download": processDownload
+    "download": downloadFile
 };
 
 onmessage = ev => {
     console.log("Downloader received message from main thread: " + ev.command);
-    processMessage(ev.data);
+    processMessage(ev.data)
+
 };
 
 function processMessage(msg) {
@@ -45,6 +46,21 @@ let appendBuffer = function (buffer1, buffer2) {
     return tmp.buffer;
 };
 
+
+
+function downloadFile(data){
+    processDownload(data)
+        .then((dataBuffer)=>{
+            postMessage({ result: "download_complete", data: dataBuffer });
+            console.log("Stream finished");
+        })
+        .catch(err=>{
+            console.log("Error downloading file: " + err);
+            postMessage({ result: "download_failed", error: err })
+        })
+}
+
+
 function processDownload(data) {
     return new Promise(async (resolve, reject) => {
         const fileInfo = JSON.parse(data.fileInfo);
@@ -54,7 +70,14 @@ function processDownload(data) {
         const ownerPubk = data.pubk;
         const metaID = fileInfo.metaID;
 
-        let fileSocket = await establishConnection();
+
+        let fileSocket;
+        try{
+           fileSocket = await establishConnection();
+        }catch (e) {
+            reject("Connection error: " + e)
+        }
+
         /**
          * event triggered by Island when file is ready to be transferred to the client
          * key is encrypted shared SYM key to decrypt file
@@ -87,11 +110,9 @@ function processDownload(data) {
                     ic.digestHash("h", "hres").addBlob("sign", fileInfo.signUnencrypted).asym.setKey("pubk", ownerPubk, "public").asym.verify("hres", "sign", "pubk", "vres");
 
                     if (!ic.get("vres")) {
-                        throw "File validation error!";
+                        reject("File validation error!");
                     } else {
-
-                        postMessage({ result: "download_complete", data: dataBuffer });
-                        console.log("Stream finished");
+                        resolve(dataBuffer);
                     }
                 });
             });
@@ -116,6 +137,8 @@ function processDownload(data) {
     });
 }
 
+
+
 function establishConnection() {
     return new Promise((resolve, reject) => {
         console.log("Connecting to file socket");
@@ -136,5 +159,10 @@ function establishConnection() {
             console.log('Island connection failed: ' + err.message);
             reject(err);
         });
+
+        fileSocket.on("connect_timeout", () =>{
+            console.log("File socket connection timeout");
+            reject("File socket connection timeout")
+        })
     });
 }
