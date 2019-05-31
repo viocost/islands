@@ -1,6 +1,7 @@
 //Vendors
 import { CuteSet } from "cute-set";
 import { iCrypto } from "./lib/iCrypto"
+import { resizableInput  } from "./lib/resizable";
 import '../css/main.sass';
 
 import * as util from "./lib/dom-util"
@@ -59,8 +60,7 @@ document.addEventListener('DOMContentLoaded', event => {
     document.querySelector('#send-new-msg').addEventListener('click', sendMessage);
     document.querySelector('#close-code-view').addEventListener('click', closeCodeView);
     document.querySelector('#new-invite').addEventListener('click', generateInvite);
-    document.querySelector('#user-name').addEventListener('change', editMyNickname);
-    document.querySelector('#topic-name').addEventListener('change', editTopicName);
+
     document.querySelector('#refresh-invites').addEventListener('click', refreshInvites);
     document.querySelector('#attach-file').addEventListener('change', processAttachmentChosen);
     document.querySelector('#re-connect').addEventListener('click', attemptReconnection);
@@ -69,7 +69,12 @@ document.addEventListener('DOMContentLoaded', event => {
 
     prepareResizer();
 
-    $('#new-msg').keydown(function (e) {
+    let userName = util.$("#user-name");
+    let topicName = util.$("#topic-name");
+    userName.addEventListener("change", editMyNickname);
+    topicName.addEventListener("change", editTopicName);
+
+    $('#new-msg').keyup(function (e) {
         if (!e.ctrlKey && e.keyCode === 13) {
             event.preventDefault();
             sendMessage();
@@ -87,6 +92,7 @@ document.addEventListener('DOMContentLoaded', event => {
             await topicLogin();
         }
     });
+
 
     enableSettingsMenuListeners();
     autoLogin();
@@ -580,6 +586,7 @@ function updateParticipants() {
     });
 
     let recipientChoice = document.querySelector("#select-member");
+    let selectedMember = recipientChoice.value;
     let defaultRecipient = document.createElement("option");
     defaultRecipient.setAttribute("value", "ALL");
     defaultRecipient.innerText = "All";
@@ -621,6 +628,17 @@ function updateParticipants() {
         recipientOption.innerText = pName.value + " (" + chat.getMemberNickname(pkfp) + ")";
         recipientChoice.appendChild(recipientOption);
     }
+
+
+    if (selectedMember !== "ALL"){
+        for (let pkfp of participantsKeys){
+            if(pkfp === selectedMember){
+                recipientChoice.value = selectedMember;
+                break;
+            }
+        }
+    }
+
     let participantsRecords = document.querySelector("#participants-records");
     if (participantsRecords.children.length > 0) {
         participantsRecords.lastChild.classList.add("participant-wrapper-last");
@@ -657,10 +675,16 @@ function updateLoadedMessages() {
 
 function processLogin(messages) {
     setView("chat");
-    let nickName = chat.session.settings.nickname;
-    $('#user-name').val(nickName);
-    $('#topic-name').val(chat.session.settings.topicName);
-    util.$("#user-id").innerText = chat.session.publicKeyFingerprint;
+
+    let userName = util.$('#user-name');
+    let topicName = util.$("#topic-name");
+    util.$("#user-id").innerText = "Your id: " + chat.session.publicKeyFingerprint;
+
+    userName.value = chat.session.settings.nickname;
+    topicName.value = chat.session.settings.topicName;
+
+    resizableInput(userName, 13);
+    resizableInput(topicName, 13);
 
     console.log("USER PKFP: " + chat.session.publicKeyFingerprint);
     if (chat.session.metadata.topicName) document.title = chat.session.metadata.topicName;
@@ -1439,15 +1463,13 @@ function refreshInvitesSuccess() {
 }
 
 function switchConnectionStatus(connected) {
-    let positive = document.querySelector("#connection-status--connected");
-    let negative = document.querySelector("#connection-status--disconnected");
     if (connected) {
-        $(positive).show();
-        $(negative).hide();
+        util.displayFlex("#connection-status--connected")
+        util.displayNone("#connection-status--disconnected")
     } else {
-        $(positive).hide();
-        $(negative).show();
-    }
+        util.displayNone("#connection-status--connected")
+        util.displayFlex("#connection-status--disconnected")
+   }
 }
 
 function attemptReconnection() {

@@ -846,7 +846,7 @@ export class ChatClient {
         request.set("headers", headers);
         request.set("body", body);
         request.signMessage(privateKey);
-        console.log("Snding update settings request");
+        console.log("Sending update settings request");
         this.chatSocket.emit("request", request);
     }
 
@@ -1207,8 +1207,6 @@ export class ChatClient {
                 let self = this;
 
                 const chatMessage = await self.prepareMessage(this.version, messageContent, pkfp);
-
-                //Will be enabled in the next version
 
                 let keys = [self.session.publicKey];
                 keys.push(self.session.metadata.participants[pkfp].publicKey);

@@ -178,12 +178,14 @@ export class Vault{
             adminKey: this.adminKey
         });
 
+        console.log(this.topics);
+
         let ic = new iCrypto();
         ic.createNonce("salt", 128)
             .bytesToHex("salt", "s16")
             .createPasswordBasedSymKey("key", this.password, "s16")
             .addBlob("vault", res)
-            .AESEncrypt("vault", "key", "v_cip", true)
+            .AESEncrypt("vault", "key", "v_cip", true, "CBC",  "utf8")
             .merge(["s16", "v_cip"], "reshex")
             .setRSAKey("priv", this.privateKey, "private")
             .hexToBytes("reshex", "res")

@@ -5338,7 +5338,7 @@ function () {
       ic.sym.createKey("sym").addBlob("body", self.body).AESEncrypt("body", "sym", "bodycip", true, "CBC", 'utf8');
 
       if (self.header.nickname) {
-        ic.addBlob("nname", self.header.nickname).AESEncrypt("nname", "sym", "nnamecip", true);
+        ic.addBlob("nname", self.header.nickname).AESEncrypt("nname", "sym", "nnamecip", true, 'CBC', "utf8");
         self.header.nickname = ic.get("nnamecip");
       }
 
@@ -7004,7 +7004,7 @@ function () {
       request.set("headers", headers);
       request.set("body", body);
       request.signMessage(privateKey);
-      console.log("Snding update settings request");
+      console.log("Sending update settings request");
       this.chatSocket.emit("request", request);
     }
     /**
@@ -7620,7 +7620,6 @@ function () {
 
                 case 4:
                   chatMessage = _context10.sent;
-                  //Will be enabled in the next version
                   keys = [_self3.session.publicKey];
                   keys.push(_self3.session.metadata.participants[pkfp].publicKey);
                   chatMessage.encryptPrivateMessage(keys);
@@ -8696,8 +8695,9 @@ function () {
         admin: this.admin,
         adminKey: this.adminKey
       });
+      console.log(this.topics);
       var ic = new iCrypto_iCrypto();
-      ic.createNonce("salt", 128).bytesToHex("salt", "s16").createPasswordBasedSymKey("key", this.password, "s16").addBlob("vault", res).AESEncrypt("vault", "key", "v_cip", true).merge(["s16", "v_cip"], "reshex").setRSAKey("priv", this.privateKey, "private").hexToBytes("reshex", "res").privateKeySign("res", "priv", "sign");
+      ic.createNonce("salt", 128).bytesToHex("salt", "s16").createPasswordBasedSymKey("key", this.password, "s16").addBlob("vault", res).AESEncrypt("vault", "key", "v_cip", true, "CBC", "utf8").merge(["s16", "v_cip"], "reshex").setRSAKey("priv", this.privateKey, "private").hexToBytes("reshex", "res").privateKeySign("res", "priv", "sign");
       return {
         vault: ic.get("reshex"),
         sign: ic.get("sign")
@@ -8764,8 +8764,8 @@ function prepareModal(content) {
 }
 // CONCATENATED MODULE: ./client/src/js/lib/PasswordVerify.js
 function verifyPassword(password, confirm) {
-  if (!password || !password.trim() || password.length < 9) {
-    return "Password or passphrase must be at least 9 characters long";
+  if (!password || !password.trim() || !/^[a-zA-Z0-9!@#$%^&*]{9,}$/.test(password)) {
+    return "Password or passphrase must be at least 9 characters long and can contain only lowercase a-z, uppercase A-Z and symbols !@#$%^&*";
   }
 
   if (password !== confirm) {

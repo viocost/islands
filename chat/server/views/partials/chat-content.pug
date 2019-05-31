@@ -8,36 +8,36 @@
                     p: button.btn#login-topic Login
     #you_online
         .user-name--wrap
-            div
-                span.user-name--greeting Hi,
-                input.heading-name--input#user-name
+            span.user-name--greeting Hi,
+            input.heading-name--input#user-name
 
-            div.user-id-display
-                span Your id:
-                span#user-id
-            div.island-connection-status-wrap
+
+
+        .topic-name--wrap
+           span Topic:
+           input.heading-name--input#topic-name
+
+    .chat-wrapper#chat_room
+        .chat-left-panel
+
+            .online-users
+                h3.online-users-heading Other participants:
+                #online-users-list
+                    .online-user-row
+            .island-connection-status-wrap
                 div#connection-status--connected
                     img(src="/img/online.png")
                     span.connected Connected to island
                 div#connection-status--disconnected
-                    img(src="/img/doNotDisturb.png")
-                    span.disconnected Disconnected...
-                    button.btn#re-connect re-connect
-
-        .topic-name--wrap
-            div.right-align
-                span.topic-name--pre Topic:
-            div
-                input.heading-name--input#topic-name
-
-    .chat-wrapper#chat_room
-        .online_users
-            h3.online-users-heading Other participants:
-            #online-users-list
-                .online-user-row
+                    div
+                        img(src="/img/doNotDisturb.png")
+                        span.disconnected Disconnected...
+                    div
+                        button.btn#re-connect Re-connect
         #chat-resizer
         .chat
             #chat_window
+            span#user-id
             .control-container
                 .control-col.new-msg-input
                     .select-member-wrap

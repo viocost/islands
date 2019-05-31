@@ -61,7 +61,7 @@ export class ChatMessage{
             .AESEncrypt("body", "sym", "bodycip", true, "CBC", 'utf8');
         if (self.header.nickname){
             ic.addBlob("nname", self.header.nickname)
-                .AESEncrypt("nname", "sym", "nnamecip", true);
+                .AESEncrypt("nname", "sym", "nnamecip", true, 'CBC', "utf8");
             self.header.nickname = ic.get("nnamecip")
         }
         self.body = ic.get("bodycip");

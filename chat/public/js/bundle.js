@@ -167,7 +167,7 @@
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* WEBPACK VAR INJECTION */(function(module) {/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(44);
+/* WEBPACK VAR INJECTION */(function(module) {/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(36);
 /* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(141);
 /* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_1__);
@@ -179,7 +179,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(55);
 /* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(31);
+/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(32);
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_6__);
 
 
@@ -3416,7 +3416,7 @@ var es6_typed_uint8_array = __webpack_require__(87);
 var es6_regexp_match = __webpack_require__(141);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.split.js
-var es6_regexp_split = __webpack_require__(44);
+var es6_regexp_split = __webpack_require__(36);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.search.js
 var es6_regexp_search = __webpack_require__(223);
@@ -3425,16 +3425,16 @@ var es6_regexp_search = __webpack_require__(223);
 var es6_regexp_to_string = __webpack_require__(55);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es7.symbol.async-iterator.js
-var es7_symbol_async_iterator = __webpack_require__(72);
+var es7_symbol_async_iterator = __webpack_require__(56);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.symbol.js
-var es6_symbol = __webpack_require__(73);
+var es6_symbol = __webpack_require__(57);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/web.dom.iterable.js
-var web_dom_iterable = __webpack_require__(35);
+var web_dom_iterable = __webpack_require__(31);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.object.to-string.js
-var es6_object_to_string = __webpack_require__(31);
+var es6_object_to_string = __webpack_require__(32);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/regenerator/index.js
 var regenerator = __webpack_require__(2);
@@ -4978,6 +4978,45 @@ function () {
 
   return iCrypto;
 }();
+// CONCATENATED MODULE: ./client/src/js/lib/resizable.js
+
+
+
+
+function resizableInput(el, factor) {
+  var multiplier = Number(factor) || 8;
+
+  function resize() {
+    el.style.width = (el.value.length + 1) * multiplier + "px";
+  }
+
+  var events = "keyup,keypress,focus,blur,change".split(",");
+  var _iteratorNormalCompletion = true;
+  var _didIteratorError = false;
+  var _iteratorError = undefined;
+
+  try {
+    for (var _iterator = events[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+      var ev = _step.value;
+      el.addEventListener(ev, resize, false);
+    }
+  } catch (err) {
+    _didIteratorError = true;
+    _iteratorError = err;
+  } finally {
+    try {
+      if (!_iteratorNormalCompletion && _iterator.return != null) {
+        _iterator.return();
+      }
+    } finally {
+      if (_didIteratorError) {
+        throw _iteratorError;
+      }
+    }
+  }
+
+  resize();
+}
 // EXTERNAL MODULE: ./client/src/css/main.sass
 var main = __webpack_require__(340);
 
@@ -5296,7 +5335,7 @@ function () {
       ic.sym.createKey("sym").addBlob("body", self.body).AESEncrypt("body", "sym", "bodycip", true, "CBC", 'utf8');
 
       if (self.header.nickname) {
-        ic.addBlob("nname", self.header.nickname).AESEncrypt("nname", "sym", "nnamecip", true);
+        ic.addBlob("nname", self.header.nickname).AESEncrypt("nname", "sym", "nnamecip", true, 'CBC', "utf8");
         self.header.nickname = ic.get("nnamecip");
       }
 
@@ -6962,7 +7001,7 @@ function () {
       request.set("headers", headers);
       request.set("body", body);
       request.signMessage(privateKey);
-      console.log("Snding update settings request");
+      console.log("Sending update settings request");
       this.chatSocket.emit("request", request);
     }
     /**
@@ -7578,7 +7617,6 @@ function () {
 
                 case 4:
                   chatMessage = _context10.sent;
-                  //Will be enabled in the next version
                   keys = [_self3.session.publicKey];
                   keys.push(_self3.session.metadata.participants[pkfp].publicKey);
                   chatMessage.encryptPrivateMessage(keys);
@@ -8467,6 +8505,7 @@ function () {
 
 
 
+
 window.toastr = toastr;
 
 var app_chat;
@@ -8511,15 +8550,17 @@ document.addEventListener('DOMContentLoaded', function (event) {
   document.querySelector('#send-new-msg').addEventListener('click', sendMessage);
   document.querySelector('#close-code-view').addEventListener('click', closeCodeView);
   document.querySelector('#new-invite').addEventListener('click', app_generateInvite);
-  document.querySelector('#user-name').addEventListener('change', editMyNickname);
-  document.querySelector('#topic-name').addEventListener('change', editTopicName);
   document.querySelector('#refresh-invites').addEventListener('click', refreshInvites);
   document.querySelector('#attach-file').addEventListener('change', processAttachmentChosen);
   document.querySelector('#re-connect').addEventListener('click', app_attemptReconnection);
   document.querySelector('#sounds-switch').addEventListener('click', switchSounds);
   document.querySelector('#re-connect').addEventListener('click', app_attemptReconnection);
   prepareResizer();
-  $('#new-msg').keydown(function (e) {
+  var userName = dom_util_$("#user-name");
+  var topicName = dom_util_$("#topic-name");
+  userName.addEventListener("change", editMyNickname);
+  topicName.addEventListener("change", editTopicName);
+  $('#new-msg').keyup(function (e) {
     if (!e.ctrlKey && e.keyCode === 13) {
       event.preventDefault();
       sendMessage();
@@ -9068,6 +9109,7 @@ function updateParticipants() {
     return val !== mypkfp;
   });
   var recipientChoice = document.querySelector("#select-member");
+  var selectedMember = recipientChoice.value;
   var defaultRecipient = document.createElement("option");
   defaultRecipient.setAttribute("value", "ALL");
   defaultRecipient.innerText = "All";
@@ -9079,16 +9121,16 @@ function updateParticipants() {
 
   try {
     for (var _iterator = participantsKeys[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-      var pkfp = _step.value;
-      addParticipantToSettings(pkfp);
+      var _pkfp = _step.value;
+      addParticipantToSettings(_pkfp);
       var participantId = document.createElement("span");
       participantId.classList.add("online-user-id");
-      participantId.innerText = pkfp;
+      participantId.innerText = _pkfp;
       var status = document.createElement("img");
       status.classList.add("participant-status");
       status.setAttribute("src", "/img/online.png");
       var pName = document.createElement("input");
-      pName.value = app_chat.getMemberAlias(pkfp) || app_chat.getMemberNickname(pkfp) || "Anonymous";
+      pName.value = app_chat.getMemberAlias(_pkfp) || app_chat.getMemberNickname(_pkfp) || "Anonymous";
       pName.addEventListener("change", participantAliasChange);
       pName.classList.add("participant-alias");
       var pRow = document.createElement("div");
@@ -9097,17 +9139,17 @@ function updateParticipants() {
       pRow.appendChild(status);
       pRow.appendChild(pName);
 
-      if (app_chat.getMemberAlias(pkfp)) {
+      if (app_chat.getMemberAlias(_pkfp)) {
         var chosenName = document.createElement("span");
-        chosenName.innerText = "(" + (app_chat.getMemberNickname(pkfp) || "Anonymous") + ")";
+        chosenName.innerText = "(" + (app_chat.getMemberNickname(_pkfp) || "Anonymous") + ")";
         pRow.appendChild(chosenName);
       }
 
       document.querySelector("#online-users-list").appendChild(pRow); //Adding to list of recipients
 
       var recipientOption = document.createElement("option");
-      recipientOption.setAttribute("value", pkfp);
-      recipientOption.innerText = pName.value + " (" + app_chat.getMemberNickname(pkfp) + ")";
+      recipientOption.setAttribute("value", _pkfp);
+      recipientOption.innerText = pName.value + " (" + app_chat.getMemberNickname(_pkfp) + ")";
       recipientChoice.appendChild(recipientOption);
     }
   } catch (err) {
@@ -9121,6 +9163,36 @@ function updateParticipants() {
     } finally {
       if (_didIteratorError) {
         throw _iteratorError;
+      }
+    }
+  }
+
+  if (selectedMember !== "ALL") {
+    var _iteratorNormalCompletion2 = true;
+    var _didIteratorError2 = false;
+    var _iteratorError2 = undefined;
+
+    try {
+      for (var _iterator2 = participantsKeys[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+        var pkfp = _step2.value;
+
+        if (pkfp === selectedMember) {
+          recipientChoice.value = selectedMember;
+          break;
+        }
+      }
+    } catch (err) {
+      _didIteratorError2 = true;
+      _iteratorError2 = err;
+    } finally {
+      try {
+        if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
+          _iterator2.return();
+        }
+      } finally {
+        if (_didIteratorError2) {
+          throw _iteratorError2;
+        }
       }
     }
   }
@@ -9152,9 +9224,9 @@ function updateLoadedMessages() {
       try {
         var _heading = msg.firstChild;
 
-        var _pkfp = _heading.querySelector(".m-author-id").innerHTML;
+        var _pkfp2 = _heading.querySelector(".m-author-id").innerHTML;
 
-        _heading.querySelector(".m-alias").innerText = app_chat.getMemberAlias(_pkfp);
+        _heading.querySelector(".m-alias").innerText = app_chat.getMemberAlias(_pkfp2);
       } catch (err) {
         console.error(err);
       }
@@ -9164,10 +9236,13 @@ function updateLoadedMessages() {
 
 function processLogin(messages) {
   setView("chat");
-  var nickName = app_chat.session.settings.nickname;
-  $('#user-name').val(nickName);
-  $('#topic-name').val(app_chat.session.settings.topicName);
-  dom_util_$("#user-id").innerText = app_chat.session.publicKeyFingerprint;
+  var userName = dom_util_$('#user-name');
+  var topicName = dom_util_$("#topic-name");
+  dom_util_$("#user-id").innerText = "Your id: " + app_chat.session.publicKeyFingerprint;
+  userName.value = app_chat.session.settings.nickname;
+  topicName.value = app_chat.session.settings.topicName;
+  resizableInput(userName, 13);
+  resizableInput(topicName, 13);
   console.log("USER PKFP: " + app_chat.session.publicKeyFingerprint);
   if (app_chat.session.metadata.topicName) document.title = app_chat.session.metadata.topicName;
   updateParticipants();
@@ -9464,13 +9539,13 @@ function processAttachments(attachments) {
 
   var attachmentsWrapper = document.createElement("div");
   attachmentsWrapper.classList.add("msg-attachments");
-  var _iteratorNormalCompletion2 = true;
-  var _didIteratorError2 = false;
-  var _iteratorError2 = undefined;
+  var _iteratorNormalCompletion3 = true;
+  var _didIteratorError3 = false;
+  var _iteratorError3 = undefined;
 
   try {
-    for (var _iterator2 = attachments[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-      var att = _step2.value;
+    for (var _iterator3 = attachments[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+      var att = _step3.value;
       var attachment = document.createElement("div");
       var attView = document.createElement("div");
       var attInfo = document.createElement("div");
@@ -9507,16 +9582,16 @@ function processAttachments(attachments) {
       attachmentsWrapper.appendChild(attachment);
     }
   } catch (err) {
-    _didIteratorError2 = true;
-    _iteratorError2 = err;
+    _didIteratorError3 = true;
+    _iteratorError3 = err;
   } finally {
     try {
-      if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
-        _iterator2.return();
+      if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
+        _iterator3.return();
       }
     } finally {
-      if (_didIteratorError2) {
-        throw _iteratorError2;
+      if (_didIteratorError3) {
+        throw _iteratorError3;
       }
     }
   }
@@ -9836,47 +9911,15 @@ function processTopicJoinSuccess(data) {
 
 function enableSettingsMenuListeners() {
   var menuItems = document.querySelector("#settings-menu").children;
-  var _iteratorNormalCompletion3 = true;
-  var _didIteratorError3 = false;
-  var _iteratorError3 = undefined;
-
-  try {
-    for (var _iterator3 = menuItems[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-      var _i7 = _step3.value;
-
-      _i7.addEventListener("click", processSettingsMenuClick);
-    }
-  } catch (err) {
-    _didIteratorError3 = true;
-    _iteratorError3 = err;
-  } finally {
-    try {
-      if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
-        _iterator3.return();
-      }
-    } finally {
-      if (_didIteratorError3) {
-        throw _iteratorError3;
-      }
-    }
-  }
-
-  document.querySelector("#invites-container").style.display = "flex";
-  document.querySelector("#chat-settings").style.display = "none";
-  document.querySelector("#participants-container").style.display = "none";
-}
-
-function processSettingsMenuClick(event) {
-  var menuItems = document.querySelector("#settings-menu").children;
   var _iteratorNormalCompletion4 = true;
   var _didIteratorError4 = false;
   var _iteratorError4 = undefined;
 
   try {
     for (var _iterator4 = menuItems[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-      var _i8 = _step4.value;
+      var _i7 = _step4.value;
 
-      _i8.classList.remove("active");
+      _i7.addEventListener("click", processSettingsMenuClick);
     }
   } catch (err) {
     _didIteratorError4 = true;
@@ -9889,6 +9932,38 @@ function processSettingsMenuClick(event) {
     } finally {
       if (_didIteratorError4) {
         throw _iteratorError4;
+      }
+    }
+  }
+
+  document.querySelector("#invites-container").style.display = "flex";
+  document.querySelector("#chat-settings").style.display = "none";
+  document.querySelector("#participants-container").style.display = "none";
+}
+
+function processSettingsMenuClick(event) {
+  var menuItems = document.querySelector("#settings-menu").children;
+  var _iteratorNormalCompletion5 = true;
+  var _didIteratorError5 = false;
+  var _iteratorError5 = undefined;
+
+  try {
+    for (var _iterator5 = menuItems[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+      var _i8 = _step5.value;
+
+      _i8.classList.remove("active");
+    }
+  } catch (err) {
+    _didIteratorError5 = true;
+    _iteratorError5 = err;
+  } finally {
+    try {
+      if (!_iteratorNormalCompletion5 && _iterator5.return != null) {
+        _iterator5.return();
+      }
+    } finally {
+      if (_didIteratorError5) {
+        throw _iteratorError5;
       }
     }
   }
@@ -9955,13 +10030,13 @@ function app_downloadAttachment(fileName, data) {
 
 function findMessage(id) {
   var chatWindow = document.querySelector("#chat_window");
-  var _iteratorNormalCompletion5 = true;
-  var _didIteratorError5 = false;
-  var _iteratorError5 = undefined;
+  var _iteratorNormalCompletion6 = true;
+  var _didIteratorError6 = false;
+  var _iteratorError6 = undefined;
 
   try {
-    for (var _iterator5 = chatWindow.children[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
-      var msg = _step5.value;
+    for (var _iterator6 = chatWindow.children[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+      var msg = _step6.value;
 
       if (msg.getElementsByClassName("message-id")[0].innerHTML == id) {
         console.log("Message found");
@@ -9969,16 +10044,16 @@ function findMessage(id) {
       }
     }
   } catch (err) {
-    _didIteratorError5 = true;
-    _iteratorError5 = err;
+    _didIteratorError6 = true;
+    _iteratorError6 = err;
   } finally {
     try {
-      if (!_iteratorNormalCompletion5 && _iterator5.return != null) {
-        _iterator5.return();
+      if (!_iteratorNormalCompletion6 && _iterator6.return != null) {
+        _iterator6.return();
       }
     } finally {
-      if (_didIteratorError5) {
-        throw _iteratorError5;
+      if (_didIteratorError6) {
+        throw _iteratorError6;
       }
     }
   }
@@ -10110,15 +10185,12 @@ function refreshInvitesSuccess() {
 }
 
 function switchConnectionStatus(connected) {
-  var positive = document.querySelector("#connection-status--connected");
-  var negative = document.querySelector("#connection-status--disconnected");
-
   if (connected) {
-    $(positive).show();
-    $(negative).hide();
+    displayFlex("#connection-status--connected");
+    displayNone("#connection-status--disconnected");
   } else {
-    $(positive).hide();
-    $(negative).show();
+    displayNone("#connection-status--connected");
+    displayFlex("#connection-status--disconnected");
   }
 }
 
