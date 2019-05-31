@@ -200,7 +200,7 @@ class VMInstaller:
 
         def on_complete(image_path):
             self.finalize_progres_bar()
-            self.message(msg="Download completed", size=16)
+            self.message(msg="Download completed. Now running setup...", size=16)
             log.info("Image download completed.")
             self.image_path = image_path
             self.launch_vm_import_sequence()

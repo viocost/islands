@@ -156,9 +156,9 @@ class UpdateForm(QObject):
                               setup=self.setup,
                               island_manager=self.island_manager,
                               on_download_timeout=lambda: self.download_timeout.emit(),
-                              magnet_link=self.ui.magnet_link.text(),
+                              magnet_link=self.ui.magnet_link.text().strip(),
                               on_confirm_required=lambda: self.unknown_key_confirm_request.emit(),
-                              image_path=self.ui.path_to_image.text(),
+                              image_path=self.ui.path_to_image.text().strip(),
                               config=self.config,
                               data_path=data_path)
 
