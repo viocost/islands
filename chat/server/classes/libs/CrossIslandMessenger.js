@@ -122,10 +122,10 @@ class CrossIslandMessenger extends EventEmitter{
 
 
 
-    async return(originalEnvelope, err){
-       // console.log("Cross-island messenger is about to send RETURN ENVELOPE!");
+    async returnEnvelope(originalEnvelope, err){
+        console.log("Cross-island messenger is about to send RETURN ENVELOPE!");
         const envelope = Envelope.makeReturnEnvelope(originalEnvelope, err);
-        this.connector.send(envelope);
+        return this.connector.sendDirectly(envelope);
     }
 
 

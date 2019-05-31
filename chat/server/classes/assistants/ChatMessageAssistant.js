@@ -292,7 +292,7 @@ class ChatMessageAssistant{
                 command: Envelope.getOriginalPayload(envelope).headers.command
             });
 
-            await self.crossIslandMessenger.return(envelope, err);
+            await self.crossIslandMessenger.returnEnvelope(envelope, err);
         }catch(fatalError){
             Logger.error("FATAL: Could nod handle the error.", {
                 envelope: JSON.stringify(envelope),

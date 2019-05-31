@@ -37,8 +37,9 @@ let processAdminRequest = ()=>{throw"Admin session uninitialized"};
 
 
 document.addEventListener('DOMContentLoaded', event => {
-
+    util.$("main").classList.add("main-admin");
     if (!secured){
+
         util.$('#island-setup').addEventListener("click", setupIslandAdmin);
         util.$("#setup--wrapper").addEventListener("keyup", (ev)=>{
             if (ev.which === 13 || ev.keyCode === 13) {

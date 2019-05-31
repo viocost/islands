@@ -243,7 +243,7 @@ class InviteAssistant{
             console.log("Error while handling incoming request");
             console.trace(err);
             if(!envelope.return){
-                await self.crossIslandMessenger.return(envelope, err);
+                await self.crossIslandMessenger.returnEnvelope(envelope, err);
             }
         }catch(fatalError){
             console.trace("FATAL: Could nod handle the error " + fatalError);

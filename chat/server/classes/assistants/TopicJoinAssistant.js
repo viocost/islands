@@ -148,6 +148,7 @@ class TopicJoinAssistant{
     subscribeToCrossIslandsMessages(ciMessenger){
         this.subscribe(ciMessenger, {
             join_topic: this.joinTopicIncoming,
+            return_join_topic: this.processJoinTopicError,
             join_topic_success: this.finalizeTopicJoin
         }, this.crossIslandErrorHandler)
     }
@@ -156,6 +157,16 @@ class TopicJoinAssistant{
 
 
     /***** Error handlers *****/
+
+    async processJoinTopicError(envelope, self){
+        //Verify, save metadata, return new topic data to the client
+        console.log("Join topic failed. Return envelope received");
+        let response = envelope.payload;
+        //const pendingRequest = self.getOutgoingPendingJoinRequest(response.headers.pkfpSource);
+        console.log("Response sent to client");
+
+    }
+
     clientRequestErrorHandler(request, connectionID, self, err){
         console.trace(err);
         try{
@@ -180,7 +191,7 @@ class TopicJoinAssistant{
     async crossIslandErrorHandler(envelope, self, err){
         try{
             console.trace("Topic join request error: " + err);
-            await self.crossIslandMessenger.return(envelope, err);
+            await self.crossIslandMessenger.returnEnvelope(envelope, err);
         }catch (fatalErr){
             console.trace("FATAL ERROR: " + fatalErr);
         }
