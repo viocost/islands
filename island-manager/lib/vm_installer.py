@@ -149,34 +149,14 @@ class VMInstaller:
             if self.download:
                 self.download_vm()
             else:
-                self.launch_vm_update_sequence()
+                self.launch_vm_import_sequence()
         except Exception as e:
             error_message = "Islands VM update error: %s" % str(e)
             log.error(error_message)
             log.exception(e)
             self.complete(False, error_message)
 
-    def launch_vm_update_sequence(self):
-        self.temp_dir = self.unpack_image(self.image_path.strip())
-        self.message("Verifying Islands image...")
-        errors = self.image_authoring.verify_image(self.temp_dir)
-        if len(errors) == 0:
-            self.message("Success Image verified")
-            self._update_proceed(False)
-        elif len(errors) == 1 and ImageVerificationError.KEY_NOT_TRUSTED in errors:
-            msg = "Warning! Public key is untrusted. Requesting confirmation"
-            log.warning(msg)
-            self.error(msg)
-            self.user_confirmation_required()
-        else:
-            for error in errors:
-                msg = "Verification error: %s" % str(error)
-                self.error(msg)
-                log.debug(msg)
-            log.info("Image verification failed.")
-            self.complete(False, "Image verification failed.")
-
-    def _update_proceed(self, add_key=True):
+    def _import_proceed(self, add_key=True):
         try:
             if add_key:
                 self.image_authoring.add_trusted_key(self.temp_dir)
@@ -185,6 +165,8 @@ class VMInstaller:
                 log.debug("Deleting islands VM")
                 self.setup.delete_islands_vm()
                 log.debug("Delete successful. Importing new image")
+            else:
+                log.debug("VM with name %s not found" % self.config["vmname"])
             self.import_vm(path_to_image, self.message, self.error)
             self.configure_vm()
         except Exception as e:
@@ -205,6 +187,7 @@ class VMInstaller:
             self.image_path = image_path
             self.launch_vm_import_sequence()
 
+
         def on_update(data):
             log.info("Updating progress bar!")
             log.debug(data)
@@ -223,17 +206,14 @@ class VMInstaller:
                                               abort_ev)
 
     def launch_vm_import_sequence(self):
-        log.debug("Launching import sequence....")
         self.temp_dir = self.unpack_image(self.image_path.strip())
         self.message("Verifying Islands image...")
         errors = self.image_authoring.verify_image(self.temp_dir)
         if len(errors) == 0:
-            self.message("Success!")
-            self.import_vm(self.image_authoring.get_path_to_vm_image(self.temp_dir), self.message, self.error)
-            self.message("Success!")
-            self.configure_vm()
+            self.message("Success Image verified")
+            self._import_proceed(False)
         elif len(errors) == 1 and ImageVerificationError.KEY_NOT_TRUSTED in errors:
-            msg = "Warning! Public key is untrusted"
+            msg = "Warning! Public key is untrusted. Requesting confirmation"
             log.warning(msg)
             self.error(msg)
             self.user_confirmation_required()
@@ -243,7 +223,7 @@ class VMInstaller:
                 self.error(msg)
                 log.debug(msg)
             log.info("Image verification failed.")
-            self.complete(False)
+            self.complete(False, "Image verification failed.")
 
     def add_key_continue_import(self):
         """

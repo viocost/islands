@@ -46,6 +46,7 @@ class UpdateForm(QObject):
         self.output.connect(self.appender)
         self.progress.connect(self.progress_bar_handler)
         self.update_completed.connect(self.process_update_result)
+        self.working = False
 
     def exec(self):
         self.window.exec()
@@ -54,13 +55,14 @@ class UpdateForm(QObject):
         from_file_checked = self.ui.opt_from_file.isChecked()
         download_checked = self.ui.opt_download.isChecked()
 
-        update_enabled = (from_file_checked and len(self.ui.path_to_image.text()) > 0) or \
-                         (download_checked and len(self.ui.magnet_link.text()) > 0)
+        update_enabled = ((from_file_checked and len(self.ui.path_to_image.text()) > 0) or
+                          (download_checked and len(self.ui.magnet_link.text()) > 0) and not self.working)
         self.ui.btn_update.setEnabled(update_enabled)
         self.ui.btn_update.setStyleSheet('color: "green"') if update_enabled else \
             self.ui.btn_update.setStyleSheet('color: #777')
 
     def process_update_result(self, is_success, msg=""):
+        self.working = False
         if is_success:
             QM.information(self.window, "Update successful", "Update completed successfully!", QM.Ok)
             self.close()
@@ -145,6 +147,7 @@ class UpdateForm(QObject):
         if self.ui.opt_download.isChecked():
             self.download_timeout.connect(self.on_download_timeout)
         log.debug("Trying to import VM from %s " % self.ui.path_to_image.text())
+        self.working = True
         self.setup.run_update(on_message=self.on_message,
                               on_complete=lambda res, opt_msg="":
                               self.update_completed.emit(res, opt_msg),

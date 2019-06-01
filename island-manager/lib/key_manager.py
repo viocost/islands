@@ -175,12 +175,13 @@ class KeyManager:
         """
         key_path = None
         if pkfp in os.listdir(self.trusted_keys_path):
-            log.debug("pkfp not found in trusted keys")
+            log.debug("pkfp found in trusted keys")
             key_path = os.path.join(self.trusted_keys_path, pkfp)
         elif pkfp in os.listdir(self.user_keys_path):
-            log.debug("pkfp not found in user keys")
+            log.debug("pkfp found in user keys")
             key_path = os.path.join(self.user_keys_path, pkfp)
         else:
+            log.debug("pkfp not recognized as trusted")
             return False
         with open(os.path.join(key_path, "public.pem"), "rb") as fp:
             log.debug("Checking public key")
