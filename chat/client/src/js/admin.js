@@ -38,6 +38,7 @@ let processAdminRequest = ()=>{throw"Admin session uninitialized"};
 
 document.addEventListener('DOMContentLoaded', event => {
     util.$("main").classList.add("main-admin");
+    util.$("header").style.minWidth = "111rem";
     if (!secured){
 
         util.$('#island-setup').addEventListener("click", setupIslandAdmin);
