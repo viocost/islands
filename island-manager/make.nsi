@@ -23,7 +23,7 @@ RequestExecutionLevel admin
         CreateShortcut "$desktop\Islands.lnk" "$INSTDIR\islands.exe"
     FunctionEnd
   !define MUI_FINISHPAGE_SHOWREADME ""
-  !define MUI_FINISHPAGE_SHOWREADME_NOTCHECKED
+  !define MUI_FINISHPAGE_SHOWREADME_CHECKED
   !define MUI_FINISHPAGE_SHOWREADME_TEXT  "Create Desktop Shortcut"
   !define MUI_FINISHPAGE_SHOWREADME_FUNCTION finishpageaction
 

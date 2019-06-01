@@ -6,7 +6,7 @@ from controllers.config_form import ConfigForm
 from controllers.update_form import UpdateForm
 from PyQt5.QtWidgets import QMainWindow,  QMessageBox as QM
 from PyQt5.QtCore import QObject, pyqtSignal
-from lib.util import get_version,  has_admin_rights_win32
+from lib.util import get_version
 from lib.island_states import IslandStates as States
 from controllers.image_authoring_form import ImageAuthoringForm
 from controllers.torrents_form import TorrentsForm
@@ -170,11 +170,6 @@ class MainWindow(QObject):
         self.state_changed.emit()
 
     def launch_setup(self):
-        if sys.platform == "win32" and not has_admin_rights_win32():
-            QM.warning(self.window, "Admin rights required!",
-                       "Running setup requires administrator privileges. "
-                       "Please close island manager and start it as administrator.", QM.Ok)
-            return
         self.setup_window = SetupWindow(self.window, self.config, self.island_manager, self.setup)
         self.set_setup_window_onclose_handler(self.setup_window)
         self.setup_window.set_vbox_checker(self.setup.is_vbox_set_up)

@@ -57,13 +57,19 @@ class IslandSetup:
 
 
     def get_islands_ip(self):
-        res = Executor.exec_sync(self.cmd.ip_a_eth1_onguest())
-        response = [line for line in res[1].split('\n') if "eth1" in line]
-        for line in response:
-            search_res = re.search(r'(\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b)', line)
-            if search_res:
-                log.debug("Found IP address %s " % search_res.group())
-                return search_res.group()
+        res = Executor.exec_sync(self.cmd.vm_guestproperty(property="/VirtualBox/GuestInfo/Net/1/V4/IP"))
+        if res[0] == 0 and re.search(r'(\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b)', res[1]):
+            try:
+                ip = res[1].split(": ")[1].strip()
+                log.debug("Found IP address: %s" % res[1])
+                return ip
+            except Exception as e:
+                log.warning("Error getting IP address: %s" % str(e))
+                log.debug(res[1])
+
+
+
+
 
 
     def sha1(self, fname):
