@@ -94,7 +94,7 @@ class VMInstaller:
 
     def unknown_key_confirm_resume_update(self):
         log.debug("Resuming update")
-        self.thread = Thread(target=self._update_proceed)
+        self.thread = Thread(target=self._import_proceed)
         self.thread.start()
 
     def unknown_key_confirm_resume(self):
