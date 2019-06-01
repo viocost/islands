@@ -9022,6 +9022,7 @@ var adminLogin;
 /**Set main listeneres when document loaded**/
 
 document.addEventListener('DOMContentLoaded', function (event) {
+  document.title = "Islands | Login";
   dom_util_$("#register-vault").addEventListener("click", registerVault);
   dom_util_$("#vault-login-btn").addEventListener("click", vaultLoginGetVault);
   dom_util_$("#create").addEventListener("click", showTopicCreateForm);
@@ -9328,6 +9329,7 @@ function vaultLoginProcessVault(data, password, passwordEl) {
 
     passwordEl.value = "";
     vaultLoginFinalize();
+    document.title = "Islands | Vault";
   } catch (err) {
     loadingOff();
     toastr["warning"]("Login failed. Check the password and try again.");

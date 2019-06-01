@@ -51,6 +51,7 @@ let tempName;
 let recording = false;
 
 document.addEventListener('DOMContentLoaded', event => {
+    document.title = "Islands";
     console.log('initializing chat....');
     chat = new ChatClient({version: version});
     loadSounds();
@@ -60,7 +61,6 @@ document.addEventListener('DOMContentLoaded', event => {
     document.querySelector('#send-new-msg').addEventListener('click', sendMessage);
     document.querySelector('#close-code-view').addEventListener('click', closeCodeView);
     document.querySelector('#new-invite').addEventListener('click', generateInvite);
-
     document.querySelector('#refresh-invites').addEventListener('click', refreshInvites);
     document.querySelector('#attach-file').addEventListener('change', processAttachmentChosen);
     document.querySelector('#re-connect').addEventListener('click', attemptReconnection);
@@ -263,6 +263,7 @@ function setupChatListeners(chat) {
         processLogin(messages);
         playSound("user_online");
         toastr.success("You are now online!");
+        document.title = "Islands | " + chat.session.settings.topicName
     });
 
     chat.on("unknown_error", err => {
@@ -722,7 +723,7 @@ function processLogout() {
     console.log("Processing logout");
     document.querySelector('#chat_window').innerHTML = "";
     chat.logout();
-    setView("auth");
+    document.location = "/";
     toastr["info"]("You have successfully logged out!");
 }
 
@@ -1431,6 +1432,7 @@ function editTopicName(ev) {
     ev.target.value = newTopicName;
     chat.topicNameUpdate(ev.target.value);
     ev.target.blur();
+    document.title = "Islands | " + chat.session.settings.topicName;
 }
 
 function buttonLoadingOn(element) {

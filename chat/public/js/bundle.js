@@ -8577,6 +8577,7 @@ var mainMenuItems = [{
 var tempName;
 var recording = false;
 document.addEventListener('DOMContentLoaded', function (event) {
+  document.title = "Islands";
   console.log('initializing chat....');
   app_chat = new ChatClient_ChatClient({
     version: version
@@ -8847,6 +8848,7 @@ function setupChatListeners(chat) {
     processLogin(messages);
     playSound("user_online");
     toastr["success"]("You are now online!");
+    document.title = "Islands | " + chat.session.settings.topicName;
   });
   chat.on("unknown_error", function (err) {
     console.log("unknown_error emited by chat: " + err);
@@ -9318,7 +9320,7 @@ function processLogout() {
   console.log("Processing logout");
   document.querySelector('#chat_window').innerHTML = "";
   app_chat.logout();
-  setView("auth");
+  document.location = "/";
   toastr["info"]("You have successfully logged out!");
 }
 
@@ -10194,6 +10196,7 @@ function editTopicName(ev) {
   ev.target.value = newTopicName;
   app_chat.topicNameUpdate(ev.target.value);
   ev.target.blur();
+  document.title = "Islands | " + app_chat.session.settings.topicName;
 }
 
 function buttonLoadingOn(element) {

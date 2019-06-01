@@ -37,6 +37,7 @@ let processAdminRequest = ()=>{throw"Admin session uninitialized"};
 
 
 document.addEventListener('DOMContentLoaded', event => {
+    document.title = "Islands | Admin login";
     util.$("main").classList.add("main-admin");
     util.$("header").style.minWidth = "111rem";
     if (!secured){
@@ -518,6 +519,7 @@ async function requestAdminLogin (privateKey){
                 displayAdminMenu(true);
                 loadingOff();
                 toastr.info("Admin login successfull!");
+                document.title = "Islands | Admin panel"
             },
 
             error: err => {
