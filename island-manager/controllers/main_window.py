@@ -4,9 +4,9 @@ from controllers.keys_form import KeysForm
 from controllers.setup_wizard_window import SetupWizardWindow as SetupWindow
 from controllers.config_form import ConfigForm
 from controllers.update_form import UpdateForm
-from PyQt5.QtWidgets import QMainWindow,  QMessageBox as QM
-from PyQt5.QtCore import QObject, pyqtSignal
-from lib.util import get_version
+from PyQt5.QtWidgets import QMainWindow,  QMessageBox as QM, QWidget
+from PyQt5.QtCore import pyqtSignal, QEvent, QObject
+from lib.util import get_version, is_admin_registered
 from lib.island_states import IslandStates as States
 from controllers.image_authoring_form import ImageAuthoringForm
 from controllers.torrents_form import TorrentsForm
@@ -19,21 +19,21 @@ import logging
 log = logging.getLogger(__name__)
 
 
-class MainWindow(QObject):
+class MainWindow(QMainWindow):
 
     current_state = pyqtSignal(object)
     processing = pyqtSignal()
     state_changed = pyqtSignal()
+    focus_in = pyqtSignal()
 
     def __init__(self, config, island_manager, setup, torrent_manager):
-        QObject.__init__(self)
+        super(MainWindow, self).__init__()
         self.config = config
         self.setup = setup
         self.island_manager = island_manager
-        self.window = QMainWindow()
         self.states = self.prepare_states()
         self.ui = Ui_MainWindow()
-        self.ui.setupUi(self.window)
+        self.ui.setupUi(self)
         self.key_manager = KeyManager(self.config)
         self.assign_handlers()
         self.set_state(States.UNKNOWN)
@@ -41,16 +41,20 @@ class MainWindow(QObject):
         self.torrent_manager = torrent_manager
         self.refresh_island_status()
         self.set_main_window_title()
-
         # island status refresh counter
         self.refresh_count = 0
         log.debug("Main window controller initialized.")
 
-    def show(self):
-        self.window.show()
 
-    def hide(self):
-        self.window.hide()
+    def event(self, event):
+        if event.type() == QEvent.ActivationChange:
+            log.debug("Focus In detected")
+            self.refresh_island_status()
+            return True
+
+        return super().event(event)
+
+
 
     def refresh_island_status(self):
         try:
@@ -75,7 +79,7 @@ class MainWindow(QObject):
 
     def request_to_run_setup(self):
         message = "Islands setup is required. Would you like to launch it now?"
-        res = QM.question(self.window, '', message, QM.Yes | QM.No)
+        res = QM.question(self, '', message, QM.Yes | QM.No)
         if res == QM.Yes:
             self.launch_setup()
 
@@ -104,7 +108,7 @@ class MainWindow(QObject):
 
     def author_image(self):
         log.debug("Opening image authoring form")
-        form = ImageAuthoringForm(parent=self.window,
+        form = ImageAuthoringForm(parent=self,
                                   key_manager=self.key_manager,
                                   config=self.config,
                                   torrent_manager=self.torrent_manager)
@@ -158,19 +162,19 @@ class MainWindow(QObject):
 
     def open_config(self):
         log.debug("Opening")
-        config = ConfigForm(self.window, self.config, self.setup, self.island_manager)
+        config = ConfigForm(self, self.config, self.setup, self.island_manager)
         config.exec()
         self.refresh_island_status()
         self.state_changed.emit()
 
     def open_update(self):
         log.debug("opening update form")
-        update_form = UpdateForm(self.window, self.config, self.island_manager, self.setup)
+        update_form = UpdateForm(self, self.config, self.island_manager, self.setup)
         update_form.exec()
         self.state_changed.emit()
 
     def launch_setup(self):
-        self.setup_window = SetupWindow(self.window, self.config, self.island_manager, self.setup)
+        self.setup_window = SetupWindow(self, self.config, self.island_manager, self.setup)
         self.set_setup_window_onclose_handler(self.setup_window)
         self.setup_window.set_vbox_checker(self.setup.is_vbox_set_up)
         self.setup_window.set_islands_vm_checker(self.setup.is_islands_vm_exist)
@@ -179,11 +183,11 @@ class MainWindow(QObject):
         self.refresh_island_status()
 
     def open_keys_form(self, is_private_keys=False):
-        keys_form = KeysForm(self.window, self.key_manager, self.config, is_private_keys)
+        keys_form = KeysForm(self, self.key_manager, self.config, is_private_keys)
         keys_form.exec()
 
     def show_my_torrents(self):
-        torrents_dialog = TorrentsForm(self.window, self.torrent_manager, self.config)
+        torrents_dialog = TorrentsForm(self, self.torrent_manager, self.config)
         torrents_dialog.exec()
 
     def set_setup_window_onclose_handler(self, window):
@@ -202,18 +206,18 @@ class MainWindow(QObject):
     """MENU HANDLERS"""
     def minimize_main_window(self):
         print("Minimizing")
-        self.window.showMinimized()
+        self.showMinimized()
 
     def show_app_info(self):
-        pos = self.window.pos()
-        self.window.show()
-        QM.about(self.window, "", "Islands Virtual Machine Manager\nVersion: %s" % get_version())
+        pos = self.pos()
+        self.show()
+        QM.about(self, "", "Islands Virtual Machine Manager\nVersion: %s" % get_version())
 
     def on_close(self):
-        self.window.close()
+        self.close()
 
     def set_main_window_title(self):
-        self.window.setWindowTitle("Islands Manager %s" % "v"+get_version())
+        self.setWindowTitle("Islands Manager %s" % "v"+get_version())
 
     """ STATE SETTERS """
     def set_setup_required(self):
@@ -234,8 +238,10 @@ class MainWindow(QObject):
 
     def set_running(self):
         self.setup.update_vm_config()
-        self.ui.island_access_label.setVisible(True)
-        self.ui.island_access_address.setVisible(True)
+        admin_exist = is_admin_registered(self.config["data_folder"])
+        log.debug("admin exists: %s" % str(admin_exist))
+        self.ui.island_access_label.setVisible(admin_exist)
+        self.ui.island_access_address.setVisible(admin_exist)
         if self.config["local_access"]:
             self.ui.island_access_address.setText(self.get_local_access_html(self.config["local_access"]))
             self.ui.island_admin_access_address.setText(self.get_local_access_html(self.config["local_access_admin"], True))
@@ -336,10 +342,12 @@ class MainWindow(QObject):
         thread.start()
 
     def show_notification(self, text):
-        QM.warning(self.window, None, "Warning", text, buttons=QM.Ok)
+        QM.warning(self, None, "Warning", text, buttons=QM.Ok)
 
     def get_local_access_html(self, connection_str, admin=False):
         return '<a href="{connstr}">{content}</a>'.format(
             connstr=connection_str,
             content="Admin access" if admin else connection_str
         )
+
+
