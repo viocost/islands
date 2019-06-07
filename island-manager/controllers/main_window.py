@@ -4,8 +4,9 @@ from controllers.keys_form import KeysForm
 from controllers.setup_wizard_window import SetupWizardWindow as SetupWindow
 from controllers.config_form import ConfigForm
 from controllers.update_form import UpdateForm
-from PyQt5.QtWidgets import QMainWindow,  QMessageBox as QM, QWidget
-from PyQt5.QtCore import pyqtSignal, QEvent, QObject
+from PyQt5.QtWidgets import QMainWindow,  QMessageBox as QM, QMenu, QSystemTrayIcon, QAction
+from PyQt5.QtCore import pyqtSignal, QEvent, QPoint
+from PyQt5.QtGui import QIcon, QPixmap
 from lib.util import get_version, is_admin_registered
 from lib.island_states import IslandStates as States
 from controllers.image_authoring_form import ImageAuthoringForm
@@ -13,14 +14,14 @@ from controllers.torrents_form import TorrentsForm
 from lib.key_manager import KeyManager
 from time import sleep
 from threading import Thread
-
+import resources_rc
 import logging
 
 log = logging.getLogger(__name__)
 
 
 class MainWindow(QMainWindow):
-
+    tray_icon = None
     current_state = pyqtSignal(object)
     processing = pyqtSignal()
     state_changed = pyqtSignal()
@@ -28,6 +29,16 @@ class MainWindow(QMainWindow):
 
     def __init__(self, config, island_manager, setup, torrent_manager):
         super(MainWindow, self).__init__()
+        icon = QIcon()
+        icon.addPixmap(QPixmap(":/images/icons/island64.png"))
+        self.tray_menu = QMenu()
+        self.menu_actions = self.prepare_tray_menu(self.tray_menu)
+        self.tray_icon = QSystemTrayIcon(self)
+        self.tray_icon.setContextMenu(self.tray_menu)
+        self.tray_icon.setIcon(icon)
+        self.tray_icon.activated.connect(self.process_tray_icon_activation)
+        self.tray_icon.show()
+        self.exiting = False
         self.config = config
         self.setup = setup
         self.island_manager = island_manager
@@ -36,14 +47,15 @@ class MainWindow(QMainWindow):
         self.ui.setupUi(self)
         self.key_manager = KeyManager(self.config)
         self.assign_handlers()
-        self.set_state(States.UNKNOWN)
         self.setup_window = None
         self.torrent_manager = torrent_manager
+        self.set_state(States.UNKNOWN)
         self.refresh_island_status()
         self.set_main_window_title()
         # island status refresh counter
         self.refresh_count = 0
         log.debug("Main window controller initialized.")
+        self.pending_state = False
 
 
     def event(self, event):
@@ -52,11 +64,22 @@ class MainWindow(QMainWindow):
             self.refresh_island_status()
             return True
 
+        if event.type() == QEvent.Close:
+            log.debug("Close event caught!")
+            self.process_close(event)
+            return True
+
         return super().event(event)
 
-
+    def process_close(self, event):
+        if not self.exiting:
+            event.ignore()
+            self.showMinimized()
 
     def refresh_island_status(self):
+        if self.pending_state:
+            log.debug("pending state...")
+            return
         try:
             if self.setup.is_setup_required():
                 self.set_state(States.SETUP_REQUIRED)
@@ -221,6 +244,10 @@ class MainWindow(QMainWindow):
 
     """ STATE SETTERS """
     def set_setup_required(self):
+        self.pending_state = False
+        self.menu_actions["start"].setEnabled(False)
+        self.menu_actions["stop"].setEnabled(False)
+        self.menu_actions["restart"].setEnabled(False)
         self.ui.island_access_label.setVisible(False)
         self.ui.island_access_address.setVisible(False)
         self.ui.island_admin_access_address.setVisible(False)
@@ -237,6 +264,10 @@ class MainWindow(QMainWindow):
         self.ui.stopMode.setEnabled(False)
 
     def set_running(self):
+        self.pending_state = False
+        self.menu_actions["start"].setEnabled(False)
+        self.menu_actions["stop"].setEnabled(True)
+        self.menu_actions["restart"].setEnabled(True)
         self.setup.update_vm_config()
         admin_exist = is_admin_registered(self.config["data_folder"])
         log.debug("admin exists: %s" % str(admin_exist))
@@ -261,6 +292,10 @@ class MainWindow(QMainWindow):
         self.ui.stopMode.setEnabled(True)
 
     def set_starting_up(self):
+        self.pending_state = True
+        self.menu_actions["start"].setEnabled(False)
+        self.menu_actions["stop"].setEnabled(False)
+        self.menu_actions["restart"].setEnabled(False)
         self.ui.island_access_label.setVisible(False)
         self.ui.island_access_address.setVisible(False)
         self.ui.island_admin_access_address.setVisible(False)
@@ -275,6 +310,10 @@ class MainWindow(QMainWindow):
         self.ui.stopMode.setEnabled(False)
 
     def set_shutting_down(self):
+        self.pending_state = True
+        self.menu_actions["start"].setEnabled(False)
+        self.menu_actions["stop"].setEnabled(False)
+        self.menu_actions["restart"].setEnabled(False)
         self.ui.islandStatus.setText("Shutting down...")
         self.ui.islandStatus.setStyleSheet('color: orange')
         self.ui.island_access_label.setVisible(False)
@@ -285,6 +324,10 @@ class MainWindow(QMainWindow):
         self.set_working()
 
     def set_not_running(self):
+        self.pending_state = False
+        self.menu_actions["start"].setEnabled(True)
+        self.menu_actions["stop"].setEnabled(False)
+        self.menu_actions["restart"].setEnabled(False)
         self.ui.island_access_label.setVisible(False)
         self.ui.island_access_address.setVisible(False)
         self.ui.island_admin_access_address.setVisible(False)
@@ -299,6 +342,10 @@ class MainWindow(QMainWindow):
         self.ui.stopMode.setEnabled(False)
 
     def set_unknown(self):
+        self.pending_state = False
+        self.menu_actions["start"].setEnabled(False)
+        self.menu_actions["stop"].setEnabled(False)
+        self.menu_actions["restart"].setEnabled(False)
         self.ui.island_access_label.setVisible(False)
         self.ui.island_access_address.setVisible(False)
         self.ui.island_admin_access_address.setVisible(False)
@@ -313,6 +360,10 @@ class MainWindow(QMainWindow):
         self.ui.stopMode.setEnabled(False)
 
     def set_restarting(self):
+        self.pending_state = True
+        self.menu_actions["start"].setEnabled(False)
+        self.menu_actions["stop"].setEnabled(False)
+        self.menu_actions["restart"].setEnabled(False)
         self.ui.island_access_label.setVisible(False)
         self.ui.island_access_address.setVisible(False)
         self.ui.island_admin_access_address.setVisible(False)
@@ -321,6 +372,10 @@ class MainWindow(QMainWindow):
         self.set_working()
 
     def set_working(self):
+        self.pending_state = True
+        self.menu_actions["start"].setEnabled(False)
+        self.menu_actions["stop"].setEnabled(False)
+        self.menu_actions["restart"].setEnabled(False)
         self.ui.restartIslandButton.setEnabled(False)
         self.ui.shutdownIslandButton.setEnabled(False)
         self.ui.launchIslandButton.setEnabled(False)
@@ -350,4 +405,71 @@ class MainWindow(QMainWindow):
             content="Admin access" if admin else connection_str
         )
 
+    def quit_app(self):
+        if QM.question(self, "Exit confirm", "Quit the Island Manager?", QM.Yes | QM.No) == QM.Yes:
+            log.debug("Quitting the islands manager...")
+            self.exiting = True
+            self.close()
+
+    def show_hide(self):
+        if self.isMinimized():
+            self.activateWindow()
+
+        else:
+            self.showMinimized()
+
+    def process_tray_icon_activation(self, reason):
+        log.debug("Tray icon activation detected!")
+        if reason == QSystemTrayIcon.DoubleClick:
+            log.debug("Tray icon double click detected")
+            self.show_hide()
+
+    def prepare_tray_menu(self, menu: QMenu):
+        actions = {}
+        quit_act = QAction("Quit", self)
+        show_hide_act = QAction("Show / Hide", self)
+        torrents_act = QAction("Torrents", self)
+        start_island = QAction("Start Island", self)
+        stop_island = QAction("Stop Island", self)
+        restart_island = QAction("Restart Island", self)
+        config_act = QAction("Config...", self)
+
+        quit_act.setIcon(QIcon("resources/icons/exit.svg"))
+        show_hide_act.setIcon(QIcon("resources/icons/plus-minus.png"))
+        torrents_act.setIcon(QIcon("resources/icons/torrents.png"))
+        start_island.setIcon(QIcon("resources/icons/play.png"))
+        stop_island.setIcon(QIcon("resources/icons/stop.png"))
+        restart_island.setIcon(QIcon("resources/icons/reload.png"))
+        config_act.setIcon(QIcon("resources/icons/settings.png"))
+
+        menu.addActions([start_island, stop_island, restart_island])
+        menu.addSeparator()
+        menu.addAction(torrents_act)
+        menu.addSeparator()
+        menu.addAction(config_act)
+        menu.addSeparator()
+        menu.addAction(show_hide_act)
+        menu.addSeparator()
+        menu.addAction(quit_act)
+
+        torrents_act.triggered.connect(self.show_my_torrents)
+        config_act.triggered.connect(self.open_config)
+        quit_act.triggered.connect(self.quit_app)
+        show_hide_act.triggered.connect(self.show_hide)
+        start_island.triggered.connect(self.get_main_control_handler("launch"))
+        stop_island.triggered.connect(self.get_main_control_handler("stop"))
+        restart_island.triggered.connect(self.get_main_control_handler("restart"))
+
+        start_island.setEnabled(False)
+        stop_island.setEnabled(False)
+        restart_island.setEnabled(False)
+
+        actions["start"] = start_island
+        actions["stop"] = stop_island
+        actions["restart"] = restart_island
+        actions["config"] = config_act
+        actions["torrent"] = torrents_act
+        actions["show"] = show_hide_act
+        actions["quit"] = quit_act
+        return actions
 
