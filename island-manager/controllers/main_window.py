@@ -4,6 +4,7 @@ from controllers.keys_form import KeysForm
 from controllers.setup_wizard_window import SetupWizardWindow as SetupWindow
 from controllers.config_form import ConfigForm
 from controllers.update_form import UpdateForm
+from controllers.help_form import Helpform
 from PyQt5.QtWidgets import QMainWindow,  QMessageBox as QM, QMenu, QSystemTrayIcon, QAction
 from PyQt5.QtCore import pyqtSignal, QEvent, QPoint
 from PyQt5.QtGui import QIcon, QPixmap
@@ -128,6 +129,12 @@ class MainWindow(QMainWindow):
         self.ui.act_my_keys.triggered.connect(lambda: self.open_keys_form(True))
         self.ui.act_open_config.triggered.connect(lambda: self.open_config())
         self.ui.act_update_vm.triggered.connect(self.open_update)
+        self.ui.act_help.triggered.connect(self.open_user_guide)
+
+    def open_user_guide(self):
+        help_form = Helpform(self)
+        help_form.exec()
+
 
     def author_image(self):
         log.debug("Opening image authoring form")

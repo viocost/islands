@@ -37,6 +37,12 @@ function do_keys_form {
     echo done!
 }
 
+function do_help_form {
+    echo doing help_form
+    pyuic5 ../views/help_form/help_form.ui -o ../views/help_form/help_form.py
+    echo done!
+}
+
 function do_setup_form {
     echo doing setup
     pyuic5 ../views/setup_wizard/setup_wizard.ui -o ../views/setup_wizard/setup_wizard.py
@@ -77,6 +83,8 @@ elif [[ $1 == "key_create" ]]; then
     do_key_create_form
 elif [[ $1 == "keys" ]]; then
     do_keys_form
+elif [[ $1 == "help" ]]; then
+    do_help_form
 elif [[ $1 == "setup" ]]; then
     do_setup_form
 elif [[ $1 == "torrents" ]]; then
@@ -88,6 +96,7 @@ elif [[ $1 == "select_vm" ]]; then
 elif [[ $1 == "all" ]]; then
     do_main
     do_image_authoring_form
+    do_help_form
     do_config_form
     do_torrents_form
     do_setup_form

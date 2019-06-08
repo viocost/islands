@@ -560,7 +560,7 @@
      <x>0</x>
      <y>0</y>
      <width>850</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuOptions">
@@ -594,10 +594,17 @@
     <addaction name="separator"/>
     <addaction name="act_update_vm"/>
    </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="act_help"/>
+   </widget>
    <addaction name="menuOptions"/>
    <addaction name="menuTools"/>
    <addaction name="menuKeys"/>
    <addaction name="menuConfig"/>
+   <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusBar">
    <property name="locale">
@@ -671,6 +678,11 @@
   <action name="act_update_vm">
    <property name="text">
     <string>Update Islands VM...</string>
+   </property>
+  </action>
+  <action name="act_help">
+   <property name="text">
+    <string>User guide</string>
    </property>
   </action>
  </widget>

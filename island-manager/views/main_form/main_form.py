@@ -2,12 +2,11 @@
 
 # Form implementation generated from reading ui file '../views/main_form/main_form.ui'
 #
-# Created by: PyQt5 UI code generator 5.12.2
+# Created by: PyQt5 UI code generator 5.11.3
 #
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -259,7 +258,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_7.addLayout(self.verticalLayout_6)
         MainWindow.setCentralWidget(self.centralWidget)
         self.menuBar = QtWidgets.QMenuBar(MainWindow)
-        self.menuBar.setGeometry(QtCore.QRect(0, 0, 850, 21))
+        self.menuBar.setGeometry(QtCore.QRect(0, 0, 850, 22))
         self.menuBar.setObjectName("menuBar")
         self.menuOptions = QtWidgets.QMenu(self.menuBar)
         self.menuOptions.setObjectName("menuOptions")
@@ -269,6 +268,8 @@ class Ui_MainWindow(object):
         self.menuKeys.setObjectName("menuKeys")
         self.menuConfig = QtWidgets.QMenu(self.menuBar)
         self.menuConfig.setObjectName("menuConfig")
+        self.menuHelp = QtWidgets.QMenu(self.menuBar)
+        self.menuHelp.setObjectName("menuHelp")
         MainWindow.setMenuBar(self.menuBar)
         self.statusBar = QtWidgets.QStatusBar(MainWindow)
         self.statusBar.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates))
@@ -301,6 +302,8 @@ class Ui_MainWindow(object):
         self.act_open_config.setObjectName("act_open_config")
         self.act_update_vm = QtWidgets.QAction(MainWindow)
         self.act_update_vm.setObjectName("act_update_vm")
+        self.act_help = QtWidgets.QAction(MainWindow)
+        self.act_help.setObjectName("act_help")
         self.menuOptions.addAction(self.actionInfo)
         self.menuOptions.addSeparator()
         self.menuOptions.addAction(self.actionMinimize_2)
@@ -312,10 +315,12 @@ class Ui_MainWindow(object):
         self.menuConfig.addAction(self.act_open_config)
         self.menuConfig.addSeparator()
         self.menuConfig.addAction(self.act_update_vm)
+        self.menuHelp.addAction(self.act_help)
         self.menuBar.addAction(self.menuOptions.menuAction())
         self.menuBar.addAction(self.menuTools.menuAction())
         self.menuBar.addAction(self.menuKeys.menuAction())
         self.menuBar.addAction(self.menuConfig.menuAction())
+        self.menuBar.addAction(self.menuHelp.menuAction())
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -340,6 +345,7 @@ class Ui_MainWindow(object):
         self.menuTools.setTitle(_translate("MainWindow", "Tools"))
         self.menuKeys.setTitle(_translate("MainWindow", "Keys"))
         self.menuConfig.setTitle(_translate("MainWindow", "Config"))
+        self.menuHelp.setTitle(_translate("MainWindow", "Help"))
         self.actionExit.setText(_translate("MainWindow", "Exit"))
         self.actionMinimize.setText(_translate("MainWindow", "Minimize"))
         self.actionAbout.setText(_translate("MainWindow", "About"))
@@ -352,6 +358,6 @@ class Ui_MainWindow(object):
         self.act_my_keys.setText(_translate("MainWindow", "My keys"))
         self.act_open_config.setText(_translate("MainWindow", "Open configuration..."))
         self.act_update_vm.setText(_translate("MainWindow", "Update Islands VM..."))
-
+        self.act_help.setText(_translate("MainWindow", "User guide"))
 
 import resources_rc
