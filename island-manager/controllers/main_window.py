@@ -228,11 +228,9 @@ class MainWindow(QMainWindow):
 
     """MENU HANDLERS"""
     def minimize_main_window(self):
-        print("Minimizing")
         self.showMinimized()
 
     def show_app_info(self):
-        pos = self.pos()
         self.show()
         QM.about(self, "", "Islands Virtual Machine Manager\nVersion: %s" % get_version())
 
@@ -414,7 +412,7 @@ class MainWindow(QMainWindow):
     def show_hide(self):
         if self.isMinimized():
             self.activateWindow()
-
+            self.showNormal()
         else:
             self.showMinimized()
 
@@ -442,13 +440,13 @@ class MainWindow(QMainWindow):
         restart_island.setIcon(QIcon("resources/icons/reload.png"))
         config_act.setIcon(QIcon("resources/icons/settings.png"))
 
+        menu.addAction(show_hide_act)
+        menu.addSeparator()
         menu.addActions([start_island, stop_island, restart_island])
         menu.addSeparator()
         menu.addAction(torrents_act)
         menu.addSeparator()
         menu.addAction(config_act)
-        menu.addSeparator()
-        menu.addAction(show_hide_act)
         menu.addSeparator()
         menu.addAction(quit_act)
 
