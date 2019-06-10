@@ -21,9 +21,30 @@ class Helpform(QDialog):
                 style = """<style>
                 ul{
                     list-style: none;
-                    color: blue;
-                    margin: 25px;
+                    margin: 0px;
                 
+                }
+                
+                #wrapper{
+                    margin: 50px;
+                    
+                    max-width: 600px;
+                }
+                
+                h2 {
+                    color: #1f3d6d 
+                
+                }
+                
+                li{
+                    margin-bottom: 5px;
+                    margin-left: -40px;
+                }
+                
+                li > a {
+                    color: #1f3d6d;
+                    margin: 0;
+                    
                 }
                 
                 p {
@@ -37,7 +58,7 @@ class Helpform(QDialog):
                 </style>
                 """
                 md =  mkd.markdown(text, extras=["toc"])
-                res  =  "%s<h2>Table of content</h2>%s\n<br><br><br><br><br>%s" % (style, md.toc_html, str(md))
+                res  =  "%s<div id='wrapper'><h2>Table of content</h2>%s\n<br><br><br><br><br>%s</div>" % (style, md.toc_html, str(md))
                 log.debug(res)
                 return res
 

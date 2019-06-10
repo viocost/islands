@@ -582,7 +582,6 @@ class TorrentManager:
 
     def stop_session(self):
         self.exiting = True
-        time.sleep(1)
         self.stats_update.join()
         self.save_session_state()
 

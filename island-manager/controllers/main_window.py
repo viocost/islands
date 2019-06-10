@@ -191,6 +191,7 @@ class MainWindow(QMainWindow):
         return handler
 
     def open_config(self):
+        self.activateWindow()
         log.debug("Opening")
         config = ConfigForm(self, self.config, self.setup, self.island_manager)
         config.exec()
@@ -217,6 +218,7 @@ class MainWindow(QMainWindow):
         keys_form.exec()
 
     def show_my_torrents(self):
+        self.activateWindow()
         torrents_dialog = TorrentsForm(self, self.torrent_manager, self.config)
         torrents_dialog.exec()
 
@@ -236,6 +238,7 @@ class MainWindow(QMainWindow):
     """MENU HANDLERS"""
     def minimize_main_window(self):
         self.showMinimized()
+
 
     def show_app_info(self):
         self.show()

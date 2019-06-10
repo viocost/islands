@@ -211,6 +211,7 @@ class Ui_MainWindow(object):
         self.launchIslandButton.setIcon(icon2)
         self.launchIslandButton.setIconSize(QtCore.QSize(48, 48))
         self.launchIslandButton.setAutoDefault(False)
+        self.launchIslandButton.setDefault(False)
         self.launchIslandButton.setObjectName("launchIslandButton")
         self.verticalLayout_2.addWidget(self.launchIslandButton)
         self.launchMode = QtWidgets.QComboBox(self.centralWidget)

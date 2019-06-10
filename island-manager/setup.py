@@ -15,13 +15,19 @@ DATA_FILES = [
     'os_defaults/mac.json',
     'os_defaults/windows.json',
     'default_config.json',
+    'resources/icons/stop.png',
+    'resources/icons/play.png',
+    'resources/icons/torrents.png',
+    'resources/icons/plus-minus.png',
+    'resources/icons/exit.svg',
+    'docs/user_guide.md',
     'version'
 ]
 PLIST = {'CFBundleDisplayName': 'Islands', 'CFBundleName': 'Islands'}
 OPTIONS = {
     'iconfile': 'resources/images/icon.icns',
     'plist': PLIST,
-    'resources': ['os_defaults'],
+    'resources': ['os_defaults', 'docs', "resources"],
     'includes': ['sip', 'PyQt5']
 }
 
