@@ -11,13 +11,29 @@ from lib.im_config import IMConfig
 from logging.handlers import RotatingFileHandler
 from lib.util import get_full_path
 import sys, os
+import fasteners
 import logging
 
+
 def main():
-    config = IMConfig(sys.platform)
-    setup_logger(config)
-    application = Application(config)
-    application.run()
+    lock = fasteners.InterProcessLock("lockfile")
+    gotten = lock.acquire(blocking=False)
+    try:
+        if gotten:
+            config = IMConfig(sys.platform)
+            setup_logger(config)
+            application = Application(config)
+            application.run()
+        else:
+            print("Another instance of Island Manager is running. Exiting")
+            exit(0)
+    except Exception as e:
+        pass
+    finally:
+        if gotten:
+            lock.release()
+
+
 
 
 # noinspection PyUnreachableCode
@@ -41,6 +57,7 @@ def setup_logger(config):
     file_handler.setFormatter(formatter)
     logger.addHandler(file_handler)
     logger.debug("Logger initialized.")
+
 
 
 

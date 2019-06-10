@@ -8,6 +8,7 @@ Conversations/*
 gc.bat
 ltsession.dump
 run2.sh
+lockfile
 build-*
 **/dist/*
 **/build/*

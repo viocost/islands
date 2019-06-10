@@ -4,10 +4,10 @@ Assuming python3.7 and pip are installed
 
 - Create virtual environment and activate it:
 ```
-mkdir /venvdir
-virtualenv /venvdir
-chmod +x /venvdir/bin/activate
-source /venvdir/bin/activate
+mkdir /path/to/venvdir
+python3 -m venv /path/to/venvdir
+chmod +x /path/to/venvdir/bin/activate
+source /path/to//venvdir/bin/activate
 
 ```
 
