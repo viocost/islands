@@ -37,11 +37,12 @@ pre
 .chat-wrapper
   @include horizontal-flex-container
   justify-content: space-between
-  height: inherit
+  height: calc(100% - 4rem)
   min-width: 50rem
+  min-height: 25rem
 
 .chat-container
-  height: 95%
+  height: 100%
   width: 95%
 
 
@@ -154,24 +155,20 @@ pre
   flex-direction: row
   width: 100%
   justify-content: space-between
-  height: 6%
-  min-height: 4rem
-  max-height: 4rem
-
-
+  height: 4rem
 
 .user-name--greeting
   font-size: 1.5rem
-  margin-right: .5rem
+
 
 .heading-name--input
   border: none
   width: auto
   min-width: 5rem
   max-width: 60%
-  margin: 0
-  padding: .5rem
+  margin-left: 0.5rem
   font-size: 1.5rem
+  padding: 0
   text-overflow: ellipsis
   &:focus
     border: 1px solid #3a47ad
@@ -573,7 +570,8 @@ pre
 
 .navbar-wrap
   display: none
-  height: 100%
+  height: 3.5rem
+
 
 .message-id
   display: none
@@ -701,6 +699,7 @@ pre
       filter:  drop-shadow(1px 1px 2px rgba(0,0,0,1))
 
 .control-container
+  max-height: 50%
   display: flex
   margin-top: 2rem
   flex-direction: row
@@ -842,12 +841,15 @@ pre
 
 #footer
   display: flex
+  flex-direction: row
+  font-size: .8rem
+  align-items: center
   .copyright
     width: 100%
     display: flex
     justify-content: center
   #view-logs
-    width: 100%
+    width: 5rem
     text-align: right
     color: gray
     &:hover
