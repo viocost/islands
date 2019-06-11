@@ -6023,6 +6023,7 @@ function () {
     this.version = opts.version;
     this.islandConnectionStatus = false;
     this.allMessagesLoaded = false;
+    this.loadingMessages = false;
     this.chatSocket = null;
     this.fileSocket = null;
     this.session = null; //can be "active", "off"
@@ -6746,7 +6747,6 @@ function () {
   }, {
     key: "loadMoreMessages",
     value: function loadMoreMessages(lastLoadedMessageID) {
-      if (this.allMessagesLoaded) return;
       var request = new Message_Message(self.version);
       request.headers.command = "load_more_messages";
       request.headers.pkfpSource = this.session.publicKeyFingerprint;
@@ -6757,9 +6757,10 @@ function () {
   }, {
     key: "loadMoreMessagesSuccess",
     value: function loadMoreMessagesSuccess(response, self) {
-      var messages = self.decryptMessagesOnMessageLoad(response.body.lastMessages);
-      self.allMessagesLoaded = response.body.lastMessages.allLoaded || self.allMessagesLoaded;
+      var messages = self.decryptMessagesOnMessageLoad(response.body.lastMessages); //self.allMessagesLoaded = response.body.lastMessages.allLoaded ||  self.allMessagesLoaded;
+
       self.emit("messages_loaded", messages);
+      self.loadingMessages = true;
     }
   }, {
     key: "decryptMessagesOnMessageLoad",

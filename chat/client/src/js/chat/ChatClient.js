@@ -17,6 +17,7 @@ export class ChatClient {
         this.version = opts.version;
         this.islandConnectionStatus = false;
         this.allMessagesLoaded = false;
+        this.loadingMessages = false;
         this.chatSocket = null;
         this.fileSocket = null;
         this.session = null; //can be "active", "off"
@@ -616,7 +617,6 @@ export class ChatClient {
     }
 
     loadMoreMessages(lastLoadedMessageID){
-        if(this.allMessagesLoaded) return;
         let request = new Message(self.version);
         request.headers.command = "load_more_messages";
         request.headers.pkfpSource = this.session.publicKeyFingerprint;
@@ -627,8 +627,9 @@ export class ChatClient {
 
     loadMoreMessagesSuccess(response, self){
         let messages = self.decryptMessagesOnMessageLoad(response.body.lastMessages);
-        self.allMessagesLoaded = response.body.lastMessages.allLoaded ||  self.allMessagesLoaded;
-        self.emit("messages_loaded", messages)
+        //self.allMessagesLoaded = response.body.lastMessages.allLoaded ||  self.allMessagesLoaded;
+        self.emit("messages_loaded", messages);
+        self.loadingMessages = true;
     }
 
     decryptMessagesOnMessageLoad(data){

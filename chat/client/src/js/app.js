@@ -475,7 +475,20 @@ function messageSendSuccess(message) {
         recipient: message.header.recipient
     });
     clearAttachments();
+    clearOldMessages();
+
     lockSend(false);
+    util.$("#new-msg").focus()
+}
+
+function clearOldMessages(){
+    let chatWindow = util.$("#chat_window");
+    if (chatWindow.childElementCount >= 70){
+        for (let i=0; i<20; i++){
+            chatWindow.removeChild(chatWindow.firstElementChild)
+        }
+    }
+
 }
 
 function messageSendFail(message) {
@@ -1298,8 +1311,9 @@ function processSettingsMenuClick(event) {
 function processChatScroll(event) {
     let chatWindow = event.target;
     if (!chatWindow.firstChild) return;
-    if ($(event.target).scrollTop() <= 1) {
+    if (event.target.scrollTop <= 1) {
         //load more messages
+        console.log("loading more messages");
         let lastLoadedMessageID = chatWindow.firstChild.querySelector(".message-id").innerText;
         chat.loadMoreMessages(lastLoadedMessageID);
     }

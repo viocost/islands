@@ -6020,6 +6020,7 @@ function () {
     this.version = opts.version;
     this.islandConnectionStatus = false;
     this.allMessagesLoaded = false;
+    this.loadingMessages = false;
     this.chatSocket = null;
     this.fileSocket = null;
     this.session = null; //can be "active", "off"
@@ -6743,7 +6744,6 @@ function () {
   }, {
     key: "loadMoreMessages",
     value: function loadMoreMessages(lastLoadedMessageID) {
-      if (this.allMessagesLoaded) return;
       var request = new Message_Message(self.version);
       request.headers.command = "load_more_messages";
       request.headers.pkfpSource = this.session.publicKeyFingerprint;
@@ -6754,9 +6754,10 @@ function () {
   }, {
     key: "loadMoreMessagesSuccess",
     value: function loadMoreMessagesSuccess(response, self) {
-      var messages = self.decryptMessagesOnMessageLoad(response.body.lastMessages);
-      self.allMessagesLoaded = response.body.lastMessages.allLoaded || self.allMessagesLoaded;
+      var messages = self.decryptMessagesOnMessageLoad(response.body.lastMessages); //self.allMessagesLoaded = response.body.lastMessages.allLoaded ||  self.allMessagesLoaded;
+
       self.emit("messages_loaded", messages);
+      self.loadingMessages = true;
     }
   }, {
     key: "decryptMessagesOnMessageLoad",
@@ -9038,7 +9039,19 @@ function app_messageSendSuccess(message) {
     recipient: message.header.recipient
   });
   clearAttachments();
+  clearOldMessages();
   lockSend(false);
+  dom_util_$("#new-msg").focus();
+}
+
+function clearOldMessages() {
+  var chatWindow = dom_util_$("#chat_window");
+
+  if (chatWindow.childElementCount >= 70) {
+    for (var _i2 = 0; _i2 < 20; _i2++) {
+      chatWindow.removeChild(chatWindow.firstElementChild);
+    }
+  }
 }
 
 function messageSendFail(message) {
@@ -9339,13 +9352,13 @@ function setNavbarListeners() {
 function onLoginLoadMessages(messages) {
   document.querySelector("#chat_window").innerHTML = "";
 
-  for (var _i2 = 0; _i2 < messages.length; ++_i2) {
+  for (var _i3 = 0; _i3 < messages.length; ++_i3) {
     var message = void 0;
 
     try {
-      message = typeof messages[messages.length - _i2 - 1] === "string" ? JSON.parse(messages[messages.length - _i2 - 1]) : messages[messages.length - _i2 - 1];
+      message = typeof messages[messages.length - _i3 - 1] === "string" ? JSON.parse(messages[messages.length - _i3 - 1]) : messages[messages.length - _i3 - 1];
     } catch (err) {
-      console.log("Could not parse json. Message: " + messages[messages.length - _i2 - 1]);
+      console.log("Could not parse json. Message: " + messages[messages.length - _i3 - 1]);
       continue;
     }
 
@@ -9673,19 +9686,19 @@ function processMessageBody(text) {
     return el.length !== 0;
   });
 
-  for (var _i3 = 0; _i3 < substrings.length; ++_i3) {
+  for (var _i4 = 0; _i4 < substrings.length; ++_i4) {
     var pre = document.createElement("pre");
     var code = document.createElement("code");
     var afterText = null;
 
-    var endCode = substrings[_i3].search(endPattern);
+    var endCode = substrings[_i4].search(endPattern);
 
     if (endCode === -1) {
-      code.innerText = processCodeBlock(substrings[_i3]);
+      code.innerText = processCodeBlock(substrings[_i4]);
     } else {
-      code.innerText = processCodeBlock(substrings[_i3].substring(0, endCode));
+      code.innerText = processCodeBlock(substrings[_i4].substring(0, endCode));
 
-      var rawAfterText = substrings[_i3].substr(endCode + 5).trim();
+      var rawAfterText = substrings[_i4].substr(endCode + 5).trim();
 
       if (rawAfterText.length > 0) afterText = document.createTextNode(rawAfterText);
     } //highliter:
@@ -9725,19 +9738,19 @@ function processCodeBlock(code) {
   var lines = code.split(/\r?\n/);
   var min = Infinity;
 
-  for (var _i4 = 1; _i4 < lines.length; ++_i4) {
-    if (lines[_i4] === "") continue;
+  for (var _i5 = 1; _i5 < lines.length; ++_i5) {
+    if (lines[_i5] === "") continue;
 
     try {
-      min = Math.min(lines[_i4].match(/^\s+/)[0].length, min);
+      min = Math.min(lines[_i5].match(/^\s+/)[0].length, min);
     } catch (err) {
       //found a line with no spaces, therefore returning the entire block as is
       return lines.join(separator);
     }
   }
 
-  for (var _i5 = 1; _i5 < lines.length; ++_i5) {
-    lines[_i5] = lines[_i5].substr(min);
+  for (var _i6 = 1; _i6 < lines.length; ++_i6) {
+    lines[_i6] = lines[_i6].substr(min);
   }
 
   return lines.join(separator);
@@ -9850,7 +9863,7 @@ function syncPendingInvites() {
   var container = document.querySelector('#pending-invites');
   container.innerHTML = "";
 
-  for (var _i6 in invites) {
+  for (var _i7 in invites) {
     var inviteWrap = document.createElement("div");
     var inviteNum = document.createElement("div");
     var inviteRep = document.createElement("input");
@@ -9870,9 +9883,9 @@ function syncPendingInvites() {
     inviteDelButton.innerText = 'Del';
     inviteCopyButton.innerText = 'Copy invite code';
     inviteDelButton.onclick = app_deleteInvite;
-    inviteID.innerText = invites[_i6];
-    inviteRep.value = app_chat.session.settings.invites[invites[_i6]].name ? app_chat.session.settings.invites[invites[_i6]].name : "New member";
-    inviteNum.innerText = "#" + (parseInt(_i6) + 1);
+    inviteID.innerText = invites[_i7];
+    inviteRep.value = app_chat.session.settings.invites[invites[_i7]].name ? app_chat.session.settings.invites[invites[_i7]].name : "New member";
+    inviteNum.innerText = "#" + (parseInt(_i7) + 1);
     inviteDel.appendChild(inviteDelButton);
     inviteCopy.appendChild(inviteCopyButton);
     inviteWrap.appendChild(inviteNum);
@@ -9953,9 +9966,9 @@ function enableSettingsMenuListeners() {
 
   try {
     for (var _iterator4 = menuItems[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-      var _i7 = _step4.value;
+      var _i8 = _step4.value;
 
-      _i7.addEventListener("click", processSettingsMenuClick);
+      _i8.addEventListener("click", processSettingsMenuClick);
     }
   } catch (err) {
     _didIteratorError4 = true;
@@ -9985,9 +9998,9 @@ function processSettingsMenuClick(event) {
 
   try {
     for (var _iterator5 = menuItems[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
-      var _i8 = _step5.value;
+      var _i9 = _step5.value;
 
-      _i8.classList.remove("active");
+      _i9.classList.remove("active");
     }
   } catch (err) {
     _didIteratorError5 = true;
@@ -10015,8 +10028,9 @@ function processChatScroll(event) {
   var chatWindow = event.target;
   if (!chatWindow.firstChild) return;
 
-  if ($(event.target).scrollTop() <= 1) {
+  if (event.target.scrollTop <= 1) {
     //load more messages
+    console.log("loading more messages");
     var lastLoadedMessageID = chatWindow.firstChild.querySelector(".message-id").innerText;
     app_chat.loadMoreMessages(lastLoadedMessageID);
   }
