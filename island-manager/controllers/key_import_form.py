@@ -40,10 +40,9 @@ class KeyImportForm:
 
 
     def set_key_import_option(self):
-        from_file = self.ui.import_from_file.isChecked()
-        self.ui.key_file_path.setVisible(from_file)
-        self.ui.btn_select_file.setVisible(from_file)
-        self.ui.key_data.setVisible(not from_file)
+        ind = 0 if  self.ui.import_from_file.isChecked() else 1
+        self.ui.stackedWidget.setCurrentIndex(ind)
+
 
     def setup_private_key_layout(self):
         self.window.setWindowTitle("Private key import")

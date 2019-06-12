@@ -16,10 +16,7 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2">
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2"/>
-   </item>
+  <layout class="QVBoxLayout" name="verticalLayout_6">
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
@@ -255,54 +252,82 @@
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <property name="topMargin">
+    <widget class="QStackedWidget" name="stackedWidget">
+     <property name="currentIndex">
       <number>0</number>
      </property>
-     <property name="rightMargin">
-      <number>0</number>
-     </property>
-     <property name="bottomMargin">
-      <number>0</number>
-     </property>
-     <item>
-      <widget class="QLineEdit" name="key_file_path">
-       <property name="readOnly">
-        <bool>false</bool>
-       </property>
-       <property name="placeholderText">
-        <string>Path to key file...</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btn_select_file">
-       <property name="text">
-        <string>Select file...</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="ly_key_data">
-     <property name="topMargin">
-      <number>15</number>
-     </property>
-     <property name="bottomMargin">
-      <number>15</number>
-     </property>
-     <item>
-      <widget class="QPlainTextEdit" name="key_data">
-       <property name="visible">
-        <bool>false</bool>
-       </property>
-       <property name="placeholderText">
-        <string>Paste key data here...</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+     <widget class="QWidget" name="page">
+      <layout class="QVBoxLayout" name="verticalLayout_5">
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QLineEdit" name="key_file_path">
+           <property name="readOnly">
+            <bool>false</bool>
+           </property>
+           <property name="placeholderText">
+            <string>Path to key file...</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btn_select_file">
+           <property name="text">
+            <string>Select file...</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="page_2">
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <layout class="QHBoxLayout" name="ly_key_data">
+         <property name="topMargin">
+          <number>15</number>
+         </property>
+         <property name="bottomMargin">
+          <number>15</number>
+         </property>
+         <item>
+          <widget class="QPlainTextEdit" name="key_data">
+           <property name="visible">
+            <bool>true</bool>
+           </property>
+           <property name="placeholderText">
+            <string>Paste key data here...</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </widget>
    </item>
    <item>
     <spacer name="verticalSpacer">
