@@ -52,14 +52,13 @@ class UpdateForm(QObject):
         self.window.exec()
 
     def update_els_visibility(self):
+        log.debug("<================== UPDATING UI ==================> updating_els_visibility")
         from_file_checked = self.ui.opt_from_file.isChecked()
         download_checked = self.ui.opt_download.isChecked()
 
         update_enabled = ((from_file_checked and len(self.ui.path_to_image.text()) > 0) or
-                          (download_checked and len(self.ui.magnet_link.text()) > 0) and not self.working)
+                          (download_checked and len(self.ui.magnet_link.text()) > 0)) and not self.working
         self.ui.btn_update.setEnabled(update_enabled)
-        self.ui.btn_update.setStyleSheet('color: "green"') if update_enabled else \
-            self.ui.btn_update.setStyleSheet('color: #777')
 
     def process_update_result(self, is_success, msg=""):
         self.working = False
@@ -78,8 +77,6 @@ class UpdateForm(QObject):
                                   progress_in_percents="0",
                                   ratio=ratio,
                                   success=True)
-
-
 
     def update_progress_bar(self, progress, downloaded, total_size=None, title=None):
         ratio = "%s/%s" % (str(sizeof_fmt(downloaded)), str(
@@ -113,6 +110,7 @@ class UpdateForm(QObject):
             self.setup.vm_installer.resume_download()
 
     def on_complete(self, msg,  size=18, color='green', ):
+        log.debug("<=================== Complete called! =============>")
         self.output.emit('<p style="color: {color}; font-size: {size}px"> {msg} </p>'
                          .format(msg=msg, size=size, color=color))
         self.update_ui.emit()
@@ -144,13 +142,13 @@ class UpdateForm(QObject):
         log.info("Attempting to update islands VM...")
         self.unknown_key_confirm_request.connect(self.untrusted_key_confirm)
         self.lock_form(True)
+        self.window.repaint()
         if self.ui.opt_download.isChecked():
             self.download_timeout.connect(self.on_download_timeout)
         log.debug("Trying to import VM from %s " % self.ui.path_to_image.text())
         self.working = True
         self.setup.run_update(on_message=self.on_message,
-                              on_complete=lambda res, opt_msg="":
-                              self.update_completed.emit(res, opt_msg),
+                              on_complete=lambda res, opt_msg="": self.update_completed.emit(res, opt_msg),
                               on_error=self.on_error,
                               init_progres_bar=self.get_init_progress_bar_handler(),
                               update_progres_bar=self.get_update_progress_bar_handler(),
@@ -166,6 +164,7 @@ class UpdateForm(QObject):
                               data_path=data_path)
 
     def lock_form(self, lock=True):
+        log.debug("<================== UPDATING UI ==================> lock_form ")
         enbale_elements = not lock
         self.ui.opt_download.setEnabled(enbale_elements)
         self.ui.opt_from_file.setEnabled(enbale_elements)

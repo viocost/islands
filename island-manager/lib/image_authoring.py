@@ -4,6 +4,8 @@ from lib.util import read_file_in_chunks, get_stack
 import logging
 import os
 import json
+import time
+import datetime
 import zipfile
 from shutil import rmtree
 from lib.image_verification_error import ImageVerificationError
@@ -119,15 +121,17 @@ class ImageAuthoring:
         log.debug("Crypto complete")
         return ic
 
-    def create_info(self, ic, image_version, islands_version, note, publisher, temp_dir, hash_algorithm="sha256"):
+    def create_info(self, ic, image_version, islands_version, note, publisher, temp_dir, email, hash_algorithm="sha256"):
         log.debug("Creating file info")
         info = dict()
         info["image_version"] = image_version
         info["islands_version"] = islands_version
         info["hash_algorithm"] = hash_algorithm
         info["hash"] = str(ic["hash"], "utf8")
+        info["time_created"] = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
         info["publisher"] = publisher
         info["note"] = note
+        info["email"] = email
         info["authoring_protocol"] = self.authoring_protocol
         info["public_key"] = str(ic["pub"], "utf8")
         info["pkfp"] = str(ic["pkfp"], "utf8")
@@ -135,6 +139,7 @@ class ImageAuthoring:
         log.info("Writing image info file")
         with open(temp_dir + IMAGE_INFO_FILENAME, "w") as fp:
             json.dump(info, fp)
+        return info
 
     def make_zipfile(self, output_filename, source_dir):
         relroot = os.path.abspath(os.path.join(source_dir, os.pardir))

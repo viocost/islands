@@ -113,9 +113,9 @@
    </item>
    <item>
     <widget class="QTextBrowser" name="output_console">
-        <property name="visible">
-         <bool>false</bool>
-        </property>
+     <property name="visible">
+      <bool>false</bool>
+     </property>
     </widget>
    </item>
    <item>
@@ -197,10 +197,20 @@
         </font>
        </property>
        <property name="styleSheet">
-        <string notr="true">color: #777</string>
+        <string notr="true">QPushButton:enabled {
+	color: green;
+}
+
+QPushButton:disabled{
+	color: #777;
+}</string>
        </property>
        <property name="text">
         <string>Update</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../resources/resources.qrc">
+         <normaloff>:/images/icons/island24.png</normaloff>:/images/icons/island24.png</iconset>
        </property>
        <property name="default">
         <bool>false</bool>
@@ -211,7 +221,9 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../resources/resources.qrc"/>
+ </resources>
  <connections/>
  <buttongroups>
   <buttongroup name="group_options"/>

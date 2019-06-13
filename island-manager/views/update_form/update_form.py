@@ -2,11 +2,12 @@
 
 # Form implementation generated from reading ui file '../views/update_form/update_form.ui'
 #
-# Created by: PyQt5 UI code generator 5.11.3
+# Created by: PyQt5 UI code generator 5.12.2
 #
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class Ui_IslandsUpdate(object):
     def setupUi(self, IslandsUpdate):
@@ -97,7 +98,16 @@ class Ui_IslandsUpdate(object):
         font.setBold(True)
         font.setWeight(75)
         self.btn_update.setFont(font)
-        self.btn_update.setStyleSheet("color: #777")
+        self.btn_update.setStyleSheet("QPushButton:enabled {\n"
+"    color: green;\n"
+"}\n"
+"\n"
+"QPushButton:disabled{\n"
+"    color: #777;\n"
+"}")
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(":/images/icons/island24.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.btn_update.setIcon(icon)
         self.btn_update.setDefault(False)
         self.btn_update.setObjectName("btn_update")
         self.horizontalLayout_2.addWidget(self.btn_update)
@@ -119,3 +129,5 @@ class Ui_IslandsUpdate(object):
         self.btn_cancel.setText(_translate("IslandsUpdate", "Cancel"))
         self.btn_update.setText(_translate("IslandsUpdate", "Update"))
 
+
+import resources_rc
