@@ -441,6 +441,9 @@
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="focusPolicy">
+             <enum>Qt::NoFocus</enum>
+            </property>
             <property name="whatsThis">
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Launch island. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
@@ -463,10 +466,16 @@
             <property name="default">
              <bool>false</bool>
             </property>
+            <property name="flat">
+             <bool>false</bool>
+            </property>
            </widget>
           </item>
           <item>
            <widget class="QComboBox" name="launchMode">
+            <property name="focusPolicy">
+             <enum>Qt::NoFocus</enum>
+            </property>
             <item>
              <property name="text">
               <string>Quiet</string>
@@ -491,6 +500,9 @@
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="focusPolicy">
+             <enum>Qt::NoFocus</enum>
+            </property>
             <property name="styleSheet">
              <string notr="true">padding: 15px</string>
             </property>
@@ -507,10 +519,22 @@
               <height>48</height>
              </size>
             </property>
+            <property name="autoDefault">
+             <bool>false</bool>
+            </property>
+            <property name="default">
+             <bool>false</bool>
+            </property>
+            <property name="flat">
+             <bool>false</bool>
+            </property>
            </widget>
           </item>
           <item>
            <widget class="QComboBox" name="stopMode">
+            <property name="focusPolicy">
+             <enum>Qt::NoFocus</enum>
+            </property>
             <item>
              <property name="text">
               <string>Soft</string>
@@ -533,6 +557,14 @@
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
+          <property name="font">
+           <font>
+            <kerning>true</kerning>
+           </font>
+          </property>
+          <property name="focusPolicy">
+           <enum>Qt::NoFocus</enum>
+          </property>
           <property name="styleSheet">
            <string notr="true">padding: 20px;</string>
           </property>
@@ -548,6 +580,12 @@
             <width>48</width>
             <height>48</height>
            </size>
+          </property>
+          <property name="autoDefault">
+           <bool>false</bool>
+          </property>
+          <property name="flat">
+           <bool>false</bool>
           </property>
          </widget>
         </item>

@@ -2,11 +2,12 @@
 
 # Form implementation generated from reading ui file '../views/main_form/main_form.ui'
 #
-# Created by: PyQt5 UI code generator 5.11.3
+# Created by: PyQt5 UI code generator 5.12.2
 #
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -206,15 +207,18 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.launchIslandButton.sizePolicy().hasHeightForWidth())
         self.launchIslandButton.setSizePolicy(sizePolicy)
+        self.launchIslandButton.setFocusPolicy(QtCore.Qt.NoFocus)
         icon2 = QtGui.QIcon()
         icon2.addPixmap(QtGui.QPixmap(":/images/play"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.launchIslandButton.setIcon(icon2)
         self.launchIslandButton.setIconSize(QtCore.QSize(48, 48))
         self.launchIslandButton.setAutoDefault(False)
         self.launchIslandButton.setDefault(False)
+        self.launchIslandButton.setFlat(False)
         self.launchIslandButton.setObjectName("launchIslandButton")
         self.verticalLayout_2.addWidget(self.launchIslandButton)
         self.launchMode = QtWidgets.QComboBox(self.centralWidget)
+        self.launchMode.setFocusPolicy(QtCore.Qt.NoFocus)
         self.launchMode.setObjectName("launchMode")
         self.launchMode.addItem("")
         self.launchMode.addItem("")
@@ -229,14 +233,19 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.shutdownIslandButton.sizePolicy().hasHeightForWidth())
         self.shutdownIslandButton.setSizePolicy(sizePolicy)
+        self.shutdownIslandButton.setFocusPolicy(QtCore.Qt.NoFocus)
         self.shutdownIslandButton.setStyleSheet("padding: 15px")
         icon3 = QtGui.QIcon()
         icon3.addPixmap(QtGui.QPixmap(":/images/stop"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.shutdownIslandButton.setIcon(icon3)
         self.shutdownIslandButton.setIconSize(QtCore.QSize(48, 48))
+        self.shutdownIslandButton.setAutoDefault(False)
+        self.shutdownIslandButton.setDefault(False)
+        self.shutdownIslandButton.setFlat(False)
         self.shutdownIslandButton.setObjectName("shutdownIslandButton")
         self.verticalLayout_4.addWidget(self.shutdownIslandButton)
         self.stopMode = QtWidgets.QComboBox(self.centralWidget)
+        self.stopMode.setFocusPolicy(QtCore.Qt.NoFocus)
         self.stopMode.setObjectName("stopMode")
         self.stopMode.addItem("")
         self.stopMode.addItem("")
@@ -248,11 +257,17 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.restartIslandButton.sizePolicy().hasHeightForWidth())
         self.restartIslandButton.setSizePolicy(sizePolicy)
+        font = QtGui.QFont()
+        font.setKerning(True)
+        self.restartIslandButton.setFont(font)
+        self.restartIslandButton.setFocusPolicy(QtCore.Qt.NoFocus)
         self.restartIslandButton.setStyleSheet("padding: 20px;")
         icon4 = QtGui.QIcon()
         icon4.addPixmap(QtGui.QPixmap(":/images/reload"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.restartIslandButton.setIcon(icon4)
         self.restartIslandButton.setIconSize(QtCore.QSize(48, 48))
+        self.restartIslandButton.setAutoDefault(False)
+        self.restartIslandButton.setFlat(False)
         self.restartIslandButton.setObjectName("restartIslandButton")
         self.horizontalLayout_4.addWidget(self.restartIslandButton)
         self.verticalLayout_6.addLayout(self.horizontalLayout_4)
@@ -360,5 +375,6 @@ class Ui_MainWindow(object):
         self.act_open_config.setText(_translate("MainWindow", "Open configuration..."))
         self.act_update_vm.setText(_translate("MainWindow", "Update Islands VM..."))
         self.act_help.setText(_translate("MainWindow", "User guide"))
+
 
 import resources_rc

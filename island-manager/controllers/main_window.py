@@ -5,7 +5,7 @@ from controllers.setup_wizard_window import SetupWizardWindow as SetupWindow
 from controllers.config_form import ConfigForm
 from controllers.update_form import UpdateForm
 from controllers.help_form import Helpform
-from PyQt5.QtWidgets import QMainWindow,  QMessageBox as QM, QMenu, QSystemTrayIcon, QAction
+from PyQt5.QtWidgets import QMainWindow,  QMessageBox as QM, QMenu, QSystemTrayIcon, QAction, QPushButton
 from PyQt5.QtCore import pyqtSignal, QEvent, QPoint
 from PyQt5.QtGui import QIcon, QPixmap
 from lib.util import get_version, is_admin_registered
@@ -270,6 +270,8 @@ class MainWindow(QMainWindow):
         self.ui.groupBox.show()
         self.ui.launchMode.setEnabled(False)
         self.ui.stopMode.setEnabled(False)
+        if sys.platform == "darwin":
+            self.repaint()
 
     def set_running(self):
         self.pending_state = False
@@ -298,6 +300,8 @@ class MainWindow(QMainWindow):
         self.ui.groupBox.hide()
         self.ui.launchMode.setEnabled(False)
         self.ui.stopMode.setEnabled(True)
+        if sys.platform == "darwin":
+            self.repaint()
 
     def set_starting_up(self):
         self.pending_state = True
@@ -316,6 +320,8 @@ class MainWindow(QMainWindow):
         self.ui.groupBox.hide()
         self.ui.launchMode.setEnabled(False)
         self.ui.stopMode.setEnabled(False)
+        if sys.platform == "darwin":
+            self.repaint()
 
     def set_shutting_down(self):
         self.pending_state = True
@@ -330,6 +336,8 @@ class MainWindow(QMainWindow):
         self.ui.groupBox.setEnabled(False)
         self.ui.groupBox.hide()
         self.set_working()
+        if sys.platform == "darwin":
+            self.repaint()
 
     def set_not_running(self):
         self.pending_state = False
@@ -348,6 +356,9 @@ class MainWindow(QMainWindow):
         self.ui.groupBox.hide()
         self.ui.launchMode.setEnabled(True)
         self.ui.stopMode.setEnabled(False)
+        if sys.platform == "darwin":
+            self.repaint()
+
 
     def set_unknown(self):
         self.pending_state = False
@@ -366,6 +377,8 @@ class MainWindow(QMainWindow):
         self.ui.groupBox.hide()
         self.ui.launchMode.setEnabled(False)
         self.ui.stopMode.setEnabled(False)
+        if sys.platform == "darwin":
+            self.repaint()
 
     def set_restarting(self):
         self.pending_state = True
@@ -378,6 +391,8 @@ class MainWindow(QMainWindow):
         self.ui.islandStatus.setText("Restarting...")
         self.ui.islandStatus.setStyleSheet('color: blue')
         self.set_working()
+        if sys.platform == "darwin":
+            self.repaint()
 
     def set_working(self):
         self.pending_state = True
@@ -389,7 +404,8 @@ class MainWindow(QMainWindow):
         self.ui.launchIslandButton.setEnabled(False)
         self.ui.launchMode.setEnabled(False)
         self.ui.stopMode.setEnabled(False)
-
+        if sys.platform == "darwin":
+            self.repaint()
     """ ~ END STATES """
 
     def run_delayed_config_load(self):
