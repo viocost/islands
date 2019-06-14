@@ -264,6 +264,9 @@
               <property name="openExternalLinks">
                <bool>true</bool>
               </property>
+              <property name="textInteractionFlags">
+               <set>Qt::LinksAccessibleByMouse</set>
+              </property>
              </widget>
             </item>
            </layout>
@@ -306,6 +309,9 @@
               </property>
               <property name="openExternalLinks">
                <bool>true</bool>
+              </property>
+              <property name="textInteractionFlags">
+               <set>Qt::LinksAccessibleByMouse</set>
               </property>
              </widget>
             </item>

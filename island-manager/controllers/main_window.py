@@ -444,7 +444,10 @@ class MainWindow(QMainWindow):
                 if self.current_state == States.RUNNING:
                     worker()
                     log.debug("links updated!")
-                sleep(10)
+                for _ in range(20):
+                    if self.exiting:
+                        return
+                    sleep(.5)
 
         t = Thread(target=background_updater)
         t.start()
@@ -454,6 +457,8 @@ class MainWindow(QMainWindow):
             counter = 0
             iterations = 5
             while self.current_state == States.RUNNING and counter < iterations:
+                if self.exiting:
+                    return
                 vm_info = self.setup.get_vm_info()
                 if vm_info is None:
                     log.error("VM info not found! That means that virtual machine is not registered with Virtualbox")
@@ -476,7 +481,7 @@ class MainWindow(QMainWindow):
         QM.warning(self, None, "Warning", text, buttons=QM.Ok)
 
     def get_local_access_html(self, connstr, admin=False):
-        return '<a href="{connstr}">{content}</a>'.format(
+        return '<a href="http://{connstr}">{content}</a>'.format(
             connstr="%s/admin" % connstr if admin else connstr,
             content="Admin access" if admin else connstr
         )
