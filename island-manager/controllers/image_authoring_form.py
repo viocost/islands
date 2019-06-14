@@ -48,16 +48,83 @@ class ImageAuthoringForm(QObject):
         self.ui.image_release.textChanged.connect(self.update_elements)
         self.ui.image_modification.textChanged.connect(self.update_elements)
         self.ui.image_version.textChanged.connect(self.update_elements)
+        self.ui.out_filename.textChanged.connect(self.update_elements)
+        self.ui.source_file.textChanged.connect(self.update_elements)
+        self.ui.path_to_dest.textChanged.connect(self.update_elements)
         self.progress.connect(self.on_progress)
         self.error.connect(self.on_error)
         self.success.connect(self.on_success)
 
     def process_branch_selected(self):
         self.update_elements()
-        if self.ui.select_branch.currentIndex() == 0 or self.ui.select_private_key.currentIndex() == 0:
+        self.ui.publisher_email.clear()
+        self.ui.publisher.clear()
+        self.ui.note.clear()
+        self.ui.image_modification.clear()
+        self.ui.image_version.clear()
+        self.ui.image_release.clear()
+        self.ui.out_filename.clear()
+        self.ui.islands_version.clear()
+        self.ui.lbl_prev_islands_version.setText("none")
+        self.ui.lbl_previous_img_version.setText("none")
+
+        log.debug("Processing branch selected. Current branch index is: %d | Current priv key index: %d "% (
+            self.ui.select_branch.currentIndex(), self.ui.select_private_key.currentIndex()
+        ))
+        if self.ui.select_branch.currentIndex() <= 0 or self.ui.select_private_key.currentIndex() <= 0:
             return
-        #TODO!!!!!
+        log.debug("Processing branch selected")
         last_record = self.version_manager.get_last_release_record(self._get_selected_pkfp(), self.ui.select_branch.currentText())
+
+        if last_record:
+            self.ui.publisher.setText(last_record["publisher"])
+            self.ui.publisher_email.setText(last_record["publisher"])
+            self.ui.note.setText(last_record["publisher"])
+
+            prev_img_version = last_record["image_version"].split(".")
+            if len(prev_img_version) == 3:
+                self.ui.lbl_previous_img_version.setText(last_record["image_version"])
+                self.ui.image_version.setText(prev_img_version[0])
+                self.ui.image_release.setText(prev_img_version[1])
+                mod = "%03d" % (int(prev_img_version[2]) + 1)
+                self.ui.image_modification.setText(mod)
+            else:
+                self.ui.lbl_previous_img_version.setText("Could not parse: %s" % last_record["image_version"])
+
+            self.ui.lbl_prev_islands_version.setText(last_record["islands_version"])
+            self.ui.islands_version.setText(last_record["islands_version"])
+            self.ui.publisher.setText(last_record["publisher"])
+            self.ui.publisher_email.setText(last_record["email"])
+            self.ui.note.setText(last_record["note"])
+        else:
+            self.ui.image_modification.setText("001")
+            self.ui.image_version.setText("0")
+            self.ui.image_release.setText("00")
+        self.fill_out_filename()
+
+    def fill_out_filename(self):
+        new_version = self.construct_new_version("_")
+        if new_version is not None:
+
+            self.ui.out_filename.setText("islands_{branch}_{version}.isld".format(
+                branch=self.ui.select_branch.currentText(),
+                version=new_version
+            ))
+        else:
+            self.ui.out_filename.clear()
+
+    def construct_new_version(self, delimiter="."):
+        if not all([
+            len(self.ui.image_release.text()) > 0,
+            len(self.ui.image_version.text()) > 0,
+            len(self.ui.image_modification.text()) > 0
+        ]):
+            return
+
+        return delimiter.join([str(int(self.ui.image_version.text())),
+                       ("%02d" % int(self.ui.image_release.text())),
+                       "%03d" % int(self.ui.image_modification.text())
+                        ])
 
 
     def fill_keys(self):
@@ -117,6 +184,7 @@ class ImageAuthoringForm(QObject):
         pk_chosen = self.ui.select_private_key.currentIndex() > 0
         self.ui.select_branch.setEnabled(pk_chosen)
         self.ui.btn_create_branch.setEnabled(pk_chosen)
+        self.fill_out_filename()
 
     def fill_branches(self):
         self.ui.select_branch.clear()
@@ -126,6 +194,7 @@ class ImageAuthoringForm(QObject):
             return
         pkfp = self._get_selected_pkfp()
         self.ui.select_branch.addItems([b for b in self.version_manager.get_branches(pkfp)])
+        log.debug("Current branch index: %d" % self.ui.select_branch.currentIndex())
 
     def create_new_branch(self):
         if self.ui.select_private_key.currentIndex() == 0:

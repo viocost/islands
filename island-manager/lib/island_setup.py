@@ -24,7 +24,6 @@ class IslandSetup:
         self.cmd = commander
         self.torrent_manager = torrent_manager
         self.__config = config
-        self.update_vm_config()
 
     def abort_vm_install(self):
         log.debug("Install setup: aborting install")
@@ -176,22 +175,6 @@ class IslandSetup:
         self.__config.restore_default("local_access_port")
         self.__config.save()
 
-    def update_vm_config(self):
-        log.debug("Updating config...")
-        vm_info = self.get_vm_info()
-        if vm_info is None:
-            log.info("VM info has not been found. Restoring VM settings to defaults")
-            self.reset_vm_config()
-        else:
-            if "Net1" in vm_info:
-                log.debug("Host-only adapter found")
-                self.__config["local_access"] = self._get_access_string(vm_info["Net1"][1])
-                self.__config["local_access_admin"] = self._get_access_string(vm_info["Net1"][1], True)
-            else:
-                log.debug("Host-only adapter not found")
-                self.__config.restore_default("local_access")
-                self.__config.restore_default("local_access_admin")
-            self.__config.save()
 
     def _get_access_string(self, ip, admin=False):
         return "http://{ip}:{port}{admin}".format(

@@ -23,10 +23,11 @@ log = logging.getLogger(__name__)
 
 class MainWindow(QMainWindow):
     tray_icon = None
-    current_state = pyqtSignal(object)
+    current_state_signal = pyqtSignal(object)
     processing = pyqtSignal()
     state_changed = pyqtSignal()
     focus_in = pyqtSignal()
+    access_links_result = pyqtSignal(bool, str)
 
     def __init__(self, config, island_manager, setup, torrent_manager):
         super(MainWindow, self).__init__()
@@ -44,6 +45,7 @@ class MainWindow(QMainWindow):
         self.setup = setup
         self.island_manager = island_manager
         self.states = self.prepare_states()
+        self.current_state = States.UNKNOWN
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.key_manager = KeyManager(self.config)
@@ -56,8 +58,9 @@ class MainWindow(QMainWindow):
         # island status refresh counter
         self.refresh_count = 0
         log.debug("Main window controller initialized.")
+        self.launch_background_links_updater()
         self.pending_state = False
-
+        
 
     def event(self, event):
         if event.type() == QEvent.ActivationChange:
@@ -117,7 +120,7 @@ class MainWindow(QMainWindow):
         self.ui.shutdownIslandButton.clicked.connect(self.get_main_control_handler("stop"))
         self.ui.restartIslandButton.clicked.connect(self.get_main_control_handler("restart"))
         self.ui.button_launch_setup.clicked.connect(self.launch_setup)
-        self.current_state.connect(self.set_state)
+        self.current_state_signal.connect(self.set_state)
         self.ui.actionInfo.triggered.connect(self.show_app_info)
         self.ui.actionClose.triggered.connect(self.on_close)
         self.ui.actionMinimize_2.triggered.connect(self.minimize_main_window)
@@ -130,6 +133,7 @@ class MainWindow(QMainWindow):
         self.ui.act_open_config.triggered.connect(lambda: self.open_config())
         self.ui.act_update_vm.triggered.connect(self.open_update)
         self.ui.act_help.triggered.connect(self.open_user_guide)
+        self.access_links_result.connect(self.set_links_on_signal)
 
     def open_user_guide(self):
         help_form = Helpform(self)
@@ -151,7 +155,7 @@ class MainWindow(QMainWindow):
         :param state:
         :return:
         """
-        self.current_state.emit(state)
+        self.current_state_signal.emit(state)
 
     def get_main_control_handler(self, cmd):
         cmds = {
@@ -202,6 +206,7 @@ class MainWindow(QMainWindow):
         log.debug("opening update form")
         update_form = UpdateForm(self, self.config, self.island_manager, self.setup)
         update_form.exec()
+        sleep(1)
         self.state_changed.emit()
 
     def launch_setup(self):
@@ -252,6 +257,7 @@ class MainWindow(QMainWindow):
 
     """ STATE SETTERS """
     def set_setup_required(self):
+        self.current_state = States.SETUP_REQUIRED
         self.pending_state = False
         self.menu_actions["start"].setEnabled(False)
         self.menu_actions["stop"].setEnabled(False)
@@ -274,23 +280,12 @@ class MainWindow(QMainWindow):
             self.repaint()
 
     def set_running(self):
+        self.current_state = States.RUNNING
         self.pending_state = False
         self.menu_actions["start"].setEnabled(False)
         self.menu_actions["stop"].setEnabled(True)
         self.menu_actions["restart"].setEnabled(True)
-        self.setup.update_vm_config()
-        admin_exist = is_admin_registered(self.config["data_folder"])
-        log.debug("admin exists: %s" % str(admin_exist))
-        self.ui.island_access_label.setVisible(admin_exist)
-        self.ui.island_access_address.setVisible(admin_exist)
-        if self.config["local_access"]:
-            self.ui.island_access_address.setText(self.get_local_access_html(self.config["local_access"]))
-            self.ui.island_admin_access_address.setText(self.get_local_access_html(self.config["local_access_admin"], True))
-            self.ui.island_admin_access_address.setVisible(True)
-        else:
-            self.ui.island_access_address.setText('<span style="color: grey; text-decoration: none">not configured</span>')
-            self.ui.island_admin_access_address.setVisible(False)
-            self.run_delayed_config_load()
+        self.load_access_links()
         self.ui.islandStatus.setText("Running")
         self.ui.islandStatus.setStyleSheet('color: green')
         self.ui.restartIslandButton.setEnabled(True)
@@ -304,6 +299,7 @@ class MainWindow(QMainWindow):
             self.repaint()
 
     def set_starting_up(self):
+        self.current_state = States.STARTING_UP
         self.pending_state = True
         self.menu_actions["start"].setEnabled(False)
         self.menu_actions["stop"].setEnabled(False)
@@ -324,6 +320,7 @@ class MainWindow(QMainWindow):
             self.repaint()
 
     def set_shutting_down(self):
+        self.current_state = States.SHUTTING_DOWN
         self.pending_state = True
         self.menu_actions["start"].setEnabled(False)
         self.menu_actions["stop"].setEnabled(False)
@@ -340,6 +337,8 @@ class MainWindow(QMainWindow):
             self.repaint()
 
     def set_not_running(self):
+
+        self.current_state = States.NOT_RUNNING
         self.pending_state = False
         self.menu_actions["start"].setEnabled(True)
         self.menu_actions["stop"].setEnabled(False)
@@ -359,8 +358,8 @@ class MainWindow(QMainWindow):
         if sys.platform == "darwin":
             self.repaint()
 
-
     def set_unknown(self):
+        self.current_state = States.UNKNOWN
         self.pending_state = False
         self.menu_actions["start"].setEnabled(False)
         self.menu_actions["stop"].setEnabled(False)
@@ -381,6 +380,7 @@ class MainWindow(QMainWindow):
             self.repaint()
 
     def set_restarting(self):
+        self.current_state = States.RESTARTING
         self.pending_state = True
         self.menu_actions["start"].setEnabled(False)
         self.menu_actions["stop"].setEnabled(False)
@@ -406,27 +406,79 @@ class MainWindow(QMainWindow):
         self.ui.stopMode.setEnabled(False)
         if sys.platform == "darwin":
             self.repaint()
-    """ ~ END STATES """
 
-    def run_delayed_config_load(self):
-        if self.refresh_count >= 5:
-            self.refresh_count = 0
+
+    # HELPERS
+    def set_links_on_signal(self, result, link):
+        log.debug("Link result signal received: result: %s, link: %s" % (str(result), str(link)))
+        if self.current_state != States.RUNNING:
+            log.debug("Got the links, but the VM is not running. Returning")
             return
-        self.refresh_count += 1
+        elif not result:
+            self.ui.island_access_address.setText('<span style="color: grey; text-decoration: none">not configured</span>')
+            self.ui.island_admin_access_address.setVisible(False)
+            return
+        admin_exist = is_admin_registered(self.config["data_folder"])
+        log.debug("admin exists: %s" % str(admin_exist))
+        connstr = "%s:%s" %(link, self.config["local_access_port"])
+        local_access = self.get_local_access_html(connstr)
+        admin_access = self.get_local_access_html(connstr, True)
+        self.ui.island_access_label.setVisible(admin_exist)
+        self.ui.island_access_address.setVisible(admin_exist)
+        self.ui.island_access_address.setText(local_access)
+        self.ui.island_admin_access_address.setText(admin_access)
+        self.ui.island_admin_access_address.setVisible(True)
 
+    def load_access_links(self):
+        self.ui.island_access_address.setText('<span style="color: grey; text-decoration: none">loading...</span>')
+        self.ui.island_admin_access_address.setVisible(False)
+        worker = self._get_link_loader_worker()
+        t = Thread(target=worker)
+        t.start()
+
+    def launch_background_links_updater(self):
+        worker = self._get_link_loader_worker()
+
+        def background_updater():
+            while True:
+                if self.current_state == States.RUNNING:
+                    worker()
+                    log.debug("links updated!")
+                sleep(10)
+
+        t = Thread(target=background_updater)
+        t.start()
+
+    def _get_link_loader_worker(self):
         def worker():
-            sleep(self.refresh_count + 1)
-            self.refresh_island_status()
-        thread = Thread(target=worker)
-        thread.start()
+            counter = 0
+            iterations = 5
+            while self.current_state == States.RUNNING and counter < iterations:
+                vm_info = self.setup.get_vm_info()
+                if vm_info is None:
+                    log.error("VM info not found! That means that virtual machine is not registered with Virtualbox")
+                    self.access_links_result.emit(False, "")
+                    return
+                if "Net1" in vm_info:
+                    self.access_links_result.emit(True, vm_info["Net1"][1])
+                    return
+                else:
+                    log.debug("Links not yet found. Retrying...")
+                    counter += 1
+                    sleep(2+counter)
+            if self.current_state == States.RUNNING:
+                self.access_links_result.emit(False, "")
+        return worker
+
+    """ ~ END STATES """
 
     def show_notification(self, text):
         QM.warning(self, None, "Warning", text, buttons=QM.Ok)
 
-    def get_local_access_html(self, connection_str, admin=False):
+    def get_local_access_html(self, connstr, admin=False):
         return '<a href="{connstr}">{content}</a>'.format(
-            connstr=connection_str,
-            content="Admin access" if admin else connection_str
+            connstr="%s/admin" % connstr if admin else connstr,
+            content="Admin access" if admin else connstr
         )
 
     def quit_app(self):

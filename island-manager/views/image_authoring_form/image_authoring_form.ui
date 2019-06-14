@@ -9,16 +9,22 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1024</width>
-    <height>623</height>
+    <width>976</width>
+    <height>616</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Image Authoring</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_11">
+  <layout class="QVBoxLayout" name="verticalLayout_12">
    <item>
     <widget class="QLabel" name="form_title">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="font">
       <font>
        <pointsize>26</pointsize>
@@ -30,17 +36,29 @@
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_8">
+    <layout class="QHBoxLayout" name="horizontalLayout_15">
      <property name="spacing">
-      <number>41</number>
+      <number>63</number>
      </property>
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout_9">
+      <layout class="QVBoxLayout" name="verticalLayout_11">
        <property name="spacing">
-        <number>27</number>
+        <number>53</number>
        </property>
        <item>
         <widget class="QGroupBox" name="groupBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>430</width>
+           <height>16777215</height>
+          </size>
+         </property>
          <property name="font">
           <font>
            <weight>50</weight>
@@ -147,6 +165,9 @@
                 <height>16777215</height>
                </size>
               </property>
+              <property name="focusPolicy">
+               <enum>Qt::NoFocus</enum>
+              </property>
               <property name="text">
                <string>Create New Branch</string>
               </property>
@@ -162,17 +183,26 @@
          <property name="enabled">
           <bool>false</bool>
          </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>430</width>
+           <height>16777215</height>
+          </size>
+         </property>
          <property name="title">
           <string>STEP 3 - Check / fill the information</string>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_7">
-          <property name="spacing">
-           <number>10</number>
-          </property>
+         <layout class="QVBoxLayout" name="verticalLayout_9">
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_3">
             <property name="spacing">
-             <number>14</number>
+             <number>6</number>
             </property>
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_10">
@@ -243,18 +273,66 @@
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_6">
             <item>
-             <widget class="QLabel" name="label_8">
-              <property name="text">
-               <string>Version:</string>
-              </property>
-             </widget>
+             <layout class="QHBoxLayout" name="horizontalLayout_8">
+              <item>
+               <widget class="QLabel" name="label_11">
+                <property name="text">
+                 <string>Previous version:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="lbl_previous_img_version">
+                <property name="font">
+                 <font>
+                  <italic>true</italic>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>none</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_3">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
             </item>
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_13">
               <item>
+               <widget class="QLabel" name="label_8">
+                <property name="text">
+                 <string>New version:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
                <widget class="QLineEdit" name="image_version">
+                <property name="minimumSize">
+                 <size>
+                  <width>60</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>70</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
                 <property name="inputMask">
-                 <string>0009</string>
+                 <string>0000</string>
                 </property>
                 <property name="placeholderText">
                  <string>Version</string>
@@ -270,8 +348,20 @@
               </item>
               <item>
                <widget class="QLineEdit" name="image_release">
+                <property name="minimumSize">
+                 <size>
+                  <width>60</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>70</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
                 <property name="inputMask">
-                 <string>0099</string>
+                 <string>00</string>
                 </property>
                 <property name="placeholderText">
                  <string>Release</string>
@@ -287,13 +377,38 @@
               </item>
               <item>
                <widget class="QLineEdit" name="image_modification">
+                <property name="minimumSize">
+                 <size>
+                  <width>95</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>95</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
                 <property name="inputMask">
-                 <string>0099</string>
+                 <string>0000</string>
                 </property>
                 <property name="placeholderText">
                  <string>Modification</string>
                 </property>
                </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_4">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
               </item>
              </layout>
             </item>
@@ -307,22 +422,31 @@
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_10">
        <property name="spacing">
-        <number>29</number>
+        <number>70</number>
        </property>
        <item>
         <widget class="QGroupBox" name="groupBox_2">
          <property name="enabled">
           <bool>false</bool>
          </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="title">
           <string>STEP 2 - Select image file and fill Islands version</string>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_5">
+         <layout class="QVBoxLayout" name="verticalLayout_7">
           <property name="spacing">
-           <number>18</number>
+           <number>30</number>
           </property>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout">
+            <property name="sizeConstraint">
+             <enum>QLayout::SetDefaultConstraint</enum>
+            </property>
             <item>
              <widget class="QLineEdit" name="source_file">
               <property name="placeholderText">
@@ -340,20 +464,63 @@
            </layout>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_4">
+           <layout class="QVBoxLayout" name="verticalLayout_5">
+            <property name="spacing">
+             <number>0</number>
+            </property>
             <item>
-             <widget class="QLabel" name="label_3">
-              <property name="text">
-               <string>Islands version:</string>
-              </property>
-             </widget>
+             <layout class="QHBoxLayout" name="horizontalLayout_14">
+              <item>
+               <widget class="QLabel" name="label_12">
+                <property name="text">
+                 <string>Previous version: </string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="lbl_prev_islands_version">
+                <property name="font">
+                 <font>
+                  <italic>true</italic>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>none</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_5">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
             </item>
             <item>
-             <widget class="QLineEdit" name="islands_version">
-              <property name="placeholderText">
-               <string>Ex.: 1.05.121</string>
-              </property>
-             </widget>
+             <layout class="QHBoxLayout" name="horizontalLayout_4">
+              <item>
+               <widget class="QLabel" name="label_3">
+                <property name="text">
+                 <string>Islands version:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="islands_version">
+                <property name="placeholderText">
+                 <string>Ex.: 1.05.121</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </item>
            </layout>
           </item>
@@ -361,14 +528,36 @@
         </widget>
        </item>
        <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
         <widget class="QGroupBox" name="groupBox_4">
          <property name="enabled">
           <bool>false</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
          </property>
          <property name="title">
           <string>STEP 4 - Set output options</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_8">
+          <property name="spacing">
+           <number>5</number>
+          </property>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_3">
             <item>
@@ -410,6 +599,12 @@
           </item>
           <item>
            <widget class="QCheckBox" name="chk_seed_now">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="text">
              <string>Start seeding immediately</string>
             </property>

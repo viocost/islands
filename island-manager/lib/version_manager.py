@@ -33,6 +33,14 @@ class ImageVersionManager:
             log.debug("Releases directory does not exist. Creating: %s" % self.releases_history_dir)
             os.makedirs(self.releases_history_dir)
 
+    def get_last_release_record(self, pkfp: str, branch: str):
+        if self.is_branch_exist(pkfp, branch):
+            branch_path = os.path.join(self.releases_history_dir, pkfp, branch)
+            with open (branch_path, "r") as fp:
+                history = json.load(fp)
+                if len(history) > 0:
+                    return history[-1]
+
 
     def get_version_history(self, pkfp: str, branch: str):
         """
@@ -62,9 +70,7 @@ class ImageVersionManager:
             json.dump(list(), fp)
 
     def is_branch_exist(self, pkfp: str, branch: str):
-        key_history_dir = os.path.join(self.releases_history_dir, pkfp)
-        branch_path = os.path.join(key_history_dir, branch)
-        return all([os.path.isdir(key_history_dir), os.path.isdir(branch_path)])
+        return os.path.exists(os.path.join(self.releases_history_dir, pkfp, branch))
 
     def get_branches(self, pkfp: str):
         key_history_dir = os.path.join(self.releases_history_dir, pkfp)
