@@ -16,7 +16,11 @@ import logging
 
 
 def main():
-    lock = fasteners.InterProcessLock("lockfile")
+    if sys.platform == "darwin":
+        lock_path = "/tmp/islands_lock"
+    else:
+        lock_path = "islands_lock"
+    lock = fasteners.InterProcessLock(lock_path)
     gotten = lock.acquire(blocking=False)
     try:
         if gotten:
