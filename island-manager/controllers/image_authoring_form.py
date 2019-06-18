@@ -193,8 +193,9 @@ class ImageAuthoringForm(QObject):
         if self.ui.select_private_key.currentIndex() == 0:
             return
         pkfp = self._get_selected_pkfp()
-        self.ui.select_branch.addItems([b for b in self.version_manager.get_branches(pkfp)])
-        log.debug("Current branch index: %d" % self.ui.select_branch.currentIndex())
+        branches = self.version_manager.get_branches(pkfp)
+        if branches is not None:
+            self.ui.select_branch.addItems(branches)
 
     def create_new_branch(self):
         if self.ui.select_private_key.currentIndex() == 0:
