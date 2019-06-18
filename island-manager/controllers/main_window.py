@@ -418,7 +418,7 @@ class MainWindow(QMainWindow):
             self.ui.island_access_address.setText('<span style="color: grey; text-decoration: none">not configured</span>')
             self.ui.island_admin_access_address.setVisible(False)
             return
-        admin_exist = is_admin_registered(self.config["data_folder"])
+        admin_exist = bool(is_admin_registered(self.config["data_folder"]))
         log.debug("admin exists: %s" % str(admin_exist))
         connstr = "%s:%s" %(link, self.config["local_access_port"])
         local_access = self.get_local_access_html(connstr)

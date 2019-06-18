@@ -32,12 +32,11 @@ def main():
             print("Another instance of Island Manager is running. Exiting")
             exit(0)
     except Exception as e:
-        pass
+        log = logging.getLogger(__name__)
+        log.error("Application has crashed: %s" % str(e))
     finally:
         if gotten:
             lock.release()
-
-
 
 
 # noinspection PyUnreachableCode
@@ -61,7 +60,11 @@ def setup_logger(config):
     file_handler.setFormatter(formatter)
     logger.addHandler(file_handler)
     logger.debug("Logger initialized.")
-
+    try:
+        with open("version", "r") as fp:
+            logger.info("ISLAND MANAGER version %s" % fp.read())
+    except Exception as e:
+        pass
 
 
 
