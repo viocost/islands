@@ -11,33 +11,30 @@ from lib.im_config import IMConfig
 from logging.handlers import RotatingFileHandler
 from lib.util import get_full_path
 import sys, os
-import fasteners
 import logging
+from socket import socket, error
+import errno
 
 
 def main():
-    if sys.platform == "darwin":
-        lock_path = "/tmp/islands_lock"
-    else:
-        lock_path = "islands_lock"
-    lock = fasteners.InterProcessLock(lock_path)
-    gotten = lock.acquire(blocking=False)
+    lock_socket = socket()
     try:
-        if gotten:
-            config = IMConfig(sys.platform)
-            setup_logger(config)
-            application = Application(config)
-            application.run()
-        else:
-            print("Another instance of Island Manager is running. Exiting")
-            exit(0)
-    except Exception as e:
-        log = logging.getLogger(__name__)
-        log.error("Application has crashed: %s" % str(e))
-    finally:
-        if gotten:
-            lock.release()
+        lock_socket.bind(("localhost", 56362))
+        config = IMConfig(sys.platform)
+        setup_logger(config)
+        application = Application(config)
+        application.run()
 
+    except error as e:
+        if e.errno == errno.EADDRINUSE:
+            print("Islands manager is already running. Exiting...")
+            exit(0)
+        else:
+            print("Socket error: %s " % str(e))
+            exit(1)
+    except Exception as e:
+        print("Application has crashed: %s" % str(e))
+        exit(1)
 
 # noinspection PyUnreachableCode
 def setup_logger(config):

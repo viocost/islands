@@ -62,7 +62,7 @@ class SetupWizardWindow(QWizard):
         self.consoles[console_index].append(msg)
         self.scroll_to_end(self.ui.vm_install_output_console)
         self.check_timeout()
-        
+
     # TODO Refactor
     def progress_bar_handler(self, console_index, action, title="", progress_in_percents="", ratio="", success=True):
 
