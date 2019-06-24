@@ -433,7 +433,7 @@ class TorrentManager:
 
             log.debug("Awaiting metadata... State: %s" % str(status.state))
             log.debug("on_timeout: %s | dt: %f" % (str(on_timeout), time.time() - start))
-            if time.time() - start > 7 and on_timeout:
+            if time.time() - start > 30 and on_timeout:
                 log.debug("Metadata await timeout.")
                 on_timeout()
             time.sleep(poll_timeout)
