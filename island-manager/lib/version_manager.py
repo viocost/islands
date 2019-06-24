@@ -34,7 +34,7 @@ class ImageVersionManager:
             os.makedirs(self.releases_history_dir)
 
     def get_last_release_record(self, pkfp: str, branch: str):
-        if self.is_branch_exist(pkfp, branch):
+        if self.is_artifact_exist(pkfp, branch):
             branch_path = os.path.join(self.releases_history_dir, pkfp, branch)
             with open (branch_path, "r") as fp:
                 history = json.load(fp)
@@ -52,7 +52,7 @@ class ImageVersionManager:
         """
         pass
 
-    def create_new_branch(self, pkfp: str, branch: str):
+    def create_new_artifact(self, pkfp: str, artifact: str):
         """
         Given public key fingerprint
         :param pkfp: public key fingerprint
@@ -63,36 +63,36 @@ class ImageVersionManager:
         if not os.path.exists(key_history_dir):
             os.mkdir(key_history_dir)
 
-        branch_path = os.path.join(key_history_dir, branch)
-        if os.path.exists(branch_path):
+        artifact_path = os.path.join(key_history_dir, artifact)
+        if os.path.exists(artifact_path):
             raise VersionBranchAlreadyExist
-        with open(branch_path, "w") as fp:
+        with open(artifact_path, "w") as fp:
             json.dump(list(), fp)
 
-    def is_branch_exist(self, pkfp: str, branch: str):
+    def is_artifact_exist(self, pkfp: str, branch: str):
         return os.path.exists(os.path.join(self.releases_history_dir, pkfp, branch))
 
-    def get_branches(self, pkfp: str):
+    def get_artifacts(self, pkfp: str):
         key_history_dir = os.path.join(self.releases_history_dir, pkfp)
         if not os.path.isdir(key_history_dir):
             return
         return [d for d in os.listdir(key_history_dir)]
 
 
-    def save_release_history(self, pkfp: str, branch: str, data: dict):
+    def save_release_history(self, pkfp: str, artifact: str, data: dict):
         key_history_dir = os.path.join(self.releases_history_dir, pkfp)
-        branch_path = os.path.join(key_history_dir, branch)
+        artifact_path = os.path.join(key_history_dir, artifact)
         if not os.path.exists(key_history_dir):
             log.debug("Error saving release history: no history for pkfp %s found. Creating" % pkfp)
             os.mkdir(key_history_dir)
 
-        if not os.path.exists(branch_path):
+        if not os.path.exists(artifact_path):
             history = []
         else:
-            with open(branch_path, "r") as fp:
+            with open(artifact_path, "r") as fp:
                 history = json.load(fp)
         history.append({k: v for k, v in data.items() if k not in ["pkfp", "public_key"]})
-        with open(branch_path, "w") as fp:
+        with open(artifact_path, "w") as fp:
             log.debug("Writing updated history")
             json.dump(history, fp)
 

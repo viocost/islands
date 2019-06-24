@@ -84,7 +84,7 @@ class VMInstaller:
     def start(self):
         self.message("Initializing VM installer...")
         log.debug("Launching installer thread")
-        self.thread = Thread(target=self.install, args=(self.abort,))
+        self.thread = Thread(target=self.install)
         self.thread.start()
 
     def prepare_update(self):
@@ -113,12 +113,12 @@ class VMInstaller:
     def abort_download(self):
         self.complete(False, "Image download aborted")
 
-    def install(self, abort_ev):
+    def install(self):
         log.debug("Installing virtual machine")
         self.message("Installer initialized. ")
         try:
             if self.download:
-                self.download_vm(False, abort_ev)
+                self.download_vm(False)
             else:
                 # self.message - same function to output on error
                 self.launch_vm_import_sequence()
@@ -173,7 +173,7 @@ class VMInstaller:
             self.error("Error importing image: %s" % str(e))
             self.complete(False, "Error importing image: %s" % str(e))
 
-    def download_vm(self, resume=False, abort_ev=None):
+    def download_vm(self, resume=False):
         if not resume:
             log.debug("Image download initialization")
             self.message("Initializing torrent download... This may take a while! ")
@@ -198,12 +198,12 @@ class VMInstaller:
             self.download_initialized = True
             sleep(2)
 
-        self.torrent_manager.download_torrent(self.magnet_link,
-                                              on_complete,
-                                              on_start_download,
-                                              self.download_timeout,
-                                              on_update,
-                                              abort_ev)
+        self.torrent_manager.download_torrent(magnet=self.magnet_link,
+                                              on_complete=on_complete,
+                                              on_start_download=on_start_download,
+                                              on_timeout=self.download_timeout,
+                                              on_update=on_update,
+                                              abort_ev=self.abort)
 
     def launch_vm_import_sequence(self):
         self.temp_dir = self.unpack_image(self.image_path.strip())

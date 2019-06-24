@@ -123,6 +123,11 @@ class Ui_IslandSetupWizard(object):
         self.vm_install_output_console = QtWidgets.QTextBrowser(self.page_vm_install_2)
         self.vm_install_output_console.setObjectName("vm_install_output_console")
         self.verticalLayout_5.addWidget(self.vm_install_output_console)
+        self.lbl_timeout_msg = QtWidgets.QLabel(self.page_vm_install_2)
+        self.lbl_timeout_msg.setStyleSheet("color: #ff8000")
+        self.lbl_timeout_msg.setText("")
+        self.lbl_timeout_msg.setObjectName("lbl_timeout_msg")
+        self.verticalLayout_5.addWidget(self.lbl_timeout_msg)
         spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_5.addItem(spacerItem1)
         self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
@@ -202,8 +207,8 @@ class Ui_IslandSetupWizard(object):
         self.vbox_setup_output_console.setHtml(_translate("IslandSetupWizard", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:\'.SF NS Text\'; font-size:13pt;\"><br /></p></body></html>"))
+"</style></head><body style=\" font-family:\'.SF NS Text\'; font-size:13pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
         self.button_path_to_vboxmanage.setText(_translate("IslandSetupWizard", "Path to vboxmanage "))
         self.button_install_vbox.setText(_translate("IslandSetupWizard", "Download and isntall Virtualbox"))
         self.label_2.setText(_translate("IslandSetupWizard", "Step 2 - Islands virtual machine setup"))

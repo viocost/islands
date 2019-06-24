@@ -6,6 +6,8 @@ from views.setup_wizard.setup_wizard import Ui_IslandSetupWizard as UI_setup
 from PyQt5.QtGui import QTextCursor
 from lib import util
 import sys
+
+import time
 import logging
 
 log = logging.getLogger(__name__)
@@ -13,7 +15,7 @@ log = logging.getLogger(__name__)
 if sys.platform in ("linux", "darwin"):
     from os import getuid
 
-class SetupWizardWindow(QObject):
+class SetupWizardWindow(QWizard):
 
     # This signal will be emitted whenever there is something to append to output screen
     # First parameter is message,
@@ -24,20 +26,18 @@ class SetupWizardWindow(QObject):
     update_elements = pyqtSignal()
     vbox_instal_complete = pyqtSignal(bool, str)
     unknown_key_confirm_request = pyqtSignal()
-    download_timeout = pyqtSignal()
+    download_timeout_signal = pyqtSignal()
     vm_install_completed = pyqtSignal(bool, str)
     install_error = pyqtSignal(int, str)
     root_password_request = pyqtSignal()
 
     def __init__(self, parent, config,  island_manager, setup):
-        QObject.__init__(self)
-
+        super(QWizard, self).__init__(parent)
         self.working = False
         self.config = config
         self.setup = setup
         self.ui = UI_setup()
-        self.window = QWizard(parent)
-        self.ui.setupUi(self.window)
+        self.ui.setupUi(self)
         self.ui.button_install_vbox.setDefault(True)
         self.island_manager = island_manager
         self.assign_handlers()
@@ -47,6 +47,12 @@ class SetupWizardWindow(QObject):
             0: self.ui.vbox_setup_output_console,
             1: self.ui.vm_install_output_console
         }
+        self.reset_consoles()
+        self.vboxpage_prepare_text()
+        self.update_ui_state()
+        self.download_timeout = False
+        self.last_timeout = None
+
 
     # Handler for output signal
     def appender(self, msg, console_index):
@@ -55,7 +61,8 @@ class SetupWizardWindow(QObject):
             raise InvalidConsoleIndex
         self.consoles[console_index].append(msg)
         self.scroll_to_end(self.ui.vm_install_output_console)
-
+        self.check_timeout()
+        
     # TODO Refactor
     def progress_bar_handler(self, console_index, action, title="", progress_in_percents="", ratio="", success=True):
 
@@ -116,11 +123,12 @@ class SetupWizardWindow(QObject):
             init_progress_bar()
         elif action == 'finalize':
             finalize_progress_bar()
+        self.check_timeout()
 
     def assign_handlers(self):
         # BUTTONS' HANDLERS
         self.ui.button_install_vbox.clicked.connect(self.process_vbox_install)
-        self.window.keyPressEvent = self.key_press_handler()
+        self.keyPressEvent = self.key_press_handler()
         self.output.connect(self.appender)
         self.progress.connect(self.progress_bar_handler)
         self.update_elements.connect(self.update_ui_state)
@@ -143,19 +151,14 @@ class SetupWizardWindow(QObject):
                 message = "Setup is not complete yet. Setup process will be interrupted. " \
                     if not install_complete else ""
                 message += "Quit setup wizzard?"
-                res = QM.question(self.window, "Quit", message, QM.Yes | QM.No)
+                res = QM.question(self, "Quit", message, QM.Yes | QM.No)
                 if res == QM.Yes:
                     self.setup.abort_vm_install()
-                    self.window.close()
+                    self.close()
         return handler
 
 
     # Clear window outputs
-    def exec(self):
-        self.reset_consoles()
-        self.vboxpage_prepare_text()
-        self.update_ui_state()
-        return self.window.exec()
 
     def process_install_error(self, code, msg):
         """
@@ -164,7 +167,7 @@ class SetupWizardWindow(QObject):
         :param msg:
         :return:
         """
-        util.show_user_error_window(self.window, msg)
+        util.show_user_error_window(self, msg)
 
     def reset_consoles(self):
         self.ui.vbox_setup_output_console.setText("")
@@ -179,7 +182,7 @@ class SetupWizardWindow(QObject):
 
     def on_close(self, handler):
         def close(event):
-            res = QM.question(self.window, "Quit", "Quit setup wizzard?", QM.Yes | QM.No)
+            res = QM.question(self, "Quit", "Quit setup wizzard?", QM.Yes | QM.No)
             if res == QM.Yes:
                 event.accept()
                 handler()
@@ -190,12 +193,12 @@ class SetupWizardWindow(QObject):
     def set_vbox_checker(self, handler):
         def is_complete():
             return handler()
-        self.window.page(0).isComplete = is_complete
+        self.page(0).isComplete = is_complete
 
     def set_islands_vm_checker(self, handler):
         def is_complete():
             return handler()
-        self.window.page(1).isComplete = is_complete
+        self.page(1).isComplete = is_complete
 
     # Appends text to a given console
     def process_output(self, data, output_type="regular", font_size=12):
@@ -215,7 +218,7 @@ class SetupWizardWindow(QObject):
     def select_data_folder(self):
         f_dialog = QFileDialog()
         f_dialog.setFileMode(QFileDialog.Directory)
-        res = f_dialog.getExistingDirectory(self.window)
+        res = f_dialog.getExistingDirectory(self)
         if res:
             self.ui.data_folder_path.setText(res)
 
@@ -302,7 +305,7 @@ class SetupWizardWindow(QObject):
 
     def process_vbox_install(self):
         if sys.platform == "win32" and not util.has_admin_rights_win32():
-            QM.warning(self.window, "Admin rights required!",
+            QM.warning(self, "Admin rights required!",
                        "Running setup requires administrator privileges. "
                        "Please close island manager and start it as administrator.", QM.Ok)
             return
@@ -314,7 +317,7 @@ class SetupWizardWindow(QObject):
         elif sys.platform == "linux" and getuid() != 0:
             # Asking user to either run as root or install virtualbox separately
             log.debug("Virtulabox install: Not enough privileges")
-            QM.information(self.window, "Root required",
+            QM.information(self, "Root required",
                            "You need to be root in order to install Virtualbox."
                            "Either install Virtualbox yourself or restart Islands Manager as root",
                            QM.Ok)
@@ -337,7 +340,7 @@ class SetupWizardWindow(QObject):
         )
 
     def vbox_install_request_root_password(self):
-        dialog = QInputDialog(self.window)
+        dialog = QInputDialog(self)
         dialog.le = QLineEdit()
         dialog.le.setObjectName("root_password_field")
         res, ok = QInputDialog.getText(dialog, "Root privilege required", "Root password:", QLineEdit.Password)
@@ -357,7 +360,7 @@ class SetupWizardWindow(QObject):
     # Starts islands install process with choose image option
     def select_islands_image(self):
 
-        res = QFileDialog.getOpenFileName(self.window,
+        res = QFileDialog.getOpenFileName(self,
                                           "Select Islands image",
                                           util.get_full_path(self.config['homedir']),
                                           "Islands Virtual Appliance (*.isld)")
@@ -376,7 +379,7 @@ class SetupWizardWindow(QObject):
     def untrusted_key_confirm(self):
         msg = "Warning, the public key of the image you are trying to use is not registered as trusted.\n" + \
             "Would you like to import image anyway? The public key will be registered as trusted."
-        res = QM.question(self.window, "Unknown public key", msg, QM.Yes | QM.No)
+        res = QM.question(self, "Unknown public key", msg, QM.Yes | QM.No)
         if res == QM.Yes:
             self.setup.vm_installer.unknown_key_confirm_resume()
         else:
@@ -398,7 +401,7 @@ class SetupWizardWindow(QObject):
         if success:
             self.ui.vm_install_status_label.setText("Virtual machine now installed")
             self.ui.vm_install_status_label.setStyleSheet("color: green")
-            self.window.button(QWizard.NextButton).setEnabled(True)
+            self.button(QWizard.NextButton).setEnabled(True)
         else:
             self.ui.btn_install_islands.setEnabled(True)
             self.ui.btn_select_data_path.setEnabled(True)
@@ -418,13 +421,19 @@ class SetupWizardWindow(QObject):
 
     def on_download_timeout(self):
         msg = "Download is stalled. It may be due to poor network connection " \
-              "or torrent seeds are not reachable.\nWould you like abort download?"
-        res = QM.question(self.window, "Download timeout", msg, QM.Yes | QM.No)
-        if res == QM.Yes:
-            self.setup.vm_installer.abort_download()
-            self.download_timeout.disconnect()
-        else:
-            self.setup.vm_installer.resume_download()
+              "or torrent seeds are not reachable.\n Press Esc to cancel download"
+        log.debug(msg)
+        self.ui.lbl_timeout_msg.setText(msg)
+        self.ui.lbl_timeout_msg.setVisible(True)
+        self.download_timeout = True
+        self.last_timeout = time.time()
+
+    def check_timeout(self):
+        if self.download_timeout and (time.time() - self.last_timeout > 2):
+            self.download_timeout = False
+            self.last_timeout = None
+            self.ui.lbl_timeout_msg.setText("")
+            self.ui.lbl_timeout_msg.setVisible(False)
 
 
 
@@ -443,10 +452,10 @@ class SetupWizardWindow(QObject):
         if not (self.ui.opt_vm_local.isChecked() or self.ui.opt_download.isChecked()):
             msg = "None of VM install option are selected"
             log.debug(msg)
-            util.show_user_error_window(self.window, msg)
+            util.show_user_error_window(self, msg)
             return
         if self.ui.opt_download.isChecked():
-            self.download_timeout.connect(self.on_download_timeout)
+            self.download_timeout_signal.connect(self.on_download_timeout)
         log.debug("Trying to import VM from %s " % self.ui.path_islands_vm.text())
         self.setup.run_vm_installer(on_message=self.get_on_message_handler(console=1),
                                     on_complete=lambda is_success, opt_msg="":
@@ -458,7 +467,7 @@ class SetupWizardWindow(QObject):
                                     download=not self.ui.opt_vm_local.isChecked(),
                                     setup=self.setup,
                                     island_manager=self.island_manager,
-                                    on_download_timeout=lambda: self.download_timeout.emit(),
+                                    on_download_timeout=lambda: self.download_timeout_signal.emit(),
                                     magnet_link=self.ui.magnet_link.text().strip(),
                                     on_confirm_required=lambda: self.unknown_key_confirm_request.emit(),
                                     image_path=self.ui.path_islands_vm.text().strip(),
@@ -489,7 +498,7 @@ class SetupWizardWindow(QObject):
            VM installed, not installed
 
         """
-        self.window.button(self.window.BackButton).setEnabled(False)
+        self.button(self.BackButton).setEnabled(False)
         current_page_id = self.get_active_page_id()
         vbox_installed = self.setup.is_vbox_installed()
         vbox_up_to_date = False if not vbox_installed else self.setup.is_vbox_up_to_date()
@@ -509,11 +518,11 @@ class SetupWizardWindow(QObject):
 
         self.ui.data_folder_path.setEnabled(vm_install_ready)
         self.ui.btn_select_data_path.setEnabled(vm_install_ready)
-        self.window.button(QWizard.BackButton).setEnabled(not vm_install_ready or current_page_id != 0
+        self.button(QWizard.BackButton).setEnabled(not vm_install_ready or current_page_id != 0
                                                           or not islands_vm_installed)
-        self.window.button(QWizard.NextButton).setEnabled((current_page_id == 0 and vbox_installed and vbox_up_to_date)
+        self.button(QWizard.NextButton).setEnabled((current_page_id == 0 and vbox_installed and vbox_up_to_date)
                                                           or current_page_id == 1 and islands_vm_installed and not self.vm_install_in_progress)
-        self.window.button(QWizard.FinishButton).setEnabled(current_page_id == 2 and vbox_installed and
+        self.button(QWizard.FinishButton).setEnabled(current_page_id == 2 and vbox_installed and
                                                             vbox_up_to_date and islands_vm_installed)
         self.scroll_to_end(self.ui.vbox_setup_output_console)
         self.scroll_to_end(self.ui.vm_install_output_console)
@@ -537,7 +546,7 @@ class SetupWizardWindow(QObject):
             ((opt_download_checked and len(self.ui.magnet_link.text()) > 0)or
             (opt_vm_local_checked and len(self.ui.path_islands_vm.text()) > 0)) and not self.vm_install_in_progress
         )
-        self.window.repaint()
+        self.repaint()
 
     def set_visibility_vm_install_options(self, visibility: bool):
         self.ui.install_choice_label.setVisible(visibility)
@@ -565,7 +574,7 @@ class SetupWizardWindow(QObject):
 
 
     def get_active_page_id(self):
-        return self.window.currentId()
+        return self.currentId()
 
 
 

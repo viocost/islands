@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox as QM
-from PyQt5.QtCore import QObject, pyqtSignal, Qt
+from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QTextCursor
 from views.update_form.update_form import Ui_IslandsUpdate
 from lib.util import get_full_path, sizeof_fmt, show_user_error_window, show_notification
@@ -12,27 +12,26 @@ log = logging.getLogger(__name__)
 
 
 
-class UpdateForm(QObject):
+class UpdateForm(QDialog):
 
     output = pyqtSignal(str)
     progress = pyqtSignal(str, str, str, str, bool)
-    download_timeout = pyqtSignal()
+    download_timeout_signal = pyqtSignal()
     install_error = pyqtSignal(int, str)
     update_completed = pyqtSignal(bool, str)
     update_ui = pyqtSignal()
     unknown_key_confirm_request = pyqtSignal()
 
     def __init__(self, parent, config, island_manager, setup):
-        QObject.__init__(self)
+        super(QDialog, self).__init__(parent)
         log.debug("Initializing update form")
         self.parent = parent
         self.config = config
         self.setup = setup
         self.island_manager = island_manager
         self.ui = Ui_IslandsUpdate()
-        self.window = QDialog(parent)
         self.update_ui.connect(self.update_els_visibility)
-        self.ui.setupUi(self.window)
+        self.ui.setupUi(self)
         self.ui.opt_download.clicked.connect(self.update_els_visibility)
         self.ui.opt_from_file.clicked.connect(self.update_els_visibility)
         self.ui.btn_cancel.clicked.connect(self.close)
@@ -47,9 +46,10 @@ class UpdateForm(QObject):
         self.progress.connect(self.progress_bar_handler)
         self.update_completed.connect(self.process_update_result)
         self.working = False
+        self.download_timeout = False
+        self.last_download_timeout = None
 
-    def exec(self):
-        self.window.exec()
+
 
     def update_els_visibility(self):
         log.debug("<================== UPDATING UI ==================> updating_els_visibility")
@@ -59,15 +59,16 @@ class UpdateForm(QObject):
         update_enabled = ((from_file_checked and len(self.ui.path_to_image.text()) > 0) or
                           (download_checked and len(self.ui.magnet_link.text()) > 0)) and not self.working
         self.ui.btn_update.setEnabled(update_enabled)
+        self.ui.btn_cancel.setEnabled(self.download_timeout or (self.working and not self.download_timeout))
 
     def process_update_result(self, is_success, msg=""):
         self.working = False
         if is_success:
-            QM.information(self.window, "Update successful", "Update completed successfully!", QM.Ok)
+            QM.information(self, "Update successful", "Update completed successfully!", QM.Ok)
             self.close()
         else:
             self.lock_form(False)
-            show_user_error_window(self.window, "UPDATE ERROR: %s " % msg)
+            show_user_error_window(self, "UPDATE ERROR: %s " % msg)
             self.update_els_visibility()
 
     def init_progress_bar(self, title, size=None):
@@ -100,14 +101,14 @@ class UpdateForm(QObject):
                                   success=True)
 
     def on_download_timeout(self):
-        msg = "Download is stalled. It may be due to poor network connection " \
-              "or torrent seeds are not reachable.\nWould you like abort download?"
-        res = QM.question(self.window, "Download timeout", msg, QM.Yes | QM.No)
-        if res == QM.Yes:
-            self.setup.vm_installer.abort_download()
-            self.download_timeout.disconnect()
-        else:
-            self.setup.vm_installer.resume_download()
+        msg = "Download seems to be stalled. It may be due to poor network connection " \
+              "or torrent seeds are not reachable.\n You may cancel download at any time."
+        self.last_download_timeout = time.time()
+        self.download_timeout = True
+        log.debug(msg)
+        self.ui.lbl_timeout_msg.setText(msg)
+        self.ui.lbl_timeout_msg.setVisible(True)
+        self.update_els_visibility()
 
     def on_complete(self, msg,  size=18, color='green', ):
         log.debug("<=================== Complete called! =============>")
@@ -131,7 +132,7 @@ class UpdateForm(QObject):
         if not (self.ui.opt_from_file.isChecked() or self.ui.opt_download.isChecked()):
             msg = "None of VM update option are selected"
             log.debug(msg)
-            show_user_error_window(self.window, msg)
+            show_user_error_window(self, msg)
             return
         if self.island_manager.is_running():
             self.on_message("Islands currently running. Shutting down...")
@@ -142,9 +143,9 @@ class UpdateForm(QObject):
         log.info("Attempting to update islands VM...")
         self.unknown_key_confirm_request.connect(self.untrusted_key_confirm)
         self.lock_form(True)
-        self.window.repaint()
+        self.repaint()
         if self.ui.opt_download.isChecked():
-            self.download_timeout.connect(self.on_download_timeout)
+            self.download_timeout_signal.connect(self.on_download_timeout)
         log.debug("Trying to import VM from %s " % self.ui.path_to_image.text())
         self.working = True
         self.setup.run_update(on_message=self.on_message,
@@ -156,7 +157,7 @@ class UpdateForm(QObject):
                               download=self.ui.opt_download.isChecked(),
                               setup=self.setup,
                               island_manager=self.island_manager,
-                              on_download_timeout=lambda: self.download_timeout.emit(),
+                              on_download_timeout=lambda: self.download_timeout_signal.emit(),
                               magnet_link=self.ui.magnet_link.text().strip(),
                               on_confirm_required=lambda: self.unknown_key_confirm_request.emit(),
                               image_path=self.ui.path_to_image.text().strip(),
@@ -174,10 +175,10 @@ class UpdateForm(QObject):
         self.ui.btn_update.setEnabled(enbale_elements)
         self.ui.btn_cancel.setEnabled(enbale_elements)
 
-    def close(self):
+    def closeEvent(self, event):
         log.debug("Closing update form")
-        self.window.close()
-        self.window.destroy()
+        if self.working:
+            self.setup.abort_vm_install()
 
     def set_installing(self):
         self.ui.output_console.setVisible(True)
@@ -190,7 +191,7 @@ class UpdateForm(QObject):
         self.ui.btn_update.setEnabled(False)
 
     def select_image(self):
-        res = QFileDialog.getOpenFileName(QFileDialog(self.window),
+        res = QFileDialog.getOpenFileName(QFileDialog(self),
                                           "Select Islands image file",
                                           get_full_path(self.config['homedir']),
                                           "Islands image file (*.isld)")
@@ -210,11 +211,13 @@ class UpdateForm(QObject):
     # Console event handlers
     # This handlers are used by setup installer to display the output and update status of
     # installation process
-
     def on_message(self, msg, size=12, color='blue'):
         log.debug("GOT MESSAGE: %s" % msg)
         self.output.emit('<p style="color: {color}; font-size: {size}px"> {msg} </p>'
                          .format(msg=msg, size=size, color=color))
+        if self.download_timeout and (time.time() - self.last_download_timeout > 2):
+                self.check_timeout()
+                self.update_els_visibility()
 
     # Baking progress bar handlers
     def get_init_progress_bar_handler(self):
@@ -296,11 +299,24 @@ class UpdateForm(QObject):
         elif action == 'finalize':
             finalize_progress_bar()
 
+        self.check_timeout()
+
+    def check_timeout(self):
+        log.debug("Checking timeout")
+        if self.download_timeout and (time.time() - self.last_download_timeout > 2):
+            log.debug("Resetting timeout")
+            self.download_timeout = False
+            self.last_download_timeout = None
+            self.ui.lbl_timeout_msg.setText("")
+            self.ui.lbl_timeout_msg.setVisible(False)
+            self.update_els_visibility()
+        else:
+            log.debug("timeout not reset")
 
     def untrusted_key_confirm(self):
         msg = "Warning, the public key of the image you are trying to use is not registered as trusted.\n" + \
             "Would you like to import image anyway? The public key will be registered as trusted."
-        res = QM.question(self.window, "Unknown public key", msg, QM.Yes | QM.No)
+        res = QM.question(self, "Unknown public key", msg, QM.Yes | QM.No)
         if res == QM.Yes:
             self.setup.vm_installer.unknown_key_confirm_resume_update()
         else:

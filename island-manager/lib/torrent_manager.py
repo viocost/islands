@@ -353,9 +353,10 @@ class TorrentManager:
     def is_torrent_file_exist(self, infohash):
         return os.path.exists(os.path.join(self.torrent_metadata_path, ("%s.torrent" % infohash)))
 
-    def _download_existing_torrent(self, handle, infohash, on_complete, on_start_download, on_update=None, abort_ev=None):
-        log.debug("TORRENT EXISTS ALREADY!")
+    def _download_existing_torrent(self, handle, infohash, on_complete, on_start_download, on_update=None, abort_ev=None, on_timeout=None):
+        log.debug("downloading previously added torrent")
         status = handle.status()
+
         if status.is_seeding:
             log.debug("Torrent already seeding. Returning handle...")
             # get full path
@@ -364,13 +365,13 @@ class TorrentManager:
         elif status.state == lt.torrent_status.downloading_metadata:
             log.debug("Torrent is awaiting download")
 
-            self.await_download_start(handle, on_start_download, abort_ev)
-            self.await_download_completion(handle, on_complete, on_update, abort_ev)
+            self.await_download_start(handle, on_start_download, abort_ev, on_timeout)
+            self.await_download_completion(handle, on_complete, on_update, abort_ev, on_timeout)
             return
 
         else:
             log.debug("Torrent is already downloading. Awaiting...")
-            self.await_download_completion(handle, on_complete, on_update)
+            self.await_download_completion(handle, on_complete, on_update, abort_ev, on_timeout)
             return
 
     def download_torrent(self, magnet, on_complete, on_start_download, on_timeout, on_update=None, abort_ev=None):
@@ -384,34 +385,41 @@ class TorrentManager:
         :param on_timeout: callback in the event of timeout. It will be called if average download speed
                     falls bellow the threshold
         :param on_update: callback called on every libtorrent status poll. By default it happens every second.
+        :param abort_ev: if true - download will return immediately
         :return: none
         """
-        try:
-            # Parse magnet
-            log.debug("Torrent download request")
-            add_torrent_params = lt.parse_magnet_uri(magnet)
+        # Parse magnet
+        log.debug("Torrent download request on timeout: %s abort_ev: %s" % (str(on_timeout), str(abort_ev)))
+        add_torrent_params = lt.parse_magnet_uri(magnet)
 
-            # extract infohash
-            infohash = add_torrent_params.info_hash
-            handle = self.session.find_torrent(infohash)
-            if handle.is_valid():
-                log.debug("Torrent exists in the current session")
-                self._download_existing_torrent(handle, infohash, on_complete, on_start_download, on_update, abort_ev)
-                return
-            log.debug("Adding torrent %s" % magnet)
-            t_path = os.path.join(self.torrents_path, str(infohash))
-            if not os.path.exists(t_path):
-                os.mkdir(t_path)
-            add_torrent_params.save_path = t_path
-            self.save_torrent_info(add_torrent_params, magnet, "active")
-            handle = self._add_torrent(add_torrent_params)
-            self.await_download_start(handle, on_start_download, abort_ev)
-            self.await_download_completion(handle, on_complete, on_update, abort_ev)
-        except TimeoutError:
-            on_timeout()
 
-    def await_download_start(self, handle, on_download_started, abort_ev=None, poll_timeout=1):
-        log.debug("Awaiting torrent download...")
+        # extract infohash
+        infohash = add_torrent_params.info_hash
+        handle = self.session.find_torrent(infohash)
+        if handle.is_valid():
+            log.debug("Torrent exists in the current session")
+            self._download_existing_torrent(handle, infohash, on_complete, on_start_download, on_update, abort_ev, on_timeout)
+            return
+        log.debug("Adding torrent %s" % magnet)
+        t_path = os.path.join(self.torrents_path, str(infohash))
+        if not os.path.exists(t_path):
+            os.mkdir(t_path)
+        add_torrent_params.save_path = t_path
+        self.save_torrent_info(add_torrent_params, magnet, "active")
+        handle = self._add_torrent(add_torrent_params)
+        self.await_download_start(handle=handle,
+                                  on_download_started=on_start_download,
+                                  abort_ev=abort_ev,
+                                  on_timeout=on_timeout)
+        self.await_download_completion(handle=handle,
+                                       on_complete=on_complete,
+                                       on_update=on_update,
+                                       abort_ev=abort_ev,
+                                       on_timeout=on_timeout)
+
+
+    def await_download_start(self, handle, on_download_started, abort_ev=None, on_timeout= None, poll_timeout=1):
+        log.debug("Awaiting torrent download... abort_ev: %s" % str(abort_ev))
 
         status = handle.status()
         start = time.time()
@@ -419,16 +427,24 @@ class TorrentManager:
                                    lt.torrent_status.finished,
                                    lt.torrent_status.seeding]:
             if abort_ev and abort_ev.is_set():
-                log.debug("await_download_start: Install aborted. exiting.. ")
+                log.debug("await_download_start: download aborted. exiting.. ")
                 return
             status = handle.status()
+
             log.debug("Awaiting metadata... State: %s" % str(status.state))
+            log.debug("on_timeout: %s | dt: %f" % (str(on_timeout), time.time() - start))
+            if time.time() - start > 7 and on_timeout:
+                log.debug("Metadata await timeout.")
+                on_timeout()
             time.sleep(poll_timeout)
-            if time.time() - start > 30:
-                raise TimeoutError
         on_download_started()
 
-    def await_download_completion(self, handle, on_complete, on_update=None, abort_ev=None, poll_timeout=1):
+    def await_download_completion(self, handle, on_complete, on_update=None, abort_ev=None, on_timeout=None, poll_timeout=1):
+
+        log.debug("Awaiting download completion.. abort_ev: %s" % str(abort_ev))
+        if abort_ev and abort_ev.is_set():
+            log.debug("Abort event is set returning...")
+            return
         log.debug("Awaiting torrent for torrent download to finish")
         status = handle.status()
         start = time.time()
@@ -462,8 +478,9 @@ class TorrentManager:
             dt_time = time.time() - start
             if dt_time > 40:
                 average_bitrate_per_second = (status.progress - progress) * status.total_wanted / dt_time
-                if average_bitrate_per_second < epsilon:
-                    raise TimeoutError
+                if average_bitrate_per_second < epsilon and on_timeout:
+                    log.debug("Torrent download timeout")
+                    on_timeout()
                 else:
                     progress = status.progress
                     start = time.time()

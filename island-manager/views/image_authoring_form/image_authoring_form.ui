@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>976</width>
-    <height>616</height>
+    <height>636</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -150,15 +150,15 @@
                </size>
               </property>
               <property name="text">
-               <string>Branch:</string>
+               <string>Artifact:</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QComboBox" name="select_branch"/>
+             <widget class="QComboBox" name="select_artifact"/>
             </item>
             <item>
-             <widget class="QPushButton" name="btn_create_branch">
+             <widget class="QPushButton" name="btn_create_artifact">
               <property name="maximumSize">
                <size>
                 <width>144</width>
@@ -169,7 +169,7 @@
                <enum>Qt::NoFocus</enum>
               </property>
               <property name="text">
-               <string>Create New Branch</string>
+               <string>Create New Artifact</string>
               </property>
              </widget>
             </item>

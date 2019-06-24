@@ -32,7 +32,7 @@ class ImageAuthoringForm(QObject):
         self.version_manager = ImageVersionManager(self.config)
         self.assign_handlers()
         self.fill_keys()
-        self.fill_branches()
+        self.fill_artifacts()
         self.update_elements()
 
     def assign_handlers(self):
@@ -40,9 +40,9 @@ class ImageAuthoringForm(QObject):
         self.ui.btn_go.clicked.connect(self.start_authoring)
         self.ui.btn_select_source.clicked.connect(self.select_source_file)
         self.ui.btn_select_dest_path.clicked.connect(self.select_dest_folder)
-        self.ui.btn_create_branch.clicked.connect(self.create_new_branch)
-        self.ui.select_private_key.currentIndexChanged.connect(self.fill_branches)
-        self.ui.select_branch.currentIndexChanged.connect(self.process_branch_selected)
+        self.ui.btn_create_artifact.clicked.connect(self.create_new_artifact)
+        self.ui.select_private_key.currentIndexChanged.connect(self.fill_artifacts)
+        self.ui.select_artifact.currentIndexChanged.connect(self.process_artifact_selected)
         self.ui.private_key_password.textChanged.connect(self.update_elements)
         self.ui.islands_version.textChanged.connect(self.update_elements)
         self.ui.image_release.textChanged.connect(self.update_elements)
@@ -55,7 +55,7 @@ class ImageAuthoringForm(QObject):
         self.error.connect(self.on_error)
         self.success.connect(self.on_success)
 
-    def process_branch_selected(self):
+    def process_artifact_selected(self):
         self.update_elements()
         self.ui.publisher_email.clear()
         self.ui.publisher.clear()
@@ -68,13 +68,13 @@ class ImageAuthoringForm(QObject):
         self.ui.lbl_prev_islands_version.setText("none")
         self.ui.lbl_previous_img_version.setText("none")
 
-        log.debug("Processing branch selected. Current branch index is: %d | Current priv key index: %d "% (
-            self.ui.select_branch.currentIndex(), self.ui.select_private_key.currentIndex()
+        log.debug("Processing artifact selected. Current artifact index is: %d | Current priv key index: %d "% (
+            self.ui.select_artifact.currentIndex(), self.ui.select_private_key.currentIndex()
         ))
-        if self.ui.select_branch.currentIndex() <= 0 or self.ui.select_private_key.currentIndex() <= 0:
+        if self.ui.select_artifact.currentIndex() <= 0 or self.ui.select_private_key.currentIndex() <= 0:
             return
-        log.debug("Processing branch selected")
-        last_record = self.version_manager.get_last_release_record(self._get_selected_pkfp(), self.ui.select_branch.currentText())
+        log.debug("Processing artifact selected")
+        last_record = self.version_manager.get_last_release_record(self._get_selected_pkfp(), self.ui.select_artifact.currentText())
 
         if last_record:
             self.ui.publisher.setText(last_record["publisher"])
@@ -106,8 +106,8 @@ class ImageAuthoringForm(QObject):
         new_version = self.construct_new_version("_")
         if new_version is not None:
 
-            self.ui.out_filename.setText("islands_{branch}_{version}.isld".format(
-                branch=self.ui.select_branch.currentText(),
+            self.ui.out_filename.setText("islands_{artifact}_{version}.isld".format(
+                artifact=self.ui.select_artifact.currentText(),
                 version=new_version
             ))
         else:
@@ -155,7 +155,7 @@ class ImageAuthoringForm(QObject):
 
         self.ui.groupBox_2.setEnabled(
             self.ui.select_private_key.currentIndex() > 0 and
-            self.ui.select_branch.currentIndex() > 0 and
+            self.ui.select_artifact.currentIndex() > 0 and
             len(self.ui.private_key_password.text().strip()) > 0
         )
 
@@ -182,34 +182,35 @@ class ImageAuthoringForm(QObject):
             len(self.ui.out_filename.text().strip()) > 1
         ]))
         pk_chosen = self.ui.select_private_key.currentIndex() > 0
-        self.ui.select_branch.setEnabled(pk_chosen)
-        self.ui.btn_create_branch.setEnabled(pk_chosen)
+        self.ui.select_artifact.setEnabled(pk_chosen)
+        self.ui.btn_create_artifact.setEnabled(pk_chosen)
         self.fill_out_filename()
 
-    def fill_branches(self):
-        self.ui.select_branch.clear()
-        self.ui.select_branch.addItem("None")
+    def fill_artifacts(self):
+        self.ui.select_artifact.clear()
+        self.ui.select_artifact.addItem("None")
         self.update_elements()
         if self.ui.select_private_key.currentIndex() == 0:
             return
         pkfp = self._get_selected_pkfp()
-        branches = self.version_manager.get_branches(pkfp)
-        if branches is not None:
-            self.ui.select_branch.addItems(branches)
+        artifacts = self.version_manager.get_artifacts(pkfp)
+        if artifacts is not None:
+            self.ui.select_artifact.addItems(artifacts)
 
-    def create_new_branch(self):
+    def create_new_artifact(self):
         if self.ui.select_private_key.currentIndex() == 0:
-            log.error("Error creating version branch: no private key selected")
+            log.error("Error creating version artifact: no private key selected")
             return
 
-        res = QInputDialog.getText(self.window, "New branch", "Enter branch name")
+        res = QInputDialog.getText(self.window, "New artifact", "Enter new artifact name name")
         if res[1] and len(res[0].strip()) > 0:
             try:
                 pkfp = self._get_selected_pkfp()
-                self.version_manager.create_new_branch(pkfp, res[0])
-                log.debug("branch file created")
+                self.version_manager.create_new_artifact(pkfp, res[0])
+                log.debug("artifact file created")
             except VersionBranchAlreadyExist as e:
-                QMessageBox.warning(self.window, "Error creating new branch", "Branch with this name already exists")
+                QMessageBox.warning(self.window, "Error creating new artifact", "Artifact with this name already exists")
+        self.fill_artifacts()
 
     def _get_selected_pkfp(self):
         if self.ui.select_private_key.currentIndex() == 0:
@@ -286,7 +287,7 @@ class ImageAuthoringForm(QObject):
             note = self.ui.note.text()
             email = self.ui.publisher_email.text()
             private_pkfp = self._get_selected_pkfp()
-            branch = self.ui.select_branch.currentText()
+            artifact = self.ui.select_artifact.currentText()
             log.debug(private_pkfp)
             key_password = self.ui.private_key_password.text(),
             key_password = key_password[0]
@@ -317,7 +318,7 @@ class ImageAuthoringForm(QObject):
             if self.ui.chk_seed_now.isChecked():
                 self.torrent_manager.create_torrent(path_to_res, True)
             self.progress.emit("Saving release history", 98)
-            self.version_manager.save_release_history(private_pkfp, branch, release_data)
+            self.version_manager.save_release_history(private_pkfp, artifact, release_data)
             sleep(random())
             self.progress.emit("Done!", 100)
             self.success.emit()
