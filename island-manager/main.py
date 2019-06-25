@@ -14,14 +14,21 @@ import sys, os
 import logging
 from socket import socket, error
 import errno
+import argparse
 
 
-def main():
+
+def main(*args):
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--debug', help="Running in debug mode", action="store_true")
+    parsed = parser.parse_args()
+
     lock_socket = socket()
     try:
         lock_socket.bind(("localhost", 56362))
         config = IMConfig(sys.platform)
-        setup_logger(config)
+        setup_logger(config, parsed.debug)
         application = Application(config)
         application.run()
 
@@ -36,10 +43,11 @@ def main():
         print("Application has crashed: %s" % str(e))
         exit(1)
 
+
 # noinspection PyUnreachableCode
-def setup_logger(config):
+def setup_logger(config, debug):
     logger = logging.getLogger()
-    if __debug__:
+    if debug:
         print("Setting logging to debug mode")
         logger.setLevel(logging.DEBUG)
         handler = logging.StreamHandler(sys.stdout)
@@ -47,6 +55,8 @@ def setup_logger(config):
     else:
         print("Setting logging to production mode")
         logger.setLevel(logging.INFO)
+        handler = logging.StreamHandler(sys.stdout)
+        logger.addHandler(handler)
 
     manager_path = get_full_path(config["manager_data_folder"])
     if not os.path.exists(manager_path):
