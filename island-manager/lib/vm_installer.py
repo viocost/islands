@@ -189,7 +189,6 @@ class VMInstaller:
 
 
         def on_update(data):
-            log.info("Updating progress bar!")
             log.debug(data)
             self.update_progres_bar("%.1f" % (data["progress"]*100), data["total_done"], data["total"], "Downloading islands")
 

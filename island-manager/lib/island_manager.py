@@ -58,7 +58,6 @@ class IslandManager:
     def is_boot_complete(self):
         res = Executor.exec_sync(self.cmd.ls_on_guest())
         if res[0] == 0:
-            print("Looks like boot complete")
             return True
         else:
             return False
@@ -83,10 +82,10 @@ class IslandManager:
             elif not self.is_running():
                 state_emitter(States.NOT_RUNNING)
             elif self.is_running():
-                print("ERROR shutting down")
+                log.debug("ERROR shutting down")
                 state_emitter(States.RUNNING)
             else:
-                print("Fatal error")
+                log.error("Fatal error: Island state is unknown")
                 state_emitter(States.UNKNOWN)
         t = Thread(target=worker)
         t.start()

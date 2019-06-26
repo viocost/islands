@@ -182,13 +182,11 @@ class MainWindow(QMainWindow):
         def handler():
             self.set_working()
             try:
-                print("Command: %s" % cmd)
                 param = get_param(cmd)
                 command = ("self.island_manager.{cmd}(self.state_emitter{param})".format(
                     cmd=cmds[cmd],
                     param=param if param else ""))
                 res = eval(command)
-                print(res)
             except Exception as e:
                 print("Error occured")
                 print(e)

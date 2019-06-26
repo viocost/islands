@@ -17,6 +17,7 @@ Keys are needed to sign and verify Islands images. When you import an .isld imag
 
 ## Creating images
 If you wish to create your own Islands image and distribute it - you can do it with "Island image authoring" tool. You need to have .ova image and your private key ready. Go tools -> Island image authoring. Fill the entire form and click "Go" button. The .isld file signed by your private key will be produced as a result. You may choose to start seeding it immediately, and simply share the magnet link with your friends.
+The manager is designed to track artifacts. If you select an existing artifact, the manager will try load previous version info and pre-fill the form.
 
 ## .isld files
 .isld file is essentially a zip archive, which includes .ova image, info file with the information, hash and signature of the .ova image, and the signature of the info file. 
