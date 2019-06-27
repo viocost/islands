@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox as QM
-from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtCore import pyqtSignal, QEvent, Qt
 from PyQt5.QtGui import QTextCursor
 from views.update_form.update_form import Ui_IslandsUpdate
 from lib.util import get_full_path, sizeof_fmt, show_user_error_window, show_notification
@@ -21,6 +21,7 @@ class UpdateForm(QDialog):
     update_completed = pyqtSignal(bool, str)
     update_ui = pyqtSignal()
     unknown_key_confirm_request = pyqtSignal()
+    configuration_in_progress_signal = pyqtSignal(bool)
 
     def __init__(self, parent, config, island_manager, setup):
         super(QDialog, self).__init__(parent)
@@ -45,11 +46,12 @@ class UpdateForm(QDialog):
         self.output.connect(self.appender)
         self.progress.connect(self.progress_bar_handler)
         self.update_completed.connect(self.process_update_result)
+        self.configuration_in_progress_signal.connect(self.process_configuration_in_progress)
         self.working = False
         self.download_timeout = False
         self.last_download_timeout = None
-
-
+        self.configuration_in_progress = False
+        self.installEventFilter(self)
 
     def update_els_visibility(self):
         log.debug("<================== UPDATING UI ==================> updating_els_visibility")
@@ -59,7 +61,13 @@ class UpdateForm(QDialog):
         update_enabled = ((from_file_checked and len(self.ui.path_to_image.text()) > 0) or
                           (download_checked and len(self.ui.magnet_link.text()) > 0)) and not self.working
         self.ui.btn_update.setEnabled(update_enabled)
-        self.ui.btn_cancel.setEnabled(self.download_timeout or (self.working and not self.download_timeout))
+
+    def process_configuration_in_progress(self, in_progress: bool):
+        log.debug("Configuration in progress signal received")
+        self.configuration_in_progress = in_progress
+        self.ui.btn_cancel.setEnabled(not in_progress)
+
+
 
     def process_update_result(self, is_success, msg=""):
         self.working = False
@@ -162,6 +170,7 @@ class UpdateForm(QDialog):
                               on_confirm_required=lambda: self.unknown_key_confirm_request.emit(),
                               image_path=self.ui.path_to_image.text().strip(),
                               config=self.config,
+                              on_cofiguration_in_progress=lambda x: self.configuration_in_progress_signal.emit(x),
                               data_path=data_path)
 
     def lock_form(self, lock=True):
@@ -173,12 +182,24 @@ class UpdateForm(QDialog):
         self.ui.path_to_image.setEnabled(enbale_elements)
         self.ui.magnet_link.setEnabled(enbale_elements)
         self.ui.btn_update.setEnabled(enbale_elements)
-        self.ui.btn_cancel.setEnabled(enbale_elements)
 
     def closeEvent(self, event):
         log.debug("Closing update form")
+        if self.configuration_in_progress:
+            event.ignore()
+            return True
         if self.working:
             self.setup.abort_vm_install()
+            return True
+
+    def eventFilter(self, obj, event):
+        if obj is self and event.type() == QEvent.KeyPress:
+            if event.key() in (Qt.Key_Return, Qt.Key_Escape, Qt.Key_Enter):
+                return True
+            if event.type() == QEvent.Close:
+                event.ignore()
+                return True
+        return super(UpdateForm, self).eventFilter(obj, event)
 
     def set_installing(self):
         self.ui.output_console.setVisible(True)
@@ -281,11 +302,6 @@ class UpdateForm(QDialog):
             cursor.movePosition(QTextCursor.EndOfBlock, QTextCursor.KeepAnchor)
             cursor.removeSelectedText()
             cursor.insertHtml(b)
-            # Select until the end
-            # delete
-            # write new update line
-
-            print("Current position: %s" % str(cursor.position()))
 
         def finalize_progress_bar():
             color, content = ("green", "OK") if success else ("red", "ERROR")

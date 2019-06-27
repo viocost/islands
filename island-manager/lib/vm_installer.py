@@ -28,6 +28,7 @@ class VMInstaller:
                  file_manager,
                  torrent_manager,
                  island_manager,
+                 on_cofiguration_in_progress,
                  on_download_timeout=None,
                  magnet_link=None,
                  download=False,
@@ -66,6 +67,7 @@ class VMInstaller:
         self.torrent_manager = torrent_manager
         self.download_timeout = on_download_timeout
         self.cmd = setup.cmd
+        self.on_configuration_in_progress = on_cofiguration_in_progress
         self.key_manager = KeyManager(self.config)
         self.user_confirmation_required = on_confirm_required
         self.image_authoring = ImageAuthoring(self.config, self.key_manager)
@@ -158,6 +160,10 @@ class VMInstaller:
 
     def _import_proceed(self, add_key=True):
         try:
+            if self.abort.is_set():
+                log.debug("Abort signal received. Import cancelled")
+                return
+            self.on_configuration_in_progress(True)
             if add_key:
                 self.image_authoring.add_trusted_key(self.temp_dir)
             path_to_image = self.image_authoring.get_path_to_vm_image(self.temp_dir)
@@ -172,6 +178,8 @@ class VMInstaller:
         except Exception as e:
             self.error("Error importing image: %s" % str(e))
             self.complete(False, "Error importing image: %s" % str(e))
+        finally:
+            self.on_configuration_in_progress(False)
 
     def download_vm(self, resume=False):
         if not resume:

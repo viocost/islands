@@ -30,6 +30,8 @@ class SetupWizardWindow(QWizard):
     vm_install_completed = pyqtSignal(bool, str)
     install_error = pyqtSignal(int, str)
     root_password_request = pyqtSignal()
+    configuration_in_progress_signal = pyqtSignal(bool)
+
 
     def __init__(self, parent, config,  island_manager, setup):
         super(QWizard, self).__init__(parent)
@@ -106,11 +108,7 @@ class SetupWizardWindow(QWizard):
             cursor.movePosition(QTextCursor.EndOfBlock, QTextCursor.KeepAnchor)
             cursor.removeSelectedText()
             cursor.insertHtml(b)
-            # Select until the end
-            # delete
-            # write new update line
 
-            print("Current position: %s" % str(cursor.position()))
 
         def finalize_progress_bar():
             color, content = ("green", "OK") if success else ("red", "ERROR")
@@ -143,6 +141,10 @@ class SetupWizardWindow(QWizard):
         self.install_error.connect(self.process_install_error)
         self.vm_install_completed.connect(self.process_vm_install_result)
         self.root_password_request.connect(self.vbox_install_request_root_password)
+        self.configuration_in_progress_signal.connect(self.on_configuration_in_progress)
+
+    def on_configuration_in_progress(self):
+        log.debug("Configuration in progress signal received!")
 
     def key_press_handler(self):
         def handler(event):
@@ -469,6 +471,7 @@ class SetupWizardWindow(QWizard):
                                     island_manager=self.island_manager,
                                     on_download_timeout=lambda: self.download_timeout_signal.emit(),
                                     magnet_link=self.ui.magnet_link.text().strip(),
+                                    on_configuration_in_progress=lambda x: self.configuration_in_progress_signal.emit(x),
                                     on_confirm_required=lambda: self.unknown_key_confirm_request.emit(),
                                     image_path=self.ui.path_islands_vm.text().strip(),
                                     config=self.config,

@@ -12,11 +12,9 @@ from logging.handlers import RotatingFileHandler
 from lib.util import get_full_path
 import sys, os
 import logging
-from socket import socket, error
-import errno
 import argparse
-
-
+import fasteners
+import tempfile
 
 def main(*args):
 
@@ -24,21 +22,22 @@ def main(*args):
     parser.add_argument('--debug', help="Running in debug mode", action="store_true")
     parsed = parser.parse_args()
 
-    lock_socket = socket()
-    try:
-        lock_socket.bind(("localhost", 56362))
-        config = IMConfig(sys.platform)
-        setup_logger(config, parsed.debug)
-        application = Application(config)
-        application.run()
+    lock_filename = "islands_lock"
+    lock_filepath = os.path.join(tempfile.gettempdir(), lock_filename)
 
-    except error as e:
-        if e.errno == errno.EADDRINUSE:
-            print("Islands manager is already running. Exiting...")
-            exit(0)
+    lock = fasteners.InterProcessLock(lock_filepath)
+    gotten = lock.acquire(blocking=False)
+    
+    try:
+        if gotten:
+            config = IMConfig(sys.platform)
+            setup_logger(config, parsed.debug)
+            
+            application = Application(config)
+            application.run()
         else:
-            print("Socket error: %s " % str(e))
-            exit(1)
+            print("Another instance of Island Manager is already running. Exiting...")
+            exit(0)
     except Exception as e:
         print("Application has crashed: %s" % str(e))
         exit(1)

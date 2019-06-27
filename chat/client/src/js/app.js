@@ -1,10 +1,10 @@
 //Vendors
 import { CuteSet } from "cute-set";
-import { iCrypto } from "./lib/iCrypto"
+import { iCrypto } from "./lib/iCrypto";
 import { resizableInput  } from "./lib/resizable";
 import '../css/main.sass';
 
-import * as util from "./lib/dom-util"
+import * as util from "./lib/dom-util";
 import * as toastr from "toastr";
 window.toastr = toastr;
 
