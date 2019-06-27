@@ -1,6 +1,6 @@
 from os import path
 from PyQt5.QtWidgets import QMessageBox as QM, QWizard, QFileDialog, QInputDialog, QLineEdit, QWidget
-from PyQt5.QtCore import QObject, pyqtSignal, Qt
+from PyQt5.QtCore import QEvent, pyqtSignal, Qt
 from views.setup_wizard.setup_wizard import Ui_IslandSetupWizard as UI_setup
 
 from PyQt5.QtGui import QTextCursor
@@ -54,7 +54,8 @@ class SetupWizardWindow(QWizard):
         self.update_ui_state()
         self.download_timeout = False
         self.last_timeout = None
-
+        self.configuration_in_progress = False
+        self.installEventFilter(self)
 
     # Handler for output signal
     def appender(self, msg, console_index):
@@ -143,14 +144,34 @@ class SetupWizardWindow(QWizard):
         self.root_password_request.connect(self.vbox_install_request_root_password)
         self.configuration_in_progress_signal.connect(self.on_configuration_in_progress)
 
-    def on_configuration_in_progress(self):
+    def on_configuration_in_progress(self, in_progress: bool):
         log.debug("Configuration in progress signal received!")
+        self.configuration_in_progress = in_progress
+
+    def eventFilter(self, obj, event):
+        if obj is self and event.type() == QEvent.KeyPress:
+            if event.key() in (Qt.Key_Escape, Qt.Key_Return, Qt.Key_Enter):
+                log.debug("Key press event")
+                return True
+            if event.type() == QEvent.Close:
+
+                return True
+        return super(SetupWizardWindow, self).eventFilter(obj, event)
+
+    def closeEvent(self, event):
+        log.debug("CLOSE EVENT!!")
+        if self.configuration_in_progress:
+            log.debug("Ignoring close event. Configuration in progress")
+            event.ignore()
+        else:
+            log.debug("Aborting install")
+            self.setup.abort_vm_install()
 
     def key_press_handler(self):
         def handler(event):
             if event.key() == Qt.Key_Escape:
                 install_complete = self.setup.is_vbox_set_up and self.setup.is_islands_vm_exist()
-                message = "Setup is not complete yet. Setup process will be interrupted. " \
+                message = "Setup has not been finished and will be interrupted. Proceed? " \
                     if not install_complete else ""
                 message += "Quit setup wizzard?"
                 res = QM.question(self, "Quit", message, QM.Yes | QM.No)
@@ -471,6 +492,7 @@ class SetupWizardWindow(QWizard):
                                     island_manager=self.island_manager,
                                     on_download_timeout=lambda: self.download_timeout_signal.emit(),
                                     magnet_link=self.ui.magnet_link.text().strip(),
+
                                     on_configuration_in_progress=lambda x: self.configuration_in_progress_signal.emit(x),
                                     on_confirm_required=lambda: self.unknown_key_confirm_request.emit(),
                                     image_path=self.ui.path_islands_vm.text().strip(),

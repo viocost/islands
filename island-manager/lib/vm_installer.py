@@ -28,7 +28,7 @@ class VMInstaller:
                  file_manager,
                  torrent_manager,
                  island_manager,
-                 on_cofiguration_in_progress,
+                 on_configuration_in_progress,
                  on_download_timeout=None,
                  magnet_link=None,
                  download=False,
@@ -67,7 +67,7 @@ class VMInstaller:
         self.torrent_manager = torrent_manager
         self.download_timeout = on_download_timeout
         self.cmd = setup.cmd
-        self.on_configuration_in_progress = on_cofiguration_in_progress
+        self.on_configuration_in_progress = on_configuration_in_progress
         self.key_manager = KeyManager(self.config)
         self.user_confirmation_required = on_confirm_required
         self.image_authoring = ImageAuthoring(self.config, self.key_manager)

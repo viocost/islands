@@ -170,7 +170,7 @@ class UpdateForm(QDialog):
                               on_confirm_required=lambda: self.unknown_key_confirm_request.emit(),
                               image_path=self.ui.path_to_image.text().strip(),
                               config=self.config,
-                              on_cofiguration_in_progress=lambda x: self.configuration_in_progress_signal.emit(x),
+                              on_configuration_in_progress=lambda x: self.configuration_in_progress_signal.emit(x),
                               data_path=data_path)
 
     def lock_form(self, lock=True):
@@ -186,18 +186,16 @@ class UpdateForm(QDialog):
     def closeEvent(self, event):
         log.debug("Closing update form")
         if self.configuration_in_progress:
+            log.debug("Ignoring close event. Configuration in progress")
             event.ignore()
-            return True
-        if self.working:
+        elif self.working:
+            log.debug("aborting install")
             self.setup.abort_vm_install()
-            return True
 
     def eventFilter(self, obj, event):
         if obj is self and event.type() == QEvent.KeyPress:
+            log.debug("Received close event.")
             if event.key() in (Qt.Key_Return, Qt.Key_Escape, Qt.Key_Enter):
-                return True
-            if event.type() == QEvent.Close:
-                event.ignore()
                 return True
         return super(UpdateForm, self).eventFilter(obj, event)
 
