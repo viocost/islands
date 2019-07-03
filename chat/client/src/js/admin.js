@@ -6,17 +6,17 @@ window.toastr = toastr;
 import { iCrypto } from "./lib/iCrypto";
 import { Vault } from "./lib/Vault";
 import * as forge from "node-forge";
-import * as CuteSet from "cute-set"
+import * as CuteSet from "cute-set";
 import * as dropdown from "./lib/dropdown";
 import * as editableField from "./lib/editable_field";
-import { ChatUtility } from "./chat/ChatUtility"
+import { ChatUtility } from "./chat/ChatUtility";
 
 
 
 
 import { verifyPassword } from "./lib/PasswordVerify";
 
-import * as util from "./lib/dom-util"
+import * as util from "./lib/dom-util";
 
 window.iCrypto = iCrypto;
 
@@ -33,7 +33,7 @@ let logTableBody;
  * @onSuccess - success handler
  * @onError - error handler
  */
-let processAdminRequest = ()=>{throw"Admin session uninitialized"};
+let processAdminRequest = ()=>{throw "Admin session uninitialized";};
 
 
 document.addEventListener('DOMContentLoaded', event => {
@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', event => {
 
 
     $('#run-update').click(launchUpdate);
-
+    $('#download-logs').click(()=>{loadLogs(false, true);});
     $('#add-admin-service').click(addAdminHiddenService);
     $('#add-guest-service').click(createGuest);
 
@@ -872,7 +872,7 @@ function getElementIndex(node) {
     return index;
 }
 
-function loadLogs(errorsOnly = false) {
+function loadLogs(errorsOnly = false, download = false) {
     let privKey = adminSession.privateKey;
     let pkfp = adminSession.pkfp;
     let ic = new iCrypto();
@@ -889,13 +889,28 @@ function loadLogs(errorsOnly = false) {
             pkfp: pkfp,
             errorsOnly: errorsOnly
         },
-        success: processLogsLoaded,
+        success: download ? downloadLogs: processLogsLoaded,
         err: err => {
             console.log("Error loading logs: " + err);
             toastr.warning("Error loading logs: " + err);
         }
     });
 }
+
+
+function downloadLogs(res){
+    let records = res.records;
+    let el = util.bake("a", {
+        attributes: {
+            href: "data:text/plain;charset=utf-8," + encodeURIComponent(records), 
+            download: "islands.log"
+        }
+    });
+    el.click();
+    document.body.removeChild(el);
+}
+
+
 
 function processLogsLoaded(res) {
     let records = res.records.split("\n");
