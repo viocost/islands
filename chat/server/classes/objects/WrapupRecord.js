@@ -1,3 +1,6 @@
+/**
+ * TODO Desc here
+ */
 class WrapupRecord{
     constructor(blob, length = 16){
 

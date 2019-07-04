@@ -51,6 +51,10 @@ process.argv.forEach((val, index, array)=>{
 
 
 let config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+
+Logger.initLogger(config.servicePath, "debug");
+Logger.info("!!=====ISLANDS v." + VERSION + " =====!!");
+
 historyPath = config.historyPath || historyPath;
 let updatePath = config.updatePath || "../update";
 
@@ -73,7 +77,8 @@ if (app.get('env') === 'development'){
 app.use(express.static(path.join(__dirname, '../public')));
 
 
-Logger.initLogger(config.servicePath, "debug");
+
+//HS - hidden service
 HSVaultMap.init(config.hsVaultMap);
 
 

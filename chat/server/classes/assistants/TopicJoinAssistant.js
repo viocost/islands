@@ -6,7 +6,7 @@ const Response = require("../objects/ClientResponse.js");
 const OutgoingPendingJoinRequest = require("../objects/OutgoingPendingJoinRequest.js");
 const Invite = require("../objects/Invite.js");
 const Util = require("../libs/ChatUtility.js");
-
+const Logger = require("../libs/Logger.js");
 
 class TopicJoinAssistant{
     constructor(connectionManager = Err.required(),
@@ -32,11 +32,12 @@ class TopicJoinAssistant{
      * INCOMING REQUEST HANDLERS
      *****************************************************/
     async joinTopicIncoming(envelope, self){
-        console.log("Join topic incoming called");
+        Logger.debug("Incoming request to join topic");
         const request = Request.parse(envelope.payload);
         const invite = Invite.parse(request.body.inviteString);
         const topicAuthority = self.topicAuthorityManager.getTopicAuthority(invite.getPkfp());
-        let newTopicData = await topicAuthority.joinByInvite(request.body.inviteString, request.body.invitee, envelope.origin)
+        let newTopicData = await topicAuthority.joinByInvite(request.body.inviteString, request.body.invitee, envelope.origin);
+        Logger.debug("Join topic request processed by topic authority");
         const response = new Response("join_topic_success", request);
         response.setAttribute("metadata", newTopicData.metadata);
         response.setAttribute("inviterNickname",   newTopicData.inviterNickname);
@@ -44,7 +45,7 @@ class TopicJoinAssistant{
         response.setAttribute("topicName",   newTopicData.topicName);
         const responseEnvelope = new Envelope(envelope.origin, response, envelope.destination);
         responseEnvelope.setResponse();
-        console.log("Sending metadata!");
+        Logger.debug("Sending metadata to the invitee");
         await self.crossIslandMessenger.send(responseEnvelope);
     }
 
@@ -58,6 +59,7 @@ class TopicJoinAssistant{
      *****************************************************/
 
     async joinTopicOutgoing(request, connectionID, self){
+        Logger.debug("Sending outgoing topic join request");
         self.verifyOutgoingRequest(request);
         const hsData = await self.createHiddenService();
 
@@ -73,20 +75,20 @@ class TopicJoinAssistant{
 
     async finalizeTopicJoin(envelope, self){
         //Verify, save metadata, return new topic data to the client
-        console.log("finalizeTopicJoin called");
+        Logger.debug("Finalize topic join.");
         let response = envelope.payload;
         const pendingRequest = self.getOutgoingPendingJoinRequest(response.headers.pkfpSource);
         const metadata = response.body.metadata;
 
         const hsPrivateKeyEncrypted = Util.encryptStandardMessage(pendingRequest.hsPrivateKey, pendingRequest.publicKey);
-
+        Logger.debug("Initializing topic locally");
         self.hm.initTopic(response.headers.pkfpSource,
             pendingRequest.publicKey,
             hsPrivateKeyEncrypted);
         await self.hm.initHistory(response.headers.pkfpSource, metadata);
+        Logger.debug("Sending response to client");
+        await self.connectionManager.sendResponse(pendingRequest.connectionId, response);
 
-        await self.connectionManager.sendResponse(pendingRequest.connectionId, response)
-        console.log("Response sent to client");
     }
 
     /*****************************************************
@@ -140,7 +142,6 @@ class TopicJoinAssistant{
         this.subscribe(requestEmitter, {
             //Handlers
             join_topic: this.joinTopicOutgoing
-
         }, this.clientRequestErrorHandler)
     }
 
@@ -160,7 +161,7 @@ class TopicJoinAssistant{
 
     async processJoinTopicError(envelope, self){
         //Verify, save metadata, return new topic data to the client
-        console.log("Join topic failed. Return envelope received");
+        Logger.warn("Join topic failed. Return envelope received");
         let response = envelope.payload;
         //const pendingRequest = self.getOutgoingPendingJoinRequest(response.headers.pkfpSource);
         console.log("Response sent to client");
