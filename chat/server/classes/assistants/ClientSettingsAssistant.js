@@ -21,7 +21,7 @@ class ClientSettingsAssistant{
         this.subscribe(requestEmitter, {
             //Handlers
             update_settings: this.updateSettings
-        }, this.clientRequestErrorHandler)
+        }, this.clientRequestErrorHandler);
     }
 
 

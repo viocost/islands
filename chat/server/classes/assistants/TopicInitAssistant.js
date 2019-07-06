@@ -149,7 +149,7 @@ class TopicInitAssistant{
         if(!this.clientErrorTypes[command]){
             throw "Error tpye not found!";
         }
-        return this.clientErrorTypes[command]
+        return this.clientErrorTypes[command];
     }
 
 
@@ -157,7 +157,7 @@ class TopicInitAssistant{
         this.handlers = {
             new_topic_get_token: this.createToken,
             init_topic: this.initTopic
-        }
+        };
     }
 
 
@@ -165,14 +165,14 @@ class TopicInitAssistant{
         this.eventsHandled = [
             "new_topic_get_token",
             "init_topic"
-        ]
+        ];
     }
 
     setClientErrorTypes(){
         this.clientErrorTypes = {};
         this.eventsHandled.forEach((val)=>{
             this.clientErrorTypes[val] ="init_topic_error";
-        })
+        });
     }
 
     subscribe(requestEmitter){
@@ -180,14 +180,14 @@ class TopicInitAssistant{
         self.eventsHandled.forEach((val)=>{
             requestEmitter.on(val, async (request, connectionId)=>{
                 await self.handleRequest(request, connectionId, self);
-            })
+            });
         });
     }
 
     async handleRequest(request, connectionId, self){
         try{
 
-            await this.handlers[request.headers.command](request, connectionId, self)
+            await this.handlers[request.headers.command](request, connectionId, self);
         }catch(err){
             //handle error
             try{

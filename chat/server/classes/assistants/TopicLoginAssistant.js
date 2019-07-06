@@ -5,7 +5,7 @@ const Metadata = require("../objects/Metadata.js");
 const iCrypto = require("../libs/iCrypto.js");
 const ClientError = require("../objects/ClientError.js");
 const Util = require("../libs/ChatUtility.js");
-const Logger = require("../libs/Logger.js")
+const Logger = require("../libs/Logger.js");
 
 class TopicLoginAssistant{
 
@@ -27,11 +27,10 @@ class TopicLoginAssistant{
         this.topicAuthorityManager = taManager;
     }
 
+
     /*********************************************
      * Handlers
      *********************************************/
-
-
     /**
      *
      * @param request

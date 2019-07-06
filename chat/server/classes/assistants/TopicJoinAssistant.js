@@ -73,13 +73,19 @@ class TopicJoinAssistant{
     }
 
 
+    /**
+     * Called when join_topic_success response from other island is received.
+     * It means that new user is now registered in the topic, and existing members are notified
+     * The function initializes the topic and notifies the client
+     * @param {CrossIslandEnvelope} envelope
+     * @param {this} self
+     */
     async finalizeTopicJoin(envelope, self){
         //Verify, save metadata, return new topic data to the client
         Logger.debug("Finalize topic join.");
         let response = envelope.payload;
         const pendingRequest = self.getOutgoingPendingJoinRequest(response.headers.pkfpSource);
         const metadata = response.body.metadata;
-
         const hsPrivateKeyEncrypted = Util.encryptStandardMessage(pendingRequest.hsPrivateKey, pendingRequest.publicKey);
         Logger.debug("Initializing topic locally");
         self.hm.initTopic(response.headers.pkfpSource,
@@ -158,7 +164,6 @@ class TopicJoinAssistant{
 
 
     /***** Error handlers *****/
-
     async processJoinTopicError(envelope, self){
         //Verify, save metadata, return new topic data to the client
         Logger.warn("Join topic failed. Return envelope received");

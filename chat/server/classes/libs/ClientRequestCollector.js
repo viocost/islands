@@ -21,7 +21,7 @@ class ClientRequestCollector extends EventEmitter{
             socket.on("request", (request)=>{
                 this.emit(request.headers.command, request, connectionId);
             });
-        })
+        });
     }
 }
 

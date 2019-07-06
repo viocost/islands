@@ -726,7 +726,6 @@ export class ChatClient {
         console.log("joining topic with nickname: " + nickname + " | Invite code: " + inviteCode);
 
         const clientSettings = new ClientSettings();
-        clientSettings
 
         await this.establishIslandConnection();
         let ic = new iCrypto();

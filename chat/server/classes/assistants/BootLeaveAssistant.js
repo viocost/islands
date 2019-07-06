@@ -7,6 +7,7 @@ const Envelope = require("../objects/CrossIslandEnvelope.js");
 const Metadata = require("../objects/Metadata.js");
 const Logger = require("../libs/Logger");
 
+
 class BootLeaveAssistant extends Assistant{
     constructor(connectionManager = Err.required(),
                 sessionManager = Err.required(),
@@ -42,10 +43,10 @@ class BootLeaveAssistant extends Assistant{
     }
 
     async bootParticipantIncoming(envelope, self){
-        console.log("\nBOOTING PARTICIPANT INCOMING RECEIVED \n");
+        console.log("\nbooting participant incoming received \n");
         let request = envelope.payload;
-        let ta = self.topicAuthorityManager.getTopicAuthority(request.headers.pkfpDest);
-        await ta.processBootRequest(request)
+        let ta = self.topicauthoritymanager.gettopicauthority(request.headers.pkfpdest);
+        await ta.processbootrequest(request)
     }
 
     async leaveTopicOnBoot(envelope, self){
@@ -81,7 +82,6 @@ class BootLeaveAssistant extends Assistant{
         let response = new Response("delete_topic_success", request);
         self.connectionManager.sendResponse(connectionID, response);
     }
-
 
 
     /***Error handlers****/

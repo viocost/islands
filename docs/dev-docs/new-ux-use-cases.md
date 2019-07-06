@@ -16,7 +16,6 @@
 * Vault is then decrypted, admin record is found. Admin's private key is used to perform admin login on the same page 
 * Admin is now logged in and sees the admin panel
 
-===
 
 * admin from his vault clicks on admin record
 * new admin page is opened with no-vault parameter

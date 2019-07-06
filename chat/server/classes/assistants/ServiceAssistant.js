@@ -30,11 +30,11 @@ class ServiceAssistant{
         this.subscribeToClientRequests(requestEmitter);
         this.subscribeToCrossIslandsMessages(this.ciMessenger);
         Coordinator.on("sync_metadata", async (pkfp)=>{
-            await  self.requestMetadataSync(pkfp, self)
+            await  self.requestMetadataSync(pkfp, self);
         });
         Coordinator.on("send_metadata_outdated_note", async (data)=>{
-            await self.sendMetadataOutdatedNote(data, self)
-        })
+            await self.sendMetadataOutdatedNote(data, self);
+        });
     }
 
 

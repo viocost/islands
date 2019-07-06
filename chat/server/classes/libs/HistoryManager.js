@@ -1,9 +1,11 @@
 const fs = require('fs-extra');
+const path = require("path");
 const TaskQueue = require("./TaskQueue.js");
 const Err = require('./IError.js');
 const CuteSet = require("cute-set");
 const WrapupRecord = require("../objects/WrapupRecord.js");
 const HistoryFixer = require("../libs/HistoryIndexFixer.js");
+const Logger = require("../libs/Logger.js");
 
 
 
@@ -37,7 +39,7 @@ class HistoryManager{
         path = path ? path: "../history/";
         if (!fs.existsSync(path)){
             console.log("Path does not exist. Creating...");
-            fs.mkdirSync(path)
+            fs.mkdirSync(path);
         }
         console.log("Setting path to " + path);
         this.historyDirectory = path;
@@ -82,10 +84,11 @@ class HistoryManager{
               ownerPublicKey = Err.required("HistoryManager initTopic error: missing required parameter 'ownerPublicKey'"),
               ownerHSKey = Err.required("HistoryManager initTopic error: missing required parameter 'ownerHSKey'")){
         return new Promise((resolve, reject)=>{
+	    Logger.debug("Initializing topic for pkfp: " + pkfp);
+			 
             let self = this;
             try{
                 let topicPath = self.historyDirectory + pkfp;
-
                 if (fs.existsSync(topicPath)) {
                     reject("Topic with such id already exists!");
                     return;

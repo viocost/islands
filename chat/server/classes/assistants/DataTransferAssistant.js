@@ -13,7 +13,7 @@ class DataTransferAssistant{
         this.crossIslandDataTransporter = new CrossIslandDataTransporter(
             torConnector,
             historyManager
-        )
+        );
 
     }
 
@@ -24,7 +24,7 @@ class DataTransferAssistant{
             this.dataSockets[socket.id] = {
                 fileUploader: fileUploader,
                 fileDownloader: fileDownloader
-            }
+            };
         });
 
         connectionManager.on("data_channel_closed", socket=>{

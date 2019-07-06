@@ -15,19 +15,19 @@ class Message{
         }
         let res = new Message();
         res.headers = data.headers;
-        res.body = data.body;
+	res.body = data.body;
         res.signature = data.signature;
         return res;
     }
 
     verify(message, publicKey){
         const ic = new iCrypto();
-
+        res.body = data.body;
     }
 
     static getCommand(message){
         const m = Message.parse(message);
-        return m.headers.command
+        return m.headers.command;
     }
 
 
