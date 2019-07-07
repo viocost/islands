@@ -1,8 +1,10 @@
 *.log
 *.exe
 .tern-project
+.tern-port
 *.idea/
 *node_modules/
+*TAGS
 *venv/
 Conversations/*
 *history/*

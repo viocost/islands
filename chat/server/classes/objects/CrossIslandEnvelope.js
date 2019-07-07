@@ -30,9 +30,9 @@ class CrossIslandEnvelope{
     static getOriginalPayload(envelope){
         let request = envelope;
         while(request.payload){
-            request = request.payload
+            request = request.payload;
         }
-        return request
+        return request;
     }
 
     setReturn(err){
@@ -48,6 +48,11 @@ class CrossIslandEnvelope{
         this.returnOnConnectionFail = !!val;
     }
 
+    /**
+    * Given original envelope swaps origin and destination 
+    * and sets return flag and error message
+    * 
+    */
     static makeReturnEnvelope(originalEnvelope, err){
         const returnEnvelope = new CrossIslandEnvelope(originalEnvelope.origin, originalEnvelope, originalEnvelope.destination);
         returnEnvelope.setReturn(err);
@@ -55,7 +60,7 @@ class CrossIslandEnvelope{
     }
 
     getPayload(){
-        return this.payload
+        return this.payload;
     }
 
     setPayload(payload = Err.required()){

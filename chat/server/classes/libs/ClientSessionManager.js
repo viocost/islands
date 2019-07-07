@@ -2,11 +2,13 @@ const ClientSession = require("../objects/ClientSession.js");
 const Err = require("./IError.js");
 const Logger = require("../libs/Logger.js");
 
+
+
 class ClientSessionManager{
     constructor(connectionManager = Err.required()){
         this.sessions = {};
         this.connectionManager = connectionManager;
-        this.registerConnectionManager(connectionManager)
+        this.registerConnectionManager(connectionManager);
     }
 
     registerConnectionManager(connectionManager){
@@ -14,13 +16,13 @@ class ClientSessionManager{
         connectionManager.on("client_disconnected", connectionId=>{
             console.log("processing client disconnect!");
             this.processSocketDisconnected(connectionId);
-        })
+        });
     }
 
     getActiveUserSessions(pkfp){
         return Object.values(this.sessions).filter(val =>{
             return val.getClientPkfp() === pkfp;
-        })
+        });
     }
 
     getSessionByConnectionId(connectionID = Err.required()){
@@ -30,19 +32,19 @@ class ClientSessionManager{
     getSessionBySessionID(sessionID){
         return Object.values(this.sessions).filter((val)=>{
             return val.sessionID === sessionID;
-        })
+        });
     }
 
 
     createSession(pkfp, connectionId, sessionID){
         const sessions = this.getSessionBySessionID(sessionID);
         if (sessions.length > 0){
-            this.cleanupZombieSessions(sessions)
+            this.cleanupZombieSessions(sessions);
         }
 
         this.registerSession(new ClientSession(pkfp, connectionId, sessionID));
-        console.log("\nCreated new session. ConnectionId: " + connectionId)
-        console.log("Sessions: " )
+        console.log("\nCreated new session. ConnectionId: " + connectionId);
+        console.log("Sessions: " );
         Object.keys(this.connectionManager.socketHub.sockets).forEach(socketId=>{
             console.log("Key: "+ socketId + " Val: " + this.connectionManager.socketHub.sockets[socketId].id);
         })

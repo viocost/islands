@@ -31,8 +31,11 @@ class TopicJoinAssistant{
     /*****************************************************
      * INCOMING REQUEST HANDLERS
      *****************************************************/
+    /**
+     * 
+     */
     async joinTopicIncoming(envelope, self){
-        Logger.debug("Incoming request to join topic");
+	Logger.debug("Join topic incoming request receives");
         const request = Request.parse(envelope.payload);
         const invite = Invite.parse(request.body.inviteString);
         const topicAuthority = self.topicAuthorityManager.getTopicAuthority(invite.getPkfp());
@@ -88,6 +91,7 @@ class TopicJoinAssistant{
         const metadata = response.body.metadata;
         const hsPrivateKeyEncrypted = Util.encryptStandardMessage(pendingRequest.hsPrivateKey, pendingRequest.publicKey);
         Logger.debug("Initializing topic locally");
+	throw "Init topic error";
         self.hm.initTopic(response.headers.pkfpSource,
             pendingRequest.publicKey,
             hsPrivateKeyEncrypted);
@@ -134,11 +138,11 @@ class TopicJoinAssistant{
             pkfpSource: true,
             pkfpDest: true,
             bodyContent: ["inviteCode", "destination", "invitee"]
-        })
+        });
     }
 
     createHiddenService(){
-        return this.connector.createHiddenService()
+        return this.connector.createHiddenService();
     }
 
 
@@ -148,7 +152,7 @@ class TopicJoinAssistant{
         this.subscribe(requestEmitter, {
             //Handlers
             join_topic: this.joinTopicOutgoing
-        }, this.clientRequestErrorHandler)
+        }, this.clientRequestErrorHandler);
     }
 
     //Subscribes to relevant cross-island requests
@@ -157,30 +161,40 @@ class TopicJoinAssistant{
             join_topic: this.joinTopicIncoming,
             return_join_topic: this.processJoinTopicError,
             join_topic_success: this.finalizeTopicJoin
-        }, this.crossIslandErrorHandler)
+        }, this.crossIslandErrorHandler);
     }
 
 
 
 
     /***** Error handlers *****/
+    /**
+     * This function is called when return envelope received
+     * from other island. 
+     */
     async processJoinTopicError(envelope, self){
         //Verify, save metadata, return new topic data to the client
         Logger.warn("Join topic failed. Return envelope received");
         let response = envelope.payload;
-        //const pendingRequest = self.getOutgoingPendingJoinRequest(response.headers.pkfpSource);
-        console.log("Response sent to client");
-
+        const pendingRequest = self.getOutgoingPendingJoinRequest(response.headers.pkfpSource);
+	let error = new ClientError(response,
+				    self.getClientErrorType(response.headers.command),
+				    response.headers.error);
+	//Getting all active connections
+	let connections = self.sessionManager.getActiveUserSessions(response.headers.pkfpSource);
+	for(let conn of connections){
+	    self.connectionManager.sendResponse(conn.getId, response);
+	}
     }
 
     clientRequestErrorHandler(request, connectionID, self, err){
         console.trace(err);
         try{
-            let error = new ClientError(request, self.getClientErrorType(request.headers.command) , "Internal server error")
+            let error = new ClientError(request, self.getClientErrorType(request.headers.command) , "Internal server error");
             self.connectionManager.sendResponse(connectionID, error);
         }catch(fatalError){
-            console.log("Some big shit happened: " + fatalError + "\nOriginal error: " + err);
-            console.trace(err)
+	    Logger.error("Some big shit happened: " + fatalError + "\nOriginal error: " + err);
+            console.trace(err);
         }
     }
 
@@ -189,20 +203,26 @@ class TopicJoinAssistant{
             join_topic: "join_topic_error"
         };
         if (!errorTypes.hasOwnProperty(command)){
-            throw "invalid error type"
+            throw "invalid error type";
         }
         return errorTypes[command];
     }
 
     async crossIslandErrorHandler(envelope, self, err){
         try{
-            console.trace("Topic join request error: " + err);
+	    if (envelope.return){
+		Logger.error("Error handling return envelope: " + err + " stack: " + err.stack);
+		return;
+	    }
+	    Logger.warn("Topic join error: " + err + " returning envelope...");
             await self.crossIslandMessenger.returnEnvelope(envelope, err);
         }catch (fatalErr){
+	    Logger.error("FATAL ERROR" + fatalErr + " " + fatalErr.stack);
             console.trace("FATAL ERROR: " + fatalErr);
         }
 
     }
+
     /***** END Error handlers *****/
 
 
@@ -220,8 +240,8 @@ class TopicJoinAssistant{
             emitter.on(command, async(...args)=>{
                 args.push(self);
                 await self.handleRequest(handlers, command, args, errorHandler);
-            })
-        })
+            });
+        });
     }
 
     /**

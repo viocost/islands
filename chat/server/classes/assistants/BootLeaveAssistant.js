@@ -36,7 +36,7 @@ class BootLeaveAssistant extends Assistant{
         const metadata = JSON.parse(await self.hm.getLastMetadata(request.headers.pkfpSource));
         const client =metadata.body.participants[request.headers.pkfpSource];
         if(client.rights < 3){
-            throw "User has not enough rights to boot"
+            throw "User has not enough rights to boot";
         }
 
         await self.crossIslandMessenger.send(new Envelope(metadata.body.topicAuthority.residence, request, client.residence));
@@ -45,12 +45,12 @@ class BootLeaveAssistant extends Assistant{
     async bootParticipantIncoming(envelope, self){
         console.log("\nbooting participant incoming received \n");
         let request = envelope.payload;
-        let ta = self.topicauthoritymanager.gettopicauthority(request.headers.pkfpdest);
-        await ta.processbootrequest(request)
+        let ta = self.topicAuthorityManager.getTopicAuthority(request.headers.pkfpDest);
+        await ta.processBootRequest(request);
     }
 
     async leaveTopicOnBoot(envelope, self){
-        console.log("I was booted... leaving topic");
+        console.log("I has been booted... leaving topic");
         let message = envelope.payload;
         let lastMetadata = Metadata.parseMetadata(await self.hm.getLastMetadata(message.headers.pkfpDest));
         if(!Request.isRequestValid(message, lastMetadata.body.topicAuthority.publicKey)){
@@ -85,14 +85,28 @@ class BootLeaveAssistant extends Assistant{
 
 
     /***Error handlers****/
+    async crossIslandErrorHandler(envelope, self, err){
+	try{
+	    if(envelope.return){
+		Logger.warn("Error processing return envelope: " + err);
+		return;    
+	    }
+	    Logger.warn("Boot/leave error: " + err + " returning envelope...");
+	    await self.crossIslandMessenger.returnEnvelope(envelope);
+	}catch(err){
+	    Logger.error("FATAL ERROR: " + err + " " + err.stack);
+	}	
+    }
+
+
     async clientErrorHandler(request, connectionID, self, err){
-        console.trace(err);
         try{
-            let error = new ClientError(request, self.getClientErrorType(request.headers.command) , "Internal server error")
+	    Logger.warn("Error handling client request: " + err);
+            let error = new ClientError(request, self.getClientErrorType(request.header.command) , "Internal server error");
             self.connectionManager.sendResponse(connectionID, error);
         }catch(fatalError){
-            Logger.error("Some big shit happened: " + fatalError + "\nOriginal error: " + err);
-            console.trace(err)
+            Logger.error("FATAL ERROR while handling client request: " + fatalError + "\nOriginal error: " + err + " " + request);
+            console.trace(err);
         }
     }
 
@@ -120,7 +134,7 @@ class BootLeaveAssistant extends Assistant{
         this.subscribe(crossIslandMessenger, {
             boot_participant: this.bootParticipantIncoming,
             u_booted: this.leaveTopicOnBoot
-        }, this.clientErrorHandler)
+        }, this.crossIslandErrorHandler)
     }
     /*****************************************************
      * ~END UTILS

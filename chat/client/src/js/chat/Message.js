@@ -1,8 +1,10 @@
 import { iCrypto } from "../lib/iCrypto";
 
 /**
- *
- *
+ * Message is the major data type used for client-server-client communication
+ * 
+ * 
+ * 
  * Possible headers:
  *  command: used mainly between browser and island
  *  response: island response to browser. This is an arbitrary string by which

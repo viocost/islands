@@ -5,6 +5,8 @@ const Util = require("./ChatUtility.js");
 const Envelope = require("../objects/CrossIslandEnvelope.js");
 const ServiceMessage = require("../objects/ServiceMessage.js");
 const SSet = require("cute-set");
+const Logger = require("./Logger.js");
+
 
 class TopicAuthorityManager{
     constructor(crossIslandMessenger = Err.required(),
@@ -68,7 +70,7 @@ class TopicAuthorityManager{
     async launchTopicAuthority(taPrivateKey = Err.required(),
                          taHSPrivateKey = Err.required(),
                          taPkfp = Err.required()){
-        console.log("About to launch topic authority");
+        Logger.debug("About to launch topic authority: " + taPkfp);
         await this.connector.checkLaunchIfNotUp(taHSPrivateKey);
         const ta = new TopicAuthority(this.historyManager);
         ta.encryptCachePrivateKey(taPrivateKey);
@@ -77,19 +79,17 @@ class TopicAuthorityManager{
         await ta.loadMetadata();
         ta.loadInviteIndex();
         this.registerTopicAuthority(ta);
-        console.log("Topic authority was launched");
+        Logger.debug("Topic authority was launched");
     }
 
 
     getTopicAuthority(taPkfp){
         if (!this.isTopicAuthorityLaunched(taPkfp)){
-            console.log("Topic authority is not launched: " + taPkfp);
-            Object.keys(this.topicAuthorities).forEach(val=>{
-                console.log(val);
-            });
+            let launchedTAs = Object.keys(this.topicAuthorities).join(", ");
+	    Logger.warn("Topic authority is not launched: " + taPkfp + " launched TAs: " + launchedTAs);
             throw "Topic authority is not launched: " + taPkfp;
         }
-        return this.topicAuthorities[taPkfp]
+        return this.topicAuthorities[taPkfp];
     }
 
 
@@ -163,6 +163,7 @@ class TopicAuthorityManager{
 
 
     isTopicAuthorityLaunched(taPkfp){
+	Logger.debug("checking if topic authority is launched: " + taPkfp);
         return this.topicAuthorities.hasOwnProperty(taPkfp);
     }
 
@@ -177,3 +178,8 @@ class TopicAuthorityManager{
 }
 
 module.exports = TopicAuthorityManager;
+
+
+
+
+

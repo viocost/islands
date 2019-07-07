@@ -22,7 +22,7 @@ class ClientSession {
     }
 
     getConnectionID(){
-        return this.connectionID
+        return this.connectionID;
     }
 }
 

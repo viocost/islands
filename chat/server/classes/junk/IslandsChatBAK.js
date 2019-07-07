@@ -1726,7 +1726,7 @@ class IslandsChat{
                     "note",
                     authorResidence);
 
-                //Notify the one who was booted
+                //Notify the one who has been booted
                 promises.push(self.connector.send(forBooted));
 
                 return Promise.all(promises);

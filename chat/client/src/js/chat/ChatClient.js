@@ -246,9 +246,10 @@ export class ChatClient {
             settings.topicName = topicName;
         }
         if (encrypt){
-            return ChatUtility.encryptStandardMessage(JSON.stringify(settings), publicKey)
-        }else {return settings}
-
+            return ChatUtility.encryptStandardMessage(JSON.stringify(settings), publicKey);
+        }else {
+	    return settings;
+	}
     }
 
 
@@ -306,7 +307,7 @@ export class ChatClient {
             this.chatSocket.emit("request", request);
         }catch(err){
             success = false;
-            error = err.message
+            error = err.message;
         }
 
         //On error try to disconnect
@@ -700,13 +701,13 @@ export class ChatClient {
      * @param self
      */
     noteParticipantBooted(note, self){
-        console.log("Note received: A member was booted. Processing");
+        console.log("Note received: A member has been booted. Processing");
         let newMeta = Metadata.parseMetadata(note.body.metadata);
         self._updateMetadata(newMeta);
         let bootedNickname = this.getMemberRepr(note.body.bootedPkfp);
         this.deleteMemberData(note.body.bootedPkfp);
         this.saveClientSettings();
-        self.emit("participant_booted", "Participant " + bootedNickname + " was booted!")
+        self.emit("participant_booted", "Participant " + bootedNickname + " has been booted!")
     }
 
 
@@ -724,7 +725,6 @@ export class ChatClient {
      */
     async initTopicJoin(nickname, inviteCode) {
         console.log("joining topic with nickname: " + nickname + " | Invite code: " + inviteCode);
-
         const clientSettings = new ClientSettings();
 
         await this.establishIslandConnection();
@@ -1202,7 +1202,7 @@ export class ChatClient {
                 if (filesAttached && filesAttached.length >0){
                     attachmentsInfo = await self.uploadAttachments(filesAttached, chatMessage.header.id, metaID);
                     for (let att of attachmentsInfo) {
-                        chatMessage.addAttachmentInfo(att)
+                        chatMessage.addAttachmentInfo(att);
                     }
                 }
 
@@ -1223,7 +1223,7 @@ export class ChatClient {
             }catch(err){
                 reject(err);
             }
-        })
+        });
     }
 
     whisperMessage(pkfp, messageContent, filesAttached){

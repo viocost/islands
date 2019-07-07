@@ -110,8 +110,8 @@ class CrossIslandMessenger extends EventEmitter{
             if (envelope.returnOnConnectionFail){
                 this.returnEnvelopeOnConnectionFail(envelope, data.error);
             }
-            return !(envelope.returnOnConnectionFail)
-        })
+            return !(envelope.returnOnConnectionFail);
+        });
     }
 
 
@@ -121,13 +121,19 @@ class CrossIslandMessenger extends EventEmitter{
     }
 
 
-
     async returnEnvelope(originalEnvelope, err){
-        console.log("Cross-island messenger is about to send RETURN ENVELOPE!");
+	let logmsg = "Island is returning envelope origin: " + originalEnvelope.origin +
+		    " dest: " + originalEnvelope.destination +
+	    " error: " + err;
+	if (originalEnvelope.payload
+	    && originalEnvelope.payload.headers
+	    && originalEnvelope.payload.headers.command){
+	    logmsg += (" command: " + originalEnvelope.payload.headers.command);
+	}
+	Logger.info(logmsg);
         const envelope = Envelope.makeReturnEnvelope(originalEnvelope, err);
         return this.connector.sendDirectly(envelope);
     }
-
 
 
     getMessageCommand(envelope){

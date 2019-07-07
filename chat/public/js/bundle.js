@@ -6833,7 +6833,7 @@ function () {
   }, {
     key: "noteParticipantBooted",
     value: function noteParticipantBooted(note, self) {
-      console.log("Note received: A member was booted. Processing");
+      console.log("Note received: A member has been booted. Processing");
       var newMeta = Metadata_Metadata.parseMetadata(note.body.metadata);
 
       self._updateMetadata(newMeta);
@@ -6841,7 +6841,7 @@ function () {
       var bootedNickname = this.getMemberRepr(note.body.bootedPkfp);
       this.deleteMemberData(note.body.bootedPkfp);
       this.saveClientSettings();
-      self.emit("participant_booted", "Participant " + bootedNickname + " was booted!");
+      self.emit("participant_booted", "Participant " + bootedNickname + " has been booted!");
     }
   }, {
     key: "bootParticipantFailed",
