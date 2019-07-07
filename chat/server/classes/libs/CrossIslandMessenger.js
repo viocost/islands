@@ -130,7 +130,7 @@ class CrossIslandMessenger extends EventEmitter{
 	    && originalEnvelope.payload.headers.command){
 	    logmsg += (" command: " + originalEnvelope.payload.headers.command);
 	}
-	Logger.info(logmsg);
+	Logger.warn(logmsg);
         const envelope = Envelope.makeReturnEnvelope(originalEnvelope, err);
         return this.connector.sendDirectly(envelope);
     }

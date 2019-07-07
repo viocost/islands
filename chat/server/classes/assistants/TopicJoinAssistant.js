@@ -8,7 +8,7 @@ const Invite = require("../objects/Invite.js");
 const Util = require("../libs/ChatUtility.js");
 const Logger = require("../libs/Logger.js");
 
-class TopicJoinAssistant{
+class TopicJoinAssistant {
     constructor(connectionManager = Err.required(),
                 sessionManager = Err.required(),
                 requestEmitter = Err.required(),
@@ -25,17 +25,15 @@ class TopicJoinAssistant{
         this.topicAuthorityManager = topicAuthorityManager;
         this.subscribeToClientRequests(requestEmitter);
         this.subscribeToCrossIslandsMessages(crossIslandMessenger);
-        this.pedningOutgoingJoinRequests = {};
+        this.pendingOutgoingJoinRequests = {};
     }
 
     /*****************************************************
      * INCOMING REQUEST HANDLERS
      *****************************************************/
-    /**
-     * 
-     */
-    async joinTopicIncoming(envelope, self){
-	Logger.debug("Join topic incoming request receives");
+
+    async joinTopicIncoming(envelope, self) {
+        Logger.debug("Join topic incoming request receives");
         const request = Request.parse(envelope.payload);
         const invite = Invite.parse(request.body.inviteString);
         const topicAuthority = self.topicAuthorityManager.getTopicAuthority(invite.getPkfp());
@@ -43,9 +41,9 @@ class TopicJoinAssistant{
         Logger.debug("Join topic request processed by topic authority");
         const response = new Response("join_topic_success", request);
         response.setAttribute("metadata", newTopicData.metadata);
-        response.setAttribute("inviterNickname",   newTopicData.inviterNickname);
-        response.setAttribute("inviterPkfp",   newTopicData.inviterPkfp);
-        response.setAttribute("topicName",   newTopicData.topicName);
+        response.setAttribute("inviterNickname", newTopicData.inviterNickname);
+        response.setAttribute("inviterPkfp", newTopicData.inviterPkfp);
+        response.setAttribute("topicName", newTopicData.topicName);
         const responseEnvelope = new Envelope(envelope.origin, response, envelope.destination);
         responseEnvelope.setResponse();
         Logger.debug("Sending metadata to the invitee");
@@ -61,7 +59,7 @@ class TopicJoinAssistant{
      * OUTGOING REQUEST HANDLERS
      *****************************************************/
 
-    async joinTopicOutgoing(request, connectionID, self){
+    async joinTopicOutgoing(request, connectionID, self) {
         Logger.debug("Sending outgoing topic join request");
         self.verifyOutgoingRequest(request);
         const hsData = await self.createHiddenService();
@@ -83,21 +81,27 @@ class TopicJoinAssistant{
      * @param {CrossIslandEnvelope} envelope
      * @param {this} self
      */
-    async finalizeTopicJoin(envelope, self){
+    async finalizeTopicJoin(envelope, self) {
         //Verify, save metadata, return new topic data to the client
-        Logger.debug("Finalize topic join.");
-        let response = envelope.payload;
-        const pendingRequest = self.getOutgoingPendingJoinRequest(response.headers.pkfpSource);
-        const metadata = response.body.metadata;
-        const hsPrivateKeyEncrypted = Util.encryptStandardMessage(pendingRequest.hsPrivateKey, pendingRequest.publicKey);
-        Logger.debug("Initializing topic locally");
-	throw "Init topic error";
-        self.hm.initTopic(response.headers.pkfpSource,
-            pendingRequest.publicKey,
-            hsPrivateKeyEncrypted);
-        await self.hm.initHistory(response.headers.pkfpSource, metadata);
-        Logger.debug("Sending response to client");
-        await self.connectionManager.sendResponse(pendingRequest.connectionId, response);
+        try {
+            Logger.debug("Finalize topic join.");
+            let response = envelope.payload;
+            const pendingRequest = self.getOutgoingPendingJoinRequest(response.headers.pkfpSource);
+            const metadata = response.body.metadata;
+            const hsPrivateKeyEncrypted = Util.encryptStandardMessage(pendingRequest.hsPrivateKey, pendingRequest.publicKey);
+            Logger.debug("Initializing topic locally");
+            //only for testing purposes
+            throw "Init topic error";
+            self.hm.initTopic(response.headers.pkfpSource,
+                pendingRequest.publicKey,
+                hsPrivateKeyEncrypted);
+            await self.hm.initHistory(response.headers.pkfpSource, metadata);
+            Logger.debug("Sending response to client");
+            await self.connectionManager.sendResponse(pendingRequest.connectionId, response);
+        } catch (err) {
+            Logger.warn("Error finalizing topic join request: " + err + " " + err.stack);
+            await self.processJoinTopicError(envelope.payload, self, err);
+        }
 
     }
 
@@ -109,31 +113,31 @@ class TopicJoinAssistant{
      * HELPERS
      *****************************************************/
 
-    getOutgoingPendingJoinRequest(pkfp){
-        if(this.pedningOutgoingJoinRequests[pkfp]){
-            return this.pedningOutgoingJoinRequests[pkfp];
-        }else{
+    getOutgoingPendingJoinRequest(pkfp) {
+        if (this.pendingOutgoingJoinRequests[pkfp]) {
+            return this.pendingOutgoingJoinRequests[pkfp];
+        } else {
             throw "Topic join error: pending join request not found!";
         }
 
     }
 
-    verifyIncomingRequest(request){
+    verifyIncomingRequest(request) {
         return Request.isRequestValid(request);
     }
 
     async sendOutgoingRequest(request = Err.required(),
-                        inviteeResidence = Err.required){
+                              inviteeResidence = Err.required) {
         const dest = request.body.destination;
         const envelope = new Envelope(dest, request, inviteeResidence);
         await this.crossIslandMessenger.send(envelope);
     }
 
-    registerOutgoingPendingJoinrequest(pendingRequest){
-        this.pedningOutgoingJoinRequests[pendingRequest.pkfp] = pendingRequest;
+    registerOutgoingPendingJoinrequest(pendingRequest) {
+        this.pendingOutgoingJoinRequests[pendingRequest.pkfp] = pendingRequest;
     }
 
-    verifyOutgoingRequest(request){
+    verifyOutgoingRequest(request) {
         Request.isRequestValid(request, request.body.invitee.publicKey, {
             pkfpSource: true,
             pkfpDest: true,
@@ -141,14 +145,13 @@ class TopicJoinAssistant{
         });
     }
 
-    createHiddenService(){
+    createHiddenService() {
         return this.connector.createHiddenService();
     }
 
 
-
     //Subscribes to relevant client requests
-    subscribeToClientRequests(requestEmitter){
+    subscribeToClientRequests(requestEmitter) {
         this.subscribe(requestEmitter, {
             //Handlers
             join_topic: this.joinTopicOutgoing
@@ -156,68 +159,78 @@ class TopicJoinAssistant{
     }
 
     //Subscribes to relevant cross-island requests
-    subscribeToCrossIslandsMessages(ciMessenger){
+    subscribeToCrossIslandsMessages(ciMessenger) {
         this.subscribe(ciMessenger, {
             join_topic: this.joinTopicIncoming,
-            return_join_topic: this.processJoinTopicError,
+            return_join_topic: this.processJoinTopicErrorOnReturn,
             join_topic_success: this.finalizeTopicJoin
         }, this.crossIslandErrorHandler);
     }
 
 
-
-
     /***** Error handlers *****/
     /**
      * This function is called when return envelope received
-     * from other island. 
+     * from other island.
      */
-    async processJoinTopicError(envelope, self){
-        //Verify, save metadata, return new topic data to the client
-        Logger.warn("Join topic failed. Return envelope received");
-        let response = envelope.payload;
-        const pendingRequest = self.getOutgoingPendingJoinRequest(response.headers.pkfpSource);
-	let error = new ClientError(response,
-				    self.getClientErrorType(response.headers.command),
-				    response.headers.error);
-	//Getting all active connections
-	let connections = self.sessionManager.getActiveUserSessions(response.headers.pkfpSource);
-	for(let conn of connections){
-	    self.connectionManager.sendResponse(conn.getId, response);
-	}
+    async processJoinTopicErrorOnReturn(envelope, self) {
+        Logger.warn("Join topic failed. Return envelope received. Error: " + envelope.error);
+        let request = envelope;
+
+        while(request.payload){
+            request = request.payload;
+        }
+
+        await self.processJoinTopicError(request, self, envelope.error);
     }
 
-    clientRequestErrorHandler(request, connectionID, self, err){
+    async processJoinTopicError(message, self, error = undefined) {
+        try {
+            const pendingRequest = self.getOutgoingPendingJoinRequest(message.headers.pkfpSource);
+            let clientError = new ClientError(message,
+                self.getClientErrorType(message.headers.command),
+                error ? error : "unknown error");
+            if (pendingRequest) {
+                self.connectionManager.sendResponse(pendingRequest.connectionId, clientError);
+                delete self.pendingOutgoingJoinRequests[message.headers.pkfpSorce];
+            }
+        } catch (err) {
+            Logger.error("FATAL ERROR while processing join topic error: " + err + " " + err.stack);
+        }
+    }
+
+    clientRequestErrorHandler(request, connectionID, self, err) {
         console.trace(err);
-        try{
-            let error = new ClientError(request, self.getClientErrorType(request.headers.command) , "Internal server error");
+        try {
+            let error = new ClientError(request, self.getClientErrorType(request.headers.command), "Internal server error");
             self.connectionManager.sendResponse(connectionID, error);
-        }catch(fatalError){
-	    Logger.error("Some big shit happened: " + fatalError + "\nOriginal error: " + err);
+        } catch (fatalError) {
+            Logger.error("Some big shit happened: " + fatalError + "\nOriginal error: " + err);
             console.trace(err);
         }
     }
 
-    getClientErrorType(command){
+
+    getClientErrorType(command) {
         const errorTypes = {
             join_topic: "join_topic_error"
         };
-        if (!errorTypes.hasOwnProperty(command)){
+        if (!errorTypes.hasOwnProperty(command)) {
             throw "invalid error type";
         }
         return errorTypes[command];
     }
 
-    async crossIslandErrorHandler(envelope, self, err){
-        try{
-	    if (envelope.return){
-		Logger.error("Error handling return envelope: " + err + " stack: " + err.stack);
-		return;
-	    }
-	    Logger.warn("Topic join error: " + err + " returning envelope...");
+    async crossIslandErrorHandler(envelope, self, err) {
+        try {
+            if (envelope.return) {
+                Logger.error("Error handling return envelope: " + err + " stack: " + err.stack);
+                return;
+            }
+            Logger.warn("Topic join error: " + err + " returning envelope...");
             await self.crossIslandMessenger.returnEnvelope(envelope, err);
-        }catch (fatalErr){
-	    Logger.error("FATAL ERROR" + fatalErr + " " + fatalErr.stack);
+        } catch (fatalErr) {
+            Logger.error("FATAL ERROR" + fatalErr + " " + fatalErr.stack);
             console.trace("FATAL ERROR: " + fatalErr);
         }
 
@@ -234,10 +247,10 @@ class TopicJoinAssistant{
      */
     subscribe(emitter = Err.required(),
               handlers = Err.required(),
-              errorHandler = Err.required()){
+              errorHandler = Err.required()) {
         let self = this;
-        Object.keys(handlers).forEach((command)=>{
-            emitter.on(command, async(...args)=>{
+        Object.keys(handlers).forEach((command) => {
+            emitter.on(command, async (...args) => {
                 args.push(self);
                 await self.handleRequest(handlers, command, args, errorHandler);
             });
@@ -252,10 +265,10 @@ class TopicJoinAssistant{
      * @param errorHandler - request specific error handler
      * @returns {Promise<void>}
      */
-    async handleRequest(handlers, command, args, errorHandler){
-        try{
+    async handleRequest(handlers, command, args, errorHandler) {
+        try {
             await handlers[command](...args)
-        }catch(err){
+        } catch (err) {
             args.push(err);
             await errorHandler(...args);
         }

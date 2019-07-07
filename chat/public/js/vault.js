@@ -5566,8 +5566,10 @@ function () {
 
 
 /**
- *
- *
+ * Message is the major data type used for client-server-client communication
+ * 
+ * 
+ * 
  * Possible headers:
  *  command: used mainly between browser and island
  *  response: island response to browser. This is an arbitrary string by which
@@ -6085,6 +6087,7 @@ function () {
         request_invite_error: this.requestInviteError,
         sync_invites_error: this.syncInvitesError,
         delete_topic_error: this.deleteTopicError,
+        join_topic_error: this.joinTopicError,
         default: this.unknownError
       };
     }
@@ -6872,11 +6875,10 @@ function () {
               case 0:
                 console.log("joining topic with nickname: " + nickname + " | Invite code: " + inviteCode);
                 clientSettings = new ClientSettings_ClientSettings();
-                clientSettings;
-                _context4.next = 5;
+                _context4.next = 4;
                 return this.establishIslandConnection();
 
-              case 5:
+              case 4:
                 ic = new iCrypto_iCrypto();
                 ic.asym.createKeyPair("rsa").getPublicKeyFingerprint('rsa', 'pkfp').addBlob("invite64", inviteCode.trim()).base64Decode("invite64", "invite");
                 invite = ic.get("invite").split("/");
@@ -6885,14 +6887,14 @@ function () {
                 inviteID = invite[2];
 
                 if (this.inviteRequestValid(inviterResidence, inviterID, inviteID)) {
-                  _context4.next = 14;
+                  _context4.next = 13;
                   break;
                 }
 
                 this.emit("join_topic_fail");
                 throw "Invite request is invalid";
 
-              case 14:
+              case 13:
                 this.pendingTopicJoins[inviteID] = {
                   publicKey: ic.get('rsa').publicKey,
                   privateKey: ic.get('rsa').privateKey,
@@ -6926,7 +6928,7 @@ function () {
                 };
                 return _context4.abrupt("return", topicData);
 
-              case 24:
+              case 23:
               case "end":
                 return _context4.stop();
             }
@@ -7882,6 +7884,12 @@ function () {
       request.set("body", body);
       request.signMessage(this.session.privateKey);
       this.chatSocket.emit("request", request);
+    }
+  }, {
+    key: "joinTopicError",
+    value: function joinTopicError(response, self) {
+      console.log("Topic join error: " + response.headers.error);
+      self.emit("topic_join_error", response.headers.error);
     }
   }, {
     key: "requestInviteError",
@@ -9396,8 +9404,14 @@ function topicJoin() {
         return _ref.apply(this, arguments);
       };
     }());
+    chat.on("topic_join_error", function (err) {
+      console.log("Topic join finished with error: " + err);
+      loadingOff();
+      toastr["warning"]("Topic join finished with error: " + err);
+
+      _destroyChat(chat);
+    });
     chat.initTopicJoin(nickname, inviteCode).then(function () {
-      toastr["success"]("You have joined the topic successfully.");
       console.log("Topic creation initiated!: ");
     }).catch(function (err) {
       console.log("Error creating topic: " + err);

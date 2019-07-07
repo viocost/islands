@@ -82,6 +82,7 @@ export class ChatClient {
             request_invite_error: this.requestInviteError,
             sync_invites_error: this.syncInvitesError,
             delete_topic_error: this.deleteTopicError,
+            join_topic_error: this.joinTopicError,
             default: this.unknownError
         }
     }
@@ -1399,6 +1400,11 @@ export class ChatClient {
         request.set("body", body);
         request.signMessage(this.session.privateKey);
         this.chatSocket.emit("request", request);
+    }
+
+    joinTopicError(response, self){
+        console.log("Topic join error: " + response.headers.error);
+        self.emit("topic_join_error", response.headers.error);
     }
 
     requestInviteError(response, self){

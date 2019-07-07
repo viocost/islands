@@ -374,11 +374,17 @@ function topicJoin(){
             topicJoinForm.close();
         });
 
+        chat.on("topic_join_error",  (err)=>{
+            console.log("Topic join finished with error: " + err);
+            loadingOff();
+            toastr.warning("Topic join finished with error: " + err);
+            _destroyChat(chat);
+
+        });
+
         chat.initTopicJoin(nickname, inviteCode)
             .then(()=>{
-                toastr.success("You have joined the topic successfully.");
                 console.log("Topic creation initiated!: ");
-
             })
             .catch(err=>{
                 console.log("Error creating topic: " + err );

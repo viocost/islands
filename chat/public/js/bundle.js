@@ -3437,14 +3437,14 @@ var web_dom_iterable = __webpack_require__(31);
 var es6_object_to_string = __webpack_require__(32);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/regenerator/index.js
-var regenerator = __webpack_require__(2);
+var regenerator = __webpack_require__(3);
 var regenerator_default = /*#__PURE__*/__webpack_require__.n(regenerator);
 
 // EXTERNAL MODULE: ./node_modules/regenerator-runtime/runtime.js
 var runtime = __webpack_require__(146);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/asyncToGenerator.js
-var asyncToGenerator = __webpack_require__(8);
+var asyncToGenerator = __webpack_require__(9);
 var asyncToGenerator_default = /*#__PURE__*/__webpack_require__.n(asyncToGenerator);
 
 // EXTERNAL MODULE: ./node_modules/cute-set/index.js
@@ -5563,8 +5563,10 @@ function () {
 
 
 /**
- *
- *
+ * Message is the major data type used for client-server-client communication
+ * 
+ * 
+ * 
  * Possible headers:
  *  command: used mainly between browser and island
  *  response: island response to browser. This is an arbitrary string by which
@@ -6082,6 +6084,7 @@ function () {
         request_invite_error: this.requestInviteError,
         sync_invites_error: this.syncInvitesError,
         delete_topic_error: this.deleteTopicError,
+        join_topic_error: this.joinTopicError,
         default: this.unknownError
       };
     }
@@ -6869,11 +6872,10 @@ function () {
               case 0:
                 console.log("joining topic with nickname: " + nickname + " | Invite code: " + inviteCode);
                 clientSettings = new ClientSettings_ClientSettings();
-                clientSettings;
-                _context4.next = 5;
+                _context4.next = 4;
                 return this.establishIslandConnection();
 
-              case 5:
+              case 4:
                 ic = new iCrypto_iCrypto();
                 ic.asym.createKeyPair("rsa").getPublicKeyFingerprint('rsa', 'pkfp').addBlob("invite64", inviteCode.trim()).base64Decode("invite64", "invite");
                 invite = ic.get("invite").split("/");
@@ -6882,14 +6884,14 @@ function () {
                 inviteID = invite[2];
 
                 if (this.inviteRequestValid(inviterResidence, inviterID, inviteID)) {
-                  _context4.next = 14;
+                  _context4.next = 13;
                   break;
                 }
 
                 this.emit("join_topic_fail");
                 throw "Invite request is invalid";
 
-              case 14:
+              case 13:
                 this.pendingTopicJoins[inviteID] = {
                   publicKey: ic.get('rsa').publicKey,
                   privateKey: ic.get('rsa').privateKey,
@@ -6923,7 +6925,7 @@ function () {
                 };
                 return _context4.abrupt("return", topicData);
 
-              case 24:
+              case 23:
               case "end":
                 return _context4.stop();
             }
@@ -7881,6 +7883,12 @@ function () {
       this.chatSocket.emit("request", request);
     }
   }, {
+    key: "joinTopicError",
+    value: function joinTopicError(response, self) {
+      console.log("Topic join error: " + response.headers.error);
+      self.emit("topic_join_error", response.headers.error);
+    }
+  }, {
     key: "requestInviteError",
     value: function requestInviteError(response, self) {
       console.log("Request invite error received: " + response.headers.error);
@@ -8559,22 +8567,6 @@ var soundsOnOfIcons = {
   off: "/img/sound-off.png"
 };
 var sendLock = false;
-var mainMenuItems = [{
-  index: 0,
-  subtitle: "Login",
-  selector: "#login-container",
-  active: true
-}, {
-  index: 1,
-  subtitle: "Join",
-  selector: "#join-by-invite-container",
-  active: false
-}, {
-  index: 2,
-  subtitle: "New",
-  selector: "#new-topic-container",
-  active: false
-}];
 var tempName;
 var recording = false;
 document.addEventListener('DOMContentLoaded', function (event) {
@@ -8782,47 +8774,6 @@ function js_app_topicLogin() {
     }, _callee2);
   }));
   return js_app_topicLogin.apply(this, arguments);
-}
-
-function joinTopic() {
-  return _joinTopic.apply(this, arguments);
-}
-
-function _joinTopic() {
-  _joinTopic = asyncToGenerator_default()(
-  /*#__PURE__*/
-  regenerator_default.a.mark(function _callee3() {
-    var inviteCode, nickname, data;
-    return regenerator_default.a.wrap(function _callee3$(_context3) {
-      while (1) {
-        switch (_context3.prev = _context3.next) {
-          case 0:
-            inviteCode = document.querySelector('#invite-code').value.trim();
-            nickname = document.querySelector('#join-nickname').value.trim();
-            loadingOn();
-            _context3.prev = 3;
-            _context3.next = 6;
-            return app_chat.initTopicJoin(nickname, inviteCode);
-
-          case 6:
-            data = _context3.sent;
-            _context3.next = 13;
-            break;
-
-          case 9:
-            _context3.prev = 9;
-            _context3.t0 = _context3["catch"](3);
-            toastr["error"]("Topic was not created. Error: " + _context3.t0);
-            loadingOff();
-
-          case 13:
-          case "end":
-            return _context3.stop();
-        }
-      }
-    }, _callee3, null, [[3, 9]]);
-  }));
-  return _joinTopic.apply(this, arguments);
 }
 
 function setupChatListeners(chat) {
@@ -9524,11 +9475,11 @@ function downloadOnClick(_x2) {
 function _downloadOnClick() {
   _downloadOnClick = asyncToGenerator_default()(
   /*#__PURE__*/
-  regenerator_default.a.mark(function _callee4(ev) {
+  regenerator_default.a.mark(function _callee3(ev) {
     var target, fileInfo;
-    return regenerator_default.a.wrap(function _callee4$(_context4) {
+    return regenerator_default.a.wrap(function _callee3$(_context3) {
       while (1) {
-        switch (_context4.prev = _context4.next) {
+        switch (_context3.prev = _context3.next) {
           case 0:
             console.log("Download event triggered!");
             target = ev.target;
@@ -9538,7 +9489,7 @@ function _downloadOnClick() {
             }
 
             if (target) {
-              _context4.next = 5;
+              _context3.next = 5;
               break;
             }
 
@@ -9549,32 +9500,32 @@ function _downloadOnClick() {
 
             console.log("obtained fileinfo: " + fileInfo);
             target.childNodes[0].style.display = "inline-block";
-            _context4.prev = 8;
-            _context4.next = 11;
+            _context3.prev = 8;
+            _context3.next = 11;
             return app_chat.downloadAttachment(fileInfo);
 
           case 11:
             //download file
             console.log("Download complete!");
-            _context4.next = 17;
+            _context3.next = 17;
             break;
 
           case 14:
-            _context4.prev = 14;
-            _context4.t0 = _context4["catch"](8);
-            toastr["warning"]("file download unsuccessfull: " + _context4.t0);
+            _context3.prev = 14;
+            _context3.t0 = _context3["catch"](8);
+            toastr["warning"]("file download unsuccessfull: " + _context3.t0);
 
           case 17:
-            _context4.prev = 17;
+            _context3.prev = 17;
             target.childNodes[0].style.display = "none";
-            return _context4.finish(17);
+            return _context3.finish(17);
 
           case 20:
           case "end":
-            return _context4.stop();
+            return _context3.stop();
         }
       }
-    }, _callee4, null, [[8, 14, 17, 20]]);
+    }, _callee3, null, [[8, 14, 17, 20]]);
   }));
   return _downloadOnClick.apply(this, arguments);
 }
@@ -10116,22 +10067,22 @@ function loadAudio(_x3, _x4) {
 function _loadAudio() {
   _loadAudio = asyncToGenerator_default()(
   /*#__PURE__*/
-  regenerator_default.a.mark(function _callee5(fileInfo, fileData) {
+  regenerator_default.a.mark(function _callee4(fileInfo, fileData) {
     var message, audio, arr, fileURL, viewWrap;
-    return regenerator_default.a.wrap(function _callee5$(_context5) {
+    return regenerator_default.a.wrap(function _callee4$(_context4) {
       while (1) {
-        switch (_context5.prev = _context5.next) {
+        switch (_context4.prev = _context4.next) {
           case 0:
             //search right message
             message = findMessage(fileInfo.messageID);
 
             if (message) {
-              _context5.next = 4;
+              _context4.next = 4;
               break;
             }
 
             console.error("Message not found");
-            return _context5.abrupt("return");
+            return _context4.abrupt("return");
 
           case 4:
             audio = document.createElement("audio");
@@ -10147,10 +10098,10 @@ function _loadAudio() {
 
           case 14:
           case "end":
-            return _context5.stop();
+            return _context4.stop();
         }
       }
-    }, _callee5);
+    }, _callee4);
   }));
   return _loadAudio.apply(this, arguments);
 }

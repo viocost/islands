@@ -105,8 +105,7 @@ class BootLeaveAssistant extends Assistant{
             let error = new ClientError(request, self.getClientErrorType(request.header.command) , "Internal server error");
             self.connectionManager.sendResponse(connectionID, error);
         }catch(fatalError){
-            Logger.error("FATAL ERROR while handling client request: " + fatalError + "\nOriginal error: " + err + " " + request);
-            console.trace(err);
+            Logger.error("FATAL ERROR while handling client request: " + fatalError + " " + fatalError.stack);
         }
     }
 

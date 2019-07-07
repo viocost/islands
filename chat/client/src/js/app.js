@@ -29,22 +29,6 @@ let soundsOnOfIcons = {
 
 let sendLock = false;
 
-let mainMenuItems = [{
-    index: 0,
-    subtitle: "Login",
-    selector: "#login-container",
-    active: true
-}, {
-    index: 1,
-    subtitle: "Join",
-    selector: "#join-by-invite-container",
-    active: false
-}, {
-    index: 2,
-    subtitle: "New",
-    selector: "#new-topic-container",
-    active: false
-}];
 
 let tempName;
 
@@ -228,17 +212,7 @@ async function topicLogin() {
     await chat.topicLogin(privKey);
 }
 
-async function joinTopic() {
-    let inviteCode = document.querySelector('#invite-code').value.trim();
-    let nickname = document.querySelector('#join-nickname').value.trim();
-    loadingOn();
-    try {
-        let data = await chat.initTopicJoin(nickname, inviteCode);
-    } catch (err) {
-        toastr.error("Topic was not created. Error: " + err);
-        loadingOff();
-    }
-}
+
 
 function setupChatListeners(chat) {
     chat.on("init_topic_success", data => {
@@ -350,6 +324,8 @@ function setupChatListeners(chat) {
     chat.on("sync_invites_success", () => {
         refreshInvitesSuccess();
     });
+
+
 
     chat.on("sync_invites_error", msg => {
         buttonLoadingOff(document.querySelector('#refresh-invites'));
