@@ -746,6 +746,7 @@ export class ChatClient {
         }
 
         this.pendingTopicJoins[inviteID] = {
+	    pkfp: ic.get('pkfp'),
             publicKey: ic.get('rsa').publicKey,
             privateKey: ic.get('rsa').privateKey,
             nickname: nickname,
@@ -808,11 +809,13 @@ export class ChatClient {
         console.log("Join successfull received!");
         let topicInfo = self.pendingTopicJoins[request.body.inviteCode];
         self.initSettingsOnTopicJoin(topicInfo, request);
+
+	console.log("new topic pkfp: " + JSON.stringify(topicInfo));
         self.emit("topic_join_success", {
             pkfp: topicInfo.pkfp,
             nickname: topicInfo.nickname,
             privateKey: topicInfo.privateKey
-        })
+        });
     }
 
 

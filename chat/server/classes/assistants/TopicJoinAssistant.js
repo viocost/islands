@@ -90,8 +90,6 @@ class TopicJoinAssistant {
             const metadata = response.body.metadata;
             const hsPrivateKeyEncrypted = Util.encryptStandardMessage(pendingRequest.hsPrivateKey, pendingRequest.publicKey);
             Logger.debug("Initializing topic locally");
-            //only for testing purposes
-            throw "Init topic error";
             self.hm.initTopic(response.headers.pkfpSource,
                 pendingRequest.publicKey,
                 hsPrivateKeyEncrypted);

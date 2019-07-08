@@ -1,13 +1,13 @@
 import { ChatClient } from  "./chat/ChatClient";
 import * as toastr from "toastr";
 import { Vault } from "./lib/Vault";
-import * as waitMe from "./lib/waitMe.min"
+import * as waitMe from "./lib/waitMe.min";
 import { iCrypto } from "./lib/iCrypto";
-import * as Modal from "./lib/DynmaicModal"
+import * as Modal from "./lib/DynmaicModal";
 import { verifyPassword } from "./lib/PasswordVerify";
 import * as dropdown from "./lib/dropdown";
 import * as editable_field from "./lib/editable_field";
-import * as util from "./lib/dom-util"
+import * as util from "./lib/dom-util";
 
 //let chat;
 let vault;
@@ -25,7 +25,7 @@ let adminLogin;
 /**Set main listeneres when document loaded**/
 document.addEventListener('DOMContentLoaded', event => {
     document.title = "Islands | Login";
-    util.$("#register-vault").addEventListener("click", registerVault)
+    util.$("#register-vault").addEventListener("click", registerVault);
     util.$("#vault-login-btn").addEventListener("click", vaultLoginGetVault);
     util.$("#create").addEventListener("click", showTopicCreateForm);
     util.$("#join").addEventListener("click", showTopicJopinForm);

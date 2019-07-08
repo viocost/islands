@@ -1,6 +1,6 @@
 import { iCrypto } from "../lib/iCrypto";
 import { IError }  from "../../../../common/IError";
-import { Topic } from "../lib/Topic"
+import { Topic } from "../lib/Topic";
 
 
 
@@ -89,7 +89,7 @@ export class Vault{
                 k,
                 data.topics[k].name,
                 data.topics[k].key,
-                data.topics[k].comment)
+                data.topics[k].comment);
         });
 
         this.initialized = true;
@@ -102,7 +102,7 @@ export class Vault{
     //This has to be moved outside
     save(){
         if (!this.password || this.privateKey || this.topics){
-            throw "Vault object structure is not valid"
+            throw "Vault object structure is not valid";
         }
 
         //Check if vault exists decrypted and loaded
@@ -125,7 +125,7 @@ export class Vault{
             .base64Encode("cipher", "cip64")
             .merge(["cip64", "s64"], "res")
             .setRSAKey("asymkey", this.privateKey, "private")
-            .privateKeySign("res", "asymkey", "sign")
+            .privateKeySign("res", "asymkey", "sign");
 
 
         //Sign encrypted vault with private key
@@ -135,30 +135,26 @@ export class Vault{
             sign: ic.get("sign")
         };
         let xhr = new XMLHttpRequest();
-
-
-        xhr.open("POST", "/update", true)
+        xhr.open("POST", "/update", true);
         xhr.setRequestHeader('Content-Type', 'application/json');
-
         xhr.onreadystatechange = ()=>{
             console.log("Server said that vault is saved!");
         };
-        xhr.send(body)
+        xhr.send(body);
 
         //Send vault to the server
-
         //Display result of save request
 
     }
 
     changePassword(newPassword){
         if(!this.initialized){
-            throw "The vault hasn't been initialized"
+            throw "The vault hasn't been initialized";
         }
         if(!newPassword || newPassword.trim === ""){
-            throw "Password required"
+            throw "Password required";
         }
-        this.password = newPassword
+        this.password = newPassword;
     }
 
 
