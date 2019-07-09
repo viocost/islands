@@ -13,7 +13,7 @@ const vaultRouter = require("./vaultRouter");
 const adminRouter = require("./adminRouter");
 const chatRouter = require("./chatRouter");
 const HSVaultMap = require("./classes/libs/HSVaultMap");
-
+const mobileRouter = require("./mobileRouter");
 let VERSION;
 try{
     VERSION = "v" + JSON.parse(fs.readFileSync('./package.json').toString()).version
@@ -84,10 +84,10 @@ HSVaultMap.init(config.hsVaultMap);
 
 adminRouter.init(app, config, HOST, PORT, VERSION, adminKeyPath, updatePath);
 vaultRouter.init(config, VERSION);
-
+mobileRouter.init(VERSION);
 
 app.use("/", vaultRouter.router);
-
+app.use("/mobile", mobileRouter.router);
 app.use("/help", helpRouter);
 app.use("/chat", chatRouter.router);
 app.use("/admin", adminRouter.router);

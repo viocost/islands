@@ -53,6 +53,11 @@ case $key in
     BUILD_FRONT=true
     shift
     ;;
+    -ip)
+    IPADDR="$2"
+    shift
+    shift
+    ;;
     -h | --help)
     HELP=true
     shift
@@ -72,6 +77,12 @@ if [[ ${BUILD_FRONT} ]]; then
 fi
 
 RUNCOMMAND="docker container run --rm -it "
+
+if [ [ -z ${IPADDR} ] ]; then
+    IPADDR="localhost"
+else
+    RUNCOMMAND= "$RUNCOMMAND -ip ${IPADDR} "
+fi
 
 if [[ -z ${PORT+x} ]]; then
     PORT=4001;
