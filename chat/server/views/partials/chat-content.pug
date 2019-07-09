@@ -9,13 +9,13 @@
     #you_online
         .user-name--wrap
             span.user-name--greeting Hi,
-            input.heading-name--input#user-name
+            input.heading-name--input#user-name(maxlength="255")
 
 
 
         .topic-name--wrap
            span Topic:
-           input.heading-name--input#topic-name
+           input.heading-name--input#topic-name(maxlength="255")
 
     .chat-wrapper#chat_room
         .chat-left-panel
@@ -48,7 +48,7 @@
                         .button-column
                             img#sounds-switch(src="/img/sound-on.png")
                         .flex-column.new-msg-input
-                            textarea#new-msg(placeholder='Enter your message')
+                            textarea#new-msg(placeholder='Enter your message', maxlength="65535")
                             #chosen-files
                 .control-col.new-msg-buttons
                     .send-button-wrap

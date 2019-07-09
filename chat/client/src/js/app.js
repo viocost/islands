@@ -243,7 +243,15 @@ function setupChatListeners(chat) {
     chat.on("unknown_error", err => {
         console.log("unknown_error emited by chat: " + err);
         toastr.error("Chat error: " + err);
+	loadingOff();
+	lockSend(false);
+	util.$("#new-msg").focus();
+
     });
+
+
+    
+    
     chat.on("login_fail", err => {
         clearLoginPrivateKey();
         loadingOff();
@@ -416,14 +424,14 @@ function sendMessage() {
     }
 
     if (addressee === "ALL") {
-        chat.shoutMessage(message.value.trim(), attachments).then(() => {
+        chat.shoutMessage(message.value.trim().substring(0, 65536), attachments).then(() => {
             console.log("Send message resolved");
         }).catch(err => {
             console.log("Error sending message" + err.message);
             lockSend(false);
         });
     } else {
-        chat.whisperMessage(addressee, message.value.trim()).then(() => {
+        chat.whisperMessage(addressee, message.value.trim().substring(0, 65536)).then(() => {
             console.log("Done whispering message!");
         }).catch(err => {
             console.log("Error sending message" + err.message);
@@ -454,14 +462,14 @@ function messageSendSuccess(message) {
     clearOldMessages();
 
     lockSend(false);
-    util.$("#new-msg").focus()
+    util.$("#new-msg").focus();
 }
 
 function clearOldMessages(){
     let chatWindow = util.$("#chat_window");
     if (chatWindow.childElementCount >= 70){
         for (let i=0; i<20; i++){
-            chatWindow.removeChild(chatWindow.firstElementChild)
+            chatWindow.removeChild(chatWindow.firstElementChild);
         }
     }
 

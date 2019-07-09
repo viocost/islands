@@ -1221,7 +1221,6 @@ export class ChatClient {
                 message.body.message = chatMessage.toBlob();
                 let userPrivateKey = this.session.privateKey;
                 message.signMessage(userPrivateKey);
-                //console.log("Message ready: " + JSON.stringify(message));
                 this.chatSocket.emit("request", message);
                 resolve();
             }catch(err){

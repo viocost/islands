@@ -7612,7 +7612,7 @@ function () {
                   message.headers.command = "broadcast_message";
                   message.body.message = chatMessage.toBlob();
                   userPrivateKey = _this5.session.privateKey;
-                  message.signMessage(userPrivateKey); //console.log("Message ready: " + JSON.stringify(message));
+                  message.signMessage(userPrivateKey);
 
                   _this5.chatSocket.emit("request", message);
 
@@ -9069,6 +9069,7 @@ function prepareChangePasswordModal() {
     id: "pass-change-old",
     classes: "left-align",
     attributes: {
+      maxlength: "50",
       type: "password",
       placeholder: "Enter old password",
       required: true
@@ -9079,6 +9080,7 @@ function prepareChangePasswordModal() {
     classes: "left-align",
     attributes: {
       type: "password",
+      maxlength: "50",
       placeholder: "Enter new password",
       required: true
     }
@@ -9088,6 +9090,7 @@ function prepareChangePasswordModal() {
     classes: "left-align",
     attributes: {
       type: "password",
+      maxlength: "50",
       placeholder: "Confirm new password",
       required: true
     }
@@ -9120,6 +9123,7 @@ function prepareTopicCreateModal() {
     classes: "left-align",
     attributes: {
       placeholder: "Enter topic name",
+      maxlength: "255",
       required: true
     }
   });
@@ -9128,6 +9132,7 @@ function prepareTopicCreateModal() {
     classes: "left-align",
     attributes: {
       placeholder: "Enter nickname",
+      maxlength: "255",
       required: true
     }
   });
@@ -9171,6 +9176,7 @@ function prepareTopicJoinModal() {
     classes: "left-align",
     attributes: {
       placeholder: "Enter your nickname",
+      maxlength: "255",
       required: true
     }
   });
@@ -9179,6 +9185,7 @@ function prepareTopicJoinModal() {
     classes: "left-align",
     attributes: {
       placeholder: "Paste invite code",
+      maxlength: "255",
       required: true
     }
   });
@@ -9194,6 +9201,7 @@ function prepareTopicJoinModal() {
     classes: "left-align",
     attributes: {
       placeholder: "Enter topic name",
+      maxlength: "255",
       required: true
     }
   });

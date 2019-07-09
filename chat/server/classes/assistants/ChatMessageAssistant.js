@@ -62,6 +62,12 @@ class ChatMessageAssistant{
             });
             throw "Login required";
         }
+
+	if (message.body.message.length > 65535){
+	    Logger.warn("Attempt to send message of length more than 65535 bytes. Actual length is " + message.body.message.length);
+	    throw "Message is too long";
+	}
+	
         const metadata = JSON.parse(await self.hm.getLastMetadata(pkfp));
         const myPublicKey = metadata.body.participants[pkfp].publicKey;
         const verified = Message.verifyMessage(myPublicKey, message);
@@ -71,6 +77,7 @@ class ChatMessageAssistant{
             });
             throw "Broadcasting message error: signature is not valid!" ;
         }
+
         const recipients = metadata.body.participants;
         await self.hm.appendMessage(message.body.message, pkfp);
         const myResidence = recipients[pkfp].residence;
@@ -109,6 +116,12 @@ class ChatMessageAssistant{
             });
             throw "Login required";
         }
+
+	if (message.body.message.length > 65535){
+	    Logger.warn("Attempt to send message of length more than 65535 bytes. Actual length is " + message.body.message.length);
+	    throw "Message is too long";
+	}
+	
         const verified = Message.verifyMessage(myPublicKey, message);
         if(!verified){
             throw "Sending private message error: signature is not valid!";
@@ -122,15 +135,20 @@ class ChatMessageAssistant{
         let envelope = new Envelope(recipient.residence, new Message(msgString), sender.residence);
         await self.crossIslandMessenger.send(envelope);
         message.headers.response = "send_success";
-        self.sessionManager.broadcastUserResponse(sender.pkfp, message)
+        self.sessionManager.broadcastUserResponse(sender.pkfp, message);
     }
 
 
 
     async processIncomingMessage(envelope, self){
         const message = envelope.payload;
+	if(message.body.message.length > 65535){
+	    Logger.warn("Incoming message exeeds length limit. Origin: " + evnelope.origin +
+		       " Length: " + message.body.message.length);
+	    return;
+	}
         const chatMessage = JSON.parse(message.body.message);
-
+		
         Logger.verbose("Received incoming chat message", {
             origResidence: envelope.origin,
             messageID: chatMessage.header.id,
@@ -150,7 +168,6 @@ class ChatMessageAssistant{
                 messageID: chatMessage.header.id
             });
             return
-
         }
 
         let authorPublicKey = metadata.body.participants[authorPkfp].publicKey;
@@ -262,23 +279,25 @@ class ChatMessageAssistant{
 
 
     /***** Error handlers *****/
+    getClientErrorType(command){
+	return command + "_error";
+    }
+    
     async clientErrorHandler(request, connectionID, self, err){
-
         try{
-            Logger.warn("Error handling client request",{
+	    let msg = `Error handling client request: ${request}, conid: ${connectionID
+} self: ${self} err: ${err.message}`;
+            Logger.warn(msg ,{
                 errorMsg: err.message,
                 context: err.stack,
             });
-            let error = new ClientError(request, self.getClientErrorType(request.headers.command) , "Internal server error")
+            let error = new ClientError(request, self.getClientErrorType(request.headers.command) , err.message || err || "Unknown error");
             self.connectionManager.sendResponse(connectionID, error);
         }catch(fatalError){
             Logger.error("FATAL: Could nod handle client error.", {
-                envelope: JSON.stringify(envelope),
-                originalError: err.message,
                 fatalError: fatalError.message,
                 context: fatalError.stack,
-
-            })
+            });
         }
     }
 

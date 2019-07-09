@@ -7609,7 +7609,7 @@ function () {
                   message.headers.command = "broadcast_message";
                   message.body.message = chatMessage.toBlob();
                   userPrivateKey = _this5.session.privateKey;
-                  message.signMessage(userPrivateKey); //console.log("Message ready: " + JSON.stringify(message));
+                  message.signMessage(userPrivateKey);
 
                   _this5.chatSocket.emit("request", message);
 
@@ -8807,6 +8807,9 @@ function setupChatListeners(chat) {
   chat.on("unknown_error", function (err) {
     console.log("unknown_error emited by chat: " + err);
     toastr["error"]("Chat error: " + err);
+    loadingOff();
+    lockSend(false);
+    dom_util_$("#new-msg").focus();
   });
   chat.on("login_fail", function (err) {
     clearLoginPrivateKey();
@@ -8959,14 +8962,14 @@ function sendMessage() {
   }
 
   if (addressee === "ALL") {
-    app_chat.shoutMessage(message.value.trim(), attachments).then(function () {
+    app_chat.shoutMessage(message.value.trim().substring(0, 65536), attachments).then(function () {
       console.log("Send message resolved");
     }).catch(function (err) {
       console.log("Error sending message" + err.message);
       lockSend(false);
     });
   } else {
-    app_chat.whisperMessage(addressee, message.value.trim()).then(function () {
+    app_chat.whisperMessage(addressee, message.value.trim().substring(0, 65536)).then(function () {
       console.log("Done whispering message!");
     }).catch(function (err) {
       console.log("Error sending message" + err.message);

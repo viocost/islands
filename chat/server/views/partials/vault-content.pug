@@ -3,14 +3,14 @@
     #vault-register--wrapper
         div.form-border
             h3 Create your password:
-            div: input#vault-new-password(type="password" placeholder="Enter new password")
-            div: input#vault-new-password-confirm(type="password" placeholder="Confirm new password")
+            div: input#vault-new-password(type="password" placeholder="Enter new password" maxlength="50")
+            div: input#vault-new-password-confirm(type="password" placeholder="Confirm new password" maxlength="50")
             div: button.btn#register-vault Save
 
     #vault-login--wrapper
         div.form-border
             h3 Vault login:
-            div: input#vault-password(type="password" placeholder="Password")
+            div: input#vault-password(type="password" placeholder="Password" maxlength="50")
             div: button.btn#vault-login-btn Login
 
 
