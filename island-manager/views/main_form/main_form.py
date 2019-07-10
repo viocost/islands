@@ -329,6 +329,8 @@ class Ui_MainWindow(object):
         self.act_update_vm.setObjectName("act_update_vm")
         self.act_help = QtWidgets.QAction(MainWindow)
         self.act_help.setObjectName("act_help")
+        self.act_view_logs = QtWidgets.QAction(MainWindow)
+        self.act_view_logs.setObjectName("act_view_logs")
         self.menuOptions.addAction(self.actionInfo)
         self.menuOptions.addSeparator()
         self.menuOptions.addAction(self.actionMinimize_2)
@@ -340,6 +342,7 @@ class Ui_MainWindow(object):
         self.menuConfig.addAction(self.act_open_config)
         self.menuConfig.addSeparator()
         self.menuConfig.addAction(self.act_update_vm)
+        self.menuConfig.addAction(self.act_view_logs)
         self.menuHelp.addAction(self.act_help)
         self.menuBar.addAction(self.menuOptions.menuAction())
         self.menuBar.addAction(self.menuTools.menuAction())
@@ -384,6 +387,7 @@ class Ui_MainWindow(object):
         self.act_open_config.setText(_translate("MainWindow", "Open configuration..."))
         self.act_update_vm.setText(_translate("MainWindow", "Update Islands VM..."))
         self.act_help.setText(_translate("MainWindow", "User guide"))
+        self.act_view_logs.setText(_translate("MainWindow", "View logs"))
 
 
 import resources_rc

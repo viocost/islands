@@ -655,6 +655,7 @@
     <addaction name="act_open_config"/>
     <addaction name="separator"/>
     <addaction name="act_update_vm"/>
+    <addaction name="act_view_logs"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -745,6 +746,11 @@
   <action name="act_help">
    <property name="text">
     <string>User guide</string>
+   </property>
+  </action>
+  <action name="act_view_logs">
+   <property name="text">
+    <string>View logs</string>
    </property>
   </action>
  </widget>

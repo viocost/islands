@@ -4,6 +4,7 @@ from controllers.keys_form import KeysForm
 from controllers.setup_wizard_window import SetupWizardWindow as SetupWindow
 from controllers.config_form import ConfigForm
 from controllers.update_form import UpdateForm
+from controllers.logs_form import LogsForm
 from controllers.help_form import Helpform
 from PyQt5.QtWidgets import QMainWindow,  QMessageBox as QM, QMenu, QSystemTrayIcon, QAction, QPushButton
 from PyQt5.QtCore import pyqtSignal, QEvent, QPoint
@@ -122,13 +123,14 @@ class MainWindow(QMainWindow):
         self.ui.button_launch_setup.clicked.connect(self.launch_setup)
         self.current_state_signal.connect(self.set_state)
         self.ui.actionInfo.triggered.connect(self.show_app_info)
-        self.ui.actionClose.triggered.connect(self.on_close)
+        self.ui.actionClose.triggered.connect(self.quit_app)
         self.ui.actionMinimize_2.triggered.connect(self.minimize_main_window)
         self.processing.connect(self.set_working)
         self.state_changed.connect(self.refresh_island_status)
         self.ui.act_islandsimage_authoring.triggered.connect(self.author_image)
         self.ui.act_my_torrents.triggered.connect(self.show_my_torrents)
         self.ui.act_trusted_keys.triggered.connect(lambda: self.open_keys_form())
+        self.ui.act_view_logs.triggered.connect(self.open_logs_form)
         self.ui.act_my_keys.triggered.connect(lambda: self.open_keys_form(True))
         self.ui.act_open_config.triggered.connect(lambda: self.open_config())
         self.ui.act_update_vm.triggered.connect(self.open_update)
@@ -139,7 +141,10 @@ class MainWindow(QMainWindow):
         help_form = Helpform(self)
         help_form.exec()
 
-
+    def open_logs_form(self):
+        logs_form = LogsForm(self, self.config["manager_data_folder"])
+        logs_form.exec()
+            
     def author_image(self):
         log.debug("Opening image authoring form")
         form = ImageAuthoringForm(parent=self,

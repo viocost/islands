@@ -6,6 +6,12 @@ function do_main {
     echo done!
 }
 
+function do_logs {
+    echo doing logs form
+    pyuic5 ../views/logs_form/logs_form.ui -o ../views/logs_form/logs_form.py
+    echo done!
+}
+
 function do_image_authoring_form {
     echo doing image_authoring_form
     pyuic5 ../views/image_authoring_form/image_authoring_form.ui -o ../views/image_authoring_form/image_authoring_form.py
@@ -81,6 +87,8 @@ elif [[ $1 == "key_import" ]]; then
     do_import_key_form
 elif [[ $1 == "key_create" ]]; then
     do_key_create_form
+elif [[ $1 == "logs" ]]; then
+    do_logs
 elif [[ $1 == "keys" ]]; then
     do_keys_form
 elif [[ $1 == "help" ]]; then
