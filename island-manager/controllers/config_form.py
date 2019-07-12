@@ -1,14 +1,14 @@
-from views.config_form.config_form import Ui_ConfigForm
-from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox as QM, QStatusBar, QVBoxLayout
-from PyQt5.QtCore import Qt
-from lib.util import get_full_path, show_notification, show_user_error_window, get_stack
-from controllers.update_form import UpdateForm
-from controllers.select_vm_form import SelectVMForm
-import time
-import re
 import logging
-from lib.island_manager import IslandManagerException
+import time
 from os.path import basename, normpath, join
+
+from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox as QM, QStatusBar, QVBoxLayout
+
+from controllers.select_vm_form import SelectVMForm
+from controllers.update_form import UpdateForm
+from lib.island_manager import IslandManagerException
+from lib.util import get_full_path, show_notification, show_user_error_window
+from views.config_form.config_form import Ui_ConfigForm
 
 log = logging.getLogger(__name__)
 
@@ -32,7 +32,6 @@ class ConfigForm:
     def exec(self):
         self.window.exec()
 
-
     def setup_status_bar(self):
         ly = QVBoxLayout(self.window)
         bar = QStatusBar(self.window)
@@ -41,7 +40,6 @@ class ConfigForm:
 
     def load_settings(self):
         self.ui.vboxmanagePathLineEdit.setText(get_full_path(self.config['vboxmanage']))
-
 
     def assign_handlers(self):
         self.ui.btn_refresh_info.clicked.connect(self.refresh_vm_info)
@@ -54,7 +52,6 @@ class ConfigForm:
         self.ui.vboxmanageDefault.clicked.connect(self.restore_default_vboxmanage_path)
         self.ui.vboxmanageSave.clicked.connect(self.save_vboxmanage_path)
 
-
     def restore_default_vmname(self):
         self.config.restore_default("vmname")
         self.refresh_required = True
@@ -66,8 +63,8 @@ class ConfigForm:
         self.refresh_required = True
 
     def restore_default_data_folder_path(self):
-        #Check if custom path is different from default
-        #confirm
+        # Check if custom path is different from default
+        # confirm
         if self.config.is_default("data_folder"):
             print("Already default")
             return
@@ -85,8 +82,8 @@ class ConfigForm:
         res = QM.warning(self.window,
                          "Delete Island",
                          "This is going to unregister Island virtual machine, "
-                              "wipe its files and reset VM settings to default. " 
-                              "Data files will be saved. Continue?",
+                         "wipe its files and reset VM settings to default. "
+                         "Data files will be saved. Continue?",
                          QM.Yes | QM.No)
         if res == QM.Yes:
             try:
@@ -142,9 +139,9 @@ class ConfigForm:
                "and selected directory will be mounted under islandsData name.\n\nSelected directory: %s\n\n" \
                "Proceed?" % res
         if QM.question(self.window,
-                          "Confirm",
-                          wmsg,
-                          QM.Yes | QM.No) != QM.Yes:
+                       "Confirm",
+                       wmsg,
+                       QM.Yes | QM.No) != QM.Yes:
             log.debug("Data folder config cancelled. Returning...")
             return
         log.debug("Configuring data dir to " + res)
@@ -214,7 +211,7 @@ class ConfigForm:
                 for key in self.vm_info.keys():
                     self.ui.vm_info.append(line.format(
                         content="%s%s" % (name.format(key=key), val.format(val=str(self.vm_info[key])))
-                ))
+                    ))
         self.ui.btn_del_vm.setEnabled(vbox_set_up and self.vm_info is not None)
         self.ui.btn_configure_data.setEnabled(vbox_set_up and self.vm_info is not None)
         self.ui.btn_update_vm.setEnabled(vbox_set_up)

@@ -1,19 +1,17 @@
-from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox as QM
-from PyQt5.QtCore import pyqtSignal, QEvent, Qt
-from PyQt5.QtGui import QTextCursor
-from views.update_form.update_form import Ui_IslandsUpdate
-from lib.util import get_full_path, sizeof_fmt, show_user_error_window, show_notification
+import logging
 import time
 
-import logging
+from PyQt5.QtCore import pyqtSignal, QEvent, Qt
+from PyQt5.QtGui import QTextCursor
+from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox as QM
 
+from lib.util import get_full_path, sizeof_fmt, show_user_error_window
+from views.update_form.update_form import Ui_IslandsUpdate
 
 log = logging.getLogger(__name__)
 
 
-
 class UpdateForm(QDialog):
-
     output = pyqtSignal(str)
     progress = pyqtSignal(str, str, str, str, bool)
     download_timeout_signal = pyqtSignal()
@@ -67,8 +65,6 @@ class UpdateForm(QDialog):
         self.configuration_in_progress = in_progress
         self.ui.btn_cancel.setEnabled(not in_progress)
 
-
-
     def process_update_result(self, is_success, msg=""):
         self.working = False
         if is_success:
@@ -102,11 +98,11 @@ class UpdateForm(QDialog):
         ratio = "%s/%s" % (str(downloaded), str(total_size)) if downloaded is not None and total_size \
             else ""
         self.progress_bar_handler(
-                                  action='finalize',
-                                  title=title,
-                                  progress_in_percents=str(progress),
-                                  ratio=ratio,
-                                  success=True)
+            action='finalize',
+            title=title,
+            progress_in_percents=str(progress),
+            ratio=ratio,
+            success=True)
 
     def on_download_timeout(self):
         msg = "Download seems to be stalled. It may be due to poor network connection " \
@@ -118,7 +114,7 @@ class UpdateForm(QDialog):
         self.ui.lbl_timeout_msg.setVisible(True)
         self.update_els_visibility()
 
-    def on_complete(self, msg,  size=18, color='green', ):
+    def on_complete(self, msg, size=18, color='green', ):
         log.debug("<=================== Complete called! =============>")
         self.output.emit('<p style="color: {color}; font-size: {size}px"> {msg} </p>'
                          .format(msg=msg, size=size, color=color))
@@ -235,14 +231,15 @@ class UpdateForm(QDialog):
         self.output.emit('<p style="color: {color}; font-size: {size}px"> {msg} </p>'
                          .format(msg=msg, size=size, color=color))
         if self.download_timeout and (time.time() - self.last_download_timeout > 2):
-                self.check_timeout()
-                self.update_els_visibility()
+            self.check_timeout()
+            self.update_els_visibility()
 
     # Baking progress bar handlers
     def get_init_progress_bar_handler(self):
         def init_progress_bar(title, size=None):
             ratio = "0/%d" % size if size is not None else ""
             self.progress.emit('init', title, "0", ratio, True)
+
         return init_progress_bar
 
     def get_update_progress_bar_handler(self):
@@ -256,10 +253,11 @@ class UpdateForm(QDialog):
         return update_progress_bar
 
     def get_finalize_progress_bar_handler(self):
-        def finalize_progress_bar(progress=None,  downloaded=None, total_size=None, title=None):
+        def finalize_progress_bar(progress=None, downloaded=None, total_size=None, title=None):
             ratio = "%s/%s" % (str(downloaded), str(total_size)) if downloaded is not None and total_size \
                 else ""
             self.progress.emit('finalize', title, str(progress), ratio, True)
+
         return finalize_progress_bar
 
     def progress_bar_handler(self, action, title="", progress_in_percents="", ratio="", success=True):
@@ -282,10 +280,11 @@ class UpdateForm(QDialog):
             multiple = .3
             fill = '='
             void = ' '
-            fills = int(multiple*int(float(progress_in_percents)))
-            whitespaces = int(multiple*100) - fills
-            return '<span style="font-family: Courier"><b> {:>3}% </b><span style="white-space: pre;">|{}>{}|</span> </span>{}'.format(progress_in_percents, fill*fills,
-                                        void * whitespaces, ratio)
+            fills = int(multiple * int(float(progress_in_percents)))
+            whitespaces = int(multiple * 100) - fills
+            return '<span style="font-family: Courier"><b> {:>3}% </b><span style="white-space: pre;">|{}>{}|</span> </span>{}'.format(
+                progress_in_percents, fill * fills,
+                void * whitespaces, ratio)
 
         def init_progress_bar():
             self.ui.output_console.append('<br><b>{title}</b>'.format(title=title))
@@ -329,7 +328,7 @@ class UpdateForm(QDialog):
 
     def untrusted_key_confirm(self):
         msg = "Warning, the public key of the image you are trying to use is not registered as trusted.\n" + \
-            "Would you like to import image anyway? The public key will be registered as trusted."
+              "Would you like to import image anyway? The public key will be registered as trusted."
         res = QM.question(self, "Unknown public key", msg, QM.Yes | QM.No)
         if res == QM.Yes:
             self.setup.vm_installer.unknown_key_confirm_resume_update()

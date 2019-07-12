@@ -1,5 +1,6 @@
-from views.select_vm_form.select_vm_form import Ui_SelectVM
 from PyQt5.QtWidgets import QDialog
+
+from views.select_vm_form.select_vm_form import Ui_SelectVM
 
 
 class SelectVMForm:

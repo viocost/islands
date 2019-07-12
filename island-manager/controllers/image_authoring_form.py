@@ -1,26 +1,27 @@
-from views.image_authoring_form.image_authoring_form import Ui_ImageAuthoringForm
-from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox, QInputDialog
-from PyQt5.QtCore import pyqtSignal, QObject
-from lib.util import get_full_path, show_user_error_window
-from lib.image_authoring import ImageAuthoring
+import logging
+import os
+import re
+import shutil
+from random import random
 from threading import Thread
 from time import sleep
-from random import random
+
+from PyQt5.QtCore import pyqtSignal, QObject
+from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox, QInputDialog
+
+from lib.image_authoring import ImageAuthoring
+from lib.util import get_full_path, show_user_error_window
 from lib.version_manager import ImageVersionManager, VersionBranchAlreadyExist
-import os
-import shutil
-import logging
-import re
-
-
+from views.image_authoring_form.image_authoring_form import Ui_ImageAuthoringForm
 
 log = logging.getLogger(__name__)
 
-class ImageAuthoringForm(QObject):
 
+class ImageAuthoringForm(QObject):
     progress = pyqtSignal(str, int)
     error = pyqtSignal(str)
     success = pyqtSignal()
+
     def __init__(self, parent, config, key_manager, torrent_manager):
         QObject.__init__(self, parent)
         self.key_manager = key_manager
@@ -68,13 +69,14 @@ class ImageAuthoringForm(QObject):
         self.ui.lbl_prev_islands_version.setText("none")
         self.ui.lbl_previous_img_version.setText("none")
 
-        log.debug("Processing artifact selected. Current artifact index is: %d | Current priv key index: %d "% (
+        log.debug("Processing artifact selected. Current artifact index is: %d | Current priv key index: %d " % (
             self.ui.select_artifact.currentIndex(), self.ui.select_private_key.currentIndex()
         ))
         if self.ui.select_artifact.currentIndex() <= 0 or self.ui.select_private_key.currentIndex() <= 0:
             return
         log.debug("Processing artifact selected")
-        last_record = self.version_manager.get_last_release_record(self._get_selected_pkfp(), self.ui.select_artifact.currentText())
+        last_record = self.version_manager.get_last_release_record(self._get_selected_pkfp(),
+                                                                   self.ui.select_artifact.currentText())
 
         if last_record:
             self.ui.publisher.setText(last_record["publisher"])
@@ -122,10 +124,9 @@ class ImageAuthoringForm(QObject):
             return
 
         return delimiter.join([str(int(self.ui.image_version.text())),
-                       ("%02d" % int(self.ui.image_release.text())),
-                       "%03d" % int(self.ui.image_modification.text())
-                        ])
-
+                               ("%02d" % int(self.ui.image_release.text())),
+                               "%03d" % int(self.ui.image_modification.text())
+                               ])
 
     def fill_keys(self):
         user_keys = self.key_manager.get_user_private_keys_info()
@@ -146,7 +147,8 @@ class ImageAuthoringForm(QObject):
         show_user_error_window(self.window, msg)
 
     def on_success(self):
-        QMessageBox.information(QMessageBox(self.window), "Success", "Image authoring successfully completed!", QMessageBox.Ok)
+        QMessageBox.information(QMessageBox(self.window), "Success", "Image authoring successfully completed!",
+                                QMessageBox.Ok)
         log.debug("Closing authoring form")
         self.window.close()
         self.window.destroy()
@@ -164,14 +166,14 @@ class ImageAuthoringForm(QObject):
             os.path.exists(self.ui.source_file.text()) and
             bool(re.search(r"^\d{1,4}\.\d{1,4}\.\d{1,4}$", self.ui.islands_version.text().strip()))
 
-
         )
 
         self.ui.groupBox_4.setEnabled(
             self.ui.groupBox_2.isEnabled() and
             self.ui.groupBox_3.isEnabled() and
             all(re.search(r"^\d{1,4}", x) for x in
-                [self.ui.image_version.text().strip(), self.ui.image_modification.text().strip(), self.ui.image_release.text().strip()])
+                [self.ui.image_version.text().strip(), self.ui.image_modification.text().strip(),
+                 self.ui.image_release.text().strip()])
         )
 
         self.ui.btn_go.setEnabled(all([
@@ -209,7 +211,8 @@ class ImageAuthoringForm(QObject):
                 self.version_manager.create_new_artifact(pkfp, res[0])
                 log.debug("artifact file created")
             except VersionBranchAlreadyExist as e:
-                QMessageBox.warning(self.window, "Error creating new artifact", "Artifact with this name already exists")
+                QMessageBox.warning(self.window, "Error creating new artifact",
+                                    "Artifact with this name already exists")
         self.fill_artifacts()
 
     def _get_selected_pkfp(self):
@@ -306,7 +309,8 @@ class ImageAuthoringForm(QObject):
             ic = image_authoring.sign_source(key_data, key_password, path_to_image)
             log.debug("Creating info")
             self.progress.emit("Creating info...", 38)
-            release_data = image_authoring.create_info(ic, image_version, islands_version, note, publisher, temp_dir, email)
+            release_data = image_authoring.create_info(ic, image_version, islands_version, note, publisher, temp_dir,
+                                                       email)
             self.progress.emit("Signing info info...", 48)
             image_authoring.sign_info(ic, temp_dir)
             self.progress.emit("Writing image..", 60)
@@ -352,7 +356,7 @@ class ImageAuthoringForm(QObject):
         if self.ui.private_key_password.text().strip(" ") == "":
             required_fields.append("Image version")
 
-        if len(required_fields) > 0 :
+        if len(required_fields) > 0:
             show_user_error_window(self.window, "Please fill the required fields: %s" % " ".join(required_fields))
             return True
 

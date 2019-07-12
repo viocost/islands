@@ -1,23 +1,24 @@
-import sys
-from views.main_form.main_form import Ui_MainWindow
-from controllers.keys_form import KeysForm
-from controllers.setup_wizard_window import SetupWizardWindow as SetupWindow
-from controllers.config_form import ConfigForm
-from controllers.update_form import UpdateForm
-from controllers.logs_form import LogsForm
-from controllers.help_form import Helpform
-from PyQt5.QtWidgets import QMainWindow,  QMessageBox as QM, QMenu, QSystemTrayIcon, QAction, QPushButton
-from PyQt5.QtCore import pyqtSignal, QEvent, QPoint
-from PyQt5.QtGui import QIcon, QPixmap
-from lib.util import get_version, is_admin_registered
-from lib.island_states import IslandStates as States
-from controllers.image_authoring_form import ImageAuthoringForm
-from controllers.torrents_form import TorrentsForm
-from lib.key_manager import KeyManager
-from time import sleep
-from threading import Thread
-import resources_rc
 import logging
+import sys
+from threading import Thread
+from time import sleep
+
+from PyQt5.QtCore import pyqtSignal, QEvent
+from PyQt5.QtGui import QIcon, QPixmap
+from PyQt5.QtWidgets import QMainWindow, QMessageBox as QM, QMenu, QSystemTrayIcon, QAction
+
+from controllers.config_form import ConfigForm
+from controllers.help_form import Helpform
+from controllers.image_authoring_form import ImageAuthoringForm
+from controllers.keys_form import KeysForm
+from controllers.logs_form import LogsForm
+from controllers.setup_wizard_window import SetupWizardWindow as SetupWindow
+from controllers.torrents_form import TorrentsForm
+from controllers.update_form import UpdateForm
+from lib.island_states import IslandStates as States
+from lib.key_manager import KeyManager
+from lib.util import get_version, is_admin_registered
+from views.main_form.main_form import Ui_MainWindow
 
 log = logging.getLogger(__name__)
 
@@ -61,7 +62,6 @@ class MainWindow(QMainWindow):
         log.debug("Main window controller initialized.")
         self.launch_background_links_updater()
         self.pending_state = False
-        
 
     def event(self, event):
         if event.type() == QEvent.ActivationChange:
@@ -144,7 +144,7 @@ class MainWindow(QMainWindow):
     def open_logs_form(self):
         logs_form = LogsForm(self, self.config["manager_data_folder"])
         logs_form.exec()
-            
+
     def author_image(self):
         log.debug("Opening image authoring form")
         form = ImageAuthoringForm(parent=self,
@@ -195,6 +195,7 @@ class MainWindow(QMainWindow):
             except Exception as e:
                 print("Error occured")
                 print(e)
+
         return handler
 
     def open_config(self):
@@ -233,6 +234,7 @@ class MainWindow(QMainWindow):
     def set_setup_window_onclose_handler(self, window):
         def handler():
             self.refresh_island_status()
+
         window.on_close(handler)
 
     def set_state(self, state):
@@ -244,9 +246,9 @@ class MainWindow(QMainWindow):
             log.error("Error setting state %s: %s" % (state, str(e)))
 
     """MENU HANDLERS"""
+
     def minimize_main_window(self):
         self.showMinimized()
-
 
     def show_app_info(self):
         self.show()
@@ -256,9 +258,10 @@ class MainWindow(QMainWindow):
         self.close()
 
     def set_main_window_title(self):
-        self.setWindowTitle("Islands Manager %s" % "v"+get_version())
+        self.setWindowTitle("Islands Manager %s" % "v" + get_version())
 
     """ STATE SETTERS """
+
     def set_setup_required(self):
         self.current_state = States.SETUP_REQUIRED
         self.pending_state = False
@@ -410,7 +413,6 @@ class MainWindow(QMainWindow):
         if sys.platform == "darwin":
             self.repaint()
 
-
     # HELPERS
     def set_links_on_signal(self, result, link):
         log.debug("Link result signal received: result: %s, link: %s" % (str(result), str(link)))
@@ -418,12 +420,13 @@ class MainWindow(QMainWindow):
             log.debug("Got the links, but the VM is not running. Returning")
             return
         elif not result:
-            self.ui.island_access_address.setText('<span style="color: grey; text-decoration: none">not configured</span>')
+            self.ui.island_access_address.setText(
+                '<span style="color: grey; text-decoration: none">not configured</span>')
             self.ui.island_admin_access_address.setVisible(False)
             return
         admin_exist = bool(is_admin_registered(self.config["data_folder"]))
         log.debug("admin exists: %s" % str(admin_exist))
-        connstr = "%s:%s" %(link, self.config["local_access_port"])
+        connstr = "%s:%s" % (link, self.config["local_access_port"])
         local_access = self.get_local_access_html(connstr)
         admin_access = self.get_local_access_html(connstr, True)
         self.ui.island_access_label.setVisible(admin_exist)
@@ -473,9 +476,10 @@ class MainWindow(QMainWindow):
                 else:
                     log.debug("Links not yet found. Retrying...")
                     counter += 1
-                    sleep(2+counter)
+                    sleep(2 + counter)
             if self.current_state == States.RUNNING:
                 self.access_links_result.emit(False, "")
+
         return worker
 
     """ ~ END STATES """
@@ -556,4 +560,3 @@ class MainWindow(QMainWindow):
         actions["show"] = show_hide_act
         actions["quit"] = quit_act
         return actions
-

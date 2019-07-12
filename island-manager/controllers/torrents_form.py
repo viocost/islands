@@ -1,15 +1,16 @@
-from views.torrents_form.torrents_form import Ui_TorrentsForm
-from controllers.create_torrent_form import CreateTorrentForm
-from PyQt5.QtWidgets import QDialog, QHeaderView, QInputDialog, QLineEdit, QMenu, QAction, QMessageBox, QApplication
-from PyQt5.QtCore import Qt, QProcess
-from models.TorrentsModel import TorrentsModel
-from lib.util import sizeof_fmt, show_user_error_window, get_stack
-from lib.app_ref import AppRef
+import logging
 import os
 
-import logging
+from PyQt5.QtCore import Qt, QProcess
+from PyQt5.QtWidgets import QDialog, QHeaderView, QInputDialog, QLineEdit, QMenu, QAction, QMessageBox, QApplication
+
+from controllers.create_torrent_form import CreateTorrentForm
+from lib.util import sizeof_fmt, show_user_error_window
+from models.TorrentsModel import TorrentsModel
+from views.torrents_form.torrents_form import Ui_TorrentsForm
 
 log = logging.getLogger(__name__)
+
 
 class TorrentsForm:
     def __init__(self, parent, torrent_manager, config):
@@ -31,7 +32,6 @@ class TorrentsForm:
 
         self.load_display_limits()
 
-
     def show_torrent_context_menu(self, point):
         print(point)
         index = self.ui.torrents_table.indexAt(point)
@@ -47,7 +47,6 @@ class TorrentsForm:
         header.setSectionResizeMode(3, QHeaderView.ResizeToContents)
         header.setSectionResizeMode(1, QHeaderView.Stretch)
         header.setSectionResizeMode(4, QHeaderView.Stretch)
-
 
     def show_create_torrent_dialog(self):
         dialog = CreateTorrentForm(self.window, self.torrent_manager, self.config)
@@ -72,7 +71,7 @@ class TorrentsForm:
         copy_magnet_link.triggered.connect(lambda: self.copy_magnet_link(infohash))
         copy_infohash.triggered.connect(lambda: self.copy_infohash(infohash))
 
-        menu.addActions([pause, resume, show_content, copy_infohash,  copy_magnet_link,  delete])
+        menu.addActions([pause, resume, show_content, copy_infohash, copy_magnet_link, delete])
         return menu
 
     def pause_torrent(self, infohash):
@@ -87,7 +86,7 @@ class TorrentsForm:
         dialog = QMessageBox(self.window)
         dialog.setIcon(QMessageBox.Warning)
         dialog.setText("Delete torrent")
-        dialog.setInformativeText("The torrent %s and all its metadata will be deleted"\
+        dialog.setInformativeText("The torrent %s and all its metadata will be deleted" \
                                   "\nWould you like to delete torrent data as well?" % name)
         dialog.addButton(QMessageBox.Cancel)
         dialog.addButton(QMessageBox.No)
@@ -98,7 +97,7 @@ class TorrentsForm:
             log.debug("Cancel torrent deletion")
             return
         try:
-            log.debug("Deleting torrent: %s %s" %(infohash, name))
+            log.debug("Deleting torrent: %s %s" % (infohash, name))
             self.torrent_manager.delete_torrent(infohash, (res == QMessageBox.Yes))
         except Exception as e:
             msg = "Error deleting torrent %s " % str(e)
@@ -135,7 +134,6 @@ class TorrentsForm:
         self.ui.lbl_download_speed.setText("%s/s" % sizeof_fmt(download_rate))
         self.ui.lbl_upload_speed.setText("%s/s" % sizeof_fmt(upload_rate))
 
-
     def set_global_upload_limit(self):
         res = QInputDialog.getInt(QInputDialog(self.window), "Set upload limit",
                                   "Enter new upload limit in bytes per second. Enter 0 to remove limit ", )
@@ -155,10 +153,9 @@ class TorrentsForm:
         download_limit = self.torrent_manager.get_global_download_limit()
         log.debug("Loading limits up %d down %d" % (upload_limit, download_limit))
         self.ui.btn_upload_limit.setText("Limit: %s" % (u"\u221E" if upload_limit == 0 else
-                                         "%s/s" % sizeof_fmt(upload_limit)))
+                                                        "%s/s" % sizeof_fmt(upload_limit)))
         self.ui.btn_download_limit.setText("Limit: %s" % (u"\u221E" if download_limit == 0 else
-                                           "%s/s" % sizeof_fmt(download_limit)))
+                                                          "%s/s" % sizeof_fmt(download_limit)))
 
     def exec(self):
         self.window.exec()
-

@@ -1,10 +1,12 @@
-from views.import_key_form.import_key_form import Ui_KeyImport
-from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox
-from lib.key_manager import PASSWORD_LENGTH
-from lib.exceptions import KeyImportError
 import logging
 from os import path
+
+from PyQt5.QtWidgets import QDialog, QFileDialog
+
+from lib.exceptions import KeyImportError
+from lib.key_manager import PASSWORD_LENGTH
 from lib.util import get_full_path, show_user_error_window
+from views.import_key_form.import_key_form import Ui_KeyImport
 
 log = logging.getLogger(__name__)
 
@@ -33,16 +35,12 @@ class KeyImportForm:
         if self.is_private:
             self.ui.is_key_encrypted.clicked.connect(self.set_existing_password_field_visibility)
 
-
     def set_existing_password_field_visibility(self):
         self.ui.existing_password.setVisible(self.ui.is_key_encrypted.isChecked())
 
-
-
     def set_key_import_option(self):
-        ind = 0 if  self.ui.import_from_file.isChecked() else 1
+        ind = 0 if self.ui.import_from_file.isChecked() else 1
         self.ui.stackedWidget.setCurrentIndex(ind)
-
 
     def setup_private_key_layout(self):
         self.window.setWindowTitle("Private key import")
@@ -50,7 +48,6 @@ class KeyImportForm:
         self.ui.new_password.setVisible(True)
         self.ui.key_password_label.setVisible(True)
         self.ui.confirm_password.setVisible(True)
-
 
     def open_select_file_dialog(self):
         res = QFileDialog.getOpenFileName(self.window,
@@ -120,22 +117,15 @@ class KeyImportForm:
             except KeyImportError as e:
                 show_user_error_window(self.window, str(e))
 
-
     def _close(self):
         self.window.close()
         self.window.destroy()
-
 
     def cancel(self):
         self._close()
         print("Canceling")
 
-
     def exec(self):
         self.window.exec()
         print("after window.exec executing")
         return "Some value!"
-
-
-
-

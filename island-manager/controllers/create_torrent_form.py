@@ -1,8 +1,10 @@
-from views.create_torrent_form.create_torrent_form import Ui_CreateTorrentForm
-from PyQt5.QtWidgets import QDialog, QFileDialog
-from lib.util import get_full_path, show_user_error_window, show_notification
 import logging
 import os
+
+from PyQt5.QtWidgets import QDialog, QFileDialog
+
+from lib.util import get_full_path, show_user_error_window
+from views.create_torrent_form.create_torrent_form import Ui_CreateTorrentForm
 
 log = logging.getLogger(__name__)
 
@@ -23,7 +25,7 @@ class CreateTorrentForm:
         res = None
         if self.ui.select_mode.currentIndex() == 0:
             # Selecting file
-            res = QFileDialog.getOpenFileName(dialog,  "Select file", get_full_path(self.config["homedir"]))
+            res = QFileDialog.getOpenFileName(dialog, "Select file", get_full_path(self.config["homedir"]))
         elif self.ui.select_mode.currentIndex() == 1:
             res = QFileDialog.getExistingDirectory(dialog, "Select directory", get_full_path(self.config["homedir"]))
         else:
@@ -51,7 +53,7 @@ class CreateTorrentForm:
             log.error(msg)
             log.exception(e)
             raise e
-            #show_user_error_window(self.window, msg)
+            # show_user_error_window(self.window, msg)
 
     def cancel(self):
         self.close()
@@ -62,5 +64,3 @@ class CreateTorrentForm:
 
     def exec(self):
         self.window.exec()
-
-

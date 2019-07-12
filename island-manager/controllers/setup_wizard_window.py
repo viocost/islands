@@ -1,22 +1,22 @@
-from os import path
-from PyQt5.QtWidgets import QMessageBox as QM, QWizard, QFileDialog, QInputDialog, QLineEdit, QWidget
-from PyQt5.QtCore import QEvent, pyqtSignal, Qt
-from views.setup_wizard.setup_wizard import Ui_IslandSetupWizard as UI_setup
-
-from PyQt5.QtGui import QTextCursor
-from lib import util
-import sys
-
-import time
 import logging
+import sys
+import time
+from os import path
+
+from PyQt5.QtCore import QEvent, pyqtSignal, Qt
+from PyQt5.QtGui import QTextCursor
+from PyQt5.QtWidgets import QMessageBox as QM, QWizard, QFileDialog, QInputDialog, QLineEdit
+
+from lib import util
+from views.setup_wizard.setup_wizard import Ui_IslandSetupWizard as UI_setup
 
 log = logging.getLogger(__name__)
 
 if sys.platform in ("linux", "darwin"):
     from os import getuid
 
-class SetupWizardWindow(QWizard):
 
+class SetupWizardWindow(QWizard):
     # This signal will be emitted whenever there is something to append to output screen
     # First parameter is message,
     # second parameter is console index: 0 - first page, 1 - second page
@@ -32,8 +32,7 @@ class SetupWizardWindow(QWizard):
     root_password_request = pyqtSignal()
     configuration_in_progress_signal = pyqtSignal(bool)
 
-
-    def __init__(self, parent, config,  island_manager, setup):
+    def __init__(self, parent, config, island_manager, setup):
         super(QWizard, self).__init__(parent)
         self.working = False
         self.config = config
@@ -89,16 +88,16 @@ class SetupWizardWindow(QWizard):
             multiple = .3
             fill = '='
             void = ' '
-            fills = int(multiple*int(float(progress_in_percents)))
-            whitespaces = int(multiple*100) - fills
+            fills = int(multiple * int(float(progress_in_percents)))
+            whitespaces = int(multiple * 100) - fills
             print(fills, whitespaces)
-            return '<span style="font-family: Courier"><b> {:>3}% </b><span style="white-space: pre;">|{}>{}|</span> </span>{}'.format(progress_in_percents, fill*fills,
-                                        void * whitespaces, ratio)
+            return '<span style="font-family: Courier"><b> {:>3}% </b><span style="white-space: pre;">|{}>{}|</span> </span>{}'.format(
+                progress_in_percents, fill * fills,
+                void * whitespaces, ratio)
 
         def init_progress_bar():
             self.consoles[console_index].append('<br><b>{title}</b>'.format(title=title))
             self.consoles[console_index].append(construct_progress_bar())
-
 
         def update_progress_bar():
             b = construct_progress_bar()
@@ -109,7 +108,6 @@ class SetupWizardWindow(QWizard):
             cursor.movePosition(QTextCursor.EndOfBlock, QTextCursor.KeepAnchor)
             cursor.removeSelectedText()
             cursor.insertHtml(b)
-
 
         def finalize_progress_bar():
             color, content = ("green", "OK") if success else ("red", "ERROR")
@@ -154,7 +152,6 @@ class SetupWizardWindow(QWizard):
                 log.debug("Key press event")
                 return True
             if event.type() == QEvent.Close:
-
                 return True
         return super(SetupWizardWindow, self).eventFilter(obj, event)
 
@@ -178,8 +175,8 @@ class SetupWizardWindow(QWizard):
                 if res == QM.Yes:
                     self.setup.abort_vm_install()
                     self.close()
-        return handler
 
+        return handler
 
     # Clear window outputs
 
@@ -211,16 +208,19 @@ class SetupWizardWindow(QWizard):
                 handler()
             else:
                 event.ignore()
+
         return close
 
     def set_vbox_checker(self, handler):
         def is_complete():
             return handler()
+
         self.page(0).isComplete = is_complete
 
     def set_islands_vm_checker(self, handler):
         def is_complete():
             return handler()
+
         self.page(1).isComplete = is_complete
 
     # Appends text to a given console
@@ -244,7 +244,6 @@ class SetupWizardWindow(QWizard):
         res = f_dialog.getExistingDirectory(self)
         if res:
             self.ui.data_folder_path.setText(res)
-
 
     def process_vbox_install_result(self, res, msg):
         form_msg = """
@@ -272,8 +271,6 @@ class SetupWizardWindow(QWizard):
         self.set_visibility_vm_install_concole(False)
         self.ui.vm_install_output_console.setVisible(len(self.ui.vm_install_output_console.toPlainText()) > 0)
 
-
-
     # Console event handlers
     # This handlers are used by setup installer to display the output and update status of
     # installation process
@@ -282,6 +279,7 @@ class SetupWizardWindow(QWizard):
             log.debug("GOT MESSAGE: %s" % msg)
             self.output.emit('<p style="color: {color}; font-size: {size}px"> {msg} </p>'
                              .format(msg=msg, size=size, color=color), console)
+
         return on_message
 
     def get_on_error_handler(self, console):
@@ -290,6 +288,7 @@ class SetupWizardWindow(QWizard):
             self.output.emit('<p style="color: {color}; font-size: {size}px"> {msg} </p>'
                              .format(msg=msg, size=size, color=color), console)
             self.update_elements.emit()
+
         return on_errror
 
     def get_on_complete_handler(self, msg, console, handler=None):
@@ -299,7 +298,9 @@ class SetupWizardWindow(QWizard):
             self.update_elements.emit()
             if handler:
                 handler()
+
         return on_complete
+
     # Console event handlers
 
     # Baking progress bar handlers
@@ -307,6 +308,7 @@ class SetupWizardWindow(QWizard):
         def init_progress_bar(title, size=None):
             ratio = "0/%d" % size if size is not None else ""
             self.progress.emit(console, 'init', title, "0", ratio, True)
+
         return init_progress_bar
 
     def get_update_progress_bar_handler(self, console):
@@ -315,15 +317,18 @@ class SetupWizardWindow(QWizard):
                 util.sizeof_fmt(total_size))) if downloaded is not None and total_size \
                 else ""
             title = title if title is not None else ""
-            self.progress.emit(console, 'update', title,str(progress), ratio, True)
+            self.progress.emit(console, 'update', title, str(progress), ratio, True)
+
         return update_progress_bar
 
     def get_finalize_progress_bar_handler(self, console):
-        def finalize_progress_bar(progress=None,  downloaded=None, total_size=None, title=None):
+        def finalize_progress_bar(progress=None, downloaded=None, total_size=None, title=None):
             ratio = "%s/%s" % (str(downloaded), str(total_size)) if downloaded is not None and total_size \
                 else ""
             self.progress.emit(console, 'finalize', title, str(progress), ratio, True)
+
         return finalize_progress_bar
+
     # END progress bar handlers
 
     def process_vbox_install(self):
@@ -345,7 +350,6 @@ class SetupWizardWindow(QWizard):
                            "Either install Virtualbox yourself or restart Islands Manager as root",
                            QM.Ok)
             return
-
 
         self.consoles[0].setText("")
         self.ui.button_install_vbox.setEnabled(False)
@@ -375,8 +379,6 @@ class SetupWizardWindow(QWizard):
             log.debug("Installation cancelled...")
             self.vbox_instal_complete.emit(False, "Installation cancelled")
 
-
-
     def on_root_password_request(self):
         self.root_password_request.emit()
 
@@ -401,7 +403,7 @@ class SetupWizardWindow(QWizard):
 
     def untrusted_key_confirm(self):
         msg = "Warning, the public key of the image you are trying to use is not registered as trusted.\n" + \
-            "Would you like to import image anyway? The public key will be registered as trusted."
+              "Would you like to import image anyway? The public key will be registered as trusted."
         res = QM.question(self, "Unknown public key", msg, QM.Yes | QM.No)
         if res == QM.Yes:
             self.setup.vm_installer.unknown_key_confirm_resume()
@@ -458,8 +460,6 @@ class SetupWizardWindow(QWizard):
             self.ui.lbl_timeout_msg.setText("")
             self.ui.lbl_timeout_msg.setVisible(False)
 
-
-
     def proceed_vm_install(self):
         """
         Launches VM installation
@@ -482,7 +482,7 @@ class SetupWizardWindow(QWizard):
         log.debug("Trying to import VM from %s " % self.ui.path_islands_vm.text())
         self.setup.run_vm_installer(on_message=self.get_on_message_handler(console=1),
                                     on_complete=lambda is_success, opt_msg="":
-                                        self.vm_install_completed.emit(is_success, opt_msg),
+                                    self.vm_install_completed.emit(is_success, opt_msg),
                                     on_error=self.get_on_error_handler(console=1),
                                     init_progres_bar=self.get_init_progress_bar_handler(console=1),
                                     update_progres_bar=self.get_update_progress_bar_handler(console=1),
@@ -493,7 +493,8 @@ class SetupWizardWindow(QWizard):
                                     on_download_timeout=lambda: self.download_timeout_signal.emit(),
                                     magnet_link=self.ui.magnet_link.text().strip(),
 
-                                    on_configuration_in_progress=lambda x: self.configuration_in_progress_signal.emit(x),
+                                    on_configuration_in_progress=lambda x: self.configuration_in_progress_signal.emit(
+                                        x),
                                     on_confirm_required=lambda: self.unknown_key_confirm_request.emit(),
                                     image_path=self.ui.path_islands_vm.text().strip(),
                                     config=self.config,
@@ -528,7 +529,7 @@ class SetupWizardWindow(QWizard):
         vbox_installed = self.setup.is_vbox_installed()
         vbox_up_to_date = False if not vbox_installed else self.setup.is_vbox_up_to_date()
         islands_vm_installed = vbox_installed and vbox_up_to_date and \
-                self.setup.is_islands_vm_exist()
+                               self.setup.is_islands_vm_exist()
 
         self.ui.button_install_vbox.setVisible(not (vbox_installed and vbox_up_to_date))
         self.ui.button_install_vbox.setEnabled(not (vbox_installed and vbox_up_to_date))
@@ -539,20 +540,19 @@ class SetupWizardWindow(QWizard):
             self.ui.button_install_vbox.setText("Update Virtualbox")
 
         vm_install_ready = (vbox_installed
-                         and vbox_up_to_date and not islands_vm_installed)
+                            and vbox_up_to_date and not islands_vm_installed)
 
         self.ui.data_folder_path.setEnabled(vm_install_ready)
         self.ui.btn_select_data_path.setEnabled(vm_install_ready)
         self.button(QWizard.BackButton).setEnabled(not vm_install_ready or current_page_id != 0
-                                                          or not islands_vm_installed)
+                                                   or not islands_vm_installed)
         self.button(QWizard.NextButton).setEnabled((current_page_id == 0 and vbox_installed and vbox_up_to_date)
-                                                          or current_page_id == 1 and islands_vm_installed and not self.vm_install_in_progress)
+                                                   or current_page_id == 1 and islands_vm_installed and not self.vm_install_in_progress)
         self.button(QWizard.FinishButton).setEnabled(current_page_id == 2 and vbox_installed and
-                                                            vbox_up_to_date and islands_vm_installed)
+                                                     vbox_up_to_date and islands_vm_installed)
         self.scroll_to_end(self.ui.vbox_setup_output_console)
         self.scroll_to_end(self.ui.vm_install_output_console)
         self.vm_install_page_update_state()
-
 
     def vm_install_page_update_state(self):
         """
@@ -568,8 +568,8 @@ class SetupWizardWindow(QWizard):
         self.ui.magnet_link.setVisible(opt_download_checked)
 
         self.ui.btn_install_islands.setEnabled(
-            ((opt_download_checked and len(self.ui.magnet_link.text()) > 0)or
-            (opt_vm_local_checked and len(self.ui.path_islands_vm.text()) > 0)) and not self.vm_install_in_progress
+            ((opt_download_checked and len(self.ui.magnet_link.text()) > 0) or
+             (opt_vm_local_checked and len(self.ui.path_islands_vm.text()) > 0)) and not self.vm_install_in_progress
         )
         self.repaint()
 
@@ -593,15 +593,8 @@ class SetupWizardWindow(QWizard):
         self.ui.opt_vm_local.setChecked(False)
         self.ui.opt_download.setChecked(False)
 
-
-
-
-
-
     def get_active_page_id(self):
         return self.currentId()
-
-
 
 
 class SetupMessages:
@@ -635,7 +628,6 @@ class SetupMessages:
             <p style='font-size=15px'>Click <b>Update Virtualbox</b> to download and install newest version of Virtualbox automatically</p>
                  """
 
-
     @staticmethod
     def vb_installed_instructions():
         return """
@@ -653,7 +645,7 @@ class SetupMessages:
 
     @staticmethod
     def dloading_vb():
-        return"""
+        return """
         <p>Downloading virtualbox...</p>
         """
 
@@ -686,7 +678,6 @@ class SetupMessages:
         return """  
          <br><p style='font-size=15px'>Please click <b>Continue</b></p> 
          """
-
 
     @staticmethod
     def vm_not_found_instructions():

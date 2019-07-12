@@ -1,14 +1,16 @@
-from views.keys_form.keys_form import Ui_KeysForm
-from PyQt5.QtWidgets import QDialog, QHeaderView, QMessageBox
-from lib.util import  show_notification
-
-from models.PublicKeyTableModel import PublicKeyTableModel
-from models.PrivateKeyTableModel import PrivateKeyTableModel
-from controllers.key_import_form import KeyImportForm
-from controllers.key_create_form import KeyCreateForm
 import logging
 
+from PyQt5.QtWidgets import QDialog, QHeaderView, QMessageBox
+
+from controllers.key_create_form import KeyCreateForm
+from controllers.key_import_form import KeyImportForm
+from lib.util import show_notification
+from models.PrivateKeyTableModel import PrivateKeyTableModel
+from models.PublicKeyTableModel import PublicKeyTableModel
+from views.keys_form.keys_form import Ui_KeysForm
+
 log = logging.getLogger(__name__)
+
 
 class KeysForm:
     def __init__(self, parent, key_manager, config, is_private_keys=False):
@@ -33,7 +35,6 @@ class KeysForm:
         self.ui.table_keys.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.ui.btn_delete_key.clicked.connect(self.delete_key)
         self.ui.table_keys.clicked.connect(self.process_table_click)
-
 
     def exec(self):
         self.window.exec()
@@ -102,7 +103,3 @@ class KeysForm:
         self.key_manager.delete_key(pkfp, self._is_private_keys)
         self.model.removeRow(selected_index.row())
         self.model.updateModel()
-
-
-
-

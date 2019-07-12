@@ -1,9 +1,12 @@
-from views.key_create_form.key_create_form import Ui_CreatePrivateKeyForm
-from PyQt5.QtWidgets import QDialog, QMessageBox
-from lib.key_manager import PASSWORD_LENGTH
 import logging
 
+from PyQt5.QtWidgets import QDialog, QMessageBox
+
+from lib.key_manager import PASSWORD_LENGTH
+from views.key_create_form.key_create_form import Ui_CreatePrivateKeyForm
+
 log = logging.getLogger(__name__)
+
 
 class KeyCreateForm:
     def __init__(self, parent, key_manager):
@@ -54,5 +57,3 @@ class KeyCreateForm:
         msgBox.setInformativeText(message)
         msgBox.setDefaultButton(QMessageBox.Ok)
         msgBox.exec()
-
-
