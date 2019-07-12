@@ -17,30 +17,30 @@ import fasteners
 import tempfile
 
 def main(*args):
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--debug', help="Running in debug mode", action="store_true")
-    parsed = parser.parse_args()
-
-    lock_filename = "islands_lock"
-    lock_filepath = os.path.join(tempfile.gettempdir(), lock_filename)
-
-    lock = fasteners.InterProcessLock(lock_filepath)
-    gotten = lock.acquire(blocking=False)
-    
     try:
+        parser = argparse.ArgumentParser()
+        parser.add_argument('--debug', help="Running in debug mode", action="store_true")
+        parsed = parser.parse_args()
+
+        config = IMConfig(sys.platform)
+        setup_logger(config, parsed.debug)
+        log = logging.getLogger(__name__)
+        lock_filename = "islands_lock"
+        lock_filepath = os.path.join(tempfile.gettempdir(), lock_filename)
+        lock = fasteners.InterProcessLock(lock_filepath)
+        gotten = lock.acquire(blocking=False)
         if gotten:
-            config = IMConfig(sys.platform)
-            setup_logger(config, parsed.debug)
-            
             application = Application(config)
             application.run()
         else:
-            print("Another instance of Island Manager is already running. Exiting...")
-            exit(0)
+            log.info("Another instance of Island Manager is already running. Exiting...")
+            sys.exit(0)
     except Exception as e:
-        print("Application has crashed: %s" % str(e))
-        exit(1)
+        msg = "Application has crashed: %s" % str(e)
+        print(msg)
+        log = logging.getLogger(__name__)
+        log.error(msg)
+        sys.exit(1)
 
 
 # noinspection PyUnreachableCode
