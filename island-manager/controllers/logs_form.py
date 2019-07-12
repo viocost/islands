@@ -36,27 +36,29 @@ class LogsForm(QDialog):
 
     def load_logs(self):
         log.debug("Loading logs")
-        l1 = get_full_path(os.path.join(self.logs_dir, "islands_manager.log"))
-        l2 = get_full_path(os.path.join(self.logs_dir, "islands_manager.log.1"))
+        try:
+            logfile1 = get_full_path(os.path.join(self.logs_dir, "islands_manager.log"))
+            logfile2 = get_full_path(os.path.join(self.logs_dir, "islands_manager.log.1"))
 
-        if os.path.exists(l1):
-            with open(l1, "r") as fp:
-                regex = re.compile("\d+.*\w+")
-                self.logs_data += list(filter(regex.search, fp.read().split("\n")))
+            if os.path.exists(logfile1):
+                with open(logfile1, "r") as fp:
+                    regex = re.compile("^\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2},\d{3}.+$")
+                    self.logs_data += list(filter(regex.search, fp.read().split("\n")))
 
-        if os.path.exists(l2):
-            with open(l2, "r") as fp:
-                regex = re.compile("\d+.*\w+")
-                self.logs_data += list(filter(regex.search, fp.read().split("\n")))
+            if os.path.exists(logfile2):
+                with open(logfile2, "r") as fp:
+                    regex = re.compile("\d+.*\w+")
+                    self.logs_data += list(filter(regex.search, fp.read().split("\n")))
+        except Exception as e:
+            log.error("Error loading logs: %s" % str(e))
 
     def order_logs(self, reverse=False):
-        def sort_helper(line):
-            try:
-                return datetime.datetime.strptime(" ".join(line.split(" ")[0:2]), "%Y-%m-%d %H:%M:%S,%f")
-            except Exception as e:
-                pass
+        try:
+            self.logs_data.sort(key=lambda x: datetime.datetime.strptime(" ".join(x.split(" ")[0:2]),
+                                                                         "%Y-%m-%d %H:%M:%S,%f"), reverse=reverse)
+        except Exception as e:
+            log.error("Order logs error: %s" % str(e))
 
-        self.logs_data.sort(key=lambda x: sort_helper(x), reverse=reverse)
 
     def apply_filter(self):
         level_filter = {
@@ -69,11 +71,8 @@ class LogsForm(QDialog):
         self.render_logs(level_filter[self.ui.cb_filter.currentIndex()])
 
     def apply_order(self):
-        try:
-            self.order_logs(self.ui.cb_order.currentIndex() == 1)
-            self.apply_filter()
-        except Exception as e:
-            log.error("Error sorting logs: %s" % str(e))
+        self.order_logs(self.ui.cb_order.currentIndex() == 1)
+        self.apply_filter()
 
     def clear_logs(self):
         if QMessageBox.question(self, "Confirm", "All logs will be deleted. Continue?",
