@@ -68,7 +68,8 @@ class LogsForm(QDialog):
         self.render_logs(level_filter[self.ui.cb_filter.currentIndex()])
 
     def apply_order(self):
-        self.order_logs(self.ui.cb_order.currentIndex == 1)
+        log.debug("Applying order. Current index: %d" % self.ui.cb_order.currentIndex())
+        self.order_logs(self.ui.cb_order.currentIndex() == 1)
         self.apply_filter()    
             
     def clear_logs(self):
