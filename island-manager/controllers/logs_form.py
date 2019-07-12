@@ -49,7 +49,13 @@ class LogsForm(QDialog):
 
 
     def order_logs(self, reverse=False):
-        self.logs_data.sort(key=lambda x: datetime.datetime.strptime(" ".join(x.split(" ")[0:2]),  "%Y-%m-%d %H:%M:%S,%f"), reverse=reverse)
+        def sort_helper(line):
+            try:
+                return datetime.datetime.strptime(" ".join(line.split(" ")[0:2]),  "%Y-%m-%d %H:%M:%S,%f")
+            except Exception as e:
+                pass
+
+        self.logs_data.sort(key=lambda x: sort_helper(x),  reverse=reverse)
             
     def apply_filter(self):
         level_filter = {
