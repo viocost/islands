@@ -5,7 +5,7 @@ import re
 
 from PyQt5.QtWidgets import QDialog, QMessageBox
 
-from lib.util import get_full_path
+from lib.util import get_full_path, adjust_window_size
 from views.logs_form.logs_form import Ui_LogsForm
 
 log = logging.getLogger(__name__)
@@ -26,6 +26,7 @@ class LogsForm(QDialog):
         self.ui.cb_filter.currentIndexChanged.connect(self.apply_filter)
         self.ui.btn_reload.clicked.connect(self.reload_logs)
         self.ui.btn_clear.clicked.connect(self.clear_logs)
+        adjust_window_size(self)
         self.show()
 
     def reload_logs(self):

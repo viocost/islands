@@ -4,7 +4,7 @@ import markdown2 as mkd
 from PyQt5.QtWidgets import QDialog
 
 from views.help_form.help_form import Ui_HelpForm
-
+from lib.util import adjust_window_size
 log = logging.getLogger(__name__)
 
 
@@ -15,6 +15,7 @@ class Helpform(QDialog):
         self.ui.setupUi(self)
         self.content = self.load_help_content()
         self.ui.browser.setText(self.content)
+        adjust_window_size(self)
 
     def load_help_content(self):
         try:

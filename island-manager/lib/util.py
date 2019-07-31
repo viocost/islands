@@ -4,11 +4,26 @@ from PyQt5.QtWidgets import QMessageBox
 import logging
 import traceback
 import re
+from lib.app_ref import AppRef
 
 log = logging.getLogger(__name__)
 
 if sys.platform == "win32":
     import ctypes
+
+
+def get_screen_resolution():
+    app = AppRef.get_app()
+    return app.desktop().screenGeometry()
+
+
+def adjust_window_size(wgt):
+    log.debug("Adjusting size...")
+    curr_size = wgt.size()
+    screen_res = get_screen_resolution()
+    adjusted_h = min(curr_size.height(), screen_res.height())
+    adjusted_w = min(curr_size.width(), screen_res.width())
+    wgt.resize(adjusted_w, adjusted_h)
 
 
 def sizeof_fmt(num, suffix='b'):

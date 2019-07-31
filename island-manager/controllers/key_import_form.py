@@ -5,21 +5,22 @@ from PyQt5.QtWidgets import QDialog, QFileDialog
 
 from lib.exceptions import KeyImportError
 from lib.key_manager import PASSWORD_LENGTH
-from lib.util import get_full_path, show_user_error_window
+from lib.util import get_full_path, show_user_error_window, adjust_window_size
 from views.import_key_form.import_key_form import Ui_KeyImport
 
 log = logging.getLogger(__name__)
 
 
-class KeyImportForm:
+class KeyImportForm(QDialog):
     def __init__(self, parent, key_manager, config, private=False):
+        super(QDialog, self).__init__(parent)
         self.config = config
         self.ui = Ui_KeyImport()
         self.key_manager = key_manager
-        self.window = QDialog(parent)
-        self.ui.setupUi(self.window)
+        self.ui.setupUi(self)
         self.is_private = private
-        self.window.setWindowTitle("Trusted key import")
+        self.setWindowTitle("Trusted key import")
+        adjust_window_size(self)
 
         if self.is_private:
             self.setup_private_key_layout()
@@ -43,14 +44,14 @@ class KeyImportForm:
         self.ui.stackedWidget.setCurrentIndex(ind)
 
     def setup_private_key_layout(self):
-        self.window.setWindowTitle("Private key import")
+        self.setWindowTitle("Private key import")
         self.ui.is_key_encrypted.setVisible(True)
         self.ui.new_password.setVisible(True)
         self.ui.key_password_label.setVisible(True)
         self.ui.confirm_password.setVisible(True)
 
     def open_select_file_dialog(self):
-        res = QFileDialog.getOpenFileName(self.window,
+        res = QFileDialog.getOpenFileName(self,
                                           "Select key file",
                                           get_full_path(self.config['homedir']),
                                           "Key file (*.pem)")
@@ -64,24 +65,24 @@ class KeyImportForm:
             passwd = self.ui.new_password.text()
             confirm = self.ui.confirm_password.text()
             if passwd != confirm:
-                show_user_error_window(self.window, "Password and confirmation do not match!")
+                show_user_error_window(self, "Password and confirmation do not match!")
                 return
             if len(passwd) < PASSWORD_LENGTH:
-                show_user_error_window(self.window, "Password length must be at least %d symbols" % PASSWORD_LENGTH)
+                show_user_error_window(self, "Password length must be at least %d symbols" % PASSWORD_LENGTH)
                 return
         if self.ui.import_from_file.isChecked():
             filepath = self.ui.key_file_path.text()
             if not path.exists(filepath):
-                show_user_error_window(self.window, "Key file is not found")
+                show_user_error_window(self, "Key file is not found")
                 return
         if self.ui.paste_as_plain_text.isChecked() and len(self.ui.key_data.toPlainText().strip(" ")) == 0:
-            show_user_error_window(self.window, "Please paste key data!")
+            show_user_error_window(self, "Please paste key data!")
             return
         try:
             self.process_import()
         except Exception as e:
             logging.error(e)
-            show_user_error_window(self.window, e)
+            show_user_error_window(self, e)
 
     def process_import(self):
         logging.debug("Importing key")
@@ -103,9 +104,9 @@ class KeyImportForm:
                     alias=self.ui.key_alias.text(),
                     filepath=filepath
                 )
-                self._close()
+                self.close()
             except KeyImportError as e:
-                show_user_error_window(self.window, str(e))
+                show_user_error_window(self, str(e))
         else:
             try:
                 self.key_manager.import_public_key(
@@ -113,19 +114,11 @@ class KeyImportForm:
                     alias=self.ui.key_alias.text(),
                     filepath=filepath
                 )
-                self._close()
+                self.close()
             except KeyImportError as e:
-                show_user_error_window(self.window, str(e))
-
-    def _close(self):
-        self.window.close()
-        self.window.destroy()
+                show_user_error_window(self, str(e))
 
     def cancel(self):
-        self._close()
+        self.close()
         print("Canceling")
 
-    def exec(self):
-        self.window.exec()
-        print("after window.exec executing")
-        return "Some value!"

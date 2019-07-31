@@ -8,6 +8,7 @@
 
 
 import sys
+import signal
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtGui import QPixmap, QIcon
 from lib.island_manager import IslandManager
@@ -40,6 +41,8 @@ class Application:
     # noinspection PyUnreachableCode
 
     def run(self):
+        signal.signal(signal.SIGINT, lambda *args: self.kill())
+        self.app.startTimer(200)
         self.main_window.show()
         self.app.exec_()
         self.kill()
@@ -59,13 +62,14 @@ class Application:
         # This is needed for proper icon display in Windows task bar
         if sys.platform == "win32":
             import ctypes
-            myappid = u'islands.manager.v00185'  # arbitrary string
+            myappid = u'islands.manager'  # arbitrary string
             ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
         AppRef.set_app(app)
         return app
 
     def kill(self):
         print("Exiting!")
+        self.main_window.quit_app(silent=True)
         self.torrent_manager.stop_session()
         self.app.quit()
 

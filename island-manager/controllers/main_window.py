@@ -18,7 +18,7 @@ from controllers.torrents_form import TorrentsForm
 from controllers.update_form import UpdateForm
 from lib.island_states import IslandStates as States
 from lib.key_manager import KeyManager
-from lib.util import get_version, is_admin_registered
+from lib.util import get_version, is_admin_registered, adjust_window_size
 from views.main_form.main_form import Ui_MainWindow
 
 log = logging.getLogger(__name__)
@@ -66,6 +66,7 @@ class MainWindow(QMainWindow):
         log.debug("Main window controller initialized.")
         self.launch_background_links_updater()
         self.pending_state = False
+        adjust_window_size(self)
 
 
     def event(self, event):
@@ -286,8 +287,8 @@ class MainWindow(QMainWindow):
         self.menu_actions["start"].setEnabled(False)
         self.menu_actions["stop"].setEnabled(False)
         self.menu_actions["restart"].setEnabled(False)
-        self.ui.btn_go_to_island.setEnabled(False)
-        self.ui.btn_admin.setEnabled(False)
+        self.ui.btn_go_to_island.setVisible(False)
+        self.ui.btn_admin.setVisible(False)
         reason = self.setup.is_setup_required()
         self.ui.islandStatus.setText("Setup required")
         self.ui.islandStatus.setStyleSheet('color: orange')
@@ -325,9 +326,9 @@ class MainWindow(QMainWindow):
 
     def set_starting_up(self):
         self.current_state = States.STARTING_UP
-        self.ui.btn_go_to_island.setEnabled(False)
+        self.ui.btn_go_to_island.setVisible(False)
         self.toggle_loading_animation(True)
-        self.ui.btn_admin.setEnabled(False)
+        self.ui.btn_admin.setVisible(False)
         self.pending_state = True
         self.menu_actions["start"].setEnabled(False)
         self.menu_actions["stop"].setEnabled(False)
@@ -346,8 +347,8 @@ class MainWindow(QMainWindow):
 
     def set_shutting_down(self):
         self.current_state = States.SHUTTING_DOWN
-        self.ui.btn_go_to_island.setEnabled(False)
-        self.ui.btn_admin.setEnabled(False)
+        self.ui.btn_go_to_island.setVisible(False)
+        self.ui.btn_admin.setVisible(False)
         self.pending_state = True
         self.menu_actions["start"].setEnabled(False)
         self.menu_actions["stop"].setEnabled(False)
@@ -361,8 +362,8 @@ class MainWindow(QMainWindow):
             self.repaint()
 
     def set_not_running(self):
-        self.ui.btn_go_to_island.setEnabled(False)
-        self.ui.btn_admin.setEnabled(False)
+        self.ui.btn_go_to_island.setVisible(False)
+        self.ui.btn_admin.setVisible(False)
         self.toggle_loading_animation(False)
         self.current_state = States.NOT_RUNNING
         self.pending_state = False
@@ -382,8 +383,8 @@ class MainWindow(QMainWindow):
             self.repaint()
 
     def set_unknown(self):
-        self.ui.btn_go_to_island.setEnabled(False)
-        self.ui.btn_admin.setEnabled(False)
+        self.ui.btn_go_to_island.setVisible(False)
+        self.ui.btn_admin.setVisible(False)
         self.current_state = States.UNKNOWN
         self.toggle_loading_animation(False)
         self.pending_state = False
@@ -403,8 +404,8 @@ class MainWindow(QMainWindow):
             self.repaint()
 
     def set_restarting(self):
-        self.ui.btn_go_to_island.setEnabled(False)
-        self.ui.btn_admin.setEnabled(False)
+        self.ui.btn_go_to_island.setVisible(False)
+        self.ui.btn_admin.setVisible(False)
         self.current_state = States.RESTARTING
         self.pending_state = True
         self.toggle_loading_animation(True)
@@ -454,20 +455,20 @@ class MainWindow(QMainWindow):
         log.debug("Link result signal received: result: %s, link: %s" % (str(result), str(link)))
         if self.current_state != States.RUNNING:
             log.debug("Got the links, but the VM is not running. Returning")
-            self.ui.btn_admin.setEnabled(False)
-            self.ui.btn_go_to_island.setEnabled(False)
+            self.ui.btn_admin.setVisible(False)
+            self.ui.btn_go_to_island.setVisible(False)
             return
         elif not result:
             log.warning("Unable to get connection links to access island. Network configuration is invalid")
-            self.ui.btn_admin.setEnabled(False)
-            self.ui.btn_go_to_island.setEnabled(False)
+            self.ui.btn_admin.setVisible(False)
+            self.ui.btn_go_to_island.setVisible(False)
             self.show_note("Unable to connect to island. Network configuration is invalid.")
             return
         admin_exist = bool(is_admin_registered(self.config["data_folder"]))
         log.debug("admin exists: %s, data folder: %s" % (str(admin_exist), self.config["data_folder"]))
-        self.ui.btn_admin.setEnabled(True)
+        self.ui.btn_admin.setVisible(True)
         if admin_exist:
-            self.ui.btn_go_to_island.setEnabled(True)
+            self.ui.btn_go_to_island.setVisible(True)
         else:
             self.show_note("Looks like you haven't set up your master password yet. Please click on \"Admin\" button and follow the instructions in the browser. You will be able to use your island once master password is set")
         connstr = "http://%s:%s" % (link, self.config["local_access_port"])
@@ -481,8 +482,8 @@ class MainWindow(QMainWindow):
             log.error("Attempt to open a link while island is not running")
             
     def load_access_links(self):
-        self.ui.btn_go_to_island.setEnabled(False)
-        self.ui.btn_admin.setEnabled(False)
+        self.ui.btn_go_to_island.setVisible(False)
+        self.ui.btn_admin.setVisible(False)
         worker = self._get_link_loader_worker()
         t = Thread(target=worker)
         t.start()
@@ -532,12 +533,19 @@ class MainWindow(QMainWindow):
         QM.warning(self, None, "Warning", text, buttons=QM.Ok)
 
 
-    def quit_app(self):
+    def quit_app(self, silent=False):
+        if silent:
+            self.exiting = True
+            self.close()
+            return
+
         if QM.question(self, "Exit confirm", "Quit the Island Manager?", QM.Yes | QM.No) == QM.Yes:
             log.debug("Quitting the islands manager...")
             self.exiting = True
             self.close()
 
+    
+            
     def show_hide(self):
         if self.isMinimized():
             self.activateWindow()

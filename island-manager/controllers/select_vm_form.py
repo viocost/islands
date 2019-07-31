@@ -3,16 +3,14 @@ from PyQt5.QtWidgets import QDialog
 from views.select_vm_form.select_vm_form import Ui_SelectVM
 
 
-class SelectVMForm:
+class SelectVMForm(QDialog):
     def __init__(self, parent, setup):
+        super(QDialog, self).__init__(parent)
         self.ui = Ui_SelectVM()
-        self.window = QDialog(parent)
-        self.ui.setupUi(self.window)
+        self.ui.setupUi(self)
         self.setup = setup
         self.prepare_vm_list()
 
-    def exec(self):
-        return self.window.exec()
 
     def prepare_vm_list(self):
         self.ui.vms_list.clear()

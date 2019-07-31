@@ -2,7 +2,6 @@ import logging
 import sys
 import time
 from os import path
-
 from PyQt5.QtCore import QEvent, pyqtSignal, Qt
 from PyQt5.QtGui import QTextCursor
 from PyQt5.QtWidgets import QMessageBox as QM, QWizard, QFileDialog, QInputDialog, QLineEdit
@@ -55,7 +54,9 @@ class SetupWizardWindow(QWizard):
         self.last_timeout = None
         self.configuration_in_progress = False
         self.installEventFilter(self)
-
+        util.adjust_window_size(self)
+        
+        
     # Handler for output signal
     def appender(self, msg, console_index):
         print("Appending message")
@@ -645,10 +646,7 @@ class SetupMessages:
     @staticmethod
     def vb_not_installed_instructions():
         return """  
-         <p style='font-size=15px'>Click <b>Install virtualbox</b> to download/install virtualbox automatically  </p>          
-         <p style='font-size=12px'> If you have virtualbox already installed and 
-         you know the location of <b>vboxmanage</b> file: please
-          click <b>Path to vboxmanage</b> and select vboxmanage file</p> 
+         <p style='font-size=15px'>Click <b>Install virtualbox</b> to download/install virtualbox automatically.</p>          
          """
 
     @staticmethod

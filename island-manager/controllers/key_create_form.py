@@ -1,24 +1,22 @@
 import logging
-
 from PyQt5.QtWidgets import QDialog, QMessageBox
-
 from lib.key_manager import PASSWORD_LENGTH
 from views.key_create_form.key_create_form import Ui_CreatePrivateKeyForm
+from lib.util import adjust_window_size
 
 log = logging.getLogger(__name__)
 
 
-class KeyCreateForm:
+class KeyCreateForm(QDialog):
     def __init__(self, parent, key_manager):
+        super(QDialog, self).__init__(parent)
         self.ui = Ui_CreatePrivateKeyForm()
-        self.window = QDialog(parent)
-        self.ui.setupUi(self.window)
+        self.ui.setupUi(self)
         self.key_manager = key_manager
         self.ui.btn_create.clicked.connect(self.create_key_check)
         self.ui.btn_cancel.clicked.connect(self.cancel)
+        adjust_window_size(self)
 
-    def exec(self):
-        self.window.exec()
 
     def create_key_check(self):
         log.debug("Checking data")
@@ -31,7 +29,7 @@ class KeyCreateForm:
         else:
             alias = self.ui.alias.text()
             self.create_key(password, alias)
-            self.close_window()
+            self.close()
 
     def create_key(self, password, alias=None):
         key = self.key_manager.generate_encrypted_user_key(password)
@@ -43,15 +41,12 @@ class KeyCreateForm:
         )
 
     def cancel(self):
-        self.close_window()
+        self.close()
 
-    def close_window(self):
-        self.window.close()
-        self.window.destroy()
 
     def show_error(self, message):
         log.warning("Key creation error: %s " % message)
-        msgBox = QMessageBox(self.window)
+        msgBox = QMessageBox(self)
         msgBox.setIcon(QMessageBox.Warning)
         msgBox.setText("Key creation error")
         msgBox.setInformativeText(message)

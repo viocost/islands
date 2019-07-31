@@ -10,31 +10,31 @@ from PyQt5.QtCore import pyqtSignal, QObject
 from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox, QInputDialog
 
 from lib.image_authoring import ImageAuthoring
-from lib.util import get_full_path, show_user_error_window
+from lib.util import get_full_path, show_user_error_window, adjust_window_size
 from lib.version_manager import ImageVersionManager, VersionBranchAlreadyExist
 from views.image_authoring_form.image_authoring_form import Ui_ImageAuthoringForm
 
 log = logging.getLogger(__name__)
 
 
-class ImageAuthoringForm(QObject):
+class ImageAuthoringForm(QDialog):
     progress = pyqtSignal(str, int)
     error = pyqtSignal(str)
     success = pyqtSignal()
 
     def __init__(self, parent, config, key_manager, torrent_manager):
-        QObject.__init__(self, parent)
+        super(QDialog, self).__init__(parent)
         self.key_manager = key_manager
         self.torrent_manager = torrent_manager
         self.config = config
-        self.window = QDialog(parent=parent)
         self.ui = Ui_ImageAuthoringForm()
-        self.ui.setupUi(self.window)
+        self.ui.setupUi(self)
         self.version_manager = ImageVersionManager(self.config)
         self.assign_handlers()
         self.fill_keys()
         self.fill_artifacts()
         self.update_elements()
+        adjust_window_size(self)
 
     def assign_handlers(self):
         self.ui.btn_cancel.clicked.connect(self.cancel)
@@ -144,14 +144,14 @@ class ImageAuthoringForm(QObject):
     def on_error(self, msg):
         self.ui.lbl_action.setText("ERROR! Authoring process has not been finished")
         self.ui.lbl_action.setStyleSheet('color: "red"')
-        show_user_error_window(self.window, msg)
+        show_user_error_window(self, msg)
 
     def on_success(self):
-        QMessageBox.information(QMessageBox(self.window), "Success", "Image authoring successfully completed!",
+        QMessageBox.information(QMessageBox(self), "Success", "Image authoring successfully completed!",
                                 QMessageBox.Ok)
         log.debug("Closing authoring form")
-        self.window.close()
-        self.window.destroy()
+        self.close()
+        self.destroy()
 
     def update_elements(self):
 
@@ -204,14 +204,14 @@ class ImageAuthoringForm(QObject):
             log.error("Error creating version artifact: no private key selected")
             return
 
-        res = QInputDialog.getText(self.window, "New artifact", "Enter new artifact name name")
+        res = QInputDialog.getText(self, "New artifact", "Enter new artifact name name")
         if res[1] and len(res[0].strip()) > 0:
             try:
                 pkfp = self._get_selected_pkfp()
                 self.version_manager.create_new_artifact(pkfp, res[0])
                 log.debug("artifact file created")
             except VersionBranchAlreadyExist as e:
-                QMessageBox.warning(self.window, "Error creating new artifact",
+                QMessageBox.warning(self, "Error creating new artifact",
                                     "Artifact with this name already exists")
         self.fill_artifacts()
 
@@ -220,12 +220,10 @@ class ImageAuthoringForm(QObject):
             return
         return self.ui.select_private_key.currentText().split("||")[1].strip()
 
-    def exec(self):
-        self.window.exec()
 
     def select_source_file(self):
         log.debug("Selecting source image")
-        res = QFileDialog.getOpenFileName(QFileDialog(self.window),
+        res = QFileDialog.getOpenFileName(QFileDialog(self),
                                           "Select Islands image file",
                                           get_full_path(self.config['homedir']),
                                           "Virtual Appliance (*.ova)")
@@ -239,7 +237,7 @@ class ImageAuthoringForm(QObject):
         log.debug("Selecting dest dir")
         f_dialog = QFileDialog()
         f_dialog.setFileMode(QFileDialog.Directory)
-        res = f_dialog.getExistingDirectory(self.window)
+        res = f_dialog.getExistingDirectory(self)
         if res:
             log.debug("Dest directory chosen: %s" % res)
             self.ui.path_to_dest.setText(res)
@@ -253,8 +251,8 @@ class ImageAuthoringForm(QObject):
         return ".".join([version, release, modification])
 
     def cancel(self):
-        self.window.close()
-        self.window.destroy()
+        self.close()
+        self.destroy()
 
     def start_authoring(self):
         log.debug("Starting authoring process...")
@@ -342,10 +340,10 @@ class ImageAuthoringForm(QObject):
         log.debug("Checking image file")
 
         if not os.path.exists(self.ui.source_file.text()):
-            show_user_error_window(self.window, "Source file not found...")
+            show_user_error_window(self, "Source file not found...")
             return True
         if not os.path.isdir(self.ui.path_to_dest.text()):
-            show_user_error_window(self.window, "Destination directory does not exist")
+            show_user_error_window(self, "Destination directory does not exist")
             return True
         required_fields = []
 
@@ -357,10 +355,10 @@ class ImageAuthoringForm(QObject):
             required_fields.append("Image version")
 
         if len(required_fields) > 0:
-            show_user_error_window(self.window, "Please fill the required fields: %s" % " ".join(required_fields))
+            show_user_error_window(self, "Please fill the required fields: %s" % " ".join(required_fields))
             return True
 
         if self.ui.select_private_key.count() == 0:
-            show_user_error_window(self.window, "You have not created your key yet. Create a key and try again")
+            show_user_error_window(self, "You have not created your key yet. Create a key and try again")
             return True
         return False
