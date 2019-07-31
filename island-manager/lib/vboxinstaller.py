@@ -134,8 +134,8 @@ class VBoxInstaller:
                                     abort=self.abort)
         self.finalize_progres_bar()
         self.message("Download completed. Installing...")
-        self.on_configuration_in_progress()
-        self._install_vbox_dar_win(path_to_vbox_distr)
+        self.on_configuration_in_progress(True)
+        self._install_vbox_windows(path_to_vbox_distr)
         self.message("Instalation complete!")
         self.complete(True, "")
 
@@ -219,7 +219,8 @@ class VBoxInstaller:
         """
         return Executor.exec_stream(self.cmd.install_vbox(path_to_installer), self.message, self.error)
 
-
+    def _install_vbox_windows(self, path_to_installer):
+        return Executor.run_vbox_installer_windows(self.cmd.install_vbox(path_to_installer))
 
     @check_output
     def uninstall_vbox(self):

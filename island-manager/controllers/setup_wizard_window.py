@@ -340,11 +340,11 @@ class SetupWizardWindow(QWizard):
     # END progress bar handlers
 
     def process_vbox_install(self):
-        if sys.platform == "win32" and not util.has_admin_rights_win32():
-            QM.warning(self, "Admin rights required!",
-                       "Running setup requires administrator privileges. "
-                       "Please close island manager and start it as administrator.", QM.Ok)
-            return
+        # if sys.platform == "win32" and not util.has_admin_rights_win32():
+        #     QM.warning(self, "Admin rights required!",
+        #                "Running setup requires administrator privileges. "
+        #                "Please close island manager and start it as administrator.", QM.Ok)
+        #     return
 
         vbox_installed = self.setup.is_vbox_installed()
 

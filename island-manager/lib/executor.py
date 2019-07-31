@@ -80,6 +80,81 @@ class ShellExecutor:
             print("STDERR: %s" % proc.stderr)
         return proc.returncode, proc.stdout, proc.stderr
 
+    @staticmethod
+    def run_vbox_installer_windows(cmd):
+        from win32com.shell.shell import ShellExecuteEx
+        from win32com.shell import shellcon
+        import win32con, win32event, win32process
+        cmd_dir = ''
+        showCmd = win32con.SW_SHOWNORMAL
+        lpVerb = 'runas'
+        cmd = cmd.split(" ")
+        installer = cmd[0]
+        args = " ".join(cmd[1:])
+        procInfo = ShellExecuteEx(nShow=showCmd,
+                                  fMask=shellcon.SEE_MASK_NOCLOSEPROCESS,
+                                  lpVerb=lpVerb,
+                                  lpFile=installer,
+                                  lpParameters=args)
+
+        procHandle = procInfo['hProcess']
+        obj = win32event.WaitForSingleObject(procHandle, win32event.INFINITE)
+        rc = win32process.GetExitCodeProcess(procHandle)
+        # print "Process handle %s returned code %s" % (procHandle, rc)
+        log.debug("Virtualbox setup finished")
+        return rc
+
+    @staticmethod
+    def exec_sync_mac(cmd, verbose=False):
+        out = ""
+        err = ""
+        res = None
+        proc = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE, bufsize=1, universal_newlines=True)
+        while proc.poll() is None:
+            for line in proc.stderr:
+                err += line
+                if verbose:
+                    print("STDERR: " + line)
+            for line in proc.stdout:
+                out += line
+                if verbose:
+                    print("STDOUT: " + line)
+        res = proc.returncode
+        return res, out, err
+
+    def exec_sync_mac(cmd, verbose=False):
+        out = ""
+        err = ""
+        res = None
+        proc = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE, bufsize=1, universal_newlines=True)
+        while proc.poll() is None:
+            for line in proc.stderr:
+                err += line
+                if verbose:
+                    print("STDERR: " + line)
+            for line in proc.stdout:
+                out += line
+                if verbose:
+                    print("STDOUT: " + line)
+        res = proc.returncode
+        return res, out, err
+
+    def exec_sync_mac(cmd, verbose=False):
+        out = ""
+        err = ""
+        res = None
+        proc = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE, bufsize=1, universal_newlines=True)
+        while proc.poll() is None:
+            for line in proc.stderr:
+                err += line
+                if verbose:
+                    print("STDERR: " + line)
+            for line in proc.stdout:
+                out += line
+                if verbose:
+                    print("STDOUT: " + line)
+        res = proc.returncode
+        return res, out, err
 
     @staticmethod
     def exec_sync_mac(cmd, verbose=False):
