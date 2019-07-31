@@ -124,6 +124,7 @@ def is_subdir(subdir_candidate, dir):
     pass
 
 def is_admin_registered(datadir):
+    datadir = get_full_path(datadir)
     keys_path = os.path.join(datadir, "keys")
     vaults_path = os.path.join(datadir, "vaults")
     if os.path.exists(keys_path) and os.path.exists(vaults_path):

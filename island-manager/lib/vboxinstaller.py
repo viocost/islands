@@ -1,4 +1,4 @@
-from threading import Thread
+from threading import Thread, Event
 from lib.downloader import Downloader as Dl
 from lib.exceptions import IslandSetupError
 from lib.executor import ShellExecutor as Executor
@@ -30,6 +30,7 @@ class VBoxInstaller:
                  on_error,
                  init_progres_bar,
                  update_progres_bar,
+                 on_configuration_in_progress,
                  finalize_progres_bar,
                  update=False,
                  on_root_password_request=None):
@@ -44,9 +45,15 @@ class VBoxInstaller:
         self.update_progres_bar = update_progres_bar
         self.finalize_progres_bar = finalize_progres_bar
         self.update = update
+        self.on_configuration_in_progress = on_configuration_in_progress
         self.on_root_password_request=on_root_password_request
         self.path_to_vbox_distr = None
+        self.abort = Event()
 
+    def abort_install(self):
+        log.debug("Vbox installer: aborting install...")
+        self.abort.set()
+        
     def start(self):
         self.message("Installing virtualbox...")
         self.thread = Thread(target=self.install)
@@ -84,16 +91,26 @@ class VBoxInstaller:
             error_message = "Virtualbox installation didn't successfully finish:\nError: {error} Please try again...".format(error=str(e), size=16)
             self.error(error_message)
             log.error(error_message)
+        finally:
+            log.debug("Virtualbox installation terminated.")
+            self.on_configuration_in_progress(False)
 
     def mac_install(self):
+        log.info("Downloading virtualbox")
         self.init_progres_bar("Downloading virtualbox...")
         # start download
         path_to_vbox_distr = Dl.get(url=self.config["vbox_download"],
                                     dest_path=path.expandvars(self.config["downloads_path"]),
-                                    on_update=self.update_progres_bar)
+                                    on_update=self.update_progres_bar,
+                                    abort=self.abort)
         self.finalize_progres_bar()
         self.message("Download completed. Mounting...")
-        #path_to_image = self.config["downloads_path"] + self.config["vbox_installer_name"]
+        log.info("Installing virtualbox")
+        if self.abort.is_set():
+            log.debug("Vbox intallation aborted.")
+            return
+
+        self.on_configuration_in_progress(True)
         self.mount_vbox_distro(path_to_vbox_distr)  # OS SPECIFIC!!!
         if self.update:
             self.uninstall_vbox()
@@ -113,9 +130,11 @@ class VBoxInstaller:
         # start download
         path_to_vbox_distr = Dl.get(url=self.config["vbox_download"],
                                     dest_path=path.expandvars(self.config["downloads_path"]),
-                                    on_update=self.update_progres_bar)
+                                    on_update=self.update_progres_bar,
+                                    abort=self.abort)
         self.finalize_progres_bar()
         self.message("Download completed. Installing...")
+        self.on_configuration_in_progress()
         self._install_vbox_dar_win(path_to_vbox_distr)
         self.message("Instalation complete!")
         self.complete(True, "")
@@ -178,7 +197,8 @@ class VBoxInstaller:
         self.init_progres_bar("Downloading virtualbox...")
         self.path_to_vbox_distr = Dl.get(url=self.config["vbox_download"],
                                          dest_path=get_full_path(self.config["downloads_path"]),
-                                         on_update=self.update_progres_bar)
+                                         on_update=self.update_progres_bar, 
+                                         abort=self.abort)
         self.finalize_progres_bar()
         self.message("Download completed. Installing...")
 

@@ -90,7 +90,6 @@ class SetupWizardWindow(QWizard):
             void = ' '
             fills = int(multiple * int(float(progress_in_percents)))
             whitespaces = int(multiple * 100) - fills
-            print(fills, whitespaces)
             return '<span style="font-family: Courier"><b> {:>3}% </b><span style="white-space: pre;">|{}>{}|</span> </span>{}'.format(
                 progress_in_percents, fill * fills,
                 void * whitespaces, ratio)
@@ -148,9 +147,9 @@ class SetupWizardWindow(QWizard):
 
     def eventFilter(self, obj, event):
         if obj is self and event.type() == QEvent.KeyPress:
-            if event.key() in (Qt.Key_Escape, Qt.Key_Return, Qt.Key_Enter):
-                log.debug("Key press event")
-                return True
+        #    if event.key() in (Qt.Key_Escape, Qt.Key_Return, Qt.Key_Enter):
+        #        log.debug("Key press event")
+        #        return True
             if event.type() == QEvent.Close:
                 return True
         return super(SetupWizardWindow, self).eventFilter(obj, event)
@@ -162,18 +161,23 @@ class SetupWizardWindow(QWizard):
             event.ignore()
         else:
             log.debug("Aborting install")
-            self.setup.abort_vm_install()
+            self.setup.abort_install()
 
     def key_press_handler(self):
         def handler(event):
+            log.debug("In key press handler")
             if event.key() == Qt.Key_Escape:
+                if self.configuration_in_progress:
+                    log.debug("Configuration in progress. Cannot exit now..")
+                    return
+                log.debug("ESC key pressed, processing")
                 install_complete = self.setup.is_vbox_set_up and self.setup.is_islands_vm_exist()
                 message = "Setup has not been finished and will be interrupted. Proceed? " \
                     if not install_complete else ""
                 message += "Quit setup wizzard?"
                 res = QM.question(self, "Quit", message, QM.Yes | QM.No)
                 if res == QM.Yes:
-                    self.setup.abort_vm_install()
+                    self.setup.abort_install()
                     self.close()
 
         return handler
@@ -187,6 +191,7 @@ class SetupWizardWindow(QWizard):
         :param msg:
         :return:
         """
+        log.error("Install error signal received. Code: %s Message: %s" % (str(code), str(msg)))
         util.show_user_error_window(self, msg)
 
     def reset_consoles(self):
@@ -246,6 +251,8 @@ class SetupWizardWindow(QWizard):
             self.ui.data_folder_path.setText(res)
 
     def process_vbox_install_result(self, res, msg):
+        log.debug("Virtualbox installer finished. Success: %s" % str(res))
+        self.configuration_in_progress_signal.emit(False)
         form_msg = """
             <p style='color: {color}; font-size: {font_size}'> {msg} </p>
         """
@@ -361,6 +368,7 @@ class SetupWizardWindow(QWizard):
             init_progres_bar=self.get_init_progress_bar_handler(0),
             update_progres_bar=self.get_update_progress_bar_handler(0),
             finalize_progres_bar=self.get_finalize_progress_bar_handler(0),
+            on_configuration_in_progress=self.on_configuration_in_progress, 
             on_error=self.get_on_error_handler(console=0),
             update=vbox_installed,
             on_root_password_request=self.on_root_password_request

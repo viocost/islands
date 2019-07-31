@@ -1,10 +1,11 @@
 import logging
+import webbrowser
 import sys
 from threading import Thread
 from time import sleep
 
 from PyQt5.QtCore import pyqtSignal, QEvent
-from PyQt5.QtGui import QIcon, QPixmap
+from PyQt5.QtGui import QIcon, QPixmap, QMovie
 from PyQt5.QtWidgets import QMainWindow, QMessageBox as QM, QMenu, QSystemTrayIcon, QAction
 
 from controllers.config_form import ConfigForm
@@ -25,6 +26,7 @@ log = logging.getLogger(__name__)
 
 class MainWindow(QMainWindow):
     tray_icon = None
+    note_expire = pyqtSignal()
     current_state_signal = pyqtSignal(object)
     processing = pyqtSignal()
     state_changed = pyqtSignal()
@@ -34,7 +36,7 @@ class MainWindow(QMainWindow):
     def __init__(self, config, island_manager, setup, torrent_manager):
         super(MainWindow, self).__init__()
         icon = QIcon()
-        icon.addPixmap(QPixmap(":/images/icons/island64.png"))
+        icon.addPixmap(QPixmap(":/images/icons/island128.png"))
         self.tray_menu = QMenu()
         self.menu_actions = self.prepare_tray_menu(self.tray_menu)
         self.tray_icon = QSystemTrayIcon(self)
@@ -58,10 +60,13 @@ class MainWindow(QMainWindow):
         self.refresh_island_status()
         self.set_main_window_title()
         # island status refresh counter
+        self.local_access = None
+        self.admin_access = None
         self.refresh_count = 0
         log.debug("Main window controller initialized.")
         self.launch_background_links_updater()
         self.pending_state = False
+
 
     def event(self, event):
         if event.type() == QEvent.ActivationChange:
@@ -136,6 +141,11 @@ class MainWindow(QMainWindow):
         self.ui.act_update_vm.triggered.connect(self.open_update)
         self.ui.act_help.triggered.connect(self.open_user_guide)
         self.access_links_result.connect(self.set_links_on_signal)
+        self.ui.btn_go_to_island.clicked.connect(self.open_island_link)
+        self.ui.btn_admin.clicked.connect(lambda: self.open_island_link(admin=True))
+        self.note_expire.connect(self.hide_note)
+
+        self.ui.btn_close_hint.clicked.connect(self.hide_note)
 
     def open_user_guide(self):
         help_form = Helpform(self)
@@ -261,6 +271,14 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Islands Manager %s" % "v" + get_version())
 
     """ STATE SETTERS """
+    def toggle_loading_animation(self, activate):
+        self.loading_animation  = QMovie("resources/icons/loading.gif")
+        self.ui.lbl_loading.setMovie(self.loading_animation)
+        self.loading_animation.start()
+        log.debug("Toggling loading animation")
+        self.ui.lbl_loading.setVisible(activate)
+        if sys.platform == "darwin":
+            self.repaint()
 
     def set_setup_required(self):
         self.current_state = States.SETUP_REQUIRED
@@ -268,9 +286,8 @@ class MainWindow(QMainWindow):
         self.menu_actions["start"].setEnabled(False)
         self.menu_actions["stop"].setEnabled(False)
         self.menu_actions["restart"].setEnabled(False)
-        self.ui.island_access_label.setVisible(False)
-        self.ui.island_access_address.setVisible(False)
-        self.ui.island_admin_access_address.setVisible(False)
+        self.ui.btn_go_to_island.setEnabled(False)
+        self.ui.btn_admin.setEnabled(False)
         reason = self.setup.is_setup_required()
         self.ui.islandStatus.setText("Setup required")
         self.ui.islandStatus.setStyleSheet('color: orange')
@@ -282,11 +299,13 @@ class MainWindow(QMainWindow):
         self.ui.groupBox.show()
         self.ui.launchMode.setEnabled(False)
         self.ui.stopMode.setEnabled(False)
+        self.toggle_loading_animation(False)
         if sys.platform == "darwin":
             self.repaint()
 
     def set_running(self):
         self.current_state = States.RUNNING
+        self.toggle_loading_animation(False)
         self.pending_state = False
         self.menu_actions["start"].setEnabled(False)
         self.menu_actions["stop"].setEnabled(True)
@@ -306,13 +325,13 @@ class MainWindow(QMainWindow):
 
     def set_starting_up(self):
         self.current_state = States.STARTING_UP
+        self.ui.btn_go_to_island.setEnabled(False)
+        self.toggle_loading_animation(True)
+        self.ui.btn_admin.setEnabled(False)
         self.pending_state = True
         self.menu_actions["start"].setEnabled(False)
         self.menu_actions["stop"].setEnabled(False)
         self.menu_actions["restart"].setEnabled(False)
-        self.ui.island_access_label.setVisible(False)
-        self.ui.island_access_address.setVisible(False)
-        self.ui.island_admin_access_address.setVisible(False)
         self.ui.islandStatus.setText("Starting up...")
         self.ui.islandStatus.setStyleSheet('color: blue')
         self.ui.restartIslandButton.setEnabled(False)
@@ -327,15 +346,14 @@ class MainWindow(QMainWindow):
 
     def set_shutting_down(self):
         self.current_state = States.SHUTTING_DOWN
+        self.ui.btn_go_to_island.setEnabled(False)
+        self.ui.btn_admin.setEnabled(False)
         self.pending_state = True
         self.menu_actions["start"].setEnabled(False)
         self.menu_actions["stop"].setEnabled(False)
         self.menu_actions["restart"].setEnabled(False)
         self.ui.islandStatus.setText("Shutting down...")
         self.ui.islandStatus.setStyleSheet('color: orange')
-        self.ui.island_access_label.setVisible(False)
-        self.ui.island_access_address.setVisible(False)
-        self.ui.island_admin_access_address.setVisible(False)
         self.ui.groupBox.setEnabled(False)
         self.ui.groupBox.hide()
         self.set_working()
@@ -343,15 +361,14 @@ class MainWindow(QMainWindow):
             self.repaint()
 
     def set_not_running(self):
-
+        self.ui.btn_go_to_island.setEnabled(False)
+        self.ui.btn_admin.setEnabled(False)
+        self.toggle_loading_animation(False)
         self.current_state = States.NOT_RUNNING
         self.pending_state = False
         self.menu_actions["start"].setEnabled(True)
         self.menu_actions["stop"].setEnabled(False)
         self.menu_actions["restart"].setEnabled(False)
-        self.ui.island_access_label.setVisible(False)
-        self.ui.island_access_address.setVisible(False)
-        self.ui.island_admin_access_address.setVisible(False)
         self.ui.islandStatus.setText("Not running")
         self.ui.islandStatus.setStyleSheet('color: red')
         self.ui.restartIslandButton.setEnabled(False)
@@ -365,14 +382,14 @@ class MainWindow(QMainWindow):
             self.repaint()
 
     def set_unknown(self):
+        self.ui.btn_go_to_island.setEnabled(False)
+        self.ui.btn_admin.setEnabled(False)
         self.current_state = States.UNKNOWN
+        self.toggle_loading_animation(False)
         self.pending_state = False
         self.menu_actions["start"].setEnabled(False)
         self.menu_actions["stop"].setEnabled(False)
         self.menu_actions["restart"].setEnabled(False)
-        self.ui.island_access_label.setVisible(False)
-        self.ui.island_access_address.setVisible(False)
-        self.ui.island_admin_access_address.setVisible(False)
         self.ui.islandStatus.setText("Unknown")
         self.ui.islandStatus.setStyleSheet('color: gray')
         self.ui.restartIslandButton.setEnabled(False)
@@ -386,14 +403,14 @@ class MainWindow(QMainWindow):
             self.repaint()
 
     def set_restarting(self):
+        self.ui.btn_go_to_island.setEnabled(False)
+        self.ui.btn_admin.setEnabled(False)
         self.current_state = States.RESTARTING
         self.pending_state = True
+        self.toggle_loading_animation(True)
         self.menu_actions["start"].setEnabled(False)
         self.menu_actions["stop"].setEnabled(False)
         self.menu_actions["restart"].setEnabled(False)
-        self.ui.island_access_label.setVisible(False)
-        self.ui.island_access_address.setVisible(False)
-        self.ui.island_admin_access_address.setVisible(False)
         self.ui.islandStatus.setText("Restarting...")
         self.ui.islandStatus.setStyleSheet('color: blue')
         self.set_working()
@@ -402,6 +419,7 @@ class MainWindow(QMainWindow):
 
     def set_working(self):
         self.pending_state = True
+        self.toggle_loading_animation(True)
         self.menu_actions["start"].setEnabled(False)
         self.menu_actions["stop"].setEnabled(False)
         self.menu_actions["restart"].setEnabled(False)
@@ -414,37 +432,63 @@ class MainWindow(QMainWindow):
             self.repaint()
 
     # HELPERS
+    def hide_note(self):
+        self.ui.grp_note_container.setVisible(False)
+        if sys.platform == "darwin":
+            self.repaint()
+
+    def show_note(self, msg, lifespan=20):
+        self.ui.lbl_hint.setText(msg)
+        self.ui.grp_note_container.setVisible(True)
+        if sys.platform == "darwin":
+            self.repaint()
+        def expire_note_on_timeout():
+            sleep(lifespan)
+            self.note_expire.emit()
+            
+        t = Thread(target=expire_note_on_timeout)
+        t.start()
+    
+        
     def set_links_on_signal(self, result, link):
         log.debug("Link result signal received: result: %s, link: %s" % (str(result), str(link)))
         if self.current_state != States.RUNNING:
             log.debug("Got the links, but the VM is not running. Returning")
+            self.ui.btn_admin.setEnabled(False)
+            self.ui.btn_go_to_island.setEnabled(False)
             return
         elif not result:
-            self.ui.island_access_address.setText(
-                '<span style="color: grey; text-decoration: none">not configured</span>')
-            self.ui.island_admin_access_address.setVisible(False)
+            log.warning("Unable to get connection links to access island. Network configuration is invalid")
+            self.ui.btn_admin.setEnabled(False)
+            self.ui.btn_go_to_island.setEnabled(False)
+            self.show_note("Unable to connect to island. Network configuration is invalid.")
             return
         admin_exist = bool(is_admin_registered(self.config["data_folder"]))
-        log.debug("admin exists: %s" % str(admin_exist))
-        connstr = "%s:%s" % (link, self.config["local_access_port"])
-        local_access = self.get_local_access_html(connstr)
-        admin_access = self.get_local_access_html(connstr, True)
-        self.ui.island_access_label.setVisible(admin_exist)
-        self.ui.island_access_address.setVisible(admin_exist)
-        self.ui.island_access_address.setText(local_access)
-        self.ui.island_admin_access_address.setText(admin_access)
-        self.ui.island_admin_access_address.setVisible(True)
+        log.debug("admin exists: %s, data folder: %s" % (str(admin_exist), self.config["data_folder"]))
+        self.ui.btn_admin.setEnabled(True)
+        if admin_exist:
+            self.ui.btn_go_to_island.setEnabled(True)
+        else:
+            self.show_note("Looks like you haven't set up your master password yet. Please click on \"Admin\" button and follow the instructions in the browser. You will be able to use your island once master password is set")
+        connstr = "http://%s:%s" % (link, self.config["local_access_port"])
+        self.local_access = connstr
+        self.admin_access = "%s/%s" % (connstr, "admin")
 
+    def open_island_link(self, admin=False):
+        if self.current_state == States.RUNNING:
+            webbrowser.open(self.admin_access) if admin else webbrowser.open(self.local_access) 
+        else:
+            log.error("Attempt to open a link while island is not running")
+            
     def load_access_links(self):
-        self.ui.island_access_address.setText('<span style="color: grey; text-decoration: none">loading...</span>')
-        self.ui.island_admin_access_address.setVisible(False)
+        self.ui.btn_go_to_island.setEnabled(False)
+        self.ui.btn_admin.setEnabled(False)
         worker = self._get_link_loader_worker()
         t = Thread(target=worker)
         t.start()
 
     def launch_background_links_updater(self):
         worker = self._get_link_loader_worker()
-
         def background_updater():
             while True:
                 if self.current_state == States.RUNNING:
@@ -487,11 +531,6 @@ class MainWindow(QMainWindow):
     def show_notification(self, text):
         QM.warning(self, None, "Warning", text, buttons=QM.Ok)
 
-    def get_local_access_html(self, connstr, admin=False):
-        return '<a href="http://{connstr}">{content}</a>'.format(
-            connstr="%s/admin" % connstr if admin else connstr,
-            content="Admin access" if admin else connstr
-        )
 
     def quit_app(self):
         if QM.question(self, "Exit confirm", "Quit the Island Manager?", QM.Yes | QM.No) == QM.Yes:

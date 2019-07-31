@@ -11,14 +11,14 @@ class Downloader:
         pass
 
     @staticmethod
-    def get(url, dest_path, filename=None, on_update=None):
+    def get(url, dest_path, filename=None, on_update=None, abort=None):
         http = urllib.PoolManager(
                 cert_reqs='CERT_REQUIRED', 
                 ca_certs=certifi.where()
                 )
         response = http.request('GET', url, preload_content=False)
         if response.status != 200:
-            print("Download error")
+            log.error("Virtualbox download error. Status: %s, " % str(response.status))
             return
             # Do error handling here
         if not filename:
@@ -33,6 +33,9 @@ class Downloader:
 
         with open(dl_path, 'wb') as out:
             while True:
+                if abort and abort.is_set():
+                    log.debug("Vbox download aborted. Exiting...")
+                    return
                 data = response.read(blocksize)
                 if not data:
                     print("Download completed!")

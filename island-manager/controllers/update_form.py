@@ -186,7 +186,7 @@ class UpdateForm(QDialog):
             event.ignore()
         elif self.working:
             log.debug("aborting install")
-            self.setup.abort_vm_install()
+            self.setup.abort_install()
 
     def eventFilter(self, obj, event):
         if obj is self and event.type() == QEvent.KeyPress:

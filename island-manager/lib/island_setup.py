@@ -25,10 +25,13 @@ class IslandSetup:
         self.torrent_manager = torrent_manager
         self.__config = config
 
-    def abort_vm_install(self):
-        log.debug("Install setup: aborting install")
+    def abort_install(self):
+        log.debug("Install: aborting install")
         if self.vm_installer:
             self.vm_installer.abort_install()
+        if self.vbox_installer:
+            self.vbox_installer.abort_install()
+    
 
     # Initializes vm installer in separate thread and starts it
     def run_vm_installer(self, *args, **kwargs):
