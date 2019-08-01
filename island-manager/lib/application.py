@@ -42,6 +42,7 @@ class Application:
 
     def run(self):
         signal.signal(signal.SIGINT, lambda *args: self.kill())
+        signal.signal(signal.SIGTERM, lambda *args: self.kill())
         self.app.startTimer(200)
         self.main_window.show()
         self.app.exec_()
