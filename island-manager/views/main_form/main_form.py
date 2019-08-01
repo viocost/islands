@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '../views/main_form/main_form.ui'
+# Form implementation generated from reading ui file '..\views\main_form\main_form.ui'
 #
 # Created by: PyQt5 UI code generator 5.12.2
 #
@@ -12,8 +12,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(755, 664)
-        MainWindow.setMinimumSize(QtCore.QSize(640, 660))
+        MainWindow.resize(800, 660)
+        MainWindow.setMinimumSize(QtCore.QSize(800, 660))
         font = QtGui.QFont()
         font.setPointSize(10)
         MainWindow.setFont(font)
@@ -323,7 +323,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_7.addLayout(self.verticalLayout_6)
         MainWindow.setCentralWidget(self.centralWidget)
         self.menuBar = QtWidgets.QMenuBar(MainWindow)
-        self.menuBar.setGeometry(QtCore.QRect(0, 0, 755, 22))
+        self.menuBar.setGeometry(QtCore.QRect(0, 0, 800, 21))
         self.menuBar.setObjectName("menuBar")
         self.menuOptions = QtWidgets.QMenu(self.menuBar)
         self.menuOptions.setObjectName("menuOptions")

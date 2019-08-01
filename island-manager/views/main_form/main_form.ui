@@ -6,13 +6,13 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>755</width>
-    <height>664</height>
+    <width>800</width>
+    <height>660</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>640</width>
+    <width>800</width>
     <height>660</height>
    </size>
   </property>
@@ -778,8 +778,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>755</width>
-     <height>22</height>
+     <width>800</width>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuOptions">

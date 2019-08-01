@@ -160,28 +160,26 @@ class SetupWizardWindow(QWizard):
         if self.configuration_in_progress:
             log.debug("Ignoring close event. Configuration in progress")
             event.ignore()
-        else:
+        elif self.confirm_abort_setup():
             log.debug("Aborting install")
             self.setup.abort_install()
+        else:
+            event.ignore()
 
     def key_press_handler(self):
         def handler(event):
             log.debug("In key press handler")
             if event.key() == Qt.Key_Escape:
-                if self.configuration_in_progress:
-                    log.debug("Configuration in progress. Cannot exit now..")
-                    return
-                log.debug("ESC key pressed, processing")
-                install_complete = self.setup.is_vbox_set_up and self.setup.is_islands_vm_exist()
-                message = "Setup has not been finished and will be interrupted. Proceed? " \
-                    if not install_complete else ""
-                message += "Quit setup wizzard?"
-                res = QM.question(self, "Quit", message, QM.Yes | QM.No)
-                if res == QM.Yes:
-                    self.setup.abort_install()
-                    self.close()
-
+                self.close()
         return handler
+
+    def confirm_abort_setup(self):
+        install_complete = self.setup.is_vbox_set_up and self.setup.is_islands_vm_exist()
+        message = "Setup has not been finished and will be interrupted. Proceed? " \
+            if not install_complete else ""
+        message += "Quit setup wizzard?"
+        res = QM.question(self, "Quit", message, QM.Yes | QM.No)
+        return res == QM.Yes
 
     # Clear window outputs
 

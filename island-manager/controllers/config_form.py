@@ -112,9 +112,11 @@ class ConfigForm(QDialog):
         if res == 1:
             selected_vm = str(select_form.ui.vms_list.currentText())
             self.config["vmname"] = selected_vm
+            log.debug("Saving config and new vm info")
             self.config.save()
-            self.setup.update_vm_config()
+            log.debug("Updated. Refreshing VM info")
             self.refresh_vm_info()
+            log.debug("Done.")
 
     def configure_data_folder(self):
         f_dialog = QFileDialog(self)

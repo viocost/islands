@@ -4,6 +4,12 @@ from subprocess import Popen, PIPE, run
 from multiprocessing import Process
 import logging
 
+if sys.platform == "nt":
+    from win32com.shell.shell import ShellExecuteEx
+    from win32com.shell import shellcon
+    import win32con, win32event, win32process
+
+
 log = logging.getLogger(__name__)
 
 
@@ -82,9 +88,6 @@ class ShellExecutor:
 
     @staticmethod
     def run_vbox_installer_windows(cmd):
-        from win32com.shell.shell import ShellExecuteEx
-        from win32com.shell import shellcon
-        import win32con, win32event, win32process
         cmd_dir = ''
         showCmd = win32con.SW_SHOWNORMAL
         lpVerb = 'runas'

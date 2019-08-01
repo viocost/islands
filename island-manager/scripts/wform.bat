@@ -10,7 +10,7 @@ if "%form%" == "" (
 
 if "%form%" == "main" (
     echo main form
-    pyuic5 ..\views\main_form\mainwindow.ui -o ..\views\main_form\main_window_ui_setup.py
+    pyuic5 ..\views\main_form\main_form.ui -o ..\views\main_form\main_form.py
     echo Done!
 
 )
