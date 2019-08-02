@@ -12,7 +12,15 @@ fi
 source ./venv/bin/activate 
 pip3 install -r requirements.txt
 
-python3 ./main.py
+
+if [[ $1 == "--debug" ]]; then
+    echo Running in debug mode
+    python3 ./main.py --debug
+else
+    echo Running in normal mode
+    python3 ./main.py
+fi
+
 
 deactivate
 

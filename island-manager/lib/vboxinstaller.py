@@ -4,6 +4,7 @@ from lib.exceptions import IslandSetupError
 from lib.executor import ShellExecutor as Executor
 from lib.exceptions import CmdExecutionError
 from lib.util import get_full_path
+from shutil import which
 from os import path
 
 import sys
@@ -32,8 +33,7 @@ class VBoxInstaller:
                  update_progres_bar,
                  on_configuration_in_progress,
                  finalize_progres_bar,
-                 update=False,
-                 on_root_password_request=None):
+                 update=False):
         self.thread = None
         self.setup = setup
         self.cmd = setup.cmd
@@ -46,7 +46,6 @@ class VBoxInstaller:
         self.finalize_progres_bar = finalize_progres_bar
         self.update = update
         self.on_configuration_in_progress = on_configuration_in_progress
-        self.on_root_password_request=on_root_password_request
         self.path_to_vbox_distr = None
         self.abort = Event()
 
@@ -57,11 +56,6 @@ class VBoxInstaller:
     def start(self):
         self.message("Installing virtualbox...")
         self.thread = Thread(target=self.install)
-        self.thread.start()
-        log.debug("Thread started")
-
-    def root_password_received_resume(self, password):
-        self.thread = Thread(target=self._linux_install_proceed, args=(password,))
         self.thread.start()
         log.debug("Thread started")
 
@@ -146,52 +140,44 @@ class VBoxInstaller:
         except Exception as e:
             self.complete(False, str(e))
             log.error("Install error: %s" % str(e))
-            
 
-
-    def _linux_install_proceed(self, passwd=None):
+    def _linux_install_proceed(self):
         """
         Assuming that vbox installer is already downloaded
-        :param passwd:
         :return:
         """
         self.message("Running virtualbox installation script...")
+        # Checking whether the installer really exists
         if self.path_to_vbox_distr is None or not path.exists(self.path_to_vbox_distr):
             log.error("Vbox installer not found. Aborting...")
-            return
-
-        prefix = ""
+            raise FileNotFoundError("Virtualbox installer not found")
+        log.debug("Installer found")
+        
+        # Checking if user is root
+        sudo_command = ""
         if getuid() != 0:
-            if passwd is None:
-                # signal here and return
-                if not self.on_root_password_request:
-                    log.debug("User is not root")
-                    self.error("Virtualbox installation requires root privileges. Run as root using 'sudo'")
-                else:
-                    self.message("Root password is required")
-                    self.on_root_password_request()
-                return
-
-
+            log.debug("Checking sudo")
+            sudo_flavors = ["gksudo", "pkexec", "kdesudo"]
+            for f in sudo_flavors:
+                if which(f) is not None:
+                    sudo_command = f
+                    break
+            if sudo_command == "":
+                raise Exception("Cannot elevate rights. Please restart as root or install virtualbox manually")
+        
+        log.debug("Adding execute rights to the installer")
+        res, stdout, stderr = Executor.exec_sync("chmod +x %s" % self.path_to_vbox_distr)
+        if res != 0:
+            raise Exception("Unable to add execution rights for the Virtualbox installer.")
         log.debug("VBOX install: all prerequisites checked. Continuing...")
-
-        try:
-            Executor.exec_sync(self.cmd.make_executable(self.path_to_vbox_distr))
-            self._install_vbox_linux(self.path_to_vbox_distr, passwd)
-            self.complete(True, "Virtualbox installed successfully.")
-        except CmdExecutionError as e:
-            if "password" in e.args[2]:
-                self.error("Root password error")
-                self.on_root_password_request()
-            else:
-                self.complete(False, "Virtualbox installation failed")
-        except Exception as e:
-            log.error("GOT VBOX INSTALL EXCEPTION: %s" % str(e))
-            self.error("Virtualbox installation failed: %s " % str(e))
-
-        # self.delete_vbox_distro(path_to_vbox_distr)
-        # self.message("Distro removed.")
-
+        
+        self.message("Installing Virtualbox. This may take a few minutes.")
+        cmd = "%s %s" % (sudo_command, self.path_to_vbox_distr)
+        res, stdout, stderr = self.install_vbox_linux(cmd)
+        self.message(stdout)
+        self.complete(True, "Virtualbox installed successfully.")
+            
+        
     def _linux_install_download(self):
         log.debug("Downloading virtualbox")
         self.init_progres_bar("Downloading virtualbox...")
@@ -207,9 +193,9 @@ class VBoxInstaller:
         return Executor.exec_sync(self.cmd.mount_vbox_distro(path_to_installer))
 
     @check_output
-    def _install_vbox_linux(self, path_to_installer, passwd=""):
-        return Executor.exec_stream_as_root(path_to_installer, self.message, self.error, passwd)
-
+    def install_vbox_linux(self, cmd):
+        return Executor.exec_sync(cmd)
+    
     @check_output
     def _install_vbox_dar_win(self, path_to_installer):
         """

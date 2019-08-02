@@ -28,7 +28,6 @@ class SetupWizardWindow(QWizard):
     download_timeout_signal = pyqtSignal()
     vm_install_completed = pyqtSignal(bool, str)
     install_error = pyqtSignal(int, str)
-    root_password_request = pyqtSignal()
     configuration_in_progress_signal = pyqtSignal(bool)
 
     def __init__(self, parent, config, island_manager, setup):
@@ -139,7 +138,6 @@ class SetupWizardWindow(QWizard):
         self.ui.btn_select_data_path.clicked.connect(self.select_data_folder)
         self.install_error.connect(self.process_install_error)
         self.vm_install_completed.connect(self.process_vm_install_result)
-        self.root_password_request.connect(self.vbox_install_request_root_password)
         self.configuration_in_progress_signal.connect(self.on_configuration_in_progress)
 
     def on_configuration_in_progress(self, in_progress: bool):
@@ -338,23 +336,9 @@ class SetupWizardWindow(QWizard):
     # END progress bar handlers
 
     def process_vbox_install(self):
-        # if sys.platform == "win32" and not util.has_admin_rights_win32():
-        #     QM.warning(self, "Admin rights required!",
-        #                "Running setup requires administrator privileges. "
-        #                "Please close island manager and start it as administrator.", QM.Ok)
-        #     return
-
         vbox_installed = self.setup.is_vbox_installed()
-
+        
         if vbox_installed:
-            return
-        elif sys.platform == "linux" and getuid() != 0:
-            # Asking user to either run as root or install virtualbox separately
-            log.debug("Virtulabox install: Not enough privileges")
-            QM.information(self, "Root required",
-                           "You need to be root in order to install Virtualbox."
-                           "Either install Virtualbox yourself or restart Islands Manager as root",
-                           QM.Ok)
             return
 
         self.consoles[0].setText("")
@@ -369,25 +353,8 @@ class SetupWizardWindow(QWizard):
             finalize_progres_bar=self.get_finalize_progress_bar_handler(0),
             on_configuration_in_progress=self.on_configuration_in_progress, 
             on_error=self.get_on_error_handler(console=0),
-            update=vbox_installed,
-            on_root_password_request=self.on_root_password_request
+            update=vbox_installed
         )
-
-    def vbox_install_request_root_password(self):
-        dialog = QInputDialog(self)
-        dialog.le = QLineEdit()
-        dialog.le.setObjectName("root_password_field")
-        res, ok = QInputDialog.getText(dialog, "Root privilege required", "Root password:", QLineEdit.Password)
-        if ok:
-            print(res)
-            self.setup.resume_vbox_setup_root_password(res)
-            return
-        else:
-            log.debug("Installation cancelled...")
-            self.vbox_instal_complete.emit(False, "Installation cancelled")
-
-    def on_root_password_request(self):
-        self.root_password_request.emit()
 
     # Starts islands install process with choose image option
     def select_islands_image(self):
