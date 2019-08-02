@@ -336,9 +336,6 @@ function vaultLoginProcessVault(data, password, passwordEl){
         vault = new Vault();
         vault.initSaved(data.vault, password);
         initPasswordBasedHandlers(password);
-        //DEBUG ONLY!
-        window.vault = vault;
-        //
         passwordEl.value = "";
         vaultLoginFinalize();
         document.title = "Islands | Vault"
@@ -662,6 +659,15 @@ function renderVault(){
         newButton.style.display = "block";
     } else {
         document.querySelector("#admin").style.display = "none";
+    }
+    console.log("Checking if topics exist...")
+    console.log(vault.topics.toString())
+    if (Object.keys(vault.topics).length == 0){
+	console.log("No topics found. Showing welcome message.")
+	util.$("#welcome-msg-wrap").style.display = "block"
+    } else {
+	console.log("Topics exist")
+	util.$("#welcome-msg-wrap").style.display = "none"
     }
 }
 

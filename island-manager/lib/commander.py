@@ -23,7 +23,7 @@ class Commander:
     __install_vbox = {
         "darwin": """osascript -e 'do shell script "installer -pkg {mountpoint}VirtualBox.pkg -target / " with administrator privileges' """,
         "win32": "{distrpath} --silent",
-        "linux": "{distrpath}"
+        "linux": "{distrpath} --silent"
     }
     __delete_vbox_distr = {
         "darwin": "rm -rf {distrpath}",
