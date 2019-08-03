@@ -323,6 +323,7 @@ function onHiddenServiceUpdate(data) {
             copyTextToBuffer(ev.target.innerText, "Onion link copied to clipboard")
         })
     }
+    onHiddenServicesPageActivation();
 }
 
 
@@ -858,6 +859,33 @@ function processMainMenuClick(ev) {
     pages.children[index].classList.add("active");
     menu.children[index].classList.add("active");
     document.querySelector("#admin-section-heading").innerHTML = ev.target.innerHTML;
+    runPageActivationHandler(index);
+}
+
+function runPageActivationHandler(index){
+    console.log("Running page activation handler for index: " + index)
+    switch (index){
+	case 0:
+	    onHiddenServicesPageActivation();
+	    break;
+	case 1:
+	    onLogsPageActivation();
+	    break
+	default:
+	    throw "Invaild page index"
+    }
+}
+
+function onHiddenServicesPageActivation(){
+    let hsExist = util.$("#hidden-services-wrap").children.length === 0 
+    util.$("#hs-container").style.display = hsExist ? "none" : "block" 
+    util.$("#hidden-services-empty").style.display = hsExist ? "block" : "none" 
+}
+
+function onLogsPageActivation(){
+    let logsExist = util.$("#log-records").children.length === 0;
+    util.$("#logs-empty-message").style.display = logsExist ? "block" : "none";
+    util.$("#log-content").style.display = logsExist ? "none" : "block";
 }
 
 function clearAdminPrivateKey() {
@@ -960,6 +988,7 @@ function processLogsLoaded(res) {
         }
         table.appendChild(row);
     }
+    onLogsPageActivation();
     toastr.info("Logs loaded successfully");
 }
 
