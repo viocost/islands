@@ -88,8 +88,7 @@ def show_user_error_window(parent, message):
 
 def show_notification(parent, text):
     log.debug("About to show notifiction: %s" % text)
-    dialog = QMessageBox(parent)
-    QMessageBox.warning(dialog, "Warning", text, buttons=QMessageBox.Ok)
+    QMessageBox.warning(parent, "Warning", text, buttons=QMessageBox.Ok)
 
 def get_stack():
     return "".join(traceback.format_stack())

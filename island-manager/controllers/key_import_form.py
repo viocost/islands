@@ -1,4 +1,5 @@
 import logging
+import sys
 from os import path
 
 from PyQt5.QtWidgets import QDialog, QFileDialog
@@ -38,6 +39,8 @@ class KeyImportForm(QDialog):
 
     def set_existing_password_field_visibility(self):
         self.ui.existing_password.setVisible(self.ui.is_key_encrypted.isChecked())
+        if sys.platform == "darwin":
+            self.repaint()
 
     def set_key_import_option(self):
         ind = 0 if self.ui.import_from_file.isChecked() else 1

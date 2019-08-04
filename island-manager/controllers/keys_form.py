@@ -91,7 +91,7 @@ class KeysForm(QDialog):
             log.debug("No key selected")
             show_notification(self, "No key is selected.")
             return
-        confirm = QMessageBox.question(QMessageBox(self), "Delete key",
+        confirm = QMessageBox.question(self, "Delete key",
                                        "The key will be deleted and forgotten. \n\nProceed?",
                                        QMessageBox.Yes | QMessageBox.No)
         if not confirm == QMessageBox.Yes:
