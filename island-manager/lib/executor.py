@@ -4,7 +4,7 @@ from subprocess import Popen, PIPE, run
 from multiprocessing import Process
 import logging
 
-if sys.platform == "nt":
+if sys.platform == "win32":
     from win32com.shell.shell import ShellExecuteEx
     from win32com.shell import shellcon
     import win32con, win32event, win32process
