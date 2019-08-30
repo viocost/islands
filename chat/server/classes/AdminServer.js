@@ -646,13 +646,13 @@ module.exports.getAdminVault = function(){
 
 
 module.exports.setKeyFolder = function(keysPath, uPath){
-    console.log("setting update path to " + updatePath);
+    console.log("setting keysPath path to " + keysPath);
     keysFolderPath = keysPath;
     updatePath = uPath;
 };
 
 module.exports.setHSFolderPath = function(hsFolderPath){
-    console.log("setting update path to " + updatePath);
+    console.log("setting update path to " + hsFolderPath);
     hiddenServicesFolderPath = hsFolderPath;
 };
 

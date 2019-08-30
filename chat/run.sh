@@ -23,6 +23,7 @@ USAGE="
     Run npm script to re-build front end
 "
 
+
 POSITIONAL=()
 while [[ $# -gt 0 ]]
 
