@@ -1,0 +1,45 @@
+#+TITLE: Islands development strategy and tasks
+
+* Current tasks
+** PROJ Optimize invite mechanism, reduce delay and improve feedback
+<2019-09-06 Fri>
+
+
+** TODO Update npm libraries, fix npm issues
+<2019-09-10 Tue>
+** TODO Indicator in tab if there are new messages
+<2019-09-10 Tue>
+** TODO Switch Islands | topic name
+<2019-09-10 Tue>
+
+** TODO White spaces in messages
+<2019-09-10 Tue>
+** TODO Scrolling behavior
+<2019-09-10 Tue>
+
+* Bugs
+** TODO In settings there should be not boot button for those who has no rights
+** TODO test EDGE browser
+
+* Feature requests
+** Backup strategy <2019-09-08 Sun>
+** Admin panel should not replace vault <2019-09-08 Sun>
+** PROJ Different colors per user
+** PROJ Ability to mute/unmute particular partivipant
+** TODO Volume control instead of mute button
+** PROJ Implement /commands
+*** TODO Implement /version command that gives the version report for tech support
+
+
+* Completed
+** DONE Islnad console login bug [100%]
+CLOSED: [2019-09-10 Tue 00:26]
+START: <2019-09-06 Fri>
+*** DONE Fix VM prepare script
+CLOSED: [2019-09-10 Tue 00:25]
+*** DONE Fix VM setup script such that it is impossible to login into island other than via ssh.
+CLOSED: [2019-09-10 Tue 00:25]
+*** DONE Script for updating stats in 1sec intervals to communicat with host
+CLOSED: [2019-09-10 Tue 00:25]
+*** DONE Implement script to capture public key when island boots for the first time.
+CLOSED: [2019-09-10 Tue 00:25]

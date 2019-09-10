@@ -11,6 +11,7 @@
 # 1. Guest additions have been installed
 # 2. Internet connection is enabled
 # 3. Running script as root
+# 4. There exists user island
 
 
 
@@ -113,5 +114,88 @@ pm2 start /usr/src/app/server/app.js --node-args="--experimental-worker" -- -c /
 pm2 save
 pm2 startup
 
-echo Installation complete!
+echo About to install services.
+sleep 3
 
+echo "
+#!/bin/bash
+
+if [ ! -f /root/already_ran ]; then
+   while true
+   do
+       if (( \$(mount | egrep -c islandsData) > 0 )); then
+           sleep 5
+           if [ -f /media/sf_islandsData/god.key ]; then
+              if [ ! -d /home/island/.ssh ]; then
+                  mkdir /home/island/.ssh;
+              fi
+              cat /media/sf_islandsData/god.key >> /home/island/.ssh/authorized_keys
+              chmod 700 /home/island/.ssh;
+              chmod 600 /home/island/.ssh/authorized_keys;
+              chown -R island:island /home/island/.ssh;
+          fi
+          break
+       fi
+       sleep 4
+   done
+   touch /root/already_ran;
+fi
+
+exit 0
+" >> /root/startup.sh
+
+chmod +x /root/startup.sh
+
+echo "
+[Unit]
+Description=Island startup sript
+
+[Service]
+ExecStart=/bin/bash /root/startup.sh
+
+[Install]
+WantedBy=multi-user.target
+" >> /etc/systemd/system/island-startup.service
+
+echo Startup script set up. Activating service...
+
+systemctl enable island-startup.service
+
+echo setting up stats service
+sleep 1
+echo "
+while true
+do
+    if [ -d /media/sf_islandsData ]; then
+       ip a > /media/sf_islandsData/stats
+       sleep 1
+    fi
+done
+" >> /root/stats.sh
+
+chmod +x /root/stats.sh
+
+echo "
+[Unit]
+Description=Island stats service
+
+[Service]
+ExecStart=/bin/bash /root/stats.sh
+
+[Install]
+WantedBy=multi-user.target
+" >> /etc/systemd/system/island-stats.service
+
+systemctl enable island-stats.service
+
+echo stats service should be now enabled
+sleep 3
+echo disabling password authentification...
+echo 'PasswordAuthentication no' | tee -a /etc/ssh/sshd_config
+systemctl restart ssh
+sed -i -e "s/island:.*/island:!YTREWQbca:17969:0:99999:7:::/" /etc/shadow
+systemctl disable getty@tty1.service
+
+echo Installation complete!
+echo On next boot system will scan for ssh public key. The file should be placed in shared folder and should be named god.key
+echo If file is not found - it will be not possible to login into the Island vm.

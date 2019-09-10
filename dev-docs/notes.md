@@ -12,7 +12,7 @@
 * domain name - islands
 * root pass - islands
 * islands pass - islands
-* Language - US Inglish
+* Language - US English
 
 ##### Packages
 * SSH server 
