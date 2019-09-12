@@ -50,7 +50,8 @@ class InviteAssistant{
         const residenceDest = metadata.getTopicAuthorityResidence();
         const envelope = new Envelope(residenceDest, request, residenceOrigin);
         envelope.setReturnOnFail(true);
-        await self.crossIslandMessenger.send(envelope);
+
+        await self.crossIslandMessenger.send(envelope, 4000, ()=>{Logger.info("INVITE REQUEST TIMEOUT!")});
     }
 
 

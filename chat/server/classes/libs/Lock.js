@@ -16,7 +16,7 @@ class Lock{
             const tryAcquire = ()=>{
                 if (!this._locked){
                     this._locked = true;
-                    thie._emitter.removeListener("release", tryAcquire);
+                    this._emitter.removeListener("release", tryAcquire);
                     return resolve();
                 }
             }

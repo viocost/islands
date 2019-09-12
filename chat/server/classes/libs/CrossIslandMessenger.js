@@ -23,49 +23,29 @@ class CrossIslandMessenger extends EventEmitter{
      * Returns promise whether sent attempt was successfull.
      *
      * @arg envelope: CrossIslandEnvelope - envelope to send
-     * @arg params: send parameters. Can contain following properties:
-     *     onError - callback(envelope) will be called if error occurs during message send
-     *     onTimeout - callback(envelope) will be called if timeout expires
-     *     onDelivered - callback(envelope) will be called once message has been delivered to addressee
-     *     timeout - number in milliseconds. Undefind by default.
+     * @arg timeout: number in milliseconds. Undefind by default.
      *         If envelope has not been delivered to the addressee before timeout expired
      *         the envelope will be removed from the queue and onTimeout callback will be called.
+     * @arg onTimeout: - callback(envelope) will be called if timeout expires
      */
-    async send(envelope, params){
-        //TODO implement
-        // enqueue envelope
+    async send(envelope, timeout, onTimeout){
+        Logger.debug("Crossisland messenger: sending envelope")
+        await this._crossIslandMessageQueue.enqueue(envelope.destination, envelope, timeout, onTimeout);
 
-        await this._crossIslandMessageQueue.enqueue(envelope);
-        //if onTimeout and timeout - set timeout
-        if (typeof params.timeout === "number" && params.timeout > 0){
-            setTimeout(()=>{
-
-            }, params.timeout)
-        }
+        Logger.debug("Calling hidden peer to send the message")
         this._checkConnection(envelope.destination, envelope.origin);
-        //set other callbacks
-
-        //check connection
     }
 
 
-    getTimeoutHandler(envelope, onTimeout){
-        let self = this
-        return async ()=>{
-            Logger.debug("standard onTimeout handler called for expired envelope.")
-            let queue = self._crossIslandMessageQueue.get(envelope.destination)
-            await queue.remove(envelope);
-            if (typeof onTimeout === "function"){
-                onTimeout(envelope);
-            }
-        }
-    }
 
 
     _checkConnection(dest, orig, numberOfAttempts = 7, timeout = 7000){
         this.connector.callPeer(dest, orig, numberOfAttempts, timeout)
     }
 
+    /**
+     * DEPRICATED
+     */
     _enqueueMessage(envelope){
         Logger.debug("Enqueueing message and awaiting connection_established event");
         let dest = envelope.destination;
@@ -76,6 +56,9 @@ class CrossIslandMessenger extends EventEmitter{
         }
     }
 
+    /**
+     * DEPRICATED
+     */
     _dequeueMessage(destination){
         return this._crossIslandMessageQueue[destination].shift();
     }
@@ -124,7 +107,6 @@ class CrossIslandMessenger extends EventEmitter{
 
 
     async _sendAwaitingMessages(destination){
-        //TODO re-implement wiht new data structure
 
         Logger.debug("Connection established. Processing queue", {destination: destination});
 
@@ -134,7 +116,6 @@ class CrossIslandMessenger extends EventEmitter{
         }
 
         let queue = this._crossIslandMessageQueue.get(destination);
-
         
         while(!queue.isEmpty()){
 

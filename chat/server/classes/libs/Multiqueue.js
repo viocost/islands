@@ -18,7 +18,7 @@ class Multiqueue{
         this._queues = {}
     }
 
-    async enqueue(dest, obj, onSucess, onError, timeout){
+    async enqueue(dest, obj, timeout, onTimeout){
         if (!this._queues.hasOwnProperty(dest)){
             try {
                 await this._lock.acquire();
@@ -35,12 +35,9 @@ class Multiqueue{
         //Here we are sure that queue exists
         let queue = this._queues[dest];
         try{
-            await queue.lock();
-            queue.enqueue(obj);
-            if (timeout){
-                setTimeout(()=>{
-
-                })
+            await queue.enqueue(obj);
+            if (typeof timeout === "number" && timeout > 0){
+                setTimeout(this.getTimeoutHandler(dest, obj, onTimeout), timeout);
             }
         }catch(e){
             Logger.error("Error enqueueing message: " + e)
@@ -49,7 +46,20 @@ class Multiqueue{
         }
     }
 
+    getTimeoutHandler(key, obj, onTimeout){
+        let self = this
+        return async ()=>{
+            Logger.debug("standard onTimeout handler called for expired object.")
+            let queue = self.get(key)
+            await queue.remove(obj);
+            if (typeof onTimeout === "function"){
+                onTimeout(obj);
+            }
+        }
+    }
+
     get(key){
+        Logger.debug("Get queue request for key: " + key + " Existing keys are: " + JSON.stringify(Object.keys(this._queues)))
         return this._queues[key];
     }
 

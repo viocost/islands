@@ -20,15 +20,24 @@ class MessageQueueBlocking{
     }
 
     async lock(){
+        Logger.debug("Locking queue");
         return this._lock.acquire()
     }
 
     async unlock(){
+        Logger.debug("Releasing the lock")
         this._lock.release()
     }
 
-    enqueue(obj){
-        this._queue.push(obj);
+    async enqueue(obj){
+        await this.lock();
+        try{
+            this._queue.push(obj);
+        }catch(err){
+            Logger.error("Error enqueueing obj: " + err);
+        }finally{
+            this.unlock();
+        }
     }
 
     async dequeue(){
@@ -38,6 +47,7 @@ class MessageQueueBlocking{
             return this._queue.shift();
         }catch(err){
 
+            Logger.error("Error dequeueing: " + err);
         }finally{
             await this.unlock()
         }
@@ -50,6 +60,8 @@ class MessageQueueBlocking{
             let index = this._queue.indexOf(obj)
             if (index > -1){
                 this._queue.splice(index, 1)
+            } else {
+                Logger.debug("Object is not found.")
             }
         }catch(err){
             Logger.error("Error removing object from the queue: " + err)
