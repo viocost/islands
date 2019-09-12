@@ -32,7 +32,7 @@ class CrossIslandMessenger extends EventEmitter{
         Logger.debug("Crossisland messenger: sending envelope")
         await this._crossIslandMessageQueue.enqueue(envelope.destination, envelope, timeout, onTimeout);
 
-        Logger.debug("Calling hidden peer to send the message")
+        Logger.debug("Calling hidden peer to send the message. Dest: " + envelope.destination)
         this._checkConnection(envelope.destination, envelope.origin);
     }
 
@@ -43,32 +43,13 @@ class CrossIslandMessenger extends EventEmitter{
         this.connector.callPeer(dest, orig, numberOfAttempts, timeout)
     }
 
-    /**
-     * DEPRICATED
-     */
-    _enqueueMessage(envelope){
-        Logger.debug("Enqueueing message and awaiting connection_established event");
-        let dest = envelope.destination;
-        if(this._crossIslandMessageQueue[dest]){
-            this._crossIslandMessageQueue[dest].push(envelope)
-        } else {
-            this._crossIslandMessageQueue[dest] = [envelope];
-        }
-    }
-
-    /**
-     * DEPRICATED
-     */
-    _dequeueMessage(destination){
-        return this._crossIslandMessageQueue[destination].shift();
-    }
-
-
     _setConnectorListeners(){
         this.connector.on("connection_established", async residence =>{
+            Logger.debug("Connection is established with: " + residence);
             await this._sendAwaitingMessages(residence);
         });
         this.connector.on("connection_error", data =>{
+            Logger.error("Connection error: " + JSON.stringify(data));
             this.processConnectionError(data)
         });
 
@@ -107,16 +88,17 @@ class CrossIslandMessenger extends EventEmitter{
 
 
     async _sendAwaitingMessages(destination){
-
         Logger.debug("Connection established. Processing queue", {destination: destination});
 
-        if(!this._crossIslandMessageQueue[destination]){
-            Logger.debug("No messages to send to destination", {destination: destination})
-            return;
+        let queue = this._crossIslandMessageQueue.get(destination);
+
+        if (queue === undefined || queue.isEmpty()){
+            Logger.debug("No messages to send to " + destination);
+            return
         }
 
-        let queue = this._crossIslandMessageQueue.get(destination);
-        
+        Logger.debug("Got queue: " + queue);
+       
         while(!queue.isEmpty()){
 
             let envelope = await queue.dequeue()
@@ -133,6 +115,7 @@ class CrossIslandMessenger extends EventEmitter{
                 }
             }
         }
+        Logger.debug("Queue has been processed for:" + destination);
     }
 
     processConnectionError(data){
@@ -163,17 +146,17 @@ class CrossIslandMessenger extends EventEmitter{
 
 
     async returnEnvelope(originalEnvelope, err){
-	let logmsg = "Island is returning envelope origin: " + originalEnvelope.origin +
-		    " dest: " + originalEnvelope.destination +
-	    " error: " + err;
-	if (originalEnvelope.payload
-	    && originalEnvelope.payload.headers
-	    && originalEnvelope.payload.headers.command){
-	    logmsg += (" command: " + originalEnvelope.payload.headers.command);
-	}
-	Logger.warn(logmsg);
-        const envelope = Envelope.makeReturnEnvelope(originalEnvelope, err);
-        return this.connector.sendDirectly(envelope);
+        let logmsg = "Island is returning envelope origin: " + originalEnvelope.origin +
+                " dest: " + originalEnvelope.destination +
+            " error: " + err;
+        if (originalEnvelope.payload
+            && originalEnvelope.payload.headers
+            && originalEnvelope.payload.headers.command){
+            logmsg += (" command: " + originalEnvelope.payload.headers.command);
+        }
+        Logger.warn(logmsg);
+            const envelope = Envelope.makeReturnEnvelope(originalEnvelope, err);
+            return this.connector.sendDirectly(envelope);
     }
 
 

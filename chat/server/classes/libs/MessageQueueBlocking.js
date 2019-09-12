@@ -55,14 +55,16 @@ class MessageQueueBlocking{
 
     async remove(obj){
         Logger.debug("Removing object from queue")
+        let index = this._queue.indexOf(obj)
+
+        if (index === -1){
+            Logger.debug("Object is not found.")
+            return
+        }
+
         await this.lock();
         try{
-            let index = this._queue.indexOf(obj)
-            if (index > -1){
-                this._queue.splice(index, 1)
-            } else {
-                Logger.debug("Object is not found.")
-            }
+            return (index > -1) ? this._queue.splice(index, 1)[0] : undefined;
         }catch(err){
             Logger.error("Error removing object from the queue: " + err)
         }finally{
@@ -72,6 +74,10 @@ class MessageQueueBlocking{
 
     length(){
         return this._queue.length;
+    }
+
+    isEmpty(){
+        return this._queue.length === 0;
     }
 
 }

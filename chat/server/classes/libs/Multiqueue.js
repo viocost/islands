@@ -19,6 +19,7 @@ class Multiqueue{
     }
 
     async enqueue(dest, obj, timeout, onTimeout){
+        Logger.debug("Enqueueing object for: " + dest);
         if (!this._queues.hasOwnProperty(dest)){
             try {
                 await this._lock.acquire();
@@ -51,7 +52,11 @@ class Multiqueue{
         return async ()=>{
             Logger.debug("standard onTimeout handler called for expired object.")
             let queue = self.get(key)
-            await queue.remove(obj);
+            let removed = await queue.remove(obj);
+            if (removed === undefined){
+                Logger.debug("Object has been processed in time")
+                return;
+            }
             if (typeof onTimeout === "function"){
                 onTimeout(obj);
             }
@@ -63,10 +68,8 @@ class Multiqueue{
         return this._queues[key];
     }
 
-
-
     isEmpty(key){
-        return this._queues.hasOwnProperty(key) && this._queues[key]
+        return this._queues.hasOwnProperty(key) ? this._queues[key].isEmpty() : true;
     }
 
 }

@@ -34,6 +34,7 @@ class InviteAssistant{
      * Verifies and sends to topic authority on some other island
      */
     async requestInviteOutgoing(request, connectionID, self){
+
         Logger.debug("Outgoing invite request from client", {
             source: request.headers.pkfpSource
         });
@@ -51,7 +52,11 @@ class InviteAssistant{
         const envelope = new Envelope(residenceDest, request, residenceOrigin);
         envelope.setReturnOnFail(true);
 
-        await self.crossIslandMessenger.send(envelope, 4000, ()=>{Logger.info("INVITE REQUEST TIMEOUT!")});
+        await self.crossIslandMessenger.send(envelope, 4000, (envelope)=>{
+            Logger.info("INVITE REQUEST TIMEOUT: dest: " + envelope.destination)
+            envelope.error = "Invite request timeout.";
+            self._processStandardClientError(envelope, self);
+        });
     }
 
 
