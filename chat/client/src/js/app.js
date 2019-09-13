@@ -83,6 +83,13 @@ document.addEventListener('DOMContentLoaded', event => {
 
 });
 
+
+window.onfocus = function(){
+    if (chat !== undefined && chat.isLoggedIn()){
+        document.title = chat.session.settings.topicName + " | Islands";
+    }
+}
+
 function prepareResizer() {
     let resizer = util.$("#chat-resizer");
 
@@ -121,7 +128,10 @@ function autoLogin(){
     let token = url.searchParams.get("token");
     let pkcipher = localStorage.getItem(id);
     if (!pkcipher){
-        throw ("Autologin failed: no private ley found in local storage");
+        console.log("Autologin failed: no private ley found in local storage");
+        document.location.href = document.location.origin;
+        toastr.warning("Login required.")
+        return;
     }
 
     let ic = new iCrypto()
@@ -237,7 +247,7 @@ function setupChatListeners(chat) {
         processLogin(messages);
         playSound("user_online");
         toastr.success("You are now online!");
-        document.title = "Islands | " + chat.session.settings.topicName
+        document.title = chat.session.settings.topicName + " | Islands";
     });
 
     chat.on("unknown_error", err => {
@@ -389,7 +399,9 @@ function processIncomingMessage(message) {
         recipient: message.header.recipient,
         attachments: message.attachments
     });
-
+    if(document.hidden){
+        document.title = "* " + chat.session.settings.topicName + " | Islands"
+    }
     toastr["info"]("New message from " + chat.getMemberRepr(pkfp));
 }
 
@@ -528,13 +540,14 @@ function bootParticipant(event) {
         }
     }
 
-    if (confirm("Are you sure you want to boot " + participant + "? ")) {
+    let name = chat.getMemberRepr(participantPkfp);
+    if (confirm("Are you sure you want to boot " + name + "? ")) {
         chat.bootParticipant(participantPkfp);
     }
 }
 
 function addParticipantToSettings(key) {
-
+    let userRights = chat.session.metadata.participants[chat.session.publicKeyFingerprint].rights;
     let records = document.querySelector("#participants-records");
     let participant = chat.session.metadata.participants[key];
     if (!participant) {
@@ -564,7 +577,9 @@ function addParticipantToSettings(key) {
     wrapper.appendChild(id);
     wrapper.appendChild(nickname);
     wrapper.appendChild(rights);
-    actions.appendChild(delButton);
+    if (userRights === 3){
+        actions.appendChild(delButton);
+    }
     wrapper.appendChild(actions);
     wrapper.appendChild(id);
     records.appendChild(wrapper);
@@ -1430,7 +1445,7 @@ function editTopicName(ev) {
     ev.target.value = newTopicName;
     chat.topicNameUpdate(ev.target.value);
     ev.target.blur();
-    document.title = "Islands | " + chat.session.settings.topicName;
+    document.title = chat.session.settings.topicName + " | Islands";
 }
 
 function buttonLoadingOn(element) {

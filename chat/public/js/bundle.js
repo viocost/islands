@@ -8639,6 +8639,12 @@ document.addEventListener('DOMContentLoaded', function (event) {
   autoLogin();
 });
 
+window.onfocus = function () {
+  if (app_chat !== undefined && app_chat.isLoggedIn()) {
+    document.title = app_chat.session.settings.topicName + " | Islands";
+  }
+};
+
 function prepareResizer() {
   var resizer = dom_util_$("#chat-resizer");
   var chatWrapper = dom_util_$("#chat_room");
@@ -8673,7 +8679,10 @@ function autoLogin() {
   var pkcipher = localStorage.getItem(id);
 
   if (!pkcipher) {
-    throw "Autologin failed: no private ley found in local storage";
+    console.log("Autologin failed: no private ley found in local storage");
+    document.location.href = document.location.origin;
+    toastr["warning"]("Login required.");
+    return;
   }
 
   var ic = new iCrypto_iCrypto();
@@ -8802,7 +8811,7 @@ function setupChatListeners(chat) {
     processLogin(messages);
     playSound("user_online");
     toastr["success"]("You are now online!");
-    document.title = "Islands | " + chat.session.settings.topicName;
+    document.title = chat.session.settings.topicName + " | Islands";
   });
   chat.on("unknown_error", function (err) {
     console.log("unknown_error emited by chat: " + err);
@@ -8926,6 +8935,11 @@ function app_processIncomingMessage(message) {
     recipient: message.header.recipient,
     attachments: message.attachments
   });
+
+  if (document.hidden) {
+    document.title = "* " + app_chat.session.settings.topicName + " | Islands";
+  }
+
   toastr["info"]("New message from " + app_chat.getMemberRepr(pkfp));
 }
 
@@ -9065,12 +9079,15 @@ function app_bootParticipant(event) {
     }
   }
 
-  if (confirm("Are you sure you want to boot " + participant + "? ")) {
+  var name = app_chat.getMemberRepr(participantPkfp);
+
+  if (confirm("Are you sure you want to boot " + name + "? ")) {
     app_chat.bootParticipant(participantPkfp);
   }
 }
 
 function addParticipantToSettings(key) {
+  var userRights = app_chat.session.metadata.participants[app_chat.session.publicKeyFingerprint].rights;
   var records = document.querySelector("#participants-records");
   var participant = app_chat.session.metadata.participants[key];
 
@@ -9099,7 +9116,11 @@ function addParticipantToSettings(key) {
   wrapper.appendChild(id);
   wrapper.appendChild(nickname);
   wrapper.appendChild(rights);
-  actions.appendChild(delButton);
+
+  if (userRights === 3) {
+    actions.appendChild(delButton);
+  }
+
   wrapper.appendChild(actions);
   wrapper.appendChild(id);
   records.appendChild(wrapper);
@@ -10166,7 +10187,7 @@ function editTopicName(ev) {
   ev.target.value = newTopicName;
   app_chat.topicNameUpdate(ev.target.value);
   ev.target.blur();
-  document.title = "Islands | " + app_chat.session.settings.topicName;
+  document.title = app_chat.session.settings.topicName + " | Islands";
 }
 
 function buttonLoadingOn(element) {

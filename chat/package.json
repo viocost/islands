@@ -1,6 +1,6 @@
 {
   "name": "chat",
-  "version": "0.0.144",
+  "version": "1.0.0",
   "description": "",
   "main": "app.js",
   "scripts": {
@@ -39,6 +39,7 @@
     "save-dev": "^2.0.0",
     "semantic-ui-dropdown": "^2.4.1",
     "semantic-ui-icon": "^2.3.3",
+    "shelljs": "^0.8.1",
     "socket.io": "^2.2.0",
     "socket.io-client": "^2.2.0",
     "socket.io-stream": "^0.9.1",
@@ -46,7 +47,6 @@
     "tingle.js": "^0.14.0",
     "toastr": "^2.1.4",
     "tor-control": "^0.0.3",
-    "shelljs": "^0.8.1",
     "webpack-visualizer-plugin": "^0.1.11",
     "winston": "^3.1.0"
   },

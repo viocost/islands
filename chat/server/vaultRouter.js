@@ -7,9 +7,6 @@ const AdminKey = require("./classes/libs/AdminKey");
 const Logger = require("./classes/libs/Logger");
 const version = require("./classes/libs/Version");
 
-
-
-
 let vaultManager;
 
 let VERSION; //Depricated

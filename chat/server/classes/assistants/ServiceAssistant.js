@@ -28,13 +28,8 @@ class ServiceAssistant{
         this.hm = historyManager;
         this.topicAuthorityManager = topicAuthorityManager;
         this.subscribeToClientRequests(requestEmitter);
+        this.subscribeToCoordinatorEvents();
         this.subscribeToCrossIslandsMessages(this.ciMessenger);
-        Coordinator.on("sync_metadata", async (pkfp)=>{
-            await  self.requestMetadataSync(pkfp, self);
-        });
-        Coordinator.on("send_metadata_outdated_note", async (data)=>{
-            await self.sendMetadataOutdatedNote(data, self);
-        });
     }
 
 
@@ -175,9 +170,9 @@ class ServiceAssistant{
         self.sessionManager.broadcastServiceRecord(request.headers.pkfpSource, msg);
     }
 
-    async processInviteRequestError(envelope, self){
+    async serviceRecordOnRequestError(envelope, self){
         let request = Envelope.getOriginalPayload(envelope);
-        let msg = await self.createSaveServiceRecord(request.headers.pkfpSource, request.headers.command, "Invite request error: " + envelope.error);
+        let msg = await self.createSaveServiceRecord(request.headers.pkfpSource, request.headers.command, envelope.error);
         self.sessionManager.broadcastServiceRecord(request.headers.pkfpSource, msg);
     }
 
@@ -381,7 +376,26 @@ class ServiceAssistant{
         return msg;
     }
 
+    subscribeToCoordinatorEvents(){
+        let self = this;
+        Coordinator.on("sync_metadata", async (pkfp)=>{
+            await  self.requestMetadataSync(pkfp, self);
+        });
 
+        Coordinator.on("send_metadata_outdated_note", async (data)=>{
+            await self.sendMetadataOutdatedNote(data, self);
+        });
+
+        Coordinator.on("invite_request_timeout", async (envelope)=>{
+            Logger.debug("Processing invite request timeout");
+            await self.serviceRecordOnRequestError(envelope, self);
+        });
+
+        Coordinator.on("sync_invite_timeout", async(envelope)=>{
+            Logger.debug("Processing invite sync request timeout");
+            await self.serviceRecordOnRequestError(envelope, self);
+        })
+    }
 
     subscribeToClientRequests(requestEmitter){
         this.subscribe(requestEmitter, {

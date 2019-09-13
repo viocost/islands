@@ -1,7 +1,7 @@
 #+TITLE: Islands development strategy and tasks
 
 * Current tasks
-** PROJ Optimize invite mechanism, reduce delay and improve feedback [60%]
+** PROJ Optimize invite mechanism, reduce delay and improve feedback [66%]
 <2019-09-06 Fri>
 *** DONE Implement multiqueue
 CLOSED: [2019-09-13 Fri 00:17]
@@ -9,35 +9,29 @@ CLOSED: [2019-09-13 Fri 00:17]
 CLOSED: [2019-09-13 Fri 00:17]
 *** DONE Test new delivery system
 CLOSED: [2019-09-13 Fri 00:18]
-*** TODO Implement invite request and sync handling logic using multiqueue
-
+*** DONE Implement invite request and sync handling logic using multiqueue
+CLOSED: [2019-09-13 Fri 23:20]
 
 *** TODO Rewrite all timeout requests:
-- Boot
-- Leave
-- Invite sync
-- Topic join
-
-
-** TODO Update npm libraries, fix npm issues
-<2019-09-10 Tue>
-** TODO Indicator in tab if there are new messages
-<2019-09-10 Tue>
-** TODO Switch Islands | topic name
-<2019-09-10 Tue>
-
+**** TODO Boot
+**** TODO Leave
+**** DONE Invite sync
+CLOSED: [2019-09-13 Fri 23:20]
+**** DONE Topic join
+CLOSED: [2019-09-13 Fri 23:20]
+ 
+** TODO Make new manager version that supports both new and old images
 ** TODO White spaces in messages
 <2019-09-10 Tue>
 ** TODO Scrolling behavior
 <2019-09-10 Tue>
 
 * Bugs
-** TODO In settings there should be not boot button for those who has no rights
 ** TODO test EDGE browser
 
 * Feature requests
-** Backup strategy <2019-09-08 Sun>
-** Admin panel should not replace vault <2019-09-08 Sun>
+** TODO Backup strategy <2019-09-08 Sun>
+** TODO Message sequencing and interleaving
 ** PROJ Different colors per user
 ** PROJ Ability to mute/unmute particular partivipant
 ** TODO Volume control instead of mute button
@@ -46,6 +40,8 @@ CLOSED: [2019-09-13 Fri 00:18]
 
 
 * Completed
+** DONE Admin panel should not replace vault <2019-09-08 Sun>
+CLOSED: [2019-09-13 Fri 23:25]
 ** DONE Islnad console login bug [100%]
 CLOSED: [2019-09-10 Tue 00:26]
 START: <2019-09-06 Fri>
@@ -57,3 +53,14 @@ CLOSED: [2019-09-10 Tue 00:25]
 CLOSED: [2019-09-10 Tue 00:25]
 *** DONE Implement script to capture public key when island boots for the first time.
 CLOSED: [2019-09-10 Tue 00:25]
+** DONE Update npm libraries, fix npm issues
+CLOSED: [2019-09-13 Fri 16:10]
+<2019-09-10 Tue>
+** DONE Indicator in tab if there are new messages
+CLOSED: [2019-09-13 Fri 21:49]
+<2019-09-10 Tue>
+** DONE Switch Islands | topic name
+CLOSED: [2019-09-13 Fri 21:48]
+<2019-09-10 Tue>
+** DONE In settings there should be not boot button for those who has no rights
+CLOSED: [2019-09-13 Fri 23:19]

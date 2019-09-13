@@ -1,5 +1,11 @@
 const EventEmitter = require("events").EventEmitter;
 
+/**
+ * This singleton class notifies assistants when various events happen
+ * Any assistant can subscribe to relevant events
+ * Any assistant can notify other assistants by calling notify method
+ *
+ */
 class AssistantCoordinator{
     constructor(){
         throw "Assistant coordinator cannot be initialized directly."

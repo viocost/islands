@@ -5,6 +5,7 @@ const Request = require("../objects/ClientRequest.js");
 const Response = require("../objects/ClientResponse.js");
 const Logger = require("../libs/Logger.js");
 const Metadata = require("../objects/Metadata.js");
+const Coordinator = require("./AssistantCoordinator.js");
 
 class InviteAssistant{
     constructor(connectionManager = Err.required(),
@@ -54,7 +55,8 @@ class InviteAssistant{
 
         await self.crossIslandMessenger.send(envelope, 4000, (envelope)=>{
             Logger.info("INVITE REQUEST TIMEOUT: dest: " + envelope.destination)
-            envelope.error = "Invite request timeout.";
+            envelope.error = "Invite request timeout. If you have just created the topic, allow some time for invite hidden service to be published and try again. That ususally takes 20sec - 2min.";
+            Coordinator.notify("invite_request_timeout", envelope);
             self._processStandardClientError(envelope, self);
         });
     }
@@ -91,7 +93,12 @@ class InviteAssistant{
         const residenceDest = metadata.getTopicAuthorityResidence();
         const envelope = new Envelope(residenceDest, request, residenceOrigin);
         envelope.setReturnOnFail(true);
-        await self.crossIslandMessenger.send(envelope);
+        await self.crossIslandMessenger.send(envelope, 4000, (envelope)=>{
+            envelope.error = "Sync invites request timeout. If you just created your topic or Island has been restarted, allow 20sec - 3min for invite service to publish and try again.";
+            Coordinator.notify("sync_invite_timeout", envelope);
+            self._processStandardClientError(envelope, self);
+
+        });
     }
 
     async syncInvitesIncoming(envelope, self){
