@@ -1,7 +1,7 @@
 #+TITLE: Islands development strategy and tasks
 
 * Current tasks
-** PROJ Optimize invite mechanism, reduce delay and improve feedback [85%]
+** PROJ Optimize invite mechanism, reduce delay and improve feedback [60%]
 <2019-09-06 Fri>
 *** DONE Implement multiqueue
 CLOSED: [2019-09-13 Fri 00:17]
@@ -10,6 +10,13 @@ CLOSED: [2019-09-13 Fri 00:17]
 *** DONE Test new delivery system
 CLOSED: [2019-09-13 Fri 00:18]
 *** TODO Implement invite request and sync handling logic using multiqueue
+
+
+*** TODO Rewrite all timeout requests:
+- Boot
+- Leave
+- Invite sync
+- Topic join
 
 
 ** TODO Update npm libraries, fix npm issues
