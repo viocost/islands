@@ -56,11 +56,10 @@ class IslandManager:
         t.start()
 
     def is_boot_complete(self):
-        res = Executor.exec_sync(self.cmd.ls_on_guest())
-        if res[0] == 0:
-            return True
-        else:
-            return False
+        # Version 1.0.0 check
+        return (os.path.exists(self.config.get_stats_path()) and \
+            time.time() - os.lstat(self.config.get_stats_path()).st_mtime < 1.5) or \
+            Executor.exec_sync(self.cmd.ls_on_guest())[0] == 0 # Version <1.0.0 check
 
     def stop_island(self, state_emitter, force=False, timeout=60):
         def worker():
@@ -121,8 +120,7 @@ class IslandManager:
         t.start()
 
     def is_running(self):
-
-        res = Executor.exec_sync(self.cmd.ls_on_guest())
+        res = Executor.exec_sync(self.cmd.vminfo())
         log.debug("IS RUNNING RES: %s" % str(res[1]))
         if res[0] != 0:
             return False

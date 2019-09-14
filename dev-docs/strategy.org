@@ -32,7 +32,6 @@ CLOSED: [2019-09-13 Fri 23:20]
 * Feature requests
 ** TODO Backup strategy <2019-09-08 Sun>
 ** TODO Message sequencing and interleaving
-** PROJ Different colors per user
 ** PROJ Ability to mute/unmute particular partivipant
 ** TODO Volume control instead of mute button
 ** PROJ Implement /commands
@@ -40,6 +39,8 @@ CLOSED: [2019-09-13 Fri 23:20]
 
 
 * Completed
+** DONE Different colors per user
+CLOSED: [2019-09-14 Sat 15:26]
 ** DONE Admin panel should not replace vault <2019-09-08 Sun>
 CLOSED: [2019-09-13 Fri 23:25]
 ** DONE Islnad console login bug [100%]

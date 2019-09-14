@@ -156,7 +156,8 @@ class IMConfig:
         if not os.path.exists(default_data_dir_path):
             os.makedirs(default_data_dir_path)
 
-
+    def get_stats_path(self):
+        return get_full_path(os.path.join(self["data_folder"], self["stats"]))
 
 
 

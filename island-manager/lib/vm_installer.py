@@ -1,7 +1,7 @@
 from threading import Thread, Event
 from lib.executor import ShellExecutor as Executor
-from time import sleep
-from os import path, makedirs
+from time import sleep, time
+from os import path, makedirs, lstat
 from lib.exceptions import IslandsImageNotFound, IslandSetupError, CmdExecutionError
 from lib.util import get_full_path, check_output, get_stack
 import logging
@@ -281,7 +281,7 @@ class VMInstaller:
             self.island_manager.set_new_datafolder(self.data_path)
             log.debug("Data folder set up... Launching VM")
             self.message("Data folder set up... Launching VM")
-            # Start machine... Wait until controlvm is available then run scripts
+
             self.start_vm()
             self.message("VM started. Awaiting initial startup... This may take a while! Be patient!")
             self.wait_guest_additions()
@@ -331,10 +331,13 @@ class VMInstaller:
 
     def wait_guest_additions(self):
         for i in range(10):
-            res = Executor.exec_sync(self.cmd.ls_on_guest())
-            if res[0] == 0:
-                print("Looks like guestcontrol is available on Islands VM! Returning...")
-                return
+            # Check version 1.0.0
+
+            if (path.exists(self.config.get_stats_path()) and \
+                time() - lstat(self.config.get_stats_path()).st_mtime < 1.5) or \
+                Executor.exec_sync(self.cmd.ls_on_guest())[0] == 0:  # Check version < 1.0.0
+                    print("Looks like guestcontrol is available on Islands VM! Returning...")
+                    return
             print("Awaiting for initial setup to complete..")
             sleep(15)
         raise IslandSetupError("Guest additions installation timed out. Please restart setup")
