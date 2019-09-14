@@ -121,7 +121,9 @@ class IslandManager:
         t.start()
 
     def is_running(self):
-        res = Executor.exec_sync(self.cmd.vminfo())
+
+        res = Executor.exec_sync(self.cmd.ls_on_guest())
+        log.debug("IS RUNNING RES: %s" % str(res[1]))
         if res[0] != 0:
             return False
         vminfo = parse_vminfo_output(res[1])

@@ -68,7 +68,6 @@ class TestConfig(unittest.TestCase):
         print(r)
 
     def test_is_vm_running(self):
-
         im = IslandManager(self.config)
         r = im.stop_island()
         print(r)

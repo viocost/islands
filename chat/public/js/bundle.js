@@ -8557,11 +8557,12 @@ function () {
 window.toastr = toastr;
 
 var app_chat;
-var DAYSOFWEEK = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]; //variables to create new topic
+var DAYSOFWEEK = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+var colors = ["#cfeeff", "#ffebcc", "#ccffd4", "#ccfffb", "#e6e6ff", "#f8e6ff", "#ffe6f1", "#ccefff", "#ccf1ff"];
+var participantsKeys = []; //variables to create new topic
 
 var app_nickname, app_topicName; //variables to topic login
 
-var topicID;
 var sounds = {};
 var isResizing = false;
 var soundsOnOfIcons = {
@@ -9131,7 +9132,7 @@ function updateParticipants() {
   $('#participants-records').html("");
   $('#participants--topic-name').html("Topic: " + app_chat.session.settings.topicName);
   var mypkfp = app_chat.session.publicKeyFingerprint;
-  var participantsKeys = Object.keys(app_chat.session.metadata.participants).filter(function (val) {
+  participantsKeys = Object.keys(app_chat.session.metadata.participants).filter(function (val) {
     return val !== mypkfp;
   });
   var recipientChoice = document.querySelector("#select-member");
@@ -9387,6 +9388,7 @@ function appendMessageToChat(message) {
     var author = document.createElement('div');
     author.classList.add("m-author-id");
     author.innerHTML = message.pkfp;
+    msg.style.backgroundColor = colors[participantsKeys.indexOf(message.pkfp) % colors.length];
     message_heading.appendChild(author);
   }
 

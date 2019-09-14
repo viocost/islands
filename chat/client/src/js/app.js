@@ -14,12 +14,12 @@ let chat;
 
 const DAYSOFWEEK = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
+let colors = ["#cfeeff", "#ffebcc", "#ccffd4", "#ccfffb", "#e6e6ff", "#f8e6ff", "#ffe6f1", "#ccefff", "#ccf1ff"]
+let participantsKeys = []
 //variables to create new topic
 let nickname, topicName;
 
 //variables to topic login
-let topicID;
-
 let sounds = {};
 let isResizing = false;
 let soundsOnOfIcons = {
@@ -591,9 +591,11 @@ function updateParticipants() {
     $('#participants--topic-name').html("Topic: " + chat.session.settings.topicName);
 
     let mypkfp = chat.session.publicKeyFingerprint;
-    let participantsKeys = Object.keys(chat.session.metadata.participants).filter(val => {
+    participantsKeys = Object.keys(chat.session.metadata.participants).filter(val => {
         return val !== mypkfp;
     });
+
+
 
     let recipientChoice = document.querySelector("#select-member");
     let selectedMember = recipientChoice.value;
@@ -810,6 +812,7 @@ function appendMessageToChat(message, toHead = false) {
         let author = document.createElement('div');
         author.classList.add("m-author-id");
         author.innerHTML = message.pkfp;
+        msg.style.backgroundColor = colors[participantsKeys.indexOf(message.pkfp) % colors.length];
         message_heading.appendChild(author);
     }
     if (message.private) {

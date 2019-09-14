@@ -24,7 +24,7 @@ let adminLogin;
 
 /**Set main listeneres when document loaded**/
 document.addEventListener('DOMContentLoaded', event => {
-    document.title = "Islands | Login";
+    document.title = "Login | Islands";
     util.$("#register-vault").addEventListener("click", registerVault);
     util.$("#vault-login-btn").addEventListener("click", vaultLoginGetVault);
     util.$("#create").addEventListener("click", showTopicCreateForm);
@@ -338,7 +338,7 @@ function vaultLoginProcessVault(data, password, passwordEl){
         initPasswordBasedHandlers(password);
         passwordEl.value = "";
         vaultLoginFinalize();
-        document.title = "Islands | Vault"
+        document.title = "Vault | Islands"
     }catch(err){
         loadingOff();
         toastr.warning("Login failed. Check the password and try again.")

@@ -9941,7 +9941,7 @@ function prepareAdminLogin(privateKey) {
 
     localStorage.setItem(ic.get("idhex"), ic.get("privkcipher"));
     var params = "?id=" + ic.get("idhex") + "&token=" + ic.get("sym");
-    window.open(document.location.href + "admin" + params, "_self");
+    window.open(document.location.href + "admin" + params, "_blank");
   };
 }
 
