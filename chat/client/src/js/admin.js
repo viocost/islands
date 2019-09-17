@@ -785,17 +785,13 @@ function loadingOnPromise() {
         }
     });
 }
+
 function loadingOn() {
-    $('body').waitMe({
-        effect: 'roundBounce',
-        bg: 'rgba(255,255,255,0.7)',
-        textPos: 'vertical',
-        color: '#33b400'
-    });
+    console.log("Loading on")
 }
 
 function loadingOff() {
-    $('body').waitMe('hide');
+    console.log("Loading off")
 }
 
 function switchUpdateOption(event) {

@@ -1,7 +1,6 @@
 import { ChatClient } from  "./chat/ChatClient";
 import * as toastr from "toastr";
 import { Vault } from "./lib/Vault";
-import * as waitMe from "./lib/waitMe.min";
 import { iCrypto } from "./lib/iCrypto";
 import * as Modal from "./lib/DynmaicModal";
 import { verifyPassword } from "./lib/PasswordVerify";
@@ -794,16 +793,11 @@ function prepareAdminLogin(privateKey){
 
 
 function loadingOn() {
-    $('body').waitMe({
-        effect: 'roundBounce',
-        bg: 'rgba(255,255,255,0.7)',
-        textPos: 'vertical',
-        color: '#33b400'
-    });
+    console.log("Loading on")
 }
 
 function loadingOff() {
-    $('body').waitMe('hide');
+    console.log("Loading off")
 }
 
 
