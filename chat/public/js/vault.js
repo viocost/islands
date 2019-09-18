@@ -8713,9 +8713,17 @@ function appendChildren(parent, children) {
   }
 }
 function dom_util_$(selector) {
+  if (typeof selector !== "string") {
+    throw "Selector type is invalid!";
+  }
+
   return document.querySelector(selector);
 }
 function $$(selector) {
+  if (typeof selector !== "string") {
+    throw "Selector type is invalid!";
+  }
+
   return document.querySelectorAll(selector);
 }
 function displayNone(selector) {
@@ -8726,6 +8734,60 @@ function displayBlock(selector) {
 }
 function displayFlex(selector) {
   dom_util_$(selector).style.display = "flex";
+}
+/**
+ * This is to replace jquery ajax api
+ *
+ */
+
+function dom_util_xhr(param) {
+  var TYPES = ["GET", "POST", "PUT"];
+  var EVENTS = {
+    "onreadystatechange": "onreadystatechange",
+    "abort": {
+      event: "onabort"
+    },
+    "success": {
+      event: "onload",
+      getHandler: function getHandler(xhr, handler) {
+        return function () {
+          handler(xhr.responseText, xhr.response, xhr);
+        };
+      }
+    },
+    "error": {
+      event: "onerror",
+      getHandler: function getHandler(xhr, handler) {
+        return function () {
+          handler(xhr.responseText, xhr.response, xhr);
+        };
+      }
+    }
+  };
+  var DATATYPES = ["json", "xml", "script", "html"]; //request checks
+
+  if (!param.hasOwnProperty("url")) {
+    throw "Url is missing";
+  } else if (TYPES.indexOf(param.type) === -1) {
+    console.log("TYPE: " + param.type);
+    throw "Request type is invalid";
+  }
+
+  var xhr = new XMLHttpRequest(); //Assigning handlers
+
+  for (var _i3 = 0, _Object$keys3 = Object.keys(EVENTS); _i3 < _Object$keys3.length; _i3++) {
+    var key = _Object$keys3[_i3];
+    console.log(JSON.stringify(Object.keys(param)));
+
+    if (Object.keys(param).indexOf(key) > -1 && typeof param[key] === "function") {
+      console.log("Assigning handler: " + key);
+      xhr[EVENTS[key].event] = EVENTS[key].getHandler(xhr, param[key]);
+    }
+  }
+
+  xhr.open(param.type, param.url);
+  xhr.setRequestHeader("Content-type", "application/json");
+  xhr.send(JSON.stringify(param.data));
 }
 // CONCATENATED MODULE: ./client/src/js/lib/dropdown.js
 
@@ -8824,22 +8886,24 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
   if (reg) {
     setView("register");
-    $('#vault-new-password-confirm').keyup(function (e) {
+
+    dom_util_$('#vault-new-password-confirm').onkeyup = function (e) {
       if (e.keyCode === 13) {
         registerVault();
       }
-    });
+    };
   } else {
     //regular login
     setView("login");
-    $('#vault-password').keyup(function (e) {
+
+    dom_util_$('#vault-password').onkeyup = function (e) {
       if (e.keyCode === 13) {
         vaultLoginGetVault();
       }
-    });
+    };
   }
 
-  document.querySelector("#vault-login-btn").addEventListener("click", vaultLoginGetVault);
+  dom_util_$("#vault-login-btn").addEventListener("click", vaultLoginGetVault);
   prepareTopicJoinModal();
   prepareTopicCreateModal();
   prepareChangePasswordModal();
@@ -9043,7 +9107,7 @@ function registerVault() {
       var vaultEncData = _vault.pack();
 
       var vaultPublicKey = _vault.publicKey;
-      $.ajax({
+      dom_util_xhr({
         type: "POST",
         url: "/register",
         dataType: "json",
@@ -9100,11 +9164,12 @@ function vaultLoginGetVault(ev) {
     }
 
     loadingOn();
-    $.ajax({
-      type: "post",
+    dom_util_xhr({
+      type: "POST",
       url: "/",
       success: function success(data) {
-        vaultLoginProcessVault(data, password, passwordEl);
+        console.log("DATA: " + data);
+        vaultLoginProcessVault(JSON.parse(data), password, passwordEl);
       },
       error: function error(err) {
         loadingOff();

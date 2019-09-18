@@ -5132,9 +5132,17 @@ function appendChildren(parent, children) {
   }
 }
 function dom_util_$(selector) {
+  if (typeof selector !== "string") {
+    throw "Selector type is invalid!";
+  }
+
   return document.querySelector(selector);
 }
 function $$(selector) {
+  if (typeof selector !== "string") {
+    throw "Selector type is invalid!";
+  }
+
   return document.querySelectorAll(selector);
 }
 function displayNone(selector) {
@@ -5145,6 +5153,60 @@ function displayBlock(selector) {
 }
 function displayFlex(selector) {
   dom_util_$(selector).style.display = "flex";
+}
+/**
+ * This is to replace jquery ajax api
+ *
+ */
+
+function xhr(param) {
+  var TYPES = ["GET", "POST", "PUT"];
+  var EVENTS = {
+    "onreadystatechange": "onreadystatechange",
+    "abort": {
+      event: "onabort"
+    },
+    "success": {
+      event: "onload",
+      getHandler: function getHandler(xhr, handler) {
+        return function () {
+          handler(xhr.responseText, xhr.response, xhr);
+        };
+      }
+    },
+    "error": {
+      event: "onerror",
+      getHandler: function getHandler(xhr, handler) {
+        return function () {
+          handler(xhr.responseText, xhr.response, xhr);
+        };
+      }
+    }
+  };
+  var DATATYPES = ["json", "xml", "script", "html"]; //request checks
+
+  if (!param.hasOwnProperty("url")) {
+    throw "Url is missing";
+  } else if (TYPES.indexOf(param.type) === -1) {
+    console.log("TYPE: " + param.type);
+    throw "Request type is invalid";
+  }
+
+  var xhr = new XMLHttpRequest(); //Assigning handlers
+
+  for (var _i3 = 0, _Object$keys3 = Object.keys(EVENTS); _i3 < _Object$keys3.length; _i3++) {
+    var key = _Object$keys3[_i3];
+    console.log(JSON.stringify(Object.keys(param)));
+
+    if (Object.keys(param).indexOf(key) > -1 && typeof param[key] === "function") {
+      console.log("Assigning handler: " + key);
+      xhr[EVENTS[key].event] = EVENTS[key].getHandler(xhr, param[key]);
+    }
+  }
+
+  xhr.open(param.type, param.url);
+  xhr.setRequestHeader("Content-type", "application/json");
+  xhr.send(JSON.stringify(param.data));
 }
 // EXTERNAL MODULE: ./node_modules/toastr/toastr.js
 var toastr = __webpack_require__(7);

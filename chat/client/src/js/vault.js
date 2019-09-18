@@ -32,21 +32,21 @@ document.addEventListener('DOMContentLoaded', event => {
 
     if (reg){
         setView("register")
-        $('#vault-new-password-confirm').keyup(e => {
+        util.$('#vault-new-password-confirm').onkeyup = e => {
             if (e.keyCode === 13) {
                 registerVault();
             }
-        });
+        };
     } else {
         //regular login
         setView("login");
-        $('#vault-password').keyup(e => {
+        util.$('#vault-password').onkeyup = e => {
             if (e.keyCode === 13) {
                 vaultLoginGetVault();
             }
-        });
+        };
     }
-    document.querySelector("#vault-login-btn").addEventListener("click", vaultLoginGetVault);
+    util.$("#vault-login-btn").addEventListener("click", vaultLoginGetVault);
     prepareTopicJoinModal();
     prepareTopicCreateModal();
     prepareChangePasswordModal();
@@ -252,7 +252,7 @@ function registerVault() {
             let vaultEncData = vault.pack();
             let vaultPublicKey = vault.publicKey;
 
-            $.ajax({
+            util.xhr({
                 type: "POST",
                 url: "/register",
                 dataType: "json",
@@ -309,11 +309,13 @@ function vaultLoginGetVault(ev){
             return;
         }
         loadingOn()
-        $.ajax({
-            type: "post",
+        util.xhr({
+            type: "POST",
             url: "/",
             success: (data)=>{
-                vaultLoginProcessVault(data, password, passwordEl)
+                console.log("DATA: " + data)
+
+                vaultLoginProcessVault(JSON.parse(data), password, passwordEl)
             },
             error: err => {
                 loadingOff();
