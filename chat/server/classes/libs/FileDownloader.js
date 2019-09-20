@@ -1,6 +1,7 @@
 const Err = require("./IError.js");
 const iCrypto = require("./iCrypto.js");
 const ss = require('socket.io-stream');
+const Logger = require("./Logger.js");
 
 class FileDownloader{
     constructor(socket = Err.required(),
@@ -24,28 +25,35 @@ class FileDownloader{
 
 
     async downloadAttachment(socket, data, self){
-        console.log("Got download_attachment request");
+        console.log("downloadAttachment: Got download_attachment request");
         // If requested file found locally - just push it to the client browser
         let link = data.link;
         let myPkfp = data.myPkfp;
-        let fileOwnerPublicKey = await self.hm.getParticipantPublicKey(myPkfp, link.pkfp);
-        if (self.hm.fileExists(myPkfp, link.name)){
-            await self.verifyAttachmentFile(link.pkfp, fileOwnerPublicKey, link.name, data.hashEncrypted, data.signEncrypted);
-            let key = await self.hm.getSharedKeysSet([data.metaID], myPkfp);
-            console.log("File found locally. Notifying client...");
-            socket.emit("download_ready", key);
-        } else if(myPkfp === data.pkfp){
-            console.log("I am the owner but file is missing");
-        }else{
-            //Trying to get file from peer
-            socket.emit("requesting_peer");
-            console.log("File not found locally. Trying to get it from the owner");
-            data.pubKey = fileOwnerPublicKey;
-            await self.cidTransporter.getFileFromPeer(data);
-            let key = await self.hm.getSharedKeysSet([data.metaID], myPkfp);
-            console.log("File successfully obtained and can be transferred to client. Notifying...");
-            socket.emit("download_ready", key);
-        }
+        self.hm.getParticipantPublicKey(myPkfp, link.pkfp)
+            .then(async fileOwnerPublicKey=>{
+                Logger.debug("File owner key obtained: " + fileOwnerPublicKey);
+                if (self.hm.fileExists(myPkfp, link.name)){
+                    await self.verifyAttachmentFile(myPkfp, fileOwnerPublicKey, link.name, data.hashEncrypted, data.signEncrypted);
+                    let key = await self.hm.getSharedKeysSet([data.metaID], myPkfp);
+                    console.log("File found locally. Notifying client...");
+                    socket.emit("download_ready", key);
+                } else if(myPkfp === data.pkfp){
+                    console.log("I am the owner but file is missing");
+                }else{
+                    //Trying to get file from peer
+                    socket.emit("requesting_peer");
+                    console.log("File not found locally. Trying to get it from the owner");
+                    data.pubKey = fileOwnerPublicKey;
+                    await self.cidTransporter.getFileFromPeer(data);
+                    let key = await self.hm.getSharedKeysSet([data.metaID], myPkfp);
+                    console.log("File successfully obtained and can be transferred to client. Notifying...");
+                    socket.emit("download_ready", key);
+                }
+            })
+            .catch(err=>{
+                Logger.error("Error downloading attachment: " + err)
+                throw err;
+            })
     }
 
 
@@ -115,6 +123,8 @@ class FileDownloader{
         return new Promise(async (resolve, reject)=>{
             let self = this;
             try{
+
+                Logger.debug("Verifying attachment file. Filename: " + filename )
                 //Calcluate hash of existing file
                 let publicKey = fileOwnerPublicKey;
                 let calculatedHash = await self.getAttachmentFileHash(topicOwnerPkfp, filename);

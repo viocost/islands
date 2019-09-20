@@ -214,11 +214,13 @@ class HistoryManager{
     getParticipantPublicKey(ownerPkfp, participantPkfp, metaID){
         return new Promise(async(resolve, reject)=>{
             try{
+                Logger.debug("Get participant public key request...")
                 let self = this;
                 let lastMeta = JSON.parse(await self.getMetadata(ownerPkfp, metaID))
                 let publicKey = lastMeta.body.participants[participantPkfp].publicKey;
                 resolve(publicKey)
             }catch(err){
+                Logger.error("Error getting participant public key: " + err)
                 reject(err)
             }
         })
@@ -437,6 +439,7 @@ class HistoryManager{
      * @param id
      */
     async getMetadata(pkfp, id){
+        Logger.debug("Get metadata called. Pkfp: " + pkfp + " id: " + id );
         let self = this;
         if (id === undefined){
             //if id not defined - just returning last metadata
@@ -469,15 +472,15 @@ class HistoryManager{
      * @returns {*}
      */
     createAttachmentFileStream(pkfp, fileName, mode = "w"){
-        let path = this.getPath(pkfp, "files");
-        if (!fs.existsSync(path)){
-            fs.mkdirSync(path);
+        let filesPath = this.getPath(pkfp, "files");
+        if (!fs.existsSync(filesPath)){
+            fs.mkdirSync(filesPath);
         }
 
         if (mode==="w") {
-            return fs.createWriteStream(path + fileName);
+            return fs.createWriteStream(path.join(filesPath, fileName));
         } else if (mode === "r"){
-            return fs.createReadStream(path + fileName);
+            return fs.createReadStream(path.join(filesPath, fileName));
         } else {
             throw "createAttachmentFileStream: invalid mode " + mode;
         }
@@ -493,9 +496,12 @@ class HistoryManager{
      * @returns {*}
      */
     fileExists(pkfp, name){
-        let path = this.getPath(pkfp, "files");
-        console.log("Checking if exists: " + (path + name));
-        return fs.existsSync(path + name)
+        let filesPath = this.getPath(pkfp, "files")
+        console.log("files path: " + filesPath);
+        console.log("file name: " + name)
+        let _path = path.join(filesPath, name);
+        console.log("Checking if exists: " + _path);
+        return fs.existsSync(_path)
     }
 
     getFileStat(pkfp, name){
