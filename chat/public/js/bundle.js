@@ -167,7 +167,7 @@
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* WEBPACK VAR INJECTION */(function(module) {/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(36);
+/* WEBPACK VAR INJECTION */(function(module) {/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(33);
 /* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(141);
 /* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_1__);
@@ -177,9 +177,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var core_js_modules_es6_typed_uint32_array__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_typed_uint32_array__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(147);
 /* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(55);
+/* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(45);
 /* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(32);
+/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(26);
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_6__);
 
 
@@ -3416,13 +3416,13 @@ var es6_typed_uint8_array = __webpack_require__(87);
 var es6_regexp_match = __webpack_require__(141);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.split.js
-var es6_regexp_split = __webpack_require__(36);
+var es6_regexp_split = __webpack_require__(33);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.search.js
 var es6_regexp_search = __webpack_require__(223);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.to-string.js
-var es6_regexp_to_string = __webpack_require__(55);
+var es6_regexp_to_string = __webpack_require__(45);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es7.symbol.async-iterator.js
 var es7_symbol_async_iterator = __webpack_require__(56);
@@ -3431,10 +3431,10 @@ var es7_symbol_async_iterator = __webpack_require__(56);
 var es6_symbol = __webpack_require__(57);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/web.dom.iterable.js
-var web_dom_iterable = __webpack_require__(31);
+var web_dom_iterable = __webpack_require__(25);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.object.to-string.js
-var es6_object_to_string = __webpack_require__(32);
+var es6_object_to_string = __webpack_require__(26);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/regenerator/index.js
 var regenerator = __webpack_require__(3);
@@ -5020,6 +5020,147 @@ function resizableInput(el, factor) {
 // EXTERNAL MODULE: ./client/src/css/main.sass
 var main = __webpack_require__(340);
 
+// CONCATENATED MODULE: ./client/src/js/lib/xhr.js
+
+
+
+
+var DATATYPES = ["json", "xml"];
+var CALLBACKTYPES = {
+  "complete": "onloadend",
+  "success": "onload",
+  "error": "onerror"
+};
+function get(endpoint, param) {
+  if (!endpoint) {
+    throw "URL is missing.";
+  }
+
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", endpoint, true);
+}
+/**
+ * This function meant to replace jquery ajax with bare xhr
+ * @param endpoint a string containing the URL to which the request is sent
+ * @param param is JSON object with following properties:
+ *   accepts: string, default depends on dataType
+ *   async: default true - makes request asynchronously
+ *   beforeSend: function, called before request is sent
+ *   cache: boolean
+ *   complete: function, called after request is finished. Args: XMLHttprequest xhr, String textStatus
+ *   data: Object, Array, or String - data to send to server
+ *   error: function called if request fails. Args: XMLHttpRequest xhr, String textStatus, String errorThrown
+ *   success: function called if request succeed. Args: Anything data, String textStatus, XMLHttpRequest xhr
+ *   timeout: Number - set timeout in milliseconds
+ *
+ */
+
+function post(endpoint, param) {
+  if (!endpoint) throw "The url is missing";
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", endpoint, true); //type of content passed to server
+
+  var contentType = param.contentType || 'application/json'; //data type expected back
+
+  if (param.dataType && DATATYPES.indexOf(para.dataType) === -1) {
+    throw "Invalid data type";
+  }
+
+  xhr.responseType = param.dataType || 'json'; //setting callbacks
+
+  for (var _i = 0, _Object$keys = Object.keys(CALLBACKTYPES); _i < _Object$keys.length; _i++) {
+    var key = _Object$keys[_i];
+
+    if (Object.keys(param).indexOf(key) > -1 && typeof param[key] === "function") {
+      console.log("Setting handler for " + key);
+      xhr[CALLBACKTYPES[key]] = callback(key, xhr, param[key]);
+    }
+  }
+
+  var data = param.data;
+
+  if (data) {
+    xhr.setRequestHeader("Content-Type", contentType);
+
+    if (typeof data === "object") {
+      console.log("JSON processing data");
+      data = JSON.stringify(param.data);
+    }
+  }
+
+  xhr.send(data);
+}
+function xhr(param) {
+  console.log("XHR call. param: " + JSON.stringify(param));
+
+  if (!param.hasOwnProperty("url")) {
+    throw "Url is missing";
+  } else if (TYPES.indexOf(param.type) === -1) {
+    console.log("TYPE: " + param.type);
+    throw "Request type is invalid";
+  }
+}
+
+var processIncomingData = function processIncomingData(responseType, data) {
+  console.log("Response type is: " + responseType);
+  console.log("Data is " + data);
+
+  switch (responseType) {
+    case responseType.indexOf("json") > -1:
+      return JSON.parse(data);
+
+    default:
+      console.log("No default processor found. Returning data as is.");
+      return data;
+  }
+};
+
+var callback = function callback(cbType, xhr, handler) {
+  switch (cbType) {
+    case "complete":
+      return function () {
+        handler(processIncomingData(xhr.responseType, xhr.responseText), xhr.statusText, xhr);
+      };
+
+    case "success":
+      return function () {
+        console.log("text response" + xhr.responseText);
+        console.log("XHR response type: " + xhr.responseType);
+        console.log("XHR response is: " + xhr.response);
+        console.log("XHR status text: " + xhr.statusText);
+        console.log("XHR headers: " + xhr.getAllResponseHeaders().toString());
+        handler(processIncomingData(xhr.responseType, xhr.responseText), xhr.statusText, xhr);
+      };
+
+    case "error":
+      return function () {};
+
+    case "beforeSend":
+      throw "Not Implemented";
+
+    default:
+      throw "Unknown callback type";
+  }
+};
+
+function parseHeaders(headers) {
+  if (typeof headers !== "string") {
+    throw "Error: headers must be a string";
+  }
+
+  var hArr = headers.split("\n");
+  res = {};
+  hArr.forEach(function (header) {
+    var hSplit = header.split(/:\s*/);
+
+    if (hSplit.length > 2) {
+      return;
+    }
+
+    res[hSplit[0]] = hSplit[1].split(/;\s*/);
+  });
+  return res;
+}
 // CONCATENATED MODULE: ./client/src/js/lib/dom-util.js
 
 
@@ -5043,6 +5184,7 @@ var main = __webpack_require__(340);
  *  
  * @param recipe
  */
+
 function bake(name, recipe) {
   var el = document.createElement(name);
   if (!recipe) return el;
@@ -5159,55 +5301,7 @@ function displayFlex(selector) {
  *
  */
 
-function xhr(param) {
-  var TYPES = ["GET", "POST", "PUT"];
-  var EVENTS = {
-    "onreadystatechange": "onreadystatechange",
-    "abort": {
-      event: "onabort"
-    },
-    "success": {
-      event: "onload",
-      getHandler: function getHandler(xhr, handler) {
-        return function () {
-          handler(xhr.responseText, xhr.response, xhr);
-        };
-      }
-    },
-    "error": {
-      event: "onerror",
-      getHandler: function getHandler(xhr, handler) {
-        return function () {
-          handler(xhr.responseText, xhr.response, xhr);
-        };
-      }
-    }
-  };
-  var DATATYPES = ["json", "xml", "script", "html"]; //request checks
-
-  if (!param.hasOwnProperty("url")) {
-    throw "Url is missing";
-  } else if (TYPES.indexOf(param.type) === -1) {
-    console.log("TYPE: " + param.type);
-    throw "Request type is invalid";
-  }
-
-  var xhr = new XMLHttpRequest(); //Assigning handlers
-
-  for (var _i3 = 0, _Object$keys3 = Object.keys(EVENTS); _i3 < _Object$keys3.length; _i3++) {
-    var key = _Object$keys3[_i3];
-    console.log(JSON.stringify(Object.keys(param)));
-
-    if (Object.keys(param).indexOf(key) > -1 && typeof param[key] === "function") {
-      console.log("Assigning handler: " + key);
-      xhr[EVENTS[key].event] = EVENTS[key].getHandler(xhr, param[key]);
-    }
-  }
-
-  xhr.open(param.type, param.url);
-  xhr.setRequestHeader("Content-type", "application/json");
-  xhr.send(JSON.stringify(param.data));
-}
+var dom_util_xhr = xhr;
 // EXTERNAL MODULE: ./node_modules/toastr/toastr.js
 var toastr = __webpack_require__(7);
 

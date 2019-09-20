@@ -314,8 +314,7 @@ function vaultLoginGetVault(ev){
             url: "/",
             success: (data)=>{
                 console.log("DATA: " + data)
-
-                vaultLoginProcessVault(JSON.parse(data), password, passwordEl)
+                vaultLoginProcessVault(data, password, passwordEl)
             },
             error: err => {
                 loadingOff();

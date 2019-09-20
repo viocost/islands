@@ -22,7 +22,6 @@ module.exports.init = function(config, version, hsManager) {
 router.get('/', (req, res)=>{
     let onion = req.headers["host"];
     let isRegistration = isVaultAwaitingRegistration(onion);
-
     res.render("vault", {
         version: version.getVersion(),
         title: "Islands chat - Vault",
@@ -43,7 +42,7 @@ router.post("/", (req, res)=>{
         } else {
             Logger.debug("Data is correct")
             let vault = vaultManager.getVault(id);
-            res.set("Content-Type", "application/json")
+            res.type('json').set("Content-Type", "application/json")
                 .status(200).send({"vault": vault})
         }
     }catch(err){
