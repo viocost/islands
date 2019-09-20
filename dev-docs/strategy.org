@@ -1,26 +1,18 @@
 #+TITLE: Islands development strategy and tasks
 
 * Current tasks
-** PROJ Optimize invite mechanism, reduce delay and improve feedback [66%]
-<2019-09-06 Fri>
-*** DONE Implement multiqueue
-CLOSED: [2019-09-13 Fri 00:17]
-*** DONE Implement blocking queue
-CLOSED: [2019-09-13 Fri 00:17]
-*** DONE Test new delivery system
-CLOSED: [2019-09-13 Fri 00:18]
-*** DONE Implement invite request and sync handling logic using multiqueue
-CLOSED: [2019-09-13 Fri 23:20]
+** TODO BUG! File transfer isn't working properly
+*** DONE Debug file transfer
+CLOSED: [2019-09-20 Fri 22:22]
+**** Symptoms:
+- Wrong pkfp passed to the checker function
+  possibly file is saved with origin pkfp, while it should
+  save on the island with receiver pkfp
 
-*** TODO Rewrite all timeout requests:
-**** TODO Boot
-**** TODO Leave
-**** DONE Invite sync
-CLOSED: [2019-09-13 Fri 23:20]
-**** DONE Topic join
-CLOSED: [2019-09-13 Fri 23:20]
- 
-** TODO Make new manager version that supports both new and old images
+*** TODO Add messages on state change in UI
+** PROJ Get rid of jquery
+*** TODO wirte an universal wrapper around xhr
+
 ** TODO White spaces in messages
 <2019-09-10 Tue>
 ** TODO Scrolling behavior
@@ -39,6 +31,32 @@ CLOSED: [2019-09-13 Fri 23:20]
 
 
 * Completed
+
+** DONE Make new manager version that supports both new and old images
+CLOSED: [2019-09-20 Fri 20:04]
+** DONE Optimize invite mechanism, reduce delay and improve feedback [100%]
+CLOSED: [2019-09-20 Fri 20:04]
+<2019-09-06 Fri>
+*** DONE Implement multiqueue
+CLOSED: [2019-09-13 Fri 00:17]
+*** DONE Implement blocking queue
+CLOSED: [2019-09-13 Fri 00:17]
+*** DONE Test new delivery system
+CLOSED: [2019-09-13 Fri 00:18]
+*** DONE Implement invite request and sync handling logic using multiqueue
+CLOSED: [2019-09-13 Fri 23:20]
+
+*** DONE Rewrite all timeout requests:
+CLOSED: [2019-09-20 Fri 20:04]
+**** DONE Boot
+CLOSED: [2019-09-20 Fri 20:04]
+**** DONE Leave
+CLOSED: [2019-09-20 Fri 20:04]
+**** DONE Invite sync
+CLOSED: [2019-09-13 Fri 23:20]
+**** DONE Topic join
+CLOSED: [2019-09-13 Fri 23:20]
+
 ** DONE Different colors per user
 CLOSED: [2019-09-14 Sat 15:26]
 ** DONE Admin panel should not replace vault <2019-09-08 Sun>
