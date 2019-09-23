@@ -7375,7 +7375,7 @@ function () {
                 case 12:
                   myPkfp = _self2.session.publicKeyFingerprint;
                   _context7.next = 15;
-                  return _self2.downloadAttachmentWithWorker(fileInfo, myPkfp, privk, fileOwnerPublicKey);
+                  return _self2.downloadAttachmentWithWorker(fileInfo, myPkfp, privk, fileOwnerPublicKey, parsedFileInfo.name);
 
                 case 15:
                   fileData = _context7.sent;
@@ -7411,14 +7411,15 @@ function () {
     }
   }, {
     key: "downloadAttachmentWithWorker",
-    value: function downloadAttachmentWithWorker(fileInfo, myPkfp, privk, ownerPubk) {
+    value: function downloadAttachmentWithWorker(fileInfo, myPkfp, privk, ownerPubk, fileName) {
+      var self = this;
       return new Promise(
       /*#__PURE__*/
       function () {
         var _ref4 = asyncToGenerator_default()(
         /*#__PURE__*/
         regenerator_default.a.mark(function _callee8(resolve, reject) {
-          var downloader, downloadComplete, downloadFailed, messageHandlers, processMessage;
+          var downloader, downloadComplete, downloadFailed, messageHandlers, notify, processMessage;
           return regenerator_default.a.wrap(function _callee8$(_context8) {
             while (1) {
               switch (_context8.prev = _context8.next) {
@@ -7432,17 +7433,30 @@ function () {
                     };
 
                     downloadFailed = function downloadFailed(err) {
+                      console.log("Download failed with error: " + err);
                       reject(err);
                       downloader.terminate();
                     };
 
                     messageHandlers = {
                       "download_complete": downloadComplete,
-                      "download_failed": downloadFailed
+                      "download_failed": downloadFailed,
+                      "file_available_locally": function file_available_locally() {
+                        self.emit("file_available_locally", fileName);
+                        notify("File found locally.");
+                      },
+                      "requesting_peer": function requesting_peer() {
+                        self.emit("requesting_peer", fileName);
+                        notify("Requesting peer to hand the file...");
+                      }
+                    };
+
+                    notify = function notify(msg) {
+                      console.log("FILE TRANSFER EVENT NOTIFICATION: " + msg);
                     };
 
                     processMessage = function processMessage(msg) {
-                      messageHandlers[msg.result](msg.data);
+                      messageHandlers[msg.message](msg.data);
                     };
 
                     downloader.onmessage = function (ev) {
@@ -9035,7 +9049,7 @@ var adminLogin;
 /**Set main listeneres when document loaded**/
 
 document.addEventListener('DOMContentLoaded', function (event) {
-  document.title = "Islands | Login";
+  document.title = "Login | Islands";
   dom_util_$("#register-vault").addEventListener("click", registerVault);
   dom_util_$("#vault-login-btn").addEventListener("click", vaultLoginGetVault);
   dom_util_$("#create").addEventListener("click", showTopicCreateForm);
@@ -9347,7 +9361,7 @@ function vaultLoginProcessVault(data, password, passwordEl) {
     initPasswordBasedHandlers(password);
     passwordEl.value = "";
     vaultLoginFinalize();
-    document.title = "Islands | Vault";
+    document.title = "Vault | Islands";
   } catch (err) {
     loadingOff();
     toastr["warning"]("Login failed. Check the password and try again.");

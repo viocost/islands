@@ -51,12 +51,12 @@ let appendBuffer = function (buffer1, buffer2) {
 function downloadFile(data){
     processDownload(data)
         .then((dataBuffer)=>{
-            postMessage({ result: "download_complete", data: dataBuffer });
+            postMessage({ message: "download_complete", data: dataBuffer });
             console.log("Stream finished");
         })
         .catch(err=>{
             console.log("Error downloading file: " + err);
-            postMessage({ result: "download_failed", error: err })
+            postMessage({ message: "download_failed", data: err })
         })
 }
 
@@ -85,9 +85,8 @@ function processDownload(data) {
 
         fileSocket.on("download_ready", key => {
             //prepare file
+            postMessage({ message: "file_available_locally"});
             let symk = key[metaID];
-
-            console.log("download_ready triggered. shared key found: " + symk);
             let dataBuffer = new ArrayBuffer(0);
             ss(fileSocket).on("file", stream => {
 
@@ -126,6 +125,16 @@ function processDownload(data) {
 
             });
         });
+
+        fileSocket.on("requesting_peer", ()=>{
+            console.log("File not found locally, requesting hidden peer")
+            postMessage({ message: "requesting_peer"});
+        })
+
+        fileSocket.on("download_failed", err =>{
+            console.log("File download fail: " + err);
+            postMessage({ message: "download_failed", data: err })
+        })
 
         fileSocket.emit("download_attachment", {
             link: link,
