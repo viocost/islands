@@ -11,50 +11,47 @@ class FileDownloader{
         this.cidTransporter = crossIslandDataTransporter;
         socket.on('download_attachment', async (data)=>{
             try{
-                await this.downloadAttachment(socket, data, this)
-            }catch(err){
+            await this.downloadAttachment(socket, data, this)
+        }catch(err){
+            Logger.error("Download attachment error: " + err )
+            socket.emit("download_failed", err.toString());
+        }
 
-            }
+    });
 
-        });
+    socket.on('proceed_download', async (data)=>{
+        this.proceedDownload(socket, data, this)
+    })
+}
 
-        socket.on('proceed_download', async (data)=>{
-            this.proceedDownload(socket, data, this)
-        })
+/**
+    *
+    */
+async downloadAttachment(socket, data, self){
+    console.log("downloadAttachment: Got download_attachment request");
+    // If requested file found locally - just push it to the client browser
+    let link = data.link;
+    let myPkfp = data.myPkfp;
+    let fileOwnerPublicKey = await self.hm.getParticipantPublicKey(myPkfp, link.pkfp)
+    Logger.debug("File owner key obtained: " + fileOwnerPublicKey);
+    if (self.hm.fileExists(myPkfp, link.name)){
+        await self.verifyAttachmentFile(myPkfp, fileOwnerPublicKey, link.name, data.hashEncrypted, data.signEncrypted);
+        let key = await self.hm.getSharedKeysSet([data.metaID], myPkfp);
+        console.log("File found locally. Notifying client...");
+        socket.emit("download_ready", key);
+    } else if(myPkfp === data.pkfp){
+        console.log("I am the owner but file is missing");
+    }else{
+        //Trying to get file from peer
+        socket.emit("requesting_peer");
+        console.log("File not found locally. Trying to get it from the owner");
+        data.pubKey = fileOwnerPublicKey;
+        await self.cidTransporter.getFileFromPeer(data);
+        let key = await self.hm.getSharedKeysSet([data.metaID], myPkfp);
+        console.log("File successfully obtained and can be transferred to client. Notifying...");
+        socket.emit("download_ready", key);
     }
-
-
-    async downloadAttachment(socket, data, self){
-        console.log("downloadAttachment: Got download_attachment request");
-        // If requested file found locally - just push it to the client browser
-        let link = data.link;
-        let myPkfp = data.myPkfp;
-        self.hm.getParticipantPublicKey(myPkfp, link.pkfp)
-            .then(async fileOwnerPublicKey=>{
-                Logger.debug("File owner key obtained: " + fileOwnerPublicKey);
-                if (self.hm.fileExists(myPkfp, link.name)){
-                    await self.verifyAttachmentFile(myPkfp, fileOwnerPublicKey, link.name, data.hashEncrypted, data.signEncrypted);
-                    let key = await self.hm.getSharedKeysSet([data.metaID], myPkfp);
-                    console.log("File found locally. Notifying client...");
-                    socket.emit("download_ready", key);
-                } else if(myPkfp === data.pkfp){
-                    console.log("I am the owner but file is missing");
-                }else{
-                    //Trying to get file from peer
-                    socket.emit("requesting_peer");
-                    console.log("File not found locally. Trying to get it from the owner");
-                    data.pubKey = fileOwnerPublicKey;
-                    await self.cidTransporter.getFileFromPeer(data);
-                    let key = await self.hm.getSharedKeysSet([data.metaID], myPkfp);
-                    console.log("File successfully obtained and can be transferred to client. Notifying...");
-                    socket.emit("download_ready", key);
-                }
-            })
-            .catch(err=>{
-                Logger.error("Error downloading attachment: " + err)
-                throw err;
-            })
-    }
+}
 
 
     /**

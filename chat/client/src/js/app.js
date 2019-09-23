@@ -259,9 +259,6 @@ function setupChatListeners(chat) {
 
     });
 
-
-    
-    
     chat.on("login_fail", err => {
         clearLoginPrivateKey();
         loadingOff();
@@ -367,6 +364,7 @@ function setupChatListeners(chat) {
         switchConnectionStatus(false);
     });
 
+
     chat.on("download_complete", res => {
         let fileInfo = JSON.parse(res.fileInfo);
         let fileData = res.fileData;
@@ -376,6 +374,17 @@ function setupChatListeners(chat) {
             downloadAttachment(fileInfo.name, fileData);
         }
     });
+
+    //file events
+    chat.on("file_available_locally", (fileName)=>{
+        appendEphemeralMessage(fileName + " file available locally. Downloading...")
+    })
+
+    chat.on("requesting_peer", (fileName)=>{
+        appendEphemeralMessage(fileName + " file not found locally. Requesting peer...")
+    })
+
+
 }
 
 function processIncomingMessage(message) {
@@ -918,13 +927,15 @@ async function downloadOnClick(ev) {
         throw "att-view container not found...";
     }
     let fileInfo = target.nextSibling.innerHTML; //Extract fileInfo from message
-    console.log("obtained fileinfo: " + fileInfo);
+
+    let fileName = JSON.parse(fileInfo).name;
     target.childNodes[0].style.display = "inline-block";
     try {
         await chat.downloadAttachment(fileInfo); //download file
         console.log("Download complete!");
     } catch(err){
         toastr.warning("file download unsuccessfull: " + err)
+        appendEphemeralMessage(fileName + " Download finished with error: " + err)
     }finally {
         target.childNodes[0].style.display = "none";
     }
@@ -1355,6 +1366,7 @@ function downloadURI(uri, name) {
 
 ///Testing blob download
 function downloadAttachment(fileName, data) {
+    appendEphemeralMessage(fileName + " Download successfull.")
     let arr = new Uint8Array(data);
     let fileURL = URL.createObjectURL(new Blob([arr]));
     downloadURI(fileURL, fileName);
@@ -1477,15 +1489,20 @@ function switchConnectionStatus(connected) {
     if (connected) {
         util.displayFlex("#connection-status--connected")
         util.displayNone("#connection-status--disconnected")
+        appendEphemeralMessage("Connection with island established")
     } else {
         util.displayNone("#connection-status--connected")
         util.displayFlex("#connection-status--disconnected")
+        appendEphemeralMessage("Connection with island lost")
    }
 }
 
+
 function attemptReconnection() {
-    chat.attemptReconnection().then(() => {}).catch(err => {
-        console.trace(err);
+    chat.attemptReconnection().then(() => {
+        console.log("Reconnection attempt resolved")
+    }).catch(err => {
+        console.trace("Reconnection error: " + err);
     });
 }
 
@@ -1528,4 +1545,25 @@ function lockSend(val) {
 }
 
 
+function appendEphemeralMessage(msg){
+    if (!msg){
+        console.log("Message is empty.")
+        return
+    }
+    try{
+        let msgContainer = util.bake("div", {classes: "ephemeral-msg"})
+        let headingContainer = util.bake("div", {classes: "msg-heading"})
+        let text = util.bake("b", {text: "Ephemeral"})
+        let timestamp = util.bake("span", {classes: "msg-time-stamp"})
+        timestamp.innerText = getChatFormatedDate(new Date());
+        util.appendChildren(headingContainer, [text, timestamp])
+        let msgBodyContainer = util.bake("div", {classes: "msg-body"})
+        let msgBody = util.bake("div", {html: msg})
+        msgBodyContainer.appendChild(msgBody)
+        util.appendChildren(msgContainer, [headingContainer, msgBodyContainer])
+        util.$("#chat_window").appendChild(msgContainer);
+    }catch(err){
+        console.log("EPHEMERAL ERROR: " + err)
+    }
 
+}

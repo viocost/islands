@@ -9,6 +9,22 @@ CLOSED: [2019-09-20 Fri 22:22]
   possibly file is saved with origin pkfp, while it should
   save on the island with receiver pkfp
 
+*** TODO Add transfer stages:
+- Checking file locally
+  if found:
+     downloading
+  else:
+     connecting to peer:
+       if connected:
+          requesting file
+          if file found:
+              downloading crossisland
+              notifying client that file is available locally
+              downloading locally
+          else:
+              notifying client: file no longer offered by peer
+
+
 *** TODO Add messages on state change in UI
 ** PROJ Get rid of jquery
 *** TODO wirte an universal wrapper around xhr
@@ -18,10 +34,15 @@ CLOSED: [2019-09-20 Fri 22:22]
 ** TODO Scrolling behavior
 <2019-09-10 Tue>
 
+** TODO Auto-reconnect if island connection lost
+** TODO BUG! On scroll messages loaded and appended multiple times
+
 * Bugs
 ** TODO test EDGE browser
 
+
 * Feature requests
+** TODO Time in UTC.
 ** TODO Backup strategy <2019-09-08 Sun>
 ** TODO Message sequencing and interleaving
 ** PROJ Ability to mute/unmute particular partivipant

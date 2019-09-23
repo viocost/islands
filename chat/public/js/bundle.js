@@ -7372,7 +7372,7 @@ function () {
                 case 12:
                   myPkfp = _self2.session.publicKeyFingerprint;
                   _context7.next = 15;
-                  return _self2.downloadAttachmentWithWorker(fileInfo, myPkfp, privk, fileOwnerPublicKey);
+                  return _self2.downloadAttachmentWithWorker(fileInfo, myPkfp, privk, fileOwnerPublicKey, parsedFileInfo.name);
 
                 case 15:
                   fileData = _context7.sent;
@@ -7408,14 +7408,15 @@ function () {
     }
   }, {
     key: "downloadAttachmentWithWorker",
-    value: function downloadAttachmentWithWorker(fileInfo, myPkfp, privk, ownerPubk) {
+    value: function downloadAttachmentWithWorker(fileInfo, myPkfp, privk, ownerPubk, fileName) {
+      var self = this;
       return new Promise(
       /*#__PURE__*/
       function () {
         var _ref4 = asyncToGenerator_default()(
         /*#__PURE__*/
         regenerator_default.a.mark(function _callee8(resolve, reject) {
-          var downloader, downloadComplete, downloadFailed, messageHandlers, processMessage;
+          var downloader, downloadComplete, downloadFailed, messageHandlers, notify, processMessage;
           return regenerator_default.a.wrap(function _callee8$(_context8) {
             while (1) {
               switch (_context8.prev = _context8.next) {
@@ -7429,17 +7430,30 @@ function () {
                     };
 
                     downloadFailed = function downloadFailed(err) {
+                      console.log("Download failed with error: " + err);
                       reject(err);
                       downloader.terminate();
                     };
 
                     messageHandlers = {
                       "download_complete": downloadComplete,
-                      "download_failed": downloadFailed
+                      "download_failed": downloadFailed,
+                      "file_available_locally": function file_available_locally() {
+                        self.emit("file_available_locally", fileName);
+                        notify("File found locally.");
+                      },
+                      "requesting_peer": function requesting_peer() {
+                        self.emit("requesting_peer", fileName);
+                        notify("Requesting peer to hand the file...");
+                      }
+                    };
+
+                    notify = function notify(msg) {
+                      console.log("FILE TRANSFER EVENT NOTIFICATION: " + msg);
                     };
 
                     processMessage = function processMessage(msg) {
-                      messageHandlers[msg.result](msg.data);
+                      messageHandlers[msg.message](msg.data);
                     };
 
                     downloader.onmessage = function (ev) {
@@ -8910,6 +8924,13 @@ function setupChatListeners(chat) {
     } else {
       app_downloadAttachment(fileInfo.name, fileData);
     }
+  }); //file events
+
+  chat.on("file_available_locally", function (fileName) {
+    appendEphemeralMessage(fileName + " file available locally. Downloading...");
+  });
+  chat.on("requesting_peer", function (fileName) {
+    appendEphemeralMessage(fileName + " file not found locally. Requesting peer...");
   });
 }
 
@@ -9504,7 +9525,7 @@ function _downloadOnClick() {
   _downloadOnClick = asyncToGenerator_default()(
   /*#__PURE__*/
   regenerator_default.a.mark(function _callee3(ev) {
-    var target, fileInfo;
+    var target, fileInfo, fileName;
     return regenerator_default.a.wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
@@ -9526,7 +9547,7 @@ function _downloadOnClick() {
           case 5:
             fileInfo = target.nextSibling.innerHTML; //Extract fileInfo from message
 
-            console.log("obtained fileinfo: " + fileInfo);
+            fileName = JSON.parse(fileInfo).name;
             target.childNodes[0].style.display = "inline-block";
             _context3.prev = 8;
             _context3.next = 11;
@@ -9535,25 +9556,26 @@ function _downloadOnClick() {
           case 11:
             //download file
             console.log("Download complete!");
-            _context3.next = 17;
+            _context3.next = 18;
             break;
 
           case 14:
             _context3.prev = 14;
             _context3.t0 = _context3["catch"](8);
             toastr["warning"]("file download unsuccessfull: " + _context3.t0);
+            appendEphemeralMessage(fileName + " Download finished with error: " + _context3.t0);
 
-          case 17:
-            _context3.prev = 17;
+          case 18:
+            _context3.prev = 18;
             target.childNodes[0].style.display = "none";
-            return _context3.finish(17);
+            return _context3.finish(18);
 
-          case 20:
+          case 21:
           case "end":
             return _context3.stop();
         }
       }
-    }, _callee3, null, [[8, 14, 17, 20]]);
+    }, _callee3, null, [[8, 14, 18, 21]]);
   }));
   return _downloadOnClick.apply(this, arguments);
 }
@@ -10047,6 +10069,7 @@ function downloadURI(uri, name) {
 
 
 function app_downloadAttachment(fileName, data) {
+  appendEphemeralMessage(fileName + " Download successfull.");
   var arr = new Uint8Array(data);
   var fileURL = URL.createObjectURL(new Blob([arr]));
   downloadURI(fileURL, fileName);
@@ -10218,15 +10241,19 @@ function switchConnectionStatus(connected) {
   if (connected) {
     displayFlex("#connection-status--connected");
     displayNone("#connection-status--disconnected");
+    appendEphemeralMessage("Connection with island established");
   } else {
     displayNone("#connection-status--connected");
     displayFlex("#connection-status--disconnected");
+    appendEphemeralMessage("Connection with island lost");
   }
 }
 
 function app_attemptReconnection() {
-  app_chat.attemptReconnection().then(function () {}).catch(function (err) {
-    console.trace(err);
+  app_chat.attemptReconnection().then(function () {
+    console.log("Reconnection attempt resolved");
+  }).catch(function (err) {
+    console.trace("Reconnection error: " + err);
   });
 }
 
@@ -10268,6 +10295,41 @@ function lockSend(val) {
   var newMsgField = document.querySelector('#new-msg');
   sendLock ? buttonLoadingOn(sendButton) : buttonLoadingOff(sendButton);
   sendLock ? newMsgField.setAttribute("disabled", true) : newMsgField.removeAttribute("disabled");
+}
+
+function appendEphemeralMessage(msg) {
+  if (!msg) {
+    console.log("Message is empty.");
+    return;
+  }
+
+  try {
+    var msgContainer = bake("div", {
+      classes: "ephemeral-msg"
+    });
+    var headingContainer = bake("div", {
+      classes: "msg-heading"
+    });
+    var text = bake("b", {
+      text: "Ephemeral"
+    });
+    var timestamp = bake("span", {
+      classes: "msg-time-stamp"
+    });
+    timestamp.innerText = getChatFormatedDate(new Date());
+    appendChildren(headingContainer, [text, timestamp]);
+    var msgBodyContainer = bake("div", {
+      classes: "msg-body"
+    });
+    var msgBody = bake("div", {
+      html: msg
+    });
+    msgBodyContainer.appendChild(msgBody);
+    appendChildren(msgContainer, [headingContainer, msgBodyContainer]);
+    dom_util_$("#chat_window").appendChild(msgContainer);
+  } catch (err) {
+    console.log("EPHEMERAL ERROR: " + err);
+  }
 }
 
 /***/ })

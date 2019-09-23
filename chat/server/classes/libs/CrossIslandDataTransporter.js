@@ -1,6 +1,7 @@
 const Err = require("./IError.js");
 const iCrypto = require("./iCrypto.js");
 const ss = require('socket.io-stream');
+const Logger = require("./Logger.js");
 
 class CrossIslandDataTransporter{
     constructor(connector = Err.required(),
@@ -82,7 +83,7 @@ class CrossIslandDataTransporter{
         console.log("About to check if file exists");
         if (!self.hm.fileExists(link.pkfp, link.name)){
             //file not found => return not found
-            console.log("File not found");
+            console.log("Crossisland incoming file request: File not found");
             socket.emit("file_not_found");
             return;
         }
@@ -150,7 +151,7 @@ class CrossIslandDataTransporter{
 
 
                 socket.on("file_not_found", ()=>{
-                    this.hm.deleteFileOnTransferFail(data.pkfpDest, data.name);
+                    this.hm.deleteFileOnTransferFail(data.myPkfp, data.name);
                     reject("File not found");
                 });
 

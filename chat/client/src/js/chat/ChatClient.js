@@ -1091,7 +1091,7 @@ export class ChatClient {
                 } else {
 
                     const myPkfp = self.session.publicKeyFingerprint;
-                    let fileData = await self.downloadAttachmentWithWorker(fileInfo, myPkfp, privk, fileOwnerPublicKey);
+                    let fileData = await self.downloadAttachmentWithWorker(fileInfo, myPkfp, privk, fileOwnerPublicKey, parsedFileInfo.name);
                     self.emit("download_complete", {fileInfo: fileInfo, fileData: fileData});
                     resolve()
                 }
@@ -1102,27 +1102,44 @@ export class ChatClient {
 
     }
 
-    downloadAttachmentWithWorker(fileInfo, myPkfp, privk, ownerPubk){
+    downloadAttachmentWithWorker(fileInfo, myPkfp, privk, ownerPubk, fileName){
+        let self = this;
         return new Promise(async (resolve, reject)=>{
             try{
                 const downloader = new Worker("/js/downloaderWorker.js");
+
                 const downloadComplete = (fileBuffer)=>{
                     resolve(fileBuffer);
                     downloader.terminate();
                 };
 
                 const downloadFailed = (err)=>{
+                    console.log("Download failed with error: " + err);
                     reject(err);
                     downloader.terminate()
                 };
 
                 const messageHandlers = {
                     "download_complete": downloadComplete,
-                    "download_failed": downloadFailed
+                    "download_failed": downloadFailed,
+                    "file_available_locally": ()=>{
+                        self.emit("file_available_locally", fileName)
+                        notify("File found locally.")
+                    },
+                    "requesting_peer": ()=>{
+
+                        self.emit("requesting_peer", fileName)
+                        notify("Requesting peer to hand the file...")
+                    }
                 };
 
+
+                const notify = (msg)=>{
+                    console.log("FILE TRANSFER EVENT NOTIFICATION: " + msg);
+                }
+
                 const processMessage = (msg)=>{
-                    messageHandlers[msg.result](msg.data)
+                    messageHandlers[msg.message](msg.data)
                 };
 
                 downloader.onmessage = (ev)=>{
