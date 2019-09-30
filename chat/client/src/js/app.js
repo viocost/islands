@@ -8,6 +8,7 @@ import * as util from "./lib/dom-util";
 import * as toastr from "toastr";
 window.toastr = toastr;
 
+
 import { ChatClient } from  "./chat/ChatClient";
 
 let chat;
@@ -18,6 +19,9 @@ let colors = ["#cfeeff", "#ffebcc", "#ccffd4", "#ccfffb", "#e6e6ff", "#f8e6ff", 
 let participantsKeys = []
 //variables to create new topic
 let nickname, topicName;
+
+//Connection in progress flag
+let connecting = false;
 
 //variables to topic login
 let sounds = {};
@@ -122,10 +126,15 @@ function prepareResizer() {
     })
 }
 function autoLogin(){
+    console.log("In autologin")
     let url = new URL(window.location.href);
+    console.log("URL is " + url);
+    console.log("search params func: " + url.searchParams.get)
     let id = url.searchParams.get("id");
+    console.log("After searching id")
     if(!id) return;
     let token = url.searchParams.get("token");
+    console.log("Got token: " + token);
     let pkcipher = localStorage.getItem(id);
     if (!pkcipher){
         console.log("Autologin failed: no private ley found in local storage");
@@ -262,6 +271,7 @@ function setupChatListeners(chat) {
     chat.on("login_fail", err => {
         clearLoginPrivateKey();
         loadingOff();
+        connecting = false;
         console.log("Login fail emited by chat: " + err);
         toastr.error("Login fail: " + err);
     });
@@ -357,11 +367,13 @@ function setupChatListeners(chat) {
     });
 
     chat.on("connected_to_island", () => {
-        switchConnectionStatus(true);
+        connecting = false;
+        switchConnectionStatus(0);
     });
 
     chat.on("disconnected_from_island", () => {
-        switchConnectionStatus(false);
+        switchConnectionStatus(1);
+        setTimeout(attemptReconnection, 1000);
     });
 
 
@@ -1485,24 +1497,60 @@ function refreshInvitesSuccess() {
     toastr.success("Invites re-synced");
 }
 
-function switchConnectionStatus(connected) {
-    if (connected) {
-        util.displayFlex("#connection-status--connected")
-        util.displayNone("#connection-status--disconnected")
-        appendEphemeralMessage("Connection with island established")
-    } else {
-        util.displayNone("#connection-status--connected")
-        util.displayFlex("#connection-status--disconnected")
-        appendEphemeralMessage("Connection with island lost")
-   }
+/**
+ * Changes Island connection indicator.
+ * @param status int can be one of following:
+ *     0 - connected
+ *     1 - disconnected
+ *     2 - connecting
+ */
+function switchConnectionStatus(status) {
+    if (!Number.isInteger(status) || ! (0 <= status <= 2)){
+        throw("Switch connection status: status is invalid")
+    }
+    switch(status){
+        case 0:
+            util.displayFlex("#connection-status--connected");
+            util.displayNone("#connection-status--disconnected");
+            util.displayNone("#connection-status--connecting")
+            appendEphemeralMessage("Connection with island established");
+            break;
+        case 1:
+            util.displayNone("#connection-status--connected");
+            util.displayFlex("#connection-status--disconnected");
+            util.displayNone("#connection-status--connecting")
+            appendEphemeralMessage("Connection with island lost");
+            break;
+        case 2:
+            util.displayFlex("#connection-status--connecting")
+            util.displayNone("#connection-status--connected");
+            util.displayNone("#connection-status--disconnected");
+            appendEphemeralMessage("Connecting to island...");
+            break;
+    }
 }
 
-
 function attemptReconnection() {
+    if (connecting){
+        console.log("Already connecting...")
+        return;
+    } else if (chat.islandConnectionStatus){
+        console.log("Already connected");
+        return;
+    }
+
+    console.log("Attempting reconnection...")
+    connecting = true;
+    switchConnectionStatus(2);
     chat.attemptReconnection().then(() => {
         console.log("Reconnection attempt resolved")
     }).catch(err => {
         console.trace("Reconnection error: " + err);
+        connecting = false
+        switchConnectionStatus(1);
+    }).finally(()=>{
+        console.log("Finally block after reconnection attempt");
+        switchConnectionStatus(chat.islandConnectionStatus ? 0 : 1)
     });
 }
 

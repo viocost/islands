@@ -9,7 +9,8 @@ CLOSED: [2019-09-20 Fri 22:22]
   possibly file is saved with origin pkfp, while it should
   save on the island with receiver pkfp
 
-*** TODO Add transfer stages:
+*** DONE Add transfer stages:
+CLOSED: [2019-09-30 Mon 18:06]
 - Checking file locally
   if found:
      downloading
@@ -24,8 +25,10 @@ CLOSED: [2019-09-20 Fri 22:22]
           else:
               notifying client: file no longer offered by peer
 
+*** DONE Add messages on state change in UI
+CLOSED: [2019-10-01 Tue 00:48]
+*** TODO bug - file is blocked on rename
 
-*** TODO Add messages on state change in UI
 ** PROJ Get rid of jquery
 *** TODO wirte an universal wrapper around xhr
 
@@ -34,25 +37,34 @@ CLOSED: [2019-09-20 Fri 22:22]
 ** TODO Scrolling behavior
 <2019-09-10 Tue>
 
-** TODO Auto-reconnect if island connection lost
 ** TODO BUG! On scroll messages loaded and appended multiple times
+
+** TODO Message sequencing and interleaving
 
 * Bugs
 ** TODO test EDGE browser
 
 
 * Feature requests
-** TODO Time in UTC.
 ** TODO Backup strategy <2019-09-08 Sun>
-** TODO Message sequencing and interleaving
 ** PROJ Ability to mute/unmute particular partivipant
 ** TODO Volume control instead of mute button
 ** PROJ Implement /commands
 *** TODO Implement /version command that gives the version report for tech support
 
+** TODO Search messages
 
 * Completed
 
+** DONE Time in UTC.
+CLOSED: [2019-10-01 Tue 01:08]
+** DONE Auto-reconnect if island connection lost
+CLOSED: [2019-10-01 Tue 00:48]
+
+** DONE fix npm bug in docker
+CLOSED: [2019-10-01 Tue 00:48]
+** DONE File upload bug
+CLOSED: [2019-10-01 Tue 00:48]
 ** DONE Make new manager version that supports both new and old images
 CLOSED: [2019-09-20 Fri 20:04]
 ** DONE Optimize invite mechanism, reduce delay and improve feedback [100%]

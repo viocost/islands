@@ -10,7 +10,7 @@
 /******/ 		var moduleId, chunkId, i = 0, resolves = [];
 /******/ 		for(;i < chunkIds.length; i++) {
 /******/ 			chunkId = chunkIds[i];
-/******/ 			if(installedChunks[chunkId]) {
+/******/ 			if(Object.prototype.hasOwnProperty.call(installedChunks, chunkId) && installedChunks[chunkId]) {
 /******/ 				resolves.push(installedChunks[chunkId][0]);
 /******/ 			}
 /******/ 			installedChunks[chunkId] = 0;
@@ -148,36 +148,36 @@
 /******/
 /******/
 /******/ 	// add entry module to deferred list
-/******/ 	deferredModules.push([363,1]);
+/******/ 	deferredModules.push([368,1]);
 /******/ 	// run deferred modules when ready
 /******/ 	return checkDeferredModules();
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 154:
+/***/ 158:
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
 
-/***/ 250:
+/***/ 255:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* WEBPACK VAR INJECTION */(function(module) {/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(55);
+/* WEBPACK VAR INJECTION */(function(module) {/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(56);
 /* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(252);
+/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(257);
 /* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(148);
+/* harmony import */ var core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(152);
 /* harmony import */ var core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var core_js_modules_es6_typed_uint32_array__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(253);
+/* harmony import */ var core_js_modules_es6_typed_uint32_array__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(258);
 /* harmony import */ var core_js_modules_es6_typed_uint32_array__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_typed_uint32_array__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(147);
+/* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(151);
 /* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(54);
+/* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(52);
 /* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(24);
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_6__);
@@ -1891,7 +1891,7 @@ a: try {
     var ja;
 
     try {
-      ja = __webpack_require__(254);
+      ja = __webpack_require__(259);
     } catch (a) {
       ja = null;
     }
@@ -3331,39 +3331,32 @@ sjcl.codec.arrayBuffer = {
 "function" === typeof define && define([], function () {
   return sjcl;
 });
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(251)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(256)(module)))
 
 /***/ }),
 
-/***/ 256:
+/***/ 261:
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
 
-/***/ 258:
+/***/ 263:
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
 
-/***/ 292:
+/***/ 297:
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
 
-/***/ 293:
-/***/ (function(module, exports) {
-
-/* (ignored) */
-
-/***/ }),
-
-/***/ 357:
+/***/ 298:
 /***/ (function(module, exports) {
 
 /* (ignored) */
@@ -3371,6 +3364,13 @@ sjcl.codec.arrayBuffer = {
 /***/ }),
 
 /***/ 362:
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+
+/***/ 367:
 /***/ (function(module, exports) {
 
 /*
@@ -3586,46 +3586,46 @@ Github: https://github.com/vadimsva/waitMe
 
 /***/ }),
 
-/***/ 363:
+/***/ 368:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 
-// EXTERNAL MODULE: ./node_modules/core-js/modules/web.dom.iterable.js
-var web_dom_iterable = __webpack_require__(26);
-
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.to-string.js
-var es6_regexp_to_string = __webpack_require__(54);
+var es6_regexp_to_string = __webpack_require__(52);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/regenerator/index.js
 var regenerator = __webpack_require__(0);
 var regenerator_default = /*#__PURE__*/__webpack_require__.n(regenerator);
 
 // EXTERNAL MODULE: ./node_modules/regenerator-runtime/runtime.js
-var runtime = __webpack_require__(131);
+var runtime = __webpack_require__(87);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/asyncToGenerator.js
 var asyncToGenerator = __webpack_require__(10);
 var asyncToGenerator_default = /*#__PURE__*/__webpack_require__.n(asyncToGenerator);
 
+// EXTERNAL MODULE: ./node_modules/core-js/modules/web.dom.iterable.js
+var web_dom_iterable = __webpack_require__(28);
+
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.promise.js
-var es6_promise = __webpack_require__(91);
+var es6_promise = __webpack_require__(92);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.object.to-string.js
 var es6_object_to_string = __webpack_require__(24);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es7.array.includes.js
-var es7_array_includes = __webpack_require__(70);
+var es7_array_includes = __webpack_require__(71);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es7.symbol.async-iterator.js
-var es7_symbol_async_iterator = __webpack_require__(94);
+var es7_symbol_async_iterator = __webpack_require__(96);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.symbol.js
-var es6_symbol = __webpack_require__(95);
+var es6_symbol = __webpack_require__(97);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.split.js
-var es6_regexp_split = __webpack_require__(55);
+var es6_regexp_split = __webpack_require__(56);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/classCallCheck.js
 var classCallCheck = __webpack_require__(8);
@@ -3636,16 +3636,16 @@ var createClass = __webpack_require__(9);
 var createClass_default = /*#__PURE__*/__webpack_require__.n(createClass);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.typed.uint16-array.js
-var es6_typed_uint16_array = __webpack_require__(231);
+var es6_typed_uint16_array = __webpack_require__(236);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.replace.js
-var es6_regexp_replace = __webpack_require__(147);
+var es6_regexp_replace = __webpack_require__(151);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.typed.uint8-array.js
-var es6_typed_uint8_array = __webpack_require__(148);
+var es6_typed_uint8_array = __webpack_require__(152);
 
 // EXTERNAL MODULE: ./node_modules/js-chacha20/src/jschacha20.js
-var jschacha20 = __webpack_require__(121);
+var jschacha20 = __webpack_require__(128);
 
 // EXTERNAL MODULE: ./node_modules/node-forge/lib/index.js
 var lib = __webpack_require__(1);
@@ -3667,7 +3667,7 @@ var lib = __webpack_require__(1);
 
 
 
-var sjcl = __webpack_require__(250);
+var sjcl = __webpack_require__(255);
 
 var iCrypto_iCrypto =
 /*#__PURE__*/
@@ -5845,7 +5845,7 @@ var ClientSettings_ClientSettings = function ClientSettings() {
   this.invites = {};
 };
 // EXTERNAL MODULE: ./node_modules/socket.io-client/lib/index.js
-var socket_io_client_lib = __webpack_require__(122);
+var socket_io_client_lib = __webpack_require__(129);
 
 // CONCATENATED MODULE: ./client/src/js/chat/WildEmitter.js
 
@@ -6730,10 +6730,11 @@ function () {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
-                _context3.next = 2;
+                console.log("Attempt reconnection called in Chat");
+                _context3.next = 3;
                 return this.topicLogin(this.session.privateKey);
 
-              case 2:
+              case 3:
               case "end":
                 return _context3.stop();
             }
@@ -8072,8 +8073,7 @@ function () {
                     reconnection: false,
                     forceNew: true,
                     autoConnect: false,
-                    connection: 'Upgrade',
-                    upgrade: 'websocket',
+                    upgrade: false,
                     pingInterval: 10000,
                     pingTimeout: 5000
                   });
@@ -8552,7 +8552,7 @@ function () {
   return ChatClient;
 }();
 // EXTERNAL MODULE: ./node_modules/toastr/toastr.js
-var toastr = __webpack_require__(4);
+var toastr = __webpack_require__(5);
 
 // CONCATENATED MODULE: ./common/IError.js
 
@@ -8801,10 +8801,10 @@ function () {
 //
 // };
 // EXTERNAL MODULE: ./client/src/js/lib/waitMe.min.js
-var waitMe_min = __webpack_require__(362);
+var waitMe_min = __webpack_require__(367);
 
 // EXTERNAL MODULE: ./node_modules/tingle.js/dist/tingle.min.js
-var tingle_min = __webpack_require__(212);
+var tingle_min = __webpack_require__(216);
 
 // CONCATENATED MODULE: ./client/src/js/lib/DynmaicModal.js
 
@@ -9312,8 +9312,11 @@ function registerVault() {
 }
 
 function fillIDFromParameters() {
+  console.log("Filling id from parameters");
   var url = new URL(document.location.href);
+  console.log("Got url: " + url);
   var vaultID = url.searchParams.get("vault_id");
+  console.log("Vault id: " + vaultID);
 
   if (vaultID) {
     document.querySelector("#vault-id-login").value = vaultID;
@@ -9338,6 +9341,7 @@ function vaultLoginGetVault(ev) {
       type: "post",
       url: "/",
       success: function success(data) {
+        console.log("Got data: " + JSON.stringify(data));
         vaultLoginProcessVault(data, password, passwordEl);
       },
       error: function error(err) {
@@ -9357,6 +9361,14 @@ function vaultLoginProcessVault(data, password, passwordEl) {
   try {
     console.log("Vault obtained. Continuing login...");
     vault_vault = new Vault_Vault();
+
+    if (typeof data === "string") {
+      console.log("Data seems to be string. Parsing...");
+      data = JSON.parse(data);
+    }
+
+    console.log(JSON.stringify(data));
+    console.log(JSON.stringify(Object.keys(data)));
     vault_vault.initSaved(data.vault, password);
     initPasswordBasedHandlers(password);
     passwordEl.value = "";

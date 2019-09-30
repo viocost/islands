@@ -2,7 +2,7 @@ const SocketIO = require('socket.io');
 const EventEmitter = require('events');
 const ID_SIZE = 6
 const Err = require("./IError.js");
-
+const Logger = require("./Logger.js");
 
 /**
  * Manages client->island connections
@@ -16,6 +16,10 @@ class ClientConnectionManager extends EventEmitter{
         this.io = SocketIO.listen(server);
         this.socketHub = this.io.of("/chat");
         this.dataSocketHub = this.io.of("/file");
+<<<<<<< Updated upstream
+=======
+        this.iosSocket = this.io.of("/ios");
+>>>>>>> Stashed changes
         this.setListeners();
     }
 
@@ -38,12 +42,19 @@ class ClientConnectionManager extends EventEmitter{
         self.dataSocketHub.on('connection', (socket)=>{
             console.log("File socket connected");
             self.emit("data_channel_opened", socket);
+            console.log("After data_channel_opened emit")
             socket.on("disconnect", (reason)=>{
                 self.emit("data_channel_closed", socket.id);
             });
+
             socket.on("reconnect",  (attemptNumber) => {
                 self.emit("data_channel_reconnection", socket.id);
             })
+
+            socket.on("error", (err)=>{
+                Logger.error("Data socket error: " + err)
+            })
+
         })
     }
 

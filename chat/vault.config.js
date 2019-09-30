@@ -1,6 +1,5 @@
 const path = require('path');
 const webpack = require('webpack');
-var Visualizer = require('webpack-visualizer-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 
