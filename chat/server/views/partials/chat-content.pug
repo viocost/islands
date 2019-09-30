@@ -25,15 +25,21 @@
                 #online-users-list
                     .online-user-row
             .island-connection-status-wrap
-                div#connection-status--connected
+                #connection-status--connected
                     img(src="/img/online.png")
                     span.connected Connected to island
-                div#connection-status--disconnected
+                #connection-status--disconnected
                     div
                         img(src="/img/doNotDisturb.png")
                         span.disconnected Disconnected...
                     div
                         button.btn#re-connect Re-connect
+                #connection-status--connecting
+                    div
+                        img(src="/img/afk.png")
+                        span.connecting Connecting to island...
+                        img(src="/img/spinner.gif")
+
         #chat-resizer
         .chat
             #chat_window

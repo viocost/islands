@@ -10,7 +10,7 @@
 /******/ 		var moduleId, chunkId, i = 0, resolves = [];
 /******/ 		for(;i < chunkIds.length; i++) {
 /******/ 			chunkId = chunkIds[i];
-/******/ 			if(installedChunks[chunkId]) {
+/******/ 			if(Object.prototype.hasOwnProperty.call(installedChunks, chunkId) && installedChunks[chunkId]) {
 /******/ 				resolves.push(installedChunks[chunkId][0]);
 /******/ 			}
 /******/ 			installedChunks[chunkId] = 0;
@@ -148,36 +148,36 @@
 /******/
 /******/
 /******/ 	// add entry module to deferred list
-/******/ 	deferredModules.push([368,1]);
+/******/ 	deferredModules.push([375,1]);
 /******/ 	// run deferred modules when ready
 /******/ 	return checkDeferredModules();
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 156:
+/***/ 161:
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
 
-/***/ 253:
+/***/ 261:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* WEBPACK VAR INJECTION */(function(module) {/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(36);
+/* WEBPACK VAR INJECTION */(function(module) {/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(40);
 /* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(141);
+/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(150);
 /* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(87);
+/* harmony import */ var core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(94);
 /* harmony import */ var core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var core_js_modules_es6_typed_uint32_array__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(255);
+/* harmony import */ var core_js_modules_es6_typed_uint32_array__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(263);
 /* harmony import */ var core_js_modules_es6_typed_uint32_array__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_typed_uint32_array__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(147);
+/* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(155);
 /* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(55);
+/* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(56);
 /* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(32);
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_6__);
@@ -1891,7 +1891,7 @@ a: try {
     var ja;
 
     try {
-      ja = __webpack_require__(256);
+      ja = __webpack_require__(264);
     } catch (a) {
       ja = null;
     }
@@ -3331,43 +3331,43 @@ sjcl.codec.arrayBuffer = {
 "function" === typeof define && define([], function () {
   return sjcl;
 });
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(254)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(262)(module)))
 
 /***/ }),
 
-/***/ 258:
+/***/ 266:
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
 
-/***/ 260:
+/***/ 268:
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
 
-/***/ 294:
+/***/ 301:
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
 
-/***/ 295:
+/***/ 302:
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
 
-/***/ 340:
+/***/ 344:
 /***/ (function(module, exports, __webpack_require__) {
 
 
-var content = __webpack_require__(341);
+var content = __webpack_require__(345);
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -3381,7 +3381,7 @@ var options = {"hmr":true}
 options.transform = transform
 options.insertInto = undefined;
 
-var update = __webpack_require__(342)(content, options);
+var update = __webpack_require__(346)(content, options);
 
 if(content.locals) module.exports = content.locals;
 
@@ -3389,46 +3389,52 @@ if(false) {}
 
 /***/ }),
 
-/***/ 341:
+/***/ 345:
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
 
 /***/ }),
 
-/***/ 365:
+/***/ 372:
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
 
-/***/ 368:
+/***/ 375:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.promise.js
+var es6_promise = __webpack_require__(90);
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es7.promise.finally.js
+var es7_promise_finally = __webpack_require__(226);
+
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.typed.uint8-array.js
-var es6_typed_uint8_array = __webpack_require__(87);
+var es6_typed_uint8_array = __webpack_require__(94);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.match.js
-var es6_regexp_match = __webpack_require__(141);
+var es6_regexp_match = __webpack_require__(150);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.split.js
-var es6_regexp_split = __webpack_require__(36);
+var es6_regexp_split = __webpack_require__(40);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.search.js
-var es6_regexp_search = __webpack_require__(223);
+var es6_regexp_search = __webpack_require__(239);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.to-string.js
-var es6_regexp_to_string = __webpack_require__(55);
+var es6_regexp_to_string = __webpack_require__(56);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es7.symbol.async-iterator.js
-var es7_symbol_async_iterator = __webpack_require__(56);
+var es7_symbol_async_iterator = __webpack_require__(57);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.symbol.js
-var es6_symbol = __webpack_require__(57);
+var es6_symbol = __webpack_require__(58);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/web.dom.iterable.js
 var web_dom_iterable = __webpack_require__(31);
@@ -3441,29 +3447,26 @@ var regenerator = __webpack_require__(3);
 var regenerator_default = /*#__PURE__*/__webpack_require__.n(regenerator);
 
 // EXTERNAL MODULE: ./node_modules/regenerator-runtime/runtime.js
-var runtime = __webpack_require__(146);
+var runtime = __webpack_require__(104);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/asyncToGenerator.js
 var asyncToGenerator = __webpack_require__(9);
 var asyncToGenerator_default = /*#__PURE__*/__webpack_require__.n(asyncToGenerator);
 
 // EXTERNAL MODULE: ./node_modules/cute-set/index.js
-var cute_set = __webpack_require__(230);
+var cute_set = __webpack_require__(245);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.typed.uint16-array.js
-var es6_typed_uint16_array = __webpack_require__(232);
+var es6_typed_uint16_array = __webpack_require__(247);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.replace.js
-var es6_regexp_replace = __webpack_require__(147);
-
-// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.promise.js
-var es6_promise = __webpack_require__(148);
+var es6_regexp_replace = __webpack_require__(155);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es7.array.includes.js
-var es7_array_includes = __webpack_require__(74);
+var es7_array_includes = __webpack_require__(77);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/classCallCheck.js
-var classCallCheck = __webpack_require__(11);
+var classCallCheck = __webpack_require__(12);
 var classCallCheck_default = /*#__PURE__*/__webpack_require__.n(classCallCheck);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/createClass.js
@@ -3471,7 +3474,7 @@ var createClass = __webpack_require__(13);
 var createClass_default = /*#__PURE__*/__webpack_require__.n(createClass);
 
 // EXTERNAL MODULE: ./node_modules/js-chacha20/src/jschacha20.js
-var jschacha20 = __webpack_require__(122);
+var jschacha20 = __webpack_require__(129);
 
 // EXTERNAL MODULE: ./node_modules/node-forge/lib/index.js
 var lib = __webpack_require__(0);
@@ -3493,7 +3496,7 @@ var lib = __webpack_require__(0);
 
 
 
-var sjcl = __webpack_require__(253);
+var sjcl = __webpack_require__(261);
 
 var iCrypto_iCrypto =
 /*#__PURE__*/
@@ -5018,7 +5021,7 @@ function resizableInput(el, factor) {
   resize();
 }
 // EXTERNAL MODULE: ./client/src/css/main.sass
-var main = __webpack_require__(340);
+var main = __webpack_require__(344);
 
 // CONCATENATED MODULE: ./client/src/js/lib/dom-util.js
 
@@ -5147,7 +5150,7 @@ function displayFlex(selector) {
   dom_util_$(selector).style.display = "flex";
 }
 // EXTERNAL MODULE: ./node_modules/toastr/toastr.js
-var toastr = __webpack_require__(7);
+var toastr = __webpack_require__(6);
 
 // CONCATENATED MODULE: ./client/src/js/chat/AttachmentInfo.js
 
@@ -5842,7 +5845,7 @@ var ClientSettings_ClientSettings = function ClientSettings() {
   this.invites = {};
 };
 // EXTERNAL MODULE: ./node_modules/socket.io-client/lib/index.js
-var socket_io_client_lib = __webpack_require__(123);
+var socket_io_client_lib = __webpack_require__(130);
 
 // CONCATENATED MODULE: ./client/src/js/chat/WildEmitter.js
 
@@ -6727,10 +6730,11 @@ function () {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
-                _context3.next = 2;
+                console.log("Attempt reconnection called in Chat");
+                _context3.next = 3;
                 return this.topicLogin(this.session.privateKey);
 
-              case 2:
+              case 3:
               case "end":
                 return _context3.stop();
             }
@@ -8069,8 +8073,7 @@ function () {
                     reconnection: false,
                     forceNew: true,
                     autoConnect: false,
-                    connection: 'Upgrade',
-                    upgrade: 'websocket',
+                    upgrade: false,
                     pingInterval: 10000,
                     pingTimeout: 5000
                   });
@@ -8561,6 +8564,8 @@ function () {
 
 
 
+
+
 //Vendors
 
 
@@ -8575,7 +8580,9 @@ var DAYSOFWEEK = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 var colors = ["#cfeeff", "#ffebcc", "#ccffd4", "#ccfffb", "#e6e6ff", "#f8e6ff", "#ffe6f1", "#ccefff", "#ccf1ff"];
 var participantsKeys = []; //variables to create new topic
 
-var app_nickname, app_topicName; //variables to topic login
+var app_nickname, app_topicName; //Connection in progress flag
+
+var connecting = false; //variables to topic login
 
 var sounds = {};
 var isResizing = false;
@@ -8687,10 +8694,15 @@ function prepareResizer() {
 }
 
 function autoLogin() {
+  console.log("In autologin");
   var url = new URL(window.location.href);
+  console.log("URL is " + url);
+  console.log("search params func: " + url.searchParams.get);
   var id = url.searchParams.get("id");
+  console.log("After searching id");
   if (!id) return;
   var token = url.searchParams.get("token");
+  console.log("Got token: " + token);
   var pkcipher = localStorage.getItem(id);
 
   if (!pkcipher) {
@@ -8838,6 +8850,7 @@ function setupChatListeners(chat) {
   chat.on("login_fail", function (err) {
     clearLoginPrivateKey();
     loadingOff();
+    connecting = false;
     console.log("Login fail emited by chat: " + err);
     toastr["error"]("Login fail: " + err);
   });
@@ -8910,10 +8923,12 @@ function setupChatListeners(chat) {
     processMessagesLoaded(messages);
   });
   chat.on("connected_to_island", function () {
-    switchConnectionStatus(true);
+    connecting = false;
+    switchConnectionStatus(0);
   });
   chat.on("disconnected_from_island", function () {
-    switchConnectionStatus(false);
+    switchConnectionStatus(1);
+    setTimeout(app_attemptReconnection, 1000);
   });
   chat.on("download_complete", function (res) {
     var fileInfo = JSON.parse(res.fileInfo);
@@ -10236,24 +10251,65 @@ function refreshInvitesSuccess() {
   buttonLoadingOff(document.querySelector("#refresh-invites"));
   toastr["success"]("Invites re-synced");
 }
+/**
+ * Changes Island connection indicator.
+ * @param status int can be one of following:
+ *     0 - connected
+ *     1 - disconnected
+ *     2 - connecting
+ */
 
-function switchConnectionStatus(connected) {
-  if (connected) {
-    displayFlex("#connection-status--connected");
-    displayNone("#connection-status--disconnected");
-    appendEphemeralMessage("Connection with island established");
-  } else {
-    displayNone("#connection-status--connected");
-    displayFlex("#connection-status--disconnected");
-    appendEphemeralMessage("Connection with island lost");
+
+function switchConnectionStatus(status) {
+  if (!Number.isInteger(status) || !(0 <= status <= 2)) {
+    throw "Switch connection status: status is invalid";
+  }
+
+  switch (status) {
+    case 0:
+      displayFlex("#connection-status--connected");
+      displayNone("#connection-status--disconnected");
+      displayNone("#connection-status--connecting");
+      appendEphemeralMessage("Connection with island established");
+      break;
+
+    case 1:
+      displayNone("#connection-status--connected");
+      displayFlex("#connection-status--disconnected");
+      displayNone("#connection-status--connecting");
+      appendEphemeralMessage("Connection with island lost");
+      break;
+
+    case 2:
+      displayFlex("#connection-status--connecting");
+      displayNone("#connection-status--connected");
+      displayNone("#connection-status--disconnected");
+      appendEphemeralMessage("Connecting to island...");
+      break;
   }
 }
 
 function app_attemptReconnection() {
+  if (connecting) {
+    console.log("Already connecting...");
+    return;
+  } else if (app_chat.islandConnectionStatus) {
+    console.log("Already connected");
+    return;
+  }
+
+  console.log("Attempting reconnection...");
+  connecting = true;
+  switchConnectionStatus(2);
   app_chat.attemptReconnection().then(function () {
     console.log("Reconnection attempt resolved");
   }).catch(function (err) {
     console.trace("Reconnection error: " + err);
+    connecting = false;
+    switchConnectionStatus(1);
+  }).finally(function () {
+    console.log("Finally block after reconnection attempt");
+    switchConnectionStatus(app_chat.islandConnectionStatus ? 0 : 1);
   });
 }
 

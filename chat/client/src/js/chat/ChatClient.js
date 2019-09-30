@@ -615,6 +615,7 @@ export class ChatClient {
 
 
     async attemptReconnection(){
+        console.log("Attempt reconnection called in Chat")
         await this.topicLogin(this.session.privateKey);
     }
 
@@ -1204,7 +1205,7 @@ export class ChatClient {
 
 
     /**
-     * Sends the message.
+     * Sends the message. Message will be visible to all topic members.
      *
      * @param {string} messageContent
      * @param {array} filesAttached Array of attached files. Should be taken straight from input field
@@ -1544,8 +1545,7 @@ export class ChatClient {
                 reconnection: false,
                 forceNew: true,
                 autoConnect: false,
-                connection: 'Upgrade',
-                upgrade: 'websocket',
+                upgrade: false,
                 pingInterval: 10000,
                 pingTimeout: 5000,
             });
@@ -1645,7 +1645,7 @@ export class ChatClient {
         if (option === "chat") {
             return this._establishChatConnection();
         } else if (option === "file"){
-                return this._establishChatConnection();
+            return this._establishChatConnection();
         }
     }
 

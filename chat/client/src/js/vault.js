@@ -291,8 +291,11 @@ function registerVault() {
 
 
 function fillIDFromParameters(){
+    console.log("Filling id from parameters")
     let url = new URL(document.location.href);
+    console.log("Got url: " + url)
     let vaultID = url.searchParams.get("vault_id");
+    console.log("Vault id: " + vaultID)
     if (vaultID){
         document.querySelector("#vault-id-login").value = vaultID;
     }
@@ -314,6 +317,7 @@ function vaultLoginGetVault(ev){
             type: "post",
             url: "/",
             success: (data)=>{
+                console.log("Got data: " + JSON.stringify(data));
                 vaultLoginProcessVault(data, password, passwordEl)
             },
             error: err => {
@@ -334,6 +338,13 @@ function vaultLoginProcessVault(data, password, passwordEl){
     try{
         console.log("Vault obtained. Continuing login...");
         vault = new Vault();
+        if(typeof data === "string"){
+            console.log("Data seems to be string. Parsing...")
+            data = JSON.parse(data)
+        }
+
+        console.log(JSON.stringify(data))
+        console.log(JSON.stringify(Object.keys(data)))
         vault.initSaved(data.vault, password);
         initPasswordBasedHandlers(password);
         passwordEl.value = "";

@@ -1,6 +1,7 @@
 const ss = require('socket.io-stream');
 const Err = require("../libs/IError.js");
 const iCrypto = require("../libs/iCrypto.js");
+const Logger = require("./Logger")
 
 
 class FileUploader{
@@ -10,6 +11,7 @@ class FileUploader{
         this.hashUnencrypted = null;
 
         ss(socket).on("upload_attachment",async (stream, data)=>{
+            Logger.debug("Received upload attachment.")
             await this.processUploadAttachment(socket, stream, data);
         });
 
