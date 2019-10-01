@@ -46,7 +46,7 @@ CLOSED: [2019-10-01 Tue 00:48]
 *** TODO Implement persistent queue
 *** TODO Wakeup protocol when user appears after a break
 *** TODO Timestamps chain for messages
-*** TODO get rif if simple ram queue
+*** TODO get rid if simple RAM queue
 *** TODO Expiration time for messages
 
 * Bugs

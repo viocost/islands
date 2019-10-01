@@ -1237,6 +1237,9 @@ export class ChatClient {
                 message.headers.pkfpSource = this.session.publicKeyFingerprint;
                 message.headers.command = "broadcast_message";
                 message.body.message = chatMessage.toBlob();
+                let currentTime = new Date().getTime();
+                message.travelLog = {};
+                message.travelLog[currentTime] = "Outgoing processed on client.";
                 let userPrivateKey = this.session.privateKey;
                 message.signMessage(userPrivateKey);
                 this.chatSocket.emit("request", message);

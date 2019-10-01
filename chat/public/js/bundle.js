@@ -7532,7 +7532,7 @@ function () {
       });
     }
     /**
-     * Sends the message.
+     * Sends the message. Message will be visible to all topic members.
      *
      * @param {string} messageContent
      * @param {array} filesAttached Array of attached files. Should be taken straight from input field
@@ -7550,7 +7550,7 @@ function () {
         var _ref5 = asyncToGenerator_default()(
         /*#__PURE__*/
         regenerator_default.a.mark(function _callee9(resolve, reject) {
-          var _self3, attachmentsInfo, metaID, chatMessage, _iteratorNormalCompletion2, _didIteratorError2, _iteratorError2, _iterator2, _step2, att, message, userPrivateKey;
+          var _self3, attachmentsInfo, metaID, chatMessage, _iteratorNormalCompletion2, _didIteratorError2, _iteratorError2, _iterator2, _step2, att, message, currentTime, userPrivateKey;
 
           return regenerator_default.a.wrap(function _callee9$(_context9) {
             while (1) {
@@ -7626,26 +7626,29 @@ function () {
                   message.headers.pkfpSource = _this5.session.publicKeyFingerprint;
                   message.headers.command = "broadcast_message";
                   message.body.message = chatMessage.toBlob();
+                  currentTime = new Date().getTime();
+                  message.travelLog = {};
+                  message.travelLog[currentTime] = "Outgoing processed on client.";
                   userPrivateKey = _this5.session.privateKey;
                   message.signMessage(userPrivateKey);
 
                   _this5.chatSocket.emit("request", message);
 
                   resolve();
-                  _context9.next = 44;
+                  _context9.next = 47;
                   break;
 
-                case 41:
-                  _context9.prev = 41;
+                case 44:
+                  _context9.prev = 44;
                   _context9.t1 = _context9["catch"](0);
                   reject(_context9.t1);
 
-                case 44:
+                case 47:
                 case "end":
                   return _context9.stop();
               }
             }
-          }, _callee9, null, [[0, 41], [13, 17, 21, 29], [22,, 24, 28]]);
+          }, _callee9, null, [[0, 44], [13, 17, 21, 29], [22,, 24, 28]]);
         }));
 
         return function (_x12, _x13) {
