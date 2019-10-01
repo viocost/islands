@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # This script refreshes islands source code within the running container
-# This allows refresh source without restarting tor and re-launching hiden services
+# This allows refresh source without restarting tor and re-launching hidden services
 
 POSITIONAL=()
 while [[ $# -gt 0 ]]

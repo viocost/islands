@@ -39,7 +39,15 @@ CLOSED: [2019-10-01 Tue 00:48]
 
 ** TODO BUG! On scroll messages loaded and appended multiple times
 
-** TODO Message sequencing and interleaving
+** PROJ Message sequencing and interleaving
+*** TODO Implement sequencing
+*** TODO Implement thread safe history append
+*** TODO Implement message buffer
+*** TODO Implement persistent queue
+*** TODO Wakeup protocol when user appears after a break
+*** TODO Timestamps chain for messages
+*** TODO get rif if simple ram queue
+*** TODO Expiration time for messages
 
 * Bugs
 ** TODO test EDGE browser
