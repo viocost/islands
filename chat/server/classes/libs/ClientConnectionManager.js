@@ -16,10 +16,6 @@ class ClientConnectionManager extends EventEmitter{
         this.io = SocketIO.listen(server);
         this.socketHub = this.io.of("/chat");
         this.dataSocketHub = this.io.of("/file");
-<<<<<<< Updated upstream
-=======
-        this.iosSocket = this.io.of("/ios");
->>>>>>> Stashed changes
         this.setListeners();
     }
 
