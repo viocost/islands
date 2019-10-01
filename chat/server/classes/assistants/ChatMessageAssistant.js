@@ -91,6 +91,7 @@ class ChatMessageAssistant{
         const recipientsPkfps = a.difference([pkfp]).toArray();
 
         let msgBlob = JSON.stringify(message);
+        console.log("MSG blob is : " + msgBlob)
         for(let participantPkfp of recipientsPkfps){
             let onionDest = recipients[participantPkfp].residence;
             let nMessage = new Message(msgBlob);
@@ -201,13 +202,19 @@ class ChatMessageAssistant{
                                                   pkfp,
                                                   enqueue = true) {
         const message = envelope.payload;
-        const currentTime = new Date().getTime();
-        message.travelLog[currentTime] = "Arrived to destination island";
         //Printing travel log
-        console.log("Printing message travel log....")
-        Object.keys(message.travelLog).forEach((key)=>{
-            console.log(`${key}: ${message.travelLog[key]}`)
-        })
+        if(message.travelLog) {
+            console.log("Printing message travel log....")
+            const currentTime = new Date().getTime();
+            message.travelLog[currentTime] = "Arrived to destination island";
+            Object.keys(message.travelLog).forEach((key)=>{
+                console.log(`${key}: ${message.travelLog[key]}`)
+            })
+        }else{
+
+            console.log("Message travel log is missing")
+            console.log(JSON.stringify(message))
+        }
 
         const chatMessage = JSON.parse(message.body.message);
         if (this._metadataIdMatchesCurrent(currentMetadata.body.id, chatMessage.header.metadataID)) {

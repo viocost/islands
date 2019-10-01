@@ -11,6 +11,9 @@ class ChatMessage extends Message{
         this.headers = message.headers;
         this.body = message.body;
         this.signature = message.signature;
+        if(message.travelLog){
+            this.travelLog = message.travelLog;
+        }
     }
 
     /**
