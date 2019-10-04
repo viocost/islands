@@ -105,7 +105,7 @@ class IslandsChat{
             this.crossIslandMessenger
         );
 
-        Logger.verbose("Chat started")
+        Logger.verbose("Chat initialized")
     }
 
 

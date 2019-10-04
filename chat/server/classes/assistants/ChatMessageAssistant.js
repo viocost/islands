@@ -5,6 +5,8 @@ const Message = require("../objects/ChatMessage.js");
 const ClientError = require("../objects/ClientError.js");
 const Logger = require("../libs/Logger.js");
 const Coordinator = require("../assistants/AssistantCoordinator.js");
+const MsgCount = require("../libs/CounterSet.js");
+
 
 
 class ChatMessageAssistant{
@@ -20,6 +22,7 @@ class ChatMessageAssistant{
         this.connectionManager = connectionManager;
         this.sessionManager = sessionManager;
         this.hm = historyManager;
+        this.counters = MsgCount.CounterSetCollection(this.hm);
         this.topicAuthorityManager = topicAuthorityManager;
         this.subscribeToClientRequests(requestEmitter);
         this.subscribeToCrossIslandsMessages(crossIslandMessenger);
@@ -27,8 +30,6 @@ class ChatMessageAssistant{
             await this.processAppendQueue(pkfp, self);
         })
     }
-
-
 
 
     subscribeToClientRequests(requestEmitter){

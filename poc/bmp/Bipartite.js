@@ -102,6 +102,7 @@ class Bipartite {
     }
 
     print(){
+        return
         console.log("\nKEYS:")
         let keyString;
         Object.keys(this._keys).forEach(key=>{

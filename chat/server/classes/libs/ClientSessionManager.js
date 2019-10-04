@@ -44,7 +44,6 @@ class ClientSessionManager{
 
         this.registerSession(new ClientSession(pkfp, connectionId, sessionID));
         console.log("\nCreated new session. ConnectionId: " + connectionId);
-        console.log("Sessions: " );
         Object.keys(this.connectionManager.socketHub.sockets).forEach(socketId=>{
             console.log("Key: "+ socketId + " Val: " + this.connectionManager.socketHub.sockets[socketId].id);
         })

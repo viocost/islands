@@ -40,7 +40,37 @@ CLOSED: [2019-10-01 Tue 00:48]
 ** TODO BUG! On scroll messages loaded and appended multiple times
 
 ** PROJ Message sequencing and interleaving
+
+*** Use cases:
+**** Message arrives when user not logged in
+***** Seq number is current
+***** Seq number is not current
+
+**** Message arrived when user session is initialized
+
+*** SYNC protocol use cases:
+**** Private message sync:
+1. Island receives message with seq number which is greater than last recorded
+   by more than one, meaning that some messages are skipped
+   - Place message in processing queue
+   - Send last seq seen from the member
+   - if member responses with missed messages:
+         process missed messages
+         append to history
+   - else:
+
+     
+
 *** TODO Implement sequencing
+Counters:
+   outgoing:
+      public,
+      private for each member
+
+   incoming:
+      public and private for each member
+
+
 *** TODO Implement thread safe history append
 *** TODO Implement message buffer
 *** TODO Implement persistent queue
@@ -49,6 +79,7 @@ CLOSED: [2019-10-01 Tue 00:48]
 *** TODO get rid if simple RAM queue
 *** TODO Expiration time for messages
 
+** TODO improve server logging. Implement Logging categories and runtime rule changes.
 * Bugs
 ** TODO test EDGE browser
 

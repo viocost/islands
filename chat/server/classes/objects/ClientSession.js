@@ -9,12 +9,19 @@ class ClientSession {
                 sessionID = Err.required()) {
         this.clientPkfp = clientPkfp;
         this.timeInitialized = Date.now();
+        this.counters = this.loadCounters(clientPkfp);
         this.id = sessionID;
         this.connectionID = connectionID;
     }
 
     getId(){
         return this.id;
+    }
+
+    //Loads participant counters
+    loadCounters(pkfp){
+
+
     }
 
     getClientPkfp(){

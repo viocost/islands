@@ -53,6 +53,7 @@ class HistoryManager{
             inviteIndex: "/invites/invite_index",
             files: "/files/",
             history: "/history_store",
+            counters: "/counters",
             taMetadata: "/metadata",
             settings: "/settings"
         };

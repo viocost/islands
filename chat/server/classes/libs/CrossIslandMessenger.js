@@ -120,13 +120,13 @@ class CrossIslandMessenger extends EventEmitter{
 
     processConnectionError(data){
         //TODO remove this thing as now it will be handled by timeout callback.
-        Logger.debug("Error establishing a connection to hidden endpoint", {
-            origin: data.origin,
-            destination: data.destination,
-            maxAttempts: data.maxAttempts,
-            attempts: data.attempts,
-            error: data.error
-        });
+        //Logger.debug("Error establishing a connection to hidden endpoint", {
+        //    origin: data.origin,
+        //    destination: data.destination,
+        //    maxAttempts: data.maxAttempts,
+        //    attempts: data.attempts,
+        //    error: data.error
+        //});
         if(!this._crossIslandMessageQueue[data.destination] || this._crossIslandMessageQueue[data.destination].length === 0){
             return
         }
