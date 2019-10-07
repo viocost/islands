@@ -241,7 +241,8 @@ class TorConnector extends EventEmitter{
             Logger.debug("Attempting to call hidden peer", {
                 origin: onionOrig,
                 destination: onionDest,
-                attempt: attempt
+                attempt: attempt,
+                cat: "connection"
             });
             socket.open();
         };
