@@ -1,9 +1,40 @@
 const { createLogger, format, transports,  } = require('winston');
 const { combine, timestamp, label, json } = format;
 const fs = require("fs-extra");
+const Path = require("path");
 const Err = require("../libs/IError.js");
+const Set = require("cute-set");
 
+//Logging categories
+const CONFIG = {
+    console: false,
+    consoleFilter: true,
+    categories: new Set()
+}
 
+/**
+ * LIST OF POSSIBLE CATEGORIES
+ * chat, metadata, transport, connection, counters
+ */
+
+let filterConfigPath;
+
+const loadFilterConfig = function(){
+    try{
+        if (fs.existsSync(filterConfigPath)){
+            let configLoaded = JSON.parse(fs.readFileSync(filterConfigPath, "utf8"));
+            for(let key of Object.keys(CONFIG)){
+                if (key === "categories" && Array.isArray(configLoaded["categories"])){
+                    CONFIG.categories = new Set(configLoaded["categories"]);
+                } else {
+                    CONFIG[key] = configLoaded[key];
+                }
+            }
+        }
+    } catch(err){
+        console.log("ERROR LOADING LOGGER CONFIG: " + err)
+    }
+}
 
 
 class Logger{
@@ -30,7 +61,9 @@ class Logger{
     }
 
     static initLogger  (path = Err.required(), level){
-        let fullPath = path[-1] === "/" ? path + "logs/" : path + "/logs/";
+        let fullPath = Path.join(path, "logs");
+        filterConfigPath = Path.join(path, "console_filter.json")
+
         if(!fs.existsSync(path)){
             fs.mkdirSync(path);
         }
@@ -47,7 +80,6 @@ class Logger{
             ),
 
             transports: [
-                new transports.Console(),
                 new transports.File({ filename: fullPath + 'error.log', maxsize: 5242880, level: 'error' }),
                 new transports.File({ filename: fullPath + 'combined.log', maxsize: 5242880})
             ]
@@ -55,6 +87,10 @@ class Logger{
 
         Logger._path = fullPath;
         Logger._logger = instance;
+
+        loadFilterConfig();
+        setInterval(loadFilterConfig, 2000)
+
     };
 
     static async fetchLogs(errorOnly = false){
@@ -112,8 +148,30 @@ class Logger{
             for(let key of Object.keys(additionalData)){
                 logMsg[key] = additionalData[key];
             }
+            Logger._consoleLog(msg, additionalData, level);
         }
+
         logger.log(logMsg);
+    }
+
+    //prints log message to console if required
+    static _consoleLog(msg, data, level){
+        if (!CONFIG.console){
+            //console turned off
+            return
+        }
+
+        let additionalData = data ? JSON.stringify(data) : "";
+        level = level ? level.toUpperCase() : "UNDEFINED";
+        if (!CONFIG.consoleFilter){
+
+            console.log(`==${level}== : ${msg} \n    data: ${additionalData}`)
+        } else{
+            let cat = data.cat;
+            if (CONFIG.categories.has(cat)){
+                console.log(`==${level}==: ${msg} \n    data: ${additionalData}`)
+            }
+        }
     }
 
     static isEnabled(){
@@ -132,7 +190,7 @@ Logger._path = undefined;
 Logger._status = true;
 Logger._logger = undefined;
 Logger._level = undefined;
-Logger. _levels = ["silly", "debug", "verbose", "info",  "warn", "error"];
+Logger._levels = ["silly", "debug", "verbose", "info",  "warn", "error"];
 
 
 
