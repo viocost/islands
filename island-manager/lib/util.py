@@ -46,7 +46,7 @@ def get_full_path(path):
 
 def get_version():
     with open("version", "r") as vfile:
-        return vfile.readline()
+        return re.sub("\r?\n", "", vfile.readline())
 
 
 def get_current_path():

@@ -50,7 +50,6 @@ class ChatMessageAssistant{
     }
 
 
-
     async broadcastMessage(message, connectionId, self){
         let pkfp = message.headers.pkfpSource;
         if(!self.sessionManager.isSessionActive(pkfp)){
