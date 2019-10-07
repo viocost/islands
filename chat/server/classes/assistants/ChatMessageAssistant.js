@@ -49,7 +49,6 @@ class ChatMessageAssistant{
     }
 
 
-
     async broadcastMessage(message, connectionId, self){
         let pkfp = message.headers.pkfpSource;
         Logger.debug("Broadcasting chat message", {
