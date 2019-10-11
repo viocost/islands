@@ -31,7 +31,7 @@ let soundsOnOfIcons = {
     off: "/img/sound-off.png"
 };
 
-let sendLock = false;
+let sendButtonLocked = false;
 
 
 let tempName;
@@ -368,11 +368,13 @@ function setupChatListeners(chat) {
 
     chat.on("connected_to_island", () => {
         connecting = false;
+        lockSend();
         switchConnectionStatus(0);
     });
 
     chat.on("disconnected_from_island", () => {
         switchConnectionStatus(1);
+        lockSend();
         setTimeout(attemptReconnection, 1000);
     });
 
@@ -442,7 +444,7 @@ function processServiceRecord(record) {
 
 function sendMessage() {
     ensureConnected();
-    if (sendLock) {
+    if (sendButtonLocked) {
         return;
     }
     lockSend(true);
@@ -1584,12 +1586,14 @@ function ensureConnected() {
     }
 }
 
+// ---------------------------------------------------------------------------------------------------------------------------
+// Locks send message button and shows loading animation
 function lockSend(val) {
-    sendLock = !!val;
+    sendButtonLocked = !!val;
     let sendButton = document.querySelector('#send-new-msg');
     let newMsgField = document.querySelector('#new-msg');
-    sendLock ? buttonLoadingOn(sendButton) : buttonLoadingOff(sendButton);
-    sendLock ? newMsgField.setAttribute("disabled", true) : newMsgField.removeAttribute("disabled");
+    sendButtonLocked ? buttonLoadingOn(sendButton) : buttonLoadingOff(sendButton);
+    sendButtonLocked ? newMsgField.setAttribute("disabled", true) : newMsgField.removeAttribute("disabled");
 }
 
 

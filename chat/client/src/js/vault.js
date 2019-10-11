@@ -9,7 +9,6 @@ import * as dropdown from "./lib/dropdown";
 import * as editable_field from "./lib/editable_field";
 import * as util from "./lib/dom-util";
 
-//let chat;
 let vault;
 let reg = isRegistration();
 
@@ -20,6 +19,7 @@ let passwordChangeForm;
 ///Functions closures
 let reloadVault;
 let adminLogin;
+
 
 
 /**Set main listeneres when document loaded**/
@@ -54,6 +54,15 @@ document.addEventListener('DOMContentLoaded', event => {
 
 });
 
+function isMobileBrowser(){
+    return navigator.userAgent.match(/Android/i)
+        || navigator.userAgent.match(/webOS/i)
+        || navigator.userAgent.match(/iPhone/i)
+        || navigator.userAgent.match(/iPad/i)
+        || navigator.userAgent.match(/iPod/i)
+        || navigator.userAgent.match(/BlackBerry/i)
+        || navigator.userAgent.match(/Windows Phone/i)
+}
 
 function prepareChangePasswordModal(){
     let wrapper = util.bake("div");
@@ -377,7 +386,8 @@ function topicJoin(){
         let inviteCode = document.querySelector("#join-topic-invite").value;
         let topicName = document.querySelector("#join-topic-name").value;
 
-        let chat = new ChatClient({version: version});
+        let transport = isMobileBrowser() ? 0 : 1;
+        let chat = new ChatClient({version: version, transport: transport});
 
         chat.on("topic_join_success", async (data)=>{
             console.log("Topic join successful!");
@@ -497,7 +507,8 @@ function topicCreate(){
     let nickname = document.querySelector("#new-topic-nickname").value;
     let topicName = document.querySelector("#new-topic-name").value;
 
-    let chat = new ChatClient({version: version});
+    let transport = isMobileBrowser() ? 0 : 1;
+    let chat = new ChatClient({version: version, transport: transport});
 
     chat.on("init_topic_success", async (data)=>{
         console.log("Topic Created!");
@@ -538,7 +549,7 @@ function _destroyChat(chat){
 function prepareLogin(options){
 
     let privateKey = options.privateKey;
-
+    let isMobile = options.isMobile;
     return function (){
         let ic = new iCrypto();
         ic.addBlob("privk", privateKey)
@@ -553,7 +564,7 @@ function prepareLogin(options){
         if(options.currentWindow){
             window.open(document.location.href + "chat" + params, "_self");
         }else{
-            window.open(document.location.href + "chat" + params, "_blank");
+            window.open(document.location.href + "chat" + params, isMobile ? "_self" : "_blank");
         }
     };
 
@@ -653,7 +664,7 @@ function renderVault(){
 
         let buttons = util.bake("div", {classes: "topic-buttons"});
         let loginButton = util.bake("button", {classes: "login-button", text: "Login"});
-        loginButton.addEventListener("click", prepareLogin({privateKey: vault.topics[k].key}));
+        loginButton.addEventListener("click", prepareLogin({privateKey: vault.topics[k].key, isMobile: isMobileBrowser()}));
         let options = bakeTopicDropdownMenu(vault.topics[k].key, vault.topics[k].pkfp);
 
         util.appendChildren(buttons, [loginButton, options]);
@@ -731,8 +742,8 @@ function prepareTopicDelete(privateKey, pkfp){
             toastr.warning(err.responseText);
             console.log("Vault login error: " + err.responseText);
         };
-
-        let chat = new ChatClient({version: version});
+        let transport = isMobileBrowser() ? 0 : 1;
+        let chat = new ChatClient({version: version, tranport: transport});
 
         let deleteTopicRecord = prepareTopicRecordDelete(pkfp);
 
@@ -786,6 +797,7 @@ function processTopicNameChange(ev){
 
 
 function prepareAdminLogin(privateKey){
+    let isMobile = isMobileBrowser()
     return  function (){
         let ic = new iCrypto();
         ic.addBlob("privk", privateKey)
@@ -798,7 +810,7 @@ function prepareAdminLogin(privateKey){
 
         let params = "?id=" + ic.get("idhex") + "&token=" + ic.get("sym");
 
-        window.open(document.location.href + "admin" + params, "_blank");
+        window.open(document.location.href + "admin" + params, isMobile ? undefined : "_blank");
     };
 }
 

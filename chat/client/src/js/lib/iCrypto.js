@@ -1,11 +1,7 @@
 'use strict';
-import { JSChaCha20 } from 'js-chacha20'
+import  JSChaCha20  from 'js-chacha20';
 import * as forge from 'node-forge';
-const sjcl = require("./sjcl.js");
-
-
-
-
+const sjcl = require("sjcl");
 
 export class iCrypto {
     constructor(){
@@ -580,7 +576,13 @@ export class iCrypto {
 
     createHash(nameToSave = iCrypto.pRequired("createHash"),
                algorithm = "sha256"){
+        console.log(`Create hash called.`);
+        console.log(`sjcl is ${typeof sjcl}`)
+        for (let key of Object.keys(sjcl)){
+            console.log(key);
+        }
         let hash = sjcl.hash.hasOwnProperty(algorithm) ? new sjcl.hash[algorithm](): this.throwError("Wrong hash algorithm");
+
         this.set(nameToSave, hash);
         return this
     }

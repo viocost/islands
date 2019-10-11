@@ -20,6 +20,11 @@ export class ChatClient {
         this.loadingMessages = false;
         this.chatSocket = null;
         this.fileSocket = null;
+
+        // ---------------------------------------------------------------------------------------------------------------------------
+        // Transport defines socket.io transport
+        // can be 0: xhr, 1: websocket
+        this.transport = opts.transport || 0;
         this.session = null; //can be "active", "off"
         this.newTopicPending = {};
         this.pendingTopicJoins = {};
@@ -726,15 +731,22 @@ export class ChatClient {
      * @returns {Promise}
      */
     async initTopicJoin(nickname, inviteCode) {
+        let start = new Date();
         console.log("joining topic with nickname: " + nickname + " | Invite code: " + inviteCode);
+
         const clientSettings = new ClientSettings();
 
         await this.establishIslandConnection();
+        console.log(`Connection with island is established. ${(new Date() - start) / 1000 } Elapsed since beginning. Working crypto.`);
+        let cryptoStart = new Date()
         let ic = new iCrypto();
         ic.asym.createKeyPair("rsa")
             .getPublicKeyFingerprint('rsa', 'pkfp')
             .addBlob("invite64", inviteCode.trim())
             .base64Decode("invite64", "invite");
+
+        let now = new Date()
+        console.log(`Keys generated in ${(now - cryptoStart) / 1000}sec. ${ (now - start) / 1000 } elapsed since beginning.`);
 
         let invite = ic.get("invite").split("/");
         let inviterResidence = invite[0];
@@ -775,7 +787,11 @@ export class ChatClient {
         request.set('headers', headers);
         request.set("body", body);
         request.signMessage(ic.get('rsa').privateKey);
+        console.log("Sending topic join request");
+        let sendStart = new Date();
         this.chatSocket.emit("request", request);
+        now = new Date()
+        console.log(`Request sent to island in  ${(now - sendStart) / 1000}sec. ${ (now - start) / 1000 } elapsed since beginning.`);
         let topicData = {
             newPublicKey: ic.get('rsa').publicKey,
             newPrivateKey: ic.get('rsa').privateKey,
@@ -1038,6 +1054,10 @@ export class ChatClient {
 
             };
 
+            let logMessage = (msg)=>{
+                console.log("WORKER LOG: " + msg);
+            }
+
             let uploadError = (msg)=>{
                 uploader.terminate();
                 self.emit("upload_error", msg.data);
@@ -1047,7 +1067,8 @@ export class ChatClient {
             let messageHandlers = {
                 "upload_complete": uploadComplete,
                 "upload_progress": uploadProgress,
-                "upload_error": uploadError
+                "upload_error": uploadError,
+                "log": logMessage
             };
 
             uploader.onmessage = (ev)=>{
@@ -1090,9 +1111,9 @@ export class ChatClient {
                     console.log(err);
                     reject(err);
                 } else {
-
+                    console.log(`Downloading with worker or sync`);
                     const myPkfp = self.session.publicKeyFingerprint;
-                    let fileData = await self.downloadAttachmentWithWorker(fileInfo, myPkfp, privk, fileOwnerPublicKey, parsedFileInfo.name);
+                    let fileData = await self.downloadAttachmentSync(fileInfo, myPkfp, privk, fileOwnerPublicKey, parsedFileInfo.name);
                     self.emit("download_complete", {fileInfo: fileInfo, fileData: fileData});
                     resolve()
                 }
@@ -1107,9 +1128,10 @@ export class ChatClient {
         let self = this;
         return new Promise(async (resolve, reject)=>{
             try{
-                const downloader = new Worker("/js/downloaderWorker.js");
+                const downloader = new Worker("/js/fileWorker.js");
 
                 const downloadComplete = (fileBuffer)=>{
+                    console.log("RECEIVED FILE BUFFER FROM THE WORKER: length: " + fileBuffer.length)
                     resolve(fileBuffer);
                     downloader.terminate();
                 };
@@ -1120,9 +1142,14 @@ export class ChatClient {
                     downloader.terminate()
                 };
 
+                const processLog = (msg) =>{
+                    console.log("WORKER LOG: " + msg)
+                }
+
                 const messageHandlers = {
                     "download_complete": downloadComplete,
                     "download_failed": downloadFailed,
+                    "log": processLog,
                     "file_available_locally": ()=>{
                         self.emit("file_available_locally", fileName)
                         notify("File found locally.")
@@ -1162,6 +1189,86 @@ export class ChatClient {
                         pubk: ownerPubk
                     }
                 })
+            }catch (e) {
+
+                reject(e)
+            }
+
+        })
+    }
+
+    // ---------------------------------------------------------------------------------------------------------------------------
+    // This is for test purposes only!
+    downloadAttachmentSync(fileInfo, myPkfp, privk, ownerPubk, fileName){
+        console.log(`Downloading attachment sync`);
+        let self = this;
+
+        return new Promise(async (resolve, reject)=>{
+            try{
+                const downloader = new Downloader();
+
+                const downloadComplete = (fileBuffer)=>{
+                    console.log("RECEIVED FILE BUFFER FROM THE WORKER: length: " + fileBuffer.length)
+                    resolve(fileBuffer);
+                    downloader.terminate();
+                };
+
+                const downloadFailed = (err)=>{
+                    console.log("Download failed with error: " + err);
+                    reject(err);
+                    downloader.terminate()
+                };
+
+                const processLog = (msg) =>{
+                    console.log("WORKER LOG: " + msg)
+                }
+
+                const messageHandlers = {
+                    "download_complete": downloadComplete,
+                    "download_failed": downloadFailed,
+                    "log": processLog,
+                    "file_available_locally": ()=>{
+                        self.emit("file_available_locally", fileName)
+                        notify("File found locally.")
+                    },
+                    "requesting_peer": ()=>{
+
+                        self.emit("requesting_peer", fileName)
+                        notify("Requesting peer to hand the file...")
+                    }
+                };
+
+
+                const notify = (msg)=>{
+                    console.log("FILE TRANSFER EVENT NOTIFICATION: " + msg);
+                }
+
+                const processMessage = (msg)=>{
+                    messageHandlers[msg.message](msg.data)
+                };
+
+                downloader.on("message",  (ev)=>{
+                    processMessage(ev.data)
+                });
+
+                downloader.on("error",  (ev)=>{
+                    console.log(ev);
+                    reject("Downloader worker error");
+                    downloader.terminate()
+                });
+
+                try{
+
+                    downloader.downloadFile({
+                            fileInfo: fileInfo,
+                            myPkfp: myPkfp,
+                            privk: privk,
+                            pubk: ownerPubk
+                        })
+                }catch (e){
+                    console.log(`Error downloading file: ${e}`);
+                    throw e;
+                }
             }catch (e) {
 
                 reject(e)
@@ -1532,6 +1639,7 @@ export class ChatClient {
     async _establishChatConnection(connectionAttempts = 7, reconnectionDelay = 8000){
         return new Promise((resolve, reject)=>{
             let self = this;
+            let upgrade = this.transport === 1;
             if (self.chatSocket && self.chatSocket.connected){
                 resolve();
                 return;
@@ -1548,7 +1656,7 @@ export class ChatClient {
                 reconnection: false,
                 forceNew: true,
                 autoConnect: false,
-                upgrade: false,
+                upgrade: upgrade,
                 pingInterval: 10000,
                 pingTimeout: 5000,
             });
@@ -1593,6 +1701,7 @@ export class ChatClient {
     _establishFileConnection(connectionAttempts = 7, reconnectionDelay = 8000){
         return new Promise((resolve, reject)=>{
             let self = this;
+            let upgrade = this.transport === 1;
             console.log("Connecting to file socket");
             if (self.fileSocket && self.fileSocket.connected){
                 console.log("File socket already connected! returning");
@@ -1611,8 +1720,7 @@ export class ChatClient {
                 reconnection: false,
                 forceNew: true,
                 autoConnect: false,
-                connection: 'Upgrade',
-                upgrade: 'websocket',
+                upgrade: upgrade,
                 pingInterval: 10000,
                 pingTimeout: 5000,
             });
@@ -1645,10 +1753,11 @@ export class ChatClient {
     }
 
     async establishIslandConnection(option = "chat"){
+        console.log("Establishing connection with: " + option)
         if (option === "chat") {
             return this._establishChatConnection();
         } else if (option === "file"){
-            return this._establishChatConnection();
+            return this._establishFileConnection();
         }
     }
 
@@ -1761,13 +1870,13 @@ export class ChatClient {
         }
     }
 
-    processMetaSync(message, self){
+            processMetaSync(message, self){
         if(!self.session){
             return;
         }
         console.log("Processing metadata sync message")
         if(message.body.metadata){
-            self._updateMetadata(Metadata.parseMetadata(message.body.metadata));
+                    self._updateMetadata(Metadata.parseMetadata(message.body.metadata));
             self.emit("metadata_updated");
         }
     }
@@ -1786,7 +1895,7 @@ export class ChatClient {
     }
 
 
-    _updateMetadata(metadata){
+            _updateMetadata(metadata){
         let self = this;
         let sharedKey = Metadata.extractSharedKey(self.session.publicKeyFingerprint,
             self.session.privateKey,
@@ -1894,7 +2003,7 @@ export class ChatClient {
             pkfp = '0' + pkfp;
         }
         let bytes = [];
-        for (let i = 0; i < pkfp.length/2; i = i + 2) {
+                    for (let i = 0; i < pkfp.length/2; i = i + 2) {
             bytes.push(parseInt(pkfp.slice(i, i + 2), 16));
         }
 
@@ -1919,7 +2028,7 @@ export class ChatClient {
         }catch(err){
             throw "Invalid parameter thingToExtract"
         }
-    }
+        }
 
 
     onionValid(candidate){
@@ -1929,7 +2038,7 @@ export class ChatClient {
 
     getMyResidence(){
         return this.session.metadata.participants[this.session.publicKeyFingerprint].residence;
-    }
+        }
 
     /**************************************************
      * =================== END  ===================== *
@@ -1938,3 +2047,209 @@ export class ChatClient {
 
 }
 
+
+class Downloader{
+
+    constructor(){
+        console.log(`Downloader initialized non-worker`);
+        WildEmitter.mixin(this);
+    }
+
+
+    processMessage(msg) {
+        console.log("Processing message from main thread..");
+        commandHandlers[msg.command](msg.data);
+    }
+
+
+    parseFileLink(link) {
+        let ic = new iCrypto();
+        ic.addBlob('l', link).base64Decode("l", "ls");
+        let parsed = ic.get("ls");
+        let splitted = parsed.split("/");
+        return {
+            onion: splitted[0],
+            pkfp: splitted[1],
+            name: splitted[2]
+        };
+    }
+
+    postMessage(data){
+        this.emit("message",  {data: data});
+    }
+
+    /**
+    * Concatenates 2 buffers
+    * @param buffer1
+    * @param buffer2
+    * @returns {ArrayBufferLike}
+    */
+    appendBuffer(buffer1, buffer2) {
+        let tmp = new Uint8Array(buffer1.byteLength + buffer2.byteLength);
+        tmp.set(new Uint8Array(buffer1), 0);
+        tmp.set(new Uint8Array(buffer2), buffer1.byteLength);
+        return tmp.buffer;
+    };
+
+
+
+
+    downloadFile(data){
+        this.processDownload(data)
+            .then((dataBuffer)=>{
+                this.postMessage({ message: "download_complete", data: dataBuffer });
+                console.log("Stream finished");
+            })
+            .catch(err=>{
+                console.log("Error downloading file: " + err);
+                this.postMessage({ message: "download_failed", data: err })
+            })
+    }
+
+
+
+    processDownload(data) {
+        let self = this;
+        return new Promise(async (resolve, reject) => {
+            console.log(`Initializing file download`);
+            const fileInfo = JSON.parse(data.fileInfo);
+            const link = self.parseFileLink(fileInfo.link);
+            const myPkfp = data.myPkfp;
+            const privk = data.privk;
+            const ownerPubk = data.pubk;
+            const metaID = fileInfo.metaID;
+
+
+            let fileSocket;
+            try{
+                fileSocket = await this.establishConnection();
+            }catch (e) {
+                reject("Connection error: " + e)
+            }
+
+            /**
+            * event triggered by Island when file is ready to be transferred to the client
+            * key is encrypted shared SYM key to decrypt file
+            */
+
+            fileSocket.on("download_ready", key => {
+                //prepare file
+                self.postMessage({ message: "file_available_locally"});
+                let symk = key[metaID];
+                let dataBuffer = new ArrayBuffer(0);
+                ss(fileSocket).on("file", stream => {
+
+                    console.log("File download in progress!");
+                    let ic = new iCrypto();
+                    ic.addBlob("k", symk).asym.setKey("privk", privk, "private").asym.decrypt("k", "privk", "symk", "hex");
+                    ic.createHash("h");
+
+                    ic.ssym.init("stc", ic.get("symk"), false);
+
+                    stream.on('data', data => {
+
+                        self.postMessage({ message: "log", data: "Received data chunk" })
+                        let chunk = ic.ssym.decrypt("stc", data.buffer);
+                        ic.updateHash("h", new Uint8Array(chunk));
+                        dataBuffer = iCrypto.concatArrayBuffers(dataBuffer, chunk);
+                    });
+                    stream.on('end', () => {
+                        self.postMessage({ message: "log", data: "Received end of data message" })
+                        ic.digestHash("h", "hres").addBlob("sign", fileInfo.signUnencrypted).asym.setKey("pubk", ownerPubk, "public").asym.verify("hres", "sign", "pubk", "vres");
+
+                        if (!ic.get("vres")) {
+                            reject("File validation error!");
+                        } else {
+
+                            self.postMessage({ message: "log", data: "Resolving data..." })
+                            resolve(dataBuffer);
+                        }
+                    });
+                });
+
+                //create stream
+                //emit
+                console.log("About to emit process_download");
+                fileSocket.emit("proceed_download", {
+                    link: link,
+                    pkfp: myPkfp
+
+                });
+            });
+
+            fileSocket.on("requesting_peer", ()=>{
+                console.log("File not found locally, requesting hidden peer")
+                self.postMessage({ message: "requesting_peer"});
+            })
+
+            fileSocket.on("download_failed", err =>{
+                console.log("File download fail: " + err);
+                self.postMessage({ message: "download_failed", data: err })
+            })
+
+            fileSocket.emit("download_attachment", {
+                link: link,
+                myPkfp: myPkfp,
+                metaID: fileInfo.metaID,
+                hashEncrypted: fileInfo.hashEncrypted,
+                signEncrypted: fileInfo.signEncrypted
+            });
+        });
+    }
+
+
+
+    establishConnection() {
+        let self = this;
+        return new Promise((resolve, reject) => {
+            console.log("Connecting to file socket...")
+            let maxAttempts = 5;
+            let reconnectionDelay = 5000 //ms
+            let attempted = 0;
+
+            self.postMessage({ message: "log", data: "Connecting to file socket..." })
+            let fileSocket = io('/file', {
+                autoConnect: false,
+                reconnection: false,
+                upgrade: false,
+                pingInterval: 10000,
+                pingTimeout: 5000
+            });
+
+            let attemptConnection = ()=>{
+                self.postMessage({ message: "log", data: "Attempting connection: " + attempted })
+                fileSocket.open()
+            }
+
+            let connectionFailHandler = (err)=>{
+
+                if (attempted < maxAttempts){
+                    let msg = `Connection error on attempt ${attempted}: ${err}`
+                    self.postMessage({ message: "log", data: msg})
+                    attempted++;
+                    setTimeout(attemptConnection, reconnectionDelay)
+                } else {
+                    let msg = `Connection error on attempt ${attempted}: ${err}\nRejecting!`
+                    self.postMessage( { message: "log", data: msg })
+                    reject(err);
+                }
+            }
+
+            fileSocket.on("connect", () => {
+                self.postMessage({ message: "log", data: "File transfer connection established" })
+                resolve(fileSocket);
+            });
+
+            fileSocket.on("connect_error", err => {
+                connectionFailHandler(err)
+            });
+
+            fileSocket.on("connect_timeout", () =>{
+                connectionFailHandler("Connection timeout.")
+            })
+
+            attemptConnection();
+        });
+    }
+
+}

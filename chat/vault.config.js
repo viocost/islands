@@ -18,6 +18,7 @@ module.exports = {
         minimize: true,
         minimizer: [
             new OptimizeCSSAssetsPlugin({})
+
         ],
 
         splitChunks: {
@@ -39,7 +40,14 @@ module.exports = {
             filename: "../css/[name].min.css",
             chunkFilename: "[id].min.css",
             sourceMap: true
-        })
+        }),
+
+        // ---------------------------------------------------------------------------------------------------------------------------
+        // uncomment to generate module stats
+        //new Visualizer({
+            //filename: './chat_stat.html'
+        //})
+
     ],
 
     module: {
