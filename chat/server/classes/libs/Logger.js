@@ -14,7 +14,7 @@ const CONFIG = {
 
 /**
  * LIST OF POSSIBLE CATEGORIES
- * chat, metadata, transport, connection, counters
+ * chat, metadata, transport, connection, files
  */
 
 let filterConfigPath;

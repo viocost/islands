@@ -171,7 +171,7 @@ function establishConnection() {
         let fileSocket = io('/file', {
             reconnection: true,
             forceNew: true,
-            upgrade: false,
+            upgrade: true,
             reconnectionDelay: 1000,
             reconnectionDelayMax: 5000,
             reconnectionAttempts: 5

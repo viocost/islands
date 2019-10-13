@@ -17,9 +17,9 @@ module.exports = {
 
     optimization: {
         minimize: true,
-        minimizer: [
-            new OptimizeCSSAssetsPlugin({})
-        ],
+        //minimizer: [
+            //new OptimizeCSSAssetsPlugin({})
+        //],
 
         splitChunks: {
             cacheGroups: {
@@ -36,6 +36,7 @@ module.exports = {
     plugins: [
         new MiniCssExtractPlugin({
             // Options similar to the same options in webpackOptions.output
+            //
             // both options are optional
             filename: "../css/[name].min.css",
             chunkFilename: "[id].min.css",
