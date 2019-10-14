@@ -16,21 +16,21 @@ module.exports = {
 
     optimization: {
         minimize: true,
-        minimizer: [
-            new OptimizeCSSAssetsPlugin({})
-
-        ],
-
-        splitChunks: {
-            cacheGroups: {
-                commons: {
-                    test: /[\\/]node_modules[\\/]/,
-                    name: "vendor",
-                    chunks: "initial",
-                },
-            },
-            chunks: "initial",
-        },
+        //minimizer: [
+        //    new OptimizeCSSAssetsPlugin({})
+//
+  //      ],
+//
+  //      splitChunks: {
+  //          cacheGroups: {
+  //              commons: {
+  //                  test: /[\\/]node_modules[\\/]/,
+  //                  name: "vendor",
+  //                  chunks: "initial",
+  //              },
+  //          },
+  //          chunks: "initial",
+  //      },
     },
 
     plugins: [
@@ -40,6 +40,11 @@ module.exports = {
             filename: "../css/[name].min.css",
             chunkFilename: "[id].min.css",
             sourceMap: true
+        }),
+        new webpack.ProvidePlugin({
+            $: 'jquery',
+            jQuery: 'jquery',
+            'window.jQuery': 'jquery'
         }),
 
         // ---------------------------------------------------------------------------------------------------------------------------

@@ -1,6 +1,5 @@
 import '../css/main.sass';
-
-
+import $ from "jquery";
 import * as toastr from "toastr";
 window.toastr = toastr;
 import { iCrypto } from "./lib/iCrypto";

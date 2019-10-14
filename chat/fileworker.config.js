@@ -1,7 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
-var Visualizer = require('webpack-visualizer-plugin');
-
+const Visualizer = require('webpack-visualizer-plugin');
+const BrotliPlugin = require('brotli-webpack-plugin');
 
 
 module.exports = {
@@ -15,6 +15,15 @@ module.exports = {
         minimize: false,
 
     },
+
+ //   plugins: [
+ //       new BrotliPlugin({
+ //           asset: '[path].br[query]',
+ //           test: /\.(js|css|html|svg)$/,
+ //           treshold: 10240,
+ //           minRatio: 0.8
+ //       })
+ //   ],
 
     module: {
         rules: [

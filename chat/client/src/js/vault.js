@@ -1,4 +1,5 @@
 import { ChatClient } from  "./chat/ChatClient";
+import $ from "jquery";
 import * as toastr from "toastr";
 import { Vault } from "./lib/Vault";
 import * as waitMe from "./lib/waitMe.min";
@@ -8,10 +9,12 @@ import { verifyPassword } from "./lib/PasswordVerify";
 import * as dropdown from "./lib/dropdown";
 import * as editable_field from "./lib/editable_field";
 import * as util from "./lib/dom-util";
+import {Spinner} from "spin.js"
+const sjcl = require("sjcl");
 
 let vault;
 let reg = isRegistration();
-
+let spinner = getSpinner()
 let topicCreateForm;
 let topicJoinForm;
 let passwordChangeForm;
@@ -20,10 +23,37 @@ let passwordChangeForm;
 let reloadVault;
 let adminLogin;
 
+//TEST only
+window.util = util;
+window.spinner = spinner;
 
+function getSpinner(){
+    let options = {
+        lines: 13, // The number of lines to draw
+        length: 38, // The length of each line
+        width: 17, // The line thickness
+        radius: 45, // The radius of the inner circle
+        scale: 1, // Scales overall size of the spinner
+        corners: 1, // Corner roundness (0..1)
+        color: '#ffffff', // CSS color or array of colors
+        fadeColor: 'transparent', // CSS color or array of colors
+        speed: 1, // Rounds per second
+        rotate: 0, // The rotation offset
+        animation: 'spinner-line-fade-quick', // The CSS animation name for the lines
+        direction: 1, // 1: clockwise, -1: counterclockwise
+        zIndex: 2e9, // The z-index (defaults to 2000000000)
+        className: 'spinner', // The CSS class to assign to the spinner
+        top: '50%', // Top position relative to parent
+        left: '50%', // Left position relative to parent
+        shadow: '0 0 1px transparent', // Box-shadow for the lines
+        position: 'absolute' // Element positioning
+    };
+    return new Spinner(options);
+}
 
 /**Set main listeneres when document loaded**/
 document.addEventListener('DOMContentLoaded', event => {
+    window.sjcl = sjcl;
     document.title = "Login | Islands";
     util.$("#register-vault").addEventListener("click", registerVault);
     util.$("#vault-login-btn").addEventListener("click", vaultLoginGetVault);
@@ -54,14 +84,10 @@ document.addEventListener('DOMContentLoaded', event => {
 
 });
 
-function isMobileBrowser(){
-    return navigator.userAgent.match(/Android/i)
-        || navigator.userAgent.match(/webOS/i)
-        || navigator.userAgent.match(/iPhone/i)
+function isMobileIOS(){
+    return navigator.userAgent.match(/iPhone/i)
         || navigator.userAgent.match(/iPad/i)
         || navigator.userAgent.match(/iPod/i)
-        || navigator.userAgent.match(/BlackBerry/i)
-        || navigator.userAgent.match(/Windows Phone/i)
 }
 
 function prepareChangePasswordModal(){
@@ -381,12 +407,12 @@ function showTopicJopinForm(){
 
 function topicJoin(){
     try{
-        loadingOn();
+        //loadingOn(); TEST
         let nickname = document.querySelector("#join-nickname").value;
         let inviteCode = document.querySelector("#join-topic-invite").value;
         let topicName = document.querySelector("#join-topic-name").value;
 
-        let transport = isMobileBrowser() ? 0 : 1;
+        let transport = isMobileIOS() ? 0 : 1;
         let chat = new ChatClient({version: version, transport: transport});
 
         chat.on("topic_join_success", async (data)=>{
@@ -507,7 +533,7 @@ function topicCreate(){
     let nickname = document.querySelector("#new-topic-nickname").value;
     let topicName = document.querySelector("#new-topic-name").value;
 
-    let transport = isMobileBrowser() ? 0 : 1;
+    let transport = isMobileIOS() ? 0 : 1;
     let chat = new ChatClient({version: version, transport: transport});
 
     chat.on("init_topic_success", async (data)=>{
@@ -664,7 +690,7 @@ function renderVault(){
 
         let buttons = util.bake("div", {classes: "topic-buttons"});
         let loginButton = util.bake("button", {classes: "login-button", text: "Login"});
-        loginButton.addEventListener("click", prepareLogin({privateKey: vault.topics[k].key, isMobile: isMobileBrowser()}));
+        loginButton.addEventListener("click", prepareLogin({privateKey: vault.topics[k].key, isMobile: isMobileIOS()}));
         let options = bakeTopicDropdownMenu(vault.topics[k].key, vault.topics[k].pkfp);
 
         util.appendChildren(buttons, [loginButton, options]);
@@ -742,7 +768,7 @@ function prepareTopicDelete(privateKey, pkfp){
             toastr.warning(err.responseText);
             console.log("Vault login error: " + err.responseText);
         };
-        let transport = isMobileBrowser() ? 0 : 1;
+        let transport = isMobileIOS() ? 0 : 1;
         let chat = new ChatClient({version: version, tranport: transport});
 
         let deleteTopicRecord = prepareTopicRecordDelete(pkfp);
@@ -797,7 +823,7 @@ function processTopicNameChange(ev){
 
 
 function prepareAdminLogin(privateKey){
-    let isMobile = isMobileBrowser()
+    let isMobile = isMobileIOS()
     return  function (){
         let ic = new iCrypto();
         ic.addBlob("privk", privateKey)
@@ -817,16 +843,18 @@ function prepareAdminLogin(privateKey){
 
 
 function loadingOn() {
-    $('body').waitMe({
-        effect: 'roundBounce',
-        bg: 'rgba(255,255,255,0.7)',
-        textPos: 'vertical',
-        color: '#33b400'
-    });
+    spinner.spin(util.$('body'))
+ //   $('body').waitMe({
+ //       effect: 'roundBounce',
+ //       bg: 'rgba(255,255,255,0.7)',
+ //       textPos: 'vertical',
+ //       color: '#33b400'
+ //   });
 }
 
 function loadingOff() {
-    $('body').waitMe('hide');
+    spinner.stop()
+    //$('body').waitMe('hide');
 }
 
 
