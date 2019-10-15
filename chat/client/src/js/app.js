@@ -1,6 +1,4 @@
 //Vendors
-//import { CuteSet } from "cute-set";
-import { Spinner } from "spin.js";
 import { iCrypto } from "./lib/iCrypto";
 import { resizableInput  } from "./lib/resizable";
 import '../css/main.sass';
@@ -8,6 +6,7 @@ import $ from "jquery";
 import * as util from "./lib/dom-util";
 import * as toastr from "toastr";
 window.toastr = toastr;
+import { BlockingSpinner } from "./lib/BlockingSpinner";
 
 
 
@@ -15,12 +14,9 @@ window.toastr = toastr;
 import { ChatClient } from  "./chat/ChatClient";
 
 
-//test only
-let spinner = getSpinner()
 let chat;
 
-window.util = util;
-window.spinner = spinner;
+let spinner = new BlockingSpinner()
 
 const DAYSOFWEEK = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -100,29 +96,6 @@ window.onfocus = function(){
     }
 }
 
-function getSpinner(){
-    let options = {
-        lines: 13, // The number of lines to draw
-        length: 38, // The length of each line
-        width: 17, // The line thickness
-        radius: 45, // The radius of the inner circle
-        scale: 1, // Scales overall size of the spinner
-        corners: 1, // Corner roundness (0..1)
-        color: '#ffffff', // CSS color or array of colors
-        fadeColor: 'transparent', // CSS color or array of colors
-        speed: 1, // Rounds per second
-        rotate: 0, // The rotation offset
-        animation: 'spinner-line-fade-quick', // The CSS animation name for the lines
-        direction: 1, // 1: clockwise, -1: counterclockwise
-        zIndex: 2e9, // The z-index (defaults to 2000000000)
-        className: 'spinner', // The CSS class to assign to the spinner
-        top: '50%', // Top position relative to parent
-        left: '50%', // Left position relative to parent
-        shadow: '0 0 1px transparent', // Box-shadow for the lines
-        position: 'absolute' // Element positioning
-    };
-    return new Spinner(options);
-}
 
 function prepareResizer() {
     let resizer = util.$("#chat-resizer");
@@ -1190,19 +1163,11 @@ function showModalNotification(headingText, bodyContent) {
 }
 
 function loadingOn() {
-    spinner.spin(util.$('body'))
-
-    // $('body').waitMe({
-    //    effect: 'roundBounce',
-    //    bg: 'rgba(255,255,255,0.7)',
-    //    textPos: 'vertical',
-    //    color: '#33b400'
-    //});
+    spinner.loadingOn();
 }
 
 function loadingOff() {
-    spinner.stop()
-    //$('body').waitMe('hide');
+    spinner.loadingOff();
 }
 
 function setView(view) {

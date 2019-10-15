@@ -49,6 +49,10 @@ CLOSED: [2019-10-01 Tue 00:48]
 *** TODO get rif if simple ram queue
 *** TODO Expiration time for messages
 
+** TODO new version release
+** TODO Fix scripts for processing sjcl
+
+
 * Bugs
 ** TODO test EDGE browser
 
@@ -62,8 +66,16 @@ CLOSED: [2019-10-01 Tue 00:48]
 
 ** TODO Search messages
 
+** TODO Members' names background colors must match background colors in chat
 * Completed
 
+
+** DONE Mobile browser topic login bug
+CLOSED: [2019-10-15 Tue 21:57]
+** DONE Logs download bug
+CLOSED: [2019-10-15 Tue 21:57]
+** DONE Iphone transport test
+CLOSED: [2019-10-15 Tue 21:57]
 ** DONE Time in UTC.
 CLOSED: [2019-10-01 Tue 01:08]
 ** DONE Auto-reconnect if island connection lost

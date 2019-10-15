@@ -2,19 +2,21 @@ import { ChatClient } from  "./chat/ChatClient";
 import $ from "jquery";
 import * as toastr from "toastr";
 import { Vault } from "./lib/Vault";
-import * as waitMe from "./lib/waitMe.min";
 import { iCrypto } from "./lib/iCrypto";
 import * as Modal from "./lib/DynmaicModal";
 import { verifyPassword } from "./lib/PasswordVerify";
 import * as dropdown from "./lib/dropdown";
 import * as editable_field from "./lib/editable_field";
 import * as util from "./lib/dom-util";
-import {Spinner} from "spin.js"
+import { BlockingSpinner } from "./lib/BlockingSpinner";
+
+import '../css/main.sass';
+import '../css/vendor/tingle.css'
 const sjcl = require("sjcl");
+
 
 let vault;
 let reg = isRegistration();
-let spinner = getSpinner()
 let topicCreateForm;
 let topicJoinForm;
 let passwordChangeForm;
@@ -23,33 +25,14 @@ let passwordChangeForm;
 let reloadVault;
 let adminLogin;
 
+let spinner = new BlockingSpinner();
 //TEST only
 window.util = util;
 window.spinner = spinner;
+window.BlockingSpinner = BlockingSpinner;
 
-function getSpinner(){
-    let options = {
-        lines: 13, // The number of lines to draw
-        length: 38, // The length of each line
-        width: 17, // The line thickness
-        radius: 45, // The radius of the inner circle
-        scale: 1, // Scales overall size of the spinner
-        corners: 1, // Corner roundness (0..1)
-        color: '#ffffff', // CSS color or array of colors
-        fadeColor: 'transparent', // CSS color or array of colors
-        speed: 1, // Rounds per second
-        rotate: 0, // The rotation offset
-        animation: 'spinner-line-fade-quick', // The CSS animation name for the lines
-        direction: 1, // 1: clockwise, -1: counterclockwise
-        zIndex: 2e9, // The z-index (defaults to 2000000000)
-        className: 'spinner', // The CSS class to assign to the spinner
-        top: '50%', // Top position relative to parent
-        left: '50%', // Left position relative to parent
-        shadow: '0 0 1px transparent', // Box-shadow for the lines
-        position: 'absolute' // Element positioning
-    };
-    return new Spinner(options);
-}
+
+
 
 /**Set main listeneres when document loaded**/
 document.addEventListener('DOMContentLoaded', event => {
@@ -84,10 +67,18 @@ document.addEventListener('DOMContentLoaded', event => {
 
 });
 
+function isMobile(){
+    return isMobileIOS() ||
+        navigator.userAgent.match(/Android/i) ||
+        navigator.userAgent.match(/webOS/i) ||
+        navigator.userAgent.match(/BlackBerry/i) ||
+        navigator.userAgent.match(/Windows Phone/i)
+}
+
 function isMobileIOS(){
-    return navigator.userAgent.match(/iPhone/i)
-        || navigator.userAgent.match(/iPad/i)
-        || navigator.userAgent.match(/iPod/i)
+    return navigator.userAgent.match(/iPhone/i)   ||
+        navigator.userAgent.match(/iPad/i)  ||
+        navigator.userAgent.match(/iPod/i)   
 }
 
 function prepareChangePasswordModal(){
@@ -690,7 +681,7 @@ function renderVault(){
 
         let buttons = util.bake("div", {classes: "topic-buttons"});
         let loginButton = util.bake("button", {classes: "login-button", text: "Login"});
-        loginButton.addEventListener("click", prepareLogin({privateKey: vault.topics[k].key, isMobile: isMobileIOS()}));
+        loginButton.addEventListener("click", prepareLogin({privateKey: vault.topics[k].key, isMobile: isMobile()}));
         let options = bakeTopicDropdownMenu(vault.topics[k].key, vault.topics[k].pkfp);
 
         util.appendChildren(buttons, [loginButton, options]);
@@ -843,7 +834,7 @@ function prepareAdminLogin(privateKey){
 
 
 function loadingOn() {
-    spinner.spin(util.$('body'))
+    spinner.loadingOn()
  //   $('body').waitMe({
  //       effect: 'roundBounce',
  //       bg: 'rgba(255,255,255,0.7)',
@@ -853,8 +844,8 @@ function loadingOn() {
 }
 
 function loadingOff() {
-    spinner.stop()
-    //$('body').waitMe('hide');
+    spinner.loadingOff()
+    // $('body').waitMe('hide');
 }
 
 
