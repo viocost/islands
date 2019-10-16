@@ -59,7 +59,11 @@ export function bake(name, recipe){
     return el
 }
 
-
+/**
+ * Given parent node appends one or multiple children
+ * @param parent DOM node
+ * @param children can be array of nodes or a single node
+ */
 export function appendChildren(parent, children){
     if (children instanceof  Array){
         for (let child of children){
@@ -70,23 +74,55 @@ export function appendChildren(parent, children){
     }
 }
 
+/**
+ * Less verbose wrapper for document.querySelector
+ */
 export function $(selector){
     return document.querySelector(selector)
 }
 
+/**
+ * Less verbose wrapper for document.querySelectorAll
+ */
 export function $$(selector){
     return document.querySelectorAll(selector)
 }
 
-export function displayNone(selector){
-    $(selector).style.display = "none"
+
+export function displayNone(node){
+    displayElement(node, "none")
 }
 
-export function displayBlock(selector){
-    $(selector).style.display = "block"
+export function displayBlock(node){
+    displayElement(node, "block")
 }
 
-export function displayFlex(selector){
-    $(selector).style.display = "flex"
+export function displayFlex(node){
+    displayElement(node, "flex")
 }
 
+/**
+ * Internal. Sets node display property
+ *
+ */
+function displayElement(node, display){
+    if (typeof node === "string"){
+        //Assuming it is selector
+        $(node).style.display = display
+    } else if (node instanceof Element){
+        node.style.display = display;
+    } else {
+        throw "Node element can be either string or DOM element. Type is invalid.";
+    }
+}
+
+export function generateRandomId(length = 10, prefix="", postfix=""){
+    let alphabet = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    let symbols = [];
+    for(let i=0; i<length; ++i){
+        symbols.push(alphabet[Math.floor(Math.random() * alphabet.length)])
+    }
+
+    return `${prefix.length > 0 ? prefix + "-" : ""}${symbols.join("")}${postfix.length > 0 ? "-" + postfix : ""}`;
+
+}

@@ -44,6 +44,7 @@ class FileUploader{
             console.log("About to rename");
             fileStream.end(); // to free the file
             await self.hm.renameTempUpload(data.pkfp, tempName, self.hashUnencrypted);
+            console.log("Rename success, notifying client!");
             socket.emit("upload_success");
         });
 
