@@ -49,10 +49,6 @@ CLOSED: [2019-10-01 Tue 00:48]
 *** TODO get rif if simple ram queue
 *** TODO Expiration time for messages
 
-** TODO new version release
-** TODO Fix scripts for processing sjcl
-
-
 * Bugs
 ** TODO test EDGE browser
 
@@ -70,6 +66,10 @@ CLOSED: [2019-10-01 Tue 00:48]
 * Completed
 
 
+** DONE new version release
+CLOSED: [2019-10-16 Wed 11:00]
+** DONE Fix scripts for processing sjcl
+CLOSED: [2019-10-16 Wed 11:00]
 ** DONE Mobile browser topic login bug
 CLOSED: [2019-10-15 Tue 21:57]
 ** DONE Logs download bug
