@@ -8,6 +8,7 @@ import { ClientSettings } from  "./ClientSettings";
 import { iCrypto } from "../lib/iCrypto";
 import * as io from "socket.io-client";
 import { WildEmitter } from "./WildEmitter";
+import{ FileWorker } from "../lib/FileWorker";
 
 export class ChatClient {
     constructor(opts){
@@ -20,6 +21,12 @@ export class ChatClient {
         this.loadingMessages = false;
         this.chatSocket = null;
         this.fileSocket = null;
+
+        // ---------------------------------------------------------------------------------------------------------------------------
+        // Transport defines socket.io transport
+        // can be 0: xhr, 1: websocket
+        this.transport = opts.transport || 0;
+        console.log(`Transport initialized to ${this.transport === 0 ? "xhr" : "websocket upgrade"}`)
         this.session = null; //can be "active", "off"
         this.newTopicPending = {};
         this.pendingTopicJoins = {};
@@ -726,15 +733,24 @@ export class ChatClient {
      * @returns {Promise}
      */
     async initTopicJoin(nickname, inviteCode) {
+        let start = new Date();
         console.log("joining topic with nickname: " + nickname + " | Invite code: " + inviteCode);
-        const clientSettings = new ClientSettings();
 
-        await this.establishIslandConnection();
+        const clientSettings = new ClientSettings();
+        console.log(`Preparing keys...`);
+        let cryptoStart = new Date()
         let ic = new iCrypto();
         ic.asym.createKeyPair("rsa")
             .getPublicKeyFingerprint('rsa', 'pkfp')
             .addBlob("invite64", inviteCode.trim())
             .base64Decode("invite64", "invite");
+
+        let now = new Date()
+        console.log(`Keys generated in ${(now - cryptoStart) / 1000}sec. ${ (now - start) / 1000 } elapsed since beginning.`);
+
+        let callStart = new Date()
+        await this.establishIslandConnection();
+        console.log(`Connection with island is established. ${(new Date() - callStart) / 1000 } Elapsed since beginning. Working crypto.`);
 
         let invite = ic.get("invite").split("/");
         let inviterResidence = invite[0];
@@ -775,7 +791,11 @@ export class ChatClient {
         request.set('headers', headers);
         request.set("body", body);
         request.signMessage(ic.get('rsa').privateKey);
+        console.log("Sending topic join request");
+        let sendStart = new Date();
         this.chatSocket.emit("request", request);
+        now = new Date()
+        console.log(`Request sent to island in  ${(now - sendStart) / 1000}sec. ${ (now - start) / 1000 } elapsed since beginning.`);
         let topicData = {
             newPublicKey: ic.get('rsa').publicKey,
             newPrivateKey: ic.get('rsa').privateKey,
@@ -986,11 +1006,6 @@ export class ChatClient {
         return new Promise(async (resolve, reject)=>{
             const self = this;
 
-            if (Worker === undefined){
-                reject(null, "Client does not support web workers.")
-                return;
-            }
-
             const filesProcessed = [];
 
             const pkfp = self.session.publicKeyFingerprint;
@@ -1000,18 +1015,69 @@ export class ChatClient {
 
             for (let file of filesAttached){
                 console.log("Calling worker function");
-                filesProcessed.push(self.uploadAttachmentWithWorker(file, pkfp, privk, symk, messageID, metaID, residence))
+                filesProcessed.push(self.uploadAttachmentDefault(file, pkfp, privk, symk, messageID, metaID, residence))
             }
 
-            try{
-                const filesInfo = await Promise.all(filesProcessed);
-                resolve(filesInfo);
-            }catch (err) {
-                console.log("ERROR DURING UPLOAD ATTACHMENTS: " + err);
-                reject(err)
+            Promise.all(filesProcessed)
+                .then((fileInfo)=>{
+                    resolve(fileInfo)
+                })
+                .catch(()=>{
+                    console.log("ERROR DURING UPLOAD ATTACHMENTS");
+                    reject();
+                })
+        })
+    }
+
+    /**
+     * Uploads single attachment without workers asyncronously
+     *
+     */
+    uploadAttachmentDefault(file, pkfp, privk, symk, messageID, metaID, residence){
+        let self = this;
+        return new Promise((resolve, reject)=>{
+
+            console.log(`Initializing worker...`);
+            let uploader = new FileWorker(self.transport);
+
+            let uploadComplete = (msg)=>{
+                let fileInfo = new AttachmentInfo(file, residence, pkfp, metaID, privk, messageID, msg.hashEncrypted, msg.hashUnencrypted);
+                resolve(fileInfo);
+            };
+
+            let uploadProgress = (msg) =>{
+                //TODO implement event handling
+                console.log("Upload progress: " + msg)
+
+            };
+
+            let logMessage = (msg)=>{
+                console.log("WORKER LOG: " + msg);
             }
 
+            let uploadError = (msg)=>{
+                self.emit("upload_error", msg.data);
+                reject(msg.data);
+            };
 
+            let messageHandlers = {
+                "upload_complete": uploadComplete,
+                "upload_progress": uploadProgress,
+                "upload_error": uploadError,
+                "log": logMessage
+            };
+
+            uploader.on("message", (data)=>{
+                let msg = data.data;
+                messageHandlers[msg.message](msg.data);
+            });
+
+            uploader.uploadFile({
+                attachment: file,
+                pkfp: pkfp,
+                privk: privk,
+                symk: symk
+            })
         })
     }
 
@@ -1025,7 +1091,7 @@ export class ChatClient {
     uploadAttachmentWithWorker(file, pkfp, privk, symk, messageID, metaID, residence){
         return new Promise((resolve, reject)=>{
             console.log("!!!Initializing worker...");
-            let uploader = new Worker("/js/uploaderWorker.js");
+            let uploader = new Worker("/js/fileWorker.js");
 
             let uploadComplete = (msg)=>{
                 let fileInfo = new AttachmentInfo(file, residence, pkfp, metaID, privk, messageID, msg.hashEncrypted, msg.hashUnencrypted);
@@ -1035,8 +1101,13 @@ export class ChatClient {
 
             let uploadProgress = (msg) =>{
                 //TODO implement event handling
+                console.log("Upload progress: " + msg)
 
             };
+
+            let logMessage = (msg)=>{
+                console.log("WORKER LOG: " + msg);
+            }
 
             let uploadError = (msg)=>{
                 uploader.terminate();
@@ -1047,7 +1118,8 @@ export class ChatClient {
             let messageHandlers = {
                 "upload_complete": uploadComplete,
                 "upload_progress": uploadProgress,
-                "upload_error": uploadError
+                "upload_error": uploadError,
+                "log": logMessage
             };
 
             uploader.onmessage = (ev)=>{
@@ -1057,10 +1129,12 @@ export class ChatClient {
 
             uploader.postMessage({
                 command: "upload",
-                attachment: file,
-                pkfp: pkfp,
-                privk: privk,
-                symk: symk
+                data: {
+                    attachment: file,
+                    pkfp: pkfp,
+                    privk: privk,
+                    symk: symk
+                }
             });
         })
     }
@@ -1085,17 +1159,11 @@ export class ChatClient {
 
                 let fileOwnerPublicKey = self.session.metadata.participants[parsedFileInfo.pkfp].publicKey;
 
-                if(Worker === undefined){
-                    const err = "Worker is not defined.Cannot download file."
-                    console.log(err);
-                    reject(err);
-                } else {
-
-                    const myPkfp = self.session.publicKeyFingerprint;
-                    let fileData = await self.downloadAttachmentWithWorker(fileInfo, myPkfp, privk, fileOwnerPublicKey, parsedFileInfo.name);
-                    self.emit("download_complete", {fileInfo: fileInfo, fileData: fileData});
-                    resolve()
-                }
+                console.log(`Downloading with worker or sync`);
+                const myPkfp = self.session.publicKeyFingerprint;
+                let fileData = await self.downloadAttachmentDefault(fileInfo, myPkfp, privk, fileOwnerPublicKey, parsedFileInfo.name);
+                self.emit("download_complete", {fileInfo: fileInfo, fileData: fileData});
+                resolve()
             } catch (err){
                 reject(err)
             }
@@ -1103,26 +1171,35 @@ export class ChatClient {
 
     }
 
-    downloadAttachmentWithWorker(fileInfo, myPkfp, privk, ownerPubk, fileName){
+
+    // ---------------------------------------------------------------------------------------------------------------------------
+    // This is for test purposes only!
+    downloadAttachmentDefault(fileInfo, myPkfp, privk, ownerPubk, fileName){
+        console.log(`Downloading attachment by default`);
         let self = this;
+
         return new Promise(async (resolve, reject)=>{
             try{
-                const downloader = new Worker("/js/downloaderWorker.js");
+                const downloader = new FileWorker();
 
                 const downloadComplete = (fileBuffer)=>{
+                    console.log("RECEIVED FILE BUFFER FROM THE WORKER: length: " + fileBuffer.length)
                     resolve(fileBuffer);
-                    downloader.terminate();
                 };
 
                 const downloadFailed = (err)=>{
                     console.log("Download failed with error: " + err);
                     reject(err);
-                    downloader.terminate()
                 };
+
+                const processLog = (msg) =>{
+                    console.log("WORKER LOG: " + msg)
+                }
 
                 const messageHandlers = {
                     "download_complete": downloadComplete,
                     "download_failed": downloadFailed,
+                    "log": processLog,
                     "file_available_locally": ()=>{
                         self.emit("file_available_locally", fileName)
                         notify("File found locally.")
@@ -1143,25 +1220,27 @@ export class ChatClient {
                     messageHandlers[msg.message](msg.data)
                 };
 
-                downloader.onmessage = (ev)=>{
+                downloader.on("message",  (ev)=>{
                     processMessage(ev.data)
-                };
+                });
 
-                downloader.onerror = (ev)=>{
+                downloader.on("error",  (ev)=>{
                     console.log(ev);
                     reject("Downloader worker error");
-                    downloader.terminate()
-                };
+                });
 
-                downloader.postMessage({
-                    command: "download",
-                    data: {
-                        fileInfo: fileInfo,
-                        myPkfp: myPkfp,
-                        privk: privk,
-                        pubk: ownerPubk
-                    }
-                })
+                try{
+
+                    downloader.downloadFile({
+                            fileInfo: fileInfo,
+                            myPkfp: myPkfp,
+                            privk: privk,
+                            pubk: ownerPubk
+                        })
+                }catch (e){
+                    console.log(`Error downloading file: ${e}`);
+                    throw e;
+                }
             }catch (e) {
 
                 reject(e)
@@ -1532,6 +1611,7 @@ export class ChatClient {
     async _establishChatConnection(connectionAttempts = 7, reconnectionDelay = 8000){
         return new Promise((resolve, reject)=>{
             let self = this;
+            let upgrade = this.transport === 1;
             if (self.chatSocket && self.chatSocket.connected){
                 resolve();
                 return;
@@ -1544,14 +1624,17 @@ export class ChatClient {
                 self.chatSocket.open()
             }
 
-            self.chatSocket = io('/chat', {
+            const socketConfig = {
                 reconnection: false,
                 forceNew: true,
                 autoConnect: false,
-                upgrade: false,
                 pingInterval: 10000,
                 pingTimeout: 5000,
-            });
+            }
+
+            socketConfig.upgrade = self.transport > 0;
+
+            self.chatSocket = io('/chat', socketConfig);
 
             self.chatSocket.on('connect', ()=>{
                 this.finishSocketSetup();
@@ -1593,6 +1676,7 @@ export class ChatClient {
     _establishFileConnection(connectionAttempts = 7, reconnectionDelay = 8000){
         return new Promise((resolve, reject)=>{
             let self = this;
+            let upgrade = this.transport === 1;
             console.log("Connecting to file socket");
             if (self.fileSocket && self.fileSocket.connected){
                 console.log("File socket already connected! returning");
@@ -1611,8 +1695,7 @@ export class ChatClient {
                 reconnection: false,
                 forceNew: true,
                 autoConnect: false,
-                connection: 'Upgrade',
-                upgrade: 'websocket',
+                upgrade: upgrade,
                 pingInterval: 10000,
                 pingTimeout: 5000,
             });
@@ -1645,10 +1728,11 @@ export class ChatClient {
     }
 
     async establishIslandConnection(option = "chat"){
+        console.log("Establishing connection with: " + option)
         if (option === "chat") {
             return this._establishChatConnection();
         } else if (option === "file"){
-            return this._establishChatConnection();
+            return this._establishFileConnection();
         }
     }
 
@@ -1761,13 +1845,13 @@ export class ChatClient {
         }
     }
 
-    processMetaSync(message, self){
+            processMetaSync(message, self){
         if(!self.session){
             return;
         }
         console.log("Processing metadata sync message")
         if(message.body.metadata){
-            self._updateMetadata(Metadata.parseMetadata(message.body.metadata));
+                    self._updateMetadata(Metadata.parseMetadata(message.body.metadata));
             self.emit("metadata_updated");
         }
     }
@@ -1786,7 +1870,7 @@ export class ChatClient {
     }
 
 
-    _updateMetadata(metadata){
+            _updateMetadata(metadata){
         let self = this;
         let sharedKey = Metadata.extractSharedKey(self.session.publicKeyFingerprint,
             self.session.privateKey,
@@ -1894,7 +1978,7 @@ export class ChatClient {
             pkfp = '0' + pkfp;
         }
         let bytes = [];
-        for (let i = 0; i < pkfp.length/2; i = i + 2) {
+                    for (let i = 0; i < pkfp.length/2; i = i + 2) {
             bytes.push(parseInt(pkfp.slice(i, i + 2), 16));
         }
 
@@ -1919,7 +2003,7 @@ export class ChatClient {
         }catch(err){
             throw "Invalid parameter thingToExtract"
         }
-    }
+        }
 
 
     onionValid(candidate){
@@ -1929,7 +2013,7 @@ export class ChatClient {
 
     getMyResidence(){
         return this.session.metadata.participants[this.session.publicKeyFingerprint].residence;
-    }
+        }
 
     /**************************************************
      * =================== END  ===================== *

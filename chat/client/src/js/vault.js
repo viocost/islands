@@ -1,18 +1,22 @@
 import { ChatClient } from  "./chat/ChatClient";
+import $ from "jquery";
 import * as toastr from "toastr";
 import { Vault } from "./lib/Vault";
-import * as waitMe from "./lib/waitMe.min";
 import { iCrypto } from "./lib/iCrypto";
 import * as Modal from "./lib/DynmaicModal";
 import { verifyPassword } from "./lib/PasswordVerify";
 import * as dropdown from "./lib/dropdown";
 import * as editable_field from "./lib/editable_field";
 import * as util from "./lib/dom-util";
+import { BlockingSpinner } from "./lib/BlockingSpinner";
 
-//let chat;
+import '../css/main.sass';
+import '../css/vendor/tingle.css'
+const sjcl = require("sjcl");
+
+
 let vault;
 let reg = isRegistration();
-
 let topicCreateForm;
 let topicJoinForm;
 let passwordChangeForm;
@@ -21,9 +25,18 @@ let passwordChangeForm;
 let reloadVault;
 let adminLogin;
 
+let spinner = new BlockingSpinner();
+//TEST only
+window.util = util;
+window.spinner = spinner;
+window.BlockingSpinner = BlockingSpinner;
+
+
+
 
 /**Set main listeneres when document loaded**/
 document.addEventListener('DOMContentLoaded', event => {
+    window.sjcl = sjcl;
     document.title = "Login | Islands";
     util.$("#register-vault").addEventListener("click", registerVault);
     util.$("#vault-login-btn").addEventListener("click", vaultLoginGetVault);
@@ -54,6 +67,19 @@ document.addEventListener('DOMContentLoaded', event => {
 
 });
 
+function isMobile(){
+    return isMobileIOS() ||
+        navigator.userAgent.match(/Android/i) ||
+        navigator.userAgent.match(/webOS/i) ||
+        navigator.userAgent.match(/BlackBerry/i) ||
+        navigator.userAgent.match(/Windows Phone/i)
+}
+
+function isMobileIOS(){
+    return navigator.userAgent.match(/iPhone/i)   ||
+        navigator.userAgent.match(/iPad/i)  ||
+        navigator.userAgent.match(/iPod/i)   
+}
 
 function prepareChangePasswordModal(){
     let wrapper = util.bake("div");
@@ -372,12 +398,13 @@ function showTopicJopinForm(){
 
 function topicJoin(){
     try{
-        loadingOn();
+        //loadingOn(); TEST
         let nickname = document.querySelector("#join-nickname").value;
         let inviteCode = document.querySelector("#join-topic-invite").value;
         let topicName = document.querySelector("#join-topic-name").value;
 
-        let chat = new ChatClient({version: version});
+        let transport = isMobileIOS() ? 0 : 1;
+        let chat = new ChatClient({version: version, transport: transport});
 
         chat.on("topic_join_success", async (data)=>{
             console.log("Topic join successful!");
@@ -497,7 +524,8 @@ function topicCreate(){
     let nickname = document.querySelector("#new-topic-nickname").value;
     let topicName = document.querySelector("#new-topic-name").value;
 
-    let chat = new ChatClient({version: version});
+    let transport = isMobileIOS() ? 0 : 1;
+    let chat = new ChatClient({version: version, transport: transport});
 
     chat.on("init_topic_success", async (data)=>{
         console.log("Topic Created!");
@@ -538,7 +566,7 @@ function _destroyChat(chat){
 function prepareLogin(options){
 
     let privateKey = options.privateKey;
-
+    let isMobile = options.isMobile;
     return function (){
         let ic = new iCrypto();
         ic.addBlob("privk", privateKey)
@@ -553,7 +581,7 @@ function prepareLogin(options){
         if(options.currentWindow){
             window.open(document.location.href + "chat" + params, "_self");
         }else{
-            window.open(document.location.href + "chat" + params, "_blank");
+            window.open(document.location.href + "chat" + params, isMobile ? "_self" : "_blank");
         }
     };
 
@@ -653,7 +681,7 @@ function renderVault(){
 
         let buttons = util.bake("div", {classes: "topic-buttons"});
         let loginButton = util.bake("button", {classes: "login-button", text: "Login"});
-        loginButton.addEventListener("click", prepareLogin({privateKey: vault.topics[k].key}));
+        loginButton.addEventListener("click", prepareLogin({privateKey: vault.topics[k].key, isMobile: isMobile()}));
         let options = bakeTopicDropdownMenu(vault.topics[k].key, vault.topics[k].pkfp);
 
         util.appendChildren(buttons, [loginButton, options]);
@@ -731,8 +759,8 @@ function prepareTopicDelete(privateKey, pkfp){
             toastr.warning(err.responseText);
             console.log("Vault login error: " + err.responseText);
         };
-
-        let chat = new ChatClient({version: version});
+        let transport = isMobileIOS() ? 0 : 1;
+        let chat = new ChatClient({version: version, tranport: transport});
 
         let deleteTopicRecord = prepareTopicRecordDelete(pkfp);
 
@@ -786,6 +814,7 @@ function processTopicNameChange(ev){
 
 
 function prepareAdminLogin(privateKey){
+    let isMobile = isMobileIOS()
     return  function (){
         let ic = new iCrypto();
         ic.addBlob("privk", privateKey)
@@ -798,23 +827,25 @@ function prepareAdminLogin(privateKey){
 
         let params = "?id=" + ic.get("idhex") + "&token=" + ic.get("sym");
 
-        window.open(document.location.href + "admin" + params, "_blank");
+        window.open(document.location.href + "admin" + params, isMobile ? undefined : "_blank");
     };
 }
 
 
 
 function loadingOn() {
-    $('body').waitMe({
-        effect: 'roundBounce',
-        bg: 'rgba(255,255,255,0.7)',
-        textPos: 'vertical',
-        color: '#33b400'
-    });
+    spinner.loadingOn()
+ //   $('body').waitMe({
+ //       effect: 'roundBounce',
+ //       bg: 'rgba(255,255,255,0.7)',
+ //       textPos: 'vertical',
+ //       color: '#33b400'
+ //   });
 }
 
 function loadingOff() {
-    $('body').waitMe('hide');
+    spinner.loadingOff()
+    // $('body').waitMe('hide');
 }
 
 

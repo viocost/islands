@@ -465,7 +465,7 @@ class TorConnector extends EventEmitter{
 
     _checkIncomingConnections(destination){
         console.log("Incoming connections: ");
-        this.connectionsIncoming.print();
+        //this.connectionsIncoming.print(); //DEBUG ONLY
         if(this.connectionsIncoming.hasKey(destination)){
             let connectedSockets = this.connectionsIncoming.key(destination);
             if (connectedSockets){
@@ -480,7 +480,7 @@ class TorConnector extends EventEmitter{
 
     _checkOutgoingConnections(destination){
         console.log("Outgoing connections: ");
-        this.connectionsOutgoing.print();
+        //this.connectionsOutgoing.print();// DEBUG only
         if(this.connectionsOutgoing.hasKey(destination)){
             let connectedSockets = this.connectionsOutgoing.key(destination);
             if (connectedSockets){

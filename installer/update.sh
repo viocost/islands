@@ -5,7 +5,7 @@ rm -rf /usr/src/app/*
 cd $1
 cp -r * /usr/src/app/
 cd /usr/src/app/
-npm install
-npm build-front
+npm run build
+npm run build-front
 npm prune --production
 reboot

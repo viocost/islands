@@ -542,6 +542,7 @@ class HistoryManager{
                 try{
                     console.log("File exists. Renaming...");
                     fs.renameSync(oldName, newName);
+                    console.log("Renamed. Resolving...")
                     resolve();
                 }catch(err){
                     if ((/BSY/i.test(err.code) || /BUSY/i.test(err.code)) && attempted < maxAttempts){
@@ -549,6 +550,8 @@ class HistoryManager{
                         attempted++;
                         setTimeout(renameAttempt, timeout);
                     }else {
+                        Logger.error("Error renaming file: " + err, {cat: "files"})
+                        console.log("ERROR renaming file: " + err);
                         reject("renameTempUpload error: " + err);
                     }
                 }

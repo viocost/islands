@@ -16,6 +16,7 @@ class ClientConnectionManager extends EventEmitter{
         this.io = SocketIO.listen(server);
         this.socketHub = this.io.of("/chat");
         this.dataSocketHub = this.io.of("/file");
+        this.iosSocket = this.io.of("ios");
         this.setListeners();
     }
 
@@ -24,6 +25,13 @@ class ClientConnectionManager extends EventEmitter{
      */
     setListeners(){
         let self = this;
+        //TEST
+        self.iosSocket.on('connection', (socket)=>{
+            console.log("client connected on ios test endpoint!")
+            socket.emit("hello")
+        })
+        //TEST
+
         self.socketHub.on('connection', (socket) => {
             self.emit("client_connected", socket.id);
             socket.on("disconnect", (reason)=>{

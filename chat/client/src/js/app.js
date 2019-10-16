@@ -1,17 +1,22 @@
 //Vendors
-import { CuteSet } from "cute-set";
 import { iCrypto } from "./lib/iCrypto";
 import { resizableInput  } from "./lib/resizable";
 import '../css/main.sass';
-
+import $ from "jquery";
 import * as util from "./lib/dom-util";
 import * as toastr from "toastr";
 window.toastr = toastr;
+import { BlockingSpinner } from "./lib/BlockingSpinner";
+
+
 
 
 import { ChatClient } from  "./chat/ChatClient";
 
+
 let chat;
+
+let spinner = new BlockingSpinner()
 
 const DAYSOFWEEK = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -31,11 +36,8 @@ let soundsOnOfIcons = {
     off: "/img/sound-off.png"
 };
 
-let sendLock = false;
-
-
+let sendButtonLocked = false;
 let tempName;
-
 let recording = false;
 
 document.addEventListener('DOMContentLoaded', event => {
@@ -93,6 +95,7 @@ window.onfocus = function(){
         document.title = chat.session.settings.topicName + " | Islands";
     }
 }
+
 
 function prepareResizer() {
     let resizer = util.$("#chat-resizer");
@@ -368,11 +371,13 @@ function setupChatListeners(chat) {
 
     chat.on("connected_to_island", () => {
         connecting = false;
+        lockSend();
         switchConnectionStatus(0);
     });
 
     chat.on("disconnected_from_island", () => {
         switchConnectionStatus(1);
+        lockSend();
         setTimeout(attemptReconnection, 1000);
     });
 
@@ -442,7 +447,7 @@ function processServiceRecord(record) {
 
 function sendMessage() {
     ensureConnected();
-    if (sendLock) {
+    if (sendButtonLocked) {
         return;
     }
     lockSend(true);
@@ -460,14 +465,14 @@ function sendMessage() {
         chat.shoutMessage(message.value.trim().substring(0, 65536), attachments).then(() => {
             console.log("Send message resolved");
         }).catch(err => {
-            console.log("Error sending message" + err.message);
+            appendEphemeralMessage("Error sending message: " + err);
             lockSend(false);
         });
     } else {
         chat.whisperMessage(addressee, message.value.trim().substring(0, 65536)).then(() => {
             console.log("Done whispering message!");
         }).catch(err => {
-            console.log("Error sending message" + err.message);
+            appendEphemeralMessage("Error sending message: " + err.message);
             lockSend(false);
         });
     }
@@ -1158,16 +1163,11 @@ function showModalNotification(headingText, bodyContent) {
 }
 
 function loadingOn() {
-    $('body').waitMe({
-        effect: 'roundBounce',
-        bg: 'rgba(255,255,255,0.7)',
-        textPos: 'vertical',
-        color: '#33b400'
-    });
+    spinner.loadingOn();
 }
 
 function loadingOff() {
-    $('body').waitMe('hide');
+    spinner.loadingOff();
 }
 
 function setView(view) {
@@ -1584,12 +1584,14 @@ function ensureConnected() {
     }
 }
 
+// ---------------------------------------------------------------------------------------------------------------------------
+// Locks send message button and shows loading animation
 function lockSend(val) {
-    sendLock = !!val;
+    sendButtonLocked = !!val;
     let sendButton = document.querySelector('#send-new-msg');
     let newMsgField = document.querySelector('#new-msg');
-    sendLock ? buttonLoadingOn(sendButton) : buttonLoadingOff(sendButton);
-    sendLock ? newMsgField.setAttribute("disabled", true) : newMsgField.removeAttribute("disabled");
+    sendButtonLocked ? buttonLoadingOn(sendButton) : buttonLoadingOff(sendButton);
+    sendButtonLocked ? newMsgField.setAttribute("disabled", true) : newMsgField.removeAttribute("disabled");
 }
 
 

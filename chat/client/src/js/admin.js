@@ -1,6 +1,6 @@
 import '../css/main.sass';
-
-
+import '../css/vendor/toastr.min.css';
+import $ from "jquery";
 import * as toastr from "toastr";
 window.toastr = toastr;
 import { iCrypto } from "./lib/iCrypto";
@@ -10,20 +10,15 @@ import * as CuteSet from "cute-set";
 import * as dropdown from "./lib/dropdown";
 import * as editableField from "./lib/editable_field";
 import { ChatUtility } from "./chat/ChatUtility";
-
-
-
-
+import { BlockingSpinner } from "./lib/BlockingSpinner"
 import { verifyPassword } from "./lib/PasswordVerify";
-
 import * as util from "./lib/dom-util";
-
-window.iCrypto = iCrypto;
 
 let adminSession;
 let filterFieldSelector;
 let logTableBody;
 
+let spinner = new BlockingSpinner()
 
 
 /**
@@ -126,11 +121,16 @@ function addAdminHiddenService(){
         processAdminRequest({
             action: "launch_admin_hidden_service",
             permanent: true
-        }, onHiddenServiceUpdate, displayServerRequestError)
+        }, (data)=>{
+            toastr.success("Admin hidden service created!")
+            onHiddenServiceUpdate(data)
+        }, (err)=>{
+            toastr.warning(`Error creating admin hidden service${err ? ": " + err : ""} `)
+            displayServerRequestError(err);
+        })
 
     } catch (err) {
         toastr.warning("Error creating admin hidden service: " + err.message);
-
     }
 }
 
@@ -146,7 +146,13 @@ function createGuest() {
             vaultID: ic.get("nhex"),
             sign: ic.get("sign"),
             permanent: true
-        }, onHiddenServiceUpdate, displayServerRequestError)
+        }, (data)=>{
+            toastr.success("Guest hidden services created!")
+            onHiddenServiceUpdate(data)
+        }, (err)=>{
+            toastr.warning(`Error creating guest hidden service${err ? ": " + err : ""} `)
+            displayServerRequestError(err)
+        })
 
     } catch (err) {
         toastr.warning("Error creating admin hidden service: " + err.message);
@@ -786,16 +792,11 @@ function loadingOnPromise() {
     });
 }
 function loadingOn() {
-    $('body').waitMe({
-        effect: 'roundBounce',
-        bg: 'rgba(255,255,255,0.7)',
-        textPos: 'vertical',
-        color: '#33b400'
-    });
+    spinner.loadingOn();
 }
 
 function loadingOff() {
-    $('body').waitMe('hide');
+    spinner.loadingOff();
 }
 
 function switchUpdateOption(event) {
@@ -901,6 +902,7 @@ function getElementIndex(node) {
 }
 
 function loadLogs(errorsOnly = false, download = false) {
+    loadingOn()
     let privKey = adminSession.privateKey;
     let pkfp = adminSession.pkfp;
     let ic = new iCrypto();
@@ -921,20 +923,30 @@ function loadLogs(errorsOnly = false, download = false) {
         err: err => {
             console.log("Error loading logs: " + err);
             toastr.warning("Error loading logs: " + err);
+        },
+
+        complete: ()=>{
+            console.log("Loading completed!")
+            loadingOff()
         }
     });
 }
 
 
 function downloadLogs(res){
+    console.log("Records received, downloading logs.")
     let records = res.records;
+    let dateOptions = {year: "numeric", month: "numeric", day: "numeric", hour: "numeric", minute: "numeric", second: "numeric"}
     let el = util.bake("a", {
         attributes: {
             href: "data:text/plain;charset=utf-8," + encodeURIComponent(records), 
-            download: "islands.log"
+            download: `islands_${new Date().toLocaleTimeString(navigator.language, dateOptions)}.log`,
+            style: "display: none;"
         }
     });
+    document.body.appendChild(el)
     el.click();
+
     document.body.removeChild(el);
 }
 
