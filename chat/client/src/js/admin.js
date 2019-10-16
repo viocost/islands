@@ -1,11 +1,10 @@
 import '../css/main.sass';
 import '../css/vendor/toastr.min.css';
-import $ from "jquery";
+import { XHR } from "./lib/xhr";
 import * as toastr from "toastr";
 window.toastr = toastr;
 import { iCrypto } from "./lib/iCrypto";
 import { Vault } from "./lib/Vault";
-import * as forge from "node-forge";
 import * as CuteSet from "cute-set";
 import * as dropdown from "./lib/dropdown";
 import * as editableField from "./lib/editable_field";
@@ -37,7 +36,7 @@ document.addEventListener('DOMContentLoaded', event => {
     util.$("header").style.minWidth = "111rem";
     if (!secured){
 
-        util.$('#island-setup').addEventListener("click", setupIslandAdmin);
+        util.$('#island-setup').addEventListener('click', setupIslandAdmin);
         util.$("#setup--wrapper").addEventListener("keyup", (ev)=>{
             if (ev.which === 13 || ev.keyCode === 13) {
                 setupIslandAdmin();
@@ -46,7 +45,7 @@ document.addEventListener('DOMContentLoaded', event => {
         util.displayFlex('#setup--wrapper');
         return ;
     }
-    $('#admin-login').click(adminLogin);
+    util.$('#admin-login').click(adminLogin);
     util.$("#admin-login--wrapper").addEventListener("keyup", (ev)=>{
         if (ev.which === 13 || ev.keyCode === 13) {
             adminLogin();
@@ -54,34 +53,34 @@ document.addEventListener('DOMContentLoaded', event => {
     })
 
 
-    $('#run-update').click(launchUpdate);
-    $('#download-logs').click(()=>{loadLogs(false, true);});
-    $('#add-admin-service').click(addAdminHiddenService);
-    $('#add-guest-service').click(createGuest);
+    util.$('#run-update').onclick = launchUpdate;
+    util.$('#download-logs').click(()=>{loadLogs(false, true);});
+    util.$('#add-admin-service').onclick = addAdminHiddenService;
+    util.$('#add-guest-service').onclick = createGuest;
 
-    $('#update-from-file').click(switchUpdateMode);
-    $('#update-from-git').click(switchUpdateMode);
+    util.$('#update-from-file').onclick = switchUpdateMode;
+    util.$('#update-from-git').onclick = switchUpdateMode;
 
-    $('#to-chat').click(returnToChat);
-    $('#admin-logout-button').click(adminLogout);
+    util.$('#to-chat').onclick = returnToChat;
+    util.$('#admin-logout-button').onclick = adminLogout;
 
-    $('#clear-logs').click(clearLogs);
-    $('#update-file').change(processUpdateFile);
+    util.$('#clear-logs').onclick = clearLogs;
+    util.$('#update-file').onclick = processUpdateFile;
 
-    $('#admin-login--wrapper').css('display', "flex");
-    $('#setup--wrapper').hide();
+    util.displayFlex('#admin-login--wrapper');
+    util.displatNone('#setup--wrapper');
 
-    $('#login-setup--wrapper').css('display', "block");
+    util.displayBlock('#login-setup--wrapper');
 
-    $('.update-option').each((index, el) => {
-        $(el).click(switchUpdateOption);
+    util.$$('.update-option').forEeach(el => {
+        el.onclick = switchUpdateOption;
     });
 
-    logTableBody = document.querySelector("#log-content").lastElementChild;
-    filterFieldSelector = document.querySelector('#filter-field-selector');
+    logTableBody = util.$("#log-content").lastElementChild;
+    filterFieldSelector = util.$('#filter-field-selector');
     filterFieldSelector.addEventListener("change", filterLogs);
-    document.querySelector("#log-filter").addEventListener("keyup", filterLogs);
-    $('#log-reverse').click(reverseLogList);
+    util.$("#log-filter").addEventListener("keyup", filterLogs);
+    util.$('#log-reverse').onclick = reverseLogList;
     prepareAdminMenuListeners();
     prepareLogPageListeners();
     autoLogin();
@@ -249,7 +248,7 @@ function displayServerRequestError(err){
 //     let ic = new iCrypto();
 //     ic.createNonce('n').setRSAKey("pk", privKey, 'private').privateKeySign('n', 'pk', 'sign').bytesToHex('n', 'nhex');
 //
-//     $.ajax({
+//     XHR({
 //         type: "POST",
 //         url: "/admin",
 //         dataType: "json",
@@ -274,7 +273,7 @@ function displayServerRequestError(err){
  * @param {Array} hiddenServices
  */
 function updateHiddenServicesList(hiddenServices) {
-    let hsContainer = document.querySelector("#hidden-services-wrap");
+    let hsContainer = util.$("#hidden-services-wrap");
     hsContainer.innerHTML = "";
     let count = 0;
     for (let key of Object.keys(hiddenServices)) {
@@ -445,7 +444,7 @@ function copyTextToBuffer(text, message){
 
 
 function adminLogin() {
-    let password = document.querySelector("#admin-password").value.trim();
+    let password = util.$("#admin-password").value.trim();
     if(!password){
         toastr.warning("Password is required!");
         return;
@@ -453,7 +452,7 @@ function adminLogin() {
     loadingOn();
 
     //Request admin vault
-    $.ajax({
+    XHR({
         type: "GET",
         url: "/admin/vault",
         success: async res =>{
@@ -500,7 +499,7 @@ async function requestAdminLogin (privateKey){
     try {
         let ic = new iCrypto();
         ic.createNonce('n').setRSAKey("pk", privateKey, 'private').privateKeySign('n', 'pk', 'sign').bytesToHex('n', 'nhex').publicFromPrivate("pk", "pub").getPublicKeyFingerprint("pub", "pkfp");
-        $.ajax({
+        XHR({
             type: "POST",
             url: "/admin",
             dataType: "json",
@@ -553,8 +552,8 @@ function setupIslandAdmin() {
 
     $('#island-setup').addClass('btn-loading');
 
-    let password = document.querySelector('#new-admin-password').value;
-    let confirm = document.querySelector('#new-admin-password-confirm').value;
+    let password = util.$('#new-admin-password').value;
+    let confirm = util.$('#new-admin-password-confirm').value;
     let error  = verifyPassword(password, confirm);
     if(error){
         toastr.warning(error);
@@ -587,7 +586,7 @@ function setupAdminContinue(password) {
         let vaultPublicKey = vault.publicKey;
         let adminPublicKey = ic.get("adminkp").publicKey;
 
-        $.ajax({
+        XHR({
             type: "POST",
             url: "/admin",
             dataType: "json",
@@ -643,15 +642,15 @@ function showModalNotification(headingText, bodyContent) {
     body.innerHTML = bodyContent;
     wrapper.appendChild(heading);
     wrapper.appendChild(body);
-    let modalContent = document.querySelector('#code--content');
+    let modalContent = util.$('#code--content');
     modalContent.innerHTML = "";
     modalContent.appendChild(wrapper);
-    let modalView = document.querySelector('#code-view');
+    let modalView = util.$('#code-view');
     modalView.style.display = "block";
 }
 
 function closeCodeView() {
-    document.querySelector("#code-view").style.display = "none";
+    util.$("#code-view").style.display = "none";
 }
 
 function switchUpdateMode() {
@@ -667,19 +666,19 @@ function switchUpdateMode() {
 }
 
 function processUpdateFile() {
-    let file = document.querySelector("#update-file").files[0];
+    let file = util.$("#update-file").files[0];
     getUpdateFileData(file).then(filedata => {
         let signature = signUpdateFile(filedata);
-        document.querySelector("#pkfp").value = adminSession.pkfp;
-        document.querySelector("#sign").value = signature;
-        document.querySelector("#select-file").innerText = "SELECTED: " + file.name;
+        util.$("#pkfp").value = adminSession.pkfp;
+        util.$("#sign").value = signature;
+        util.$("#select-file").innerText = "SELECTED: " + file.name;
     }).catch(err => {
         throw err;
     });
 }
 
 function launchUpdate() {
-    if ($('#update-from-file').hasClass('active') && document.querySelector("#update-file").value) {
+    if ($('#update-from-file').hasClass('active') && util.$("#update-file").value) {
         loadingOn();
         updateFromFile();
     } else if ($('#update-from-git').hasClass('active')) {
@@ -692,7 +691,7 @@ function launchUpdate() {
 }
 
 function updateFromFile() {
-    let file = document.querySelector("#update-file").files[0];
+    let file = util.$("#update-file").files[0];
     getUpdateFileData(file).then(filedata => {
         let signature = signUpdateFile(filedata);
         sendUpdateFromFileRequest(file, signature);
@@ -723,7 +722,7 @@ function signUpdateFile(filedata) {
 }
 
 function getSelectedUpdateBranch() {
-    let branchSelect = document.querySelector("#gh-update-branch-select");
+    let branchSelect = util.$("#gh-update-branch-select");
     return branchSelect.options[branchSelect.options.selectedIndex].value;
 }
 
@@ -744,7 +743,7 @@ function sendUpdateFromFileRequest(filedata, signature) {
     let data = new FormData();
     data.append("action", "update_from_file");
     data.append("pkfp", adminSession.pkfp);
-    data.append("file", document.querySelector("#update-file").files[0]);
+    data.append("file", util.$("#update-file").files[0]);
     data.append("sign", signature);
 
     sendUpdateRequest(data);
@@ -828,15 +827,11 @@ function adminLogout() {
 }
 
 function displayAdminMenu(on) {
-    if (on) {
-        $('#admin-menu').css("display", "flex");
-    } else {
-        $('#admin-menu').hide();
-    }
+    on ? util.displayFlex("#admin-menu") : util.displayNone("#admin-menu")
 }
 
 function prepareAdminMenuListeners() {
-    document.querySelector("#island-admin-main-menu").childNodes.forEach(node => {
+    util.$("#island-admin-main-menu").childNodes.forEach(node => {
         node.addEventListener("click", processMainMenuClick);
     });
 }
@@ -845,12 +840,12 @@ function processMainMenuClick(ev) {
     if (ev.target.classList.contains("active")) {
         return;
     }
-    let menu = document.querySelector("#island-admin-main-menu");
+    let menu = util.$("#island-admin-main-menu");
     for (let item of menu.children) {
         item.classList.remove("active");
     };
 
-    let pages = document.querySelector("#admin-pages");
+    let pages = util.$("#admin-pages");
     for (let item of pages.children) {
         item.classList.remove("active");
     };
@@ -859,7 +854,7 @@ function processMainMenuClick(ev) {
 
     pages.children[index].classList.add("active");
     menu.children[index].classList.add("active");
-    document.querySelector("#admin-section-heading").innerHTML = ev.target.innerHTML;
+    util.$("#admin-section-heading").innerHTML = ev.target.innerHTML;
     runPageActivationHandler(index);
 }
 
@@ -908,7 +903,7 @@ function loadLogs(errorsOnly = false, download = false) {
     let ic = new iCrypto();
     ic.createNonce('n').setRSAKey("pk", privKey, 'private').privateKeySign('n', 'pk', 'sign').bytesToHex('n', 'nhex');
 
-    $.ajax({
+    XHR({
         type: "POST",
         url: "/admin",
         dataType: "json",
@@ -920,7 +915,7 @@ function loadLogs(errorsOnly = false, download = false) {
             errorsOnly: errorsOnly
         },
         success: download ? downloadLogs: processLogsLoaded,
-        err: err => {
+        error: err => {
             console.log("Error loading logs: " + err);
             toastr.warning("Error loading logs: " + err);
         },
@@ -953,8 +948,13 @@ function downloadLogs(res){
 
 
 function processLogsLoaded(res) {
+    if(!res.recores){
+        console.log("Server returned no logs")
+        return
+    }
+
     let records = res.records.split("\n");
-    let table = document.querySelector("#log-content").lastElementChild;
+    let table = util.$("#log-content").lastElementChild;
     table.innerHTML = "";
     for (let record of records) {
         let parsed;
@@ -1011,7 +1011,7 @@ function requestLoggerStateChange(ev) {
     let ic = new iCrypto();
     ic.createNonce('n').setRSAKey("pk", privKey, 'private').privateKeySign('n', 'pk', 'sign').bytesToHex('n', 'nhex');
 
-    $.ajax({
+    XHR({
         type: "POST",
         url: "/admin",
         dataType: "json",
@@ -1040,7 +1040,7 @@ function requestLoggerLevelChange(ev) {
     let ic = new iCrypto();
     ic.createNonce('n').setRSAKey("pk", privKey, 'private').privateKeySign('n', 'pk', 'sign').bytesToHex('n', 'nhex');
 
-    $.ajax({
+    XHR({
         type: "POST",
         url: "/admin",
         dataType: "json",
@@ -1055,23 +1055,23 @@ function requestLoggerLevelChange(ev) {
         success: () => {
             toastr.info("Log level has been changed to: " + selectedElement.value);
         },
-        err: err => {
+        error: err => {
             toastr.warning("Error loading logs: " + err);
         }
     });
 }
 
 function prepareLogPageListeners() {
-    document.querySelector("#load-logs").addEventListener("click", () => {
+    util.$("#load-logs").addEventListener("click", () => {
         loadLogs();
     });
 
-    document.querySelector("#load-error-logs").addEventListener("click", () => {
+    util.$("#load-error-logs").addEventListener("click", () => {
         loadLogs(true);
     });
 
-    document.querySelector("#logs-state").addEventListener("change", requestLoggerStateChange);
-    document.querySelector("#log-highest-level").addEventListener("change", requestLoggerLevelChange);
+    util.$("#logs-state").addEventListener("change", requestLoggerStateChange);
+    util.$("#log-highest-level").addEventListener("change", requestLoggerLevelChange);
 }
 
 function reverseLogList() {
@@ -1112,7 +1112,7 @@ function clearLogs(ev) {
     let ic = new iCrypto();
     ic.createNonce('n').setRSAKey("pk", privKey, 'private').privateKeySign('n', 'pk', 'sign').bytesToHex('n', 'nhex');
 
-    $.ajax({
+    XHR({
         type: "POST",
         url: "/admin",
         dataType: "json",
@@ -1126,7 +1126,7 @@ function clearLogs(ev) {
             logTableBody.innerHTML = "";
             toastr.info("Log level have been cleared");
         },
-        err: err => {
+        error: err => {
             toastr.warning("Error clearing logs: " + err);
         }
     });
@@ -1148,7 +1148,7 @@ function prepareRequestProcessor(adminSession){
         ic.addBlob('data', requestString)
             .setRSAKey("pk", privKey, 'private')
             .privateKeySign('data', 'pk', 'sign');
-        $.ajax({
+        XHR({
             type: "POST",
             url: "/admin",
             dataType: "json",

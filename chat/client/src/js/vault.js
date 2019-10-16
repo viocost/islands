@@ -9,7 +9,7 @@ import * as dropdown from "./lib/dropdown";
 import * as editable_field from "./lib/editable_field";
 import * as util from "./lib/dom-util";
 import { BlockingSpinner } from "./lib/BlockingSpinner";
-
+import { XHR } from "./lib/xhr";
 import '../css/main.sass';
 import '../css/vendor/tingle.css'
 const sjcl = require("sjcl");
@@ -279,7 +279,7 @@ function registerVault() {
             let vaultEncData = vault.pack();
             let vaultPublicKey = vault.publicKey;
 
-            $.ajax({
+            XHR({
                 type: "POST",
                 url: "/register",
                 dataType: "json",
@@ -339,17 +339,15 @@ function vaultLoginGetVault(ev){
             return;
         }
         loadingOn()
-        $.ajax({
+        XHR({
             type: "post",
             url: "/",
             success: (data)=>{
-                console.log("Got data: " + JSON.stringify(data));
                 vaultLoginProcessVault(data, password, passwordEl)
             },
             error: err => {
                 loadingOff();
                 toastr.warning(err.responseText);
-                console.log("Vault login error: " + err.responseText);
             }
         });
     }catch(err){
@@ -476,7 +474,7 @@ function changePassword(){
     }
 
     try{
-        $.ajax({
+        XHR({
             type: "post",
             url: "/",
             success: async (data)=>{
@@ -635,7 +633,7 @@ function setViewOnline(){
 function saveVault(){
     return new Promise((resolve, reject)=>{
         let vaultEncData = vault.pack();
-        $.ajax({
+        XHR({
             type: "POST",
             url: "/update",
             dataType: "json",

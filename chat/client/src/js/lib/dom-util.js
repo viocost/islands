@@ -124,5 +124,4 @@ export function generateRandomId(length = 10, prefix="", postfix=""){
     }
 
     return `${prefix.length > 0 ? prefix + "-" : ""}${symbols.join("")}${postfix.length > 0 ? "-" + postfix : ""}`;
-
 }
