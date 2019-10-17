@@ -171,6 +171,13 @@ const callback = function (cbType, _xhr, handler){
 
 
 const processIncomingData = function(_xhr){
+    try{
+        console.log(`XHR RESPONSE: ${_xhr.response}`)
+    }catch(err){}
+    try{
+        console.log(`XHR RESPONSE TEXT: ${_xhr.responseText}`);
+    }catch(err){}
+
     switch (_xhr.responseType){
         case "json":
             try{

@@ -59,6 +59,42 @@ export function bake(name, recipe){
     return el
 }
 
+// ---------------------------------------------------------------------------------------------------------------------------
+// CSS classes wrapers
+export function addClass(element, _class){
+    let node = verifyGetNode(element);
+    node.classList.add(_class);
+}
+
+export function removeClass(element, _class){
+    let node = verifyGetNode(element);
+    node.classList.remove(_class);
+}
+//end//////////////////////////////////////////////////////////////////////////
+
+
+// ---------------------------------------------------------------------------------------------------------------------------
+// Setting text and html
+export function html(element, html){
+    let node = verifyGetNode(element);
+    node.innerHTML = html;
+}
+
+export function text(element, text){
+    let node = verifyGetNode(element);
+    node.innerText = text;
+}
+//end//////////////////////////////////////////////////////////////////////////
+
+/**
+ * Less verbose wrapper for setting value;
+ *
+ */
+export function val(element, val){
+    let node = verifyGetNode(element);
+    node.value = val;
+}
+
 /**
  * Given parent node appends one or multiple children
  * @param parent DOM node
@@ -77,8 +113,8 @@ export function appendChildren(parent, children){
 /**
  * Less verbose wrapper for document.querySelector
  */
-export function $(selector){
-    return document.querySelector(selector)
+export function $(element){
+    return verifyGetNode(element)
 }
 
 /**
@@ -90,7 +126,11 @@ export function $$(selector){
 
 
 export function displayNone(node){
-    displayElement(node, "none")
+    try{
+        displayElement(node, "none")
+    }catch(err){
+        console.log("Display none fail: " + err)
+    }
 }
 
 export function displayBlock(node){
@@ -105,15 +145,9 @@ export function displayFlex(node){
  * Internal. Sets node display property
  *
  */
-function displayElement(node, display){
-    if (typeof node === "string"){
-        //Assuming it is selector
-        $(node).style.display = display
-    } else if (node instanceof Element){
-        node.style.display = display;
-    } else {
-        throw "Node element can be either string or DOM element. Type is invalid.";
-    }
+function displayElement(element, display){
+    let node = verifyGetNode(element);
+    node.style.display = display;
 }
 
 export function generateRandomId(length = 10, prefix="", postfix=""){
@@ -124,4 +158,21 @@ export function generateRandomId(length = 10, prefix="", postfix=""){
     }
 
     return `${prefix.length > 0 ? prefix + "-" : ""}${symbols.join("")}${postfix.length > 0 ? "-" + postfix : ""}`;
+}
+
+/**
+ * Helper function. Given either DOM element or selector
+ * makes sure it exists and valid, and returns it.
+ */
+function verifyGetNode(element){
+    let node = element
+    if (typeof node === "string"){
+        node =  document.querySelector(element);
+    }
+    if (!node){
+        throw `Element ${element} is undefined`;
+    } else if(!node instanceof Element){
+        throw "Type of element is invalid";
+    }
+    return node;
 }

@@ -12,12 +12,12 @@ import { ChatUtility } from "./chat/ChatUtility";
 import { BlockingSpinner } from "./lib/BlockingSpinner"
 import { verifyPassword } from "./lib/PasswordVerify";
 import * as util from "./lib/dom-util";
-
 let adminSession;
 let filterFieldSelector;
 let logTableBody;
 
 let spinner = new BlockingSpinner()
+window.util = util;
 
 
 /**
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', event => {
     util.$("main").classList.add("main-admin");
     util.$("header").style.minWidth = "111rem";
     if (!secured){
-
+        console.log("Secured is false!");
         util.$('#island-setup').addEventListener('click', setupIslandAdmin);
         util.$("#setup--wrapper").addEventListener("keyup", (ev)=>{
             if (ev.which === 13 || ev.keyCode === 13) {
@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', event => {
         util.displayFlex('#setup--wrapper');
         return ;
     }
-    util.$('#admin-login').click(adminLogin);
+    util.$('#admin-login').onclick = adminLogin;
     util.$("#admin-login--wrapper").addEventListener("keyup", (ev)=>{
         if (ev.which === 13 || ev.keyCode === 13) {
             adminLogin();
@@ -53,26 +53,21 @@ document.addEventListener('DOMContentLoaded', event => {
     })
 
 
-    util.$('#run-update').onclick = launchUpdate;
-    util.$('#download-logs').click(()=>{loadLogs(false, true);});
+    util.$('#download-logs').onclick = ()=>{loadLogs(false, true);};
     util.$('#add-admin-service').onclick = addAdminHiddenService;
     util.$('#add-guest-service').onclick = createGuest;
 
-    util.$('#update-from-file').onclick = switchUpdateMode;
-    util.$('#update-from-git').onclick = switchUpdateMode;
 
     util.$('#to-chat').onclick = returnToChat;
     util.$('#admin-logout-button').onclick = adminLogout;
 
     util.$('#clear-logs').onclick = clearLogs;
-    util.$('#update-file').onclick = processUpdateFile;
 
     util.displayFlex('#admin-login--wrapper');
-    util.displatNone('#setup--wrapper');
 
-    util.displayBlock('#login-setup--wrapper');
 
-    util.$$('.update-option').forEeach(el => {
+
+    util.$$('.update-option').forEach(el => {
         el.onclick = switchUpdateOption;
     });
 
@@ -518,9 +513,9 @@ async function requestAdminLogin (privateKey){
 
                 processAdminRequest = prepareRequestProcessor(adminSession);
 
-                $('#admin-content-wrapper').css("display", "flex");
-                $('.heading__main').html("Rule your island");
-                $('#admin-login--wrapper').hide();
+                util.displayFlex('#admin-content-wrapper');
+                util.html('.heading__main', "Rule your island");
+                util.displayNone('#admin-login--wrapper');
                 processLoginData(res);
                 displayAdminMenu(true);
                 loadingOff();
@@ -543,14 +538,14 @@ async function requestAdminLogin (privateKey){
 function processLoginData(res) {
     let loggerState = res.loggerInfo.enabled === "true" || res.loggerInfo.enabled === true;
     let loggerLevel = res.loggerInfo.level;
-    $("#logs-state").val(loggerState ? "true" : "false");
-    $("#log-highest-level").val(loggerLevel);
+    util.val("#logs-state", loggerState ? "true" : "false");
+    util.val("#log-highest-level", loggerLevel);
     onHiddenServiceUpdate(res);
 }
 
 function setupIslandAdmin() {
 
-    $('#island-setup').addClass('btn-loading');
+    util.addClass('#island-setup', 'btn-loading');
 
     let password = util.$('#new-admin-password').value;
     let confirm = util.$('#new-admin-password-confirm').value;
@@ -609,187 +604,18 @@ function setupAdminContinue(password) {
                 util.$("#registration-complete--wrapper").style.display = "flex";
 
 
-                $('#island-setup').removeClass('btn-loading');
+                util.removeClass('#island-setup', 'btn-loading');
                 resolve();
             },
             error: err => {
                 loadingOff();
                 reject("Fail!" + err);
-                $('#island-setup').removeClass('btn-loading');
+                util.removeClass('#island-setup', 'btn-loading');
             }
         });
     });
 }
 
-function switchView(view) {
-    let views = {
-        admin: () => {
-            $('#admin-login--wrapper').css('display', "flex");
-            $('#setup--wrapper').hide();
-        }
-    };
-    views[view]();
-}
-
-function showModalNotification(headingText, bodyContent) {
-    let wrapper = document.createElement("div");
-    wrapper.classList.add("modal-notification--wrapper");
-    let heading = document.createElement("h3");
-    heading.classList.add("modal-notification--heading");
-    let body = document.createElement("div");
-    body.classList.add("modal-notification--body");
-    heading.innerText = headingText;
-    body.innerHTML = bodyContent;
-    wrapper.appendChild(heading);
-    wrapper.appendChild(body);
-    let modalContent = util.$('#code--content');
-    modalContent.innerHTML = "";
-    modalContent.appendChild(wrapper);
-    let modalView = util.$('#code-view');
-    modalView.style.display = "block";
-}
-
-function closeCodeView() {
-    util.$("#code-view").style.display = "none";
-}
-
-function switchUpdateMode() {
-    if ($('#update-from-file').prop('checked')) {
-        $('#update-from-file--wrapper').css("display", "block");
-        $('#update-from-git--wrapper').hide();
-        $('#github-update-options--wrap').hide();
-    } else {
-        $('#update-from-file--wrapper').hide();
-        $('#update-from-git--wrapper').css("display", "block");
-        $('#github-update-options--wrap').css("display", "block");
-    }
-}
-
-function processUpdateFile() {
-    let file = util.$("#update-file").files[0];
-    getUpdateFileData(file).then(filedata => {
-        let signature = signUpdateFile(filedata);
-        util.$("#pkfp").value = adminSession.pkfp;
-        util.$("#sign").value = signature;
-        util.$("#select-file").innerText = "SELECTED: " + file.name;
-    }).catch(err => {
-        throw err;
-    });
-}
-
-function launchUpdate() {
-    if ($('#update-from-file').hasClass('active') && util.$("#update-file").value) {
-        loadingOn();
-        updateFromFile();
-    } else if ($('#update-from-git').hasClass('active')) {
-        console.log("Updating from GIT");
-        loadingOn();
-        updateFromGithub();
-    } else {
-        toastr.warning("Please select the update file!");
-    }
-}
-
-function updateFromFile() {
-    let file = util.$("#update-file").files[0];
-    getUpdateFileData(file).then(filedata => {
-        let signature = signUpdateFile(filedata);
-        sendUpdateFromFileRequest(file, signature);
-    }).catch(err => {
-        throw err;
-    });
-}
-
-function getUpdateFileData(file) {
-    return new Promise((resolve, reject) => {
-        try {
-            let reader = new FileReader();
-
-            reader.onload = () => {
-                resolve(reader.result);
-            };
-            reader.readAsBinaryString(file);
-        } catch (err) {
-            reject(err);
-        }
-    });
-}
-
-function signUpdateFile(filedata) {
-    let ic = new iCrypto();
-    ic.setRSAKey("pk", adminSession.privateKey, "private").addBlob("f", filedata).privateKeySign("f", "pk", "sign");
-    return ic.get("sign");
-}
-
-function getSelectedUpdateBranch() {
-    let branchSelect = util.$("#gh-update-branch-select");
-    return branchSelect.options[branchSelect.options.selectedIndex].value;
-}
-
-function updateFromGithub() {
-    let ic = new iCrypto();
-
-    ic.setRSAKey("pk", adminSession.privateKey, "private").createNonce("n").bytesToHex("n", "nhex").privateKeySign("n", "pk", "sign");
-    let data = new FormData();
-    data.append("action", "update_from_github");
-    data.append("branch", getSelectedUpdateBranch());
-    data.append("pkfp", adminSession.pkfp);
-    data.append("nonce", ic.get("nhex"));
-    data.append("sign", ic.get("sign"));
-    sendUpdateRequest(data);
-}
-
-function sendUpdateFromFileRequest(filedata, signature) {
-    let data = new FormData();
-    data.append("action", "update_from_file");
-    data.append("pkfp", adminSession.pkfp);
-    data.append("file", util.$("#update-file").files[0]);
-    data.append("sign", signature);
-
-    sendUpdateRequest(data);
-}
-
-function sendUpdateRequest(data) {
-    let request = new XMLHttpRequest();
-    request.open("POST", window.location.href, true);
-    request.send(data);
-    request.onreadystatechange = () => {
-        if (request.readyState === XMLHttpRequest.DONE) {
-            //
-            console.log("Handling response");
-            loadingOff();
-            if (request.status === 200) {
-                $('#close-code-view').hide();
-                showModalNotification("Update completed", "<span id=timer>You will be redirected in 5 seconds</span>");
-                delayedPageReload(5);
-            } else {
-                toastr.warning("Update failed: " + request.responseText);
-            }
-        }
-    };
-}
-
-function delayedPageReload(seconds) {
-    if (--seconds) {
-        $("#timer").text("You will be redirected in " + seconds + (seconds > 1 ? " seconds" : " second"));
-    } else {
-        window.location.href = "/";
-        return;
-    }
-    setTimeout(() => {
-        delayedPageReload(seconds);
-    }, 1000);
-}
-function loadingOnPromise() {
-    return new Promise((resolve, reject) => {
-        try {
-            loadingOn();
-            resolve();
-        } catch (err) {
-            reject(err);
-        }
-    });
-}
 function loadingOn() {
     spinner.loadingOn();
 }
@@ -797,22 +623,6 @@ function loadingOn() {
 function loadingOff() {
     spinner.loadingOff();
 }
-
-function switchUpdateOption(event) {
-    if ($(event.target).hasClass("active")) {
-        return;
-    }
-
-    $(".update-option").each((index, el) => {
-        if (!$(el).hasClass("active") && $(el).attr("id") === "update-from-file") {
-            $("#update-file--wrapper").css("display", "flex");
-        } else if ($(el).hasClass("active") && $(el).attr("id") === "update-from-file") {
-            $("#update-file--wrapper").css("display", "none");
-        }
-        $(el).toggleClass("active");
-    });
-}
-
 function returnToChat() {
     adminSession = undefined;
     clearAdminPrivateKey();
@@ -885,7 +695,7 @@ function onLogsPageActivation(){
 }
 
 function clearAdminPrivateKey() {
-    $("#admin-private-key").val("");
+    util.val("#admin-private-key", "");
 }
 
 function getElementIndex(node) {
@@ -929,26 +739,29 @@ function loadLogs(errorsOnly = false, download = false) {
 
 
 function downloadLogs(res){
-    console.log("Records received, downloading logs.")
-    let records = res.records;
+    console.log("Records received, downloading logs.");
+    let records = JSON.stringify(res.records);
+
+    let url = URL.createObjectURL(new Blob([records], {type: "text/json"}))
     let dateOptions = {year: "numeric", month: "numeric", day: "numeric", hour: "numeric", minute: "numeric", second: "numeric"}
     let el = util.bake("a", {
         attributes: {
-            href: "data:text/plain;charset=utf-8," + encodeURIComponent(records), 
+            //href: "data:text/plain;charset=utf-8," + encodeURIComponent(records),
+            href: url,
             download: `islands_${new Date().toLocaleTimeString(navigator.language, dateOptions)}.log`,
             style: "display: none;"
         }
     });
     document.body.appendChild(el)
     el.click();
-
     document.body.removeChild(el);
 }
 
 
 
 function processLogsLoaded(res) {
-    if(!res.recores){
+    console.log(res.records);
+    if(!res.records){
         console.log("Server returned no logs")
         return
     }
@@ -1164,3 +977,142 @@ function prepareRequestProcessor(adminSession){
     };
 }
 
+// ---------------------------------------------------------------------------------------------------------------------------
+// Direct updates are not currently used
+
+
+// function switchUpdateMode() {
+//
+//    if ($('#update-from-file').prop('checked')) {
+//        $('#update-from-file--wrapper').css("display", "block");
+//        $('#update-from-git--wrapper').hide();
+//        $('#github-update-options--wrap').hide();
+//    } else {
+//        $('#update-from-file--wrapper').hide();
+//        $('#update-from-git--wrapper').css("display", "block");
+//        $('#github-update-options--wrap').css("display", "block");
+//    }
+//}
+//
+//
+//function processUpdateFile() {
+//    let file = util.$("#update-file").files[0];
+//    getUpdateFileData(file).then(filedata => {
+//        let signature = signUpdateFile(filedata);
+//        util.$("#pkfp").value = adminSession.pkfp;
+//        util.$("#sign").value = signature;
+//        util.$("#select-file").innerText = "SELECTED: " + file.name;
+//    }).catch(err => {
+//        throw err;
+//    });
+//}
+//
+//function launchUpdate() {
+//    if ($('#update-from-file').hasClass('active') && util.$("#update-file").value) {
+//        loadingOn();
+//        updateFromFile();
+//    } else if ($('#update-from-git').hasClass('active')) {
+//        console.log("Updating from GIT");
+//        loadingOn();
+//        updateFromGithub();
+//    } else {
+//        toastr.warning("Please select the update file!");
+//    }
+//}
+//
+//function updateFromFile() {
+//    let file = util.$("#update-file").files[0];
+//    getUpdateFileData(file).then(filedata => {
+//        let signature = signUpdateFile(filedata);
+//        sendUpdateFromFileRequest(file, signature);
+//    }).catch(err => {
+//        throw err;
+//    });
+//}
+//
+//function getUpdateFileData(file) {
+//    return new Promise((resolve, reject) => {
+//        try {
+//            let reader = new FileReader();
+//
+//            reader.onload = () => {
+//                resolve(reader.result);
+//            };
+//            reader.readAsBinaryString(file);
+//        } catch (err) {
+//            reject(err);
+//        }
+//    });
+//}
+//
+//
+//function signUpdateFile(filedata) {
+//    let ic = new iCrypto();
+//    ic.setRSAKey("pk", adminSession.privateKey, "private").addBlob("f", filedata).privateKeySign("f", "pk", "sign");
+//    return ic.get("sign");
+//}
+//
+//function getSelectedUpdateBranch() {
+//    let branchSelect = util.$("#gh-update-branch-select");
+//    return branchSelect.options[branchSelect.options.selectedIndex].value;
+//}
+//
+//function updateFromGithub() {
+//    let ic = new iCrypto();
+//
+//    ic.setRSAKey("pk", adminSession.privateKey, "private").createNonce("n").bytesToHex("n", "nhex").privateKeySign("n", "pk", "sign");
+//    let data = new FormData();
+//    data.append("action", "update_from_github");
+//    data.append("branch", getSelectedUpdateBranch());
+//    data.append("pkfp", adminSession.pkfp);
+//    data.append("nonce", ic.get("nhex"));
+//    data.append("sign", ic.get("sign"));
+//    sendUpdateRequest(data);
+//}
+//
+//function sendUpdateFromFileRequest(filedata, signature) {
+//    let data = new FormData();
+//    data.append("action", "update_from_file");
+//    data.append("pkfp", adminSession.pkfp);
+//    data.append("file", util.$("#update-file").files[0]);
+//    data.append("sign", signature);
+//
+//    sendUpdateRequest(data);
+//}
+//
+//function sendUpdateRequest(data) {
+//    let request = new XMLHttpRequest();
+//    request.open("POST", window.location.href, true);
+//    request.send(data);
+//    request.onreadystatechange = () => {
+//        if (request.readyState === XMLHttpRequest.DONE) {
+//            //
+//            console.log("Handling response");
+//            loadingOff();
+//            if (request.status === 200) {
+//                $('#close-code-view').hide();
+//                showModalNotification("Update completed", "<span id=timer>You will be redirected in 5 seconds</span>");
+//                delayedPageReload(5);
+//            } else {
+//                toastr.warning("Update failed: " + request.responseText);
+//            }
+//        }
+//    };
+//}
+
+//
+//function switchUpdateOption(event) {
+//    if ($(event.target).hasClass("active")) {
+//        return;
+//    }
+//
+//    util.$$(".update-option").forEach((el) => {
+//        if (!$(el).hasClass("active") && $(el).attr("id") === "update-from-file") {
+//            $("#update-file--wrapper").css("display", "flex");
+//        } else if ($(el).hasClass("active") && $(el).attr("id") === "update-from-file") {
+//            $("#update-file--wrapper").css("display", "none");
+//        }
+//        $(el).toggleClass("active");
+//    });
+//}
+//
