@@ -29,8 +29,10 @@ CLOSED: [2019-09-30 Mon 18:06]
 CLOSED: [2019-10-01 Tue 00:48]
 *** TODO bug - file is blocked on rename
 
-** PROJ Get rid of jquery
-*** TODO wirte an universal wrapper around xhr
+** DONE Get rid of jquery
+CLOSED: [2019-10-19 Sat 17:12]
+*** DONE wirte an universal wrapper around xhr
+CLOSED: [2019-10-19 Sat 17:12]
 
 ** TODO White spaces in messages
 <2019-09-10 Tue>
@@ -40,13 +42,19 @@ CLOSED: [2019-10-01 Tue 00:48]
 ** TODO BUG! On scroll messages loaded and appended multiple times
 
 ** PROJ Message sequencing and interleaving
+*** TODO Implement connection drops when topic becomes inactive
+1. When no message has been sent or received in N minutes, drop all connections to other participants
+Brian -- OtterFri, 9/04 18:31
+2. When a message should be sent reconnect any non-connected participant (and resync) and send to all participants
+Brian -- OtterFri, 9/04 18:32
+3. when a connection occurs, re-connect any non-connected participants and resync
 *** TODO Implement sequencing
 *** TODO Implement thread safe history append
 *** TODO Implement message buffer
 *** TODO Implement persistent queue
 *** TODO Wakeup protocol when user appears after a break
 *** TODO Timestamps chain for messages
-*** TODO get rif if simple ram queue
+*** TODO get rid of simple ram queue
 *** TODO Expiration time for messages
 
 * Bugs
