@@ -1,4 +1,5 @@
 const path = require('path');
+const Visualizer = require('webpack-visualizer-plugin');
 const webpack = require("webpack")
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
@@ -41,11 +42,12 @@ module.exports = {
             sourceMap: true
         }),
 
-        new webpack.ProvidePlugin({
-            $: 'jquery',
-            jQuery: 'jquery',
-            'window.jQuery': 'jquery'
-        }),
+
+        // ---------------------------------------------------------------------------------------------------------------------------
+        // uncomment to generate module stats
+        //new Visualizer({
+        //    filename: './admin_stat.html'
+        //})
     ],
 
     module: {

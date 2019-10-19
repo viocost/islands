@@ -1,6 +1,5 @@
 import { ChatClient } from  "./chat/ChatClient";
-import $ from "jquery";
-import * as toastr from "toastr";
+import toastr from "./lib/toastr";
 import { Vault } from "./lib/Vault";
 import { iCrypto } from "./lib/iCrypto";
 import * as Modal from "./lib/DynmaicModal";
@@ -46,19 +45,19 @@ document.addEventListener('DOMContentLoaded', event => {
 
     if (reg){
         setView("register")
-        $('#vault-new-password-confirm').keyup(e => {
+        util.$('#vault-new-password-confirm').onkeyup = e => {
             if (e.keyCode === 13) {
                 registerVault();
             }
-        });
+        };
     } else {
         //regular login
         setView("login");
-        $('#vault-password').keyup(e => {
+        util.$('#vault-password').onkeyup = e => {
             if (e.keyCode === 13) {
                 vaultLoginGetVault();
             }
-        });
+        };
     }
     document.querySelector("#vault-login-btn").addEventListener("click", vaultLoginGetVault);
     prepareTopicJoinModal();
@@ -367,8 +366,6 @@ function vaultLoginProcessVault(data, password, passwordEl){
             data = JSON.parse(data)
         }
 
-        console.log(JSON.stringify(data))
-        console.log(JSON.stringify(Object.keys(data)))
         vault.initSaved(data.vault, password);
         initPasswordBasedHandlers(password);
         passwordEl.value = "";
@@ -833,17 +830,10 @@ function prepareAdminLogin(privateKey){
 
 function loadingOn() {
     spinner.loadingOn()
- //   $('body').waitMe({
- //       effect: 'roundBounce',
- //       bg: 'rgba(255,255,255,0.7)',
- //       textPos: 'vertical',
- //       color: '#33b400'
- //   });
 }
 
 function loadingOff() {
     spinner.loadingOff()
-    // $('body').waitMe('hide');
 }
 
 

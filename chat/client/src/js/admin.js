@@ -1,7 +1,7 @@
 import '../css/main.sass';
 import '../css/vendor/toastr.min.css';
 import { XHR } from "./lib/xhr";
-import * as toastr from "toastr";
+import toastr from "./lib/toastr";
 window.toastr = toastr;
 import { iCrypto } from "./lib/iCrypto";
 import { Vault } from "./lib/Vault";
@@ -740,9 +740,8 @@ function loadLogs(errorsOnly = false, download = false) {
 
 function downloadLogs(res){
     console.log("Records received, downloading logs.");
-    let records = JSON.stringify(res.records);
 
-    let url = URL.createObjectURL(new Blob([records], {type: "text/json"}))
+    let url = URL.createObjectURL(new Blob([res.records], {type: "text/json"}))
     let dateOptions = {year: "numeric", month: "numeric", day: "numeric", hour: "numeric", minute: "numeric", second: "numeric"}
     let el = util.bake("a", {
         attributes: {
