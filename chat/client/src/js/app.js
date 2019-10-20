@@ -2,9 +2,8 @@
 import { iCrypto } from "./lib/iCrypto";
 import { resizableInput  } from "./lib/resizable";
 import '../css/main.sass';
-import $ from "jquery";
 import * as util from "./lib/dom-util";
-import * as toastr from "toastr";
+import toastr from "./lib/toastr";
 window.toastr = toastr;
 import { BlockingSpinner } from "./lib/BlockingSpinner";
 
@@ -64,7 +63,7 @@ document.addEventListener('DOMContentLoaded', event => {
     userName.addEventListener("change", editMyNickname);
     topicName.addEventListener("change", editTopicName);
 
-    $('#new-msg').keyup(function (e) {
+    util.$('#new-msg').onkeyup = function (e) {
         if (!e.ctrlKey && e.keyCode === 13) {
             event.preventDefault();
             sendMessage();
@@ -74,14 +73,14 @@ document.addEventListener('DOMContentLoaded', event => {
             e.target.value += "\n";
             moveCursor(e.target, "end");
         }
-    });
-    $('#chat_window').scroll(processChatScroll);
+    };
+    util.$('#chat_window').onscroll = processChatScroll;
 
-    $('#private-key').keyup(async e => {
+    util.$('#private-key').onkeyup = async e => {
         if (e.keyCode === 13) {
             await topicLogin();
         }
-    });
+    };
 
 
     enableSettingsMenuListeners();
@@ -328,7 +327,7 @@ function setupChatListeners(chat) {
 
     chat.on("del_invite_success", () => {
         syncPendingInvites();
-        toastr.info("Invite was deleted");
+        toastr.info("Invite has been deleted");
     });
 
     chat.on("chat_message", data => {
@@ -612,9 +611,9 @@ function addParticipantToSettings(key) {
 }
 
 function updateParticipants() {
-    $('#online-users-list').html("");
-    $('#participants-records').html("");
-    $('#participants--topic-name').html("Topic: " + chat.session.settings.topicName);
+    util.html('#online-users-list', "");
+    util.html('#participants-records', "");
+    util.html('#participants--topic-name', "Topic: " + chat.session.settings.topicName);
 
     let mypkfp = chat.session.publicKeyFingerprint;
     participantsKeys = Object.keys(chat.session.metadata.participants).filter(val => {
@@ -768,16 +767,16 @@ function processLogout() {
 }
 
 function setNavbarListeners() {
-    $('#chat-view-button').click(() => {
+    util.$('#chat-view-button').onclick = () => {
         setView("chat");
-    });
-    $('#settings-view-button').click(() => {
+    };
+    util.$('#settings-view-button').onclick = () => {
         setView("settings");
-    });
+    };
 
-    $('#logout-button').click(() => {
+    util.$('#logout-button').onclick = () => {
         processLogout();
-    });
+    };
 }
 
 function onLoginLoadMessages(messages) {
@@ -1120,27 +1119,8 @@ function generateInvite(ev) {
     chat.requestInvite();
 }
 
-
-// function displayNewTopicData(data, heading, toastrMessage) {
-//     heading = heading ? heading : "Your new topic data. SAVE YOUR PRIVATE KEY!!!";
-//     toastrMessage = toastrMessage ? toastrMessage : "Topic was created successfully!";
-//     let nicknameWrapper = document.createElement("div");
-//     let pkWrapper = document.createElement("div");
-//     let bodyWrapper = document.createElement("div");
-//     nicknameWrapper.innerHTML = "<b>Nickname: </b>" + data.nickname;
-//     pkWrapper.innerHTML = "<br><b>Your private key:</b> <br> <textarea class='key-display'>" + data.privateKey + "</textarea>";
-//     bodyWrapper.appendChild(nicknameWrapper);
-//     bodyWrapper.appendChild(pkWrapper);
-//     let tempWrap = document.createElement("div");
-//     tempWrap.appendChild(bodyWrapper);
-//     showModalNotification(heading, tempWrap.innerHTML);
-//     toastr.success(toastrMessage);
-//
-// }
-
 function showInviteCode(newInvite) {
     syncPendingInvites();
-    showModalNotification("Here is your invite code:", newInvite);
     toastr.success("New invite was generated successfully!");
 }
 
@@ -1167,35 +1147,37 @@ function loadingOn() {
 }
 
 function loadingOff() {
-    spinner.loadingOff();
+    if (spinner.isOn){
+        spinner.loadingOff();
+    }
 }
 
 function setView(view) {
     switch (view) {
         case "chat":
-            $('#chat_room').css('display', 'flex');
-            $('#you_online').css('display', 'flex');
-            $('#auth-wrapper').hide();
-            $('#chat-menu').css('display', 'flex');
-            $('#settings-view').hide();
-            $('#chat-view-button').addClass("active");
-            $('#settings-view-button ').removeClass("active");
+            util.displayFlex('#chat_room');
+            util.displayFlex('#you_online');
+            util.displayNone('#auth-wrapper');
+            util.displayFlex('#chat-menu');
+            util.displayNone('#settings-view');
+            util.addClass('#chat-view-button', "active");
+            util.removeClass('#settings-view-button', "active");
             break;
         case "auth":
-            $('#chat_room').hide();
-            $('#you_online').hide();
-            $('#auth-wrapper').css('display', 'block');
-            $('#chat-menu').hide();
-            $('#settings-view').hide();
+            util.displayNone('#chat_room');
+            util.displayNone('#you_online');
+            util.displayBlock('#auth-wrapper');
+            util.displayNone('#chat-menu');
+            util.displayNone('#settings-view');
             break;
         case "settings":
-            $('#settings-view').css('display', 'flex');
-            $('#chat_room').hide();
-            $('#you_online').hide();
-            $('#auth-wrapper').hide();
-            $('#chat-menu').css('display', 'flex');
-            $('#chat-view-button').removeClass("active");
-            $('#settings-view-button').addClass("active");
+            util.displayFlex('#settings-view');
+            util.displayNone('#chat_room');
+            util.displayNone('#you_online');
+            util.displayNone('#auth-wrapper');
+            util.displayFlex('#chat-menu');
+            util.removeClass('#chat-view-button', "active");
+            util.addClass('#settings-view-button', "active");
             break;
         default:
             throw "setView: Invalid view: " + view;
@@ -1344,27 +1326,12 @@ function processChatScroll(event) {
     }
 }
 
-
-
-function clearInviteInputs() {
-    $("#invite-code").val("");
-    $("#join-nickname").val("");
-}
-
-function clearNewTopicFields() {
-    $("#new-topic-nickname").val("");
-    $("#new-topic-name").val("");
-}
-
 function clearLoginPrivateKey() {
-    $("#private-key").val("");
+    util.val("private-key", "");
 }
 
 function clearAllInputs() {
     clearModal();
-    clearInviteInputs();
-    clearNewTopicFields();
-    clearLoginPrivateKey();
 }
 
 function downloadURI(uri, name) {

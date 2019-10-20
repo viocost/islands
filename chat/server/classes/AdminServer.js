@@ -589,15 +589,19 @@ async function loadLogs(req, res){
     if(!isRequestValid(req)){
         return res.status(401).end('"error": "Update request was not verified"')
     }
-    let errorsOnly = (req.body.errorsOnly.trim().toLowerCase() === "true" || req.body.errorsOnly === true);
+    try{
+        let errorsOnly = (req.body.errorsOnly === true);
 
-    let logs = await Logger.fetchLogs(errorsOnly);
-    res.set('Content-Type', 'application/json');
+        let logs = await Logger.fetchLogs(errorsOnly);
+        res.set('Content-Type', 'application/json');
 
-    if(logs){
-        res.status(200).send({message: "Logs fetched", records: logs});
-    } else{
-        res.status(404).send({message: "Logs not found"});
+        if(logs){
+            res.status(200).send({message: "Logs fetched", records: logs});
+        } else{
+            res.status(404).send({message: "Logs not found"});
+        }
+    }catch(err){
+        res.status(500).send(`Internal server error: ${err.message}`);
     }
 }
 
