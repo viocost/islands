@@ -7,7 +7,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "unbuild": "rm -rf node_modules || rd /s /q node_modules",
     "build": "npm install && cd ./node_modules/sjcl && ./configure --with-ccmArrayBuffer && make && cd ../../",
-    "build-front": "webpack && webpack --config admin.config.js && webpack --config vault.config.js"
+    "build-front": "webpack && webpack --config admin.config.js && webpack --config vault.config.js",
+    "build-admin": "webpack --config admin.config.js",
+    "build-chat": "webpack",
+    "build-vault": "webpack --config vault.config.js"
   },
   "author": "Konstantin Rybakov <viocost@gmail.com>",
   "license": "ISC",
@@ -20,7 +23,6 @@
     "express": "^4.16.2",
     "express-fileupload": "^0.4.0",
     "fs-extra": "^7.0.0",
-    "jquery": "^3.4.1",
     "js-chacha20": "^1.1.0",
     "js-middleware": "^0.3.1",
     "lzma": "^2.3.2",
@@ -30,6 +32,7 @@
     "randexp": "^0.5.3",
     "semver": "^6.3.0",
     "shelljs": "^0.8.1",
+    "siiimple-toast": "^3.1.6",
     "sjcl": "https://github.com/bitwiseshiftleft/sjcl/tarball/master",
     "socket.io": "^2.2.0",
     "socket.io-client": "^2.2.0",

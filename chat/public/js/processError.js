@@ -1,9 +1,10 @@
 window.onerror = processDocumentError;
 const LENGTHLIMIT = 200;
 let logErrors = [];
+let oldLog;
 
 (function(){
-    let oldLog = console.log;
+    oldLog = console.log;
     console.log = function (message) {
         appendClientLog("log: " + message);
         oldLog.apply(console, arguments);
@@ -52,6 +53,7 @@ function appendClientLog(errMsg){
 
 function processDocumentError(errorMsg, url, lineNumber){
     console.log("Processing error: " + lineNumber);
+    oldLog.apply(errorMsg);
     appendClientLog(errorMsg);
     return true;
 }

@@ -18,6 +18,18 @@ do
             shift
             shift
             ;;
+        -ba|--build-admin)
+            BUILD_ADMIN=ture
+            shift
+            ;;
+        -bv|--build-vault)
+            BUILD_VAULT=ture
+            shift
+            ;;
+        -bc|--build-chat)
+            BUILD_CHAT=true
+            shift
+            ;;
     esac
 done
 
@@ -26,9 +38,32 @@ if [[ ! ${CONTAINER_NAME} ]]; then
     exit 0;
 fi
 
+
+if [[ ${BUILD_ADMIN} ]]; then
+    SELECTIVE_BUILD=true;
+    echo Building admin...
+    npm run build-admin;
+fi
+
+if [[ ${BUILD_VAULT} ]]; then
+    SELECTIVE_BUILD=true;
+    echo Building vault...
+    npm run build-vault;
+fi
+
+if [[ ${BUILD_CHAT} ]]; then
+    SELECTIVE_BUILD=true;
+    echo Building chat...
+    npm run build-chat;
+fi
+
 if [[ ${BUILD_FRONT} ]]; then
     echo Building front...
-    npm run build-front;
+    if  [[ ! $SELECTIVE_BUILD ]]; then
+        npm run build-front;
+    else
+        echo Selective build enabled
+    fi
 fi
 
 

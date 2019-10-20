@@ -9,6 +9,7 @@ export class BlockingSpinner{
         this.selector = opts.selector || "body";
         this.text = opts.text || "Working..."
         this.id = util.generateRandomId(10, "spinner");
+        this.isOn = false
 
     }
 
@@ -18,6 +19,7 @@ export class BlockingSpinner{
         overlayDiv.setAttribute("data-text", this.text)
         overlayDiv.style.position = 'absolute';
         parent.appendChild(overlayDiv);
+        this.isOn = true;
     }
 
     loadingOff(timeout = 200){
@@ -28,6 +30,7 @@ export class BlockingSpinner{
                 if (overlayDiv){
                     overlayDiv.parentElement.removeChild(overlayDiv)
                 }
+                this.isOn = false;
             }, timeout)
         }
     }

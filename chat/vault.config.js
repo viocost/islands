@@ -2,6 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
+const Visualizer = require('webpack-visualizer-plugin');
 
 //...
 
@@ -41,16 +42,11 @@ module.exports = {
             chunkFilename: "[id].min.css",
             sourceMap: true
         }),
-        new webpack.ProvidePlugin({
-            $: 'jquery',
-            jQuery: 'jquery',
-            'window.jQuery': 'jquery'
-        }),
 
         // ---------------------------------------------------------------------------------------------------------------------------
         // uncomment to generate module stats
         //new Visualizer({
-            //filename: './chat_stat.html'
+        //  filename: './vault_stat.html'
         //})
 
     ],
