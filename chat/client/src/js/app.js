@@ -7,14 +7,9 @@ import toastr from "./lib/toastr";
 window.toastr = toastr;
 import { BlockingSpinner } from "./lib/BlockingSpinner";
 
-
-
-
 import { ChatClient } from  "./chat/ChatClient";
 
-
 let chat;
-
 let spinner = new BlockingSpinner()
 
 const DAYSOFWEEK = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -63,7 +58,7 @@ document.addEventListener('DOMContentLoaded', event => {
     userName.addEventListener("change", editMyNickname);
     topicName.addEventListener("change", editTopicName);
 
-    util.$('#new-msg').onkeyup = function (e) {
+    util.$('#new-msg').onkeypress = function (e) {
         if (!e.ctrlKey && e.keyCode === 13) {
             event.preventDefault();
             sendMessage();
@@ -76,7 +71,7 @@ document.addEventListener('DOMContentLoaded', event => {
     };
     util.$('#chat_window').onscroll = processChatScroll;
 
-    util.$('#private-key').onkeyup = async e => {
+    util.$('#private-key').onkeypress = async e => {
         if (e.keyCode === 13) {
             await topicLogin();
         }
@@ -1239,7 +1234,7 @@ function editInviteeName(event) {
     tempName = event.target.value;
     event.target.value = "";
     event.target.addEventListener("focusout", processInviteeNameInput);
-    event.target.addEventListener("keyup", inviteEditingProcessKeyPress);
+    event.target.addEventListener("keypress", inviteEditingProcessKeyPress);
 }
 
 function inviteEditingProcessKeyPress(event) {
