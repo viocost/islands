@@ -10,7 +10,6 @@ import * as util from "./lib/dom-util";
 import { BlockingSpinner } from "./lib/BlockingSpinner";
 import { XHR } from "./lib/xhr";
 import '../css/main.sass';
-import '../css/vendor/tingle.css'
 const sjcl = require("sjcl");
 
 
@@ -45,7 +44,7 @@ document.addEventListener('DOMContentLoaded', event => {
 
     if (reg){
         setView("register")
-        util.$('#vault-new-password-confirm').onkeyup = e => {
+        util.$('#vault-new-password-confirm').onkeypress = e => {
             if (e.keyCode === 13) {
                 registerVault();
             }
@@ -53,7 +52,7 @@ document.addEventListener('DOMContentLoaded', event => {
     } else {
         //regular login
         setView("login");
-        util.$('#vault-password').onkeyup = e => {
+        util.$('#vault-password').onkeypress = e => {
             if (e.keyCode === 13) {
                 vaultLoginGetVault();
             }
@@ -125,7 +124,7 @@ function prepareChangePasswordModal(){
         confirm.value = "";
     };
 
-    wrapper.addEventListener("keyup", (ev)=>{
+    wrapper.addEventListener("keypress", (ev)=>{
         if (ev.which === 13 || ev.keyCode === 13) {
             changePassword();
         }
@@ -175,7 +174,7 @@ function prepareTopicCreateModal(){
         }
     };
 
-    wrapper.addEventListener("keyup", (ev)=>{
+    wrapper.addEventListener("keypress", (ev)=>{
         if (ev.which === 13 || ev.keyCode === 13) {
             start();
         }
@@ -244,7 +243,7 @@ function prepareTopicJoinModal(){
         }
     };
 
-    wrapper.addEventListener("keyup", (ev)=>{
+    wrapper.addEventListener("keypress", (ev)=>{
         if (ev.which === 13 || ev.keyCode === 13) {
             start();
         }
@@ -707,7 +706,7 @@ function renderVault(){
 
 function addNameChangeHandlers(el){
     el.addEventListener("change", processTopicNameChange)
-    el.addEventListener("keyup", (ev)=>{
+    el.addEventListener("keypress", (ev)=>{
         if (ev.which === 13 || ev.keyCode === 13) {
             document.activeElement.blur();
         }

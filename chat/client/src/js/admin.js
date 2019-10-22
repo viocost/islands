@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', event => {
     if (!secured){
         console.log("Secured is false!");
         util.$('#island-setup').addEventListener('click', setupIslandAdmin);
-        util.$("#setup--wrapper").addEventListener("keyup", (ev)=>{
+        util.$("#setup--wrapper").addEventListener("keypress", (ev)=>{
             if (ev.which === 13 || ev.keyCode === 13) {
                 setupIslandAdmin();
             }
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', event => {
         return ;
     }
     util.$('#admin-login').onclick = adminLogin;
-    util.$("#admin-login--wrapper").addEventListener("keyup", (ev)=>{
+    util.$("#admin-login--wrapper").addEventListener("keypress", (ev)=>{
         if (ev.which === 13 || ev.keyCode === 13) {
             adminLogin();
         }
@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', event => {
     logTableBody = util.$("#log-content").lastElementChild;
     filterFieldSelector = util.$('#filter-field-selector');
     filterFieldSelector.addEventListener("change", filterLogs);
-    util.$("#log-filter").addEventListener("keyup", filterLogs);
+    util.$("#log-filter").addEventListener("keypress", filterLogs);
     util.$('#log-reverse').onclick = reverseLogList;
     prepareAdminMenuListeners();
     prepareLogPageListeners();
@@ -337,7 +337,7 @@ function extractDescription(cipher){
 function bakeDescriptionElement(cell, description){
     let field = editableField.bakeEditableField("Place for description",  "editable-field-gray");
     field.addEventListener("change", updateHSDescription);
-    field.addEventListener("keyup", ev=>{
+    field.addEventListener("keypress", ev=>{
         if (ev.which === 13 || ev.keyCode === 13) {
             document.activeElement.blur();
         }

@@ -1,37 +1,13 @@
 #+TITLE: Islands development strategy and tasks
 
 * Current tasks
-** TODO BUG! File transfer isn't working properly
-*** DONE Debug file transfer
-CLOSED: [2019-09-20 Fri 22:22]
-**** Symptoms:
-- Wrong pkfp passed to the checker function
-  possibly file is saved with origin pkfp, while it should
-  save on the island with receiver pkfp
-
-*** DONE Add transfer stages:
-CLOSED: [2019-09-30 Mon 18:06]
-- Checking file locally
-  if found:
-     downloading
-  else:
-     connecting to peer:
-       if connected:
-          requesting file
-          if file found:
-              downloading crossisland
-              notifying client that file is available locally
-              downloading locally
-          else:
-              notifying client: file no longer offered by peer
-
-*** DONE Add messages on state change in UI
-CLOSED: [2019-10-01 Tue 00:48]
-*** TODO bug - file is blocked on rename
-
-** PROJ Get rid of jquery
-*** TODO wirte an universal wrapper around xhr
-
+** TODO Implement multiplexing in browser
+** TODO debug reconnection
+** TODO Implement outgoing message queue on client
+** PROJ Rework the chat interface
+*** Everything on a single page design
+*** Switching between topics
+** TODO BUG: on reconnection mute settings are reset
 ** TODO White spaces in messages
 <2019-09-10 Tue>
 ** TODO Scrolling behavior
@@ -65,6 +41,41 @@ CLOSED: [2019-10-01 Tue 00:48]
 ** TODO Members' names background colors must match background colors in chat
 * Completed
 
+
+** DONE Get rid of jquery
+CLOSED: [2019-10-21 Mon 17:59]
+*** DONE wirte an universal wrapper around xhr
+CLOSED: [2019-10-21 Mon 17:59]
+
+** DONE BUG! File transfer isn't working properly
+CLOSED: [2019-10-21 Mon 17:59]
+*** DONE Debug file transfer
+CLOSED: [2019-09-20 Fri 22:22]
+**** Symptoms:
+- Wrong pkfp passed to the checker function
+  possibly file is saved with origin pkfp, while it should
+  save on the island with receiver pkfp
+
+*** DONE Add transfer stages:
+CLOSED: [2019-09-30 Mon 18:06]
+- Checking file locally
+  if found:
+     downloading
+  else:
+     connecting to peer:
+       if connected:
+          requesting file
+          if file found:
+              downloading crossisland
+              notifying client that file is available locally
+              downloading locally
+          else:
+              notifying client: file no longer offered by peer
+
+*** DONE Add messages on state change in UI
+CLOSED: [2019-10-01 Tue 00:48]
+*** DONE bug - file is blocked on rename
+CLOSED: [2019-10-21 Mon 17:59]
 
 ** DONE new version release
 CLOSED: [2019-10-16 Wed 11:00]
