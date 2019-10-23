@@ -31,12 +31,12 @@ class BootLeaveAssistant extends Assistant{
         console.log("\nBOOTING PARTICIPANT\n");
         const publicKey = await self.hm.getOwnerPublicKey(request.headers.pkfpSource);
         if(!Request.isRequestValid(request, publicKey)){
-            throw "Boot request was not verified";
+            throw new Error("Boot request was not verified");
         }
         const metadata = JSON.parse(await self.hm.getLastMetadata(request.headers.pkfpSource));
         const client =metadata.body.participants[request.headers.pkfpSource];
         if(client.rights < 3){
-            throw "User has not enough rights to boot";
+            throw new Error("User has not enough rights to boot");
         }
 
         await self.crossIslandMessenger.send(new Envelope(metadata.body.topicAuthority.residence, request, client.residence));
@@ -75,7 +75,7 @@ class BootLeaveAssistant extends Assistant{
         Logger.debug("Deleting topic")
         const publicKey = await self.hm.getOwnerPublicKey(request.headers.pkfpSource);
         if(!Request.isRequestValid(request, publicKey)){
-            throw "Boot request was not verified";
+            throw new Error("Boot request was not verified");
         }
 
         await self.hm.deleteTopic(request.headers.pkfpSource);

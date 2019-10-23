@@ -155,9 +155,8 @@ class TorController extends TorControl{
         let onionPattern = /[a-z0-9]*\.onion/;
         let portPattern = /\:[0-9]{1,5}$/;
         if (!onion || !onion.match(onionPattern))
-            throw "getWSOnionConnectionString: Invalid onion address " + onion
+            throw new Error("getWSOnionConnectionString: Invalid onion address: " + onion);
         onion = onion.trim();
-
         return (wss ? "wss://" : "ws://") + onion.match(onionPattern)[0] +
             (onion.match(portPattern) ? onion.match(portPattern)[0] : "");
 

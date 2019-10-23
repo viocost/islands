@@ -6,7 +6,7 @@ class Bipartite {
 
     static processInput(input) {
         if (!input) {
-            throw "Empty input"
+            throw new Error("Empty input");
         } else if (typeof (input) === "object") {
             return JSON.stringify(input)
         } else {

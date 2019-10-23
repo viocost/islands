@@ -27,7 +27,9 @@ window.util = util;
  * @onSuccess - success handler
  * @onError - error handler
  */
-let processAdminRequest = ()=>{throw "Admin session uninitialized";};
+let processAdminRequest = ()=>{
+    throw new Error("Admin session uninitialized");
+};
 
 
 document.addEventListener('DOMContentLoaded', event => {
@@ -92,7 +94,7 @@ function autoLogin(){
     let pkcipher = localStorage.getItem(id);
     if (!pkcipher){
         loadingOff();
-        throw ("Autologin failed: no private ley found in local storage");
+        throw new Error("Autologin failed: no private ley found in local storage");
     }
 
     let ic = new iCrypto();
@@ -195,7 +197,7 @@ function deleteGuest(ev){
         let onion = row.children[1].innerText;
         let isAdmin = /admin/i.test(row.children[3].innerText);
         if(isAdmin){
-            throw "Only applicable to guest hidden service";
+            throw new Error("Only applicable to guest hidden service");
         }
         if(!confirm("This will delete permanently hidden service and associated with it guest vault." +
             "After this operation guest will no longer be able to access this island. \n\nProceed?")){
@@ -217,7 +219,7 @@ function deleteAdminHiddenService(ev){
     let isAdmin = /admin/i.test(row.children[3].innerText);
     try{
         if(!isAdmin){
-            throw "Only applicable to admin hidden service";
+            throw new Error("Only applicable to admin hidden service");
         }
         processAdminRequest({
             action: "delete_hidden_service",
@@ -678,7 +680,7 @@ function runPageActivationHandler(index){
 	    onLogsPageActivation();
 	    break
 	default:
-	    throw "Invaild page index"
+	        throw new Error("Invaild page index")
     }
 }
 
@@ -948,7 +950,7 @@ function clearLogs(ev) {
 function prepareRequestProcessor(adminSession){
     return function (data, onSuccess, onError){
         if (!data.action){
-            throw "Malformed request"
+            throw new Error("Malformed request")
         }
         let privKey = adminSession.privateKey;
         let pkfp = adminSession.pkfp;

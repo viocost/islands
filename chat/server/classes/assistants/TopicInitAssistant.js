@@ -48,9 +48,9 @@ class TopicInitAssistant{
 
         //Error check
         if(!request.hasAttribute("topicID")){
-            throw "Topic id is required";
+            throw new Error("Topic id is required");
         } else if(!request.hasAttribute("ownerPublicKey")){
-            throw "Owner public key is required";
+            throw new Error("Owner public key is required");
         }
 
         //Creating token
@@ -147,7 +147,7 @@ class TopicInitAssistant{
 
     getErrorType(command){
         if(!this.clientErrorTypes[command]){
-            throw "Error tpye not found!";
+            throw new Error("Error tpye not found!");
         }
         return this.clientErrorTypes[command];
     }
@@ -202,11 +202,11 @@ class TopicInitAssistant{
 
     initTopicVerifyRequest(request){
         if(!this.newTopicPending[request.body.topicID]){
-            throw "Pending topic data not found";
+            throw new Error("Pending topic data not found");
         }
 
         if(!request.body.newTopicData){
-            throw "Missing new topic data";
+            throw new Error("Missing new topic data");
         }
     }
 

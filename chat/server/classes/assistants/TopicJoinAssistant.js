@@ -115,7 +115,7 @@ class TopicJoinAssistant {
         if (this.pendingOutgoingJoinRequests[pkfp]) {
             return this.pendingOutgoingJoinRequests[pkfp];
         } else {
-            throw "Topic join error: pending join request not found!";
+            throw new Error("Topic join error: pending join request not found!");
         }
 
     }
@@ -214,7 +214,7 @@ class TopicJoinAssistant {
             join_topic: "join_topic_error"
         };
         if (!errorTypes.hasOwnProperty(command)) {
-            throw "invalid error type";
+            throw new Error("invalid error type");
         }
         return errorTypes[command];
     }

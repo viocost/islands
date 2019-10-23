@@ -13,7 +13,7 @@ import{ FileWorker } from "../lib/FileWorker";
 export class ChatClient {
     constructor(opts){
         if(!opts.version){
-            throw "Version required!";
+            throw new Error("Version required!");
         }
         this.version = opts.version;
         this.islandConnectionStatus = false;
@@ -496,7 +496,7 @@ export class ChatClient {
             return
         }
         if(!pkfp){
-            throw "Missing required parameter";
+            throw new Error("Missing required parameter");
         }
         let membersData = this.session.settings.membersData;
         if (!membersData[pkfp]){
@@ -508,7 +508,7 @@ export class ChatClient {
 
     setMemberAlias(pkfp, alias){
         if(!pkfp){
-            throw "Missing required parameter";
+            throw new Error("Missing required parameter");
         }
         if(!this.session){
             return
@@ -527,7 +527,7 @@ export class ChatClient {
 
     requestNickname(pkfp){
         if(!pkfp){
-            throw "Missing required parameter"
+            throw new Error("Missing required parameter");
         }
         let request = new Message(self.version);
         request.setCommand("whats_your_name");
@@ -759,7 +759,7 @@ export class ChatClient {
 
         if (!this.inviteRequestValid(inviterResidence, inviterID, inviteID)){
             this.emit("join_topic_fail");
-            throw "Invite request is invalid";
+            throw new Error("Invite request is invalid");
         }
 
         this.pendingTopicJoins[inviteID] = {
@@ -884,7 +884,7 @@ export class ChatClient {
      */
     async deleteTopic(){
         if(!this.session){
-            throw "User must be logged in"
+            throw new Error("User must be logged in");
         }
         let privateKey = this.session.privateKey;
         let ic = new iCrypto();
@@ -1260,7 +1260,7 @@ export class ChatClient {
 
     prepareMessage(version, messageContent, recipientPkfp) {
         return new Promise((resolve, reject) => {
-            if(version === undefined || version === "") throw "Chat message initialization error: Version is required";
+            if(version === undefined || version === "") throw new Error("Chat message initialization error: Version is required");
             let self = this;
             console.log("Preparing message: " + messageContent);
             if (!self.isLoggedIn()) {
@@ -1366,13 +1366,13 @@ export class ChatClient {
         let chatMessage = new ChatMessage(message.body.message);
         let author = self.session.metadata.participants[chatMessage.header.author];
         if(!author){
-            throw "Author is not found in the current version of metadata!";
+            throw new Error("Author is not found in the current version of metadata!");
         }
         if(!chatMessage.verify(author.publicKey)){
             self.emit("error", "Received message with invalid signature!");
         }
         if(!chatMessage.header.private && !data.key && chatMessage.header.metadataID !== self.session.metadata.id){
-            throw "current metadata cannot decrypt this message";
+            throw new Error("current metadata cannot decrypt this message");
         }
 
         if(chatMessage.header.private){
@@ -1404,13 +1404,13 @@ export class ChatClient {
         let chatMessage = new ChatMessage(response.body.message);
         let author = self.session.metadata.participants[chatMessage.header.author];
         if(!author){
-            throw "Author is not found in the current version of metadata!";
+            throw new Error("Author is not found in the current version of metadata!");
         }
         if(!chatMessage.verify(author.publicKey)){
             self.emit("error", "Received message with invalid signature!");
         }
         if(!chatMessage.header.private && chatMessage.header.metadataID !== self.session.metadata.id){
-            throw "current metadata cannot decrypt this message";
+            throw new Error("current metadata cannot decrypt this message");
         }
 
         if(chatMessage.header.private){
@@ -1480,7 +1480,7 @@ export class ChatClient {
             self.updatePendingInvites(response.body.invites);
             self.emit(response.headers.response)
         }else{
-            throw "invalid message"
+            throw new Error("invalid message");
         }
     }
 
@@ -2001,7 +2001,7 @@ export class ChatClient {
         try{
             return things[thingToExtract]
         }catch(err){
-            throw "Invalid parameter thingToExtract"
+            throw new Error("Invalid parameter thingToExtract");
         }
         }
 

@@ -40,6 +40,7 @@ class TopicLoginAssistant{
      */
     async initLogin(request, connectionId, self) {
         const clientPkfp = request.headers.pkfpSource;
+        //test
         await self.verifyLoginRequest(request);
         await self.setPendingLogin(request);
         const pendingLogin = self.getPendingLogin(request.body.sessionID);
@@ -56,7 +57,7 @@ class TopicLoginAssistant{
     async continueAfterDecryption(request, connectionId, self){
         const pendingLogin = self.getPendingLogin(request.body.sessionID);
         if(!pendingLogin){
-            throw "Login was not properly initialized";
+            throw new Error("Login was not properly initialized");
         }
         const tokenPrivateKey = pendingLogin.token.privateKey;
         if (pendingLogin.hsLaunchRequired){
@@ -245,7 +246,7 @@ class TopicLoginAssistant{
 
     getErrorType(command){
         if(!this.clientErrorTypes[command]){
-            throw "Error tpye not found!";
+            throw new Error("Error tpye not found!");
         }
         return this.clientErrorTypes[command]
     }

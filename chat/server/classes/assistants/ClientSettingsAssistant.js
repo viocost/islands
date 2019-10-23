@@ -28,7 +28,7 @@ class ClientSettingsAssistant{
     async updateSettings(request, connectionID, self,){
         const metadata = Metadata.parseMetadata(await self.hm.getLastMetadata(request.headers.pkfpSource));
         if(!Request.isRequestValid(request, metadata.getParticipantPublicKey(request.headers.pkfpSource))){
-            throw "Update request was not verified";
+            throw new Error("Update request was not verified");
         }
         metadata.setSettings(request.body.settings);
         //let clientSettingsManager = new ClientSettingsManager(self.hm);

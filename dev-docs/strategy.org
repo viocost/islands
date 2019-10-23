@@ -1,6 +1,7 @@
 #+TITLE: Islands development strategy and tasks
 
 * Current tasks
+** TODO When tab is activated - the cursor must go to new message textarea
 ** TODO Implement multiplexing in browser
 ** TODO debug reconnection
 ** TODO Implement outgoing message queue on client

@@ -217,7 +217,7 @@ class ServiceAssistant{
         let publicKey = await self.hm.getOwnerPublicKey(request.headers.pkfpSource)
 
         if (!Request.isRequestValid(request, publicKey)){
-            throw "Request was not verified";
+            throw new Error("Request was not verified");
         }
 
         let data = await self.hm.loadMoreMessages(request.headers.pkfpSource, request.body.lastLoadedMessageID);
@@ -292,10 +292,10 @@ class ServiceAssistant{
             Logger.warn("Attempt to send a message without logging in", {
                 pkfp: request.headers.pkfpSource
             });
-            throw "Login required";
+            throw new Error("Login required");
         }
         if(!Request.isRequestValid(request, myPublicKey)){
-            throw "Sending private message error: signature is not valid!";
+            throw new Error("Sending private message error: signature is not valid!");
         }
         if(recipient){
             await self._sendToSignleRecipient(request, sender.residence, recipient.residence,)
@@ -317,7 +317,7 @@ class ServiceAssistant{
         let publicKey = await self.hm.getOwnerPublicKey(request.headers.pkfpSource);
 
         if (!Request.isRequestValid(request, publicKey)){
-            throw "Request was not verified";
+            throw new Error("Request was not verified");
         }
 
         let msg = await self.createSaveServiceRecord(request.headers.pkfpSource,

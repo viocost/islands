@@ -184,7 +184,7 @@ class InviteAssistant{
             {
                 pkfpDest: true,
             })){
-            throw "USER REQUEST VALIDATION ERROR";
+            throw new Error("USER REQUEST VALIDATION ERROR");
         }
 
     }
@@ -206,7 +206,7 @@ class InviteAssistant{
             sync_invites: "sync_invites_error"
         };
         if (!errorTypes.hasOwnProperty(command)){
-            throw "invalid error type"
+            throw new Error("invalid error type");
         }
         return errorTypes[command];
     }

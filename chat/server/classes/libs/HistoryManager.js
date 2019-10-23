@@ -244,7 +244,7 @@ class HistoryManager{
         let path = this.getPath(taPkfp, "topicAuthority");
         let pathInvites = this.getPath(taPkfp, "invites");
         if(fs.existsSync(path)){
-            throw "Cannot initialize topic authority directory - it is already exists";
+            throw new Error("Cannot initialize topic authority directory - it is already exists");
         }
 
         fs.mkdirSync(path);
@@ -265,7 +265,7 @@ class HistoryManager{
      */
     _preapreTaAppendMetadataJob(taPkfp, metadata){
         if (typeof(metadata) !== "string"){
-            throw "taAppendMetadata error - metadata must be type of string";
+            throw new Error("taAppendMetadata error - metadata must be type of string");
         }
         return async function(){
             let hm = this.hm;
@@ -482,7 +482,7 @@ class HistoryManager{
         } else if (mode === "r"){
             return fs.createReadStream(path.join(filesPath, fileName));
         } else {
-            throw "createAttachmentFileStream: invalid mode " + mode;
+            throw new Error("createAttachmentFileStream: invalid mode " + mode);
         }
     }
 
@@ -507,7 +507,7 @@ class HistoryManager{
     getFileStat(pkfp, name){
         let self = this;
         if(!self.fileExists(pkfp, name)){
-            throw "history manager getFileStat: file does not exist";
+            throw new Error("history manager getFileStat: file does not exist");
         }
         let path = this.getPath(pkfp, "files");
         let stat = fs.fstatSync(path + name);

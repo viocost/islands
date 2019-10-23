@@ -31,7 +31,7 @@ export class Vault{
      */
     init(password){
         if(!password || password.trim === ""){
-            throw "Password required"
+            throw new Error("Password required");
         }
 
         //CHECK password strength and reject if not strong enough
@@ -102,7 +102,7 @@ export class Vault{
     //This has to be moved outside
     save(){
         if (!this.password || this.privateKey || this.topics){
-            throw "Vault object structure is not valid";
+            throw new Error("Vault object structure is not valid");
         }
 
         //Check if vault exists decrypted and loaded
@@ -149,10 +149,10 @@ export class Vault{
 
     changePassword(newPassword){
         if(!this.initialized){
-            throw "The vault hasn't been initialized";
+            throw new Error("The vault hasn't been initialized");
         }
         if(!newPassword || newPassword.trim === ""){
-            throw "Password required";
+            throw new Error("Password required");
         }
         this.password = newPassword;
     }
@@ -163,7 +163,7 @@ export class Vault{
      */
     pack(){
         if(!this.initialized){
-            throw "The vault hasn't been initialized"
+            throw new Error("The vault hasn't been initialized");
         }
 
         let res = JSON.stringify({
@@ -194,7 +194,7 @@ export class Vault{
     }
 
     addTopic(pkfp, name, privateKey, comment){
-        if (this.topics.hasOwnProperty(pkfp)) throw "Topic with such id already exists";
+        if (this.topics.hasOwnProperty(pkfp)) throw new Error("Topic with such id already exists");
         this.topics[pkfp] = new Topic(pkfp, name, privateKey, comment)
     }
 

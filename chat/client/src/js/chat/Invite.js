@@ -73,7 +73,7 @@ export class Invite{
         if (encoding){
             let ic = new iCrypto();
             if (!ic.encoders.hasOwnProperty(encoding)){
-                throw "WRONG ENCODING"
+                throw new Error("WRONG ENCODING");
             }
             ic.addBlob("b", result)
                 .encode("b", encoding, "bencoded");
@@ -84,7 +84,7 @@ export class Invite{
 
     stringifyAndEncrypt(publicKey){
         if(!publicKey || !Invite.objectValid(this)){
-            throw "Error at stringifyAndEncrypt: the object is invalid or public key is not provided"
+            throw new Error("Error at stringifyAndEncrypt: the object is invalid or public key is not provided");
         }
         let ic = new iCrypto();
 
@@ -111,7 +111,7 @@ export class Invite{
     get  (name){
         if (this.keyExists(name))
             return this[name];
-        throw "Property not found"
+        throw new Error("Property not found");
     };
 
     set (name, value){
@@ -123,7 +123,7 @@ export class Invite{
 
     keyExists(key){
         if (!key)
-            throw "keyExists: Missing required arguments";
+            throw new Error("keyExists: Missing required arguments");
         return Object.keys(this).includes(key.toString());
     }
 

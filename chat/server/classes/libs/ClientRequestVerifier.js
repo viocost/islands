@@ -5,7 +5,7 @@ class ClientRequestVerifier{
 
     verify(request, publicKey){
         if(!request.signature){
-            throw "Request verefication error: no signature found"
+            throw new Error("Request verefication error: no signature found");
         }
 
         let ic = new iCrypto();
@@ -14,7 +14,7 @@ class ClientRequestVerifier{
             .addBlob("sign", request.signature)
             .publicKeyVerify("request","sign", "pubk", "v");
         if(!ic.get("v")){
-            throw "Request was not verified";
+            throw new Error("Request was not verified");
         }
     }
 

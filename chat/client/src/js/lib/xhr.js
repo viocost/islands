@@ -163,8 +163,8 @@ const callback = function (cbType, _xhr, handler){
             handler(_xhr.responseText);
         }
 
-        case "beforeSend": throw "Not Implemented";
-        default: throw "Unknown callback type";
+        case "beforeSend": throw new Error("Not Implemented");
+        default: throw new Error("Unknown callback type");
     }
 }
 
@@ -206,7 +206,7 @@ const processIncomingData = function(_xhr){
 
 function parseHeaders(headers){
     if(typeof headers !== "string"){
-        throw "Error: headers must be a string";
+        throw new Error("Error: headers must be a string");
     }
 
     let hArr = headers.split("\n");

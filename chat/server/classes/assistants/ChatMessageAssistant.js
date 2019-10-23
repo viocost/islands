@@ -53,7 +53,7 @@ class ChatMessageAssistant{
             Logger.warn("Attempt to send a message without logging in", {
                 pkfp: pkfp
             });
-            throw "Login required";
+            throw new Error("Login required");
         }
 
         Logger.debug("Broadcasting chat message", {
@@ -63,7 +63,7 @@ class ChatMessageAssistant{
 
         if (message.body.message.length > 65535){
             Logger.warn("Attempt to send message of length more than 65535 bytes. Actual length is " + message.body.message.length);
-            throw "Message is too long";
+            throw new Error("Message is too long");
         }
 	
         const metadata = JSON.parse(await self.hm.getLastMetadata(pkfp));
@@ -73,7 +73,7 @@ class ChatMessageAssistant{
             Logger.warn("Broadcasting message error: signature is not valid!", {
                 pkfp: pkfp
             });
-            throw "Broadcasting message error: signature is not valid!" ;
+            throw new Error("Broadcasting message error: signature is not valid!") ;
         }
 
         //Adding processed timestamp
@@ -117,17 +117,17 @@ class ChatMessageAssistant{
             Logger.warn("Attempt to send a message without logging in", {
                 pkfp: message.headers.pkfpSource
             });
-            throw "Login required";
+            throw new Error("Login required");
         }
 
 	if (message.body.message.length > 65535){
 	    Logger.warn("Attempt to send message of length more than 65535 bytes. Actual length is " + message.body.message.length);
-	    throw "Message is too long";
+	    throw new Error("Message is too long");
 	}
 	
         const verified = Message.verifyMessage(myPublicKey, message);
         if(!verified){
-            throw "Sending private message error: signature is not valid!";
+            throw new Error("Sending private message error: signature is not valid!");
         }
         let msgString = JSON.stringify(message);
         Logger.debug("Send message request verified", {

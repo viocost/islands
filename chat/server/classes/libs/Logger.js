@@ -40,18 +40,18 @@ const loadFilterConfig = function(){
 class Logger{
 
     constructor(){
-        throw "This class cannot be instantiated";
+        throw new Error("This class cannot be instantiated");
     }
     static _getLogger(){
         if(!Logger._logger ){
-            throw "Logger has not been initialized"
+            throw new Error("Logger has not been initialized");
         }
         return Logger._logger;
     }
 
     static setLevel(level = Err.required()){
         if(!Logger._levels.includes(level)){
-            throw "Logger set level error: invalid level";
+            throw new Error("Logger set level error: invalid level");
         }
         Logger._logger.level = level;
     }

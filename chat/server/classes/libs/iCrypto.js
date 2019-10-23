@@ -59,7 +59,7 @@ class iCrypto {
     setSymCipher(...opts){
         let self = this;
         if (!self.symCiphers.includes(opts[0])){
-            throw "setSymCipher: Invalid or unsupported algorithm"
+            throw new Error("setSymCipher: Invalid or unsupported algorithm");
         }
         self.sym = self[opts[0]]
     }
@@ -67,7 +67,7 @@ class iCrypto {
     setAsymCipher(...opts){
         let self = this;
         if (!self.asymCiphers.includes(opts[0])){
-            throw "setSymCipher: Invalid or unsupported algorithm"
+            throw new Error("setSymCipher: Invalid or unsupported algorithm");
         }
         self.asym = self[opts[0]]
     }
@@ -75,7 +75,7 @@ class iCrypto {
     setStreamCipher(...opts){
         let self = this;
         if (!self.streamCiphers.includes(opts[0])){
-            throw "setSymCipher: Invalid or unsupported algorithm"
+            throw new Error("setSymCipher: Invalid or unsupported algorithm");
         }
         self.ssym = self[opts[0]]
     }
@@ -227,7 +227,7 @@ class iCrypto {
 
         let self = this;
         if(!self.aes.modes.includes(mode.toUpperCase())){
-            throw "AESencrypt: Invalid AES mode";
+            throw new Error("AESencrypt: Invalid AES mode");
         }
         mode = "AES-" + mode.toUpperCase();
         //Creating random 16 bytes IV
@@ -274,7 +274,7 @@ class iCrypto {
         let self = this;
         let cipherWOIV;
         if(!self.aes.modes.includes(mode.toUpperCase())){
-            throw "AESencrypt: Invalid AES mode";
+            throw new Error("AESencrypt: Invalid AES mode");
         }
         mode = "AES-" + mode.toUpperCase();
         let cipher = self.get(target);
@@ -321,7 +321,7 @@ class iCrypto {
         return new Promise((resolve, reject)=>{
             let self = this;
             if(Worker === undefined){
-                throw "Web workers are not supported in current environment";
+                throw new Error("Web workers are not supported in current environment");
             }
             let worker = new Worker("/js/iCryptoWorker.js");
             worker.onmessage = (ev) =>{
@@ -382,7 +382,7 @@ class iCrypto {
 
         keyRaw = iCrypto.hexDecode(key);
         if (keyRaw.length < 16){
-            throw "chacha20: invalid key size: " + keyRaw.length + " key length must be 32 bytes";
+            throw new Error("chacha20: invalid key size: " + keyRaw.length + " key length must be 32 bytes");
         }
 
         let keyBuffer = iCrypto.stringToArrayBuffer(keyRaw).slice(0, 32);
@@ -413,7 +413,7 @@ class iCrypto {
             self.encrypt = (input)=>{
                 let blob = (typeof(input) === "string") ? iCrypto.stringToArrayBuffer(input) : input;
                 if (!(blob instanceof ArrayBuffer) && !(blob instanceof Uint8Array)){
-                    throw "StreamCryptor encrypt: input type is invalid";
+                    throw new Error("StreamCryptor encrypt: input type is invalid");
                 }
                 if (self.cryptor._byteCounter === 0){
                     //First check if counter is 0.
@@ -429,7 +429,7 @@ class iCrypto {
             self.decrypt = (input)=>{
                 let blob = (typeof(input) === "string") ? iCrypto.stringToArrayBuffer(input) : input;
                 if (!(blob instanceof ArrayBuffer)){
-                    throw "StreamCryptor encrypt: input type is invalid";
+                    throw new Error("StreamCryptor encrypt: input type is invalid");
                 }
 
                 if (self.cryptor === undefined){
@@ -474,7 +474,7 @@ class iCrypto {
         let input;
         let cryptor = self.get(cryptorID);
         if (!cryptor.encryptionMode()){
-            throw "streamCryptorEncrypt error: mode is invalid";
+            throw new Error("streamCryptorEncrypt error: mode is invalid");
         }
 
         if (blob instanceof ArrayBuffer){
@@ -491,7 +491,7 @@ class iCrypto {
         if (encoding === undefined || encoding === "raw"){
             return cryptor.encrypt(input).buffer
         } else {
-            throw "NOT IMPLEMENTED"
+            throw new Error("NOT IMPLEMENTED");
         }
 
     }
@@ -504,7 +504,7 @@ class iCrypto {
         if (encoding === undefined || encoding === "raw"){
             return cryptor.decrypt(blob).buffer
         } else {
-            throw "NOT IMPLEMENTED"
+            throw new Error("NOT IMPLEMENTED");
         }
 
     }
@@ -524,7 +524,7 @@ class iCrypto {
         let self = this;
         let blob = self.get(target);
         if(typeof(blob) !== "string"){
-            throw "hash: invalid target type: " + typeof(blob) + "  Target must be string."
+            throw new Error("hash: invalid target type: " + typeof(blob) + "  Target must be string.");
         }
         algorithm = algorithm.toLowerCase();
         let hash = forge.md.hasOwnProperty(algorithm) ? forge.md[algorithm].create(): this.throwError("Wrong hash algorithm");
@@ -558,7 +558,7 @@ class iCrypto {
         } else if (blob instanceof ArrayBuffer){
             input = blob
         } else{
-            throw "invalid input format!"
+            throw new Error("invalid input format!");
         }
         let hash = self.get(target);
         hash.update(sjcl.codec.arrayBuffer.toBits(input));
@@ -655,7 +655,7 @@ class iCrypto {
               keyData = iCrypto.pRequired("setRSAPublicKey"),
               type = iCrypto.pRequired("setRSAPublicKey")){
         if (type!== "public" && type !== "private"){
-            throw "Invalid key type"
+            throw new Error("Invalid key type");
         }
 
         if (!iCrypto.isRSAPEMValid(keyData, type)){
@@ -769,7 +769,7 @@ class iCrypto {
                 encoding = iCrypto.pRequired("_encodeBlob")){
         let self = this;
         if (!this.encoders.hasOwnProperty(encoding)){
-            throw "_encodeBlob: Invalid encoding: " + encoding;
+            throw new Error("_encodeBlob: Invalid encoding: " + encoding);
         }
         return self.encoders[encoding](blob)
     }
@@ -779,7 +779,7 @@ class iCrypto {
 
         let self = this;
         if (!this.encoders.hasOwnProperty(encoding)){
-            throw "_decodeBlob: Invalid encoding: " + encoding;
+            throw new Error("_decodeBlob: Invalid encoding: " + encoding);
         }
         return this.decoders[encoding](blob)
     }
@@ -876,14 +876,14 @@ class iCrypto {
                           keyType = iCrypto.pRequired("validateAndExtractRSAKey")){
         const keyTypes = {public: "publicKey", private: "privateKey"};
         if (!Object.keys(keyTypes).includes(keyType))
-            throw "validateExtractRSAKey: key type is invalid!";
+            throw new Error("validateExtractRSAKey: key type is invalid!");
         if (key[keyTypes[keyType]]){
             key = key[keyTypes[keyType]];
         }
         if (!iCrypto.isRSAPEMValid(key, keyType)){
             console.log(keyType);
             console.log(key);
-            throw "validateExtractRSAKey: Invalid key format"
+            throw new Error("validateExtractRSAKey: Invalid key format");
         }
         return key;
     }
@@ -895,7 +895,7 @@ class iCrypto {
         if (!iCrypto.isRSAPEMValid(key, keyType)){
             console.log(keyType);
             console.log(key);
-            throw "validateExtractRSAKey: Invalid key format"
+            throw new Error("validateExtractRSAKey: Invalid key format");
         }
         key = key.trim().split(/\r?\n/).slice(1, -1).join("");
         this.set(nameToSave, key);
@@ -1029,7 +1029,7 @@ class iCrypto {
                   nameToSave = iCrypto.pRequired("stringify")){
         let target = this.get(name);
         if (typeof(target) !== "object"){
-            throw "stringifyJSON: target invalid";
+            throw new Error("stringifyJSON: target invalid");
         }
 
         this.set(nameToSave, JSON.stringify(target));
@@ -1040,7 +1040,7 @@ class iCrypto {
               nameToSave = iCrypto.pRequired("stringify")){
         let target = this.get(name);
         if (typeof(target) !== "string"){
-            throw "stringifyJSON: target invalid";
+            throw new Error("stringifyJSON: target invalid");
         }
         this.set(nameToSave, JSON.parse(target))
         return this;
@@ -1060,14 +1060,14 @@ class iCrypto {
     merge(things = iCrypto.pRequired("merge"), nameToSave  = iCrypto.pRequired("merge")){
 
         if (!this.keysExist(things))
-            throw "merge: some or all objects with such keys not found ";
+            throw new Error("merge: some or all objects with such keys not found ");
         let result = "";
         for (let i= 0; i< things.length; ++i){
             let candidate = this.get(things[i]);
             if (typeof (candidate) === "string" || typeof(candidate) ==="number" )
                 result += candidate;
             else
-                throw "Object " + things[i] + " is not mergeable";
+                throw new Error("Object " + things[i] + " is not mergeable");
         }
         this.set(nameToSave, result);
         return this;
@@ -1078,12 +1078,12 @@ class iCrypto {
                      paddingChar = iCrypto.pRequired("encodeBlobLength"),
                      nameToSave = iCrypto.pRequired("encodeBlobLength")){
         if(typeof (paddingChar) !== "string"){
-            throw "encodeBlobLength: Invalid padding char";
+            throw new Error("encodeBlobLength: Invalid padding char");
         }
         let l = String(this.get(target).length);
         let paddingLength = targetLength - l.length;
         if (paddingLength<0){
-            throw "encodeBlobLength: String length exceedes target length";
+            throw new Error("encodeBlobLength: String length exceedes target length");
         }
         let padding = paddingChar[0].repeat(paddingLength);
         this.set(nameToSave, (padding + l));
@@ -1199,12 +1199,12 @@ class iCrypto {
     get  (name){
         if (this.keysExist(name))
             return this.store[name];
-        throw "Property " + name + " not found"
+        throw new Error("Property " + name + " not found");
     };
 
     set (name, value){
         if (this.locked)
-            throw "Cannot add property: object locked";
+            throw new Error("Cannot add property: object locked");
         this.assertKeysAvailable(name);
         this.store[name] = value;
     };
@@ -1219,18 +1219,18 @@ class iCrypto {
 
     assertKeysAvailable(keys){
         if (this.keysExist(keys))
-            throw "Cannot add property: " + keys.toString() + " property with such name already exists";
+            throw new Error("Cannot add property: " + keys.toString() + " property with such name already exists");
     }
 
     keysExist(keys){
         if (!keys)
-            throw "keysExist: Missing required arguments";
+            throw new Error("keysExist: Missing required arguments");
         if(typeof (keys) === "string" || typeof(keys) === "number")
             return this._keyExists(keys);
         if(typeof (keys) !== "object")
             throw ("keysExist: unsupported type");
         if(keys.length<1)
-            throw "array must have at least one key";
+            throw new Error("array must have at least one key");
 
         let currentKeys = Object.keys(this.store);
 
@@ -1243,7 +1243,7 @@ class iCrypto {
 
     _keyExists(key){
         if (!key)
-            throw "keyExists: Missing required arguments";
+            throw new Error("keyExists: Missing required arguments");
         return Object.keys(this.store).includes(key.toString());
     }
 

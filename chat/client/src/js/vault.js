@@ -597,7 +597,7 @@ function setView(view){
     };
 
     if(!setters.hasOwnProperty(view)){
-        throw "Invalid view"
+        throw new Error("Invalid view");
     }
     setters[view]();
 }
