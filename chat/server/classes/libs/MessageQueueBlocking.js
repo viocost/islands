@@ -34,7 +34,7 @@ class MessageQueueBlocking{
         try{
             this._queue.push(obj);
         }catch(err){
-            Logger.error("Error enqueueing obj: " + err);
+            Logger.error("Error enqueueing obj: " + err, {stack: err.stack});
         }finally{
             this.unlock();
         }
@@ -43,11 +43,11 @@ class MessageQueueBlocking{
     async dequeue(){
         await this.lock()
         try{
-            Logger.debug("Dequeueing from blocking message queue")
+            Logger.debug("Dequeueing from blocking message queue", {stack: err.stack})
             return this._queue.shift();
         }catch(err){
 
-            Logger.error("Error dequeueing: " + err);
+            Logger.error("Error dequeueing: " + err, {stack: err.stack});
         }finally{
             await this.unlock()
         }
@@ -66,7 +66,7 @@ class MessageQueueBlocking{
         try{
             return (index > -1) ? this._queue.splice(index, 1)[0] : undefined;
         }catch(err){
-            Logger.error("Error removing object from the queue: " + err)
+            Logger.error("Error removing object from the queue: " + err, {stack: err.stack})
         }finally{
             await this.unlock();
         }

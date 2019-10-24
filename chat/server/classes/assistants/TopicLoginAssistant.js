@@ -276,7 +276,8 @@ class TopicLoginAssistant{
             Logger.warn("Topic login error", {
                 error: err.message,
                 pkfp: request.pkfp,
-                connectionId: connectionId
+                connectionId: connectionId,
+                stack: err.stack
             });
 
             try{

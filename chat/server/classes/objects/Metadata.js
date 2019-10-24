@@ -97,7 +97,7 @@ class MetadataFactory{
 
         for (let prop of Metadata.properties){
             if (blob.body[prop] === undefined){
-                throw new Error("Metadata validation error: missing required property '" + prop + "'";
+                throw new Error("Metadata validation error: missing required property '" + prop + "'");
             }
         }
     }

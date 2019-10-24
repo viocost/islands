@@ -88,20 +88,20 @@ class BootLeaveAssistant extends Assistant{
     async crossIslandErrorHandler(envelope, self, err){
 	try{
 	    if(envelope.return){
-		Logger.warn("Error processing return envelope: " + err);
-		return;    
+            Logger.warn("Error processing return envelope: " + err);
+            return;
 	    }
 	    Logger.warn("Boot/leave error: " + err + " returning envelope...");
 	    await self.crossIslandMessenger.returnEnvelope(envelope);
 	}catch(err){
-	    Logger.error("FATAL ERROR: " + err + " " + err.stack);
+	    Logger.error("FATAL ERROR: " + err, {stack: err.stack});
 	}	
     }
 
 
     async clientErrorHandler(request, connectionID, self, err){
         try{
-	    Logger.warn("Error handling client request: " + err);
+            Logger.warn("Error handling client request: " + err.message, {stack: err.stack});
             let error = new ClientError(request, self.getClientErrorType(request.header.command) , "Internal server error");
             self.connectionManager.sendResponse(connectionID, error);
         }catch(fatalError){
