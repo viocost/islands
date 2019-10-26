@@ -392,7 +392,7 @@ function showTopicJopinForm(){
 
 function topicJoin(){
     try{
-        //loadingOn(); TEST
+        loadingOn();
         let nickname = document.querySelector("#join-nickname").value;
         let inviteCode = document.querySelector("#join-topic-invite").value;
         let topicName = document.querySelector("#join-topic-name").value;

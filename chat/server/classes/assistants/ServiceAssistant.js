@@ -480,6 +480,7 @@ class ServiceAssistant{
         try{
             await handlers[command](...args)
         }catch(err){
+            Logger.error(`Service assistant error on command: ${command} : ${err.message}`, {stack: err.stack} )
             args.push(err);
             await errorHandler(...args);
         }

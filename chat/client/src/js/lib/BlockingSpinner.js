@@ -23,15 +23,20 @@ export class BlockingSpinner{
     }
 
     loadingOff(timeout = 200){
-        let overlayDiv = util.$(`#${this.id}`);
-        if (overlayDiv){
-            overlayDiv.classList.add('is-unfreezing');
-            setTimeout(()=>{
-                if (overlayDiv){
-                    overlayDiv.parentElement.removeChild(overlayDiv)
-                }
-                this.isOn = false;
-            }, timeout)
+        if(this.isOn){
+            let overlayDiv = util.$(`#${this.id}`);
+            if (overlayDiv){
+                overlayDiv.classList.add('is-unfreezing');
+                setTimeout(()=>{
+                    if (overlayDiv){
+                        overlayDiv.parentElement.removeChild(overlayDiv)
+                    }
+                    this.isOn = false;
+                }, timeout)
+            }
+        } else {
+            console.trace()
+            console.error("Attempt to turn off spinner that hasn't been turned on.")
         }
     }
 }

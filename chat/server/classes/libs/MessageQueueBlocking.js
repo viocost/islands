@@ -43,10 +43,9 @@ class MessageQueueBlocking{
     async dequeue(){
         await this.lock()
         try{
-            Logger.debug("Dequeueing from blocking message queue", {stack: err.stack})
+            Logger.debug("Dequeueing from blocking message queue")
             return this._queue.shift();
         }catch(err){
-
             Logger.error("Error dequeueing: " + err, {stack: err.stack});
         }finally{
             await this.unlock()

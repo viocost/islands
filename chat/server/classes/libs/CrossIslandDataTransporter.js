@@ -52,13 +52,31 @@ class CrossIslandDataTransporter{
                 //establish connection with peer
                 let socket = await self.connector.callPeerFileTransfer(data.link.onion);
 
-                //if success - request file
+                //Creating write stream for file
                 let stream =  self.hm.createAttachmentFileStream(data.myPkfp, tempName);
+
+                //event handlers for stream
+                stream.on('finish', async ()=>{
+                    try{
+                        console.log("Renaming temp file");
+                        await self.hm.renameTempUpload(data.myPkfp, tempName, data.link.name);
+                        //All set. File transferred from peer
+                        resolve()
+                    }catch(err){
+                        Logger.error(`Error renaming temp file after file tranfer: ${err.message}`, {stack: err.stack, cat: "files"})
+                        reject(err);
+                    }
+                });
+
+                stream.on('error', (err)=>{
+                    Logger.error(`Stream error while transferring file from hidden peer: ${err.message}`, {stack: err.stack, cat: "files"})
+                    reject(err);
+                })
+
+                //Begin transfer
                 await self.transferAndVerifyFileFromPeer(socket, stream, data, data.hashEncrypted, data.signEncrypted, data.pubKey)
-                console.log("Renaming temp file");
-                await self.hm.renameTempUpload(data.myPkfp, tempName, data.link.name);
-                //All set. File transferred from peer
-                resolve()
+                stream.end();
+
             }catch(err){
                 reject(err);
             }

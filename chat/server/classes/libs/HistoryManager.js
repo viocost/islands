@@ -539,22 +539,25 @@ class HistoryManager{
             let attempted = 0;
 
             function renameAttempt(){
-                try{
-                    console.log("File exists. Renaming...");
-                    fs.renameSync(oldName, newName);
-                    console.log("Renamed. Resolving...")
-                    resolve();
-                }catch(err){
-                    if ((/BSY/i.test(err.code) || /BUSY/i.test(err.code)) && attempted < maxAttempts){
-                        console.log("File is busy");
-                        attempted++;
-                        setTimeout(renameAttempt, timeout);
-                    }else {
-                        Logger.error("Error renaming file: " + err, {cat: "files"})
-                        console.log("ERROR renaming file: " + err);
-                        reject("renameTempUpload error: " + err);
+                Logger.debug(`File exists. Renaming. Attempt: ${attempted}`, {cat: "files"});
+                fs.rename(oldName, newName, (err)=>{
+                    if (err){
+                        if ((/BSY/i.test(err.code) || /BUSY/i.test(err.code)) && attempted < maxAttempts){
+                            Logger.warn(`Error renameing file: file is busy. Attempt: ${attempted}`, {cat: "files"})
+                            attempted++;
+                            setTimeout(renameAttempt, timeout);
+                        }else {
+                            Logger.error("Error renaming file: " + err, {cat: "files"})
+                            console.log("ERROR renaming file: " + err);
+                            reject("renameTempUpload error: " + err);
+                        }
+                    } else {
+                        //success
+                        console.log("Renamed. Resolving...")
+                        resolve();
                     }
-                }
+
+                });
             }
             renameAttempt();
         })

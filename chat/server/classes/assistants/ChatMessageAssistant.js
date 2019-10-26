@@ -366,6 +366,7 @@ class ChatMessageAssistant{
         try{
             await handlers[command](...args)
         }catch(err){
+            Logger.error(err.message, {stack: err.stack, cat: "chat"})
             args.push(err);
             await errorHandler(...args);
         }

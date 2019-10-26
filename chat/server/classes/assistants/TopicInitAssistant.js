@@ -191,11 +191,11 @@ class TopicInitAssistant{
         }catch(err){
             //handle error
             try{
-                console.trace("Request handle error. Command: " + request.headers.command + "\n" + err);
+                Logger.error(`Topic init assistant error: ${err.message}`, {stack: err.stack} );
                 let error = new ClientError(request, this.getErrorType(request.headers.command) , "Internal server error");
                 this.connectionManager.sendResponse(connectionId, error);
             }catch(fatalError){
-                console.trace("Some big shit happened: " + fatalError + "\nOriginal error: " + err);
+                Logger.error(`Topic init assistant FATAL ERROR: ${fatalError.message}`, {stack: fatalError.stack} );
             }
         }
     }

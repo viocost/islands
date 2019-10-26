@@ -80,6 +80,7 @@ class ClientSettingsAssistant{
         try{
             await handlers[command](...args)
         }catch(err){
+            Logger.error(`Client settings assistant error on command: ${command} : ${err.message}`, {stack: err.stack} )
             args.push(err);
             await errorHandler(...args);
         }

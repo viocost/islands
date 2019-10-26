@@ -222,13 +222,13 @@ class TopicJoinAssistant {
     async crossIslandErrorHandler(envelope, self, err) {
         try {
             if (envelope.return) {
-                Logger.error("Error handling return envelope: " + err + " stack: " + err.stack, {cat: "topic_join"});
+                Logger.error("Error handling return envelope: " + err + " stack: " + err.stack, {cat: "topic_join", stack: err.stack});
                 return;
             }
-            Logger.warn("Topic join error: " + err + " returning envelope...", {cat: "topic_join"});
+            Logger.warn("Topic join error: " + err + " returning envelope...", {cat: "topic_join", stack: err.stack});
             await self.crossIslandMessenger.returnEnvelope(envelope, err);
         } catch (fatalErr) {
-            Logger.error("FATAL ERROR" + fatalErr + " " + fatalErr.stack, {cat: "topic_join"});
+            Logger.error("FATAL ERROR" + fatalErr + " " + fatalErr.stack, {cat: "topic_join", stack: fatalErr.stack});
             console.trace("FATAL ERROR: " + fatalErr);
         }
 

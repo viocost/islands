@@ -291,6 +291,7 @@ class InviteAssistant{
         }catch(err){
             args.push(err);
             await errorHandler(...args);
+            Logger.error(`Invite assistant error on command: ${command} : ${err.message}`, {stack: err.stack} )
         }
     }
 

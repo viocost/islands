@@ -794,7 +794,7 @@ function processLogsLoaded(res) {
         row.append(msg);
         let additionalValues = new CuteSet(Object.keys(parsed)).minus(["level", "message", "timestamp"]);
         if (additionalValues.length() > 0) {
-            let addCell = document.createElement("td");
+            let addCell = util.bake("td", {classes: "add-value-cell"});
             for (let key of additionalValues) {
                 let wrap = document.createElement("div");
                 wrap.classList.add("log-add-value");

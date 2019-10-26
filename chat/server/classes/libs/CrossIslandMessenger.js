@@ -102,6 +102,7 @@ class CrossIslandMessenger extends EventEmitter{
         while(!queue.isEmpty()){
 
             let envelope = await queue.dequeue()
+            Logger.debug("Envelope is dequeued: " + JSON.stringify(envelope));
             try{
                 await this.connector.sendDirectly(envelope);
                 if(typeof envelope.onDelivered === "function"){
