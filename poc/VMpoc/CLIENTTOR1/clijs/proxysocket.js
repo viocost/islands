@@ -47,6 +47,8 @@ function proxysocket(socksHost, socksPort, socket) {
 		writable: true
 	}));
 
+
+
 	// A socket emits events like 'data' and 'connect'
 	EventEmitter.call(self);
 
@@ -65,6 +67,7 @@ function proxysocket(socksHost, socksPort, socket) {
 			receiveSocksData(buffer);
 		}
 	});
+
 
 	socket.on('error', function (e) {
 		self.emit('error', e);
