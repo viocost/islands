@@ -11,6 +11,8 @@
 ** TODO debug reconnection
 ** TODO Implement outgoing message queue on client
 ** PROJ Rework the chat interface
+*** TODO draft layout wireframes
+
 *** Everything on a single page design
 *** Switching between topics
 *** Vault and chat are single page
