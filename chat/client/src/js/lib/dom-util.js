@@ -27,7 +27,7 @@ export function bake(name, recipe){
             }
         }else if (typeof recipe.classes === "string"){
             el.classList.add(recipe.classes);
-        }else {throw "Bake parameters invalid"}
+        }else {throw new Error("Bake parameters invalid");}
     }
 
     if(recipe.listeners){
@@ -172,7 +172,7 @@ function verifyGetNode(element){
     if (!node){
         throw `Element ${element} is undefined`;
     } else if(!node instanceof Element){
-        throw "Type of element is invalid";
+        throw new Error("Type of element is invalid");
     }
     return node;
 }

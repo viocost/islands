@@ -115,7 +115,7 @@ class TopicJoinAssistant {
         if (this.pendingOutgoingJoinRequests[pkfp]) {
             return this.pendingOutgoingJoinRequests[pkfp];
         } else {
-            throw "Topic join error: pending join request not found!";
+            throw new Error("Topic join error: pending join request not found!");
         }
 
     }
@@ -214,7 +214,7 @@ class TopicJoinAssistant {
             join_topic: "join_topic_error"
         };
         if (!errorTypes.hasOwnProperty(command)) {
-            throw "invalid error type";
+            throw new Error("invalid error type");
         }
         return errorTypes[command];
     }
@@ -222,13 +222,13 @@ class TopicJoinAssistant {
     async crossIslandErrorHandler(envelope, self, err) {
         try {
             if (envelope.return) {
-                Logger.error("Error handling return envelope: " + err + " stack: " + err.stack, {cat: "topic_join"});
+                Logger.error("Error handling return envelope: " + err + " stack: " + err.stack, {cat: "topic_join", stack: err.stack});
                 return;
             }
-            Logger.warn("Topic join error: " + err + " returning envelope...", {cat: "topic_join"});
+            Logger.warn("Topic join error: " + err + " returning envelope...", {cat: "topic_join", stack: err.stack});
             await self.crossIslandMessenger.returnEnvelope(envelope, err);
         } catch (fatalErr) {
-            Logger.error("FATAL ERROR" + fatalErr + " " + fatalErr.stack, {cat: "topic_join"});
+            Logger.error("FATAL ERROR" + fatalErr + " " + fatalErr.stack, {cat: "topic_join", stack: fatalErr.stack});
             console.trace("FATAL ERROR: " + fatalErr);
         }
 

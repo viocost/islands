@@ -52,7 +52,7 @@ class TopicAuthority extends EventEmitter{
     async processDelInviteRequest(request){
         const participant = this.currentMetadata.body.participants[request.headers.pkfpSource];
         if (!Request.isRequestValid(request, participant.publicKey)){
-            throw "Request is invalid!"
+            throw new Error("Request is invalid!");
         }
 
         console.log("Deleting invite!");
@@ -194,7 +194,7 @@ class TopicAuthority extends EventEmitter{
     async processInvitesSyncRequest(request) {
         const participant = this.currentMetadata.body.participants[request.headers.pkfpSource];
         if (!Request.isRequestValid(request, participant.publicKey)){
-            throw "Request is invalid!"
+            throw new Error("Request is invalid!");
         }
         let invites = await this.getUserInvites(request.headers.pkfpSource);
         let response = new Response("sync_invites_success", request);
@@ -225,7 +225,7 @@ class TopicAuthority extends EventEmitter{
 
     async verifyInvite(invite = Err.required()){
         if(!this.verifyBlob(invite.invite, invite.signature)){
-            throw "Invite is invalid";
+            throw new Error("Invite is invalid");
         }
     }
 
@@ -239,7 +239,7 @@ class TopicAuthority extends EventEmitter{
 
         if (lastMeta.body.participants[requestorPkfp].rights < 3){
             //Todo log suspicious request
-            throw "requester has not enough rights to boot"
+            throw new Error("requester has not enough rights to boot");
         }
         await this._bootParticipant(bootCandidate.pkfp);
         let noticeToBooted = new ServiceMessage(this.getPkfp(), bootCandidate.pkfp, "u_booted");
@@ -385,7 +385,7 @@ class TopicAuthority extends EventEmitter{
 
     verifyIsOperational(){
         if(this.taPrivateKey !== undefined)
-            throw "Private key is not set";
+            throw new Error("Private key is not set");
     }
 
 
@@ -503,7 +503,7 @@ class TopicAuthority extends EventEmitter{
      */
     setMetadata(metadata){
         if(!Metadata.isMetadataInstance(metadata)){
-            throw "Metadata must be instance of Metadata";
+            throw new Error("Metadata must be instance of Metadata");
         }
         this.currentMetadata = metadata;
     }

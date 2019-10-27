@@ -71,14 +71,14 @@ class ClientConnectionManager extends EventEmitter{
 
     getSocketById(id){
         if(!this.socketHub.sockets[id]){
-            throw "Socket does not exist: " + id;
+            throw new Error("Socket does not exist: " + id);
         }
         return this.socketHub.sockets[id];
     }
 
     getDataSocketById(id){
         if(!this.dataSocketHub.sockets[id]){
-            throw "Socket does not exist: " + id;
+            throw new Error("Socket does not exist: " + id);
         }
         return this.dataSocketHub.sockets[id];
     }
@@ -122,7 +122,7 @@ class ClientConnectionManager extends EventEmitter{
          data = Err.required("Missing required parameter data")){
         let client = this.getSocketById(connectionId);
         if(!client || !client.connected){
-            throw "Error sending message: client is not connected."
+            throw new Error("Error sending message: client is not connected.");
         }
 
         client.emit(message, data);

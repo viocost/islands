@@ -48,9 +48,9 @@ class TopicInitAssistant{
 
         //Error check
         if(!request.hasAttribute("topicID")){
-            throw "Topic id is required";
+            throw new Error("Topic id is required");
         } else if(!request.hasAttribute("ownerPublicKey")){
-            throw "Owner public key is required";
+            throw new Error("Owner public key is required");
         }
 
         //Creating token
@@ -147,7 +147,7 @@ class TopicInitAssistant{
 
     getErrorType(command){
         if(!this.clientErrorTypes[command]){
-            throw "Error tpye not found!";
+            throw new Error("Error tpye not found!");
         }
         return this.clientErrorTypes[command];
     }
@@ -191,22 +191,22 @@ class TopicInitAssistant{
         }catch(err){
             //handle error
             try{
-                console.trace("Request handle error. Command: " + request.headers.command + "\n" + err);
+                Logger.error(`Topic init assistant error: ${err.message}`, {stack: err.stack} );
                 let error = new ClientError(request, this.getErrorType(request.headers.command) , "Internal server error");
                 this.connectionManager.sendResponse(connectionId, error);
             }catch(fatalError){
-                console.trace("Some big shit happened: " + fatalError + "\nOriginal error: " + err);
+                Logger.error(`Topic init assistant FATAL ERROR: ${fatalError.message}`, {stack: fatalError.stack} );
             }
         }
     }
 
     initTopicVerifyRequest(request){
         if(!this.newTopicPending[request.body.topicID]){
-            throw "Pending topic data not found";
+            throw new Error("Pending topic data not found");
         }
 
         if(!request.body.newTopicData){
-            throw "Missing new topic data";
+            throw new Error("Missing new topic data");
         }
     }
 

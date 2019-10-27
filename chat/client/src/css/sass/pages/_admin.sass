@@ -362,6 +362,7 @@ thead.hs-table
 
 #log-content
   width: 100%
+  table-layout: fixed
   font-size: 1.2rem
   border-collapse: collapse
   thead
@@ -406,25 +407,31 @@ thead.hs-table
     .log-row-hidden
       display: none
 
-.log-add-value
-  display: flex
-  flex-direction: column
-  border-bottom: #777777 1px solid
-  .log-key
-    height: 100%
-    width: 100%
-    overflow: auto
+.add-value-cell
+  width: 30%
+  .log-add-value
+    display: flex
+    flex-direction: column
+    border-bottom: #777777 1px solid
+    width: 34%
+    .log-key
+      height: 100%
+      width: inherit
+      overflow: auto
+    .log-val
+      width: inherit
 
 
 .log-timestamp
   width: 10%
 
 .log-level
-  width: 5%
+  width: 6%
 
 .log-msg
-  width: 30%
+  width: 50%
   overflow: auto
+
 
 #github-update-options--wrap
   display: none

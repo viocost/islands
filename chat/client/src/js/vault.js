@@ -392,7 +392,7 @@ function showTopicJopinForm(){
 
 function topicJoin(){
     try{
-        //loadingOn(); TEST
+        loadingOn();
         let nickname = document.querySelector("#join-nickname").value;
         let inviteCode = document.querySelector("#join-topic-invite").value;
         let topicName = document.querySelector("#join-topic-name").value;
@@ -597,7 +597,7 @@ function setView(view){
     };
 
     if(!setters.hasOwnProperty(view)){
-        throw "Invalid view"
+        throw new Error("Invalid view");
     }
     setters[view]();
 }

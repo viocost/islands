@@ -52,7 +52,7 @@ module.exports.delOnion = function(onion){
     onion = onion.substring(0, 16);
     let map = getMap();
     if (!map.hasOwnProperty(onion))
-        throw "Onion does not exist";
+        throw new Error("Onion does not exist");
     delete map[onion];
     saveMap(map)
 };
@@ -61,9 +61,9 @@ module.exports.setOnionState = function(onion, enabled){
     onion = onion.substring(0, 16);
     let map = getMap();
     if (!map.hasOwnProperty(onion))
-        throw "Onion does not exist";
+        throw new Error("Onion does not exist");
     else if(typeof(enabled) !== "boolean")
-        throw "State format is invalid. Expected boolean.";
+        throw new Error("State format is invalid. Expected boolean.");
     map[onion].enabled = enabled;
     saveMap(map);
 };
@@ -72,7 +72,7 @@ module.exports.setOnionDescription = function(onion, description){
     onion = onion.substring(0, 16);
     let map = getMap();
     if (!map.hasOwnProperty(onion))
-        throw "Onion does not exist";
+        throw new Error("Onion does not exist");
     map[onion].description = description;
     saveMap(map);
 };
@@ -91,7 +91,7 @@ function saveMap(map){
 
 function assertInit(){
     if(!filePath){
-        throw "Hidden Service to vault map has not been initialized";
+        throw new Error("Hidden Service to vault map has not been initialized");
     }
 }
 

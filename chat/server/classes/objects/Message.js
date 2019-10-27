@@ -33,7 +33,7 @@ class Message{
 
     setAttribute(key = Err.required(), value = Err.required()){
         if(this.body[key]){
-            throw "Cannot set message attribute '" + key + "', it already exists";
+            throw new Error("Cannot set message attribute '" + key + "', it already exists");
         }
         this.body[key] = value;
     }

@@ -28,7 +28,7 @@ class ClientSettingsAssistant{
     async updateSettings(request, connectionID, self,){
         const metadata = Metadata.parseMetadata(await self.hm.getLastMetadata(request.headers.pkfpSource));
         if(!Request.isRequestValid(request, metadata.getParticipantPublicKey(request.headers.pkfpSource))){
-            throw "Update request was not verified";
+            throw new Error("Update request was not verified");
         }
         metadata.setSettings(request.body.settings);
         //let clientSettingsManager = new ClientSettingsManager(self.hm);
@@ -80,6 +80,7 @@ class ClientSettingsAssistant{
         try{
             await handlers[command](...args)
         }catch(err){
+            Logger.error(`Client settings assistant error on command: ${command} : ${err.message}`, {stack: err.stack} )
             args.push(err);
             await errorHandler(...args);
         }

@@ -1,12 +1,19 @@
 #+TITLE: Islands development strategy and tasks
 
 * Current tasks
-** TODO Implement multiplexing in browser
+** TODO When tab is activated - the cursor must go to new message textarea
+** TODO Send message in queue
+** PROJ Implement multiplexing
+*** TODO Keep messages in variables
+*** TODO Separate connector and multiplexor object
+*** TODO Refresh messages logic
+
 ** TODO debug reconnection
 ** TODO Implement outgoing message queue on client
 ** PROJ Rework the chat interface
 *** Everything on a single page design
 *** Switching between topics
+*** Vault and chat are single page
 ** TODO BUG: on reconnection mute settings are reset
 ** TODO White spaces in messages
 <2019-09-10 Tue>

@@ -51,7 +51,7 @@ export class AttachmentInfo{
         let required = ["name", "size", "pkfp", "hashUnencrypted", "hashEncrypted", "signUnencrypted", "signEncrypted", "link",  "metaID", "messageID", "hashAlgorithm"];
         for(let i of required){
             if (!info.hasOwnProperty(i)){
-                throw "Attachment verifyFileInfo: Missing required property: " + i;
+                throw new Error("Attachment verifyFileInfo: Missing required property: " + i);
             }
         }
     }
@@ -72,7 +72,7 @@ export class AttachmentInfo{
 
     buildLink(onion, pkfp, hash){
         if(!onion || !pkfp || !hash){
-            throw "Attachment buildLink: missing required parameters";
+            throw new Error("Attachment buildLink: missing required parameters");
         }
         const rawLink = onion + "/" + pkfp + "/" + hash;
         const ic = new iCrypto();
@@ -83,7 +83,7 @@ export class AttachmentInfo{
 
     signHashes(privKey){
         if(!privKey){
-            throw "Attachment signAttachmentHash: privKey is undefined";
+            throw new Error("Attachment signAttachmentHash: privKey is undefined");
         }
         let self = this;
         let ic = new iCrypto();

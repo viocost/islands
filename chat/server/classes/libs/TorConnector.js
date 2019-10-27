@@ -370,7 +370,7 @@ class TorConnector extends EventEmitter{
     async sendDirectly(envelope = Err.required()){
         let socket = this.getActiveSocket(envelope.destination);
         if(!socket){
-            throw "sendDirectly: active socket was not found. Destination: " + envelope.destination;
+            throw new Error("sendDirectly: active socket was not found. Destination: " + envelope.destination);
         }
         Logger.debug("Sending message to hidden peer", {
             destination: envelope.destination
@@ -579,7 +579,7 @@ class TorConnector extends EventEmitter{
         let onionPattern = /[a-z0-9]*\.onion/;
         let portPattern = /\:[0-9]{1,5}$/;
         if (!onion || !onion.match(onionPattern))
-            throw "getWSOnionConnectionString: Invalid onion address"
+            throw new Error("getWSOnionConnectionString: Invalid onion address");
         onion = onion.trim();
 
         return (wss ? "wss://" : "ws://") + onion.match(onionPattern)[0] + 

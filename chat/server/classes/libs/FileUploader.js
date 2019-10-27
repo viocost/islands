@@ -31,7 +31,7 @@ class FileUploader{
         let verified = await self.verifyNonce(data.pkfp, data.nonce, data.sign, true);
 
         if (!verified){
-            throw "invalid_request";
+            throw new Error("invalid_request");
         }
 
         let tempFileName = data.nonce + ".temp";

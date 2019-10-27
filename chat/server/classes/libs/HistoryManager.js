@@ -244,7 +244,7 @@ class HistoryManager{
         let path = this.getPath(taPkfp, "topicAuthority");
         let pathInvites = this.getPath(taPkfp, "invites");
         if(fs.existsSync(path)){
-            throw "Cannot initialize topic authority directory - it is already exists";
+            throw new Error("Cannot initialize topic authority directory - it is already exists");
         }
 
         fs.mkdirSync(path);
@@ -265,7 +265,7 @@ class HistoryManager{
      */
     _preapreTaAppendMetadataJob(taPkfp, metadata){
         if (typeof(metadata) !== "string"){
-            throw "taAppendMetadata error - metadata must be type of string";
+            throw new Error("taAppendMetadata error - metadata must be type of string");
         }
         return async function(){
             let hm = this.hm;
@@ -482,7 +482,7 @@ class HistoryManager{
         } else if (mode === "r"){
             return fs.createReadStream(path.join(filesPath, fileName));
         } else {
-            throw "createAttachmentFileStream: invalid mode " + mode;
+            throw new Error("createAttachmentFileStream: invalid mode " + mode);
         }
     }
 
@@ -507,7 +507,7 @@ class HistoryManager{
     getFileStat(pkfp, name){
         let self = this;
         if(!self.fileExists(pkfp, name)){
-            throw "history manager getFileStat: file does not exist";
+            throw new Error("history manager getFileStat: file does not exist");
         }
         let path = this.getPath(pkfp, "files");
         let stat = fs.fstatSync(path + name);
@@ -539,22 +539,25 @@ class HistoryManager{
             let attempted = 0;
 
             function renameAttempt(){
-                try{
-                    console.log("File exists. Renaming...");
-                    fs.renameSync(oldName, newName);
-                    console.log("Renamed. Resolving...")
-                    resolve();
-                }catch(err){
-                    if ((/BSY/i.test(err.code) || /BUSY/i.test(err.code)) && attempted < maxAttempts){
-                        console.log("File is busy");
-                        attempted++;
-                        setTimeout(renameAttempt, timeout);
-                    }else {
-                        Logger.error("Error renaming file: " + err, {cat: "files"})
-                        console.log("ERROR renaming file: " + err);
-                        reject("renameTempUpload error: " + err);
+                Logger.debug(`File exists. Renaming. Attempt: ${attempted}`, {cat: "files"});
+                fs.rename(oldName, newName, (err)=>{
+                    if (err){
+                        if ((/BSY/i.test(err.code) || /BUSY/i.test(err.code)) && attempted < maxAttempts){
+                            Logger.warn(`Error renameing file: file is busy. Attempt: ${attempted}`, {cat: "files"})
+                            attempted++;
+                            setTimeout(renameAttempt, timeout);
+                        }else {
+                            Logger.error("Error renaming file: " + err, {cat: "files"})
+                            console.log("ERROR renaming file: " + err);
+                            reject("renameTempUpload error: " + err);
+                        }
+                    } else {
+                        //success
+                        console.log("Renamed. Resolving...")
+                        resolve();
                     }
-                }
+
+                });
             }
             renameAttempt();
         })

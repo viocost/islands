@@ -922,10 +922,10 @@ class IslandsChat{
                 let messages = data.messages;
                 if (myResidence !== messages.ServiceID + ".onion"){
                     console.log("INVALID HIDDEN SERVICE WAS CREATED. Precalculated: " + myResidence + " actual: " + messages.ServiceID + ".onion");
-                    throw "INVALID HIDDEN SERVICE WAS CREATED. Precalculated: " + myResidence + " actual: " + messages.ServiceID + ".onion";
+                    throw new Error("INVALID HIDDEN SERVICE WAS CREATED. Precalculated: " + myResidence + " actual: " + messages.ServiceID + ".onion");
                 }
                 if(!self.pendingTopicJoins[inviteCode]){
-                    throw "Pending topic join was not found!!!"
+                    throw new Error("Pending topic join was not found!!!");
                 }
                 self.pendingTopicJoins[inviteCode].inviterPublicKey = inviterPublicKey;
                 console.log("Saved inviter's public key in pending topic joins: " + inviterPublicKey);
@@ -1048,7 +1048,7 @@ class IslandsChat{
             console.log("Unable to append metadata on member join. Either topic not found, or pending topic join not found");
             console.log("Invite code: " + inviteCode);
             console.log("Pending topic joins: " + CircularJSON.stringify(self.pendingTopicJoins));
-            throw ""
+            throw new Error("");
         }
 
         //let pendingRequest = self.pendingTopicJoins[request.body.inviteCode];
@@ -1161,11 +1161,11 @@ class IslandsChat{
         let taHsId = iCrypto.onionAddressFromPrivateKey(hsPrivateKey)
         if(!await self.connector.isHSUp(taHsId)){
             if(!hsPrivateKey){
-                throw "Hidden service with such id is not running. Hiddne service private key is required.";
+                throw new Error("Hidden service with such id is not running. Hiddne service private key is required.");
             }
             let torResponse = self.connector.createHiddenService(hsPrivateKey, true);
             if(torResponse.messages.ServiceID.substring(0, 16) !== taHsId.substring(0, 16)){
-                throw "Invalid hidden service ID or private key"
+                throw new Error("Invalid hidden service ID or private key");
             }
         }
 
@@ -1505,7 +1505,7 @@ class IslandsChat{
             let publicKey = await self.hm.getOwnerPublicKey(request.headers.pkfpSource)
 
             if (!Message.verifyMessage(publicKey, request)){
-                throw "Request was not verified";
+                throw new Error("Request was not verified");
             }
 
             let data = await self.hm.loadMoreMessages(request.headers.pkfpSource, request.body.lastLoadedMessageID);
@@ -1583,7 +1583,7 @@ class IslandsChat{
         self.verifyClientRequest(request)
             .then((verified) =>{
                 if (!verified){
-                    throw "Request was not verified";
+                    throw new Error("Request was not verified");
                 }
 
                 return self.hm.saveNewInvite(request.body.inviteID, request.body.invite, request.headers.pkfpSource);
@@ -1618,7 +1618,7 @@ class IslandsChat{
             .then((publicKey)=>{
                 request = new Message(request);
                 if (!Message.verifyMessage(publicKey, request)){
-                    throw "Request was not verified!"
+                    throw new Error("Request was not verified!");
                 }
                 return self.consumeInvite(request.headers.pkfpSource, request.body.inviteID, request.body.onion)
             })
@@ -1687,18 +1687,18 @@ class IslandsChat{
                 metadata = JSON.parse(metadata);
 
                 if (metadata.public.participants[authorpkfp].rights < 3){
-                    throw "Not enough rights";
+                    throw new Error("Not enough rights");
                 }
                 //Verify message
                 let authorPublicKey = self.activeSessions[authorpkfp].publicKey;
                 if (!Message.verifyMessage(authorPublicKey, message)){
-                    throw "Message verification failed";
+                    throw new Error("Message verification failed");
                 }
                 return self.hm.getOwnerPublicKey(authorpkfp)
             })
             .then(pubKey=>{
                if(!self.verifyMetadata(message.body.metadata, pubKey)){
-                   throw "Metadata is invalid"
+                   throw new Error("Metadata is invalid");
                }
                return self.hm.appendMetadata(message.body.metadata, authorpkfp)
 
@@ -1769,10 +1769,10 @@ class IslandsChat{
                 author = metadata.public.participants[authorPkfp];
                 //Verify
                 if (author.rights < 3){
-                    throw "Attempt to boot someone without required rights";
+                    throw new Error("Attempt to boot someone without required rights");
                 }
                 else  if (!self.verifyMetadata(message.body.metadata, author.publicKey)){
-                    throw "Attempt to boot someone without required rights";
+                    throw new Error("Attempt to boot someone without required rights");
                 }
                 return self.hm.appendMetadata(message.body.metadata, pkfpDest)
             })
@@ -1815,7 +1815,7 @@ class IslandsChat{
                 author = metadata.public.participants[authorPkfp];
                 //Verify
                 if (author.rights < 3) {
-                    throw "Attempt to boot someone without required rights";
+                    throw new Error("Attempt to boot someone without required rights");
                 }
                 //Processing me booted
                 metadata.public.status = "sealed";
@@ -1941,7 +1941,7 @@ class IslandsChat{
                     metadata = JSON.parse(metadata).public;
                     console.log("Metadata: " + JSON.stringify(metadata) + "\nAuthor pkfp: " + authorPkfp);
                     if(!metadata.participants[authorPkfp]){
-                        throw "Incoming message: Author's pkfp is not registered in this topic";
+                        throw new Error("Incoming message: Author's pkfp is not registered in this topic");
                     }
                     let authorPublicKey = metadata.participants[authorPkfp].publicKey;
 
@@ -1950,12 +1950,12 @@ class IslandsChat{
                     delete message.headers.pkfpDest;
                     console.log("HEADERS: " + JSON.stringify(message.headers));
                     if(!Message.verifyMessage(authorPublicKey, message)){
-                        throw "Message signature is not valid!";
+                        throw new Error("Message signature is not valid!");
                     }
                     //appens to history
                     return this.hm.appendMessage(message.body.message, myPkfp);
                 }catch(err){
-                    throw "Error verifying the message: " + err;
+                    throw new Error("Error verifying the message: " + err);
                 }
             })
             .then(()=>{
@@ -2123,7 +2123,7 @@ class IslandsChat{
 class Envelope{
     constructor(message, destination, type, origin){
         if (!['request', "response", "message", "note"].includes(type)){
-            throw "Envelope: invalid type";
+            throw new Error("Envelope: invalid type");
         }
         this.message = message;
         this.destination = destination;
@@ -2220,7 +2220,7 @@ class Message{
     get  (name){
         if (this.keyExists(name))
             return this[name];
-        throw "Property not found"
+        throw new Error("Property not found");
     };
 
     set (name, value){

@@ -87,7 +87,7 @@ class TopicAuthorityManager{
         if (!this.isTopicAuthorityLaunched(taPkfp)){
             let launchedTAs = Object.keys(this.topicAuthorities).join(", ");
 	    Logger.warn("Topic authority is not launched: " + taPkfp + " launched TAs: " + launchedTAs);
-            throw "Topic authority is not launched: " + taPkfp;
+            throw new Error("Topic authority is not launched: " + taPkfp);
         }
         return this.topicAuthorities[taPkfp];
     }

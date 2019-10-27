@@ -15,7 +15,7 @@ const PUBLICKEY = "publicKey";
 class VaultManager{
     constructor(config){
         if (!config.vaultsPath){
-            throw "Init error: Vaults path is not specified!";
+            throw new Error("Init error: Vaults path is not specified!");
         }
         this.setVaultsPath(config.vaultsPath);
 
@@ -71,7 +71,7 @@ class VaultManager{
             .hexToBytes("vaulthex", "vault")
             .publicKeyVerify("vault", "sign", "pubkey", "verified");
         if(!ic.get("verified")){
-            throw "Vault signature is not valid"
+            throw new Error("Vault signature is not valid");
         }
         Logger.debug("Signature is valid");
 
@@ -80,7 +80,7 @@ class VaultManager{
                 id = this.generateID();
             }while (this.isVaultExist(id));
         } else if (this.isVaultExist(id)){
-            throw "Vault already exists";
+            throw new Error("Vault already exists");
         }
         this._writeVault(id, vaultBlob, publicKey);
         return id;
@@ -95,11 +95,11 @@ class VaultManager{
             .hexToBytes("vaulthex", "vault")
             .publicKeyVerify("vault", "sign", "pubkey", "verified");
         if(!ic.get("verified")){
-            throw "Vault signature is not valid"
+            throw new Error("Vault signature is not valid");
         }
         Logger.debug("Signature is valid");
         if(!this.isRegistrationActive(id)){
-            throw "Registration is not active for: " + id
+            throw new Error("Registration is not active for: " + id)
         }
 
         this._writeVault(id, vaultBlob, publicKey);
@@ -109,7 +109,7 @@ class VaultManager{
     getVault(id){
         //Get vault
         if(!this.isVaultExist(id)){
-            throw "Vault not found";
+            throw new Error("Vault not found");
         }
 
         return fs.readFileSync(this.getVaultPath(id), 'utf8');
@@ -209,7 +209,7 @@ class VaultManager{
 
     getVaultPublicKey(id){
         if(!this.isVaultExist(id)){
-            throw "Vault not found";
+            throw new Error("Vault not found");
         }
 
         return fs.readFileSync(this.getVaultPublicKeyPath(id), 'utf8');

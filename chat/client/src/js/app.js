@@ -935,7 +935,7 @@ async function downloadOnClick(ev) {
     }
 
     if (!target) {
-        throw "att-view container not found...";
+        throw new Error("att-view container not found...");
     }
     let fileInfo = target.nextSibling.innerHTML; //Extract fileInfo from message
 
@@ -1175,7 +1175,7 @@ function setView(view) {
             util.addClass('#settings-view-button', "active");
             break;
         default:
-            throw "setView: Invalid view: " + view;
+            throw new Error("setView: Invalid view: " + view);
     }
 }
 
@@ -1468,7 +1468,7 @@ function refreshInvitesSuccess() {
  */
 function switchConnectionStatus(status) {
     if (!Number.isInteger(status) || ! (0 <= status <= 2)){
-        throw("Switch connection status: status is invalid")
+        throw new Error("Switch connection status: status is invalid")
     }
     switch(status){
         case 0:
@@ -1542,7 +1542,7 @@ function participantAliasChange(ev) {
 function ensureConnected() {
     if (!chat.islandConnectionStatus) {
         toastr.warning("You are disconnected from the island. Please reconnect to continue");
-        throw "No island connection";
+        throw new Error("No island connection");
     }
 }
 

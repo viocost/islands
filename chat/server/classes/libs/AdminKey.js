@@ -19,7 +19,7 @@ module.exports.get = ()=>{
 
     let pubKey = fs.readFileSync(adminKeyPath + fs.readdirSync(adminKeyPath)[0], "utf8");
     if (!pubKey){
-        throw "Error: public key not found."
+        throw new Error("Error: public key not found.");
     }
 
     return pubKey
@@ -36,5 +36,5 @@ module.exports.getPkfp = ()=>{
 };
 
 function ensureInitialized(){
-    if (!adminKeyPath) throw "Admin Key module has not been initialized";
+    if (!adminKeyPath) throw new Error("Admin Key module has not been initialized");
 }

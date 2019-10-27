@@ -7,7 +7,7 @@ class WrapupRecord{
         blob = blob ? blob : this.getStringOfZeroes(64);
 
         if(blob.length !== 64)
-            throw "Wrapup record length is invalid";
+            throw new Error("Wrapup record length is invalid");
 
         this.lastMetadataStart = parseInt(blob.substring(0, 16));
         this.lastMetadataEnd = parseInt(blob.substring(16, 32));
@@ -33,7 +33,7 @@ class WrapupRecord{
         metaStart = parseInt(metaStart);
         metaEnd = parseInt(metaEnd);
         if (metaStart > metaEnd)
-            throw "Start position cannot be after end position";
+            throw new Error("Start position cannot be after end position");
         this.lastMetadataStart =  metaStart;
         this.lastMetadataEnd = metaEnd;
     }
@@ -42,7 +42,7 @@ class WrapupRecord{
         messageStart = parseInt(messageStart);
         messageEnd = parseInt(messageEnd);
         if (messageStart > messageEnd)
-            throw "Start position cannot be after end position";
+            throw new Error("Start position cannot be after end position");
         this.lastMessageStart =  messageStart;
         this.lastMessageEnd = messageEnd;
     }
@@ -70,14 +70,14 @@ class WrapupRecord{
             result += this.getStringOfZeroes(16 - v.length) + v
         }
 
-        if (result.length !== 64) throw "Error forming wrapup record: final length is not 64"
+        if (result.length !== 64) throw new Error("Error forming wrapup record: final length is not 64");
 
         return result;
     }
 
     checkErrors(){
         if(this.lastMetadataEnd < this.lastMetadataStart ||
-            this.lastMessageEnd < this.lastMessageStart) throw "Wrapup record is invalid"
+            this.lastMessageEnd < this.lastMessageStart) throw new Error("Wrapup record is invalid");
     }
 
     getStringOfZeroes(length){

@@ -470,7 +470,7 @@ function adminSetup(req, res){
     console.log("Setting admin");
 
     if (isSecured()){
-        throw "Error setting admin: admin key is already registered"
+        throw new Error("Error setting admin: admin key is already registered");
     }
 
     //Check public key and signature
@@ -483,7 +483,7 @@ function adminSetup(req, res){
         .publicKeyVerify("n", "sign", "pubk", "res");
 
     if(!ic.get('res')){
-        throw "Error setting admin: public key was not verified";
+        throw new Error("Error setting admin: public key was not verified");
     }
 
     //Check vault
@@ -638,7 +638,7 @@ module.exports.isSecured = function(){
 module.exports.getAdminVault = function(){
     let pubKey = fs.readFileSync(keysFolderPath + fs.readdirSync(keysFolderPath)[0], "utf8");
     if (!pubKey){
-        throw "Error: public key not found."
+        throw new Error("Error: public key not found.");
     }
 
     let ic = new iCrypto();

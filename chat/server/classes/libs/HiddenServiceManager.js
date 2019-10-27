@@ -9,7 +9,7 @@ class HiddenServiceManager{
     constructor(islandConfig, appHost, appPort){
 
         if(!islandConfig.hasOwnProperty("hiddenServicesPath")){
-            throw "Invalid server config. No hidden services path specified";
+            throw new Error("Invalid server config. No hidden services path specified");
         }
 
         let torControlOpts = {
@@ -194,7 +194,7 @@ class HiddenServiceManager{
         hsid = hsid.substring(0, 16);
         let path = this.getHSFolderPath() + hsid
         if(!fs.existsSync(path)){
-            throw "Hidden service private key is not found";
+            throw new Error("Hidden service private key is not found");
         }
         return fs.readFileSync(path, "utf8")
     }
