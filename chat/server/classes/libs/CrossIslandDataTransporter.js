@@ -1,6 +1,7 @@
 const Err = require("./IError.js");
 const iCrypto = require("./iCrypto.js");
 const ss = require('socket.io-stream');
+const Logger = require("./Logger.js");
 
 class CrossIslandDataTransporter{
     constructor(connector = Err.required(),
@@ -51,13 +52,31 @@ class CrossIslandDataTransporter{
                 //establish connection with peer
                 let socket = await self.connector.callPeerFileTransfer(data.link.onion);
 
-                //if success - request file
+                //Creating write stream for file
                 let stream =  self.hm.createAttachmentFileStream(data.myPkfp, tempName);
+
+                //event handlers for stream
+                stream.on('finish', async ()=>{
+                    try{
+                        console.log("Renaming temp file");
+                        await self.hm.renameTempUpload(data.myPkfp, tempName, data.link.name);
+                        //All set. File transferred from peer
+                        resolve()
+                    }catch(err){
+                        Logger.error(`Error renaming temp file after file tranfer: ${err.message}`, {stack: err.stack, cat: "files"})
+                        reject(err);
+                    }
+                });
+
+                stream.on('error', (err)=>{
+                    Logger.error(`Stream error while transferring file from hidden peer: ${err.message}`, {stack: err.stack, cat: "files"})
+                    reject(err);
+                })
+
+                //Begin transfer
                 await self.transferAndVerifyFileFromPeer(socket, stream, data, data.hashEncrypted, data.signEncrypted, data.pubKey)
-                console.log("Renaming temp file");
-                await self.hm.renameTempUpload(data.myPkfp, tempName, data.link.name);
-                //All set. File transferred from peer
-                resolve()
+                stream.end();
+
             }catch(err){
                 reject(err);
             }
@@ -82,7 +101,7 @@ class CrossIslandDataTransporter{
         console.log("About to check if file exists");
         if (!self.hm.fileExists(link.pkfp, link.name)){
             //file not found => return not found
-            console.log("File not found");
+            console.log("Crossisland incoming file request: File not found");
             socket.emit("file_not_found");
             return;
         }
@@ -150,7 +169,7 @@ class CrossIslandDataTransporter{
 
 
                 socket.on("file_not_found", ()=>{
-                    this.hm.deleteFileOnTransferFail(data.pkfpDest, data.name);
+                    this.hm.deleteFileOnTransferFail(data.myPkfp, data.name);
                     reject("File not found");
                 });
 

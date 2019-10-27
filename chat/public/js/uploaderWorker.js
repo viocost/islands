@@ -169,11 +169,12 @@ function establishConnection() {
     return new Promise((resolve, reject) => {
         console.log("Connecting to file socket");
         let fileSocket = io('/file', {
-            'reconnection': true,
-            'forceNew': true,
-            'reconnectionDelay': 1000,
-            'reconnectionDelayMax': 5000,
-            'reconnectionAttempts': 5
+            reconnection: true,
+            forceNew: true,
+            upgrade: true,
+            reconnectionDelay: 1000,
+            reconnectionDelayMax: 5000,
+            reconnectionAttempts: 5
         });
 
         fileSocket.on("connect", () => {

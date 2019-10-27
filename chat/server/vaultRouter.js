@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const fs = require("fs-extra");
 const VaultManager = require("./classes/libs/VaultManager");
 const HSMap = require("./classes/libs/HSVaultMap");
 const AdminKey = require("./classes/libs/AdminKey");
@@ -8,10 +7,6 @@ const Logger = require("./classes/libs/Logger");
 const version = require("./classes/libs/Version");
 
 let vaultManager;
-
-let VERSION; //Depricated
-
-let hiddenServiceManager;
 
 module.exports.init = function(config, version, hsManager) {
     VERSION = version;
@@ -43,7 +38,7 @@ router.post("/", (req, res)=>{
                 .status(200).send({"vault": vault})
         }
     }catch(err){
-        Logger.warn(err.message);
+        Logger.warn(err.message, {stack: err.stack});
         res.set("Content-Type", "application/json")
         res.status(400).send("Vault login error.");
     }
@@ -96,13 +91,6 @@ router.get('/get/:id', (req, res)=>{
         res.status(500).send({error: err})
     }
 });
-
-
-// router.get("/testios", (req, res)=>{
-//     res.render("iostest");
-// })
-
-
 
 function isVaultAwaitingRegistration(onion){
     let vaultID = HSMap.getVaultId(onion);

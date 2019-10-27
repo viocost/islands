@@ -18,7 +18,7 @@ import { iCrypto } from "../lib/iCrypto";
  */
 export class Message{
     constructor(version, request){
-        if(version === undefined || version === "") throw "Message init error: Software version is required!";
+        if(version === undefined || version === "") throw new Error("Message init error: Software version is required!");
 
         if(typeof(request)==="string"){
             request = JSON.parse(request);
@@ -63,7 +63,7 @@ export class Message{
     }
 
     setVersion(version){
-        if(version === undefined || version === "") throw "Error setting message version: version undefined";
+        if(version === undefined || version === "") throw new Error("Error setting message version: version undefined");
         this.headers.version = version;
     }
 
@@ -99,7 +99,7 @@ export class Message{
     get  (name){
         if (this.keyExists(name))
             return this[name];
-        throw "Property not found"
+        throw new Error("Property not found");
     };
 
     set (name, value){

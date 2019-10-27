@@ -49,14 +49,15 @@ let appendBuffer = function (buffer1, buffer2) {
 
 
 function downloadFile(data){
+    iCrypto = data.iCrypto;
     processDownload(data)
         .then((dataBuffer)=>{
-            postMessage({ result: "download_complete", data: dataBuffer });
+            postMessage({ message: "download_complete", data: dataBuffer });
             console.log("Stream finished");
         })
         .catch(err=>{
             console.log("Error downloading file: " + err);
-            postMessage({ result: "download_failed", error: err })
+            postMessage({ message: "download_failed", data: err })
         })
 }
 
@@ -85,9 +86,8 @@ function processDownload(data) {
 
         fileSocket.on("download_ready", key => {
             //prepare file
+            postMessage({ message: "file_available_locally"});
             let symk = key[metaID];
-
-            console.log("download_ready triggered. shared key found: " + symk);
             let dataBuffer = new ArrayBuffer(0);
             ss(fileSocket).on("file", stream => {
 
@@ -100,18 +100,20 @@ function processDownload(data) {
 
                 stream.on('data', data => {
 
-                    console.log("ENCRYPTED: " + new Uint8Array(data.slice(0, 32)));
+                    postMessage({ message: "log", data: "Received data chunk" })
                     let chunk = ic.ssym.decrypt("stc", data.buffer);
-                    console.log("UNENCRYPTED: " + new Uint8Array(chunk.slice(0, 32)));
                     ic.updateHash("h", new Uint8Array(chunk));
                     dataBuffer = iCrypto.concatArrayBuffers(dataBuffer, chunk);
                 });
                 stream.on('end', () => {
+                    postMessage({ message: "log", data: "Received end of data message" })
                     ic.digestHash("h", "hres").addBlob("sign", fileInfo.signUnencrypted).asym.setKey("pubk", ownerPubk, "public").asym.verify("hres", "sign", "pubk", "vres");
 
                     if (!ic.get("vres")) {
                         reject("File validation error!");
                     } else {
+
+                        postMessage({ message: "log", data: "Resolving data..." })
                         resolve(dataBuffer);
                     }
                 });
@@ -127,6 +129,16 @@ function processDownload(data) {
             });
         });
 
+        fileSocket.on("requesting_peer", ()=>{
+            console.log("File not found locally, requesting hidden peer")
+            postMessage({ message: "requesting_peer"});
+        })
+
+        fileSocket.on("download_failed", err =>{
+            console.log("File download fail: " + err);
+            postMessage({ message: "download_failed", data: err })
+        })
+
         fileSocket.emit("download_attachment", {
             link: link,
             myPkfp: myPkfp,
@@ -137,32 +149,55 @@ function processDownload(data) {
     });
 }
 
-
-
 function establishConnection() {
     return new Promise((resolve, reject) => {
-        console.log("Connecting to file socket");
+        console.log("Connecting to file socket...")
+        let maxAttempts = 5;
+        let reconnectionDelay = 5000 //ms
+        let attempted = 0;
+
+        postMessage({ message: "log", data: "Connecting to file socket..." })
         let fileSocket = io('/file', {
-            'reconnection': true,
-            'forceNew': true,
-            'reconnectionDelay': 1000,
-            'reconnectionDelayMax': 5000,
-            'reconnectionAttempts': 5
+            autoConnect: false,
+            reconnection: false,
+            forceNew: true,
+            upgrade: false,
+            pingInterval: 10000,
+            pingTimeout: 5000
         });
 
+        let attemptConnection = ()=>{
+            postMessage({ message: "log", data: "Attempting connection: " + attempted })
+            fileSocket.open()
+        }
+
+        let connectionFailHandler = (err)=>{
+
+            if (attempted < maxAttempts){
+                let msg = `Connection error on attempt ${attempted}: ${err}`
+                postMessage({ message: "log", data: msg})
+                attempted++;
+                setTimeout(attemptConnection, reconnectionDelay)
+            } else {
+                let msg = `Connection error on attempt ${attempted}: ${err}\nRejecting!`
+                postMessage({ message: "log", data: msg })
+                reject(err);
+            }
+        }
+
         fileSocket.on("connect", () => {
-            console.log("File transfer connection established");
+            postMessage({ message: "log", data: "File transfer connection established" })
             resolve(fileSocket);
         });
 
         fileSocket.on("connect_error", err => {
-            console.log('Island connection failed: ' + err.message);
-            reject(err);
+            connectionFailHandler(err)
         });
 
         fileSocket.on("connect_timeout", () =>{
-            console.log("File socket connection timeout");
-            reject("File socket connection timeout")
+            connectionFailHandler("Connection timeout.")
         })
+
+        attemptConnection();
     });
 }

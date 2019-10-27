@@ -470,7 +470,7 @@ function adminSetup(req, res){
     console.log("Setting admin");
 
     if (isSecured()){
-        throw "Error setting admin: admin key is already registered"
+        throw new Error("Error setting admin: admin key is already registered");
     }
 
     //Check public key and signature
@@ -483,7 +483,7 @@ function adminSetup(req, res){
         .publicKeyVerify("n", "sign", "pubk", "res");
 
     if(!ic.get('res')){
-        throw "Error setting admin: public key was not verified";
+        throw new Error("Error setting admin: public key was not verified");
     }
 
     //Check vault
@@ -589,15 +589,19 @@ async function loadLogs(req, res){
     if(!isRequestValid(req)){
         return res.status(401).end('"error": "Update request was not verified"')
     }
-    let errorsOnly = (req.body.errorsOnly.trim().toLowerCase() === "true" || req.body.errorsOnly === true);
+    try{
+        let errorsOnly = (req.body.errorsOnly === true);
 
-    let logs = await Logger.fetchLogs(errorsOnly);
-    res.set('Content-Type', 'application/json');
+        let logs = await Logger.fetchLogs(errorsOnly);
+        res.set('Content-Type', 'application/json');
 
-    if(logs){
-        res.status(200).send({message: "Logs fetched", records: logs});
-    } else{
-        res.status(404).send({message: "Logs not found"});
+        if(logs){
+            res.status(200).send({message: "Logs fetched", records: logs});
+        } else{
+            res.status(404).send({message: "Logs not found"});
+        }
+    }catch(err){
+        res.status(500).send(`Internal server error: ${err.message}`);
     }
 }
 
@@ -634,7 +638,7 @@ module.exports.isSecured = function(){
 module.exports.getAdminVault = function(){
     let pubKey = fs.readFileSync(keysFolderPath + fs.readdirSync(keysFolderPath)[0], "utf8");
     if (!pubKey){
-        throw "Error: public key not found."
+        throw new Error("Error: public key not found.");
     }
 
     let ic = new iCrypto();

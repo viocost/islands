@@ -1,5 +1,5 @@
 import * as tingle from "tingle.js"
-
+import "../../css/vendor/tingle.css"
 
 
 export function prepareModal(content, options = {}){

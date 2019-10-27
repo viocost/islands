@@ -184,7 +184,7 @@ class InviteAssistant{
             {
                 pkfpDest: true,
             })){
-            throw "USER REQUEST VALIDATION ERROR";
+            throw new Error("USER REQUEST VALIDATION ERROR");
         }
 
     }
@@ -206,7 +206,7 @@ class InviteAssistant{
             sync_invites: "sync_invites_error"
         };
         if (!errorTypes.hasOwnProperty(command)){
-            throw "invalid error type"
+            throw new Error("invalid error type");
         }
         return errorTypes[command];
     }
@@ -291,6 +291,7 @@ class InviteAssistant{
         }catch(err){
             args.push(err);
             await errorHandler(...args);
+            Logger.error(`Invite assistant error on command: ${command} : ${err.message}`, {stack: err.stack} )
         }
     }
 

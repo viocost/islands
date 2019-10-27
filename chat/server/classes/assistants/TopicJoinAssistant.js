@@ -33,12 +33,12 @@ class TopicJoinAssistant {
      *****************************************************/
 
     async joinTopicIncoming(envelope, self) {
-        Logger.debug("Join topic incoming request receives");
+        Logger.debug("Join topic incoming request receives", {cat: "topic_join"});
         const request = Request.parse(envelope.payload);
         const invite = Invite.parse(request.body.inviteString);
         const topicAuthority = self.topicAuthorityManager.getTopicAuthority(invite.getPkfp());
         let newTopicData = await topicAuthority.joinByInvite(request.body.inviteString, request.body.invitee, envelope.origin);
-        Logger.debug("Join topic request processed by topic authority");
+        Logger.debug("Join topic request processed by topic authority", {cat: "topic_join"});
         const response = new Response("join_topic_success", request);
         response.setAttribute("metadata", newTopicData.metadata);
         response.setAttribute("inviterNickname", newTopicData.inviterNickname);
@@ -46,7 +46,7 @@ class TopicJoinAssistant {
         response.setAttribute("topicName", newTopicData.topicName);
         const responseEnvelope = new Envelope(envelope.origin, response, envelope.destination);
         responseEnvelope.setResponse();
-        Logger.debug("Sending metadata to the invitee");
+        Logger.debug("Sending metadata to the invitee", {cat: "topic_join"});
         await self.crossIslandMessenger.send(responseEnvelope);
     }
 
@@ -60,7 +60,7 @@ class TopicJoinAssistant {
      *****************************************************/
 
     async joinTopicOutgoing(request, connectionID, self) {
-        Logger.debug("Sending outgoing topic join request");
+        Logger.debug("Sending outgoing topic join request", {cat: "topic_join"});
         self.verifyOutgoingRequest(request);
         const hsData = await self.createHiddenService();
 
@@ -84,20 +84,20 @@ class TopicJoinAssistant {
     async finalizeTopicJoin(envelope, self) {
         //Verify, save metadata, return new topic data to the client
         try {
-            Logger.debug("Finalize topic join.");
+            Logger.debug("Finalize topic join.", {cat: "topic_join"});
             let response = envelope.payload;
             const pendingRequest = self.getOutgoingPendingJoinRequest(response.headers.pkfpSource);
             const metadata = response.body.metadata;
             const hsPrivateKeyEncrypted = Util.encryptStandardMessage(pendingRequest.hsPrivateKey, pendingRequest.publicKey);
-            Logger.debug("Initializing topic locally");
+            Logger.debug("Initializing topic locally", {cat: "topic_join"});
             self.hm.initTopic(response.headers.pkfpSource,
                 pendingRequest.publicKey,
                 hsPrivateKeyEncrypted);
             await self.hm.initHistory(response.headers.pkfpSource, metadata);
-            Logger.debug("Sending response to client");
+            Logger.debug("Sending response to client", {cat: "topic_join"});
             await self.connectionManager.sendResponse(pendingRequest.connectionId, response);
         } catch (err) {
-            Logger.warn("Error finalizing topic join request: " + err + " " + err.stack);
+            Logger.warn("Error finalizing topic join request: " + err + " " + err.stack, {cat: "topic_join"});
             await self.processJoinTopicError(envelope.payload, self, err);
         }
 
@@ -115,7 +115,7 @@ class TopicJoinAssistant {
         if (this.pendingOutgoingJoinRequests[pkfp]) {
             return this.pendingOutgoingJoinRequests[pkfp];
         } else {
-            throw "Topic join error: pending join request not found!";
+            throw new Error("Topic join error: pending join request not found!");
         }
 
     }
@@ -172,7 +172,7 @@ class TopicJoinAssistant {
      * from other island.
      */
     async processJoinTopicErrorOnReturn(envelope, self) {
-        Logger.warn("Join topic failed. Return envelope received. Error: " + envelope.error);
+        Logger.warn("Join topic failed. Return envelope received. Error: " + envelope.error, {cat: "topic_join"});
         let request = envelope;
 
         while(request.payload){
@@ -193,7 +193,7 @@ class TopicJoinAssistant {
                 delete self.pendingOutgoingJoinRequests[message.headers.pkfpSorce];
             }
         } catch (err) {
-            Logger.error("FATAL ERROR while processing join topic error: " + err + " " + err.stack);
+            Logger.error("FATAL ERROR while processing join topic error: " + err + " " + err.stack, {cat: "topic_join"});
         }
     }
 
@@ -203,7 +203,7 @@ class TopicJoinAssistant {
             let error = new ClientError(request, self.getClientErrorType(request.headers.command), "Internal server error");
             self.connectionManager.sendResponse(connectionID, error);
         } catch (fatalError) {
-            Logger.error("Some big shit happened: " + fatalError + "\nOriginal error: " + err);
+            Logger.error("Some big shit happened: " + fatalError + "\nOriginal error: " + err, {cat: "topic_join"});
             console.trace(err);
         }
     }
@@ -214,7 +214,7 @@ class TopicJoinAssistant {
             join_topic: "join_topic_error"
         };
         if (!errorTypes.hasOwnProperty(command)) {
-            throw "invalid error type";
+            throw new Error("invalid error type");
         }
         return errorTypes[command];
     }
@@ -222,13 +222,13 @@ class TopicJoinAssistant {
     async crossIslandErrorHandler(envelope, self, err) {
         try {
             if (envelope.return) {
-                Logger.error("Error handling return envelope: " + err + " stack: " + err.stack);
+                Logger.error("Error handling return envelope: " + err + " stack: " + err.stack, {cat: "topic_join", stack: err.stack});
                 return;
             }
-            Logger.warn("Topic join error: " + err + " returning envelope...");
+            Logger.warn("Topic join error: " + err + " returning envelope...", {cat: "topic_join", stack: err.stack});
             await self.crossIslandMessenger.returnEnvelope(envelope, err);
         } catch (fatalErr) {
-            Logger.error("FATAL ERROR" + fatalErr + " " + fatalErr.stack);
+            Logger.error("FATAL ERROR" + fatalErr + " " + fatalErr.stack, {cat: "topic_join", stack: fatalErr.stack});
             console.trace("FATAL ERROR: " + fatalErr);
         }
 

@@ -3,7 +3,7 @@ const app = express();
 const Chat = require('./classes/IslandsChat');
 const path = require('path');
 const bodyParser = require('body-parser');
-const fs = require("fs");
+const fs = require("fs-extra");
 const fileUpload = require('express-fileupload');
 const HiddenServiceManager = require("./classes/libs/HiddenServiceManager");
 
@@ -15,10 +15,14 @@ const chatRouter = require("./chatRouter");
 const HSVaultMap = require("./classes/libs/HSVaultMap");
 const mobileRouter = require("./mobileRouter");
 let VERSION;
+
+console.log("\n\nINITIALIZING ISLANDS....")
+
 try{
     VERSION = "v" + JSON.parse(fs.readFileSync('./package.json').toString()).version
+    console.log(`Version is set to ${VERSION}`)
 }catch(err){
-    console.log("Failed to set version: " + err );
+    console.trace("Failed to set version: " + err );
     VERSION = "version unknown";
 }
 
@@ -53,7 +57,9 @@ process.argv.forEach((val, index, array)=>{
 let config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
 
 Logger.initLogger(config.servicePath, "debug");
-Logger.info("!!=====ISLANDS v." + VERSION + " =====!!");
+let helloMsg = "!!=====ISLANDS v." + VERSION + " =====!!"
+console.log(helloMsg);
+Logger.info(helloMsg);
 
 historyPath = config.historyPath || historyPath;
 let updatePath = config.updatePath || "../update";
@@ -93,6 +99,9 @@ app.use("/chat", chatRouter.router);
 app.use("/admin", adminRouter.router);
 
 
+app.get("/iostest", (req, res)=>{
+    res.render("iostest")
+})
 
 
 let chat;
@@ -105,10 +114,6 @@ const server = app.listen(PORT, HOST, async ()=>{
 
 //
 // //TEST ONLY
-// let testws = require("./classes/poc/testws");
-// testws.init(server);
+//let testws = require("./classes/poc/testws");
+//testws.init(server);
 //
-
-
-
-

@@ -82,12 +82,12 @@ class Message{
     get  (name){
         if (this.keyExists(name))
             return this[name];
-        throw "Property not found"
+        throw new Error("Property not found");
     };
 
     set (name, value){
         if (!Message.properties.includes(name)){
-            throw 'Invite: invalid property "' + name + '"';
+            throw new Error('Invite: invalid property "' + name + '"');
         }
         this[name] = value;
     };

@@ -9,17 +9,17 @@ class ClientRequest extends Message{
 
     static isRequestValid(request, publicKey, opts = {}){
         if(!request.signature){
-            throw "Request verefication error: no signature found"
+            throw new Error("Request verefication error: no signature found");
         }
 
 
         if(opts){
             if (opts.pkfpDest && !request.headers.pkfpDest){
-                throw "Request verefication error: no destination pkfp"
+                throw new Error("Request verefication error: no destination pkfp");
             }
 
             if (opts.pkfpSource && !request.headers.pkfpSource){
-                throw "Request verefication error: no origin pkfp"
+                throw new Error("Request verefication error: no origin pkfp");
             }
 
             if(opts.bodyContent){

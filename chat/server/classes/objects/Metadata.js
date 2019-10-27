@@ -56,7 +56,7 @@ class MetadataFactory{
     static setOwner(metadata = Err.required("Metadata setOwner: missing required parameter 'metadata'"),
                     participant = Err.required("Metadata setOwner: missing required parameter 'participant'")){
         if(metadata.body.owner){
-            throw "metadata setOwner error: owner is already set to " + metadata.body.owner
+            throw new Error("metadata setOwner error: owner is already set to " + metadata.body.owner);
         }
 
         metadata.set("owner", participant.pkfp);
@@ -64,7 +64,7 @@ class MetadataFactory{
 
     static addParticipant(metadata, participant){
         if(!MetadataFactory.isMetadataInstance(metadata)){
-            throw "metadata setOwner error: parameter metadata type is invalid";
+            throw new Error("metadata setOwner error: parameter metadata type is invalid");
         }
         metadata.addParticipant(participant);
 
@@ -92,12 +92,12 @@ class MetadataFactory{
             blob = JSON.parse(blob);
         }
         if(new Set([...new Set(Metadata.properties)].filter(a => !new Set(Object.keys(blob.body)).has(a))).size !== 0){
-            throw "Metadata validation error: number of required properties is invalid."
+            throw new Error("Metadata validation error: number of required properties is invalid.");
         }
 
         for (let prop of Metadata.properties){
             if (blob.body[prop] === undefined){
-                throw "Metadata validation error: missing required property '" + prop + "'";
+                throw new Error("Metadata validation error: missing required property '" + prop + "'");
             }
         }
     }
@@ -133,7 +133,7 @@ class Metadata{
      */
     addParticipant(participant){
         if(!(participant instanceof Participant)){
-            throw "addParticpant error: participant type is invalid"
+            throw new Error("addParticpant error: participant type is invalid");
         }
         participant.validate();
         this.body.participants[participant.pkfp] = participant;
@@ -142,7 +142,7 @@ class Metadata{
 
     removeParticipant(pkfp = Err.required("Metadata removeParticipant set: - missing required parameter 'pkfp'")){
         if(!this.body.participants.hasOwnProperty(pkfp)){
-            throw "Metadata removeParticipant error: participant does not exist";
+            throw new Error("Metadata removeParticipant error: participant does not exist");
         }
         delete this.body.participants[pkfp];
     }
@@ -150,7 +150,7 @@ class Metadata{
     _setStatus(status){
         let statuses = new CuteSet(["sealed", "active"])
         if(!statuses.has(status)){
-            throw "Error setting metadata status: status is invalid";
+            throw new Error("Error setting metadata status: status is invalid");
         }
 
         this.body.status = status;
@@ -211,10 +211,10 @@ class Metadata{
 
     get(prop = Err.required("Participant get: - missing required parameter 'prop'")){
         if (!Object.keys(this.body).includes(prop)){
-            throw "Metadata.get: invalid property '" + prop + "'";
+            throw new Error("Metadata.get: invalid property '" + prop + "'");
         }
         if (!this.body[prop]){
-            throw "Metadata.get: property '" + prop + "' is not initialized";
+            throw new Error("Metadata.get: property '" + prop + "' is not initialized");
         }
         return this.body[prop];
     }
@@ -237,10 +237,10 @@ class Participant{
 
     get(prop = Err.required("Participant get: - missing required parameter 'prop'")){
         if (!Object.keys(this).includes(prop)){
-            throw "Participant.get: invalid property '" + prop + "'";
+            throw new Error("Participant.get: invalid property '" + prop + "'");
         }
         if (!this[prop]){
-            throw "Participant.get: property '" + prop + "' is not initialized";
+            throw new Error("Participant.get: property '" + prop + "' is not initialized");
         }
         return this[prop];
     }
@@ -248,11 +248,11 @@ class Participant{
     validate(){
         //Verifying attributes
         if(new Set([...new Set(Participant.properties)].filter(a => !new Set(Object.keys(this)).has(a))).size > 1){
-           throw "Participant validation error: number of required properties is invalid."
+           throw new Error("Participant validation error: number of required properties is invalid.");
         }
         for (let prop of Participant.properties){
             if (!this[prop]){
-                throw "Participant validation error: missing required property: " + prop;
+                throw new Error("Participant validation error: missing required property: " + prop);
             }
         }
     }

@@ -2,7 +2,7 @@ const SocketIO = require('socket.io');
 const EventEmitter = require('events');
 const ID_SIZE = 6
 const Err = require("./IError.js");
-
+const Logger = require("./Logger.js");
 
 /**
  * Manages client->island connections
@@ -16,6 +16,7 @@ class ClientConnectionManager extends EventEmitter{
         this.io = SocketIO.listen(server);
         this.socketHub = this.io.of("/chat");
         this.dataSocketHub = this.io.of("/file");
+        this.iosSocket = this.io.of("ios");
         this.setListeners();
     }
 
@@ -24,6 +25,13 @@ class ClientConnectionManager extends EventEmitter{
      */
     setListeners(){
         let self = this;
+        //TEST
+        self.iosSocket.on('connection', (socket)=>{
+            console.log("client connected on ios test endpoint!")
+            socket.emit("hello")
+        })
+        //TEST
+
         self.socketHub.on('connection', (socket) => {
             self.emit("client_connected", socket.id);
             socket.on("disconnect", (reason)=>{
@@ -38,12 +46,19 @@ class ClientConnectionManager extends EventEmitter{
         self.dataSocketHub.on('connection', (socket)=>{
             console.log("File socket connected");
             self.emit("data_channel_opened", socket);
+            console.log("After data_channel_opened emit")
             socket.on("disconnect", (reason)=>{
                 self.emit("data_channel_closed", socket.id);
             });
+
             socket.on("reconnect",  (attemptNumber) => {
                 self.emit("data_channel_reconnection", socket.id);
             })
+
+            socket.on("error", (err)=>{
+                Logger.error("Data socket error: " + err)
+            })
+
         })
     }
 
@@ -56,14 +71,14 @@ class ClientConnectionManager extends EventEmitter{
 
     getSocketById(id){
         if(!this.socketHub.sockets[id]){
-            throw "Socket does not exist: " + id;
+            throw new Error("Socket does not exist: " + id);
         }
         return this.socketHub.sockets[id];
     }
 
     getDataSocketById(id){
         if(!this.dataSocketHub.sockets[id]){
-            throw "Socket does not exist: " + id;
+            throw new Error("Socket does not exist: " + id);
         }
         return this.dataSocketHub.sockets[id];
     }
@@ -107,7 +122,7 @@ class ClientConnectionManager extends EventEmitter{
          data = Err.required("Missing required parameter data")){
         let client = this.getSocketById(connectionId);
         if(!client || !client.connected){
-            throw "Error sending message: client is not connected."
+            throw new Error("Error sending message: client is not connected.");
         }
 
         client.emit(message, data);

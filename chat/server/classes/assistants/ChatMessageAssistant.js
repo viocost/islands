@@ -29,8 +29,6 @@ class ChatMessageAssistant{
     }
 
 
-
-
     subscribeToClientRequests(requestEmitter){
         this.subscribe(requestEmitter, {
             //HANDLERS
@@ -49,24 +47,24 @@ class ChatMessageAssistant{
     }
 
 
-
     async broadcastMessage(message, connectionId, self){
         let pkfp = message.headers.pkfpSource;
-        Logger.debug("Broadcasting chat message", {
-            pkfp: pkfp,
-            msg: message.body.message
-        });
         if(!self.sessionManager.isSessionActive(pkfp)){
             Logger.warn("Attempt to send a message without logging in", {
                 pkfp: pkfp
             });
-            throw "Login required";
+            throw new Error("Login required");
         }
 
-	if (message.body.message.length > 65535){
-	    Logger.warn("Attempt to send message of length more than 65535 bytes. Actual length is " + message.body.message.length);
-	    throw "Message is too long";
-	}
+        Logger.debug("Broadcasting chat message", {
+            pkfp: pkfp,
+            msg: message.body.message
+        });
+
+        if (message.body.message.length > 65535){
+            Logger.warn("Attempt to send message of length more than 65535 bytes. Actual length is " + message.body.message.length);
+            throw new Error("Message is too long");
+        }
 	
         const metadata = JSON.parse(await self.hm.getLastMetadata(pkfp));
         const myPublicKey = metadata.body.participants[pkfp].publicKey;
@@ -75,8 +73,13 @@ class ChatMessageAssistant{
             Logger.warn("Broadcasting message error: signature is not valid!", {
                 pkfp: pkfp
             });
-            throw "Broadcasting message error: signature is not valid!" ;
+            throw new Error("Broadcasting message error: signature is not valid!") ;
         }
+
+        //Adding processed timestamp
+        let currentTime = new Date().getTime();
+        message.travelLog[currentTime] = "Outgoing processed on server";
+
 
         const recipients = metadata.body.participants;
         await self.hm.appendMessage(message.body.message, pkfp);
@@ -114,17 +117,17 @@ class ChatMessageAssistant{
             Logger.warn("Attempt to send a message without logging in", {
                 pkfp: message.headers.pkfpSource
             });
-            throw "Login required";
+            throw new Error("Login required");
         }
 
 	if (message.body.message.length > 65535){
 	    Logger.warn("Attempt to send message of length more than 65535 bytes. Actual length is " + message.body.message.length);
-	    throw "Message is too long";
+	    throw new Error("Message is too long");
 	}
 	
         const verified = Message.verifyMessage(myPublicKey, message);
         if(!verified){
-            throw "Sending private message error: signature is not valid!";
+            throw new Error("Sending private message error: signature is not valid!");
         }
         let msgString = JSON.stringify(message);
         Logger.debug("Send message request verified", {
@@ -142,11 +145,11 @@ class ChatMessageAssistant{
 
     async processIncomingMessage(envelope, self){
         const message = envelope.payload;
-	if(message.body.message.length > 65535){
-	    Logger.warn("Incoming message exeeds length limit. Origin: " + evnelope.origin +
-		       " Length: " + message.body.message.length);
-	    return;
-	}
+        if(message.body.message.length > 65535){
+            Logger.warn("Incoming message exeeds length limit. Origin: " + evnelope.origin +
+                " Length: " + message.body.message.length);
+            return;
+        }
         const chatMessage = JSON.parse(message.body.message);
 		
         Logger.verbose("Received incoming chat message", {
@@ -195,6 +198,20 @@ class ChatMessageAssistant{
                                                   pkfp,
                                                   enqueue = true) {
         const message = envelope.payload;
+        //Printing travel log
+        if(message.travelLog) {
+            console.log("Printing message travel log....")
+            const currentTime = new Date().getTime();
+            message.travelLog[currentTime] = "Arrived to destination island";
+            Object.keys(message.travelLog).forEach((key)=>{
+                console.log(`${key}: ${message.travelLog[key]}`)
+            })
+        }else{
+
+            console.log("Message travel log is missing")
+            console.log(JSON.stringify(message))
+        }
+
         const chatMessage = JSON.parse(message.body.message);
         if (this._metadataIdMatchesCurrent(currentMetadata.body.id, chatMessage.header.metadataID)) {
             await this.appendBroadcastIncomingMessage(pkfp, message);
@@ -202,6 +219,7 @@ class ChatMessageAssistant{
             await this._incomingMessageFindMetadataAndProcess(pkfp, envelope, enqueue);
         }
     }
+
 
     async _incomingMessageFindMetadataAndProcess(pkfp, envelope, enqueueAndLaunchMetaSync) {
         const message = envelope.payload;
@@ -348,6 +366,7 @@ class ChatMessageAssistant{
         try{
             await handlers[command](...args)
         }catch(err){
+            Logger.error(err.message, {stack: err.stack, cat: "chat"})
             args.push(err);
             await errorHandler(...args);
         }

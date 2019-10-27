@@ -1,16 +1,16 @@
 //Vendors
-import { CuteSet } from "cute-set";
 import { iCrypto } from "./lib/iCrypto";
 import { resizableInput  } from "./lib/resizable";
 import '../css/main.sass';
-
 import * as util from "./lib/dom-util";
-import * as toastr from "toastr";
+import toastr from "./lib/toastr";
 window.toastr = toastr;
+import { BlockingSpinner } from "./lib/BlockingSpinner";
 
 import { ChatClient } from  "./chat/ChatClient";
 
 let chat;
+let spinner = new BlockingSpinner()
 
 const DAYSOFWEEK = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -18,6 +18,9 @@ let colors = ["#cfeeff", "#ffebcc", "#ccffd4", "#ccfffb", "#e6e6ff", "#f8e6ff", 
 let participantsKeys = []
 //variables to create new topic
 let nickname, topicName;
+
+//Connection in progress flag
+let connecting = false;
 
 //variables to topic login
 let sounds = {};
@@ -27,11 +30,8 @@ let soundsOnOfIcons = {
     off: "/img/sound-off.png"
 };
 
-let sendLock = false;
-
-
+let sendButtonLocked = false;
 let tempName;
-
 let recording = false;
 
 document.addEventListener('DOMContentLoaded', event => {
@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', event => {
     userName.addEventListener("change", editMyNickname);
     topicName.addEventListener("change", editTopicName);
 
-    $('#new-msg').keyup(function (e) {
+    util.$('#new-msg').onkeypress = function (e) {
         if (!e.ctrlKey && e.keyCode === 13) {
             event.preventDefault();
             sendMessage();
@@ -68,14 +68,14 @@ document.addEventListener('DOMContentLoaded', event => {
             e.target.value += "\n";
             moveCursor(e.target, "end");
         }
-    });
-    $('#chat_window').scroll(processChatScroll);
+    };
+    util.$('#chat_window').onscroll = processChatScroll;
 
-    $('#private-key').keyup(async e => {
+    util.$('#private-key').onkeypress = async e => {
         if (e.keyCode === 13) {
             await topicLogin();
         }
-    });
+    };
 
 
     enableSettingsMenuListeners();
@@ -89,6 +89,7 @@ window.onfocus = function(){
         document.title = chat.session.settings.topicName + " | Islands";
     }
 }
+
 
 function prepareResizer() {
     let resizer = util.$("#chat-resizer");
@@ -122,10 +123,15 @@ function prepareResizer() {
     })
 }
 function autoLogin(){
+    console.log("In autologin")
     let url = new URL(window.location.href);
+    console.log("URL is " + url);
+    console.log("search params func: " + url.searchParams.get)
     let id = url.searchParams.get("id");
+    console.log("After searching id")
     if(!id) return;
     let token = url.searchParams.get("token");
+    console.log("Got token: " + token);
     let pkcipher = localStorage.getItem(id);
     if (!pkcipher){
         console.log("Autologin failed: no private ley found in local storage");
@@ -259,12 +265,10 @@ function setupChatListeners(chat) {
 
     });
 
-
-    
-    
     chat.on("login_fail", err => {
         clearLoginPrivateKey();
         loadingOff();
+        connecting = false;
         console.log("Login fail emited by chat: " + err);
         toastr.error("Login fail: " + err);
     });
@@ -318,7 +322,7 @@ function setupChatListeners(chat) {
 
     chat.on("del_invite_success", () => {
         syncPendingInvites();
-        toastr.info("Invite was deleted");
+        toastr.info("Invite has been deleted");
     });
 
     chat.on("chat_message", data => {
@@ -360,12 +364,17 @@ function setupChatListeners(chat) {
     });
 
     chat.on("connected_to_island", () => {
-        switchConnectionStatus(true);
+        connecting = false;
+        lockSend();
+        switchConnectionStatus(0);
     });
 
     chat.on("disconnected_from_island", () => {
-        switchConnectionStatus(false);
+        switchConnectionStatus(1);
+        lockSend();
+        setTimeout(attemptReconnection, 1000);
     });
+
 
     chat.on("download_complete", res => {
         let fileInfo = JSON.parse(res.fileInfo);
@@ -376,6 +385,17 @@ function setupChatListeners(chat) {
             downloadAttachment(fileInfo.name, fileData);
         }
     });
+
+    //file events
+    chat.on("file_available_locally", (fileName)=>{
+        appendEphemeralMessage(fileName + " file available locally. Downloading...")
+    })
+
+    chat.on("requesting_peer", (fileName)=>{
+        appendEphemeralMessage(fileName + " file not found locally. Requesting peer...")
+    })
+
+
 }
 
 function processIncomingMessage(message) {
@@ -421,7 +441,7 @@ function processServiceRecord(record) {
 
 function sendMessage() {
     ensureConnected();
-    if (sendLock) {
+    if (sendButtonLocked) {
         return;
     }
     lockSend(true);
@@ -439,14 +459,14 @@ function sendMessage() {
         chat.shoutMessage(message.value.trim().substring(0, 65536), attachments).then(() => {
             console.log("Send message resolved");
         }).catch(err => {
-            console.log("Error sending message" + err.message);
+            appendEphemeralMessage("Error sending message: " + err);
             lockSend(false);
         });
     } else {
         chat.whisperMessage(addressee, message.value.trim().substring(0, 65536)).then(() => {
             console.log("Done whispering message!");
         }).catch(err => {
-            console.log("Error sending message" + err.message);
+            appendEphemeralMessage("Error sending message: " + err.message);
             lockSend(false);
         });
     }
@@ -586,9 +606,9 @@ function addParticipantToSettings(key) {
 }
 
 function updateParticipants() {
-    $('#online-users-list').html("");
-    $('#participants-records').html("");
-    $('#participants--topic-name').html("Topic: " + chat.session.settings.topicName);
+    util.html('#online-users-list', "");
+    util.html('#participants-records', "");
+    util.html('#participants--topic-name', "Topic: " + chat.session.settings.topicName);
 
     let mypkfp = chat.session.publicKeyFingerprint;
     participantsKeys = Object.keys(chat.session.metadata.participants).filter(val => {
@@ -742,16 +762,16 @@ function processLogout() {
 }
 
 function setNavbarListeners() {
-    $('#chat-view-button').click(() => {
+    util.$('#chat-view-button').onclick = () => {
         setView("chat");
-    });
-    $('#settings-view-button').click(() => {
+    };
+    util.$('#settings-view-button').onclick = () => {
         setView("settings");
-    });
+    };
 
-    $('#logout-button').click(() => {
+    util.$('#logout-button').onclick = () => {
         processLogout();
-    });
+    };
 }
 
 function onLoginLoadMessages(messages) {
@@ -915,16 +935,18 @@ async function downloadOnClick(ev) {
     }
 
     if (!target) {
-        throw "att-view container not found...";
+        throw new Error("att-view container not found...");
     }
     let fileInfo = target.nextSibling.innerHTML; //Extract fileInfo from message
-    console.log("obtained fileinfo: " + fileInfo);
+
+    let fileName = JSON.parse(fileInfo).name;
     target.childNodes[0].style.display = "inline-block";
     try {
         await chat.downloadAttachment(fileInfo); //download file
         console.log("Download complete!");
     } catch(err){
         toastr.warning("file download unsuccessfull: " + err)
+        appendEphemeralMessage(fileName + " Download finished with error: " + err)
     }finally {
         target.childNodes[0].style.display = "none";
     }
@@ -1092,27 +1114,8 @@ function generateInvite(ev) {
     chat.requestInvite();
 }
 
-
-// function displayNewTopicData(data, heading, toastrMessage) {
-//     heading = heading ? heading : "Your new topic data. SAVE YOUR PRIVATE KEY!!!";
-//     toastrMessage = toastrMessage ? toastrMessage : "Topic was created successfully!";
-//     let nicknameWrapper = document.createElement("div");
-//     let pkWrapper = document.createElement("div");
-//     let bodyWrapper = document.createElement("div");
-//     nicknameWrapper.innerHTML = "<b>Nickname: </b>" + data.nickname;
-//     pkWrapper.innerHTML = "<br><b>Your private key:</b> <br> <textarea class='key-display'>" + data.privateKey + "</textarea>";
-//     bodyWrapper.appendChild(nicknameWrapper);
-//     bodyWrapper.appendChild(pkWrapper);
-//     let tempWrap = document.createElement("div");
-//     tempWrap.appendChild(bodyWrapper);
-//     showModalNotification(heading, tempWrap.innerHTML);
-//     toastr.success(toastrMessage);
-//
-// }
-
 function showInviteCode(newInvite) {
     syncPendingInvites();
-    showModalNotification("Here is your invite code:", newInvite);
     toastr.success("New invite was generated successfully!");
 }
 
@@ -1135,47 +1138,44 @@ function showModalNotification(headingText, bodyContent) {
 }
 
 function loadingOn() {
-    $('body').waitMe({
-        effect: 'roundBounce',
-        bg: 'rgba(255,255,255,0.7)',
-        textPos: 'vertical',
-        color: '#33b400'
-    });
+    spinner.loadingOn();
 }
 
 function loadingOff() {
-    $('body').waitMe('hide');
+    if (spinner.isOn){
+        spinner.loadingOff();
+    }
 }
 
 function setView(view) {
     switch (view) {
         case "chat":
-            $('#chat_room').css('display', 'flex');
-            $('#you_online').css('display', 'flex');
-            $('#auth-wrapper').hide();
-            $('#chat-menu').css('display', 'flex');
-            $('#settings-view').hide();
-            $('#chat-view-button').addClass("active");
-            $('#settings-view-button ').removeClass("active");
+            util.displayFlex('#chat_room');
+            util.displayFlex('#you_online');
+            util.displayNone('#auth-wrapper');
+            util.displayFlex('#chat-menu');
+            util.displayNone('#settings-view');
+            util.addClass('#chat-view-button', "active");
+            util.removeClass('#settings-view-button', "active");
             break;
         case "auth":
-            $('#chat_room').hide();
-            $('#you_online').hide();
-            $('#auth-wrapper').css('display', 'block');
-            $('#chat-menu').hide();
-            $('#settings-view').hide();
+            util.displayNone('#chat_room');
+            util.displayNone('#you_online');
+            util.displayBlock('#auth-wrapper');
+            util.displayNone('#chat-menu');
+            util.displayNone('#settings-view');
             break;
         case "settings":
-            $('#settings-view').css('display', 'flex');
-            $('#chat_room').hide();
-            $('#you_online').hide();
-            $('#auth-wrapper').hide();
-            $('#chat-menu').css('display', 'flex');
-            $('#chat-view-button').removeClass("active");
-            $('#settings-view-button').addClass("active");
+            util.displayFlex('#settings-view');
+            util.displayNone('#chat_room');
+            util.displayNone('#you_online');
+            util.displayNone('#auth-wrapper');
+            util.displayFlex('#chat-menu');
+            util.removeClass('#chat-view-button', "active");
+            util.addClass('#settings-view-button', "active");
             break;
         default:
-            throw "setView: Invalid view: " + view;
+            throw new Error("setView: Invalid view: " + view);
     }
 }
 
@@ -1234,7 +1234,7 @@ function editInviteeName(event) {
     tempName = event.target.value;
     event.target.value = "";
     event.target.addEventListener("focusout", processInviteeNameInput);
-    event.target.addEventListener("keyup", inviteEditingProcessKeyPress);
+    event.target.addEventListener("keypress", inviteEditingProcessKeyPress);
 }
 
 function inviteEditingProcessKeyPress(event) {
@@ -1321,27 +1321,12 @@ function processChatScroll(event) {
     }
 }
 
-
-
-function clearInviteInputs() {
-    $("#invite-code").val("");
-    $("#join-nickname").val("");
-}
-
-function clearNewTopicFields() {
-    $("#new-topic-nickname").val("");
-    $("#new-topic-name").val("");
-}
-
 function clearLoginPrivateKey() {
-    $("#private-key").val("");
+    util.val("private-key", "");
 }
 
 function clearAllInputs() {
     clearModal();
-    clearInviteInputs();
-    clearNewTopicFields();
-    clearLoginPrivateKey();
 }
 
 function downloadURI(uri, name) {
@@ -1355,6 +1340,7 @@ function downloadURI(uri, name) {
 
 ///Testing blob download
 function downloadAttachment(fileName, data) {
+    appendEphemeralMessage(fileName + " Download successfull.")
     let arr = new Uint8Array(data);
     let fileURL = URL.createObjectURL(new Blob([arr]));
     downloadURI(fileURL, fileName);
@@ -1473,19 +1459,60 @@ function refreshInvitesSuccess() {
     toastr.success("Invites re-synced");
 }
 
-function switchConnectionStatus(connected) {
-    if (connected) {
-        util.displayFlex("#connection-status--connected")
-        util.displayNone("#connection-status--disconnected")
-    } else {
-        util.displayNone("#connection-status--connected")
-        util.displayFlex("#connection-status--disconnected")
-   }
+/**
+ * Changes Island connection indicator.
+ * @param status int can be one of following:
+ *     0 - connected
+ *     1 - disconnected
+ *     2 - connecting
+ */
+function switchConnectionStatus(status) {
+    if (!Number.isInteger(status) || ! (0 <= status <= 2)){
+        throw new Error("Switch connection status: status is invalid")
+    }
+    switch(status){
+        case 0:
+            util.displayFlex("#connection-status--connected");
+            util.displayNone("#connection-status--disconnected");
+            util.displayNone("#connection-status--connecting")
+            appendEphemeralMessage("Connection with island established");
+            break;
+        case 1:
+            util.displayNone("#connection-status--connected");
+            util.displayFlex("#connection-status--disconnected");
+            util.displayNone("#connection-status--connecting")
+            appendEphemeralMessage("Connection with island lost");
+            break;
+        case 2:
+            util.displayFlex("#connection-status--connecting")
+            util.displayNone("#connection-status--connected");
+            util.displayNone("#connection-status--disconnected");
+            appendEphemeralMessage("Connecting to island...");
+            break;
+    }
 }
 
 function attemptReconnection() {
-    chat.attemptReconnection().then(() => {}).catch(err => {
-        console.trace(err);
+    if (connecting){
+        console.log("Already connecting...")
+        return;
+    } else if (chat.islandConnectionStatus){
+        console.log("Already connected");
+        return;
+    }
+
+    console.log("Attempting reconnection...")
+    connecting = true;
+    switchConnectionStatus(2);
+    chat.attemptReconnection().then(() => {
+        console.log("Reconnection attempt resolved")
+    }).catch(err => {
+        console.trace("Reconnection error: " + err);
+        connecting = false
+        switchConnectionStatus(1);
+    }).finally(()=>{
+        console.log("Finally block after reconnection attempt");
+        switchConnectionStatus(chat.islandConnectionStatus ? 0 : 1)
     });
 }
 
@@ -1515,17 +1542,40 @@ function participantAliasChange(ev) {
 function ensureConnected() {
     if (!chat.islandConnectionStatus) {
         toastr.warning("You are disconnected from the island. Please reconnect to continue");
-        throw "No island connection";
+        throw new Error("No island connection");
     }
 }
 
+// ---------------------------------------------------------------------------------------------------------------------------
+// Locks send message button and shows loading animation
 function lockSend(val) {
-    sendLock = !!val;
+    sendButtonLocked = !!val;
     let sendButton = document.querySelector('#send-new-msg');
     let newMsgField = document.querySelector('#new-msg');
-    sendLock ? buttonLoadingOn(sendButton) : buttonLoadingOff(sendButton);
-    sendLock ? newMsgField.setAttribute("disabled", true) : newMsgField.removeAttribute("disabled");
+    sendButtonLocked ? buttonLoadingOn(sendButton) : buttonLoadingOff(sendButton);
+    sendButtonLocked ? newMsgField.setAttribute("disabled", true) : newMsgField.removeAttribute("disabled");
 }
 
 
+function appendEphemeralMessage(msg){
+    if (!msg){
+        console.log("Message is empty.")
+        return
+    }
+    try{
+        let msgContainer = util.bake("div", {classes: "ephemeral-msg"})
+        let headingContainer = util.bake("div", {classes: "msg-heading"})
+        let text = util.bake("b", {text: "Ephemeral"})
+        let timestamp = util.bake("span", {classes: "msg-time-stamp"})
+        timestamp.innerText = getChatFormatedDate(new Date());
+        util.appendChildren(headingContainer, [text, timestamp])
+        let msgBodyContainer = util.bake("div", {classes: "msg-body"})
+        let msgBody = util.bake("div", {html: msg})
+        msgBodyContainer.appendChild(msgBody)
+        util.appendChildren(msgContainer, [headingContainer, msgBodyContainer])
+        util.$("#chat_window").appendChild(msgContainer);
+    }catch(err){
+        console.log("EPHEMERAL ERROR: " + err)
+    }
 
+}

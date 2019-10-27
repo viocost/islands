@@ -1,8 +1,8 @@
 const path = require('path');
 const webpack = require('webpack');
-var Visualizer = require('webpack-visualizer-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
+const Visualizer = require('webpack-visualizer-plugin');
 
 //...
 
@@ -17,20 +17,21 @@ module.exports = {
 
     optimization: {
         minimize: true,
-        minimizer: [
-            new OptimizeCSSAssetsPlugin({})
-        ],
-
-        splitChunks: {
-            cacheGroups: {
-                commons: {
-                    test: /[\\/]node_modules[\\/]/,
-                    name: "vendor",
-                    chunks: "initial",
-                },
-            },
-            chunks: "initial",
-        },
+        //minimizer: [
+        //    new OptimizeCSSAssetsPlugin({})
+//
+  //      ],
+//
+  //      splitChunks: {
+  //          cacheGroups: {
+  //              commons: {
+  //                  test: /[\\/]node_modules[\\/]/,
+  //                  name: "vendor",
+  //                  chunks: "initial",
+  //              },
+  //          },
+  //          chunks: "initial",
+  //      },
     },
 
     plugins: [
@@ -40,7 +41,14 @@ module.exports = {
             filename: "../css/[name].min.css",
             chunkFilename: "[id].min.css",
             sourceMap: true
-        })
+        }),
+
+        // ---------------------------------------------------------------------------------------------------------------------------
+        // uncomment to generate module stats
+        //new Visualizer({
+        //  filename: './vault_stat.html'
+        //})
+
     ],
 
     module: {

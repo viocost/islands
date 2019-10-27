@@ -1,18 +1,20 @@
 import { ChatClient } from  "./chat/ChatClient";
-import * as toastr from "toastr";
+import toastr from "./lib/toastr";
 import { Vault } from "./lib/Vault";
-import * as waitMe from "./lib/waitMe.min";
 import { iCrypto } from "./lib/iCrypto";
 import * as Modal from "./lib/DynmaicModal";
 import { verifyPassword } from "./lib/PasswordVerify";
 import * as dropdown from "./lib/dropdown";
 import * as editable_field from "./lib/editable_field";
 import * as util from "./lib/dom-util";
+import { BlockingSpinner } from "./lib/BlockingSpinner";
+import { XHR } from "./lib/xhr";
+import '../css/main.sass';
+const sjcl = require("sjcl");
 
-//let chat;
+
 let vault;
 let reg = isRegistration();
-
 let topicCreateForm;
 let topicJoinForm;
 let passwordChangeForm;
@@ -21,9 +23,18 @@ let passwordChangeForm;
 let reloadVault;
 let adminLogin;
 
+let spinner = new BlockingSpinner();
+//TEST only
+window.util = util;
+window.spinner = spinner;
+window.BlockingSpinner = BlockingSpinner;
+
+
+
 
 /**Set main listeneres when document loaded**/
 document.addEventListener('DOMContentLoaded', event => {
+    window.sjcl = sjcl;
     document.title = "Login | Islands";
     util.$("#register-vault").addEventListener("click", registerVault);
     util.$("#vault-login-btn").addEventListener("click", vaultLoginGetVault);
@@ -33,19 +44,19 @@ document.addEventListener('DOMContentLoaded', event => {
 
     if (reg){
         setView("register")
-        $('#vault-new-password-confirm').keyup(e => {
+        util.$('#vault-new-password-confirm').onkeypress = e => {
             if (e.keyCode === 13) {
                 registerVault();
             }
-        });
+        };
     } else {
         //regular login
         setView("login");
-        $('#vault-password').keyup(e => {
+        util.$('#vault-password').onkeypress = e => {
             if (e.keyCode === 13) {
                 vaultLoginGetVault();
             }
-        });
+        };
     }
     document.querySelector("#vault-login-btn").addEventListener("click", vaultLoginGetVault);
     prepareTopicJoinModal();
@@ -54,6 +65,19 @@ document.addEventListener('DOMContentLoaded', event => {
 
 });
 
+function isMobile(){
+    return isMobileIOS() ||
+        navigator.userAgent.match(/Android/i) ||
+        navigator.userAgent.match(/webOS/i) ||
+        navigator.userAgent.match(/BlackBerry/i) ||
+        navigator.userAgent.match(/Windows Phone/i)
+}
+
+function isMobileIOS(){
+    return navigator.userAgent.match(/iPhone/i)   ||
+        navigator.userAgent.match(/iPad/i)  ||
+        navigator.userAgent.match(/iPod/i)   
+}
 
 function prepareChangePasswordModal(){
     let wrapper = util.bake("div");
@@ -100,7 +124,7 @@ function prepareChangePasswordModal(){
         confirm.value = "";
     };
 
-    wrapper.addEventListener("keyup", (ev)=>{
+    wrapper.addEventListener("keypress", (ev)=>{
         if (ev.which === 13 || ev.keyCode === 13) {
             changePassword();
         }
@@ -150,7 +174,7 @@ function prepareTopicCreateModal(){
         }
     };
 
-    wrapper.addEventListener("keyup", (ev)=>{
+    wrapper.addEventListener("keypress", (ev)=>{
         if (ev.which === 13 || ev.keyCode === 13) {
             start();
         }
@@ -219,7 +243,7 @@ function prepareTopicJoinModal(){
         }
     };
 
-    wrapper.addEventListener("keyup", (ev)=>{
+    wrapper.addEventListener("keypress", (ev)=>{
         if (ev.which === 13 || ev.keyCode === 13) {
             start();
         }
@@ -253,7 +277,7 @@ function registerVault() {
             let vaultEncData = vault.pack();
             let vaultPublicKey = vault.publicKey;
 
-            $.ajax({
+            XHR({
                 type: "POST",
                 url: "/register",
                 dataType: "json",
@@ -291,8 +315,11 @@ function registerVault() {
 
 
 function fillIDFromParameters(){
+    console.log("Filling id from parameters")
     let url = new URL(document.location.href);
+    console.log("Got url: " + url)
     let vaultID = url.searchParams.get("vault_id");
+    console.log("Vault id: " + vaultID)
     if (vaultID){
         document.querySelector("#vault-id-login").value = vaultID;
     }
@@ -310,7 +337,7 @@ function vaultLoginGetVault(ev){
             return;
         }
         loadingOn()
-        $.ajax({
+        XHR({
             type: "post",
             url: "/",
             success: (data)=>{
@@ -319,7 +346,6 @@ function vaultLoginGetVault(ev){
             error: err => {
                 loadingOff();
                 toastr.warning(err.responseText);
-                console.log("Vault login error: " + err.responseText);
             }
         });
     }catch(err){
@@ -334,6 +360,11 @@ function vaultLoginProcessVault(data, password, passwordEl){
     try{
         console.log("Vault obtained. Continuing login...");
         vault = new Vault();
+        if(typeof data === "string"){
+            console.log("Data seems to be string. Parsing...")
+            data = JSON.parse(data)
+        }
+
         vault.initSaved(data.vault, password);
         initPasswordBasedHandlers(password);
         passwordEl.value = "";
@@ -366,7 +397,8 @@ function topicJoin(){
         let inviteCode = document.querySelector("#join-topic-invite").value;
         let topicName = document.querySelector("#join-topic-name").value;
 
-        let chat = new ChatClient({version: version});
+        let transport = isMobileIOS() ? 0 : 1;
+        let chat = new ChatClient({version: version, transport: transport});
 
         chat.on("topic_join_success", async (data)=>{
             console.log("Topic join successful!");
@@ -438,7 +470,7 @@ function changePassword(){
     }
 
     try{
-        $.ajax({
+        XHR({
             type: "post",
             url: "/",
             success: async (data)=>{
@@ -486,7 +518,8 @@ function topicCreate(){
     let nickname = document.querySelector("#new-topic-nickname").value;
     let topicName = document.querySelector("#new-topic-name").value;
 
-    let chat = new ChatClient({version: version});
+    let transport = isMobileIOS() ? 0 : 1;
+    let chat = new ChatClient({version: version, transport: transport});
 
     chat.on("init_topic_success", async (data)=>{
         console.log("Topic Created!");
@@ -527,7 +560,7 @@ function _destroyChat(chat){
 function prepareLogin(options){
 
     let privateKey = options.privateKey;
-
+    let isMobile = options.isMobile;
     return function (){
         let ic = new iCrypto();
         ic.addBlob("privk", privateKey)
@@ -542,7 +575,7 @@ function prepareLogin(options){
         if(options.currentWindow){
             window.open(document.location.href + "chat" + params, "_self");
         }else{
-            window.open(document.location.href + "chat" + params, "_blank");
+            window.open(document.location.href + "chat" + params, isMobile ? "_self" : "_blank");
         }
     };
 
@@ -564,7 +597,7 @@ function setView(view){
     };
 
     if(!setters.hasOwnProperty(view)){
-        throw "Invalid view"
+        throw new Error("Invalid view");
     }
     setters[view]();
 }
@@ -596,7 +629,7 @@ function setViewOnline(){
 function saveVault(){
     return new Promise((resolve, reject)=>{
         let vaultEncData = vault.pack();
-        $.ajax({
+        XHR({
             type: "POST",
             url: "/update",
             dataType: "json",
@@ -642,7 +675,7 @@ function renderVault(){
 
         let buttons = util.bake("div", {classes: "topic-buttons"});
         let loginButton = util.bake("button", {classes: "login-button", text: "Login"});
-        loginButton.addEventListener("click", prepareLogin({privateKey: vault.topics[k].key}));
+        loginButton.addEventListener("click", prepareLogin({privateKey: vault.topics[k].key, isMobile: isMobile()}));
         let options = bakeTopicDropdownMenu(vault.topics[k].key, vault.topics[k].pkfp);
 
         util.appendChildren(buttons, [loginButton, options]);
@@ -673,7 +706,7 @@ function renderVault(){
 
 function addNameChangeHandlers(el){
     el.addEventListener("change", processTopicNameChange)
-    el.addEventListener("keyup", (ev)=>{
+    el.addEventListener("keypress", (ev)=>{
         if (ev.which === 13 || ev.keyCode === 13) {
             document.activeElement.blur();
         }
@@ -720,8 +753,8 @@ function prepareTopicDelete(privateKey, pkfp){
             toastr.warning(err.responseText);
             console.log("Vault login error: " + err.responseText);
         };
-
-        let chat = new ChatClient({version: version});
+        let transport = isMobileIOS() ? 0 : 1;
+        let chat = new ChatClient({version: version, tranport: transport});
 
         let deleteTopicRecord = prepareTopicRecordDelete(pkfp);
 
@@ -775,6 +808,7 @@ function processTopicNameChange(ev){
 
 
 function prepareAdminLogin(privateKey){
+    let isMobile = isMobileIOS()
     return  function (){
         let ic = new iCrypto();
         ic.addBlob("privk", privateKey)
@@ -787,23 +821,18 @@ function prepareAdminLogin(privateKey){
 
         let params = "?id=" + ic.get("idhex") + "&token=" + ic.get("sym");
 
-        window.open(document.location.href + "admin" + params, "_blank");
+        window.open(document.location.href + "admin" + params, isMobile ? undefined : "_blank");
     };
 }
 
 
 
 function loadingOn() {
-    $('body').waitMe({
-        effect: 'roundBounce',
-        bg: 'rgba(255,255,255,0.7)',
-        textPos: 'vertical',
-        color: '#33b400'
-    });
+    spinner.loadingOn()
 }
 
 function loadingOff() {
-    $('body').waitMe('hide');
+    spinner.loadingOff()
 }
 
 

@@ -241,7 +241,8 @@ class TorConnector extends EventEmitter{
             Logger.debug("Attempting to call hidden peer", {
                 origin: onionOrig,
                 destination: onionDest,
-                attempt: attempt
+                attempt: attempt,
+                cat: "connection"
             });
             socket.open();
         };
@@ -369,7 +370,7 @@ class TorConnector extends EventEmitter{
     async sendDirectly(envelope = Err.required()){
         let socket = this.getActiveSocket(envelope.destination);
         if(!socket){
-            throw "sendDirectly: active socket was not found. Destination: " + envelope.destination;
+            throw new Error("sendDirectly: active socket was not found. Destination: " + envelope.destination);
         }
         Logger.debug("Sending message to hidden peer", {
             destination: envelope.destination
@@ -464,7 +465,7 @@ class TorConnector extends EventEmitter{
 
     _checkIncomingConnections(destination){
         console.log("Incoming connections: ");
-        this.connectionsIncoming.print();
+        //this.connectionsIncoming.print(); //DEBUG ONLY
         if(this.connectionsIncoming.hasKey(destination)){
             let connectedSockets = this.connectionsIncoming.key(destination);
             if (connectedSockets){
@@ -479,7 +480,7 @@ class TorConnector extends EventEmitter{
 
     _checkOutgoingConnections(destination){
         console.log("Outgoing connections: ");
-        this.connectionsOutgoing.print();
+        //this.connectionsOutgoing.print();// DEBUG only
         if(this.connectionsOutgoing.hasKey(destination)){
             let connectedSockets = this.connectionsOutgoing.key(destination);
             if (connectedSockets){
@@ -578,7 +579,7 @@ class TorConnector extends EventEmitter{
         let onionPattern = /[a-z0-9]*\.onion/;
         let portPattern = /\:[0-9]{1,5}$/;
         if (!onion || !onion.match(onionPattern))
-            throw "getWSOnionConnectionString: Invalid onion address"
+            throw new Error("getWSOnionConnectionString: Invalid onion address");
         onion = onion.trim();
 
         return (wss ? "wss://" : "ws://") + onion.match(onionPattern)[0] + 

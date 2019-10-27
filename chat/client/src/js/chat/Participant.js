@@ -21,7 +21,7 @@ export class Participant{
 
     toBlob(stringify = false){
         if (!this.readyForExport()){
-            throw "Object participant has some properties uninitialized"
+            throw new Error("Object participant has some properties uninitialized");
         }
         let result = {};
         for (let i=0; i<Participant.properties.length; ++i){
@@ -35,7 +35,7 @@ export class Participant{
 
     parseBlob(blob){
         if(!blob){
-            throw "missing required parameter";
+            throw new Error("missing required parameter");
         }
 
         if (typeof(blob)=== "string"){
@@ -43,7 +43,7 @@ export class Participant{
         }
 
         if (!this.objectValid(blob)){
-            throw "Participant blob is invalid"
+            throw new Error("Participant blob is invalid");
         }
 
         for (let i = 0; i< Participant.properties.length; ++i){
@@ -54,7 +54,7 @@ export class Participant{
 
     keyExists(key){
         if (!key)
-            throw "keyExists: Missing required arguments";
+            throw new Error("keyExists: Missing required arguments");
         return Object.keys(this).includes(key.toString());
     }
 
@@ -72,7 +72,7 @@ export class Participant{
     get  (name){
         if (this.keyExists(name))
             return this[name];
-        throw "Property not found"
+        throw new Error("Property not found");
     };
 
     set (name, value){

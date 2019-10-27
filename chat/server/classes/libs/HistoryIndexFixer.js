@@ -121,7 +121,7 @@ class HistoryIndexFixer{
 
     createTempFile(){
         if(!fs.existsSync(this.path)){
-            throw "Path is invalid"
+            throw new Error("Path is invalid");
         }
         return fs.openSync(this.path+ this.tempHistoryName, "a");
     }

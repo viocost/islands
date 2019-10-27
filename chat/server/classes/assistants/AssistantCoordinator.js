@@ -8,7 +8,7 @@ const EventEmitter = require("events").EventEmitter;
  */
 class AssistantCoordinator{
     constructor(){
-        throw "Assistant coordinator cannot be initialized directly."
+        throw new Error("Assistant coordinator cannot be initialized directly.");
     }
     static initialize(){
         AssistantCoordinator._notifier = new EventEmitter();
