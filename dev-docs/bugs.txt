@@ -1,0 +1,15 @@
+FIXED 1. Unicode in topic name and member name
+2. Download completed in manager when VM is downloaded - need to add Now importing...
+3. Magnet URL is not stripped and sanitized in manager
+4. Window scrolling layout
+5. Files are not sent in private
+6. No indication of file being downloaded in background
+7. When message is received - private member selection is switched back to all in chat when switching to private message
+9. On invitee side chosen topic name is not selected
+10. Topic join form looks weired
+FIXED 11. After service message received adressee switched to "all"
+FIXED 11. Password is not sanitized
+FIXED 12. Password is destroyed if vault alias updated
+
+
+

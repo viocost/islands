@@ -55,7 +55,7 @@ $('#join-room-button').click(function (){
             //display you are online
             $('#user-name').html("<i class='fa fa-user-circle-o online' aria-hidden='true'></i><b>" +"   " + joinName.value + ",</b> you are now online").css('display: block;');
 
-            $('#waiting_room').css('display','flex');
+            $('#chat_room').css('display','flex');
             SOCKET_ID = socket.socket.transport.sessid;
 
         });

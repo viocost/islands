@@ -242,7 +242,7 @@ describe('DNSServer', function () {
 			});
 
 			req.on('timeout', () => {
-				done && done(new Error("Request timed out"));
+				done && done(new Error("Message timed out"));
 				done = null;
 			});
 
