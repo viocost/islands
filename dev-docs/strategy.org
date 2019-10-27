@@ -1,0 +1,156 @@
+#+TITLE: Islands development strategy and tasks
+
+* Current tasks
+** TODO When tab is activated - the cursor must go to new message textarea
+** TODO Send message in queue
+** PROJ Implement multiplexing
+*** TODO Keep messages in variables
+*** TODO Separate connector and multiplexor object
+*** TODO Refresh messages logic
+
+** TODO debug reconnection
+** TODO Implement outgoing message queue on client
+** PROJ Rework the chat interface
+*** Everything on a single page design
+*** Switching between topics
+*** Vault and chat are single page
+** TODO BUG: on reconnection mute settings are reset
+** TODO White spaces in messages
+<2019-09-10 Tue>
+** TODO Scrolling behavior
+<2019-09-10 Tue>
+
+** TODO BUG! On scroll messages loaded and appended multiple times
+
+** PROJ Message sequencing and interleaving
+*** TODO Implement sequencing
+*** TODO Implement thread safe history append
+*** TODO Implement message buffer
+*** TODO Implement persistent queue
+*** TODO Wakeup protocol when user appears after a break
+*** TODO Timestamps chain for messages
+*** TODO get rif if simple ram queue
+*** TODO Expiration time for messages
+
+* Bugs
+** TODO test EDGE browser
+
+
+* Feature requests
+** TODO Backup strategy <2019-09-08 Sun>
+** PROJ Ability to mute/unmute particular partivipant
+** TODO Volume control instead of mute button
+** PROJ Implement /commands
+*** TODO Implement /version command that gives the version report for tech support
+
+** TODO Search messages
+
+** TODO Members' names background colors must match background colors in chat
+* Completed
+
+
+** DONE Get rid of jquery
+CLOSED: [2019-10-21 Mon 17:59]
+*** DONE wirte an universal wrapper around xhr
+CLOSED: [2019-10-21 Mon 17:59]
+
+** DONE BUG! File transfer isn't working properly
+CLOSED: [2019-10-21 Mon 17:59]
+*** DONE Debug file transfer
+CLOSED: [2019-09-20 Fri 22:22]
+**** Symptoms:
+- Wrong pkfp passed to the checker function
+  possibly file is saved with origin pkfp, while it should
+  save on the island with receiver pkfp
+
+*** DONE Add transfer stages:
+CLOSED: [2019-09-30 Mon 18:06]
+- Checking file locally
+  if found:
+     downloading
+  else:
+     connecting to peer:
+       if connected:
+          requesting file
+          if file found:
+              downloading crossisland
+              notifying client that file is available locally
+              downloading locally
+          else:
+              notifying client: file no longer offered by peer
+
+*** DONE Add messages on state change in UI
+CLOSED: [2019-10-01 Tue 00:48]
+*** DONE bug - file is blocked on rename
+CLOSED: [2019-10-21 Mon 17:59]
+
+** DONE new version release
+CLOSED: [2019-10-16 Wed 11:00]
+** DONE Fix scripts for processing sjcl
+CLOSED: [2019-10-16 Wed 11:00]
+** DONE Mobile browser topic login bug
+CLOSED: [2019-10-15 Tue 21:57]
+** DONE Logs download bug
+CLOSED: [2019-10-15 Tue 21:57]
+** DONE Iphone transport test
+CLOSED: [2019-10-15 Tue 21:57]
+** DONE Time in UTC.
+CLOSED: [2019-10-01 Tue 01:08]
+** DONE Auto-reconnect if island connection lost
+CLOSED: [2019-10-01 Tue 00:48]
+
+** DONE fix npm bug in docker
+CLOSED: [2019-10-01 Tue 00:48]
+** DONE File upload bug
+CLOSED: [2019-10-01 Tue 00:48]
+** DONE Make new manager version that supports both new and old images
+CLOSED: [2019-09-20 Fri 20:04]
+** DONE Optimize invite mechanism, reduce delay and improve feedback [100%]
+CLOSED: [2019-09-20 Fri 20:04]
+<2019-09-06 Fri>
+*** DONE Implement multiqueue
+CLOSED: [2019-09-13 Fri 00:17]
+*** DONE Implement blocking queue
+CLOSED: [2019-09-13 Fri 00:17]
+*** DONE Test new delivery system
+CLOSED: [2019-09-13 Fri 00:18]
+*** DONE Implement invite request and sync handling logic using multiqueue
+CLOSED: [2019-09-13 Fri 23:20]
+
+*** DONE Rewrite all timeout requests:
+CLOSED: [2019-09-20 Fri 20:04]
+**** DONE Boot
+CLOSED: [2019-09-20 Fri 20:04]
+**** DONE Leave
+CLOSED: [2019-09-20 Fri 20:04]
+**** DONE Invite sync
+CLOSED: [2019-09-13 Fri 23:20]
+**** DONE Topic join
+CLOSED: [2019-09-13 Fri 23:20]
+
+** DONE Different colors per user
+CLOSED: [2019-09-14 Sat 15:26]
+** DONE Admin panel should not replace vault <2019-09-08 Sun>
+CLOSED: [2019-09-13 Fri 23:25]
+** DONE Islnad console login bug [100%]
+CLOSED: [2019-09-10 Tue 00:26]
+START: <2019-09-06 Fri>
+*** DONE Fix VM prepare script
+CLOSED: [2019-09-10 Tue 00:25]
+*** DONE Fix VM setup script such that it is impossible to login into island other than via ssh.
+CLOSED: [2019-09-10 Tue 00:25]
+*** DONE Script for updating stats in 1sec intervals to communicat with host
+CLOSED: [2019-09-10 Tue 00:25]
+*** DONE Implement script to capture public key when island boots for the first time.
+CLOSED: [2019-09-10 Tue 00:25]
+** DONE Update npm libraries, fix npm issues
+CLOSED: [2019-09-13 Fri 16:10]
+<2019-09-10 Tue>
+** DONE Indicator in tab if there are new messages
+CLOSED: [2019-09-13 Fri 21:49]
+<2019-09-10 Tue>
+** DONE Switch Islands | topic name
+CLOSED: [2019-09-13 Fri 21:48]
+<2019-09-10 Tue>
+** DONE In settings there should be not boot button for those who has no rights
+CLOSED: [2019-09-13 Fri 23:19]

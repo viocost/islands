@@ -70,7 +70,7 @@ rl.on('line', (line)=>{
         case "rt":
         	args = {
 
-        	}
+        	};
         	goRouter(args);    
         	break;
         case "io":
