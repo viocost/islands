@@ -3,11 +3,10 @@ import { iCrypto } from "./lib/iCrypto";
 import { resizableInput  } from "./lib/resizable";
 import '../css/main.sass';
 import * as util from "./lib/dom-util";
-import toastr from "./lib/toastr";
-window.toastr = toastr;
 import { BlockingSpinner } from "./lib/BlockingSpinner";
-
 import { ChatClient } from  "./chat/ChatClient";
+
+
 
 let chat;
 let spinner = new BlockingSpinner()

@@ -2,6 +2,11 @@
 
 * Current tasks
 ** TODO When tab is activated - the cursor must go to new message textarea
+** PROJ Implement ECC cryptography
+*** TODO Make a poc
+*** TODO Get rid of sjcl, (only need to replace hash function)
+
+
 ** TODO Send message in queue
 ** PROJ Implement multiplexing
 *** TODO Keep messages in variables
