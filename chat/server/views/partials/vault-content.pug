@@ -1,4 +1,4 @@
-#main-container.container.tingle-content-wrapper
+.container.tingle-content-wrapper
 
     #registration-complete--wrapper
         h2 Setup completed
@@ -13,6 +13,11 @@
             div: input#vault-new-password-confirm(type="password" placeholder="Confirm new password" maxlength="50")
             div: button.btn#register-vault Save
 
+    #vault-login--wrapper
+        div.form-border
+            h3 Vault login:
+            div: input#vault-password(type="password" placeholder="Password" maxlength="50")
+            div: button.btn#vault-login-btn Login
 
 
 

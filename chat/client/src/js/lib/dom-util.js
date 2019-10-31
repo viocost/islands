@@ -47,6 +47,10 @@ export function bake(name, recipe){
         
     }
 
+    if (recipe.style){
+        el.style = recipe.style;
+    }
+
     if (recipe.html)
         el.innerHTML = recipe.html;
 
@@ -55,7 +59,11 @@ export function bake(name, recipe){
 
     if (recipe.val)
         el.value = recipe.val;
-    
+
+    if (recipe.children){
+        appendChildren(el, recipe.children);
+    }
+
     return el
 }
 

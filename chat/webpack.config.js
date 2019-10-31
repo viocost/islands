@@ -8,7 +8,7 @@ const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 
 
 module.exports = {
-    entry: "./client/src/js/app.js",
+    entry: "./client/src/js/chat-ui.js",
     output: {
         path: path.resolve(__dirname, "public/js"),
         filename: "bundle.js"
@@ -16,7 +16,7 @@ module.exports = {
 
 
     optimization: {
-        minimize: true,
+        minimize: false,
         //minimizer: [
             //new OptimizeCSSAssetsPlugin({})
         //],

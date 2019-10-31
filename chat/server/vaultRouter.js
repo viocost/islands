@@ -14,11 +14,12 @@ module.exports.init = function(config, version, hsManager) {
     hiddenServiceManager = hsManager
 };
 
+// Loads and renders login page
 router.get('/', (req, res)=>{
     let onion = req.headers["host"];
     let isRegistration = isVaultAwaitingRegistration(onion);
 
-    res.render("vault", {
+    res.render("chat", {
         version: version.getVersion(),
         title: "Islands chat - Vault",
         registration: isRegistration,
@@ -26,6 +27,8 @@ router.get('/', (req, res)=>{
 });
 
 
+// Posting to root path interpreted as a login attempt
+// processing login
 router.post("/", (req, res)=>{
     try{
         let id = getVaultId(req.headers["host"]);
