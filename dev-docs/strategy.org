@@ -1,33 +1,27 @@
 #+TITLE: Islands development strategy and tasks
 
 * Current tasks
-** TODO When tab is activated - the cursor must go to new message textarea
-** PROJ Implement ECC cryptography
-*** TODO Make a poc
-*** TODO Get rid of sjcl, (only need to replace hash function)
+** PROJ New client
+*** TODO Re-implement vault registration
+*** DONE Implement chat connection
+CLOSED: [2019-11-01 Fri 14:38]
+*** DONE Separate connector and multiplexor object
+CLOSED: [2019-11-01 Fri 14:34]
+*** DONE Draft message queue
+CLOSED: [2019-11-01 Fri 14:36]
+*** PROJ Improve socket protocol. Remove requests as they are unneeded
+*** PROJ Rework the chat interface
+**** TODO draft layout wireframes
 
-
-** TODO Send message in queue
-** PROJ Implement multiplexing
-*** TODO Keep messages in variables
-*** TODO Separate connector and multiplexor object
-*** TODO Refresh messages logic
-
-** TODO debug reconnection
-** TODO Implement outgoing message queue on client
-** PROJ Rework the chat interface
-*** TODO draft layout wireframes
-
-*** Everything on a single page design
-*** Switching between topics
-*** Vault and chat are single page
-** TODO BUG: on reconnection mute settings are reset
-** TODO White spaces in messages
+**** TODO When tab is activated - the cursor must go to new message textarea
+**** TODO Scrolling behavior
 <2019-09-10 Tue>
-** TODO Scrolling behavior
+**** TODO White spaces in messages
 <2019-09-10 Tue>
+*** TODO BUG: on reconnection mute settings are reset
+*** TODO BUG! On scroll messages loaded and appended multiple times
 
-** TODO BUG! On scroll messages loaded and appended multiple times
+*** TODO debug reconnection
 
 ** PROJ Message sequencing and interleaving
 *** TODO Implement sequencing
@@ -45,7 +39,11 @@
 
 * Feature requests
 ** TODO Backup strategy <2019-09-08 Sun>
-** PROJ Ability to mute/unmute particular partivipant
+** PROJ Ability to mute/unmute particular participant
+** PROJ Implement ECC cryptography
+*** TODO Make a poc
+*** TODO Get rid of sjcl, (only need to replace hash function)
+
 ** TODO Volume control instead of mute button
 ** PROJ Implement /commands
 *** TODO Implement /version command that gives the version report for tech support

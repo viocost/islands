@@ -1,13 +1,11 @@
 import * as util  from "domik";
 import { BlockingSpinner } from "./lib/BlockingSpinner";
 import toastr from "./lib/toastr";
-import { Chat } from "./lib/ChatClient";
+import { ChatClient as Chat } from "./lib/ChatClient";
+import { ChatEvent } from "./lib/ChatEvent";
+import "../css/chat.sass"
+import "../css/vendor/loading.css"
 
-// ---------------------------------------------------------------------------------------------------------------------------
-// TEST
-window.util = util;
-// ---------------------------------------------------------------------------------------------------------------------------
-// ~END TEST
 
 // ---------------------------------------------------------------------------------------------------------------------------
 // Visual Sections
@@ -18,13 +16,22 @@ let chatBlock;
 let spinner = new BlockingSpinner();
 // ---------------------------------------------------------------------------------------------------------------------------
 // Objects
-let vault;
-let topics;
+let chat;
+
+// ---------------------------------------------------------------------------------------------------------------------------
+// TEST ONLY!
+window.util = util;
+window.toastr = toastr;
+window.chat = chat;
+window.spinner = spinner;
+// ---------------------------------------------------------------------------------------------------------------------------
+// ~END TEST
 
 document.addEventListener('DOMContentLoaded', event =>{
-    console.log(`Initializing page. Registration: ${isRegistration()}`);
-    let form = bakeLoginBlock();
-    let container = util.$("#main-container");
+    console.log(`Initializing page. Registration: ${isRegistration()}, Version: ${version}`);
+    initChat();
+    let container = util.$("#main-container")
+    let form = isRegistration() ? bakeRegistrationBlock() : bakeLoginBlock();
     util.appendChildren(container, form);
 });
 
@@ -55,7 +62,7 @@ function bakeLoginBlock(){
                         id: "vault-login-btn",
                         text: "Login",
                         listeners: {
-                            "click": ()=>{alert("CLICKED!")}
+                            "click": initSession
                         }
                     }),
                 })
@@ -72,61 +79,48 @@ function bakeRegistrationSuccessBlock(){
 
 }
 // ---------------------------------------------------------------------------------------------------------------------------
-// ~END Page blcoks management
+// ~END Page blocks management
 
 
 // ---------------------------------------------------------------------------------------------------------------------------
 // UI handlers
-function vaultLogin(){
-    let passwordEl = util.$("#vault-password");
-    if (!passwordEl){
-        throw new Error("Vault password element is not found.");
-    } else if (!passwordEl.value){
-        throw new Error("Error: missing password.")
-    }
-    loadingOn()
-    XHR({
-        type: "post",
-        url: "/",
-        success: (data)=>{
-            console.log("Vault obtained. Processing...");
-            try{
-                initSession(data, password, passwordEl)
-            }catch(err){
-                toastr.warning(`Login error: ${err.message}`);
-            }finally{
-                loadingOff();
-            }
-        },
-
-        error: err => {
-            loadingOff();
-            toastr.warning(err.responseText);
-        }
-    })
-}
 // ---------------------------------------------------------------------------------------------------------------------------
 // ~END UI handlers
 
 
-
-
-// Decrypts the vault and initializes session
-function initSession(vaultData, password){
-    //Decrypt vault
-
-    //Initialize multiplexor socket
-
-    //Initialize vault
-
-    //Initialize topic instances
-
-    //Initizlie interface
+// ---------------------------------------------------------------------------------------------------------------------------
+// Chat Event handlers
+function processLoginResult(err){
+    if (err){
+        toastr.warning(`Login error: ${err.message}`)
+    } else {
+        toastr.success("Login successful");
+    }
+    loadingOff()
 }
+// ---------------------------------------------------------------------------------------------------------------------------
+// ~END Chat Event handlers
 
 // ---------------------------------------------------------------------------------------------------------------------------
 // Util
 
+function initChat(){
+    chat = new Chat({version: version})
+    chat.on(ChatEvent.LOGIN_ERROR, processLoginResult)
+    chat.on(ChatEvent.LOGIN_SUCCESS, processLoginResult)
+}
+
+
+
+function initSession(){
+    let passwordEl = util.$("#vault-password");
+    if (!passwordEl){
+        throw new Error("Vault password element is not found.");
+    }
+    console.log("Chat created. Starting session...");
+    loadingOn();
+    chat.initSession(passwordEl.value)
+}
 
 function loadingOn() {
     spinner.loadingOn()

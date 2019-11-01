@@ -45,9 +45,9 @@ module.exports = {
 
         // ---------------------------------------------------------------------------------------------------------------------------
         // uncomment to generate module stats
-        new Visualizer({
-          filename: './chat_stat.html'
-        })
+        //new Visualizer({
+        //  filename: './chat_stat.html'
+        //})
     ],
 
     module: {

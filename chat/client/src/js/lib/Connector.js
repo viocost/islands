@@ -1,29 +1,12 @@
-import { WildEmitter } from "../chat/WildEmitter";
 import * as io from "socket.io-client";
+import { WildEmitter } from "./WildEmitter";
 
-/**
- * This class is responsible for following:
- *   1. maintaining connection with the island through multiplexing socket.
- *   2. Sending arbitrary messages asyncronously in FIFO fasion.
- *   3. Receiving messages from island multiplexing socket and notifying subscribers.
- *
- *
- */
-export class MultiplexorQueue{
-    constructor(upgradeToWebsocket){
-        this.upgradeToWebsocket = upgradeToWebsocket;
+export class Connector{
+    constructor(){
         WildEmitter.mixin(this);
-
+        this.chatSocket;
     }
 
-
-    async enqueue(){
-
-    }
-
-    async dequeue(){
-
-    }
 
     async establishConnection(connectionAttempts = 7, reconnectionDelay = 8000){
         return new Promise((resolve, reject)=>{
@@ -47,6 +30,7 @@ export class MultiplexorQueue{
                 autoConnect: false,
                 pingInterval: 10000,
                 pingTimeout: 5000,
+                upgrade: upgrade
             }
 
             socketConfig.upgrade = self.transport > 0;
@@ -54,10 +38,10 @@ export class MultiplexorQueue{
             self.chatSocket = io('/chat', socketConfig);
 
             self.chatSocket.on('connect', ()=>{
-                this.finishSocketSetup();
+                //this.finishSocketSetup();
                 console.log("Island connection established");
-                this.islandConnectionStatus = true;
-                this.emit("connected_to_island");
+                //this.islandConnectionStatus = true;
+                //this.emit("connected_to_island");
                 resolve();
             });
 
@@ -90,10 +74,10 @@ export class MultiplexorQueue{
         })
     }
 
-
-    setListeners(){
+    async reconnect(){
 
     }
+
 
 
 }
