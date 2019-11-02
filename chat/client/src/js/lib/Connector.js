@@ -7,7 +7,6 @@ export class Connector{
         this.chatSocket;
     }
 
-
     async establishConnection(connectionAttempts = 7, reconnectionDelay = 8000){
         return new Promise((resolve, reject)=>{
             let self = this;
@@ -77,7 +76,4 @@ export class Connector{
     async reconnect(){
 
     }
-
-
-
 }

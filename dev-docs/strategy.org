@@ -2,7 +2,16 @@
 
 * Current tasks
 ** PROJ New client
+*** TODO Session now keeps vault ID
+*** TODO Query parameters on handshake
+Vault id, topics ID
+*** TODO Take out holding topic from vault to chat
+*** TODO Fix client-server protocol such that each topic listens to messages
 *** TODO Re-implement vault registration
+*** TODO Probably... Vault settings?
+Mute some topic notifications?
+*** DONE Login async
+CLOSED: [2019-11-01 Fri 15:43]
 *** DONE Implement chat connection
 CLOSED: [2019-11-01 Fri 14:38]
 *** DONE Separate connector and multiplexor object

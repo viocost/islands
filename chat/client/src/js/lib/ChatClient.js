@@ -4,6 +4,7 @@ import { Vault } from "./Vault"
 import { XHR } from "./xhr";
 import { Connector } from "./Connector";
 import { MessageQueue } from  "./MessageQueue";
+import { ArrivalHub } from "./ArrivalHub";
 
 export class ChatClient{
     constructor(opts){
@@ -14,8 +15,9 @@ export class ChatClient{
         this.version = opts.version;
         this.vault;
         this.topics;
-        this.multiplexor;
+        this.messageQueue;
         this.connector;
+        this.arrivalHub;
     }
 
 
@@ -34,6 +36,7 @@ export class ChatClient{
                 }
                 let vault = response.vault;
                 console.log("Got vault");
+                //Initialize vault
                 this.vault = new Vault()
                 this.vault.initSaved(vault, password)
                 console.log("Vault initialized. Initializing connector...");
@@ -41,10 +44,13 @@ export class ChatClient{
                 //Initialize multiplexor socket
                 this.connector = new Connector();
                 await this.connector.establishConnection();
-                console.log("Connection established");
+                console.log("Connection established. Initializing arrival hub..");
+                this.arrivalHub = new ArrivalHub(this.connector);
+
+
                 //Initialize message queue
 
-                //Initialize vault
+                this.messageQueue = new MessageQueue(this.connector);
 
                 //Initialize topic instances
                 this.emit(ChatEvent.LOGIN_SUCCESS)
@@ -54,6 +60,16 @@ export class ChatClient{
             }
         })
     }
+
+
+    shout(msg){
+        this.messageQueue.enqueue(msg)
+    }
+
+    whisper(msg){
+        this.messageQueue.enqueue(msg)
+    }
+
 
 
     async _vaultLogin(vaultData, password){

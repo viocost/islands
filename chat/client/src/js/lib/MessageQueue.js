@@ -3,9 +3,7 @@ import { Lock } from "./Lock";
 
 /**
  * This class is responsible for following:
- *   1. maintaining connection with the island through multiplexing socket.
- *   2. Sending arbitrary messages asyncronously in FIFO fasion.
- *   3. Receiving messages from island multiplexing socket and notifying subscribers.
+ *   1. Sending arbitrary messages asyncronously in FIFO fasion.
  *
  *
  */
@@ -27,7 +25,7 @@ export class MessageQueue{
             try{
                 console.log("Aquiring lock");
                 await self.lock.acquire();
-                console.log("Lock aquired, enqueueing");
+                console.log("Lock acquired, enqueueing");
                 this.queue.push(msg);
             }catch(err){
                 console.log(`Enqueue error: ${err.message} `);
@@ -39,17 +37,22 @@ export class MessageQueue{
         })
     }
 
-
+    //Processes the queue: dequeues each message one by one and send it down the wire
     launchQueueWorker(){
         let self = this;
         let processQueue = async ()=>{
+            if(self.stop){
+                console.log("Stopping worker.");
+                this.working = false;
+                return;
+            }
             try{
-                await self.lock.aquire();
-                let msg;
+                console.log("Worker tick");
+                this.working = true;
+                await self.lock.acquire();
+                let msg
                 while(msg = self.queue.shift(0)){
-                    console.log(`Sending message down the wire`);
-                    //Send message here
-                    // if error - insert it back and report the error
+                    console.log(`Sending message down the wire ${msg}`);
                 }
             }catch(err){
                 console.log(`Queue processor error ${err.message}`);
@@ -62,10 +65,20 @@ export class MessageQueue{
         setImmediate(processQueue);
     }
 
-
-    setListeners(){
-
+    stop(){
+        this.stop = ture;
     }
 
+    resume(){
+        console.log("Resuming worker..");
+        if(!this.working){
+            this.stop = false;
+            this.launchQueueWorker();
+        }
+    }
+
+    isWorking(){
+        return this.working;
+    }
 
 }

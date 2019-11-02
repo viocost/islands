@@ -108,6 +108,7 @@ function initChat(){
     chat = new Chat({version: version})
     chat.on(ChatEvent.LOGIN_ERROR, processLoginResult)
     chat.on(ChatEvent.LOGIN_SUCCESS, processLoginResult)
+    window.chat = chat;
 }
 
 
