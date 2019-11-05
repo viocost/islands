@@ -1,9 +1,11 @@
-const iCrypto =require("../libs/iCrypto.js");
+const iCrypto = require("../libs/iCrypto.js");
 const Response = require("../objects/ClientResponse.js");
 const Request = require("../objects/ClientRequest.js");
 const ClientError = require("../objects/ClientError.js");
 const Utility = require("../libs/ChatUtility.js");
 const Err = require("../libs/IError.js");
+const ChatEvents = require("../../../common/Events.js").Events;
+const Internal = require("../../../common/Events.js").Internal;
 
 
 class TopicInitAssistant{
@@ -66,7 +68,7 @@ class TopicInitAssistant{
 
         self.setNewTopicPending(pendingTopic);
 
-        let response = new Response("init_topic_get_token_success", request);
+        let response = new Response(Internal.INIT_TOPIC_TOKEN, request);
         response.setAttribute("token",  ic.get("rsa-key").publicKey);
         self.connectionManager.sendResponse(connectionId, response);
     }
@@ -130,7 +132,7 @@ class TopicInitAssistant{
         delete self.newTopicPending[request.body.topicID];
 
         //return success
-        let response = new Response("init_topic_success", request);
+        let response = new Response(ChatEvents.INIT_TOPIC_SUCCESS, request);
         self.connectionManager.sendResponse(connectionId, response);
     }
     /*********************************************
@@ -154,10 +156,9 @@ class TopicInitAssistant{
 
 
     setHandlers(){
-        this.handlers = {
-            new_topic_get_token: this.createToken,
-            init_topic: this.initTopic
-        };
+        this.handlers = {};
+        this.handlers[Internal.INIT_TOPIC_GET_TOKEN] = this.createToken;
+        this.handlers[Internal.INIT_TOPIC] = this.initTopic;
     }
 
 
@@ -171,7 +172,7 @@ class TopicInitAssistant{
     setClientErrorTypes(){
         this.clientErrorTypes = {};
         this.eventsHandled.forEach((val)=>{
-            this.clientErrorTypes[val] ="init_topic_error";
+            this.clientErrorTypes[val] = ChatEvents.INIT_TOPIC_ERROR;
         });
     }
 
@@ -192,7 +193,7 @@ class TopicInitAssistant{
             //handle error
             try{
                 Logger.error(`Topic init assistant error: ${err.message}`, {stack: err.stack} );
-                let error = new ClientError(request, this.getErrorType(request.headers.command) , "Internal server error");
+                let error = new ClientError(request, this.getErrorType(request.headers.command) , `Topic init error: ${err.message}`);
                 this.connectionManager.sendResponse(connectionId, error);
             }catch(fatalError){
                 Logger.error(`Topic init assistant FATAL ERROR: ${fatalError.message}`, {stack: fatalError.stack} );

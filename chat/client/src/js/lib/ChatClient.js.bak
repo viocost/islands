@@ -1753,10 +1753,6 @@ export class ChatClient {
     }
 
     initChatListeners(){
-        this.chatSocket.on('message', message =>{
-
-            console.log(JSON.stringify(message));
-        });
 
 
         this.chatSocket.on('request', request =>{

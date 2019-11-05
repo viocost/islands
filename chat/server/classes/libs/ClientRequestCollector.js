@@ -1,5 +1,6 @@
 const EventEmitter = require('events');
 const Err = require("./IError.js");
+const Logger = require("./Logger");
 
 class ClientRequestCollector extends EventEmitter{
 
@@ -18,7 +19,8 @@ class ClientRequestCollector extends EventEmitter{
         connectionManager.on("client_connected", connectionId =>{
             console.log("Client connected");
             let socket = connectionManager.getSocketById(connectionId);
-            socket.on("request", (request)=>{
+            socket.on("message", (request)=>{
+                Logger.debug("Got message from client")
                 this.emit(request.headers.command, request, connectionId);
             });
         });

@@ -39,6 +39,9 @@ class ClientConnectionManager extends EventEmitter{
             socket.on("error", (err)=>{
                 Logger.error(`Client socket error: ${err.message}`, {stack: err.stack});
             })
+
+            //TEST
+            socket.emit("boo");
         });
 
         self.dataSocketHub.on('connection', (socket)=>{

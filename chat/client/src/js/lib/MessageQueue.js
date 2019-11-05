@@ -9,14 +9,13 @@ import { Lock } from "./Lock";
  */
 export class MessageQueue{
 
-    constructor(upgradeToWebsocket){
+    constructor(connector){
         WildEmitter.mixin(this);
-        this.upgradeToWebsocket = upgradeToWebsocket;
         this.lock = new Lock();
+        this.connector = connector;
         this.queue = [];
-
-
-
+        this.stop = false;
+        this.launchQueueWorker();
     }
 
     async enqueue(msg){
@@ -42,17 +41,16 @@ export class MessageQueue{
         let self = this;
         let processQueue = async ()=>{
             if(self.stop){
-                console.log("Stopping worker.");
+                console.log("Stop set to true... Stopping worker.");
                 this.working = false;
                 return;
             }
             try{
-                console.log("Worker tick");
                 this.working = true;
                 await self.lock.acquire();
                 let msg
                 while(msg = self.queue.shift(0)){
-                    console.log(`Sending message down the wire ${msg}`);
+                    self.connector.send(msg);
                 }
             }catch(err){
                 console.log(`Queue processor error ${err.message}`);

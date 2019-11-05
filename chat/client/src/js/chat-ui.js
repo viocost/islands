@@ -2,7 +2,7 @@ import * as util  from "domik";
 import { BlockingSpinner } from "./lib/BlockingSpinner";
 import toastr from "./lib/toastr";
 import { ChatClient as Chat } from "./lib/ChatClient";
-import { ChatEvent } from "./lib/ChatEvent";
+import { Events } from "../../../common/Events";
 import "../css/chat.sass"
 import "../css/vendor/loading.css"
 
@@ -106,8 +106,15 @@ function processLoginResult(err){
 
 function initChat(){
     chat = new Chat({version: version})
-    chat.on(ChatEvent.LOGIN_ERROR, processLoginResult)
-    chat.on(ChatEvent.LOGIN_SUCCESS, processLoginResult)
+    chat.on(Events.LOGIN_ERROR, processLoginResult)
+    chat.on(Events.LOGIN_SUCCESS, processLoginResult)
+    chat.on(Events.INIT_TOPIC_SUCCESS, ()=>{
+        toastr.success("Init topic success")
+    })
+    chat.on(Events.INIT_TOPIC_ERROR, (err)=>{
+
+        toastr.warning(`Init topic error: ${err.message}`);
+    })
     window.chat = chat;
 }
 

@@ -1,5 +1,6 @@
 import * as io from "socket.io-client";
 import { WildEmitter } from "./WildEmitter";
+import { Internal } from "../../../../common/Events";
 
 export class Connector{
     constructor(){
@@ -36,20 +37,40 @@ export class Connector{
 
             self.chatSocket = io('/chat', socketConfig);
 
+            //Wildcard fix
+            let onevent = self.chatSocket.onevent;
+            self.chatSocket.onevent = function(packet){
+                let args = packet.data || [];
+                onevent.call(this, packet);
+                packet.data = ["*"].concat(args);
+                onevent.call(this, packet)
+            }
+            //End
+
+
             self.chatSocket.on('connect', ()=>{
                 //this.finishSocketSetup();
                 console.log("Island connection established");
                 //this.islandConnectionStatus = true;
                 //this.emit("connected_to_island");
+                //
+                self.chatSocket.on("*", (event, data)=>{
+                    console.log(`Got event: ${event}`);
+                    self.emit(event, data);
+                })
+
+                self.chatSocket.on('reconnect', (attemptNumber) => {
+                    console.log("Successfull reconnect client")
+                    self.emit("reconnect");
+                });
                 resolve();
             });
 
-
-
             self.chatSocket.on("disconnect", ()=>{
                 console.log("Island disconnected.");
-                this.islandConnectionStatus = false;
-                this.emit("disconnected_from_island");
+                self.emit("disconnect");
+                //this.islandConnectionStatus = false;
+                //this.emit("disconnected_from_island");
             });
 
             self.chatSocket.on('connect_error', (err)=>{
@@ -74,6 +95,28 @@ export class Connector{
     }
 
     async reconnect(){
+
+    }
+
+    isConnected(){
+        return this.chatSocket.connected;
+    }
+
+    send(msg){
+        if(!this.isConnected()){
+            console.error("Socket disconnected. Unbale to send message.");
+            this.emit(Internal.CONNECTION_ERROR, msg);
+            return
+        }
+
+
+        try{
+            this.chatSocket.send(msg);
+            console.log("Message sent!");
+        }catch (err){
+            console.error(`Internal error sending message: ${err.message}`);
+            this.emit(Internal.CONNECTION_ERROR, msg);
+        }
 
     }
 }

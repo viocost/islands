@@ -2,6 +2,9 @@
 
 * Current tasks
 ** PROJ New client
+*** TODO Implement message sending from queue
+*** TODO Logger config parser: change format and implement self-documenting file
+*** TODO Figure out socket.io connection bugs and dead sockets
 *** TODO Session now keeps vault ID
 *** TODO Query parameters on handshake
 Vault id, topics ID
