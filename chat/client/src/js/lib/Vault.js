@@ -1,7 +1,8 @@
-import { iCrypto } from "../lib/iCrypto";
 import { IError }  from "../../../../common/IError";
 import { Topic } from "../lib/Topic";
-
+import { iCrypto } from "./iCrypto";
+import { WildEmitter } from "./WildEmitter";
+import { Events, Internal  } from "../../../../common/Events";
 
 
 /**
@@ -10,8 +11,9 @@ import { Topic } from "../lib/Topic";
  *
  */
 export class Vault{
-
     constructor(){
+        WildEmitter.mixin(this);
+        this.id = null;
         this.initialized = false;
         this.admin = null;
         this.adminKey = null;
@@ -19,9 +21,16 @@ export class Vault{
         this.password = null;
         this.publicKey = null;
         this.privateKey = null;
+        this.handlers;
+        this.initHandlers();
     }
 
+    initHandlers(){
+        let self = this;
+        this.handlers = {};
+        this.handlers[Internal.POST_LOGIN_DECRYPT] = (data)=>{ self.emit(Internal.POST_LOGIN_DECRYPT, data) }
 
+    }
 
     /**
      * Given a password creates an empty vault
@@ -37,12 +46,14 @@ export class Vault{
         //CHECK password strength and reject if not strong enough
 
         let ic = new iCrypto();
-        ic.generateRSAKeyPair("kp");
+        ic.generateRSAKeyPair("kp")
+            .getPublicKeyFingerprint("kp", "pkfp")
         //Create new Vault object
         this.password = password;
         this.topics = {};
         this.privateKey = ic.get("kp").privateKey;
         this.publicKey = ic.get("kp").publicKey;
+        this.pkfp = ic.get("pkfp");
         this.initialized = true;
 
     }
@@ -84,18 +95,52 @@ export class Vault{
         this.privateKey = data.privateKey;
         this.password = password;
 
-        Object.keys(data.topics).forEach((k, v)=>{
-            this.topics[k] = new Topic(
-                k,
-                data.topics[k].name,
-                data.topics[k].key,
-                data.topics[k].comment);
+        if(!data.pkfp){
+            ic.setRSAKey("pub", data.publicKey, "public")
+              .getPublicKeyFingerprint("pub", "pkfp");
+            this.pkfp = ic.get("pkfp");
+        } else {
+            this.pkfp = data.pkfp;
+        }
+
+        Object.keys(data.topics).forEach((pkfp)=>{
+            this.topics[pkfp] = new Topic(
+                pkfp,
+                data.topics[pkfp].name,
+                data.topics[pkfp].key,
+                data.topics[pkfp].comment);
         });
 
         this.initialized = true;
     }
 
+    setId(id = IError.required("ID is required")){
+        this.id = id;
+    }
 
+    getId(){
+        return this.id;
+    }
+
+    bootstrap(arrivalHub){
+        let self = this;
+        this.arrivalHub = arrivalHub;
+        this.arrivalHub.on(this.id, (msg)=>{
+            self.processIncomingMessage(msg, self);
+        })
+    }
+
+    processIncomingMessage(msg, self){
+        console.log("Processing vault incoming message");
+        if (msg.headers.error){
+            throw new Error(`Error received: ${msg.headers.error}. WARNING ERROR HADLING NOT IMPLEMENTED!!!`)
+        }
+        if (!self.handlers.hasOwnProperty(msg.headers.command)){
+            console.error(`Invalid vault command received: ${msg.headers.command}`)
+            return
+        }
+        self.handlers[msg.headers.command](msg);
+    }
 
 
 

@@ -64,4 +64,21 @@ module.exports.Internal = Object.freeze({
     INIT_TOPIC_TOKEN: "init_topic_token",
     INIT_TOPIC: "init_topic_finalize",
 
+    //Sent by client to server after establishing the connection
+    POST_LOGIN: "post_login",
+
+    POST_LOGIN_CHECK_SERVICES: "post_login_check_services",
+
+    //Response sent by server to client.
+    POST_LOGIN_DECRYPT: "post_login_decrypt_services",
+
+    POST_LOGIN_SUCCESS: "post_login_success",
+    POST_LOGIN_ERROR: "post_login_error",
+
+    INIT_LOAD: "init_load",
+    LOAD_MESSAGES: "load_messages",
+
+    KILL_SESSION: "kill_session",
+
+
 })

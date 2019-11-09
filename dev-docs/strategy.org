@@ -2,7 +2,12 @@
 
 * Current tasks
 ** PROJ New client
-*** TODO Implement message sending from queue
+*** DONE Implement message sending from queue
+CLOSED: [2019-11-08 Fri 23:16]
+*** TODO Implement error processing with general message
+*** TODO Re-design client server protocol. Remove request-response stuff
+*** TODO Vault id should be pkfp
+*** TODO On establish connection launch all hidden services and topic authorities async
 *** TODO Logger config parser: change format and implement self-documenting file
 *** TODO Figure out socket.io connection bugs and dead sockets
 *** TODO Session now keeps vault ID

@@ -5,13 +5,13 @@ import { XHR } from "./xhr";
 import { Connector } from "./Connector";
 import { MessageQueue } from  "./MessageQueue";
 import { ArrivalHub } from "./ArrivalHub";
-import { iCrypto } from "../lib/iCrypto";
 import  { ChatUtility }  from "./ChatUtility";
 import { Message } from "./Message";
 import  { Metadata } from "./Metadata";
 import  { Participant}  from "./Participant";
 import  { AttachmentInfo } from "./AttachmentInfo";
 import { ClientSettings } from  "./ClientSettings";
+import { iCrypto } from "./iCrypto"
 
 export class ChatClient{
     constructor(opts){
@@ -27,7 +27,93 @@ export class ChatClient{
         this.arrivalHub;
     }
 
+    // ---------------------------------------------------------------------------------------------------------------------------
+    // Login and session initialization
+    initSession(password){
+        setImmediate(async ()=>{
+            try{
+                if (!password){
+                    throw new Error("Password is missing.")
+                }
+                console.log("Initializing session");
+                let response = await this.getVault();
+                if (!response.vault){
+                    throw new Error("Vault not found")
+                }
 
+                this.vault = new Vault()
+                let vault = response.vault;
+                let vaultId = response.vaultId;
+                console.log("Got vault. Initializing");
+                //Initialize vault
+
+                this.vault.initSaved(vault, password)
+                this.vault.setId(vaultId);
+                console.log("Vault initialized. Initializing connector...");
+
+
+                //Initialize multiplexor socket
+                this.connector = new Connector();
+
+                //Initializing arrival hub
+                this.arrivalHub = new ArrivalHub(this.connector);
+
+
+                //bootstrapping vault
+                this.vault.bootstrap(this.arrivalHub);
+
+
+                await this.connector.establishConnection(vaultId);
+                console.log("Connection established. Initializing arrival hub..");
+
+                //Initialize message queue
+                this.messageQueue = new MessageQueue(this.connector);
+
+                console.log(`Initializing topic listeners...`);
+                this.topics = this.vault.topics;
+                for(let pkfp of Object.keys(this.topics)){
+                    this.topics[pkfp].bootstrap(this.messageQueue, this.arrivalHub, this.version);
+                }
+                //Initialize topic instances
+                this.emit(Events.LOGIN_SUCCESS)
+
+                // Post-login
+                this.postLogin();
+            } catch (err){
+                this.emit(Events.LOGIN_ERROR, err);
+                console.trace(err)
+            }
+        })
+    }
+
+    // Check hidden services
+    // Check topic authorities
+    // Load current metadata for all topics in the vault
+    postLogin(){
+        //sending post_login request
+        let message = new Message(this.version);
+        message.setSource(this.vault.id);
+        message.setCommand(Internal.POST_LOGIN);
+        message.addNonce();
+        message.body.topics = Object.keys(this.topics);
+        message.signMessage(this.vault.privateKey);
+        this.vault.once(Internal.POST_LOGIN_DECRYPT, this.postLoginDecrypt)
+        this.messageQueue.enqueue(message);
+    }
+
+    postLoginDecrypt(msg){
+        console.log(`Got decrypt command from server.`)
+        //decrypting and sending data back
+
+    }
+
+    
+    //END//////////////////////////////////////////////////////////////////////
+
+
+
+    // ---------------------------------------------------------------------------------------------------------------------------
+    // Topic creation
     /**
      * Called initially on topic creation
      * @param {String} nickname
@@ -75,7 +161,7 @@ export class ChatClient{
                 self.arrivalHub.once(newTopic.ownerPkfp, (data)=>{
                     switch(data.headers.response){
                         case Internal.INIT_TOPIC_TOKEN:
-                            self.initTopicContinueAfterTokenReceived(data, self);
+                            self.initTopicContinueAfterTokenReceived(self, data, newTopic);
                             break;
                         case Events.INIT_TOPIC_ERROR:
                             self.processInitTopicError(data, self);
@@ -96,17 +182,15 @@ export class ChatClient{
     }
 
 
-
     /**
      * New token on init topic received. Proceeding with topic creation
      * @param response
      * @param self
      */
-    initTopicContinueAfterTokenReceived(response, self){
+    initTopicContinueAfterTokenReceived(self, response, pendingTopic){
 
         console.log("Token received, continuing creating topic");
 
-        let pendingTopic = self.newTopicPending[response.body.topicID];
         let token = response.body.token; // Token is 1-time disposable public key generated by server
 
         //Forming request
@@ -132,10 +216,10 @@ export class ChatClient{
         request.body.newTopicData = newTopicDataCipher;
 
 
-        self.arrivalHub.once(newTopic.ownerPkfp, (data)=>{
+        self.arrivalHub.once(pendingTopic.ownerPkfp, (data)=>{
             switch(data.headers.response){
                 case Events.INIT_TOPIC_SUCCESS:
-                    self.initTopicSuccess(data, self);
+                    self.initTopicSuccess(self, data, pendingTopic);
                     break;
                 case Events.INIT_TOPIC_ERROR:
                     self.processInitTopicError(data, self);
@@ -150,19 +234,17 @@ export class ChatClient{
         self.messageQueue.enqueue(request);
     }
 
-    initTopicSuccess(request, self){
-        let data = self.newTopicPending[request.body.topicID];
-        let pkfp = data.pkfp;
-        let privateKey = data.privateKey;
-        let nickname = data.nickname;
+    initTopicSuccess(self, request, pendingTopic ){
+        let pkfp = pendingTopic.pkfp;
+        let privateKey = pendingTopic.privateKey;
+        let nickname = pendingTopic.nickname;
         self.emit("init_topic_success", {
-            pkfp: data.ownerPkfp,
-            nickname: data.ownerNickName,
-            privateKey: data.ownerKeyPair.privateKey
+            pkfp: pendingTopic.ownerPkfp,
+            nickname: pendingTopic.ownerNickName,
+            privateKey: pendingTopic.ownerKeyPair.privateKey
         });
-        delete self.newTopicPending[request.body.topicID];
+        //delete self.newTopicPending[request.body.topicID];
     }
-
 
     prepareNewTopicSettings(nickname, topicName, publicKey, encrypt = true){
         //Creating and encrypting topic settings:
@@ -189,50 +271,7 @@ export class ChatClient{
         }
     }
 
-
-    //Logs in and initializes session
-    initSession(password){
-        setImmediate(async ()=>{
-            try{
-                if (!password){
-                    throw new Error("Password is missing.")
-                }
-                console.log("Initializing session");
-                let response = await this.getVault();
-                if (!response.vault){
-                    throw new Error("Vault not found")
-                }
-
-                this.vault = new Vault()
-                let vault = response.vault;
-                this.vault.initSaved(vault, password)
-                console.log("Got vault");
-
-                //Initialize vault
-                console.log("Vault initialized. Initializing connector...");
-
-                //Initialize multiplexor socket
-                this.connector = new Connector();
-
-                //Initializing arrival hub
-                this.arrivalHub = new ArrivalHub(this.connector);
-
-
-                await this.connector.establishConnection();
-                console.log("Connection established. Initializing arrival hub..");
-
-                //Initialize message queue
-                this.messageQueue = new MessageQueue(this.connector);
-
-                //Initialize topic instances
-                this.emit(Events.LOGIN_SUCCESS)
-            } catch (err){
-                this.emit(Events.LOGIN_ERROR, err);
-                console.trace(err)
-            }
-        })
-    }
-
+    //END//////////////////////////////////////////////////////////////////////
 
     shout(msg){
         this.messageQueue.enqueue(msg)

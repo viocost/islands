@@ -3,7 +3,6 @@ import '../css/vendor/toastr.min.css';
 import { XHR } from "./lib/xhr";
 import toastr from "./lib/toastr";
 window.toastr = toastr;
-import { iCrypto } from "./lib/iCrypto";
 import { Vault } from "./lib/Vault";
 import * as CuteSet from "cute-set";
 import * as dropdown from "./lib/dropdown";
@@ -12,6 +11,7 @@ import { ChatUtility } from "./chat/ChatUtility";
 import { BlockingSpinner } from "./lib/BlockingSpinner"
 import { verifyPassword } from "./lib/PasswordVerify";
 import * as util from "./lib/dom-util";
+import { iCrypto } from "./lib/iCrypto"
 let adminSession;
 let filterFieldSelector;
 let logTableBody;

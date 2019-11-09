@@ -1,4 +1,5 @@
-import { iCrypto } from "../lib/iCrypto";
+import { iCrypto } from "./iCrypto"
+
 
 export class Invite{
 

@@ -1,6 +1,7 @@
 const ClientSession = require("../objects/ClientSession.js");
 const Err = require("./IError.js");
 const Logger = require("../libs/Logger.js");
+const Internal = require("../../../common/Events").Internal
 
 
 
@@ -12,11 +13,32 @@ class ClientSessionManager{
     }
 
     registerConnectionManager(connectionManager){
+        let self = this;
+        connectionManager.on("client_connected", connectionId=>{
+
+            let socket = connectionManager.getSocketById(connectionId);
+            let vaultId = socket.handshake.query.vaultId;
+            if(this.sessions.hasOwnProperty(vaultId)){
+                console.log(`Session exists. Adding connection...`);
+                self.sessions[vaultId].addConnection(connectionId);
+            } else {
+                console.log(`Session does not exist. Creating...`);
+                let newSession = new ClientSession(vaultId, connectionId, connectionManager);
+                this.sessions[vaultId] = newSession
+                newSession.on(Internal.KILL_SESSION, (session)=>{
+                    Logger.debug(`Killing session ${session.id} on timeout`)
+                    delete this.sessions[session.id]
+                })
+            }
+        })
 
         connectionManager.on("client_disconnected", connectionId=>{
-            console.log("processing client disconnect!");
-            this.processSocketDisconnected(connectionId);
+            let session = self.getSessionByConnectionId(connectionId)
+            if(session === undefined) return;
+            session.removeConnection(connectionId);
+
         });
+
     }
 
     getActiveUserSessions(pkfp){
@@ -25,8 +47,12 @@ class ClientSessionManager{
         });
     }
 
-    getSessionByConnectionId(connectionID = Err.required()){
-        return this.sessions[connectionID];
+    getSessionByConnectionId(connectionId = Err.required()){
+        for(let session of Object.keys(this.sessions)){
+            if (this.sessions[session].hasConnection(connectionId)){
+                return this.sessions[session];
+            }
+        }
     }
 
     getSessionBySessionID(sessionID){
@@ -65,17 +91,6 @@ class ClientSessionManager{
         this.sessions[session.getConnectionID()] = session;
     }
 
-    processSocketDisconnected(connectionId){
-        if (this.sessions.hasOwnProperty(connectionId)){
-            delete this.sessions[connectionId];
-        }
-        console.log("\nProcessing disconnect. ConnectionId: " + connectionId)
-        console.log("Sockets: " )
-        Object.keys(this.connectionManager.socketHub.sockets).forEach(socketId=>{
-            console.log("Key: "+ socketId + " Val: " + this.connectionManager.socketHub.sockets[socketId].id);
-        })
-        console.log("\n")
-    }
 
 
     broadcastUserResponse(pkfp, response){

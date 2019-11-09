@@ -20,7 +20,7 @@ class ClientRequestCollector extends EventEmitter{
             console.log("Client connected");
             let socket = connectionManager.getSocketById(connectionId);
             socket.on("message", (request)=>{
-                Logger.debug("Got message from client")
+                Logger.debug(`Got message from client: ${request.headers.command}`, {cat: "chat"})
                 this.emit(request.headers.command, request, connectionId);
             });
         });

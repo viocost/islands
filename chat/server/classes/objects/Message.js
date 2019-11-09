@@ -15,9 +15,22 @@ class Message{
         }
         let res = new Message();
         res.headers = data.headers;
-	res.body = data.body;
+        res.body = data.body;
         res.signature = data.signature;
         return res;
+    }
+
+    static getCommand(message){
+        const m = Message.parse(message);
+        return m.headers.command;
+    }
+
+    static makeResponse(origMessage, pkfpSource, command){
+        let message = new Message();
+        message.setDest(origMessage.headers.pkfpSource);
+        message.setSource(pkfpSource)
+        message.setCommand(command);
+        return message;
     }
 
     verify(message, publicKey){
@@ -25,10 +38,6 @@ class Message{
         res.body = data.body;
     }
 
-    static getCommand(message){
-        const m = Message.parse(message);
-        return m.headers.command;
-    }
 
 
     setAttribute(key = Err.required(), value = Err.required()){
@@ -61,6 +70,25 @@ class Message{
 
     hasHeader(header){
         return this.headers[header];
+    }
+
+    setSource(pkfp){
+        this.headers.pkfpSource = pkfp;
+    }
+
+    setDest(pkfp){
+        this.headers.pkfpDest = pkfp;
+    }
+
+    setCommand(command){
+        this.headers.command = command
+    }
+
+    addNonce(){
+        let ic = new iCrypto();
+        ic.createNonce("n")
+            .bytesToHex("n", "nhex");
+        this.headers.nonce = ic.get("nhex");
     }
 
     static verify(message, publicKey){

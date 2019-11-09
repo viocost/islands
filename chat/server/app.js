@@ -58,7 +58,6 @@ let config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
 
 Logger.initLogger(config.servicePath, "debug");
 let helloMsg = "!!=====ISLANDS v." + VERSION + " =====!!"
-console.log(helloMsg);
 Logger.info(helloMsg);
 
 historyPath = config.historyPath || historyPath;

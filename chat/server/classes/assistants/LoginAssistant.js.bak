@@ -7,7 +7,7 @@ const ClientError = require("../objects/ClientError.js");
 const Util = require("../libs/ChatUtility.js");
 const Logger = require("../libs/Logger.js");
 
-class TopicLoginAssistant{
+class LoginAssistant{
 
     constructor(connectionManager = Err.required(),
                 requestEmitter = Err.required(),
@@ -234,7 +234,10 @@ class TopicLoginAssistant{
     }
 
     setEventsHandled(){
-        this.eventsHandled = ["init_login", "login_decrypted_continue"]
+        this.eventsHandled = [
+
+            "init_login", "login_decrypted_continue"
+        ]
     }
 
     setClientErrorTypes(){
@@ -253,7 +256,7 @@ class TopicLoginAssistant{
 
     subscribe(requestEmitter){
         let self = this;
-        self.eventsHandled.map((val)=>{
+        self.eventsHandled.forEach((val)=>{
             requestEmitter.on(val, async (request, connectionId)=>{
                 await self.handleRequest(request, connectionId, self);
             })

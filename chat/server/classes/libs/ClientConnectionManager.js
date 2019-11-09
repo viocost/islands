@@ -40,8 +40,6 @@ class ClientConnectionManager extends EventEmitter{
                 Logger.error(`Client socket error: ${err.message}`, {stack: err.stack});
             })
 
-            //TEST
-            socket.emit("boo");
         });
 
         self.dataSocketHub.on('connection', (socket)=>{
@@ -63,15 +61,13 @@ class ClientConnectionManager extends EventEmitter{
         })
     }
 
-
-
-
-    isSoskcetConnected(id){
-        return (this.socketHub.sockets[id] && self.socketHub.sockets[id].connected);
+    isAlive(socketId){
+        return (this.socketHub.sockets[socketId] && self.socketHub.sockets[socketId].connected);
     }
 
     getSocketById(id){
         if(!this.socketHub.sockets[id]){
+            Logger.error(`Socket not found: ${id}, \nExisting sockets: ${JSON.stringify(Object.keys(this.socketHub.sockets))}`, {cat: "connection"})
             throw new Error("Socket does not exist: " + id);
         }
         return this.socketHub.sockets[id];
@@ -109,6 +105,10 @@ class ClientConnectionManager extends EventEmitter{
     }
 
     sendChatMessage(connectionId, message){
+        this.send(connectionId, "message", message);
+    }
+
+    sendMessage(connectionId, message){
         this.send(connectionId, "message", message);
     }
 

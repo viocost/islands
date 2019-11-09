@@ -8,7 +8,7 @@ export class Connector{
         this.chatSocket;
     }
 
-    async establishConnection(connectionAttempts = 7, reconnectionDelay = 8000){
+    async establishConnection(vaultId, connectionAttempts = 7, reconnectionDelay = 8000){
         return new Promise((resolve, reject)=>{
             let self = this;
             let upgrade = !!this.upgradeToWebsocket;
@@ -25,6 +25,9 @@ export class Connector{
             }
 
             const socketConfig = {
+                query: {
+                    vaultId: vaultId
+                },
                 reconnection: false,
                 forceNew: true,
                 autoConnect: false,

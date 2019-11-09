@@ -1,5 +1,6 @@
 const Logger = require("./Logger.js");
 const fs = require("fs-extra");
+const path = require("path")
 const RandExp = require("randexp");
 const iCrypto = require("./iCrypto");
 const AdminKey = require("./AdminKey");
@@ -86,7 +87,6 @@ class VaultManager{
         return id;
     }
 
-
     completeRegistration(vaultBlob, signature, publicKey, id){
         let ic = new iCrypto();
         ic.addBlob("vaulthex", vaultBlob)
@@ -115,7 +115,6 @@ class VaultManager{
         return fs.readFileSync(this.getVaultPath(id), 'utf8');
     }
 
-
     isRegistrationPending(vaultID){
         Logger.debug("Registration pending called but not implemented!");
         return  fs.existsSync(this.vaultsPath + vaultID) &&
@@ -123,7 +122,6 @@ class VaultManager{
         !fs.existsSync(this.vaultsPath + vaultID + "/" + PUBLICKEY) &&
         fs.existsSync(this.vaultsPath + vaultID + "/" + PENDING)
     }
-
 
     isRegistrationActive(vaultID){
         let adminPublicKey = AdminKey.get();
@@ -160,51 +158,51 @@ class VaultManager{
     }
 
     _consumeRegistrationToken(vaultID){
-        fs.unlinkSync(this.vaultsPath + vaultID + "/" + PENDING);
+        fs.unlinkSync(path.join(this.vaultsPath, vaultID, PENDING));
     }
 
     createGuestVault(vaultID, signature){
-        fs.mkdirSync(this.vaultsPath + vaultID );
-        fs.writeFileSync(this.vaultsPath + vaultID + "/" + PENDING, signature)
+        fs.mkdirSync(path.join(this.vaultsPath,  vaultID));
+        fs.writeFileSync(path.join(this.vaultsPath, vaultID, PENDING), signature)
     }
-
-
 
     logUnauthorizedWriteAttempt(data){
         Logger.warn("Unauthorized vault write attempt!", data)
     }
 
     getVaultPath(id){
-        return this.vaultsPath + id + "/vault";
+        return path.join(this.vaultsPath, id, "vault");
     }
 
     async deleteVault(id){
-        if(fs.existsSync(this.vaultsPath + id))
-            await fs.remove(this.vaultsPath + id);
-    }
-
-    getVaultPublicKeyPath(id){
-        return this.vaultsPath + id + "/publicKey";
+        let _path = path.join(this.vaultsPath, id)
+        if(fs.existsSync(_path))
+            await fs.remove(_path);
     }
 
     isVaultExist(id){
-        return (fs.existsSync(this.vaultsPath + id) &&
-            fs.existsSync(this.vaultsPath + id + "/vault") &&
-            fs.existsSync(this.vaultsPath + id + "/publicKey"));
+        let vaultDir = path.join(this.vaultsPath, id);
+        let vaultFile = path.join(this.vaultsPath, id, "vault");
+        let pubKey = path.join(this.vaultsPath, id, "publicKey");
+        console.log(`dir: ${vaultDir}, file: ${vaultFile}, key: ${pubKey}`);
+
+        return (fs.existsSync(vaultDir) &&
+                fs.existsSync(vaultFile) &&
+                fs.existsSync(pubKey));
     }
 
     _writeVault(id, blob, publicKey){
-        let vaultPath = this.vaultsPath + id + "/";
+        let vaultPath = path.join(this.vaultsPath, id);
         if(!fs.existsSync(vaultPath)){
             fs.mkdirSync(vaultPath);
         }
-        fs.writeFileSync(vaultPath + "vault", blob);
-        fs.writeFileSync(vaultPath + "publicKey", publicKey);
+        fs.writeFileSync(path.join(vaultPath, "vault"), blob);
+        fs.writeFileSync(path.join(vaultPath, "publicKey"), publicKey);
     }
 
     _updateVault(id, blob){
-        let vaultPath = this.vaultsPath + id + "/";
-        fs.writeFileSync(vaultPath + "vault", blob);
+        let vaultPath = path.join(this.vaultsPath, id);
+        fs.writeFileSync(path.join(vaultPath, "vault"), blob);
     }
 
     getVaultPublicKey(id){
@@ -212,7 +210,7 @@ class VaultManager{
             throw new Error("Vault not found");
         }
 
-        return fs.readFileSync(this.getVaultPublicKeyPath(id), 'utf8');
+        return fs.readFileSync(path.join(this.vaultsPath, id, "publicKey"), 'utf8');
     }
 
 

@@ -1,4 +1,4 @@
-import { iCrypto } from "../lib/iCrypto";
+import { iCrypto } from "./iCrypto"
 
 export class Metadata{
     static parseMetadata(blob){

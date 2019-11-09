@@ -6,6 +6,7 @@ const Utility = require("../libs/ChatUtility.js");
 const Err = require("../libs/IError.js");
 const ChatEvents = require("../../../common/Events.js").Events;
 const Internal = require("../../../common/Events.js").Internal;
+const Logger = require("../libs/Logger.js");
 
 
 class TopicInitAssistant{
@@ -25,6 +26,7 @@ class TopicInitAssistant{
         this.setHandlers();
         this.setEventsHandled();
         this.setClientErrorTypes();
+        Logger.debug("About to call subscribe", {cat: "chat"});
         this.subscribe(requestEmitter);
 
     }
@@ -164,8 +166,8 @@ class TopicInitAssistant{
 
     setEventsHandled(){
         this.eventsHandled = [
-            "new_topic_get_token",
-            "init_topic"
+            Internal.INIT_TOPIC_GET_TOKEN,
+            Internal.INIT_TOPIC
         ];
     }
 
@@ -177,7 +179,9 @@ class TopicInitAssistant{
     }
 
     subscribe(requestEmitter){
+        console.log("In subscribe");
         let self = this;
+        Logger.debug(`Events handled: ${JSON.stringify(this.eventsHandled)}`, {cat: "chat"})
         self.eventsHandled.forEach((val)=>{
             requestEmitter.on(val, async (request, connectionId)=>{
                 await self.handleRequest(request, connectionId, self);
