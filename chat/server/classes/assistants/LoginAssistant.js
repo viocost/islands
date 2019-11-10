@@ -86,7 +86,42 @@ class LoginAssistant{
         self.connectionManager.sendMessage(connectionId, response);
     }
 
+    async checkServices(request, connectionId, self){
 
+        Logger.debug(`Received check services request. Checking...`, {cat: "login"})
+
+        //verify request
+
+        let services = request.body.services;
+        let session = self.sessionManager.getSessionByConnectionId(connectionId);
+        let privateKey = await session.getPrivateKey();
+
+        for(let pkfp of Object.keys(services)){
+            let metadata = JSON.parse(await self.hm.getLastMetadata(pkfp));
+            Logger.debug(`Checking topic authority`, {cat: "login"})
+            if (self.isTopicOwner(pkfp, metadata) && await self.taLaunchRequired(metadata.body.topicAuthority.pkfp)){
+                Logger.debug(`Topic autority launch required. Launching`, {cat: "login"})
+                const taPkfp = metadata.body.topicAuthority.pkfp;
+                const taPrivateKey = Util.decryptStandardMessage(services[pkfp].topicAuthority.taPrivateKey, privateKey);
+                const taHSPrivateKey = Util.decryptStandardMessage(services[pkfp].topicAuthority.taHSPrivateKey, privateKey);
+                await self.topicAuthorityManager.launchTopicAuthority(taPrivateKey, taHSPrivateKey, taPkfp);
+            }
+
+            const residence = metadata.body.participants[pkfp].residence;
+            console.log("Checking client hidden service: " + residence, {cat: "login"});
+            if (!await self.connector.isHSUp(residence)){
+                Logger.debug(`Hidden service ${residence} launch required.`, {cat: "login"})
+                const clientHSKey = Util.decryptStandardMessage(services[pkfp].clientHSPrivateKey, privateKey);
+                await self.launchClientHS(clientHSKey);
+            }
+
+        }
+        let response = Message.makeResponse(request, "island", Events.POST_LOGIN_SUCCESS)
+        self.connectionManager.sendMessage(connectionId, response);
+        Logger.debug(`Services check completed!`, {cat: "login"});
+    }
+
+    ///JUNK
     async initLogin(request, connectionId, self) {
         const clientPkfp = request.headers.pkfpSource;
         //test
@@ -154,7 +189,7 @@ class LoginAssistant{
         this.deletePendingLogin(request.body.sessionID);
     }
 
-
+    ///JUNK END
 
     async getDataForDecryption(clientPkfp, metadata, sessionID){
         let taData, hsKey;
@@ -278,7 +313,8 @@ class LoginAssistant{
 
     setEventsHandled(){
         this.eventsHandled = [
-            Internal.POST_LOGIN
+            Internal.POST_LOGIN,
+            Internal.POST_LOGIN_CHECK_SERVICES
         ]
     }
 

@@ -97,13 +97,93 @@ export class ChatClient{
         message.addNonce();
         message.body.topics = Object.keys(this.topics);
         message.signMessage(this.vault.privateKey);
-        this.vault.once(Internal.POST_LOGIN_DECRYPT, this.postLoginDecrypt)
+        this.vault.once(Internal.POST_LOGIN_DECRYPT, (msg)=>{
+            this.postLoginDecrypt(msg, this);
+        })
         this.messageQueue.enqueue(message);
     }
 
-    postLoginDecrypt(msg){
+    postLoginDecrypt(msg, self){
         console.log(`Got decrypt command from server.`)
         //decrypting and sending data back
+
+        let decryptBlob = (privateKey, blob, lengthChars = 4)=>{
+            let icn = new iCrypto();
+            let symLength = parseInt(blob.substr(-lengthChars))
+            let blobLength = blob.length;
+            let symk = blob.substring(blobLength- symLength - lengthChars, blobLength-lengthChars );
+            let cipher = blob.substring(0, blobLength- symLength - lengthChars);
+            icn.addBlob("symcip", symk)
+                .addBlob("cipher", cipher)
+                .asym.setKey("priv", privateKey, "private")
+                .asym.decrypt("symcip", "priv", "sym", "hex")
+                .sym.decrypt("cipher", "sym", "blob-raw", true)
+            return icn.get("blob-raw")
+        };
+
+        let encryptBlob = (publicKey, blob, lengthChars = 4)=>{
+            let icn = new iCrypto();
+            icn.createSYMKey("sym")
+                .asym.setKey("pub", publicKey, "public")
+                .addBlob("blob-raw", blob)
+                .sym.encrypt("blob-raw", "sym", "blob-cip", true)
+                .asym.encrypt("sym", "pub", "symcip", "hex")
+                .encodeBlobLength("symcip", 4, "0", "symcipl")
+                .merge(["blob-cip", "symcip", "symcipl"], "res")
+            return icn.get("res");
+        };
+
+        let services = msg.body.services;
+        let sessionKey = msg.body.sessionKey;
+        let res = {}
+        for (let pkfp of Object.keys(services)){
+            let topicData = services[pkfp];
+            let topicPrivateKey = self.topics[pkfp].privateKey;
+
+            let clientHSPrivateKey, taHSPrivateKey, taPrivateKey;
+
+            if (topicData.clientHSPrivateKey){
+                clientHSPrivateKey = decryptBlob(topicPrivateKey, topicData.clientHSPrivateKey)
+            }
+
+            if (topicData.topicAuthority && topicData.topicAuthority.taPrivateKey){
+                taPrivateKey = decryptBlob(topicPrivateKey, topicData.topicAuthority.taPrivateKey )
+            }
+
+            if (topicData.topicAuthority && topicData.topicAuthority.taHSPrivateKey){
+                taHSPrivateKey = decryptBlob(topicPrivateKey, topicData.topicAuthority.taHSPrivateKey)
+            }
+
+            let preDecrypted = {};
+
+            if (clientHSPrivateKey){
+                preDecrypted.clientHSPrivateKey = encryptBlob(sessionKey, clientHSPrivateKey)
+            }
+            if (taPrivateKey || taHSPrivateKey){
+                preDecrypted.topicAuthority = {}
+            }
+            if (taPrivateKey){
+                preDecrypted.topicAuthority.taPrivateKey = encryptBlob(sessionKey, taPrivateKey)
+            }
+            if (taHSPrivateKey){
+                preDecrypted.topicAuthority.taHSPrivateKey = encryptBlob(sessionKey, taHSPrivateKey)
+            }
+
+            res[pkfp] = preDecrypted
+        }
+
+        console.log("Decryption is successfull.");
+        let message = new Message(self.version);
+        message.setCommand(Internal.POST_LOGIN_CHECK_SERVICES)
+        message.setSource(self.vault.getId());
+        message.body.services = res;
+        message.signMessage(self.vault.privateKey);
+        self.vault.once(Events.POST_LOGIN_SUCCESS, ()=>{
+            console.log("Post login success!");
+            self.emit(Events.POST_LOGIN_SUCCESS)
+        })
+        
+        this.messageQueue.enqueue(message);
 
     }
 

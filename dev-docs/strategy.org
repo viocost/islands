@@ -2,31 +2,21 @@
 
 * Current tasks
 ** PROJ New client
-*** DONE Implement message sending from queue
-CLOSED: [2019-11-08 Fri 23:16]
+*** TODO Request invites
+
+*** PROJ Topic creation
+- Proper error handling
+- Vault update when topic is created, joined or deleted
+**** TODO Topic create
+**** TODO Topic join
+**** TODO Topic Delete
+
+
 *** TODO Implement error processing with general message
-*** TODO Re-design client server protocol. Remove request-response stuff
-*** TODO Vault id should be pkfp
-*** TODO On establish connection launch all hidden services and topic authorities async
-*** TODO Logger config parser: change format and implement self-documenting file
-*** TODO Figure out socket.io connection bugs and dead sockets
-*** TODO Session now keeps vault ID
-*** TODO Query parameters on handshake
-Vault id, topics ID
-*** TODO Take out holding topic from vault to chat
-*** TODO Fix client-server protocol such that each topic listens to messages
-*** TODO Re-implement vault registration
 *** TODO Probably... Vault settings?
 Mute some topic notifications?
-*** DONE Login async
-CLOSED: [2019-11-01 Fri 15:43]
-*** DONE Implement chat connection
-CLOSED: [2019-11-01 Fri 14:38]
-*** DONE Separate connector and multiplexor object
-CLOSED: [2019-11-01 Fri 14:34]
-*** DONE Draft message queue
-CLOSED: [2019-11-01 Fri 14:36]
-*** PROJ Improve socket protocol. Remove requests as they are unneeded
+*** TODO Fix client-server protocol such that each topic listens to messages
+*** TODO Re-implement vault registration
 *** PROJ Rework the chat interface
 **** TODO draft layout wireframes
 
@@ -36,23 +26,41 @@ CLOSED: [2019-11-01 Fri 14:36]
 **** TODO White spaces in messages
 <2019-09-10 Tue>
 *** TODO BUG: on reconnection mute settings are reset
-*** TODO BUG! On scroll messages loaded and appended multiple times
 
 *** TODO debug reconnection
 
-** PROJ Message sequencing and interleaving
-*** TODO Implement sequencing
-*** TODO Implement thread safe history append
-*** TODO Implement message buffer
-*** TODO Implement persistent queue
-*** TODO Wakeup protocol when user appears after a break
-*** TODO Timestamps chain for messages
-*** TODO get rif if simple ram queue
-*** TODO Expiration time for messages
+*** TODO Figure out socket.io connection bugs and dead sockets
+*** TODO BUG! On scroll messages loaded and appended multiple times
+
+
+*** DONE Logger config parser: change format and implement self-documenting file
+CLOSED: [2019-11-10 Sun 13:53]
+*** DONE Implement message sending from queue
+CLOSED: [2019-11-08 Fri 23:16]
+*** DONE Re-design client server protocol. Remove request-response stuff
+CLOSED: [2019-11-10 Sun 12:48]
+*** DONE Vault id should be pkfp
+CLOSED: [2019-11-10 Sun 12:48]
+Not needed anymore
+*** DONE On establish connection launch all hidden services and topic authorities async
+CLOSED: [2019-11-10 Sun 12:48]
+
+*** DONE Session now keeps vault ID
+CLOSED: [2019-11-10 Sun 12:48]
+
+*** DONE Login async
+CLOSED: [2019-11-01 Fri 15:43]
+*** DONE Implement chat connection
+CLOSED: [2019-11-01 Fri 14:38]
+*** DONE Separate connector and multiplexor object
+CLOSED: [2019-11-01 Fri 14:34]
+*** DONE Draft message queue
+CLOSED: [2019-11-01 Fri 14:36]
+*** DONE Improve socket protocol. Remove requests as they are unneeded
+CLOSED: [2019-11-10 Sun 12:50]
 
 * Bugs
 ** TODO test EDGE browser
-
 
 * Feature requests
 ** TODO Backup strategy <2019-09-08 Sun>

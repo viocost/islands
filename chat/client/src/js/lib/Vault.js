@@ -29,7 +29,7 @@ export class Vault{
         let self = this;
         this.handlers = {};
         this.handlers[Internal.POST_LOGIN_DECRYPT] = (data)=>{ self.emit(Internal.POST_LOGIN_DECRYPT, data) }
-
+        this.handlers[Events.POST_LOGIN_SUCCESS] = ()=>{ self.emit(Events.POST_LOGIN_SUCCESS); }
     }
 
     /**

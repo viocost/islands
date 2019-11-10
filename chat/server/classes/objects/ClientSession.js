@@ -52,7 +52,18 @@ class ClientSession extends EventEmitter{
         Logger.debug("Session key has been generated!", {cat: "session"})
     }
 
-    getPublicKey(){
+    async getPublicKey(){
+        await this.waitForKey();
+        return this.publicKey;
+    }
+
+    async getPrivateKey(){
+        await this.waitForKey();
+        return this.privateKey;
+    }
+
+
+    waitForKey(){
         let self = this;
         return new Promise((resolve, reject)=>{
             let timeout = 10000;
@@ -66,7 +77,7 @@ class ClientSession extends EventEmitter{
                     }
                     setTimeout(tick, 500);
                 } else {
-                    resolve(this.publicKey)
+                    resolve()
                 }
             }
             tick();

@@ -19,6 +19,7 @@
     "bimap": "0.0.15",
     "body-parser": "^1.18.2",
     "circular-json": "*",
+    "config-ini-parser": "^1.2.2",
     "cute-set": "^1.0.6",
     "domik": "^1.0.4",
     "express": "^4.16.2",
