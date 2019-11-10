@@ -55,7 +55,6 @@ class LoginAssistant{
 
         // Verify request
         // Post login should be sent on behalf of vault
-
         let verified = Request.verify(request, self.vaultManager.getVaultPublicKey(request.headers.pkfpSource));
         Logger.debug(`Verified: ${verified}`, {cat: "login"});
 
@@ -64,9 +63,11 @@ class LoginAssistant{
         if(request.body.topics){
             for (let pkfp of request.body.topics){
                 Logger.debug(`Getting services data for ${pkfp}`, {cat: "login"});
-                let metadata = await self.hm.getLastMetadata(pkfp);
+                let metadata = JSON.parse(await self.hm.getLastMetadata(pkfp));
 
-                topicsData[pkfp] = await self.getDataForDecryption(pkfp, JSON.parse(metadata));
+
+                topicsData[pkfp] = await self.getDataForDecryption(pkfp, metadata);
+                topicsData[pkfp].metadata = metadata;
             }
         } else {
             Logger.warning("NO TOPIC IDs PRESENT IN POST LOGIN", {cat: "login"})

@@ -75,7 +75,7 @@ module.exports.Internal = Object.freeze({
 
     POST_LOGIN_CHECK_SERVICES: "post_login_check_services",
 
-
+    REQUEST_INVITE: "request_invite",
 
     INIT_LOAD: "init_load",
     LOAD_MESSAGES: "load_messages",

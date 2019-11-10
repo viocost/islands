@@ -51,17 +51,14 @@ export class ChatClient{
                 this.vault.setId(vaultId);
                 console.log("Vault initialized. Initializing connector...");
 
-
                 //Initialize multiplexor socket
                 this.connector = new Connector();
 
                 //Initializing arrival hub
                 this.arrivalHub = new ArrivalHub(this.connector);
 
-
                 //bootstrapping vault
                 this.vault.bootstrap(this.arrivalHub);
-
 
                 await this.connector.establishConnection(vaultId);
                 console.log("Connection established. Initializing arrival hub..");
@@ -74,7 +71,8 @@ export class ChatClient{
                 for(let pkfp of Object.keys(this.topics)){
                     this.topics[pkfp].bootstrap(this.messageQueue, this.arrivalHub, this.version);
                 }
-                //Initialize topic instances
+
+                //At this point we have loaded all topic keys, so login is successful
                 this.emit(Events.LOGIN_SUCCESS)
 
                 // Post-login
@@ -86,9 +84,8 @@ export class ChatClient{
         })
     }
 
-    // Check hidden services
-    // Check topic authorities
-    // Load current metadata for all topics in the vault
+
+    // Sends all topic pkfps (ids) to gather metadata and encrypted services
     postLogin(){
         //sending post_login request
         let message = new Message(this.version);
@@ -102,6 +99,9 @@ export class ChatClient{
         })
         this.messageQueue.enqueue(message);
     }
+
+    // Decrypts topic authorities' and hidden services keys
+    // and re-encrypts them with session key, so island can poke all services
 
     postLoginDecrypt(msg, self){
         console.log(`Got decrypt command from server.`)
@@ -187,10 +187,17 @@ export class ChatClient{
 
     }
 
-    
     //END//////////////////////////////////////////////////////////////////////
 
 
+    // ---------------------------------------------------------------------------------------------------------------------------
+    // Invite handling
+
+    requestInvite(topicId){
+        if (!this.topics.hasOwnProperty(topicId)) throw new Error(`Topic ${topicId}, not found`)
+        let topic = this.topics[topicId];
+
+    }
 
     // ---------------------------------------------------------------------------------------------------------------------------
     // Topic creation

@@ -145,25 +145,65 @@ export class Topic{
         request.headers.pkfpSource = this.session.publicKeyFingerprint;
         request.body.lastLoadedMessageID = lastLoadedMessageID;
         request.signMessage(this.session.privateKey);
-
-        //this.chatSocket.emit("request", request);
     }
 
-    createInvite(){
+
+    // ---------------------------------------------------------------------------------------------------------------------------
+    // INVITES HANDLING
+    requestInvite(){
+        let self = this;
+        if(!self.initLoaded){
+            throw new Error("Metadata has not been loading yet.")
+        }
+        setTimeout(()=>{
+            let request = new Message(self.version);
+            let myNickNameEncrypted = ChatUtility.encryptStandardMessage(self.settings.nickname,
+                self.session.metadata.topicAuthority.publicKey);
+            let topicNameEncrypted = ChatUtility.encryptStandardMessage(self.session.settings.topicName,
+                self.session.metadata.topicAuthority.publicKey);
+            request.setCommand(Internal.REQUEST_INVITE);
+            request.setSource(self.publicKeyFingerprint);
+            request.setDest(self.metadata.topicAuthority.pkfp);
+            request.body.nickname = myNickNameEncrypted;
+            request.body.topicName = topicNameEncrypted;
+            request.signMessage(self.session.privateKey);
+            self.messageQueue.enqueue(request);
+        }, 100)
 
     }
 
     syncInvites(){
 
+        let request = new Message(self.version);
+        request.headers.command = "sync_invites";
+        request.headers.pkfpSource = this.session.publicKeyFingerprint;
+        request.headers.pkfpDest = this.session.metadata.topicAuthority.pkfp;
+        request.headers.nonce = ic.get("nhex");
+        request.signMessage(this.session.privateKey);
+        this.chatSocket.emit("request", request);
     }
 
     updateInvite(){
 
+        this.session.settings.invites[inviteID].name = name;
+        this.saveClientSettings(this.session.settings, this.session.privateKey)
     }
 
     deleteInvite(){
 
+        console.log("About to delete invite: " + id);
+        let request = new Message(self.version);
+        request.headers.command = "del_invite";
+        request.headers.pkfpSource = this.session.publicKeyFingerprint;
+        request.headers.pkfpDest = this.session.metadata.topicAuthority.pkfp
+        let body = {
+            invite: id,
+        };
+        request.set("body", body);
+        request.signMessage(this.session.privateKey);
+        this.chatSocket.emit("request", request);
     }
+    //END//////////////////////////////////////////////////////////////////////
 
 
     bootPraticipant(){
@@ -201,4 +241,41 @@ export class Topic{
     setName(name){
         this.name = name;
     }
+
+
+    saveClientSettings(settingsRaw, privateKey){
+        if(!settingsRaw){
+            settingsRaw = this.session.settings;
+        }
+        if(!privateKey){
+            privateKey = this.session.privateKey;
+        }
+        let ic = new iCrypto();
+        ic.asym.setKey("privk", privateKey, "private")
+            .publicFromPrivate("privk", "pub")
+            .getPublicKeyFingerprint("pub", "pkfp");
+        let publicKey = ic.get("pub");
+        let pkfp = ic.get("pkfp");
+
+        if(typeof settingsRaw === "object"){
+            settingsRaw = JSON.stringify(settingsRaw);
+        }
+        let settingsEnc = ChatUtility.encryptStandardMessage(settingsRaw, publicKey);
+        let headers = {
+            command: "update_settings",
+            pkfpSource: pkfp
+        };
+        let body = {
+            settings: settingsEnc
+        };
+
+        let request = new Message(self.version);
+        request.set("headers", headers);
+        request.set("body", body);
+        request.signMessage(privateKey);
+        console.log("Sending update settings request");
+        this.chatSocket.emit("request", request);
+    }
+
+
 }
