@@ -1,4 +1,21 @@
-#main-container.container.tingle-content-wrapper
+header.chat-header
+    .header-section-left
+        img#menu(src="/img/menu.svg")
+        h3#active-title Welcome to Islands!
+    .header-section-middle
+        img.logo(src="/img/island256.png")
+    .header-section-right
+        img#admin(src="/img/admin-user.svg")
+        img#settings(src="/img/settings-light.svg")
+        img#logout(src="/img/logout-light.svg")
+
+main
+
+    #main-container.container.tingle-content-wrapper
+
+
+
+
 
     //#registration-complete--wrapper
         //h2 Setup completed
@@ -15,6 +32,9 @@
 
 
 
+if secured !== undefined
+    script.
+        const secured = #{secured};
 
 script.
     isRegistration = function(){
