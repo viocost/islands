@@ -6,6 +6,10 @@
   display: flex
   flex-direction: row
   align-items: center
+  img
+    height: 4rem
+    width: 4rem
+    margin: 1rem
 
   #active-title
     margin-left: 1rem
@@ -81,6 +85,7 @@ main
 
 
 .messages-panel-wrapper
+  background-color: $messages-panel-background
   width: 70%
   height: 100%
   display: flex
@@ -88,10 +93,10 @@ main
   flex: 1
   .messages-panel-container
     width: 100%
-    background-color: red
     display: flex
     flex: 1
-
+    background-color: inherit
+    border-bottom: 2px solid $main-background
 
 
 //~END main
@@ -173,6 +178,7 @@ main
 
 .new-message-container
   max-height: 50%
+  background-color: inherit
   display: flex
   margin: 2rem 2rem 0 0
   flex-direction: row
@@ -195,11 +201,12 @@ main
     margin: auto 1rem
   select
     color: $text-color
-    background: none
+    background: $main-background
     padding: .8rem
     min-width: 37%
-    border: 1px solid #b5b5b5
-    border-bottom: none
+    //border: 1px solid #b5b5b5
+    border: none
+    border-bottom: 1px solid darken($main-background, 5%)
     border-radius: .5rem .5rem 0 0
     outline: none
 
@@ -217,7 +224,9 @@ main
     height: 3.5rem
     margin: 0 0 .5rem 0
     resize: vertical
-    background-color: inherit
+    background-color: $main-background
+    color: $text-color
+    border: none
   .button-column
     display: flex
     flex-direction: column
@@ -246,6 +255,7 @@ main
     display: block
     margin: 1rem 0 1rem 0
   #new-msg
+    background-color: $main-background
     min-width: 60%
     padding: 1rem
     border-radius: 0.5rem
@@ -269,7 +279,7 @@ main
 #send-new-msg
   border: none
   outline: none
-  background-color: darken($main-background, 5%)
+  background-color: $main-background
   color: $text-color
   font-size: 1.8rem
   padding: .8rem
@@ -350,3 +360,36 @@ main
 
 
 // ~END new message block
+
+// Login
+
+#vault-login--wrapper
+  display: block
+  margin: 10% auto
+  color: $text-color
+  .form-border
+    background-color: #111113
+    border: none
+
+#vault-password
+  background-color: $main-background
+  color: $text-color
+  border: none
+  outline: none
+
+#vault-login-btn
+  border-radius: .4rem
+  background-color: $main-background
+  color: $text-color
+  border: none
+  outline: none
+  padding: 1rem
+  font-size: 1.8rem
+  &:hover
+    background-color: $button-hover
+    transition: .2s
+
+// ~END Login
+
+// Settings
+// ~END Settings

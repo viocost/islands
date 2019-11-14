@@ -1,4 +1,5 @@
 import * as util  from "./lib/dom-util";
+import * as UI from "./lib/ChatUIFactory";
 import { BlockingSpinner } from "./lib/BlockingSpinner";
 import toastr from "./lib/toastr";
 import { ChatClient as Chat } from "./lib/ChatClient";
@@ -34,22 +35,48 @@ window.spinner = spinner;
 document.addEventListener('DOMContentLoaded', event =>{
     //console.log(`Initializing page. Registration: ${isRegistration()}, Version: ${version}`);
     initChat();
-    initUI();
-    renderLayout();
-    util.$("#print-dpi").onclick = ()=>{alert(window.devicePixelRatio)}
-    util.$("#print-max").onclick = ()=>{alert(window.innerWidth)}
+    initLoginUI();
+    //util.$("#print-dpi").onclick = ()=>{alert(window.devicePixelRatio)}
+    //util.$("#print-max").onclick = ()=>{alert(window.innerWidth)}
 });
 
 
+function initLoginUI(){
+    let loginBlock = UI.bakeLoginBlock(initSession)
+    util.appendChildren("#main-container", loginBlock)
+}
+
+
+//Called after successful login
 function initUI(){
+
     // let form = isRegistration() ? bakeRegistrationBlock() : bakeLoginBlock();
+    let header = util.$("header")
+    util.removeAllChildren(header);
+    util.appendChildren(header, [
+        UI.bakeHeaderLeftSection((menuButton)=>{
+            util.toggleClass(menuButton, "menu-on");
+            renderLayout()
+        }),
+        UI.bakeHeaderRightSection(false, false, processInfoClick, processMuteClick, processSettingsClick, processLogoutClick)
+    ])
+
+    let main = util.$("main")
+    util.removeAllChildren(main);
+    let settingsContainer = UI.bakeSettingsContainer()
+    let mainContainer = UI.bakeMainContainer()
+    util.appendChildren(main, [settingsContainer, mainContainer])
+   
+
+
+    let sidePanel = UI.bakeSidePanel();
+
+    let newMessageBlock = UI.bakeNewMessageControl();
+    let messagesPanel = UI.bakeMessagesPanel(newMessageBlock)
+
+    util.appendChildren(mainContainer, [sidePanel, messagesPanel]);
 
     // add listener to the menu button
-    let menuButton = util.$("#menu-button")
-    menuButton.onclick = ()=>{
-        util.toggleClass(menuButton, "menu-on");
-        renderLayout()
-    }
 
     window.onresize = renderLayout;
 
@@ -61,7 +88,7 @@ function initUI(){
 
 
     let container = util.$("#main-container")
-    util.appendChildren(container, [sidePanel, messagesWrapper]);
+    // util.appendChildren(container, [sidePanel, messagesWrapper]);
 }
 
 function renderLayout(){
@@ -94,72 +121,42 @@ function renderLayout(){
 // ---------------------------------------------------------------------------------------------------------------------------
 //
 // Page blocks creation
-
-function bakeMessagesPanel(){
-    return util.bake("div", {
-        classes: "messages-panel-container"
-    })
-}
-
-function bakeSidePanel(){
-    return util.bake("div", {
-        classes: "side-panel-container"
-    })
-}
-
-
-function bakeNewMessageControl(){
-    return util.bake("div", {
-        classes: "new-message-container"
-    })
-}
-
-function bakeLoginBlock(){
-     return  util.bake("div", {
-        id: "vault-login--wrapper",
-        style: 'display: flex;',
-        children: util.bake("div", {
-            classes: "form-border",
-            children: [
-                util.bake("h3", {html: "Vault login:"}),
-                util.bake("div",  {
-                    children:  util.bake("input", {
-                        id: "vault-password",
-                        attributes: {
-                            type: "password",
-                            placeholder: "Password",
-                            maxlength: "50"
-                        }
-                    })
-                }),
-                util.bake("div", {
-                    children: util.bake("button", {
-                        classes: "btn",
-                        id: "vault-login-btn",
-                        text: "Login",
-                        listeners: {
-                            "click": initSession
-                        }
-                    }),
-                })
-            ]
-        })
-    })
-}
-
-function bakeRegistrationBlock(){
-
-}
-
-function bakeRegistrationSuccessBlock(){
-
-}
 // ---------------------------------------------------------------------------------------------------------------------------
 // ~END Page blocks creation
 
 
 // ---------------------------------------------------------------------------------------------------------------------------
 // UI handlers
+
+function processMuteClick(){
+
+    console.log("Mute clicked");
+}
+
+function processSettingsClick(){
+    console.log("Settings clicked");
+    if (util.isShown("#main-container")){
+        util.hide("#main-container")
+        util.flex("#settings-container")
+    } else {
+        util.flex("#main-container")
+        util.hide("#settings-container")
+    }
+}
+
+function processLogoutClick(){
+    console.log("Logout clicked");
+    document.location.reload(true);
+}
+
+function processAdminLoginClick(){
+    console.log("admin login clicked");
+}
+
+function processInfoClick(){
+    alert("Islands v2.0.0")
+}
+
 // ---------------------------------------------------------------------------------------------------------------------------
 // ~END UI handlers
 
@@ -170,6 +167,7 @@ function processLoginResult(err){
     if (err){
         toastr.warning(`Login error: ${err.message}`)
     } else {
+        initUI();
         toastr.success("Login successful");
     }
     loadingOff()
@@ -189,7 +187,6 @@ function initChat(){
         toastr.success("Init topic success")
     })
     chat.on(Events.INIT_TOPIC_ERROR, (err)=>{
-
         toastr.warning(`Init topic error: ${err.message}`);
     })
     window.chat = chat;

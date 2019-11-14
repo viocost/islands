@@ -41,6 +41,10 @@ export function bake(name, recipe){
         el.setAttribute("id", recipe.id)
     }
 
+    if(recipe.src){
+        el.setAttribute("src", recipe.src)
+    }
+
     if (recipe.attributes){
         for (let key of Object.keys(recipe.attributes)){
             el.setAttribute(key, recipe.attributes[key])
@@ -201,6 +205,11 @@ export function flex(node){
     displayElement(node, "flex")
 }
 
+export function isShown(el){
+    let node = verifyGetNode(el)
+    return node.style.display === "flex" || node.style.display === "block";
+}
+
 /**
  * Internal. Sets node display property
  *
@@ -230,7 +239,7 @@ function verifyGetNode(element){
         node =  document.querySelector(element);
     }
     if (!node){
-        throw `Element ${element} is undefined`;
+        throw new Error(`Element ${element} is undefined`);
     } else if(!node instanceof Element){
         throw new Error("Type of element is invalid");
     }

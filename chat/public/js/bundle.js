@@ -39100,6 +39100,11 @@ function () {
       return this.id;
     }
   }, {
+    key: "isAdmin",
+    value: function isAdmin() {
+      return this.admin;
+    }
+  }, {
     key: "bootstrap",
     value: function bootstrap(arrivalHub) {
       var self = this;
@@ -51599,6 +51604,7 @@ __webpack_require__.d(dom_util_namespaceObject, "displayBlock", function() { ret
 __webpack_require__.d(dom_util_namespaceObject, "show", function() { return show; });
 __webpack_require__.d(dom_util_namespaceObject, "displayFlex", function() { return displayFlex; });
 __webpack_require__.d(dom_util_namespaceObject, "flex", function() { return flex; });
+__webpack_require__.d(dom_util_namespaceObject, "isShown", function() { return isShown; });
 __webpack_require__.d(dom_util_namespaceObject, "generateRandomId", function() { return generateRandomId; });
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.object.to-string.js
@@ -51683,6 +51689,10 @@ function bake(name, recipe) {
 
   if (recipe.id) {
     el.setAttribute("id", recipe.id);
+  }
+
+  if (recipe.src) {
+    el.setAttribute("src", recipe.src);
   }
 
   if (recipe.attributes) {
@@ -51847,6 +51857,10 @@ function displayFlex(node) {
 function flex(node) {
   displayElement(node, "flex");
 }
+function isShown(el) {
+  var node = verifyGetNode(el);
+  return node.style.display === "flex" || node.style.display === "block";
+}
 /**
  * Internal. Sets node display property
  *
@@ -51883,12 +51897,238 @@ function verifyGetNode(element) {
   }
 
   if (!node) {
-    throw "Element ".concat(element, " is undefined");
+    throw new Error("Element ".concat(element, " is undefined"));
   } else if (!node instanceof Element) {
     throw new Error("Type of element is invalid");
   }
 
   return node;
+}
+// CONCATENATED MODULE: ./client/src/js/lib/ChatUIFactory.js
+
+function bakeCarousel() {
+  return bake("div", {
+    classes: "carousel-wrap",
+    children: [bake("select", {
+      classes: "carousel",
+      children: [bake("option", {
+        text: "Topics"
+      }), bake("option", {
+        text: "Particiapnts"
+      }), bake("option", {
+        text: "Invites"
+      })]
+    })]
+  });
+}
+function bakeSidePanel() {
+  var carousel1 = bakeCarousel();
+  var carousel2 = bakeCarousel();
+  return bake("div", {
+    classes: "side-panel-container",
+    children: [bake("div", {
+      classes: ["side-panel-block", "top-block"],
+      children: [carousel1]
+    })]
+  });
+}
+
+function bakeTopicsControlButtons() {
+  return bake("div", {
+    classes: "side-panel-data-control",
+    children: [bake("div", {
+      children: [bake("button", {
+        text: "Create topic"
+      }), bake("button", {
+        text: "Join topic"
+      })]
+    })]
+  });
+}
+
+function bakeMessagesPanel(newMsgBlock) {
+  return bake("div", {
+    classes: "messages-panel-wrapper",
+    children: [bake("div", {
+      classes: "messages-panel-container"
+    }), newMsgBlock]
+  });
+}
+function bakeNewMessageControl() {
+  return bake("div", {
+    classes: "new-message-container",
+    children: [bake("div", {
+      classes: ["control-col", "new-msg-input"],
+      children: [bake("div", {
+        classes: "select-member-wrap",
+        children: [bake("h4", {
+          html: "To"
+        }), bake("select", {
+          id: "select-member",
+          attributes: {
+            name: "participant"
+          },
+          children: [bake("option", {
+            attributes: {
+              value: "ALL",
+              text: "All"
+            }
+          })]
+        })]
+      }), bake("div", {
+        classes: "input-wrap",
+        children: [bake("div", {
+          classes: "button-column",
+          children: [bake("label", {
+            id: "attach-file-button",
+            attributes: {
+              for: "attach-file"
+            },
+            children: [bake("img", {
+              attributes: {
+                src: "/img/clip.svg"
+              }
+            })]
+          })]
+        }), bake("div", {
+          classes: ["flex-column", "new-msg-input"],
+          children: [bake("textarea", {
+            id: "new-msg",
+            attributes: {
+              placeholder: "Enter your message. Ctrl+Enter - new line. Enter - send."
+            }
+          }), bake("div", {
+            id: "chosen-files"
+          })]
+        })]
+      })]
+    }), bake("div", {
+      classes: ["control-col", "new-msg-buttons"],
+      children: [bake("div", {
+        classes: "send-button-wrap",
+        children: [bake("button", {
+          id: "send-new-msg",
+          classes: "ld-ext-right",
+          text: "Send",
+          children: [bake("div", {
+            classes: ["ld", "ld-ring", "ld-spin"],
+            children: [bake("div", {
+              classes: "attach-file-wrap"
+            })]
+          })]
+        })]
+      }), bake("input", {
+        id: "attach-file",
+        classes: "inputfile",
+        attributes: {
+          type: "file",
+          name: "file"
+        }
+      })]
+    })]
+  });
+}
+function bakeLoginBlock(loginClickHandler) {
+  return bake("div", {
+    id: "vault-login--wrapper",
+    children: bake("div", {
+      classes: "form-border",
+      children: [bake("h3", {
+        html: "Vault login:"
+      }), bake("div", {
+        children: bake("input", {
+          id: "vault-password",
+          attributes: {
+            type: "password",
+            placeholder: "Password",
+            maxlength: "50"
+          }
+        })
+      }), bake("div", {
+        children: bake("button", {
+          classes: "btn",
+          id: "vault-login-btn",
+          text: "Login",
+          listeners: {
+            "click": loginClickHandler
+          }
+        })
+      })]
+    })
+  });
+}
+function bakeRegistrationBlock() {}
+function bakeRegistrationSuccessBlock() {}
+function bakeHeaderLeftSection(menuClickHandler) {
+  return bake("div", {
+    classes: "header-section-left",
+    children: [bake("div", {
+      id: "menu-button",
+      classes: "menu-on",
+      listeners: {
+        "click": function click() {
+          menuClickHandler("#menu-button");
+        }
+      }
+    }), bake("h3", {
+      id: "active-title"
+    })]
+  });
+}
+function bakeHeaderRightSection(isAdmin, isMute, infoHandler, muteHandler, settingsHandler, logoutHandler, adminLoginHandler) {
+  var rightSection = bake("div", {
+    classes: "header-section-right"
+  });
+
+  if (isAdmin) {
+    appendChildren(rightSection, [bake("img", {
+      id: "admin",
+      attributes: {
+        src: "/img/admin-user.svg"
+      }
+    })]);
+  }
+
+  appendChildren(rightSection, [bake("img", {
+    classes: "logo",
+    attributes: {
+      src: "/img/island.svg"
+    },
+    listeners: {
+      "click": infoHandler
+    }
+  }), bake("img", {
+    id: "sound-control",
+    src: isMute ? "/img/sound-off.svg" : "/img/sound-on.svg",
+    listeners: {
+      "click": muteHandler
+    }
+  }), bake("img", {
+    id: "settings-btn",
+    src: "/img/settings-light.svg",
+    listeners: {
+      "click": settingsHandler
+    }
+  }), bake("img", {
+    id: "logout",
+    src: "/img/logout-light.svg",
+    listeners: {
+      "click": logoutHandler
+    }
+  })]);
+  return rightSection;
+}
+function bakeSettingsContainer() {
+  return bake("div", {
+    id: "settings-container"
+  });
+}
+function bakeMainContainer() {
+  return bake("div", {
+    id: "main-container",
+    classes: ["container", "tingle-content-wrapper"],
+    style: "display: flex"
+  });
 }
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/classCallCheck.js
 var classCallCheck = __webpack_require__(3);
@@ -52183,13 +52423,14 @@ var loading = __webpack_require__(248);
 
 
 
+
  // ---------------------------------------------------------------------------------------------------------------------------
 // CONSTANTS
 
 var SMALL_WIDTH = 760; // ---------------------------------------------------------------------------------------------------------------------------
 // Visual Sections
 
-var loginBlock;
+var chat_ui_loginBlock;
 var registrationBlock;
 var registrationCompletedBlock;
 var chatBlock;
@@ -52208,27 +52449,33 @@ window.spinner = spinner; // ---------------------------------------------------
 document.addEventListener('DOMContentLoaded', function (event) {
   //console.log(`Initializing page. Registration: ${isRegistration()}, Version: ${version}`);
   initChat();
-  initUI();
-  renderLayout();
-
-  $("#print-dpi").onclick = function () {
-    alert(window.devicePixelRatio);
-  };
-
-  $("#print-max").onclick = function () {
-    alert(window.innerWidth);
-  };
+  initLoginUI(); //util.$("#print-dpi").onclick = ()=>{alert(window.devicePixelRatio)}
+  //util.$("#print-max").onclick = ()=>{alert(window.innerWidth)}
 });
+
+function initLoginUI() {
+  var loginBlock = bakeLoginBlock(initSession);
+  appendChildren("#main-container", loginBlock);
+} //Called after successful login
+
 
 function initUI() {
   // let form = isRegistration() ? bakeRegistrationBlock() : bakeLoginBlock();
-  // add listener to the menu button
-  var menuButton = $("#menu-button");
-
-  menuButton.onclick = function () {
+  var header = $("header");
+  removeAllChildren(header);
+  appendChildren(header, [bakeHeaderLeftSection(function (menuButton) {
     toggleClass(menuButton, "menu-on");
     renderLayout();
-  };
+  }), bakeHeaderRightSection(false, false, processInfoClick, processMuteClick, processSettingsClick, processLogoutClick)]);
+  var main = $("main");
+  removeAllChildren(main);
+  var settingsContainer = bakeSettingsContainer();
+  var mainContainer = bakeMainContainer();
+  appendChildren(main, [settingsContainer, mainContainer]);
+  var sidePanel = bakeSidePanel();
+  var newMessageBlock = bakeNewMessageControl();
+  var messagesPanel = bakeMessagesPanel(newMessageBlock);
+  appendChildren(mainContainer, [sidePanel, messagesPanel]); // add listener to the menu button
 
   window.onresize = renderLayout; //prepare side panel
   //let sidePanel = bakeSidePanel();
@@ -52236,8 +52483,7 @@ function initUI() {
   //let newMessagePanel = bakeNewMessageControl();
   //let messagesWrapper = util.wrap([messagesPanel, newMessagePanel], "messages-panel-wrapper");
 
-  var container = $("#main-container");
-  appendChildren(container, [sidePanel, messagesWrapper]);
+  var container = $("#main-container"); // util.appendChildren(container, [sidePanel, messagesWrapper]);
 }
 
 function renderLayout() {
@@ -52264,64 +52510,40 @@ function renderLayout() {
 } // ---------------------------------------------------------------------------------------------------------------------------
 //
 // Page blocks creation
-
-
-function bakeMessagesPanel() {
-  return bake("div", {
-    classes: "messages-panel-container"
-  });
-}
-
-function bakeSidePanel() {
-  return bake("div", {
-    classes: "side-panel-container"
-  });
-}
-
-function bakeNewMessageControl() {
-  return bake("div", {
-    classes: "new-message-container"
-  });
-}
-
-function bakeLoginBlock() {
-  return bake("div", {
-    id: "vault-login--wrapper",
-    style: 'display: flex;',
-    children: bake("div", {
-      classes: "form-border",
-      children: [bake("h3", {
-        html: "Vault login:"
-      }), bake("div", {
-        children: bake("input", {
-          id: "vault-password",
-          attributes: {
-            type: "password",
-            placeholder: "Password",
-            maxlength: "50"
-          }
-        })
-      }), bake("div", {
-        children: bake("button", {
-          classes: "btn",
-          id: "vault-login-btn",
-          text: "Login",
-          listeners: {
-            "click": initSession
-          }
-        })
-      })]
-    })
-  });
-}
-
-function bakeRegistrationBlock() {}
-
-function bakeRegistrationSuccessBlock() {} // ---------------------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------------------
 // ~END Page blocks creation
 // ---------------------------------------------------------------------------------------------------------------------------
 // UI handlers
-// ---------------------------------------------------------------------------------------------------------------------------
+
+
+function processMuteClick() {
+  console.log("Mute clicked");
+}
+
+function processSettingsClick() {
+  console.log("Settings clicked");
+
+  if (isShown("#main-container")) {
+    hide("#main-container");
+    flex("#settings-container");
+  } else {
+    flex("#main-container");
+    hide("#settings-container");
+  }
+}
+
+function processLogoutClick() {
+  console.log("Logout clicked");
+  document.location.reload(true);
+}
+
+function processAdminLoginClick() {
+  console.log("admin login clicked");
+}
+
+function processInfoClick() {
+  alert("Islands v2.0.0");
+} // ---------------------------------------------------------------------------------------------------------------------------
 // ~END UI handlers
 // ---------------------------------------------------------------------------------------------------------------------------
 // Chat Event handlers
@@ -52331,6 +52553,7 @@ function processLoginResult(err) {
   if (err) {
     lib_toastr.warning("Login error: ".concat(err.message));
   } else {
+    initUI();
     lib_toastr.success("Login successful");
   }
 

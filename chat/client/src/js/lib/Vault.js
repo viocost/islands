@@ -122,6 +122,10 @@ export class Vault{
         return this.id;
     }
 
+    isAdmin(){
+        return this.admin;
+    }
+
     bootstrap(arrivalHub){
         let self = this;
         this.arrivalHub = arrivalHub;

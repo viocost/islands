@@ -2,6 +2,8 @@
 
 * Current tasks
 ** PROJ New client
+*** TODO Implement login
+*** TODO Implement initial layout logic
 *** TODO Request invites
 
 *** PROJ Topic creation
@@ -18,7 +20,11 @@ Mute some topic notifications?
 *** TODO Fix client-server protocol such that each topic listens to messages
 *** TODO Re-implement vault registration
 *** PROJ Rework the chat interface
-**** TODO draft layout wireframes
+**** DONE Draft static design of the chat page
+CLOSED: [2019-11-14 Thu 21:27]
+
+**** DONE draft layout wireframes
+CLOSED: [2019-11-14 Thu 21:27]
 
 **** TODO When tab is activated - the cursor must go to new message textarea
 **** TODO Scrolling behavior
