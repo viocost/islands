@@ -6,27 +6,27 @@
   display: flex
   flex-direction: row
   align-items: center
-  img
-    width: 4rem
-    height: 4rem
-    margin: 1rem
-    -webkit-filter: brightness(70%)
-    filter: birghtness(70%)
-    &:hover
-      cursor: pointer
-      -webkit-filter: brightness(100%)
-      filter: birghtness(100%)
-      transition: .2s
-    @media (max-width: $medium)
-        width: 2rem
-        height: 2rem
-        margin: .7rem
 
   #active-title
     margin-left: 1rem
 
-    @media (max-width: $medium)
-      font-size: 1.2rem
+
+
+#menu-button
+    width: 4rem
+    height: 4rem
+    margin: 1rem
+    background: transparent url("/img/menu.svg") no-repeat 0 50%
+    background-size: 100% 100%
+    &:hover
+        cursor: pointer
+        -webkit-filter: brightness(70%)
+        filter: birghtness(70%)
+        transition: .2s
+
+.menu-on
+    -webkit-filter: brightness(70%)
+    filter: birghtness(70%)
 
 .header-section-middle
 
@@ -64,10 +64,6 @@
       -webkit-filter: brightness(100%)
       filter: birghtness(100%)
       transition: .2s
-    @media (max-width: $medium)
-        width: 2rem
-        height: 2rem
-        margin: .7rem
 
 // header end
 
@@ -76,4 +72,281 @@
 main
   background-color: $main-background
 
-//main end
+
+#main-container
+  height: calc(100vh - 6rem)
+  width: 100%
+  display: flex
+  flex-direction: row
+
+
+.messages-panel-wrapper
+  width: 70%
+  height: 100%
+  display: flex
+  flex-direction: column
+  flex: 1
+  .messages-panel-container
+    width: 100%
+    background-color: red
+    display: flex
+    flex: 1
+
+
+
+//~END main
+
+//Side panel
+
+.side-panel-container
+  display: flex
+  flex-direction: column
+  width: 30%
+  max-width: 40rem
+  height: 100%
+  align-items: flex-start
+  @media (max-width: $medium)
+    width: 100%
+
+.carousel-wrap
+  width: 100%
+  display: flex
+  .carousel
+    flex: 1
+    margin: 1.5rem 1rem 1.5rem 1rem
+    color: $text-color
+    font-size: 2rem
+    border: none
+    outline: none
+    background-color: inherit
+    appearance: none
+    -webkit-appearance: none
+    -moz-appearance: none
+    -ms-appearance: none
+
+  .spin-carousel
+    width: 2.5rem
+    height: 2.4rem
+    margin: 1.5rem 1rem 1.5rem 1rem
+
+
+.side-panel-block
+  display: flex
+  flex-direction: column
+
+.side-panel-list
+  list-style-type: none
+.side-panel-list-item
+  flex-direction: column
+  font-size: 1.8rem
+  color: $text-color
+  margin: 1rem 1rem 1rem 1.5rem
+
+.side-panel-data-control
+  display: flex
+  margin: 1.5rem 1rem 1rem 1.5rem
+  flex-direction: column
+  div
+    display: flex
+    flex-direction: row
+    button
+      margin: .8rem .8rem .8rem 0
+      padding: .8rem
+      background-color: darken($main-background, 5%)
+      border: none
+      color: $text-color
+      &:hover
+        background-color: $button-hover
+        transition: .2s
+
+.top-block
+  @media screen and (max-height: 800px)
+    height: 80%
+
+.bottom-block
+  height: 40%
+  @media screen and (max-height: 800px)
+    display: none
+//~END side panel
+
+//new message block
+
+.new-message-container
+  max-height: 50%
+  display: flex
+  margin: 2rem 2rem 0 0
+  flex-direction: row
+  justify-content: flex-end
+
+.control-col
+  display: flex
+  flex-direction: column
+  margin-left: 2rem
+
+
+.select-member-wrap
+  display: flex
+  flex-direction: row
+  justify-content: flex-end
+  border-bottom: none
+  margin: 0
+  color: $text-color
+  h4
+    margin: auto 1rem
+  select
+    color: $text-color
+    background: none
+    padding: .8rem
+    min-width: 37%
+    border: 1px solid #b5b5b5
+    border-bottom: none
+    border-radius: .5rem .5rem 0 0
+    outline: none
+
+
+.input-wrap
+  display: flex
+  flex-direction: row
+  width: 100%
+  justify-content: flex-end
+  margin: 0
+
+  #new-msg
+    width: 100%
+    border-radius: .5rem 0 .5rem .5rem
+    height: 3.5rem
+    margin: 0 0 .5rem 0
+    resize: vertical
+    background-color: inherit
+  .button-column
+    display: flex
+    flex-direction: column
+    margin: 0
+    img
+      cursor: pointer
+      border-radius: 1rem
+      margin-right: 2rem
+      width: 3rem
+      height: 3rem
+      transition: filter .2s ease
+      &:hover
+        filter:  drop-shadow(1px 1px 2px rgb(137, 140, 151))
+    .disabled
+      filter: grayscale(100%)
+
+
+.new-msg-input
+  width: 100%
+
+.new-message-wrap
+  display: flex
+  flex-direction: column
+  align-items: flex-end
+  *
+    display: block
+    margin: 1rem 0 1rem 0
+  #new-msg
+    min-width: 60%
+    padding: 1rem
+    border-radius: 0.5rem
+    resize: vertical
+  .send-button-wrap
+    display: flex
+    flex-direction: row
+    align-items: center
+    margin: 0
+    justify-content flex-end
+    .hint-wrap
+      display: flex
+      flex-direction: column
+      align-items: flex-end
+      .send-new-message-hint
+        margin: 0 1.5rem 0 1.5rem
+        color: #9da3ad
+        font-size: 1.2rem
+        font-style: italic
+
+#send-new-msg
+  border: none
+  outline: none
+  background-color: darken($main-background, 5%)
+  color: $text-color
+  font-size: 1.8rem
+  padding: .8rem
+  &:hover
+    background-color: $button-hover
+
+
+.attach-file-wrap
+  height: 5rem
+  display: flex
+  flex-direction: row
+  justify-content: flex-end
+  align-items: center
+  align-self: flex-end
+  width: 60%
+  min-width: 10rem
+  padding: 1rem
+  border-radius: 0.5rem
+
+.new-msg-buttons
+  width: 7rem
+  label
+    align-self: center
+    margin-top: 1.5rem
+    width: 4rem
+    height: 4rem
+    display: flex
+
+#chosen-files
+  margin-right: 1.7rem
+  display: flex
+  flex-direction: row
+  .chosen-file-wrap
+    background-color: #e1e1e1
+    padding: .2rem
+    border-radius: 1rem
+    height: inherit
+    display: flex
+    align-items: center
+    font-size: 1.8rem
+    font-weight: bolder
+    color: #1a2435
+    img
+      height: 20px
+      width: 20px
+      &:hover
+        filter:  drop-shadow(1px 1px 2px rgba(0,0,0,1))
+
+
+.inputfile
+  width: 0.1px
+  height: 0.1px
+  opacity: 0
+  overflow: hidden
+  position: absolute
+  z-index: -1
+
+.inputfile + label
+  display: flex
+  flex-direction: row
+  img
+    border-radius: 1rem
+    cursor: pointer
+    width: 32px
+    height: 32px
+    transition: filter .2s ease
+    &:hover
+      filter:  drop-shadow(1px 1px 2px rgba(0,0,0,1))
+
+.new-msg-buttons
+  width: 7rem
+  label
+    align-self: center
+    margin-top: 1.5rem
+    width: 4rem
+    height: 4rem
+    display: flex
+
+
+// ~END new message block

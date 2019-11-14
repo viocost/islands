@@ -1,4 +1,4 @@
-import * as util from "domik";
+import * as util from "./dom-util";
 import "../../css/vendor/blocking-spinner.min.css"
 
 /**
