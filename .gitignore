@@ -6,6 +6,7 @@
 *node_modules/
 *TAGS
 *venv/
+*env/
 Conversations/*
 *history/*
 gc.bat

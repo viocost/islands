@@ -213,13 +213,23 @@
                 <DefaultFrontMatter>B8855899-B5E1-41B4-B155-C4850A606B7F</DefaultFrontMatter>
             </FrontAndBackMatter>
         </Format>
+        <Format ID="04747135-ED14-4C86-8C6B-7A0BF195EEBC">
+            <SectionLayouts>
+                <Type ID="74B681B0-FED3-4211-B200-1EF0E3E46C91">FBB6B481-2779-4EEC-A9DD-BF64E42B1B36</Type>
+                <Type ID="7F2B69AC-DB81-4C8D-ABE4-674AEECDDBA4">159DACAF-7764-4BAB-9705-5E3299670824</Type>
+                <Type ID="866B49E6-F229-4B5C-9E06-289FAD04EB4D"></Type>
+                <Type ID="8B88AC37-8359-401E-80D7-2D13BF9EBEDE">AS-IS</Type>
+                <Type ID="D27DC3B5-2DD1-428B-8922-E98ADA9ECF7A">4C2A55F6-52D8-46B2-AC79-0895B992D673</Type>
+                <Type ID="F1647D39-A989-48FB-AAD5-F3FFB639C7AA">7C6D6D2D-8BF6-4091-BF60-2BFB596E3600</Type>
+            </SectionLayouts>
+        </Format>
     </FormatSettings>
     <LastUsedFormats>
         <Print>ms-non-fiction-times</Print>
         <epub2>e-book-legacy</epub2>
         <epub3>e-book</epub3>
         <html>B5466AE0-A40A-4CCF-A134-3F62FD7EDF60</html>
-        <md>DEFAULT</md>
+        <md>04747135-ED14-4C86-8C6B-7A0BF195EEBC</md>
         <rtf>manuscript-courier</rtf>
         <rtfd>4F6361BD-390C-4858-BD6E-07169B96C632</rtfd>
         <txt>latex-memoir</txt>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ScrivenerProject Template="No" Version="2.0" Identifier="3BD9360E-C7B4-48D1-A624-4C6C5CF2AFB5" Creator="SCRWIN-2.9.0.27" Device="Yomiko" Author="J. L. Brewer" Modified="2019-11-04 19:40:27 -0500" ModID="0623BFA5-174A-4F67-9778-224F1C9E952E">
+<ScrivenerProject Template="No" Version="2.0" Identifier="D9E43235-AEB5-47D8-8464-56815F2F7D7E" Creator="SCRWIN-2.9.0.29" Device="Yomiko" Modified="2019-11-15 16:42:10 -0500" ModID="0665F420-CD0F-4D4D-96BE-AA0136F9C01A">
     <Binder>
-        <BinderItem UUID="9FFBA333-8432-41C1-91F5-1302DFE283CA" Type="Text" Created="2017-11-02 14:22:45 -0500" Modified="2019-06-11 06:47:28 -0500">
+        <BinderItem UUID="9FFBA333-8432-41C1-91F5-1302DFE283CA" Type="Text" Created="2017-11-02 14:22:45 -0500" Modified="2019-11-09 12:05:41 -0500">
             <Title>Non-Fiction Format for LaTeX</Title>
             <MetaData>
                 <IncludeInCompile>Yes</IncludeInCompile>
@@ -19,13 +19,13 @@
                     <ItemID>FB242EBE-C47D-4D22-8712-58F3E4AF77B0</ItemID>
                 </OutlinerExpandedState>
                 <OutlinerExpandedState>
-                    <ItemID>1C2FEF17-BA9F-447F-83E5-4623868E0C91</ItemID>
+                    <ItemID>FE65A7AF-4040-426C-A6FE-F0D68B1BB20C</ItemID>
                 </OutlinerExpandedState>
                 <OutlinerExpandedState>
                     <ItemID>6C3BDCCC-F6C3-4AF9-B7CD-475616712EAE</ItemID>
                 </OutlinerExpandedState>
                 <OutlinerExpandedState>
-                    <ItemID>FE65A7AF-4040-426C-A6FE-F0D68B1BB20C</ItemID>
+                    <ItemID>1C2FEF17-BA9F-447F-83E5-4623868E0C91</ItemID>
                 </OutlinerExpandedState>
                 <CorkboardSettings>
                     <Arrangement>Linear</Arrangement>
@@ -42,13 +42,13 @@
                     </TextSettings>
                     <CorkboardAndOutliner>
                         <OutlinerExpandedState>
-                            <ItemID>5CD3DFD1-67A5-4D0F-A2F9-FEDE1F369BCA</ItemID>
-                        </OutlinerExpandedState>
-                        <OutlinerExpandedState>
                             <ItemID>006181AC-B1BC-4F9D-8BBD-AB3334679A6F</ItemID>
                         </OutlinerExpandedState>
                         <OutlinerExpandedState>
                             <ItemID>619D0DE5-3F95-425F-AF86-ECBC3E7787F9</ItemID>
+                        </OutlinerExpandedState>
+                        <OutlinerExpandedState>
+                            <ItemID>5CD3DFD1-67A5-4D0F-A2F9-FEDE1F369BCA</ItemID>
                         </OutlinerExpandedState>
                         <CorkboardSettings>
                             <Arrangement>Linear</Arrangement>
@@ -235,6 +235,44 @@
                                         <TextSelection>47,0</TextSelection>
                                     </TextSettings>
                                 </BinderItem>
+                                <BinderItem UUID="FB521656-C2D6-4C6A-92A0-50759B428709" Type="Text" Created="2019-11-11 12:59:04 -0500" Modified="2019-11-11 12:59:41 -0500">
+                                    <Title>Third-Party Software Credits</Title>
+                                    <MetaData>
+                                        <IncludeInCompile>Yes</IncludeInCompile>
+                                    </MetaData>
+                                    <TextSettings>
+                                        <TextSelection>0,0</TextSelection>
+                                    </TextSettings>
+                                    <Children>
+                                        <BinderItem UUID="DC45154E-077C-4C2C-BE9A-2D764F372776" Type="Text" Created="2019-11-11 13:18:51 -0500" Modified="2019-11-15 15:43:38 -0500">
+                                            <Title>Islands Manager</Title>
+                                            <MetaData>
+                                                <IncludeInCompile>Yes</IncludeInCompile>
+                                            </MetaData>
+                                            <TextSettings>
+                                                <TextSelection>298,0</TextSelection>
+                                            </TextSettings>
+                                        </BinderItem>
+                                        <BinderItem UUID="3592DF0D-F73E-45CF-A4E4-D2A01DFA174A" Type="Text" Created="2019-11-11 13:19:12 -0500" Modified="2019-11-11 13:19:15 -0500">
+                                            <Title>Islands Server</Title>
+                                            <MetaData>
+                                                <IncludeInCompile>Yes</IncludeInCompile>
+                                            </MetaData>
+                                            <TextSettings>
+                                                <TextSelection>0,0</TextSelection>
+                                            </TextSettings>
+                                        </BinderItem>
+                                        <BinderItem UUID="1342A462-0A16-4ABF-BBFA-F168A7AB49FA" Type="Text" Created="2019-11-11 13:19:16 -0500" Modified="2019-11-11 13:19:19 -0500">
+                                            <Title>Islands Chat</Title>
+                                            <MetaData>
+                                                <IncludeInCompile>Yes</IncludeInCompile>
+                                            </MetaData>
+                                            <TextSettings>
+                                                <TextSelection>0,0</TextSelection>
+                                            </TextSettings>
+                                        </BinderItem>
+                                    </Children>
+                                </BinderItem>
                             </Children>
                         </BinderItem>
                     </Children>
@@ -249,16 +287,16 @@
                     </TextSettings>
                     <CorkboardAndOutliner>
                         <OutlinerExpandedState>
-                            <ItemID>C0F51CBE-E1EF-433E-85D7-9E984FAF432E</ItemID>
-                        </OutlinerExpandedState>
-                        <OutlinerExpandedState>
                             <ItemID>0B8580CD-CD41-45C5-9AB3-A7E02696A593</ItemID>
                         </OutlinerExpandedState>
                         <OutlinerExpandedState>
-                            <ItemID>D4586650-F794-44D9-96B2-AABC586B3D1C</ItemID>
+                            <ItemID>F5F08474-7E9C-4F4F-8951-76C6791801FA</ItemID>
                         </OutlinerExpandedState>
                         <OutlinerExpandedState>
-                            <ItemID>F5F08474-7E9C-4F4F-8951-76C6791801FA</ItemID>
+                            <ItemID>C0F51CBE-E1EF-433E-85D7-9E984FAF432E</ItemID>
+                        </OutlinerExpandedState>
+                        <OutlinerExpandedState>
+                            <ItemID>D4586650-F794-44D9-96B2-AABC586B3D1C</ItemID>
                         </OutlinerExpandedState>
                         <CorkboardSettings>
                             <Arrangement>Linear</Arrangement>
@@ -885,7 +923,7 @@
                                 </BinderItem>
                             </Children>
                         </BinderItem>
-                        <BinderItem UUID="132A43DA-052A-4C80-88DD-148005CC6E52" Type="Text" Created="2019-11-04 13:34:39 -0500" Modified="2019-11-04 13:34:46 -0500">
+                        <BinderItem UUID="132A43DA-052A-4C80-88DD-148005CC6E52" Type="Text" Created="2019-11-04 13:34:39 -0500" Modified="2019-11-09 09:56:30 -0500">
                             <Title>Developing for Islands</Title>
                             <MetaData>
                                 <IncludeInCompile>Yes</IncludeInCompile>
@@ -893,6 +931,17 @@
                             <TextSettings>
                                 <TextSelection>0,0</TextSelection>
                             </TextSettings>
+                            <CorkboardAndOutliner>
+                                <OutlinerExpandedState>
+                                    <ItemID>7A01C5C3-753E-4DB9-B6D3-D7B7D81A4758</ItemID>
+                                </OutlinerExpandedState>
+                                <OutlinerExpandedState>
+                                    <ItemID>7208CBC4-421E-4B26-867A-521B26C2278C</ItemID>
+                                </OutlinerExpandedState>
+                                <CorkboardSettings>
+                                    <Arrangement>Linear</Arrangement>
+                                </CorkboardSettings>
+                            </CorkboardAndOutliner>
                             <Children>
                                 <BinderItem UUID="60F0A905-CD25-4864-B469-B8C800F0DBA6" Type="Text" Created="2019-11-04 13:35:59 -0500" Modified="2019-11-04 13:36:07 -0500">
                                     <Title>Obtaining the Git Repository</Title>
@@ -903,16 +952,45 @@
                                         <TextSelection>0,0</TextSelection>
                                     </TextSettings>
                                 </BinderItem>
-                                <BinderItem UUID="7A01C5C3-753E-4DB9-B6D3-D7B7D81A4758" Type="Text" Created="2019-10-27 16:02:01 -0500" Modified="2019-10-27 16:02:08 -0500">
+                                <BinderItem UUID="7A01C5C3-753E-4DB9-B6D3-D7B7D81A4758" Type="Text" Created="2019-10-27 16:02:01 -0500" Modified="2019-11-15 12:14:58 -0500">
                                     <Title>Dependencies</Title>
                                     <MetaData>
                                         <IncludeInCompile>Yes</IncludeInCompile>
                                     </MetaData>
                                     <TextSettings>
-                                        <TextSelection>0,0</TextSelection>
+                                        <TextSelection>440,0</TextSelection>
                                     </TextSettings>
+                                    <Children>
+                                        <BinderItem UUID="3B9AE52B-A351-4FE8-8B2A-E2E3D2C7BF7A" Type="Text" Created="2019-11-09 09:54:16 -0500" Modified="2019-11-09 09:54:30 -0500">
+                                            <Title>Islands Server</Title>
+                                            <MetaData>
+                                                <IncludeInCompile>Yes</IncludeInCompile>
+                                            </MetaData>
+                                            <TextSettings>
+                                                <TextSelection>0,0</TextSelection>
+                                            </TextSettings>
+                                        </BinderItem>
+                                        <BinderItem UUID="6FD1A263-294C-4ACE-97C3-8B7F4B6C9A48" Type="Text" Created="2019-11-09 09:54:40 -0500" Modified="2019-11-15 12:29:03 -0500">
+                                            <Title>Islands Manager</Title>
+                                            <MetaData>
+                                                <IncludeInCompile>Yes</IncludeInCompile>
+                                            </MetaData>
+                                            <TextSettings>
+                                                <TextSelection>368,0</TextSelection>
+                                            </TextSettings>
+                                        </BinderItem>
+                                        <BinderItem UUID="B9550B6F-A46E-408C-A53F-08572C0D01BD" Type="Text" Created="2019-11-09 09:54:47 -0500" Modified="2019-11-09 09:55:11 -0500">
+                                            <Title>Islands Applications</Title>
+                                            <MetaData>
+                                                <IncludeInCompile>Yes</IncludeInCompile>
+                                            </MetaData>
+                                            <TextSettings>
+                                                <TextSelection>0,0</TextSelection>
+                                            </TextSettings>
+                                        </BinderItem>
+                                    </Children>
                                 </BinderItem>
-                                <BinderItem UUID="7208CBC4-421E-4B26-867A-521B26C2278C" Type="Text" Created="2019-11-04 13:33:46 -0500" Modified="2019-11-04 13:34:27 -0500">
+                                <BinderItem UUID="7208CBC4-421E-4B26-867A-521B26C2278C" Type="Text" Created="2019-11-04 13:33:46 -0500" Modified="2019-11-15 12:14:58 -0500">
                                     <Title>Setting Up a Development Environment</Title>
                                     <MetaData>
                                         <IncludeInCompile>Yes</IncludeInCompile>
@@ -920,6 +998,93 @@
                                     <TextSettings>
                                         <TextSelection>0,0</TextSelection>
                                     </TextSettings>
+                                    <Bookmarks>
+                                        <Bookmark BinderUUID="7A01C5C3-753E-4DB9-B6D3-D7B7D81A4758">Dependencies</Bookmark>
+                                    </Bookmarks>
+                                    <Children>
+                                        <BinderItem UUID="7B77F31A-795C-4E3D-AD8C-4C0D0D76ECB5" Type="Text" Created="2019-11-09 09:55:48 -0500" Modified="2019-11-09 09:55:54 -0500">
+                                            <Title>Islands Server</Title>
+                                            <MetaData>
+                                                <IncludeInCompile>Yes</IncludeInCompile>
+                                            </MetaData>
+                                            <TextSettings>
+                                                <TextSelection>0,0</TextSelection>
+                                            </TextSettings>
+                                        </BinderItem>
+                                        <BinderItem UUID="A39B8C8F-64C6-47F6-8E52-A4659C01BE62" Type="Text" Created="2019-11-09 09:55:56 -0500" Modified="2019-11-15 15:57:41 -0500">
+                                            <Title>Islands Manager</Title>
+                                            <MetaData>
+                                                <IncludeInCompile>Yes</IncludeInCompile>
+                                            </MetaData>
+                                            <TextSettings>
+                                                <TextSelection>0,0</TextSelection>
+                                            </TextSettings>
+                                            <CorkboardAndOutliner>
+                                                <OutlinerExpandedState>
+                                                    <ItemID>B92E0450-04FC-4CDD-B4BF-2F8E7A63E694</ItemID>
+                                                </OutlinerExpandedState>
+                                                <CorkboardSettings>
+                                                    <Arrangement>Linear</Arrangement>
+                                                </CorkboardSettings>
+                                            </CorkboardAndOutliner>
+                                            <Bookmarks>
+                                                <Bookmark BinderUUID="6FD1A263-294C-4ACE-97C3-8B7F4B6C9A48">Islands Manager</Bookmark>
+                                            </Bookmarks>
+                                            <Children>
+                                                <BinderItem UUID="B92E0450-04FC-4CDD-B4BF-2F8E7A63E694" Type="Text" Created="2019-11-11 13:00:49 -0500" Modified="2019-11-15 16:36:37 -0500">
+                                                    <Title>Qt UI Tools</Title>
+                                                    <MetaData>
+                                                        <IncludeInCompile>Yes</IncludeInCompile>
+                                                    </MetaData>
+                                                    <TextSettings>
+                                                        <TextSelection>2002,0</TextSelection>
+                                                    </TextSettings>
+                                                    <Bookmarks>
+                                                        <Bookmark BinderUUID="6FD1A263-294C-4ACE-97C3-8B7F4B6C9A48">Islands Manager</Bookmark>
+                                                    </Bookmarks>
+                                                </BinderItem>
+                                                <BinderItem UUID="E2BC944C-546E-4409-A13F-BACE27566924" Type="Text" Created="2019-11-09 09:52:23 -0500" Modified="2019-11-15 16:35:19 -0500">
+                                                    <Title>Linux</Title>
+                                                    <MetaData>
+                                                        <LabelID>7</LabelID>
+                                                        <IncludeInCompile>Yes</IncludeInCompile>
+                                                    </MetaData>
+                                                    <TextSettings>
+                                                        <TextSelection>4,0</TextSelection>
+                                                    </TextSettings>
+                                                </BinderItem>
+                                                <BinderItem UUID="88117400-619D-47E5-BFE8-A7E94E5C9670" Type="Text" Created="2019-11-09 09:52:53 -0500" Modified="2019-11-15 16:35:28 -0500">
+                                                    <Title>macOS</Title>
+                                                    <MetaData>
+                                                        <LabelID>7</LabelID>
+                                                        <IncludeInCompile>Yes</IncludeInCompile>
+                                                    </MetaData>
+                                                    <TextSettings>
+                                                        <TextSelection>4,0</TextSelection>
+                                                    </TextSettings>
+                                                </BinderItem>
+                                                <BinderItem UUID="C6A80FAD-1F1E-48BF-9702-1BB7A23875E6" Type="Text" Created="2019-11-09 09:53:01 -0500" Modified="2019-11-15 16:39:41 -0500">
+                                                    <Title>Windows</Title>
+                                                    <MetaData>
+                                                        <IncludeInCompile>Yes</IncludeInCompile>
+                                                        <NotesTextSelection>124,24</NotesTextSelection>
+                                                    </MetaData>
+                                                    <TextSettings>
+                                                        <TextSelection>1726,0</TextSelection>
+                                                    </TextSettings>
+                                                </BinderItem>
+                                            </Children>
+                                        </BinderItem>
+                                        <BinderItem UUID="B008951B-533E-4A86-AA31-F2C5C58DC84B" Type="Text" Created="2019-11-09 09:56:02 -0500" Modified="2019-11-09 09:56:08 -0500">
+                                            <Title>Islands Applications</Title>
+                                            <MetaData>
+                                                <IncludeInCompile>Yes</IncludeInCompile>
+                                            </MetaData>
+                                            <TextSettings>
+                                                <TextSelection>0,0</TextSelection>
+                                            </TextSettings>
+                                        </BinderItem>
+                                    </Children>
                                 </BinderItem>
                             </Children>
                         </BinderItem>
@@ -1324,6 +1489,24 @@
                         <TextSelection>0,0</TextSelection>
                     </TextSettings>
                 </BinderItem>
+                <BinderItem UUID="BD471AB8-AFAA-49BA-B801-90E5688D3C8E" Type="Text" Created="2019-11-15 15:56:54 -0500" Modified="2019-11-15 15:57:13 -0500">
+                    <Title>Note on Qt Licencing in Islands</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>0,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem UUID="126DB844-8496-4084-A297-9B26FD13C7F9" Type="Text" Created="2019-11-15 15:57:51 -0500" Modified="2019-11-15 15:58:06 -0500">
+                    <Title>Downloading and Installing Qt</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>0,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
             </Children>
         </BinderItem>
         <BinderItem UUID="6E8A61D8-CCB2-4D84-AE6E-110F25848C36" Type="Text" Created="2019-11-04 14:32:22 -0500" Modified="2019-11-04 14:32:22 -0500">
@@ -1426,13 +1609,13 @@
     <ProjectTargets Notify="No">
         <DraftTarget Type="Words" CountIncludedOnly="Yes" CurrentCompileGroupOnly="Yes" Deadline="2011-04-12 14:24:39 +0200" IgnoreDeadline="Yes">0</DraftTarget>
         <SessionTarget Type="Words" CountDraftOnly="Yes" AllowNegatives="No" ResetType="Time" ResetTime="00:00" DeterminedFromDeadline="No" CanWriteOnDeadlineDate="No" WritingDays="">0</SessionTarget>
-        <PreviousSession Words="507" Characters="3156" Date="2019-11-04 19:40:27 -0500"/>
+        <PreviousSession Words="864" Characters="5253" Date="2019-11-15 16:42:10 -0500"/>
     </ProjectTargets>
     <TemplateFolderUUID>BB89721F-361D-4DC6-B9DC-70E2BE85968E</TemplateFolderUUID>
     <BookmarksFolderUUID>07B0D7C6-57CE-4D6F-8AD9-11F06A261A5F</BookmarksFolderUUID>
-    <RecentWritingHistory Date="2019-11-04 00:00:00 -0500">
-        <DraftWordCount>507</DraftWordCount>
-        <DraftCharCount>3156</DraftCharCount>
+    <RecentWritingHistory Date="2019-11-15 00:00:00 -0500">
+        <DraftWordCount>841</DraftWordCount>
+        <DraftCharCount>5074</DraftCharCount>
         <OtherWordCount>0</OtherWordCount>
         <OtherCharCount>0</OtherCharCount>
     </RecentWritingHistory>
