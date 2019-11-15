@@ -102,7 +102,7 @@ export class ChatClient{
 
     // Decrypts topic authorities' and hidden services keys
     // and re-encrypts them with session key, so island can poke all services
-
+   
     postLoginDecrypt(msg, self){
         console.log(`Got decrypt command from server.`)
         //decrypting and sending data back
@@ -359,6 +359,11 @@ export class ChatClient{
     }
 
     //END//////////////////////////////////////////////////////////////////////
+
+
+    getTopics(){
+        return this.topics;
+    }
 
     shout(msg){
         this.messageQueue.enqueue(msg)

@@ -1,16 +1,19 @@
 import * as util from "./dom-util"
 
-export function bakeCarousel(){
+//Bakes select list for side panel
+// top boolean whether it is select for top block
+export function bakeCarousel(top=false){
+    let options = []
+    if(top) options.push(util.bake("option", {text: "Topics"}))
+    options.push(util.bake("option", {text: "Particiapnts"}))
+    options.push(util.bake("option", {text: "Invites"}))
+
     return util.bake("div", {
         classes: "carousel-wrap",
         children: [
             util.bake("select", {
                 classes: "carousel",
-                children: [
-                    util.bake("option", {text: "Topics"}),
-                    util.bake("option", {text: "Particiapnts"}),
-                    util.bake("option", {text: "Invites"})
-                ]
+                children: options
             })
         ]
     })
@@ -19,42 +22,180 @@ export function bakeCarousel(){
 
 
 
-export function bakeSidePanel(){
-    let carousel1 = bakeCarousel()
+export function bakeSidePanel(
+    newTopicHandler,
+    joinTopicHandler,
+    newInviteHandler,
+    refreshInvitesHandler){
+
+    let carousel1 = bakeCarousel(true)
     let carousel2 = bakeCarousel()
     return util.bake("div", {
         classes: "side-panel-container",
         children: [
             util.bake("div", {
-                classes: ["side-panel-block", "top-block"],
+                classes: ["side-panel-section", "top-section"],
+
+                id: "side-panel-top-section",
                 children: [
-                    carousel1
+                    carousel1,
+                    //topics block
+                    bakeTopicsBlock(newTopicHandler, joinTopicHandler),
 
+                    //invites block
+                    bakeInvitesBlock(1, newInviteHandler, refreshInvitesHandler),
+
+                    //members block
+                    bakeParticipantsBlock(1)
                 ]
+            }),
 
 
+            util.bake("div", {
+                id: "side-panel-bottom-section",
+                classes: ["side-panel-section", "bottom-section"],
+                style: "display: none",
+                children: [
+                    carousel2,
+
+                    //invites block
+                    bakeInvitesBlock(2, newInviteHandler, refreshInvitesHandler),
+
+                    //members block
+                    bakeParticipantsBlock(2)
+                ]
             })
+
         ]
     })
 }
 
-function bakeTopicsControlButtons(){
-    return util.bake("div", {
-        classes: "side-panel-data-control",
+
+// Bakes empty  topics block for side panel
+function bakeTopicsBlock(newTopicHandler, joinTopicHandler){
+
+    return  util.bake("div", {
+        classes: "side-panel-block",
+        id: "topics-block",
+       
         children: [
+            util.bake("h4", {
+                class: "empty-block",
+                text: "No topics yet",
+                style: "display: none"
+            }),
+
+            util.bake("ul", {
+                classes: "side-block-data-list",
+                id: "topics-list",
+            }),
             util.bake("div", {
+                classes: "side-control-block",
                 children: [
-                    util.bake("button", {
-                        text: "Create topic",
-                    }),
-                    util.bake("button", {
-                        text: "Join topic"
+                    util.bake("div", {
+                        classes:  "side-panel-button-row",
+                        children: [
+
+                            util.bake("button", {
+                                //New topic button
+                                id: "new-topic-button",
+                                classes: "side-panel-btn",
+                                text: "New topic",
+                                listeners: {
+                                    click: newTopicHandler
+                                }
+                            }),
+
+                            util.bake("button", {
+                                //Join button
+                                id: "join-topic-button",
+                                classes: "btn",
+                                text: "Join toipc",
+                                listeners: {
+                                    click: joinTopicHandler
+                                }
+                            })
+                        ]
                     })
                 ]
             })
         ]
     })
 }
+
+
+//Bakes empty invites block
+function bakeInvitesBlock(id, newInviteHandler, refreshHandler){
+    return util.bake("div", {
+        id: `invites-block-${id}`,
+        classes: "side-panel-block",
+        style: "display: none",
+        children: [
+            util.bake("h4", {
+                class: "empty-block",
+                text: "No topics yet",
+                style: "display: none"
+            }),
+
+            util.bake("ul", {
+                classes: "side-block-data-list",
+                id: `invites-list-${id}`,
+
+            }),
+
+            util.bake("div", {
+                classes: "side-control-block",
+                children: [
+                    util.bake("div", {
+                        classes: "side-panel-button-row",
+                        children: [
+                            //New invite button
+                            util.bake("button", {
+                                classes: "side-panel-btn",
+                                text: "New invite",
+                                listeners: {
+                                    click: newInviteHandler
+                                }
+                            }),
+
+                            //Refresh invites button
+                            util.bake("button", {
+                                classes: "side-panel-btn",
+                                text: "Sync",
+                                listeners: {
+                                    click: refreshHandler
+                                }
+                            })
+                        ]
+                    })
+                ]
+            })
+        ]
+    })
+}
+
+function bakeParticipantsBlock(id){
+    return util.bake("div", {
+        id: `participants-block-${id}`,
+        classes: "side-panel-block",
+        style: "display: none",
+        children: [
+            util.bake("h4", {
+                class: "empty-block",
+                text: "No participants yet",
+                style: "display: none"
+            }),
+
+            util.bake("ul", {
+                classes: "side-block-data-list",
+                id: `participants-list-${id}`,
+            })
+        ]
+    })
+
+}
+
+
 
 export function bakeMessagesPanel(newMsgBlock){
     return util.bake("div", {
@@ -312,4 +453,16 @@ export function bakeMainContainer(){
         classes: ["container", "tingle-content-wrapper"],
         style: "display: flex"
     })
+}
+
+
+export function bakeTopicListItem(topic){
+    return util.bake("li", {
+        classes: "side-block-data-list-item",
+        text: topic.name,
+        attributes: {
+            pkfp: topic.pkfp
+        },
+    })
+
 }

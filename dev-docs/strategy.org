@@ -2,8 +2,12 @@
 
 * Current tasks
 ** PROJ New client
-*** TODO Implement login
-*** TODO Implement initial layout logic
+*** TODO Append and show topics
+*** TODO On topic click load messages
+*** DONE Implement login
+CLOSED: [2019-11-15 Fri 17:44]
+*** DONE Implement initial layout logic
+CLOSED: [2019-11-15 Fri 17:44]
 *** TODO Request invites
 
 *** PROJ Topic creation

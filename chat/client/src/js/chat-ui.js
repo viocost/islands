@@ -69,17 +69,23 @@ function initUI(){
    
 
 
-    let sidePanel = UI.bakeSidePanel();
+    let sidePanel = UI.bakeSidePanel(
+        processNewTopicClick,
+        processJoinTopicClick,
+        processNewInviteClick,
+        processRefreshInvitesClick
+    );
 
     let newMessageBlock = UI.bakeNewMessageControl();
     let messagesPanel = UI.bakeMessagesPanel(newMessageBlock)
 
     util.appendChildren(mainContainer, [sidePanel, messagesPanel]);
 
+    refreshTopics();
     // add listener to the menu button
 
     window.onresize = renderLayout;
-
+    renderLayout()
     //prepare side panel
     //let sidePanel = bakeSidePanel();
     //let messagesPanel = bakeMessagesPanel();
@@ -87,7 +93,6 @@ function initUI(){
     //let messagesWrapper = util.wrap([messagesPanel, newMessagePanel], "messages-panel-wrapper");
 
 
-    let container = util.$("#main-container")
     // util.appendChildren(container, [sidePanel, messagesWrapper]);
 }
 
@@ -115,6 +120,20 @@ function renderLayout(){
     //messagesPanel.appendChild(util.bake("div", {
     //    html: `width ${window.innerWidth}`
     //}))
+
+}
+
+
+function refreshTopics(){
+    let topics = chat.getTopics();
+    let topicsList = util.$("#topics-list")
+    util.removeAllChildren(topicsList)
+    let topicsElements = []
+    Object.keys(topics).forEach(key=>{
+        topicsElements.push(UI.bakeTopicListItem(topics[key]))
+    })
+    topicsElements.sort((el)=>{ return el.innerText })
+    util.appendChildren(topicsList, topicsElements)
 
 }
 
@@ -157,6 +176,22 @@ function processInfoClick(){
     alert("Islands v2.0.0")
 }
 
+function processNewTopicClick(){
+    console.log("New topic");
+}
+
+function processJoinTopicClick() {
+    console.log("Join topic");
+}
+
+function processNewInviteClick() {
+
+    console.log("New Invite");
+}
+
+function processRefreshInvitesClick() {
+    console.log("Refresh invites");
+}
 // ---------------------------------------------------------------------------------------------------------------------------
 // ~END UI handlers
 
@@ -184,6 +219,7 @@ function initChat(){
     chat.on(Events.LOGIN_ERROR, processLoginResult)
     chat.on(Events.LOGIN_SUCCESS, processLoginResult)
     chat.on(Events.INIT_TOPIC_SUCCESS, ()=>{
+
         toastr.success("Init topic success")
     })
     chat.on(Events.INIT_TOPIC_ERROR, (err)=>{

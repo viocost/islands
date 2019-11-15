@@ -1,4 +1,5 @@
 @import "../abstracts/dark"
+@import "../abstracts/mixins"
 @import "../abstracts/chat_var"
 
 // header
@@ -120,14 +121,20 @@ main
     flex: 1
     margin: 1.5rem 1rem 1.5rem 1rem
     color: $text-color
-    font-size: 2rem
+    font-size: 2.5rem
+    font-weight: bold
     border: none
     outline: none
     background-color: inherit
-    appearance: none
-    -webkit-appearance: none
-    -moz-appearance: none
-    -ms-appearance: none
+    //appearance: none
+    //-webkit-appearance: none
+    //-moz-appearance: none
+    //-ms-appearance: none
+    &:-ms-expand
+      background-color: $main-background
+      color: $text-color
+    option
+      background-color: $main-background
 
   .spin-carousel
     width: 2.5rem
@@ -135,19 +142,39 @@ main
     margin: 1.5rem 1rem 1.5rem 1rem
 
 
-.side-panel-block
+.side-panel-section
   display: flex
   flex-direction: column
+  height: 45%
+  width: 100%
 
-.side-panel-list
+.side-panel-block
+  height: 100%
+  flex-direction: column
+
+.side-block-data-list
+  @include scroll-style
   list-style-type: none
-.side-panel-list-item
+  display: flex
+  flex-direction: column
+  list-style-type: initial
+  height: 100%
+  overflow: auto
+  scrollbar-color: $button-hover $main-background
+  list-style-position: inside
+
+
+.side-block-data-list-item
   flex-direction: column
   font-size: 1.8rem
   color: $text-color
-  margin: 1rem 1rem 1rem 1.5rem
+  padding: 1rem
+  border-bottom: 1px solid darken($main-background, 5%)
+  &:hover
+    background-color: darken($main-background, 5%)
+    cursor: pointer
 
-.side-panel-data-control
+.side-control-block
   display: flex
   margin: 1.5rem 1rem 1rem 1.5rem
   flex-direction: column
@@ -159,16 +186,17 @@ main
       padding: .8rem
       background-color: darken($main-background, 5%)
       border: none
+      font-size: 1.6rem
       color: $text-color
       &:hover
         background-color: $button-hover
         transition: .2s
 
-.top-block
+.top-section
   @media screen and (max-height: 800px)
     height: 80%
 
-.bottom-block
+.bottom-section
   height: 40%
   @media screen and (max-height: 800px)
     display: none
@@ -393,3 +421,4 @@ main
 
 // Settings
 // ~END Settings
+
