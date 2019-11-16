@@ -52,8 +52,14 @@ This begs the question: can bad actors exploit Islands? Yes, just like with any 
 ￼
 XKCD #504 “Legal Hacks”, © Randal Monroe, CC-BY-NC</Text>
         </Document>
+        <Document ID="126DB844-8496-4084-A297-9B26FD13C7F9">
+            <Title>Downloading and Installing Qt</Title>
+        </Document>
         <Document ID="132A43DA-052A-4C80-88DD-148005CC6E52">
             <Title>Developing for Islands</Title>
+        </Document>
+        <Document ID="1342A462-0A16-4ABF-BBFA-F168A7AB49FA">
+            <Title>Islands Chat</Title>
         </Document>
         <Document ID="163F02D4-0BF6-4D9E-AC84-E99FF25BFFD6"/>
         <Document ID="19454B2C-2696-408E-8B82-B78117357709">
@@ -209,6 +215,9 @@ Hosting an Islands server on a mobile phone or tablet is not supported.</Text>
         <Document ID="3340BC2F-8CCC-4866-AA80-345DF7BE5AA7">
             <Title>Tools Menu</Title>
         </Document>
+        <Document ID="3592DF0D-F73E-45CF-A4E4-D2A01DFA174A">
+            <Title>Islands Server</Title>
+        </Document>
         <Document ID="36AEC700-8319-45AF-A77B-3C8928C7D300">
             <Title>What Islands Does</Title>
             <Text>Islands is built to exist outside the control of any single entity, whether that be a person, a company or a nation-state. Each user of Islands can run their own Island and contribute to the system. An attack on any single node on the system will not take the system down. Finding all the nodes will be difficult (since network traffic is encrypted and routed through TOR anonymizers) and becomes increasingly difficult with more people running Islands nodes.
@@ -221,6 +230,9 @@ It’s unwise to use phrases like “completely secure” or “unhackable” to
         </Document>
         <Document ID="3AAFFC4A-FD48-4C26-9E16-DF251BACBE7D">
             <Title>Using the Chat</Title>
+        </Document>
+        <Document ID="3B9AE52B-A351-4FE8-8B2A-E2E3D2C7BF7A">
+            <Title>Islands Server</Title>
         </Document>
         <Document ID="3E751865-BAB0-4010-B69D-0045A1717350">
             <Title>Index</Title>
@@ -348,6 +360,28 @@ Users interested in hosting an Island on a Linux server without a GUI manager sh
             <Title>Foreward</Title>
             <Synopsis>An example front matter section. By default this will print as an unnumbered section.</Synopsis>
         </Document>
+        <Document ID="6FD1A263-294C-4ACE-97C3-8B7F4B6C9A48">
+            <Title>Islands Manager</Title>
+            <Text>Islands manager currently depends on Python 3.7.x The dependency versions specified in the requirements.txt file may produce errors if you try to use them with an unsupported Python version. 
+Islands Manager uses these third-party libraries from the pip repository:
+asn1crypto
+certifi
+cffi
+cryptography
+pycparser
+PyQt5
+PyQt5-sip
+six
+urllib3
+markdown2
+fasteners
+pywin32
+
+Some of the above dependencies interface with C++ components and require a C++ compiler to be installed on the development system. Covering all possible cases for compiling C++ is outside the scope of this document. Setup instructions for those that we have successfully used are detailed under the OS-specific sections of Setting Up a Development Environment: Islands Manager.
+In addition, Islands Manager depends on libtorrent. Pre-compiled libtorrent libraries for each supported OS can be found under lib/vendor/&lt;os&gt;. Should you need to rebuild those libraries for any reason, downloads and documentation can be found on the libtorrent website.
+The graphical interface for Islands Manager is built with Qt. The Islands Team has opted to use Qt Creator as a tool for building the UI. This is explained in more detail here: Islands Manager: Qt UI Tools.
+</Text>
+        </Document>
         <Document ID="7208CBC4-421E-4B26-867A-521B26C2278C">
             <Title>Setting Up a Development Environment</Title>
         </Document>
@@ -359,6 +393,10 @@ Users interested in hosting an Island on a Linux server without a GUI manager sh
         </Document>
         <Document ID="7A01C5C3-753E-4DB9-B6D3-D7B7D81A4758">
             <Title>Dependencies</Title>
+            <Text>Each Islands component has its own set of dependencies and the files needed to pull them down from the relevant repositories (pip for Python and npm for Javascript). There are also be some tools that you may need to obtain separately. The following lists lay out what these dependencies are and links to their documentation pages. The details of how to set them up to develop for Islands are found here: Setting Up a Development Environment.</Text>
+        </Document>
+        <Document ID="7B77F31A-795C-4E3D-AD8C-4C0D0D76ECB5">
+            <Title>Islands Server</Title>
         </Document>
         <Document ID="7EC57F51-5495-4BE6-91FF-69F152EA8896">
             <Title>Forking Islands</Title>
@@ -366,6 +404,10 @@ Users interested in hosting an Island on a Linux server without a GUI manager sh
         <Document ID="7F36E1E8-5268-41DE-B900-5541DA073025">
             <Title>Preamble Modules</Title>
             <Synopsis>This folder contains some optional &quot;modules&quot; you can enable in the compiled output. They will add additional features to your project. If you have no need of them, they can be safely discarded. Note that some require additional material to be used elsewhere---for example indexing is established in the preamble, but we will need to declare the position of the index itself in the back matter.</Synopsis>
+        </Document>
+        <Document ID="88117400-619D-47E5-BFE8-A7E94E5C9670">
+            <Title>macOS</Title>
+            <Text>TODO</Text>
         </Document>
         <Document ID="886D1DD4-4062-41C1-A443-059373313157">
             <Title>Table of Contents</Title>
@@ -561,6 +603,9 @@ Use the “Index Key” style if the phrase itself doesn’t appear in the text,
         <Document ID="A385803E-E325-48FF-BB5E-DB148D7F3A52">
             <Title>Islands Chat on Mobile Devices</Title>
         </Document>
+        <Document ID="A39B8C8F-64C6-47F6-8E52-A4659C01BE62">
+            <Title>Islands Manager</Title>
+        </Document>
         <Document ID="A534F4CF-06B0-440B-B0F8-AC5B0C4FDE8C">
             <Title>Islands and Islands Chat Changelog History</Title>
         </Document>
@@ -576,6 +621,9 @@ Use the “Index Key” style if the phrase itself doesn’t appear in the text,
         </Document>
         <Document ID="AEEC8622-3321-430A-8226-D237F50233FB">
             <Title>Obtaining and Installing Islands</Title>
+        </Document>
+        <Document ID="B008951B-533E-4A86-AA31-F2C5C58DC84B">
+            <Title>Islands Applications</Title>
         </Document>
         <Document ID="B0417A1B-D617-4CBD-900A-14A6AB12C289">
             <Title>Ideas</Title>
@@ -623,14 +671,43 @@ We need to tell them about Islands. Telling them that it runs in a VM is &quot;e
             <Synopsis>This is a text file with an image in it. Refer to the help file at the top of the template's binder for an explanation of how this item works, when placed into your draft folder.</Synopsis>
             <Text>￼</Text>
         </Document>
+        <Document ID="B92E0450-04FC-4CDD-B4BF-2F8E7A63E694">
+            <Title>Qt UI Tools</Title>
+            <Text>Qt is a popular, cross-platform, open-source tool kit for building graphical user interfaces. Qt offers both a free license for open-source users and a paid license for commercial users. 
+
+A Note On Qt Licensing in Islands
+The Islands project is offered as free and open source under the MIT license. The MIT license does not require derivative projects to remain open source. Qt is licensed under the GPLv3 and LGPLv3, which does require all derivative projects to remain open source. The Islands Team intends to remain compliant with Qt’s open source licensing where Qt is used. It is up to other developers to either ensure they remain compliant with the open source license or purchase at Qt commercial license. This manual will assume use of open source licenses and tools.
+
+Downloading and Installing Qt Development Tools
+Visit https://www.qt.io/download-qt-installer which should detect your operating system and offer you the appropriate version of the Qt installer. Select and download the version you need.
+Run the installer and follow the prompts. You will be asked to either supply or create a Qt Account so that the installer can provide the products available to your chosen license. You will also be asked to accept or decline the collection of anonymous statistics.
+The installer will let you select from many items to install. You do not need all of them. (You may select all of them if you like, and have many gigabytes of free disk space.) At minimum, select:
+From a stable version of Qt (current version in Islands as of November 2019: 5.12.2):
+A binary package corresponding to your preferred compiler setup (i.e. gcc, MSVC)
+The Sources package.
+All of the Qt API packages (Islands won’t use all of them but it’s easier and they don’t take up much disk space.)
+The Qt Debug Information Files
+From Developer and Designer Tools:
+Qt Creator
+Qt Creator Debugger Support
+Debugging tools for your operating system.
+Proceed with the download and install. Do other things until it’s done.
+￼</Text>
+        </Document>
         <Document ID="B92FF96C-459A-4076-8B1C-B730BE1073C7">
             <Title>Islands Image Authoring</Title>
+        </Document>
+        <Document ID="B9550B6F-A46E-408C-A53F-08572C0D01BD">
+            <Title>Islands Applications</Title>
         </Document>
         <Document ID="BB89721F-361D-4DC6-B9DC-70E2BE85968E">
             <Title>Templates</Title>
         </Document>
         <Document ID="BC9C0ED0-76E0-4C9F-84A2-EDE5D0B96F8A">
             <Title>What is Islands Manager?</Title>
+        </Document>
+        <Document ID="BD471AB8-AFAA-49BA-B801-90E5688D3C8E">
+            <Title>Note on Qt Licencing in Islands</Title>
         </Document>
         <Document ID="BF5678AD-5D88-4A27-A235-B024E8DE9267">
             <Title>Obtaining and Installing Islands Manager</Title>
@@ -652,6 +729,49 @@ We need to tell them about Islands. Telling them that it runs in a VM is &quot;e
         </Document>
         <Document ID="C44F3211-23E5-4863-BDA0-563260B05975">
             <Title>First-Time Island Configuration</Title>
+        </Document>
+        <Document ID="C6A80FAD-1F1E-48BF-9702-1BB7A23875E6">
+            <Title>Windows</Title>
+            <Text>cffi on Windows requires seperate installation of a C++ compiler (they reccomend Microsoft’s) and libraries from the Windows SDK. When installing dependencies from pip, cffi will throw an error and terminate installation if it does not find them. Refer to https://wiki.python.org/moin/WindowsCompilers and the cffi docs for an overview of the subject.
+To install Microsoft’s C++ compiler and libraries if you don’t already have them:
+Visit https://visualstudio.microsoft.com/downloads/
+Browse to “Tools for Visual Studio” (2019 as of this writing). From the drop-down, find “Build Tools for Visual Studio” and download the installer from the link (vs_BuildTools.exe).
+￼
+Run the installer, click “Continue” and wait for the installer to run its preliminary setup.
+The installer will allow you to select only the components you need. Select “Individual Components” from the tabs along the top.
+In the search box, type “MSVC” (which stands for MicroSoft Visual C). Select the checkbox for the most recent version of the build tools for your platform. (For example: “MSVC v142 - VS 2019 C++ x64/x86 build tools (v14.23)” will install version 14.23 of the tools for x64/x86 platforms.) The minimum supported version is 14.0.
+In the search box, type “Windows”, scroll down to “SDKs, Libraries and Frameworks” and select the checkbox for the most recent version of the Windows SDK. (With Visual Studio 2019, this will be the Windows 10 SDK, even if your system isn’t Windows 10).
+Click “Install” in the bottom-right and wait for the components to download and install.
+If you need to add, change or remove components, you can run the Visual Studio installer again and select “Modify” from the “Visual Studio Build Tools” options.
+￼
+
+Building the Virtual Environment
+Once you have installed all external dependencies, you should be able to build a new virtual environment within the Git repository.
+Open a command prompt and cd to the island-manager directory.
+Run: python -m venv env to create the virtual environment directory.
+Run .\env\Scripts\activate.bat to enable the virtual environment.
+Install dependencies by running pip install -r requirements.txt .
+Run main.py to run and test Islands Manager.
+If you wish to use IDLE (the default Python IDE) with the virtual environment, invoke it from the command line with python -m idlelib.idle while within the virtual environment. For other editors, consult their documentation.
+
+A Note on Cryptography and OpenSSL
+Islands Manager itself does not use SSL for any of its functions. However, the cryptography module includes support for OpenSSL alongside many other cryptographic methods. The pre-compiled packages from pip include static-linked OpenSSL libraries. However, if there is no pre-compiled binary of cryptography for the active version of Python, pip will attempt to compile it. Compiling cryptography requires OpenSSL to be available on the system. This is likely to fail on Windows, which does not come with OpenSSL installed by default, unlike most UNIX and macOS systems.
+The preferred solution is to stick with a cryptography version that has pre-built support for the active Python version. The version specified in requirements.txt should meet this requirement. If you hit this error, check that you are building your virtual environment with a supported Python version. 
+If for some reason you absolutely must build your own cryptography package, the process is covered in the cryptography docs. Source downloads for OpenSSL are available here. There are no official Windows binaries for OpenSSL but an approved list of third-party binaries is maintained here.</Text>
+            <Notes>Islands manager virtualenv on Windows:
+
+- Install Python 3.7+
+- Make sure python, pip, wheel and setuptools are on the path
+- pip install virtualenv
+- Download and install Build Tools for Visual Studio ( https://visualstudio.microsoft.com/downloads/ ) (required for cffi)
+	-- select most recent MSVC build tools(MSVC v142 - VS 2019 C++ x64/x86 build tools (v14.23))
+		- v140 is oldest that will work
+	-- Select most recent Windows SDK (Windows 10 SDK (10.0.18362.0))
+- Install openSSL (?)
+- cd to island-manager dir
+- virtualenv env
+- env\scripts\activate.bat
+- pip install -r requirements.txt</Notes>
         </Document>
         <Document ID="C97A20AD-D2E7-487A-898C-586016F84C6A">
             <Title>What Islands Won't Do</Title>
@@ -699,6 +819,10 @@ The core implementation of Islands ships with Islands Chat. Islands Chat allows 
         <Document ID="D82F941D-1BE1-4150-976C-EDEB1412A03F">
             <Title>Managing a Chat Topic</Title>
         </Document>
+        <Document ID="DC45154E-077C-4C2C-BE9A-2D764F372776">
+            <Title>Islands Manager</Title>
+            <Text>Islands Manager uses Qt and Qt Creator for it’s graphical interface. Islands uses Qt under the GNU Public License v3 and the GNU Lesser Public License v3. Compliance with these licenses is required to use Qt without a commercial license. For more information, see the Qt guide to open source usage.</Text>
+        </Document>
         <Document ID="DDC8AD35-1BE4-49D2-9289-E31C5C748FD3">
             <Title>The Islands Team</Title>
             <Text>The core group of people developing Islands are:
@@ -713,6 +837,10 @@ Andy Smith - testing</Text>
         </Document>
         <Document ID="E2215627-7FBC-4DDB-8E6B-DA9BBF56BC15">
             <Title>Help Menu</Title>
+        </Document>
+        <Document ID="E2BC944C-546E-4409-A13F-BACE27566924">
+            <Title>Linux</Title>
+            <Text>TODO</Text>
         </Document>
         <Document ID="E3838291-9F8C-440B-B4EB-BCE832C67868">
             <Title>Updating the Islands Software</Title>
@@ -764,6 +892,9 @@ THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRES
         </Document>
         <Document ID="FB242EBE-C47D-4D22-8712-58F3E4AF77B0">
             <Title>Running An Island</Title>
+        </Document>
+        <Document ID="FB521656-C2D6-4C6A-92A0-50759B428709">
+            <Title>Third-Party Software Credits</Title>
         </Document>
         <Document ID="FD64525A-22FB-4EDD-BBD0-372BE8E7BFED">
             <Title>Indexing Packages</Title>
