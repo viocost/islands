@@ -48,6 +48,13 @@ module.exports.Events = Object.freeze({
     //Connection
     CONNECTION_STATUS_CHANGED: "connection_status_changed",
 
+    //Messages
+
+    // Initially emited by topic.
+    // All messages that topic has at the moment
+    MESSAGES_LOADED: "messages_loaded",
+   
+
     //Files
     FILE_AVAILABLE_LOCALLY: "file_available_locally",
     FILE_PEER_REQUEST: "file_peer_request",
@@ -77,8 +84,8 @@ module.exports.Internal = Object.freeze({
 
     REQUEST_INVITE: "request_invite",
 
-    INIT_LOAD: "init_load",
     LOAD_MESSAGES: "load_messages",
+    LOAD_MESSAGES_SUCCESS: "load_messages_success",
 
     KILL_SESSION: "kill_session",
 

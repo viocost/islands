@@ -1,6 +1,12 @@
 import { Events, Internal } from "../../../../common/Events";
 import { WildEmitter } from "./WildEmitter";
 import { Message } from "./Message";
+import { ChatUtility } from "./ChatUtility";
+import { iCrypto } from  "./iCrypto";
+import { ChatMessage } from "./ChatMessage";
+import { INSPECT_MAX_BYTES } from "buffer";
+
+const INITIAL_NUM_MESSAGES = 25
 
 export class Topic{
     constructor(pkfp, name, key, comment){
@@ -9,46 +15,87 @@ export class Topic{
         this.name = name;
         this.privateKey = key;
         this.comment = comment;
+        this.handlers = {};
         this.messageQueue;
         this.arrivalHub;
         this.currentMetadata;
-        this.members = {};
+        this.participants = {};
         this.messages = [];
         this.settings = {};
         this.invites = {};
+
+
+        // Meaning event listeners are set for arrivalHub
         this.isBootstrapped = false;
+
+        // Initial messages load has been completed
         this.isInitLoaded = false;
+
+        // All messages on this toipcs has been loaded
+        this.allMessagesLoaded = false;
+
+        // When topic has sent load n messages from the server and awaiting result
+        this.awaitingMessages = false
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------
     // INITIALIZING
     bootstrap(messageQueue, arrivalHub, version){
+        let self = this;
         this.messageQueue = messageQueue;
         this.arrivalHub = arrivalHub;
-        this.arrivalHub.on(this.pkfp, this.processIncomingMessage);
+        this.arrivalHub.on(this.pkfp, (msg)=>{
+            self.processIncomingMessage(msg, self);
+        });
         this.version = version;
+        this.setHandlers()
         this.bootstrapped = true;
     }
 
+
+    loadMetadata(metadata){
+
+        metadata.body.settings = JSON.parse(ChatUtility.decryptStandardMessage(metadata.body.settings, this.privateKey))
+        this._metadata = metadata
+        this.participants = {};
+        for(let pkfp of Object.keys(metadata.body.participants)){
+            this.participants[pkfp] = {};
+            this.participants[pkfp].key = metadata.body.participants[pkfp].key;
+            this.participants[pkfp].pkfp = metadata.body.participants[pkfp].pkfp;
+            this.participants[pkfp].publicKey = metadata.body.participants[pkfp].publicKey;
+            this.participants[pkfp].residence = metadata.body.participants[pkfp].residence;
+            this.participants[pkfp].rights = metadata.body.participants[pkfp].rights;
+
+            this.participants[pkfp].nickname = metadata.body.settings.membersData[pkfp] ?
+                metadata.body.settings.membersData[pkfp].nickname : "";
+            this.participants[pkfp].joined = metadata.body.settings.membersData[pkfp]?
+                metadata.body.settings.membersData[pkfp].joined : "";
+
+        }
+
+        this.invites = metadata.body.settings.invites;
+    }
+
     /**
-     * Loads topic metadata and last 20 messsages
+     * Loads topic's last n messsages
      * If wait for completion function will return only after load is completed
      */
-    async initLoad(messagesToLoad=20, waitCompletion=false){
-        this.ensureBootstrapped();
-        setImmediate(()=>{
-            let message = new Message();
-            message.setSource(this.pkfp);
-            message.setCommand(Internal.INIT_LOAD);
-            message.addNonce();
-            message.signMessage(this.privateKey);
-            this.messageQueue.enqueue(message);
+    async initLoad(messagesToLoad=INITIAL_NUM_MESSAGES, waitCompletion=false){
+        let self = this
+        self.ensureBootstrapped();
+        setTimeout(()=>{
+            self._loadMessages(self, messagesToLoad)
+            self.awaitingMessages = true;
         })
     }
 
     //Called when init_load event is received
     processInitLoad(data){
 
+    }
+
+    setHandlers(){
+        this.handlers[Internal.LOAD_MESSAGES_SUCCESS] = this.processMessagesLoaded
     }
 
     //End//////////////////////////////////////////////////////////////////////
@@ -59,6 +106,17 @@ export class Topic{
 
     // ---------------------------------------------------------------------------------------------------------------------------
     // MESSAGE HANDLING
+
+    getMessages(messagesToLoad=INITIAL_NUM_MESSAGES, lastMessageId){
+        if(this.initLoaded){
+            this.emit(Events.MESSAGES, this.messages)
+        } else {
+            console.log("Messages has not been loaded. Loading....");
+            //init load and then emit
+            this.initLoad()
+        }
+    }
+
     shout(messageContent, filesAttached){
         let self = this;
         this.ensureBootstrapped();
@@ -105,11 +163,18 @@ export class Topic{
 
     }
 
+
+
     //Incoming message
-    processIncomingMessage(msg){
+    processIncomingMessage(msg, self){
         console.log(`Incoming message on ${this.pkfp} received!`);
 
-
+        if(self.handlers.hasOwnProperty(msg.headers.command)){
+            self.handlers[msg.headers.command](msg, self)
+        } else {
+            let errMsg = `No handler found for command: ${msg.headers.command}`
+            throw new Error(errMsg);
+        }
     }
 
 
@@ -139,12 +204,18 @@ export class Topic{
          
     }
 
-    loadMessages(){
+    _loadMessages(self, quantity=25, lastMessageId){
         let request = new Message(self.version);
         request.headers.command = Internal.LOAD_MESSAGES;
-        request.headers.pkfpSource = this.session.publicKeyFingerprint;
-        request.body.lastLoadedMessageID = lastLoadedMessageID;
-        request.signMessage(this.session.privateKey);
+        request.headers.pkfpSource = self.pkfp;
+
+        request.body.quantity = quantity;
+        if (lastMessageId){
+            request.body.lastMessageId = lastMessageId;
+        }
+        request.addNonce();
+        request.signMessage(self.privateKey);
+        self.messageQueue.enqueue(request)
     }
 
 
@@ -205,6 +276,51 @@ export class Topic{
     }
     //END//////////////////////////////////////////////////////////////////////
 
+    processMessagesLoaded(msg, self){
+        console.log("Messages loaded. Processing...");
+        let data = msg.body.lastMessages;
+
+
+        let keys = data.keys;
+        let metaIDs = Object.keys(keys);
+        for (let i=0;i<metaIDs.length; ++i){
+            let ic = new iCrypto;
+            ic.addBlob('k', keys[metaIDs[i]])
+                .hexToBytes("k", "kraw")
+                .setRSAKey("priv", self.privateKey, "private")
+                .privateKeyDecrypt("kraw", "priv", "kdec");
+            keys[metaIDs[i]] = ic.get("kdec");
+        }
+
+        let messages = data.messages;
+        let result = [];
+        for (let i=0; i<messages.length; ++i){
+            let message = new ChatMessage(messages[i]);
+            if(message.header.service){
+                message.body = ChatUtility.decryptStandardMessage(message.body, self.privateKey)
+            } else if(message.header.private){
+                message.decryptPrivateMessage(self.privateKey);
+            } else{
+                message.decryptMessage(keys[message.header.metadataID]);
+            }
+            result.push(message);
+        }
+
+        if(!self.initLoaded || self.messages.length === 0){
+            self.messages = result;
+        } else {
+            let latestLoadedID = result[0].header.id;
+            let glueIndex = self.messages.findIndex((msg)=>{
+                return msg.header.id === latestLoadedID;
+            });
+            self.messages = glueIndex ? [...self.messages.slice(0, glueIndex), ...result] :
+                [...self.messages, ...result]
+
+        }
+        self.initLoaded = true;
+        self.allMessagesLoaded = data.allLoaded;
+        self.emit(Events.MESSAGES_LOADED, self.messages);
+    }
 
     bootPraticipant(){
 

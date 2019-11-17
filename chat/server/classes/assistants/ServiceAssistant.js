@@ -9,7 +9,8 @@ const ServiceMessage = require("../objects/ServiceMessage.js");
 const Metadata = require("../objects/Metadata.js");
 const Logger = require("../libs/Logger.js");
 const Coordinator = require("../assistants/AssistantCoordinator.js");
-
+const Internal = require("../../../common/Events.js").Internal
+const Events = require("../../../common/Events.js").Events
 
 class ServiceAssistant{
     constructor(connectionManager = Err.required(),
@@ -220,21 +221,23 @@ class ServiceAssistant{
             throw new Error("Request was not verified");
         }
 
-        let data = await self.hm.loadMoreMessages(request.headers.pkfpSource, request.body.lastLoadedMessageID);
+        let data = await self.hm.loadMoreMessages(request.headers.pkfpSource,
+                                                  request.body.lastLoadedMessageID);
         messages = data[0];
         metadataIDs = data[1];
         let allLoaded = data[2];
 
         let gatheredKeys  = await self.hm.getSharedKeysSet(metadataIDs, request.headers.pkfpSource)
 
-        let response = new Response("load_more_messages_success", request );
+        let response = Message.makeResponse(request,  "island", Internal.LOAD_MESSAGES_SUCCESS);
 
         response.body.lastMessages = {
             messages: messages,
             keys: gatheredKeys,
             allLoaded: allLoaded
         };
-        self.sessionManager.broadcastUserResponse(request.headers.pkfpSource, response);
+
+        self.connectionManager.sendMessage(connectionId, response);
     }
 
 
@@ -398,6 +401,9 @@ class ServiceAssistant{
     }
 
     subscribeToClientRequests(requestEmitter){
+        let handlers = {};
+        handlers[Internal.LOAD_MESSAGES] = this.loadMoreMessages
+
         this.subscribe(requestEmitter, {
             whats_your_name: this.processStandardNameExchabgeRequest,
             nickname_change_broadcast: this.processStandardNameExchabgeRequest,
@@ -405,9 +411,10 @@ class ServiceAssistant{
             request_invite: this.registerInviteRequest,
             boot_participant: this.registerBootMemberRequest,
             update_settings: this.registerSettingsUpdate,
-            load_more_messages: this.loadMoreMessages,
             register_service_record: this.registerClientServiceRecord
         }, this.clientErrorHandler)
+
+        this.subscribe(requestEmitter, handlers, this.clientErrorHandler)
     }
 
 

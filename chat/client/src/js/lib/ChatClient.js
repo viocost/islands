@@ -70,6 +70,7 @@ export class ChatClient{
                 this.topics = this.vault.topics;
                 for(let pkfp of Object.keys(this.topics)){
                     this.topics[pkfp].bootstrap(this.messageQueue, this.arrivalHub, this.version);
+                    this.initTopicListeners(this.topics[pkfp])
                 }
 
                 //At this point we have loaded all topic keys, so login is successful
@@ -83,6 +84,8 @@ export class ChatClient{
             }
         })
     }
+
+
 
 
     // Sends all topic pkfps (ids) to gather metadata and encrypted services
@@ -102,7 +105,6 @@ export class ChatClient{
 
     // Decrypts topic authorities' and hidden services keys
     // and re-encrypts them with session key, so island can poke all services
-   
     postLoginDecrypt(msg, self){
         console.log(`Got decrypt command from server.`)
         //decrypting and sending data back
@@ -154,6 +156,8 @@ export class ChatClient{
                 taHSPrivateKey = decryptBlob(topicPrivateKey, topicData.topicAuthority.taHSPrivateKey)
             }
 
+            self.topics[pkfp].loadMetadata(topicData.metadata);
+
             let preDecrypted = {};
 
             if (clientHSPrivateKey){
@@ -187,6 +191,11 @@ export class ChatClient{
 
     }
 
+    initTopicListeners(topic){
+        topic.on(Events.MESSAGES_LOADED, (messages)=>{
+            this.emit(Events.MESSAGES_LOADED, {pkfp: topic.pkfp, messages: messages})
+        })
+    }
     //END//////////////////////////////////////////////////////////////////////
 
 
@@ -360,6 +369,19 @@ export class ChatClient{
 
     //END//////////////////////////////////////////////////////////////////////
 
+    // ---------------------------------------------------------------------------------------------------------------------------
+    // Main API methods used by UI
+
+    // Given topic pkfp request loaded messages
+    getMessages(pkfp){
+        console.log(`Get messages request on Chat`);
+        let self = this
+        if (!self.topics[pkfp])
+            throw new Error(`Topic ${pkfp} not found!`)
+        setTimeout(()=>{
+            self.topics[pkfp].getMessages()
+        }, 100)
+    }
 
     getTopics(){
         return this.topics;

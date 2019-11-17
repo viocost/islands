@@ -99,7 +99,7 @@ function bakeTopicsBlock(newTopicHandler, joinTopicHandler){
                             util.bake("button", {
                                 //New topic button
                                 id: "new-topic-button",
-                                classes: "side-panel-btn",
+                                classes: ["side-panel-btn", "btn"],
                                 text: "New topic",
                                 listeners: {
                                     click: newTopicHandler
@@ -109,7 +109,7 @@ function bakeTopicsBlock(newTopicHandler, joinTopicHandler){
                             util.bake("button", {
                                 //Join button
                                 id: "join-topic-button",
-                                classes: "btn",
+                                classes: ["side-panel-btn", "btn"],
                                 text: "Join toipc",
                                 listeners: {
                                     click: joinTopicHandler
@@ -456,13 +456,26 @@ export function bakeMainContainer(){
 }
 
 
-export function bakeTopicListItem(topic){
+export function bakeTopicListItem(topic, onClick){
     return util.bake("li", {
         classes: "side-block-data-list-item",
-        text: topic.name,
         attributes: {
             pkfp: topic.pkfp
         },
+        listeners: {
+            click: onClick
+        },
+        children: [
+            util.bake("span", {
+                classes: "topic-name",
+                text: topic.name
+            }),
+
+            util.bake("span", {
+                classes: "unread-messages",
+                text: "25"
+            })
+        ]
     })
 
 }
