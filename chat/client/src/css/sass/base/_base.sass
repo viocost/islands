@@ -67,7 +67,12 @@ select
   outline: none
   padding: .3rem
 
-
+button
+  outline: none !important
+  &::-moz-focus-inner
+    border: 0
+  &:focus
+    outline: none !important
 
 .header_wrap
   display: flex

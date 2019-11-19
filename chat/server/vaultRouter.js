@@ -41,7 +41,7 @@ router.post("/", (req, res)=>{
                .status(200).send({"vault": vault, "vaultId": id})
         }
     }catch(err){
-        Logger.warn(err.message, {stack: err.stack});
+        Logger.warn(err.message, {stack: err.stack, cat: "chat"});
         res.set("Content-Type", "application/json")
         res.status(400).send("Vault login error.");
     }
@@ -53,8 +53,10 @@ router.post("/register", (req, res)=>{
         let host = req.headers["host"];
         let vaultId = getVaultId(host);
         let vaultData = req.body;
+        console.log(`vault hash is : ${vaultData.vaultHash}`);
         vaultManager.completeRegistration(
             vaultData.vault,
+            vaultData.vaultHash,
             vaultData.vaultSign,
             vaultData.vaultPublicKey,
             vaultId

@@ -109,7 +109,7 @@ export class Topic{
 
     getMessages(messagesToLoad=INITIAL_NUM_MESSAGES, lastMessageId){
         if(this.initLoaded){
-            this.emit(Events.MESSAGES, this.messages)
+            this.emit(Events.MESSAGES_LOADED, this.messages)
         } else {
             console.log("Messages has not been loaded. Loading....");
             //init load and then emit
@@ -340,6 +340,27 @@ export class Topic{
 
     processNicknameChangeNote(){
 
+    }
+
+
+
+    getParticipantAlias(pkfp){
+        if(!this.isBootstrapped || !pkfp){
+            return
+        }
+        let participantData = this.participants[pkfp];
+
+        if (participantData && participantData.alias){
+            return participantData.alias;
+        } else{
+            return pkfp.substring(0, 8);
+        }
+    }
+
+    getParticipantRepr(pkfp){
+        if (this.participants[pkfp]){
+            return this.participants[pkfp].alias || this.participants[pkfp].nickname  || "Unknown";
+        }
     }
 
     ensureInitLoaded(){

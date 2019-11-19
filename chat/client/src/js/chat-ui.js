@@ -6,15 +6,20 @@ import { ChatClient as Chat } from "./lib/ChatClient";
 import { Events } from "../../../common/Events";
 import "../css/chat.sass"
 import "../css/vendor/loading.css"
+import { Vault } from "./lib/Vault";
+//import "../css/vendor/toastr.min.css"
 
 
 // ---------------------------------------------------------------------------------------------------------------------------
 // CONSTANTS
 const SMALL_WIDTH = 760;
-
+const DAYSOFWEEK = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+let colors = ["#cfeeff", "#ffebcc", "#ccffd4", "#ccfffb", "#e6e6ff", "#f8e6ff", "#ffe6f1", "#ccefff", "#ccf1ff"]
 // ---------------------------------------------------------------------------------------------------------------------------
-// Visual Sections
+// Visual Sections and modal forms
 let spinner = new BlockingSpinner();
+let topicCreateModal;
+let topicJoinModal;
 // ---------------------------------------------------------------------------------------------------------------------------
 // Objects
 let chat;
@@ -47,9 +52,35 @@ document.addEventListener('DOMContentLoaded', event =>{
 });
 
 
+
 function initLoginUI(){
-    let loginBlock = UI.bakeLoginBlock(initSession)
-    util.appendChildren("#main-container", loginBlock)
+    let mainContainer = util.$('#main-container');
+    util.removeAllChildren(mainContainer);
+
+    if (isRegistration()){
+
+        let registrationBlock = UI.bakeRegistrationBlock(()=>{
+            console.log("New vault registration..")
+            loadingOn()
+            registerVault()
+                .then(()=>{
+                    util.removeAllChildren(mainContainer);
+                    util.appendChildren(mainContainer, UI.bakeRegistrationSuccessBlock(()=>{
+                        document.location.reload()
+                    }))
+                })
+                .catch(err=>{
+                    toastr.error(err.message)
+                })
+                .finally(()=>{
+                    loadingOff();
+                })
+        })
+        util.appendChildren("#main-container", registrationBlock)
+    } else {
+        let loginBlock = UI.bakeLoginBlock(initSession)
+        util.appendChildren("#main-container", loginBlock)
+    }
 }
 
 
@@ -92,6 +123,17 @@ function initUI(){
 
     window.onresize = renderLayout;
     renderLayout()
+
+    //modals
+    topicCreateModal = UI.bakeTopicCreateModal(()=>{console.log("Creating topic")})
+    util.$("#new-topic-button").onclick = ()=>{
+        topicCreateModal.open();
+    }
+
+    topicJoinModal = UI.bakeTopicJoinModal(()=>{
+        console.log("Joining topic")
+    })
+    util.$("#join-topic-button").onclick = ()=>{ topicJoinModal.open() }
     //prepare side panel
     //let sidePanel = bakeSidePanel();
     //let messagesPanel = bakeMessagesPanel();
@@ -154,6 +196,19 @@ function refreshTopics(){
 // ---------------------------------------------------------------------------------------------------------------------------
 // UI handlers
 
+function createTopic(){
+    let nickname = util.$("new-topic-nickname");
+    let topicName = util.$("new-topic-name");
+    let form = UI.bakeTopicCreateModal()
+}
+
+function registerVault() {
+    let password = util.$("#new-passwd");
+    let confirm =  util.$("#confirm-passwd");
+    return Vault.registerVault(password, confirm)
+}
+
+
 function processActivateTopicClick(ev){
     let element = ev.currentTarget;
     let pkfp = element.getAttribute("pkfp");
@@ -166,7 +221,6 @@ function processActivateTopicClick(ev){
     setTopicInFocus(pkfp)
     // load messges in the new window
     chat.getMessages(pkfp);
-
 
     // Update participants list in side panel
     //chat.getParticipants(pkfp);
@@ -219,6 +273,8 @@ function processInfoClick(){
 
 function processNewTopicClick(){
     console.log("New topic");
+    toastr.info("Creating topic...")
+
 }
 
 function processJoinTopicClick() {
@@ -252,19 +308,23 @@ function processLoginResult(err){
 function processMessagesLoaded(pkfp, messages){
     if (topicInFocus === pkfp){
         console.log("Appending messages to view")
-        let windowInFocus = getChatWindowInFocus()
-        appendMessageToChat({
-            nickname: message.header.nickname,
-            alias: alias,
-            body: message.body,
-            timestamp: message.header.timestamp,
-            pkfp: message.header.author,
-            messageID: message.header.id,
-            service: message.header.service,
-            private: message.header.private,
-            recipient: message.header.recipient,
-            attachments: message.attachments
-        });
+        let windowInFocus = getChatWindowInFocus();
+        clearMessagesWindow(windowInFocus)
+        for (let message of messages){
+            let alias  = chat.getParticipantAlias(pkfp, message.header.author)
+            appendMessageToChat({
+                nickname: message.header.nickname,
+                alias: alias,
+                body: message.body,
+                timestamp: message.header.timestamp,
+                pkfp: message.header.author,
+                messageID: message.header.id,
+                service: message.header.service,
+                private: message.header.private,
+                recipient: message.header.recipient,
+                attachments: message.attachments
+            }, pkfp, windowInFocus);
+        }
 
     } else {
         console.log("Topic is inactive. Ignoring")
@@ -317,6 +377,8 @@ function loadingOff() {
 }
 
 
+// ---------------------------------------------------------------------------------------------------------------------------
+// MESSAGES RENDERING AND APPENDING
 
 /**
  * Appends message onto the chat window
@@ -326,16 +388,15 @@ function loadingOff() {
  *  pkfp: pkfp
  * }
  */
-function appendMessageToChat(message, toHead = false) {
-    let chatWindow = document.querySelector('#chat_window');
+function appendMessageToChat(message, topicPkfp, chatWindow,  toHead = false) {
     let msg = document.createElement('div');
     let message_id = document.createElement('div');
     let message_body = document.createElement('div');
 
     message_body.classList.add('msg-body');
-    let message_heading = buildMessageHeading(message);
+    let message_heading = buildMessageHeading(message, topicPkfp);
 
-    if (isMyMessage(message.pkfp)) {
+    if (message.pkfp === topicPkfp) {
         // My message
         msg.classList.add('my_message');
     } else if (message.service) {
@@ -346,7 +407,8 @@ function appendMessageToChat(message, toHead = false) {
         let author = document.createElement('div');
         author.classList.add("m-author-id");
         author.innerHTML = message.pkfp;
-        msg.style.backgroundColor = colors[participantsKeys.indexOf(message.pkfp) % colors.length];
+        let participantIndex = Object.keys(chat.topics[topicPkfp].participants).indexOf(message.pkfp)
+        msg.style.backgroundColor = colors[participantIndex % colors.length];
         message_heading.appendChild(author);
     }
     if (message.private) {
@@ -377,7 +439,7 @@ function appendMessageToChat(message, toHead = false) {
     }
 }
 
-function buildMessageHeading(message) {
+function buildMessageHeading(message, topicPkfp) {
     let message_heading = document.createElement('div');
     message_heading.classList.add('msg-heading');
 
@@ -398,10 +460,12 @@ function buildMessageHeading(message) {
     time_stamp.innerHTML = getChatFormatedDate(message.timestamp);
     time_stamp.classList.add('msg-time-stamp');
 
-    if (isMyMessage(message.pkfp)) {
+    if (message.pkfp === topicPkfp) {
+        // My messages
         message_heading.appendChild(time_stamp);
         message_heading.appendChild(nickname);
     } else if (message.service) {
+        // Service message
         message_heading.innerHTML += '<b>Service  </b>';
         message_heading.appendChild(time_stamp);
     } else {
@@ -435,9 +499,189 @@ function preparePrivateMark(message) {
     return privateMark;
 }
 
-function getChatWindowInFocus(){
+/**
+ * Processes all the attachments and returns
+ * attachments wrapper which can be appended to a message
+ * If no attachments are passed - returns undefined
+ * @param attachments
+ * @returns {*}
+ */
+function processAttachments(attachments) {
+    if (attachments === undefined) {
+        return undefined;
+    }
 
+    let getAttachmentSize = function (size) {
+        let res = "";
+        size = parseInt(size);
+        if (size < 1000) {
+            res = size.toString() + "b";
+        } else if (size < 1000000) {
+            res = Number((size / 1000).toFixed(1)).toString() + "kb";
+        } else if (size < 1000000000) {
+            res = Number((size / 1000000).toFixed(1)).toString() + "mb";
+        } else {
+            res = Number((size / 1000000000).toFixed(1)).toString() + "gb";
+        }
+        return res;
+    };
+
+    let attachmentsWrapper = document.createElement("div");
+    attachmentsWrapper.classList.add("msg-attachments");
+
+    for (let att of attachments) {
+        let attachment = document.createElement("div");
+        let attView = document.createElement("div");
+        let attInfo = document.createElement("div");
+        let attSize = document.createElement("span");
+        let attName = document.createElement("span");
+        let attIcon = document.createElement("span");
+        let iconImage = document.createElement("img");
+
+        // //State icons
+        let attState = document.createElement("div");
+        attState.classList.add("att-state");
+
+        let spinner = document.createElement("img");
+        spinner.classList.add("spinner");
+        spinner.src = "/img/spinner.gif";
+        spinner.display = "flex";
+
+        attState.appendChild(spinner);
+
+        iconImage.src = "/img/attachment.png";
+        attSize.classList.add("att-size");
+        attView.classList.add("att-view");
+        attInfo.classList.add("att-info");
+        attName.classList.add("att-name");
+        iconImage.classList.add("att-icon");
+        attIcon.appendChild(iconImage);
+        attInfo.innerHTML = JSON.stringify(att);
+        attName.innerText = att.name;
+        attSize.innerHTML = getAttachmentSize(att.size);
+
+        //Appending elements to attachment view
+        attView.appendChild(attState);
+        attView.appendChild(attIcon);
+        attView.appendChild(attName);
+        attView.appendChild(attSize);
+        attView.addEventListener("click", downloadOnClick);
+        attachment.appendChild(attView);
+        attachment.appendChild(attInfo);
+        attachmentsWrapper.appendChild(attachment);
+    }
+    return attachmentsWrapper;
 }
 
+function processMessageBody(text) {
+    text = text.trim();
+    let result = document.createElement("div");
+    let startPattern = /__code/;
+    let endPattern = /__end/;
+
+    //no code
+    if (text.search(startPattern) === -1) {
+        result.appendChild(document.createTextNode(text));
+        return result;
+    }
+    //first occurrence of the code
+    let firstOccurrence = text.search(startPattern);
+    if (text.substring(0, firstOccurrence).length > 0) {
+        result.appendChild(document.createTextNode(text.substring(0, firstOccurrence)));
+        text = text.substr(firstOccurrence);
+    }
+    let substrings = text.split(startPattern).filter(el => {
+        return el.length !== 0;
+    });
+    for (let i = 0; i < substrings.length; ++i) {
+        let pre = document.createElement("pre");
+        let code = document.createElement("code");
+        let afterText = null;
+        let endCode = substrings[i].search(endPattern);
+        if (endCode === -1) {
+            code.innerText = processCodeBlock(substrings[i]);
+        } else {
+            code.innerText = processCodeBlock(substrings[i].substring(0, endCode));
+            let rawAfterText = substrings[i].substr(endCode + 5).trim();
+            if (rawAfterText.length > 0) afterText = document.createTextNode(rawAfterText);
+        }
+        //highliter:
+        hljs.highlightBlock(code);
+        ///////////
+
+        pre.appendChild(code);
+        result.appendChild(pre);
+        pre.ondblclick = showCodeView;
+        if (afterText) result.appendChild(afterText);
+    }
+    return result;
+}
+
+
+
+/**
+ * Click handler when user clicks on attached file
+ * @param ev
+ * @returns {Promise<void>}
+ */
+
+async function downloadOnClick(ev) {
+    console.log("Download event triggered!");
+    let target = ev.target;
+    while (target && !target.classList.contains("att-view")) {
+        target = target.parentNode;
+    }
+
+    if (!target) {
+        throw new Error("att-view container not found...");
+    }
+    let fileInfo = target.nextSibling.innerHTML; //Extract fileInfo from message
+
+    let fileName = JSON.parse(fileInfo).name;
+    target.childNodes[0].style.display = "inline-block";
+    try {
+        await chat.downloadAttachment(fileInfo); //download file
+        console.log("Download complete!");
+    } catch(err){
+        toastr.warning("file download unsuccessfull: " + err)
+        appendEphemeralMessage(fileName + " Download finished with error: " + err)
+    }finally {
+        target.childNodes[0].style.display = "none";
+    }
+}
+
+function showCodeView(event) {
+    let pre = document.createElement("pre");
+    pre.innerHTML = event.target.innerHTML;
+    let div = document.createElement("div");
+    div.appendChild(pre);
+    showModalNotification("Code:", div.innerHTML);
+}
+//~END MESSAGES RENDERING///////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+function getChatWindowInFocus(){
+    return util.$("#messages-window-1");
+}
+
+function clearMessagesWindow(msgWindow){
+    msgWindow.innerHTML = "";
+}
+
+
+function getChatFormatedDate(timestamp) {
+    let d = new Date(timestamp);
+    let today = new Date();
+    if (Math.floor((today - d) / 1000) <= 64000) {
+        return d.getHours() + ':' + padWithZeroes(2, d.getMinutes());
+    } else {
+        return DAYSOFWEEK[d.getDay()] + ", " + d.getMonth() + "/" + padWithZeroes(2, d.getDate()) + " " + padWithZeroes(2, d.getHours()) + ':' + padWithZeroes(2, d.getMinutes());
+    }
+}
+
+function padWithZeroes(requiredLength, value) {
+    let res = "0".repeat(requiredLength) + String(value).trim();
+    return res.substr(res.length - requiredLength);
+}
 // ---------------------------------------------------------------------------------------------------------------------------
 // ~END util

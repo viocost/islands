@@ -3,20 +3,25 @@
 * Current tasks
 ** PROJ New client
 *** Milestones
-1. Messges loading, topic activation, metadata settings loading
-2. Send/receive messages
-3. Create/delete topic
-4. Create/delete/rename invites
-5. Members' nicknames aliases management
-6. Boot member/leave
-7. Files transfer
-8. Mute members
-9. Mute topics
-10. Unread messages display
-11. Reconnection
-12. Light theme / dark theme
-13. Vault registration, password change
-
+**** DONE Messges loading, topic activation, metadata settings loading
+CLOSED: [2019-11-18 Mon 18:54]
+**** DONE Vault registration
+CLOSED: [2019-11-19 Tue 15:53]
+**** TODO Create topic
+**** TODO Vault update
+**** TODO Create/delete/rename invites
+**** TODO Topic join
+**** TODO Members' nicknames aliases management
+**** TODO Files transfer
+**** TODO Reconnection
+**** TODO Send/receive messages
+**** TODO Unread messages display
+**** TODO Boot member/leave
+**** TODO Mute topics
+**** TODO Mute members
+**** TODO Light theme / dark theme
+**** TODO Vault password change
+**** TODO Delete topic
 
 *** TODO Where to put connection indicator
 

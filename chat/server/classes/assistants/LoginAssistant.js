@@ -122,76 +122,6 @@ class LoginAssistant{
         Logger.debug(`Services check completed!`, {cat: "login"});
     }
 
-    ///JUNK
-    async initLogin(request, connectionId, self) {
-        const clientPkfp = request.headers.pkfpSource;
-        //test
-        await self.verifyLoginRequest(request);
-        await self.setPendingLogin(request);
-        const pendingLogin = self.getPendingLogin(request.body.sessionID);
-        const metadata = pendingLogin.metadata;
-        const dataForDecryption = await self.getDataForDecryption(clientPkfp, metadata, request.body.sessionID);
-        if (pendingLogin.taLaunchRequired || pendingLogin.hsLaunchRequired) {
-            await self.sendToClientForDecrytpion(dataForDecryption, request, connectionId);
-        } else {
-            await self.finalizeLogin(request, connectionId, self);
-        }
-
-    }
-
-    async continueAfterDecryption(request, connectionId, self){
-        const pendingLogin = self.getPendingLogin(request.body.sessionID);
-        if(!pendingLogin){
-            throw new Error("Login was not properly initialized");
-        }
-        const tokenPrivateKey = pendingLogin.token.privateKey;
-        if (pendingLogin.hsLaunchRequired){
-            const clientHSKey = Util.decryptStandardMessage(request.body.preDecrypted.clientHSPrivateKey, tokenPrivateKey);
-            await self.launchClientHS(clientHSKey)
-        }
-
-        if (pendingLogin.taLaunchRequired){
-            const taPkfp = pendingLogin.metadata.body.topicAuthority.pkfp;
-            const taPrivateKey = Util.decryptStandardMessage(request.body.preDecrypted.topicAuthority.taPrivateKey, tokenPrivateKey);
-            const taHSPrivateKey = Util.decryptStandardMessage(request.body.preDecrypted.topicAuthority.taHSPrivateKey, tokenPrivateKey);
-            await self.topicAuthorityManager.launchTopicAuthority(taPrivateKey, taHSPrivateKey, taPkfp);
-        }
-
-
-        self.finalizeLogin(request, connectionId, self);
-
-    }
-
-    sendToClientForDecrytpion(dataForDecryption, request, connectionId){
-        console.log("Sending to client for decryption");
-        const token = this.generateDecryptionToken();
-        const response = new Response("login_decryption_required", request);
-        response.body.dataForDecryption = dataForDecryption;
-        response.body.token = token.publicKey;
-        this.getPendingLogin(request.body.sessionID).token = token;
-        this.connectionManager.sendResponse(connectionId, response);
-    }
-
-    async finalizeLogin(request, connectionId, self){
-        if(!self.pendingLogins[request.body.sessionID]){
-            throw new Error("Login was not properly initialized");
-        }
-        await self.initSession(request, connectionId, self);
-        const messages = await self.getLastMessages(request.headers.pkfpSource);
-        //const settings = await self.getSettings(request.headers.pkfpSource);
-
-        const response = new Response("login_success", request);
-        response.body.messages = messages;
-        response.body.metadata = self.pendingLogins[request.body.sessionID].metadata;
-        //response.body.settings = settings;
-
-        self.connectionManager.sendResponse(connectionId, response);
-
-        this.deletePendingLogin(request.body.sessionID);
-    }
-
-    ///JUNK END
-
     async getDataForDecryption(clientPkfp, metadata, sessionID){
         let taData, hsKey;
         Logger.debug("Getting data for decryption", {cat: "login"})
@@ -221,6 +151,9 @@ class LoginAssistant{
 
     }
 
+    async updateVault(request, connectionId, self){
+
+    }
 
     /*********************************************
      * ~ END Handlers ~
@@ -403,6 +336,81 @@ class LoginAssistant{
     /*********************************************
      * ~ End helper Functions
      *********************************************/
+
+
+    ///JUNK
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // async initLogin(request, connectionId, self) {                                                                                        //
+    //     const clientPkfp = request.headers.pkfpSource;                                                                                    //
+    //     test                                                                                                                              //
+    //                                                                                                                                       //
+    //     await self.verifyLoginRequest(request);                                                                                           //
+    //     await self.setPendingLogin(request);                                                                                              //
+    //     const pendingLogin = self.getPendingLogin(request.body.sessionID);                                                                //
+    //     const metadata = pendingLogin.metadata;                                                                                           //
+    //     const dataForDecryption = await self.getDataForDecryption(clientPkfp, metadata, request.body.sessionID);                          //
+    //                                                                                                                                       //
+    //     if (pendingLogin.taLaunchRequired || pendingLogin.hsLaunchRequired) {                                                             //
+    //         await self.sendToClientForDecrytpion(dataForDecryption, request, connectionId);                                               //
+    //     } else {                                                                                                                          //
+    //         await self.finalizeLogin(request, connectionId, self);                                                                        //
+    //     }                                                                                                                                 //
+    //                                                                                                                                       //
+    // }                                                                                                                                     //
+    //                                                                                                                                       //
+    // async continueAfterDecryption(request, connectionId, self){                                                                           //
+    //     const pendingLogin = self.getPendingLogin(request.body.sessionID);                                                                //
+    //     if(!pendingLogin){                                                                                                                //
+    //         throw new Error("Login was not properly initialized");                                                                        //
+    //     }                                                                                                                                 //
+    //     const tokenPrivateKey = pendingLogin.token.privateKey;                                                                            //
+    //     if (pendingLogin.hsLaunchRequired){                                                                                               //
+    //         const clientHSKey = Util.decryptStandardMessage(request.body.preDecrypted.clientHSPrivateKey, tokenPrivateKey);               //
+    //         await self.launchClientHS(clientHSKey)                                                                                        //
+    //     }                                                                                                                                 //
+    //                                                                                                                                       //
+    //     if (pendingLogin.taLaunchRequired){                                                                                               //
+    //         const taPkfp = pendingLogin.metadata.body.topicAuthority.pkfp;                                                                //
+    //         const taPrivateKey = Util.decryptStandardMessage(request.body.preDecrypted.topicAuthority.taPrivateKey, tokenPrivateKey);     //
+    //         const taHSPrivateKey = Util.decryptStandardMessage(request.body.preDecrypted.topicAuthority.taHSPrivateKey, tokenPrivateKey); //
+    //         await self.topicAuthorityManager.launchTopicAuthority(taPrivateKey, taHSPrivateKey, taPkfp);                                  //
+    //     }                                                                                                                                 //
+    //                                                                                                                                       //
+    //                                                                                                                                       //
+    //     self.finalizeLogin(request, connectionId, self);                                                                                  //
+    //                                                                                                                                       //
+    // }                                                                                                                                     //
+    //                                                                                                                                       //
+    // sendToClientForDecrytpion(dataForDecryption, request, connectionId){                                                                  //
+    //     console.log("Sending to client for decryption");                                                                                  //
+    //     const token = this.generateDecryptionToken();                                                                                     //
+    //     const response = new Response("login_decryption_required", request);                                                              //
+    //     response.body.dataForDecryption = dataForDecryption;                                                                              //
+    //     response.body.token = token.publicKey;                                                                                            //
+    //     this.getPendingLogin(request.body.sessionID).token = token;                                                                       //
+    //     this.connectionManager.sendResponse(connectionId, response);                                                                      //
+    // }                                                                                                                                     //
+    //                                                                                                                                       //
+    // async finalizeLogin(request, connectionId, self){                                                                                     //
+    //     if(!self.pendingLogins[request.body.sessionID]){                                                                                  //
+    //         throw new Error("Login was not properly initialized");                                                                        //
+    //     }                                                                                                                                 //
+    //     await self.initSession(request, connectionId, self);                                                                              //
+    //     const messages = await self.getLastMessages(request.headers.pkfpSource);                                                          //
+    //     const settings = await self.getSettings(request.headers.pkfpSource);                                                              //
+    //                                                                                                                                       //
+    //     const response = new Response("login_success", request);                                                                          //
+    //     response.body.messages = messages;                                                                                                //
+    //     response.body.metadata = self.pendingLogins[request.body.sessionID].metadata;                                                     //
+    //     response.body.settings = settings;                                                                                                //
+    //                                                                                                                                       //
+    //     self.connectionManager.sendResponse(connectionId, response);                                                                      //
+    //                                                                                                                                       //
+    //     this.deletePendingLogin(request.body.sessionID);                                                                                  //
+    // }                                                                                                                                     //
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ///JUNK END
 
 
 }

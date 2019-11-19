@@ -17,9 +17,12 @@ module.exports.Events = Object.freeze({
     INIT_TOPIC_SUCCESS: "init_topic_success",
     INIT_TOPIC_ERROR: "init_topic_error",
 
+    VAULT_UPDATED: "vault_updated",
+
     CHAT_ERROR: "chat_error",
 
     NEW_MEMBER_JOINED: "new_member_joined",
+
 
     TOPIC_SETTINGS_UPDATED: "settings_updated",
 
@@ -67,6 +70,14 @@ module.exports.Events = Object.freeze({
 // This defines internal events and commands that may ever occur in the Islands Chat system
 // but not part of public API.
 module.exports.Internal = Object.freeze({
+
+    // ---------------------------------------------------------------------------------------------------------------------------
+    // Vault update notifications
+    TOPIC_ADDED: "topic_added",
+    TOPIC_DELETED: "topic_deleted",
+    TOPIC_UPDATED: "topic_updated",
+    VAULT_SETTINGS_UPDATED: "vault_settings_updated",
+    //END//////////////////////////////////////////////////////////////////////
 
     CONNECTION_ERROR: "conn_error",
 

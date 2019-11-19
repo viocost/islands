@@ -105,6 +105,26 @@ class ClientSession extends EventEmitter{
         }
     }
 
+    //pushes msg to all active sockets as message
+    broadcast(msg){
+        for (let connId of this.connections){
+            this.connectionManager.sendMessage(connId, msg)
+        }
+    }
+
+    // Sends msg to all connections.
+    // Connectoins are connectionId strings
+    // if exclusive set to true, then message will be sent to
+    // all active connections but those that are passed in connections argument
+    multicast(msg, connections, exclusive=false){
+        let connIds = exclusive ?
+            this.connections.minus(connections) :
+            connections;
+        for (connId of connIds){
+            this.connectionManager.sendMesssage(connId, msg)
+        }
+    }
+
     isActive(){
         this.cleanZombies()
         return this.connections.length > 0;

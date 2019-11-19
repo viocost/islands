@@ -98,10 +98,6 @@ app.use("/chat", chatRouter.router);
 app.use("/admin", adminRouter.router);
 
 
-app.get("/iostest", (req, res)=>{
-    res.render("iostest")
-})
-
 
 let chat;
 //const server = app.listen(PORT, HOST, ()=>{

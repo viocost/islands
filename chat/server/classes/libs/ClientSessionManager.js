@@ -7,6 +7,8 @@ const Internal = require("../../../common/Events").Internal
 
 class ClientSessionManager{
     constructor(connectionManager = Err.required()){
+
+        // Sessions are stored by vaultID
         this.sessions = {};
         this.connectionManager = connectionManager;
         this.registerConnectionManager(connectionManager);

@@ -58,7 +58,7 @@ export class ChatClient{
                 this.arrivalHub = new ArrivalHub(this.connector);
 
                 //bootstrapping vault
-                this.vault.bootstrap(this.arrivalHub);
+                this.vault.bootstrap(this.arrivalHub, this.version);
 
                 await this.connector.establishConnection(vaultId);
                 console.log("Connection established. Initializing arrival hub..");
@@ -380,7 +380,7 @@ export class ChatClient{
             throw new Error(`Topic ${pkfp} not found!`)
         setTimeout(()=>{
             self.topics[pkfp].getMessages()
-        }, 100)
+        }, 50)
     }
 
     getTopics(){
@@ -395,6 +395,20 @@ export class ChatClient{
         this.messageQueue.enqueue(msg)
     }
 
+
+    getParticipantAlias(topicPkfp, participantPkfp){
+        if (!this.topics[topicPkfp]){
+            throw new Error(`Topic ${topicPkfp} not found`)
+        }
+        return this.topics[topicPkfp].getParticipantAlias(participantPkfp);
+    }
+
+    getParticipantRepr(topicPkfp, participantPkfp){
+        if (!this.topics[topicPkfp]){
+            throw new Error(`Topic ${topicPkfp} not found`)
+        }
+        return this.topics[topicPkfp].getParticipantRepr(participantPkfp);
+    }
 
 
     async _vaultLogin(vaultData, password){

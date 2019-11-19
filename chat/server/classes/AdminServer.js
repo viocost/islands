@@ -488,10 +488,11 @@ function adminSetup(req, res){
 
     //Check vault
     let vaultBlob = data.vault;
+    let hash = data.hash;
     let signature = data.vaultSign;
     let publicKey = data.vaultPublicKey;
     ic.getPublicKeyFingerprint("pubk", "pkfp");
-    let vaultID = vaultManager.saveNewVault(vaultBlob, signature, publicKey, ic.get("pkfp"));
+    let vaultID = vaultManager.saveNewVault(vaultBlob, hash, signature, publicKey, ic.get("pkfp"));
 
     try{
 

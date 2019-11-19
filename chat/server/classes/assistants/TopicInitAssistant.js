@@ -1,6 +1,7 @@
 const iCrypto = require("../libs/iCrypto.js");
 const Response = require("../objects/ClientResponse.js");
 const Request = require("../objects/ClientRequest.js");
+const Message = require("../objects/Message.js");
 const ClientError = require("../objects/ClientError.js");
 const Utility = require("../libs/ChatUtility.js");
 const Err = require("../libs/IError.js");
@@ -134,8 +135,11 @@ class TopicInitAssistant{
         delete self.newTopicPending[request.body.topicID];
 
         //return success
-        let response = new Response(ChatEvents.INIT_TOPIC_SUCCESS, request);
-        self.connectionManager.sendResponse(connectionId, response);
+        //
+        Logger.debug("Topic created. Norifying client", {cat: "topic_create"})
+        let response = Message.makeResponse(request, "island", ChatEvents.INIT_TOPIC_SUCCESS);
+        response.body.metadata = metadata;
+        self.connectionManager.sendMessage(connectionId, response);
     }
     /*********************************************
      * ~ END Handlers ~

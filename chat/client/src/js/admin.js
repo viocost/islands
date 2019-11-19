@@ -1,5 +1,4 @@
-import '../css/main.sass';
-import '../css/vendor/toastr.min.css';
+import '../css/admin.sass';
 import { XHR } from "./lib/xhr";
 import toastr from "./lib/toastr";
 window.toastr = toastr;
@@ -7,7 +6,7 @@ import { Vault } from "./lib/Vault";
 import * as CuteSet from "cute-set";
 import * as dropdown from "./lib/dropdown";
 import * as editableField from "./lib/editable_field";
-import { ChatUtility } from "./chat/ChatUtility";
+import { ChatUtility } from "./lib/ChatUtility";
 import { BlockingSpinner } from "./lib/BlockingSpinner"
 import { verifyPassword } from "./lib/PasswordVerify";
 import * as util from "./lib/dom-util";
@@ -19,6 +18,41 @@ let logTableBody;
 let spinner = new BlockingSpinner()
 window.util = util;
 
+window.iCrypto = iCrypto
+
+window.testCrypto = ()=>{
+
+    let passwd = "hfgkhsdjf"
+    let stuff = "kljfgljsdkfgkdjgfdjlkfgjljgewjrkgjegjdjfgjdsgjsdfgdssdljvdcvjdcjv";
+    let ic = new iCrypto();
+    ic.createNonce("salt", 128)
+        .encode("salt","hex", "salt-hex")
+        .createPasswordBasedSymKey("key", passwd, "salt-hex")
+        .addBlob("vault", stuff)
+        .AESEncrypt("vault", "key", "cipher")
+        .encode("cipher","hex",  "cip-hex")
+        .merge(["salt-hex", "cip-hex"], "res")
+
+    let vault_encrypted = ic.get("res");
+
+    let icn = new iCrypto()
+    icn.addBlob("s16", vault_encrypted.substring(0, 256))
+        .addBlob("v_cip", vault_encrypted.substr(256))
+        .hexToBytes("s16", "salt")
+        .createPasswordBasedSymKey("sym", passwd, "s16")
+
+    console.log(ic.get("cip-hex") === v_cip);
+    icn.AESDecrypt("v_cip", "sym", "vault_raw", true);
+}
+
+window.testVault = ()=>{
+    let v = new Vault()
+    let pass = "jhdfgdslhglsdhgljhghdsfgh"
+    v.init(pass)
+    let cip = v.pack()
+    let dec = new Vault()
+    dec.initSaved(cip.vault, pass)
+}
 
 /**
  * Closure for processing admin requests while admin logged in
@@ -583,6 +617,8 @@ function setupAdminContinue(password) {
         let vaultPublicKey = vault.publicKey;
         let adminPublicKey = ic.get("adminkp").publicKey;
 
+        console.log(`Hash: ${vaultEncData.hash}`);
+
         XHR({
             type: "POST",
             url: "/admin",
@@ -590,6 +626,7 @@ function setupAdminContinue(password) {
             data: {
                 action: "admin_setup",
                 adminPublickKey: adminPublicKey,
+                hash: vaultEncData.hash,
                 nonce: ic.get('nhex'),
                 sign: ic.get("sign"),
                 vault: vaultEncData.vault,

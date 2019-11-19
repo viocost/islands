@@ -74,5 +74,8 @@ export class ChatUtility{
             .AESDecrypt("cip", "sym", "b", dehexify, "CBC", "utf8");
         return ic.get("b")
     }
+
+
+
 }
 

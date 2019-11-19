@@ -1,4 +1,5 @@
 import * as util from "./dom-util"
+import * as Modal from "./DynmaicModal";
 
 //Bakes select list for side panel
 // top boolean whether it is select for top block
@@ -110,7 +111,7 @@ function bakeTopicsBlock(newTopicHandler, joinTopicHandler){
                                 //Join button
                                 id: "join-topic-button",
                                 classes: ["side-panel-btn", "btn"],
-                                text: "Join toipc",
+                                text: "Join topic",
                                 listeners: {
                                     click: joinTopicHandler
                                 }
@@ -202,7 +203,11 @@ export function bakeMessagesPanel(newMsgBlock){
         classes: "messages-panel-wrapper",
         children: [
             util.bake("div", {
-                classes: "messages-panel-container"
+                classes: "messages-panel-container",
+                children: util.bake("div", {
+                    classes: "messages-window",
+                    id: "messages-window-1"
+                })
             }),
             newMsgBlock
         ]
@@ -323,6 +328,7 @@ export function bakeNewMessageControl(){
 export function bakeLoginBlock(loginClickHandler){
      return  util.bake("div", {
         id: "vault-login--wrapper",
+        classes: "form-outer-wrapper",
         children: util.bake("div", {
             classes: "form-border",
             children: [
@@ -330,6 +336,7 @@ export function bakeLoginBlock(loginClickHandler){
                 util.bake("div",  {
                     children:  util.bake("input", {
                         id: "vault-password",
+                        classes: "form-input",
                         attributes: {
                             type: "password",
                             placeholder: "Password",
@@ -339,8 +346,8 @@ export function bakeLoginBlock(loginClickHandler){
                 }),
                 util.bake("div", {
                     children: util.bake("button", {
-                        classes: "btn",
                         id: "vault-login-btn",
+                        classes: ["btn", "form-button"],
                         text: "Login",
                         listeners: {
                             "click": loginClickHandler
@@ -353,12 +360,75 @@ export function bakeLoginBlock(loginClickHandler){
 }
 
 
-export function bakeRegistrationBlock(){
+export function bakeRegistrationBlock(onRegisterClick){
+    return util.bake("div", {
+        id: "vault-registration--wrapper",
+        classes: "form-outer-wrapper",
+        children: util.bake("div", {
+            classes: "form-border",
+            children: [
+                util.bake("h3", {
+                    text: "Create password:"
+                }),
+                util.bake("input", {
+                    id: "new-passwd",
 
+                    classes: "form-input",
+                    attributes: {
+                        type: "password",
+                        placeholder: "New password",
+                        maxlength: "50"
+                    }
+                }),
+
+                util.bake("input", {
+                    id: "confirm-passwd",
+                    classes: "form-input",
+                    attributes: {
+                        type: "password",
+                        placeholder: "Confirm password",
+                        maxlength: "50"
+                    }
+                }),
+                util.bake("button", {
+                    listeners: {
+                        click: onRegisterClick
+                    },
+                    text: "Save",
+                    classes: ["btn", "form-button"],
+                    id: "register-vault-btn",
+                })
+            ]
+        })
+    })
 }
 
-export function bakeRegistrationSuccessBlock(){
 
+export function bakeRegistrationSuccessBlock(okClick){
+    return util.bake("div", {
+        classes: "form-outer-wrapper",
+        children: [
+            util.bake("div", {
+                classes: "form-border",
+                children: [
+                    util.bake("h3", {
+                        text: "Vault created!"
+                    }),
+                    util.bake("p", {
+                        html: `Please, save your password!!!
+        <br>There is no password recovery.<br>Once you lose it - it's gone forever!`
+                    }),
+                    util.bake("button", {
+                        text: "Ok",
+                        listeners: {
+                            click: okClick
+                        },
+                        classes: ["btn", "form-button"]
+                    })
+                ]
+            })
+        ]
+    })
 }
 
 export function bakeHeaderLeftSection(menuClickHandler){
@@ -477,5 +547,110 @@ export function bakeTopicListItem(topic, onClick){
             })
         ]
     })
+
+}
+
+export function bakeTopicCreateModal(createClick){
+
+    let clearFields = ()=>{
+        let nickname = util.$("#new-topic-nickname");
+        let topicName = util.$("#new-topic-name");
+        nickname.value = "";
+        topicName.value = ""
+    };
+
+    let wrap =  util.bake("div", {
+        children: [
+            util.bake("input", {
+                id: "new-topic-name",
+                classes: "left-align",
+                attributes:{
+                    placeholder: "Enter topic name",
+                maxlength: "255",
+                    required: true
+                }
+            }),
+
+            util.bake("input", {
+                id: "new-topic-nickname",
+                classes: "left-align",
+                attributes: {
+                    placeholder: "Enter nickname",
+                    maxlength: "255",
+                    required: true
+                }
+            })
+        ]
+    })
+
+    let form  = Modal.prepareModal(wrap, {
+        closeMethods: ["button"],
+        onOpen: clearFields,
+        onClose: clearFields
+    })
+
+    form.addFooterBtn('Create topic',
+                      'tingle-btn tingle-btn--primary tingle-btn--pull-right',
+                      createClick);
+    return form
+
+}
+
+export function bakeTopicJoinModal(joinClick){
+
+
+    let clearFields = ()=>{
+        let nickname = util.$("#join-topic-nickname");
+        let topicName = util.$("#new-topic-name");
+        let inviteCode = util.$("#join-topic-invite-code");
+        nickname.value = "";
+        topicName.value = "";
+        inviteCode.value = "";
+    };
+
+    let wrap =  util.bake("div", {
+        children: [
+
+            util.bake("input", {
+                id: "join-topic-invite-code",
+                classes: "left-align",
+                attributes: {
+                    placeholder: "Paste invite code",
+                    maxlength: "255",
+                    required: true
+                }
+            }),
+            util.bake("input", {
+                id: "join-topic-name",
+                classes: "left-align",
+                attributes:{
+                    placeholder: "Enter topic name",
+                maxlength: "255",
+                    required: true
+                }
+            }),
+
+            util.bake("input", {
+                id: "join-topic-nickname",
+                classes: "left-align",
+                attributes: {
+                    placeholder: "Enter nickname",
+                    maxlength: "255",
+                    required: true
+                }
+            })
+        ]
+    })
+
+    let form  = Modal.prepareModal(wrap, {
+        closeMethods: ["button"],
+        onOpen: clearFields,
+        onClose: clearFields
+    })
+
+    form.addFooterBtn('Join topic',
+                      'tingle-btn tingle-btn--primary tingle-btn--pull-right',
+                      joinClick);
+    return form
 
 }

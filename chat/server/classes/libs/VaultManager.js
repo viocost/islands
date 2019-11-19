@@ -64,16 +64,23 @@ class VaultManager{
         return ic.get("verified")
     }
 
-    saveNewVault(vaultBlob, signature, publicKey, id){
+    saveNewVault(vaultBlob, hash, signature, publicKey, id){
         let ic = new iCrypto();
         ic.addBlob("vaulthex", vaultBlob)
+            .addBlob("hash", hash)
+            .hash("vaulthex", "calc-hash")
             .addBlob("sign", signature)
             .setRSAKey("pubkey", publicKey, "public")
-            .hexToBytes("vaulthex", "vault")
-            .publicKeyVerify("vault", "sign", "pubkey", "verified");
+            .publicKeyVerify("hash", "sign", "pubkey", "verified");
         if(!ic.get("verified")){
             throw new Error("Vault signature is not valid");
         }
+
+        if(ic.get("calc-hash") !== hash){
+
+            throw new Error(`Vault hash is invalid. Passed: ${hash}, calculated: ${ic.get("calc-hash")}`);
+        }
+
         Logger.debug("Signature is valid");
 
         if (!id){
@@ -83,26 +90,32 @@ class VaultManager{
         } else if (this.isVaultExist(id)){
             throw new Error("Vault already exists");
         }
-        this._writeVault(id, vaultBlob, publicKey);
+        this._writeVault(id, vaultBlob, publicKey, hash);
         return id;
     }
 
-    completeRegistration(vaultBlob, signature, publicKey, id){
+    completeRegistration(vaultBlob, hash, signature, publicKey, id){
         let ic = new iCrypto();
-        ic.addBlob("vaulthex", vaultBlob)
+        ic.addBlob("vault64", vaultBlob)
+            .addBlob("hash", hash)
+            .hash("vault64", "calc-hash")
             .addBlob("sign", signature)
             .setRSAKey("pubkey", publicKey, "public")
-            .hexToBytes("vaulthex", "vault")
-            .publicKeyVerify("vault", "sign", "pubkey", "verified");
+            .hexToBytes("vault64", "vault")
+            .publicKeyVerify("hash", "sign", "pubkey", "verified");
         if(!ic.get("verified")){
             throw new Error("Vault signature is not valid");
         }
+        if (ic.get("calc-hash") !== hash){
+            throw new Error("Vault hash is invalid")
+        }
+
         Logger.debug("Signature is valid");
         if(!this.isRegistrationActive(id)){
             throw new Error("Registration is not active for: " + id)
         }
 
-        this._writeVault(id, vaultBlob, publicKey);
+        this._writeVault(id, vaultBlob, publicKey, hash);
         this._consumeRegistrationToken(id)
     }
 
@@ -191,13 +204,14 @@ class VaultManager{
                 fs.existsSync(pubKey));
     }
 
-    _writeVault(id, blob, publicKey){
+    _writeVault(id, blob, publicKey, hash){
         let vaultPath = path.join(this.vaultsPath, id);
         if(!fs.existsSync(vaultPath)){
             fs.mkdirSync(vaultPath);
         }
         fs.writeFileSync(path.join(vaultPath, "vault"), blob);
         fs.writeFileSync(path.join(vaultPath, "publicKey"), publicKey);
+        fs.writeFileSync(path.join(vaultPath, "hash"), hash);
     }
 
     _updateVault(id, blob){
