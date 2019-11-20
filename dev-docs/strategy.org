@@ -8,6 +8,7 @@ CLOSED: [2019-11-18 Mon 18:54]
 **** DONE Vault registration
 CLOSED: [2019-11-19 Tue 15:53]
 **** TODO Create topic
+**** TODO Split vault to multiple blobs
 **** TODO Vault update
 **** TODO Create/delete/rename invites
 **** TODO Topic join

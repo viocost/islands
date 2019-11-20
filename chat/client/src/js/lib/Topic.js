@@ -12,7 +12,7 @@ export class Topic{
     constructor(pkfp, name, key, comment){
         WildEmitter.mixin(this);
         this.pkfp = pkfp;
-        this.name = name;
+        this.name = name; // Topic alias. Not shared.
         this.privateKey = key;
         this.comment = comment;
         this.handlers = {};

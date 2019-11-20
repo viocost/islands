@@ -58,7 +58,7 @@ export class ChatClient{
                 this.arrivalHub = new ArrivalHub(this.connector);
 
                 //bootstrapping vault
-                this.vault.bootstrap(this.arrivalHub, this.version);
+                this.vault.bootstrap(this.arrivalHub, this.messageQueue, this.version);
 
                 await this.connector.establishConnection(vaultId);
                 console.log("Connection established. Initializing arrival hub..");
@@ -331,9 +331,20 @@ export class ChatClient{
     }
 
     initTopicSuccess(self, request, pendingTopic ){
-        let pkfp = pendingTopic.pkfp;
-        let privateKey = pendingTopic.privateKey;
-        let nickname = pendingTopic.nickname;
+
+        let pkfp = pendingTopic.ownerPkfp;
+        let privateKey = pendingTopic.ownerKeyPair.privateKey;
+        let nickname = pendingTopic.ownerNickName;
+        let topicName = pendingTopic.topicName;
+
+        let topic = self.vault.addTopic(pkfp, topicName, privateKey);
+        topic.bootstrap(self.messageQueue, self.arrivalHub, self.version);
+        topic.loadMetadata(data.body.metadata);
+        self.vault.save(Internal.TOPIC_ADDED);
+
+        // Add new topic to vault and save it
+
+
         self.emit("init_topic_success", {
             pkfp: pendingTopic.ownerPkfp,
             nickname: pendingTopic.ownerNickName,

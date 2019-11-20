@@ -35,17 +35,17 @@ class VaultManager{
     }
 
 
-    updateVault(vaultBlob, id, signature, publicKey = null, newKeySignature = null){
+    updateVault(vaultBlob, id, hash, previousHash, signature, publicKey = null){
 
         if(!publicKey){
             publicKey = this.getVaultPublicKey(id);
         }
 
-        if(!this.isOwnerVerified(vaultBlob, signature, publicKey)){
-            throw("Owner's signature is invalid");
+        if(!this.isOwnerVerified(vaultBlob, hash, signature, publicKey)){
+            throw new Error("Owner's signature is invalid");
         }
         if(this.isRegistrationPending(id)){
-            throw("The vault registration is pending. Updates are disabled");
+            throw new Error("The vault registration is pending. Updates are disabled");
         }
 
 
@@ -53,13 +53,13 @@ class VaultManager{
         Logger.debug("Vault successfully updated!");
     }
 
-    isOwnerVerified(vaultBlob, signature, publicKey){
+    isOwnerVerified(vaultBlob, hash,  signature, publicKey){
         let ic = new iCrypto();
         ic.addBlob("vaulthex", vaultBlob)
+            .addBlob("hash", hash)
             .addBlob("sign", signature)
             .setRSAKey("pubkey", publicKey, "public")
-            .hexToBytes("vaulthex", "vault")
-            .publicKeyVerify("vault", "sign", "pubkey", "verified");
+            .publicKeyVerify("hash", "sign", "pubkey", "verified");
 
         return ic.get("verified")
     }

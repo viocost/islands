@@ -15,6 +15,7 @@ export class Vault{
     constructor(){
         WildEmitter.mixin(this);
         this.id = null;
+        this.pkfp;
         this.initialized = false;
         this.admin = null;
         this.adminKey = null;
@@ -23,6 +24,7 @@ export class Vault{
         this.publicKey = null;
         this.privateKey = null;
         this.handlers;
+        this.messageQueue;
         this.version;
         this.initHandlers();
     }
@@ -183,10 +185,11 @@ export class Vault{
         return this.admin;
     }
 
-    bootstrap(arrivalHub, version){
+    bootstrap(arrivalHub, messageQueue ,version){
         let self = this;
         this.version = version;
         this.arrivalHub = arrivalHub;
+        this.messageQueue = messageQueue;
         this.arrivalHub.on(this.id, (msg)=>{
             self.processIncomingMessage(msg, self);
         })
@@ -212,17 +215,16 @@ export class Vault{
         }
 
         let vault = this.pack();
-
-
-
         let message = new Message(this.version);
-        message.setSource(this.pkfp);
-        message.setCommand(Events.VAULT_UPDATED);
+        message.setSource(this.id);
+        message.setCommand(Internal.SAVE_VAULT);
         message.addNonce();
         message.body.vault = vault;
         message.body.sign = sign;
         message.body.cause = cause;
+        message.body.hash = vault.hash;
         message.signMessage(this.privateKey);
+        this.messageQueue.enqueue(message)
     }
 
     //This has to be moved outside
@@ -236,6 +238,7 @@ export class Vault{
     //                                                                 //
     //     //If not                                                    //
     //         // Throw error                                          //
+    //
     //                                                                 //
     //     //Encrypt vault data with given password                    //
     //     let vault = JSON.stringify({                                //
@@ -285,23 +288,99 @@ export class Vault{
         this.password = newPassword;
     }
 
-    packTopics(){
+    packTopics(password){
         let res = {}
         for(let pkfp of Object.keys(this.topics)){
-            res[pkfp] = {
-                name:  this.topics[pkfp].name,
-                key:  this.topics[pkfp].privateKey,
-                comment: this.topics[pkfp].comment,
+            let topic = this.topics[pkfp]
+            let topicBlob = JSON.stringify({
+                name:  topic.name,
+                key:  topic.privateKey,
+                settings: topic.settings,
+                comment: topic.comment,
                 pkfp: pkfp
-            }
+            })
+            let ic = new iCrypto()
+            ic.createNonce("salt", 128)
+              .encode("salt", "hex", "salt-hex")
+              .createPasswordBasedSymKey("key", password, "salt-hex")
+              .addBlob("topic", topicBlob)
+              .AESEncrypt("topic", "key", "cipher", true, "CBC", "utf8")
+              .merge(["salt-hex", "cipher"], "blob")
+              .setRSAKey("priv", this.privateKey, "private")
+              .privateKeySign("cipher", "priv", "sign")
+              .encodeBlobLength("sign", 3, 0, "sign-length")
+              .merge(["blob", "sign", "sign-length"], "res")
+
+            res[pkfp] = ic.get("res");
         }
         return res;
+    }
+
+    unpackTopics(topics, password){
+        let res = {};
+        for(let pkfp of Object.keys(topics)){
+            let topicBlob = topics[pkfp];
+            let signLength = parseInt(topicBlob.substr(topicBlob.length - 3))
+            let signature = topicBlob.substring(topicBlob.length - signLength - 3, topicBlob.length - 3);
+            let salt = topicBlob.substring(0, 256);
+            let topicCipher = topicBlob.substring(256, topicBlob.length - signLength - 3);
+            let ic = new iCrypto();
+            ic.setRSAKey("pub", this.publicKey, "public")
+              .addBlob("cipher", topicCipher)
+              .addBlob("sign", signature)
+              .publicKeyVerify("cipher", "sign", "pub", "verified")
+            if(!ic.get("verified")) throw new Error("Topic signature is invalid!")
+
+            ic.addBlob("salt-hex", salt)
+              .createPasswordBasedSymKey("sym", password, "salt-hex")
+              .AESDecrypt("cipher", "sym", "topic-plain", true)
+            res[pkfp] = ic.get("topic-plain")
+        }
+        return res;
+    }
+
+
+
+    pack(){
+         let vaultBlob =  JSON.stringify({
+            publicKey: this.publicKey,
+            privateKey: this.privateKey,
+            admin: this.admin,
+            adminKey: this.adminKey,
+            settings: this.settings
+        });
+
+        let ic = new iCrypto();
+        ic.createNonce("salt", 128)
+            .encode("salt","hex", "salt-hex")
+            .createPasswordBasedSymKey("key", this.password, "salt-hex")
+            .addBlob("vault", vaultBlob)
+            .AESEncrypt("vault", "key", "cip-hex", true, "CBC", "utf8")
+            .merge(["salt-hex", "cip-hex"], "res")
+            .hash("res", "vault-hash")
+            .setRSAKey("asymkey", this.privateKey, "private")
+            .privateKeySign("vault-hash", "asymkey", "sign");
+
+        let topics = this.packTopics(this.password)
+
+
+        console.log(`Salt: ${ic.get("salt-hex")}`)
+        console.log(`Vault: ${ic.get("cip-hex")}`)
+        //Sign encrypted vault with private key
+        return {
+            vault:  ic.get("res"),
+            topics: topics,
+            hash : ic.get("vault-hash"),
+            sign :  ic.get("sign")
+        }
+
+
     }
 
     /**
      * Stringifies this vault and topics, hashes, signes and encrypts it
      */
-    pack(){
+    packBAK(){
          let vaultBlob =  JSON.stringify({
             topics: this.packTopics(),
             publicKey: this.publicKey,
@@ -344,7 +423,9 @@ export class Vault{
 
     addTopic(pkfp, name, privateKey, comment){
         if (this.topics.hasOwnProperty(pkfp)) throw new Error("Topic with such id already exists");
-        this.topics[pkfp] = new Topic(pkfp, name, privateKey, comment)
+        let newTopic = new Topic(pkfp, name, privateKey, comment)
+        this.topics[pkfp] = newTopic;
+        return newTopic
     }
 
     removeTopic(){
