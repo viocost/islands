@@ -1,10 +1,11 @@
-import { IError }  from "../../../../common/IError";
+import { IError as Err }  from "../../../../common/IError";
 import { verifyPassword } from "./PasswordVerify";
 import { Topic } from "../lib/Topic";
 import { iCrypto } from "./iCrypto";
 import { WildEmitter } from "./WildEmitter";
 import { Events, Internal  } from "../../../../common/Events";
 import { XHR } from "./xhr"
+import * as semver from "semver";
 
 /**
  * Represents key vault
@@ -85,8 +86,11 @@ export class Vault{
         this.handlers = {};
         this.handlers[Internal.POST_LOGIN_DECRYPT] = (data)=>{ self.emit(Internal.POST_LOGIN_DECRYPT, data) }
         this.handlers[Events.POST_LOGIN_SUCCESS] = ()=>{ self.emit(Events.POST_LOGIN_SUCCESS); }
-        this.handlers[Events.TOPIC_CREATED] = (data)=>{
+        this.handlers[Internal.TOPIC_CREATED] = (data)=>{
             self.addNewTopic(self, data)
+        }
+        this.handlers[Internal.SESSION_KEY] = (data)=>{
+            self.emit(Internal.SESSION_KEY, data)
         }
     }
 
@@ -96,7 +100,8 @@ export class Vault{
      * @param password
      * @returns {Vault}
      */
-    init(password){
+    init(password = Err.required(),
+         version = Err.required("Version required")){
         if(!password || password.trim === ""){
             throw new Error("Password required");
         }
@@ -112,6 +117,7 @@ export class Vault{
         this.privateKey = ic.get("kp").privateKey;
         this.publicKey = ic.get("kp").publicKey;
         this.pkfp = ic.get("pkfp");
+        this.version = version;
         this.initialized = true;
     }
 
@@ -133,8 +139,9 @@ export class Vault{
     }
 
 
-    initSaved(vault_encrypted = IError.required("Vault parse: data parameter missing"),
-              password = IError.required("Vault parse: password parameter missing")){
+    async initSaved(vault_encrypted = Err.required("Vault parse: data parameter missing"),
+              password = Err.required("Vault parse: password parameter missing"),
+              topics={}){
         let ic = new iCrypto();
         console.log(`Salt: ${vault_encrypted.substring(0, 256)}`)
         console.log(`Vault: ${vault_encrypted.substr(256)}`)
@@ -162,18 +169,54 @@ export class Vault{
             this.pkfp = data.pkfp;
         }
 
-        Object.keys(data.topics).forEach((pkfp)=>{
-            this.topics[pkfp] = new Topic(
-                pkfp,
-                data.topics[pkfp].name,
-                data.topics[pkfp].key,
-                data.topics[pkfp].comment);
-        });
+        let unpackedTopics = this.unpackTopics(topics, password)
+
+        if (unpackedTopics){
+            for(let pkfp of Object.keys(unpackedTopics)){
+                this.topics[pkfp] = new Topic(
+                    pkfp,
+                    unpackedTopics.name,
+                    unpackedTopics.key,
+                    unpackedTopics.comment
+                )
+            }
+        }
+            //     this.topics[pkfp] = new Topic(         //
+            //         pkfp,                              //
+            //         data.topics[pkfp].name,            //
+            //         data.topics[pkfp].key,             //
+            //         data.topics[pkfp].comment);        //
+            // });                                        //
+
+        if (!data.version || semver.lt(data.version, "1.0.5")){
+            // TODO format update required!
+            console.log("vault format update required")
+
+            await this.updateVaultFormat(data)
+        }
+
+
 
         this.initialized = true;
     }
 
-    setId(id = IError.required("ID is required")){
+
+    async updateVaultFormat(data){
+        console.log("Updating vault format...")
+
+            ////////////////////////////////////////////////
+            // Object.keys(data.topics).forEach((pkfp)=>{ //
+            //     this.topics[pkfp] = new Topic(         //
+            //         pkfp,                              //
+            //         data.topics[pkfp].name,            //
+            //         data.topics[pkfp].key,             //
+            //         data.topics[pkfp].comment);        //
+            // });                                        //
+            ////////////////////////////////////////////////
+
+    }
+
+    setId(id = Err.required("ID is required")){
         this.id = id;
     }
 
@@ -288,34 +331,6 @@ export class Vault{
         this.password = newPassword;
     }
 
-    packTopics(password){
-        let res = {}
-        for(let pkfp of Object.keys(this.topics)){
-            let topic = this.topics[pkfp]
-            let topicBlob = JSON.stringify({
-                name:  topic.name,
-                key:  topic.privateKey,
-                settings: topic.settings,
-                comment: topic.comment,
-                pkfp: pkfp
-            })
-            let ic = new iCrypto()
-            ic.createNonce("salt", 128)
-              .encode("salt", "hex", "salt-hex")
-              .createPasswordBasedSymKey("key", password, "salt-hex")
-              .addBlob("topic", topicBlob)
-              .AESEncrypt("topic", "key", "cipher", true, "CBC", "utf8")
-              .merge(["salt-hex", "cipher"], "blob")
-              .setRSAKey("priv", this.privateKey, "private")
-              .privateKeySign("cipher", "priv", "sign")
-              .encodeBlobLength("sign", 3, 0, "sign-length")
-              .merge(["blob", "sign", "sign-length"], "res")
-
-            res[pkfp] = ic.get("res");
-        }
-        return res;
-    }
-
     unpackTopics(topics, password){
         let res = {};
         for(let pkfp of Object.keys(topics)){
@@ -339,10 +354,55 @@ export class Vault{
         return res;
     }
 
+    packTopics(){
+        let res = {}
+        for(let pkfp of Object.keys(this.topics)){
+            let topic = this.topics[pkfp]
+            res[pkfp] = this.prepareVaultTopicRecord(
+                this.version,
+                topic.pkfp,
+                topic.privateKey,
+                topic.name,
+                topic.settings,
+                topic.comment
+            );
+        }
+        return res;
+    }
+
+    prepareVaultTopicRecord(version = Err.required("Version"),
+                            pkfp = Err.required("pkfp"),
+                            privateKey = Err.required("Private key"),
+                            name = Err.required("Name"),
+                            settings,
+                            comment){
+        let topicBlob = JSON.stringify({
+            version: version,
+            name:  name,
+            key:  privateKey,
+            settings: settings,
+            comment: comment,
+            pkfp: pkfp
+        })
+        let ic = new iCrypto()
+        ic.createNonce("salt", 128)
+            .encode("salt", "hex", "salt-hex")
+            .createPasswordBasedSymKey("key", this.password, "salt-hex")
+            .addBlob("topic", topicBlob)
+            .AESEncrypt("topic", "key", "cipher", true, "CBC", "utf8")
+            .merge(["salt-hex", "cipher"], "blob")
+            .setRSAKey("priv", this.privateKey, "private")
+            .privateKeySign("cipher", "priv", "sign")
+            .encodeBlobLength("sign", 3, "0", "sign-length")
+            .merge(["blob", "sign", "sign-length"], "res")
+        return ic.get("res")
+    }
+
 
 
     pack(){
          let vaultBlob =  JSON.stringify({
+            version: this.version,
             publicKey: this.publicKey,
             privateKey: this.privateKey,
             admin: this.admin,

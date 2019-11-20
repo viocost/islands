@@ -16,13 +16,17 @@ class TopicInitAssistant{
                 requestEmitter = Err.required(),
                 historyManager = Err.required(),
                 topicAuthorityManager = Err.required(),
-                torConnector = Err.required()){
+                torConnector = Err.required(),
+                vaultManager = Err.required(),
+                sessionManager = Err.required()){
 
         this.connector = torConnector;
         this.newTopicPending = {};
         this.connectionManager = connectionManager;
         this.hm = historyManager;
         this.topicAuthorityManager = topicAuthorityManager;
+        this.vaultManager = vaultManager;
+        this.sessionManager = sessionManager;
 
         this.setHandlers();
         this.setEventsHandled();
@@ -37,44 +41,6 @@ class TopicInitAssistant{
      * Handlers
      *********************************************/
 
-    /**
-     * This is the first step to initialize a new topic
-     * Client requests to generate 1-time-key to pass along new topic data
-     * this function generates the token, saves it RAM
-     * for future processing and responses with new token
-     * @param request
-     * @param socket
-     * @param self
-     */
-    createToken(request, connectionId, self){
-        //Create token
-        console.log("TopicInit: create token called");
-        request = Request.parse(request);
-
-        //Error check
-        if(!request.hasAttribute("topicID")){
-            throw new Error("Topic id is required");
-        } else if(!request.hasAttribute("ownerPublicKey")){
-            throw new Error("Owner public key is required");
-        }
-
-        //Creating token
-        let ic = new iCrypto();
-        ic.asym.createKeyPair("rsa-key", 1024);
-
-        //Saving pending request
-        let pendingTopic = {
-            topicID: request.body.topicID,
-            ownerPublicKey: request.body.ownerPublicKey,
-            token: ic.get("rsa-key")
-        };
-
-        self.setNewTopicPending(pendingTopic);
-
-        let response = new Response(Internal.INIT_TOPIC_TOKEN, request);
-        response.setAttribute("token",  ic.get("rsa-key").publicKey);
-        self.connectionManager.sendResponse(connectionId, response);
-    }
 
     /**
      * Client request to initialize the topic
@@ -98,48 +64,104 @@ class TopicInitAssistant{
      */
     async initTopic(request, connectionId, self){
 
-        self.initTopicVerifyRequest(request);
+        //self.initTopicVerifyRequest(request);
+        let vaultPublicKey = self.vaultManager.getVaultPublicKey(request.headers.pkfpSource)
+        if(!Message.verify(request, vaultPublicKey)){
+            throw new Error("Init topic request is invalid");
+        }
 
-        const newTopicPending = self.getNewTopicPendingData(request.body.topicID);
+        Logger.debug("Init toipc request verified", {cat: "topic_create"})
+        //const newTopicPending = self.getNewTopicPendingData(request.body.topicID);
+        let session = self.sessionManager.getSessionByConnectionId(connectionId);
         const newTopicRequest = request.body.newTopicData;
-        const newTopicData = JSON.parse(Utility.decryptStandardMessage(newTopicRequest, newTopicPending.token.privateKey));
+
+        const newTopicData = JSON.parse(await session.decryptMessage(newTopicRequest));
 
         const topicKeyPair = newTopicData.topicKeyPair;
         const ownerPublicKey = newTopicData.ownerPublicKey;
 
-        const torResponse = await self.preapreNewHiddenService(self);
+        const torResponse = await self.prepareHiddenService(self);
 
         const clientResidence = torResponse.serviceID.substring(0, 16) + ".onion";
         const clientHsPrivateKey = torResponse.privateKey;
         const clientHsPrivateKeyCip = Utility.encryptStandardMessage(clientHsPrivateKey, request.body.ownerPublicKey);
 
         //Create topic directory
-        await self.hm.initTopic(request.headers.pkfpSource,
+        await self.hm.initTopic(request.body.topicPkfp,
             request.body.ownerPublicKey,
             clientHsPrivateKeyCip
         );
 
+        Logger.debug("Topic initialized", {cat: "topic_create"})
+        //const newTopicPending = self.getNewTopicPendingData(request.body.topicID);
         //Initializing and saving new topic authority
         const taPkfp = await self.topicAuthorityManager.createTopicAuthority(
-            request.headers.pkfpSource,
+            request.body.topicPkfp,
             ownerPublicKey,
             clientResidence,
             topicKeyPair.privateKey);
 
+        Logger.debug("Topic authority initialized", {cat: "topic_create"})
         const metadata = self.topicAuthorityManager.getTopicAuthority(taPkfp).getCurrentMetadata();
         metadata.body.settings = request.body.settings;
         //Persist first metadata to history
-        await self.hm.initHistory(request.headers.pkfpSource, metadata.toBlob());
+        await self.hm.initHistory(request.body.topicPkfp, metadata.toBlob());
 
         //Deleting new pending topic token
-        delete self.newTopicPending[request.body.topicID];
+
+        //TODO Save new topic vault record
+
+        Logger.debug("Saving vault", {cat: "topic_create"})
+        await self.vaultManager.saveTopic(request.headers.pkfpSource,
+                                    request.body.topicPkfp,
+                                    request.body.vaultRecord)
 
         //return success
         //
         Logger.debug("Topic created. Norifying client", {cat: "topic_create"})
-        let response = Message.makeResponse(request, "island", ChatEvents.INIT_TOPIC_SUCCESS);
+        let response = Message.makeResponse(request, "island", Internal.TOPIC_CREATED);
         response.body.metadata = metadata;
+        response.body.vaultRecord = request.body.vaultRecord;
         self.connectionManager.sendMessage(connectionId, response);
+
+    }
+
+    /**
+     * This is the first step to initialize a new topic
+     * Client requests to generate 1-time-key to pass along new topic data
+     * this function generates the token, saves it RAM
+     * for future processing and responses with new token
+     * @param request
+     * @param socket
+     * @param self
+     */
+    async createToken(request, connectionId, self){
+        //Create token
+        console.log("TopicInit: create token called");
+        request = Request.parse(request);
+
+        //Error check
+        if(!request.hasAttribute("topicID")){
+            throw new Error("Topic id is required");
+        } else if(!request.hasAttribute("ownerPublicKey")){
+            throw new Error("Owner public key is required");
+        }
+
+        let session = self.sessionManager.getSessionByConnectionId(connectionId);
+        let publicKey = await session.getPublicKey();
+
+        //Saving pending request
+        let pendingTopic = {
+            topicID: request.body.topicID,
+            ownerPublicKey: request.body.ownerPublicKey,
+        };
+
+        self.setNewTopicPending(pendingTopic);
+
+        let response = new Response(Internal.INIT_TOPIC_TOKEN, request);
+
+        response.setAttribute("token", publicKey);
+        self.connectionManager.sendResponse(connectionId, response);
     }
     /*********************************************
      * ~ END Handlers ~
@@ -200,11 +222,11 @@ class TopicInitAssistant{
         }catch(err){
             //handle error
             try{
-                Logger.error(`Topic init assistant error: ${err.message}`, {stack: err.stack} );
+                Logger.error(`Topic init assistant error: ${err.message}`, {stack: err.stack, cat: "topic_create"} );
                 let error = new ClientError(request, this.getErrorType(request.headers.command) , `Topic init error: ${err.message}`);
-                this.connectionManager.sendResponse(connectionId, error);
+                this.connectionManager.sendMessage(connectionId, error);
             }catch(fatalError){
-                Logger.error(`Topic init assistant FATAL ERROR: ${fatalError.message}`, {stack: fatalError.stack} );
+                Logger.error(`Topic init assistant FATAL ERROR: ${fatalError.message}`, {stack: fatalError.stack, cat: "topic_create"} );
             }
         }
     }
@@ -223,7 +245,7 @@ class TopicInitAssistant{
         return this.newTopicPending[topicId]
     }
 
-    async preapreNewHiddenService(self){
+    async prepareHiddenService(self){
         return self.connector.createHiddenService()
     }
 

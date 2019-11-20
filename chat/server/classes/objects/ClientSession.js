@@ -1,12 +1,13 @@
 const iCrypto = require("../libs/iCrypto.js");
 const Internal = require("../../../common/Events").Internal;
 const Err = require("../libs/IError.js");
-const SESSION_ID_LENGTH = 7;
 const CuteSet = require("cute-set");
 const EventEmitter = require("events");
-
+const Message = require("./Message.js");
 const Logger = require("../libs/Logger.js");
+const Utility = require("../libs/ChatUtility.js");
 
+const SESSION_ID_LENGTH = 7;
 /**
  * Session is an object that represents act of communication between client and server.
  * Client is identified by vault ID.
@@ -35,21 +36,23 @@ class ClientSession extends EventEmitter{
         this.publicKey;
         this.privateKey;
         this.pkfp;
-        setTimeout(()=>{
-            this.initKey(this)
-        }, 100);
+        this.initKey()
+        this.sendSessionKey(connectionId);
     }
 
-    initKey(self){
-        Logger.debug("Initializing keys", {cat: "session"});
-        let ic = new iCrypto();
-        ic.rsa.createKeyPair("kp")
-          .getPublicKeyFingerprint("kp", "pkfp")
-        self.pkfp = ic.get("pkfp");
-        self.publicKey = ic.get("kp").publicKey;
-        self.privateKey = ic.get("kp").privateKey;
-        self.pending = false;
-        Logger.debug("Session key has been generated!", {cat: "session"})
+    initKey(){
+        let self = this;
+        setTimeout(()=>{
+            Logger.debug("Initializing keys", {cat: "session"});
+            let ic = new iCrypto();
+            ic.rsa.createKeyPair("kp")
+            .getPublicKeyFingerprint("kp", "pkfp")
+            self.pkfp = ic.get("pkfp");
+            self.publicKey = ic.get("kp").publicKey;
+            self.privateKey = ic.get("kp").privateKey;
+            self.pending = false;
+            Logger.debug("Session key has been generated!", {cat: "session"})
+        }, 50)
     }
 
     async getPublicKey(){
@@ -62,6 +65,10 @@ class ClientSession extends EventEmitter{
         return this.privateKey;
     }
 
+    async decryptMessage(msg){
+        let key = await this.getPrivateKey()
+        return Utility.decryptStandardMessage(msg, key);
+    }
 
     waitForKey(){
         let self = this;
@@ -93,6 +100,25 @@ class ClientSession extends EventEmitter{
         Logger.debug(`Adding connection ${connectionId} to session ${this.id}`, {cat: "session"})
         this.connections.add(connectionId);
         this.timeInactive = null;
+        this.sendSessionKey(connectionId);
+    }
+
+    sendSessionKey(connectionId){
+        let self = this;
+        setTimeout(async ()=>{
+            let publicKey = await self.getPublicKey()
+            let privateKey = await self.getPrivateKey()
+            let message = new Message()
+            message.setDest(this.id);
+            message.setSource("island");
+            message.setCommand(Internal.SESSION_KEY);
+            message.body.sessionKey = publicKey;
+            message.addNonce();
+            message.signMessage(privateKey);
+            Logger.debug(`Sending session key to client`, {cat: "login"})
+            this.connectionManager.sendMessage(connectionId, message)
+        }, 100)
+
     }
 
     removeConnection(connectionId){

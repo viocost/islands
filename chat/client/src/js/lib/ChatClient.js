@@ -25,6 +25,7 @@ export class ChatClient{
         this.messageQueue;
         this.connector;
         this.arrivalHub;
+        this.sessionKey;
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------
@@ -47,7 +48,7 @@ export class ChatClient{
                 console.log("Got vault. Initializing");
                 //Initialize vault
 
-                this.vault.initSaved(vault, password)
+                this.vault.initSaved(vault.vault, password, vault.topics,)
                 this.vault.setId(vaultId);
                 console.log("Vault initialized. Initializing connector...");
 
@@ -59,6 +60,7 @@ export class ChatClient{
 
                 //bootstrapping vault
                 this.vault.bootstrap(this.arrivalHub, this.messageQueue, this.version);
+                this.setVaultListeners()
 
                 await this.connector.establishConnection(vaultId);
                 console.log("Connection established. Initializing arrival hub..");
@@ -85,6 +87,16 @@ export class ChatClient{
         })
     }
 
+    setVaultListeners(){
+        this.vault.on(Internal.SESSION_KEY, (message)=>{
+            if(!Message.verifyMessage(message.body.sessionKey, message)){
+                throw new Error("Session key signature is invalid!")
+            }
+            this.sessionKey = message.body.sessionKey;
+            console.log("Session key is set!")
+
+        })
+    }
 
 
 
@@ -210,20 +222,94 @@ export class ChatClient{
 
     // ---------------------------------------------------------------------------------------------------------------------------
     // Topic creation
+
+
+    initTopic(nickname, topicName){
+        let self = this;
+        setTimeout(async ()=>{
+            console.log("Checking input");
+            nickname = String(nickname).trim();
+            if (!nickname || !/^.{2,20}$/.test(nickname)){
+                self.emit(Events.INIT_TOPIC_ERROR,
+                            `Nickname entered is invalid`);
+                return;
+            }
+            if(!/^.{0,20}$/.test(topicName)){
+                self.emit(Events.INIT_TOPIC_ERROR,
+                            `Topic name entered is invalid`);
+                return;
+            }
+
+            console.log("Generating keys");
+            //CREATE NEW TOPIC PENDING
+            let ic = new iCrypto();
+
+            //Generate keypairs one for user, other for topic
+            ic = await ic.asym.asyncCreateKeyPair('owner-keys');
+            ic = await ic.asym.asyncCreateKeyPair('topic-keys');
+            ic.getPublicKeyFingerprint("owner-keys", "owner-pkfp");
+            ic.getPublicKeyFingerprint("topic-keys", "topic-pkfp");
+
+            let ownerKeyPair  = ic.get("owner-keys")
+            let topicKeyPair  = ic.get("topic-keys")
+            let ownerPkfp  = ic.get("owner-pkfp")
+            let topicID  = ic.get("topic-pkfp")
+
+            //Forming request
+            let newTopicData = {
+                topicKeyPair: topicKeyPair,
+                ownerPublicKey: ownerKeyPair.publicKey
+            };
+
+            console.log("Preparing request");
+            let newTopicDataCipher = ChatUtility.encryptStandardMessage(JSON.stringify(newTopicData), self.sessionKey);
+
+            //initializing topic settings
+            let settings = self.prepareNewTopicSettings(nickname, topicName, ownerKeyPair.publicKey)
+
+            // TODO Prepare new topic vault record
+            let vaultRecord = self.vault.prepareVaultTopicRecord(this.version,
+                                                                ownerPkfp,
+                                                                ownerKeyPair.privateKey,
+                                                                topicName)
+
+            //Preparing request
+            let request = new Message(self.version);
+            request.headers.command = Internal.INIT_TOPIC;
+            request.headers.pkfpSource = self.vault.id;
+            request.body.topicID = topicID;
+            request.body.topicPkfp = ownerPkfp;
+            request.body.settings = settings;
+            request.body.ownerPublicKey = ownerKeyPair.publicKey;
+            request.body.newTopicData = newTopicDataCipher;
+            request.body.vaultRecord = vaultRecord;
+            request.body.vaultId = self.vault.id;
+            request.signMessage(self.vault.privateKey)
+
+            self.messageQueue.enqueue(request)
+
+        }, 50)
+    }
+
     /**
      * Called initially on topic creation
      * @param {String} nickname
      * @param {String} topicName
      * @returns {Promise<any>}
      */
-    initTopic(nickname, topicName){
+    initTopicBAK(nickname, topicName){
         let self = this;
         setImmediate(async ()=>{
             try{
                 nickname = String(nickname).trim();
-                if (!nickname || nickname.length < 2){
+                if (!nickname || !/^.{2,20}$/.test(nickname)){
                     self.emit(Events.INIT_TOPIC_ERROR,
                               `Nickname entered is invalid`);
+                    return;
+                }
+                if(!/^.{0,20}$/.test(topicName)){
+                    self.emit(Events.INIT_TOPIC_ERROR,
+                              `Topic name entered is invalid`);
                     return;
                 }
 
@@ -302,6 +388,12 @@ export class ChatClient{
             pendingTopic.topicName,
             pendingTopic.ownerKeyPair.publicKey);
 
+        // TODO Prepare new topic vault record
+        let vaultRecord = self.vault.prepareVaultTopicRecord(this.version,
+                                                             pendingTopic.ownerPkfp,
+                                                             pendingTopic.ownerKeyPair.privateKey,
+                                                             pendingTopic.topicName)
+
         //Preparing request
         let request = new Message(self.version);
         request.headers.command = Internal.INIT_TOPIC;
@@ -310,18 +402,23 @@ export class ChatClient{
         request.body.settings = settings;
         request.body.ownerPublicKey = pendingTopic.ownerKeyPair.publicKey;
         request.body.newTopicData = newTopicDataCipher;
+        request.body.vaultRecord = vaultRecord;
+        request.body.vaultId = self.vault.id;
 
 
         self.arrivalHub.once(pendingTopic.ownerPkfp, (data)=>{
-            switch(data.headers.response){
+            switch(data.headers.message){
                 case Events.INIT_TOPIC_SUCCESS:
                     self.initTopicSuccess(self, data, pendingTopic);
                     break;
                 case Events.INIT_TOPIC_ERROR:
                     self.processInitTopicError(data, self);
+                    console.error("Init topic error");
+                    console.error(data.headers.error);
+                    self.emit(Events.INIT_TOPIC_ERROR);
                     break;
                 default:
-                    console.error(`Invalid topic init response`)
+                    console.error(`Invalid topic init response: ${data.headers.message}`)
             }
         })
 
@@ -356,7 +453,7 @@ export class ChatClient{
     prepareNewTopicSettings(nickname, topicName, publicKey, encrypt = true){
         //Creating and encrypting topic settings:
         let settings = {
-            version: version,
+            version: this.version,
             membersData: {},
             soundsOn: true
         };

@@ -39,13 +39,15 @@ class IslandsChat{
             this.clientRequestEmitter,
             this.hm,
             this.topicAuthorityManager,
-            this.torConnector);
-
-        this.LoginAssistant = new LoginAssistant(this.chatConnectionManager,
-            this.clientRequestEmitter,
-            this.hm,
-            this.topicAuthorityManager,
             this.torConnector,
+            this.vaultManager,
+            this.clientSessionManager);
+
+    this.LoginAssistant = new LoginAssistant(this.chatConnectionManager,
+        this.clientRequestEmitter,
+        this.hm,
+        this.topicAuthorityManager,
+        this.torConnector,
             this.clientSessionManager,
             this.vaultManager);
 

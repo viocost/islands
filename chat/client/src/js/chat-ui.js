@@ -125,7 +125,15 @@ function initUI(){
     renderLayout()
 
     //modals
-    topicCreateModal = UI.bakeTopicCreateModal(()=>{console.log("Creating topic")})
+    topicCreateModal = UI.bakeTopicCreateModal(()=>{
+        console.log("Creating topic")
+        let nickname = util.$("#new-topic-nickname").value;
+        let topicName = util.$("#new-topic-name").value;
+        chat.initTopic(nickname, topicName);
+        toastr.info("Topic is being created")
+        topicCreateModal.close()
+    })
+
     util.$("#new-topic-button").onclick = ()=>{
         topicCreateModal.open();
     }
@@ -273,8 +281,7 @@ function processInfoClick(){
 
 function processNewTopicClick(){
     console.log("New topic");
-    toastr.info("Creating topic...")
-
+    toastr.info("Creating topic..")
 }
 
 function processJoinTopicClick() {

@@ -94,6 +94,34 @@ class VaultManager{
         return id;
     }
 
+    async saveTopic(vaultId, topicPkfp, topicBlob){
+        //verify
+        Logger.debug(`Save topic request received: vault id: ${vaultId}, toipcPkfp: ${topicPkfp}, blob lengt: ${topicBlob.length}`,
+                     {cat: "topic_create"});
+        let publicKey = this.getVaultPublicKey(vaultId);
+
+        let ic = new iCrypto();
+        let signLength = parseInt(topicBlob.substr(topicBlob.length - 3))
+        let signature = topicBlob.substring(topicBlob.length - signLength - 3, topicBlob.length - 3);
+        let topicCipher = topicBlob.substring(256, topicBlob.length - signLength - 3);
+        ic.setRSAKey("pub", publicKey, "public")
+            .addBlob("cipher", topicCipher)
+            .addBlob("sign", signature)
+            .publicKeyVerify("cipher", "sign", "pub", "verified")
+        if(!ic.get("verified")) throw new Error("Topic signature is invalid!")
+
+        // write blob
+        Logger.debug("Topic update verified", {cat: "topic_create"})
+        fs.writeFileSync(path.join(this.vaultsPath, vaultId, "topics", topicPkfp), topicBlob);
+        Logger.debug("Topic record saved", {cat: "topic_create"})
+    }
+
+    deleteTopic(vaultId, topicPkfp, nonce, sign){
+       
+    }
+
+
+
     completeRegistration(vaultBlob, hash, signature, publicKey, id){
         let ic = new iCrypto();
         ic.addBlob("vault64", vaultBlob)
@@ -124,8 +152,16 @@ class VaultManager{
         if(!this.isVaultExist(id)){
             throw new Error("Vault not found");
         }
-
-        return fs.readFileSync(this.getVaultPath(id), 'utf8');
+        let vaultPath = this.getVaultPath(id);
+        let topicsPath = this.getTopicsPath(id);
+        let topicsFiles = fs.readdirSync(topicsPath)
+        let res = {}
+        res.vault = fs.readFileSync(vaultPath, 'utf8');
+        res.topics = {}
+        for (let topic of topicsFiles){
+            res.topics[topic] = fs.readFileSync(path.join(topicsPath,  topic))
+        }
+        return res
     }
 
     isRegistrationPending(vaultID){
@@ -153,23 +189,6 @@ class VaultManager{
     }
 
 
-    deleteTopic(vaultBlob, vaultId, pkfp, signature, publicKey = null){
-        if(!publicKey){
-            publicKey = this.getVaultPublicKey(vaultId);
-        }
-        if(!this.isOwnerVerified(vaultBlob, signature, publicKey)){
-            throw("Owner's signature is invalid");
-        }
-        if(this.isRegistrationPending(vaultId)){
-            throw("The vault registration is pending. Updates are disabled");
-        }
-
-        //updating vault
-        this._updateVault(vaultId, vaultBlob, publicKey);
-
-
-    }
-
     _consumeRegistrationToken(vaultID){
         fs.unlinkSync(path.join(this.vaultsPath, vaultID, PENDING));
     }
@@ -185,6 +204,10 @@ class VaultManager{
 
     getVaultPath(id){
         return path.join(this.vaultsPath, id, "vault");
+    }
+
+    getTopicsPath(id){
+        return path.join(this.vaultsPath, id, "topics");
     }
 
     async deleteVault(id){
@@ -209,6 +232,9 @@ class VaultManager{
         if(!fs.existsSync(vaultPath)){
             fs.mkdirSync(vaultPath);
         }
+        if (!fs.existsSync(path.join(vaultPath, "topics"))){
+            fs.mkdirSync(path.join(vaultPath, "topics"));
+        }
         fs.writeFileSync(path.join(vaultPath, "vault"), blob);
         fs.writeFileSync(path.join(vaultPath, "publicKey"), publicKey);
         fs.writeFileSync(path.join(vaultPath, "hash"), hash);
@@ -231,6 +257,29 @@ class VaultManager{
     generateID(){
         return new RandExp(new RegExp("[a-f0-9]{" + this.vaultIdLength + "}")).gen();
     }
+
+
+    // ---------------------------------------------------------------------------------------------------------------------------
+    // GARBAGE
+
+    ///////////////////////////////////////////////////////////////////////////////
+    // deleteTopicBAK(vaultBlob, vaultId, pkfp, signature, publicKey = null){    //
+    //     if(!publicKey){                                                       //
+    //         publicKey = this.getVaultPublicKey(vaultId);                      //
+    //     }                                                                     //
+    //     if(!this.isOwnerVerified(vaultBlob, signature, publicKey)){           //
+    //         throw("Owner's signature is invalid");                            //
+    //     }                                                                     //
+    //     if(this.isRegistrationPending(vaultId)){                              //
+    //         throw("The vault registration is pending. Updates are disabled"); //
+    //     }                                                                     //
+    //                                                                           //
+    //     //updating vault                                                      //
+    //     this._updateVault(vaultId, vaultBlob, publicKey);                     //
+    //                                                                           //
+    //                                                                           //
+    // }                                                                         //
+    ///////////////////////////////////////////////////////////////////////////////
 
 
 }

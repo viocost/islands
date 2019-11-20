@@ -74,7 +74,7 @@ module.exports.Internal = Object.freeze({
     // ---------------------------------------------------------------------------------------------------------------------------
     // Vault update notifications
     SAVE_VAULT: "save_vault",
-    TOPIC_ADDED: "topic_added",
+    TOPIC_CREATED: "topic_created",
     TOPIC_DELETED: "topic_deleted",
     TOPIC_UPDATED: "topic_updated",
     VAULT_SETTINGS_UPDATED: "vault_settings_updated",
@@ -100,6 +100,7 @@ module.exports.Internal = Object.freeze({
     LOAD_MESSAGES_SUCCESS: "load_messages_success",
 
     KILL_SESSION: "kill_session",
+    SESSION_KEY: "session_key",
 
 
 })

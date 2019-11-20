@@ -41,7 +41,7 @@ router.post("/", (req, res)=>{
                .status(200).send({"vault": vault, "vaultId": id})
         }
     }catch(err){
-        Logger.warn(err.message, {stack: err.stack, cat: "chat"});
+        Logger.warn(err.message, {stack: err.stack, cat: "login"});
         res.set("Content-Type", "application/json")
         res.status(400).send("Vault login error.");
     }

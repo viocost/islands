@@ -8,6 +8,8 @@ CLOSED: [2019-11-18 Mon 18:54]
 **** DONE Vault registration
 CLOSED: [2019-11-19 Tue 15:53]
 **** TODO Create topic
+***** Init session made with one request
+**** TODO Save session key on login
 **** TODO Split vault to multiple blobs
 **** TODO Vault update
 **** TODO Create/delete/rename invites
@@ -28,7 +30,8 @@ CLOSED: [2019-11-19 Tue 15:53]
 
 *** DONE Append and show topics
 CLOSED: [2019-11-16 Sat 02:00]
-*** TODO On topic click load messages
+*** DONE On topic click load messages
+CLOSED: [2019-11-20 Wed 23:09]
 *** DONE Implement login
 CLOSED: [2019-11-15 Fri 17:44]
 *** DONE Implement initial layout logic
@@ -47,7 +50,8 @@ CLOSED: [2019-11-15 Fri 17:44]
 *** TODO Probably... Vault settings?
 Mute some topic notifications?
 *** TODO Fix client-server protocol such that each topic listens to messages
-*** TODO Re-implement vault registration
+*** DONE Re-implement vault registration
+CLOSED: [2019-11-20 Wed 23:09]
 *** PROJ Rework the chat interface
 **** DONE Draft static design of the chat page
 CLOSED: [2019-11-14 Thu 21:27]

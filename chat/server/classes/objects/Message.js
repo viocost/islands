@@ -91,6 +91,15 @@ class Message{
         this.headers.nonce = ic.get("nhex");
     }
 
+    signMessage(privateKey){
+        let ic = new iCrypto();
+        let requestString = JSON.stringify(this.headers) + JSON.stringify(this.body);
+        ic.addBlob("body", requestString)
+            .setRSAKey("priv", privateKey, "private")
+            .privateKeySign("body", "priv", "sign");
+        this.signature = ic.get("sign");
+    }
+
     static verify(message, publicKey){
         let ic = new iCrypto();
         ic.addBlob("request", JSON.stringify(message.headers) + JSON.stringify(message.body))
