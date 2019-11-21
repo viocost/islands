@@ -28,3 +28,4 @@ files=true
 login=true
 topic_join=true
 topic_create=true
+invite=true

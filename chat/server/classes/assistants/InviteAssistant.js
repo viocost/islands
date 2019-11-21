@@ -2,10 +2,12 @@ const Envelope = require("../objects/CrossIslandEnvelope.js");
 const ClientError = require("../objects/ClientError.js");
 const Err = require("../libs/IError.js");
 const Request = require("../objects/ClientRequest.js");
-const Response = require("../objects/ClientResponse.js");
+const Message = require("../objects/Message.js")
 const Logger = require("../libs/Logger.js");
 const Metadata = require("../objects/Metadata.js");
 const Coordinator = require("./AssistantCoordinator.js");
+const Internal = require("../../../common/Events.js").Internal;
+const ChatEvents = require("../../../common/Events.js").Events;
 
 class InviteAssistant{
     constructor(connectionManager = Err.required(),
@@ -37,7 +39,8 @@ class InviteAssistant{
     async requestInviteOutgoing(request, connectionID, self){
 
         Logger.debug("Outgoing invite request from client", {
-            source: request.headers.pkfpSource
+            source: request.headers.pkfpSource,
+            cat: "invite"
         });
         const metadata = Metadata.parseMetadata(await self.hm.getLastMetadata(request.headers.pkfpSource));
 
@@ -52,11 +55,11 @@ class InviteAssistant{
         const residenceDest = metadata.getTopicAuthorityResidence();
         const envelope = new Envelope(residenceDest, request, residenceOrigin);
         envelope.setReturnOnFail(true);
-
-        await self.crossIslandMessenger.send(envelope, 4000, (envelope)=>{
+        Logger.debug("Sending invite request to TA...", {cat: "invite"})
+        await self.crossIslandMessenger.send(envelope, 5000, (envelope)=>{
             Logger.info("INVITE REQUEST TIMEOUT: dest: " + envelope.destination)
             envelope.error = "Invite request timeout. If you have just created the topic, allow some time for invite hidden service to be published and try again. That ususally takes 20sec - 2min.";
-            Coordinator.notify("invite_request_timeout", envelope);
+            Coordinator.notify(Internal.INVITE_REQUEST_TIMEOUT, envelope);
             self._processStandardClientError(envelope, self);
         });
     }
@@ -77,12 +80,13 @@ class InviteAssistant{
         const data = await ta.processInviteRequest(request);
         const inviteCode = data.inviteCode;
         const userInvites = data.userInvites;
-        const response = new Response("request_invite_success", request);
+ //       const response = new Response("request_invite_success", request);
+        const response = Message.makeResponse(request, request.headers.pkfpDest, ChatEvents.INVITE_CREATED);
+
         response.body.inviteCode = inviteCode;
         response.body.userInvites = userInvites;
         console.log("About to send success invite code: " + inviteCode);
         const responseEnvelope = new Envelope(envelope.origin, response, envelope.destination);
-        responseEnvelope.setResponse();
         await self.crossIslandMessenger.send(responseEnvelope);
     }
 
@@ -118,9 +122,15 @@ class InviteAssistant{
     }
 
     requestInviteSuccess(envelope, self){
+        Logger.debug("Invite success received!", {cat: "invite"})
         const response = envelope.payload;
-        self.sessionManager.broadcastUserResponse(response.headers.pkfpSource,
-            response);
+        let session = self.sessionManager.getSessionByTopicPkfp(response.headers.pkfpDest)
+        if (session){
+            session.broadcast(response);
+        } else {
+            Logger.warn(`Invite request successful, but no active session found for ${response.headers.pkfpDest}`, {cat: "invite"})
+        }
+
     }
 
     async deleteInviteOutgoing(request, connectionID, self){
@@ -213,18 +223,21 @@ class InviteAssistant{
 
 
     subscribeToClientRequests(requestEmitter){
-        this.subscribe(requestEmitter, {
-            request_invite: this.requestInviteOutgoing,
-            del_invite: this.deleteInviteOutgoing,
-            sync_invites: this.syncInvitesOutgoing
-        }, this.clientErrorHandler)
+        let handlers = {}
+        handlers[Internal.REQUEST_INVITE] = this.requestInviteOutgoing;
+        handlers[Internal.DELETE_INVITE] = this.deleteInviteOutgoing;
+        handlers[Internal.SYNC_INVITES] = this.syncInvitesOutgoing;
+        this.subscribe(requestEmitter, handlers, this.clientErrorHandler)
     }
 
     subscribeToCrossIslandsMessages(ciMessenger){
+        let handlers = {}
+        handlers[ChatEvents.INVITE_CREATED] = this.requestInviteSuccess;
+        this.subscribe(ciMessenger, handlers, this.crossIslandErrorHandler)
+
         this.subscribe(ciMessenger, {
             request_invite: this.requestInviteIncoming,
             del_invite: this.deleteInviteIncoming,
-            request_invite_success: this.requestInviteSuccess,
             del_invite_success: this.deleteInviteSuccess,
             return_request_invite: this.requestInviteError,
             return_delete_invite: this.deleteInviteError,
@@ -243,6 +256,7 @@ class InviteAssistant{
     async clientErrorHandler(request, connectionID, self, err){
         console.trace(err);
         try{
+            Logger.error(`Client error: ${err.message}`, {cat: "invite"})
             let error = new ClientError(request, self.getClientErrorType(request.headers.command) , "Internal server error")
             self.connectionManager.sendResponse(connectionID, error);
         }catch(fatalError){
@@ -291,7 +305,7 @@ class InviteAssistant{
         }catch(err){
             args.push(err);
             await errorHandler(...args);
-            Logger.error(`Invite assistant error on command: ${command} : ${err.message}`, {stack: err.stack} )
+            Logger.error(`Invite assistant error on command: ${command} : ${err.message}`, {stack: err.stack, cat: "invite"} )
         }
     }
 

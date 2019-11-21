@@ -28,6 +28,9 @@ export class Topic{
         // Meaning event listeners are set for arrivalHub
         this.isBootstrapped = false;
 
+
+        this.metadataLoaded = false;
+
         // Initial messages load has been completed
         this.isInitLoaded = false;
 
@@ -73,7 +76,10 @@ export class Topic{
 
         }
 
+        this.topicAuthority = metadata.body.topicAuthority;
         this.invites = metadata.body.settings.invites;
+        this.metadataLoaded = true;
+
     }
 
     /**
@@ -96,6 +102,13 @@ export class Topic{
 
     setHandlers(){
         this.handlers[Internal.LOAD_MESSAGES_SUCCESS] = this.processMessagesLoaded
+        this.handlers[Internal.INVITE_REQUEST_TIMEOUT] = ()=>{
+            console.log("Invite request timeout");
+        }
+        this.handlers[Events.INVITE_CREATED] = ()=>{
+            console.log("Invite created!!");
+        }
+
     }
 
     //End//////////////////////////////////////////////////////////////////////
@@ -223,21 +236,21 @@ export class Topic{
     // INVITES HANDLING
     requestInvite(){
         let self = this;
-        if(!self.initLoaded){
+        if(!self.metadataLoaded){
             throw new Error("Metadata has not been loading yet.")
         }
         setTimeout(()=>{
             let request = new Message(self.version);
-            let myNickNameEncrypted = ChatUtility.encryptStandardMessage(self.settings.nickname,
-                self.session.metadata.topicAuthority.publicKey);
-            let topicNameEncrypted = ChatUtility.encryptStandardMessage(self.session.settings.topicName,
-                self.session.metadata.topicAuthority.publicKey);
+            let taPublicKey = self.topicAuthority.publicKey;
+            let myNickNameEncrypted = ChatUtility.encryptStandardMessage(self.participants[self.pkfp].nickname,
+                taPublicKey);
+            let topicNameEncrypted = ChatUtility.encryptStandardMessage(self.name, taPublicKey);
             request.setCommand(Internal.REQUEST_INVITE);
-            request.setSource(self.publicKeyFingerprint);
-            request.setDest(self.metadata.topicAuthority.pkfp);
+            request.setSource(self.pkfp);
+            request.setDest(self.topicAuthority.pkfp);
             request.body.nickname = myNickNameEncrypted;
             request.body.topicName = topicNameEncrypted;
-            request.signMessage(self.session.privateKey);
+            request.signMessage(self.privateKey);
             self.messageQueue.enqueue(request);
         }, 100)
 
@@ -273,6 +286,21 @@ export class Topic{
         request.set("body", body);
         request.signMessage(this.session.privateKey);
         this.chatSocket.emit("request", request);
+    }
+
+    updatePendingInvites(userInvites){
+        for(let i of userInvites){
+            if(!this.session.settings.invites.hasOwnProperty(i)){
+                this.session.settings.invites[i] = {}
+            }
+        }
+        for (let i of Object.keys(this.session.settings.invites)){
+            if(!userInvites.includes(i)){
+                delete this.session.settings.invites[i];
+            }
+        }
+
+        this.saveClientSettings(this.session.settings, this.session.privateKey);
     }
     //END//////////////////////////////////////////////////////////////////////
 

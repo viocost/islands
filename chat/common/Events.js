@@ -96,6 +96,9 @@ module.exports.Internal = Object.freeze({
     POST_LOGIN_CHECK_SERVICES: "post_login_check_services",
 
     REQUEST_INVITE: "request_invite",
+    DELETE_INVITE: "delete_invite",
+    SYNC_INVITES: "sync_invites",
+    INVITE_REQUEST_TIMEOUT: "invite_request_timeout",
 
     LOAD_MESSAGES: "load_messages",
     LOAD_MESSAGES_SUCCESS: "load_messages_success",

@@ -36,7 +36,7 @@ class ClientSession extends EventEmitter{
         this.publicKey;
         this.privateKey;
         this.pkfp;
-        this.initKey()
+        this.initKey();
         this.sendSessionKey(connectionId);
     }
 
@@ -94,6 +94,14 @@ class ClientSession extends EventEmitter{
 
     hasConnection(connectionId){
         return this.connections.has(connectionId);
+    }
+
+    hasTopic(pkfp){
+        return this.topics.has(pkfp);
+    }
+
+    addTopic(pkfp){
+        this.topics.add(pkfp);
     }
 
     addConnection(connectionId){

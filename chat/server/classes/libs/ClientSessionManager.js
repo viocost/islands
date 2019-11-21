@@ -63,6 +63,17 @@ class ClientSessionManager{
         });
     }
 
+    getSessionByTopicPkfp(pkfp){
+        for (let session of Object.values(this.sessions)){
+            if (session.hasTopic(pkfp)){
+                return session;
+            } else {
+                console.log(`topic not found. topics:`);
+                console.log(JSON.stringify(session.topics.toArray()))
+            }
+        }
+    }
+
 
     createSession(pkfp, connectionId, sessionID){
         const sessions = this.getSessionBySessionID(sessionID);

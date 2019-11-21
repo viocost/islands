@@ -59,9 +59,17 @@ class LoginAssistant{
         Logger.debug(`Verified: ${verified}`, {cat: "login"});
 
         // Gather encrypted HS private keys and topic authorities
+
+        let session = self.sessionManager.getSessionByConnectionId(connectionId);
+        if (!session) throw new Error(`Session has not been initialized for connection ${connectionId}`)
+
         let topicsData = {};
         if(request.body.topics){
             for (let pkfp of request.body.topics){
+
+                //Adding topic to the session;
+                session.addTopic(pkfp);
+
                 Logger.debug(`Getting services data for ${pkfp}`, {cat: "login"});
                 let metadata = JSON.parse(await self.hm.getLastMetadata(pkfp));
 
@@ -76,8 +84,6 @@ class LoginAssistant{
 
         Logger.debug(`got data for ${Object.keys(topicsData)}`, {cat: "login"})
 
-        let session = self.sessionManager.getSessionByConnectionId(connectionId);
-        if (!session) throw new Error(`Session has not been initialized for connection ${connectionId}`)
         let sessionPublicKey = await session.getPublicKey();
 
         // Send to client for decryption
