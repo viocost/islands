@@ -14,6 +14,7 @@ module.exports.Events = Object.freeze({
     REGISTER_NEW_VAULT_SUCCESS: "new_vault_success",
     REGISTER_NEW_VAULT_ERROR: "new_vault_error",
 
+    TOPIC_CREATED: "toipc_created",
     INIT_TOPIC_SUCCESS: "init_topic_success",
     INIT_TOPIC_ERROR: "init_topic_error",
 

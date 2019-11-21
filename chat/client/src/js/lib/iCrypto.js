@@ -507,7 +507,7 @@ export class iCrypto {
         } else if (typeof(blob) === "string"){
             input = iCrypto.stringToArrayBuffer(blob)
         } else{
-            throw("streamCryptorEncrypt: invalid format input");
+            throw new Error("streamCryptorEncrypt: invalid format input");
         }
 
 
@@ -539,7 +539,7 @@ export class iCrypto {
         } else if (typeof(blob) === "string"){
             input = iCrypto.stringToArrayBuffer(blob)
         } else{
-            throw("streamCryptorEncrypt: invalid format input");
+            throw new Error("streamCryptorEncrypt: invalid format input");
         }
         if (encoding === undefined || encoding === "raw"){
             return cryptor.decrypt(input).buffer
@@ -1250,7 +1250,7 @@ export class iCrypto {
         if(typeof (keys) === "string" || typeof(keys) === "number")
             return this._keyExists(keys);
         if(typeof (keys) !== "object")
-            throw ("keysExist: unsupported type");
+            throw new Error("keysExist: unsupported type");
         if(keys.length<1)
             throw new Error("array must have at least one key");
 
@@ -1270,11 +1270,11 @@ export class iCrypto {
     }
 
     static pRequired(functionName = "iCrypto function"){
-        throw functionName + ": missing required parameter!"
+        throw new Error(functionName + ": missing required parameter!");
     }
 
     throwError(message = "Unknown error"){
-        throw message;
+        throw new Error (message);
     }
 }
 

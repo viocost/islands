@@ -134,15 +134,12 @@ function initUI(){
         topicCreateModal.close()
     })
 
-    util.$("#new-topic-button").onclick = ()=>{
-        topicCreateModal.open();
-    }
 
     topicJoinModal = UI.bakeTopicJoinModal(()=>{
         console.log("Joining topic")
     })
-    util.$("#join-topic-button").onclick = ()=>{ topicJoinModal.open() }
-    //prepare side panel
+
+    // prepare side panel
     //let sidePanel = bakeSidePanel();
     //let messagesPanel = bakeMessagesPanel();
     //let newMessagePanel = bakeNewMessageControl();
@@ -280,8 +277,7 @@ function processInfoClick(){
 }
 
 function processNewTopicClick(){
-    console.log("New topic");
-    toastr.info("Creating topic..")
+    topicCreateModal.open()
 }
 
 function processJoinTopicClick() {

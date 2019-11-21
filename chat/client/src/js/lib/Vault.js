@@ -3,6 +3,7 @@ import { verifyPassword } from "./PasswordVerify";
 import { Topic } from "../lib/Topic";
 import { iCrypto } from "./iCrypto";
 import { WildEmitter } from "./WildEmitter";
+import { Message } from "./Message";
 import { Events, Internal  } from "../../../../common/Events";
 import { XHR } from "./xhr"
 import * as semver from "semver";
@@ -89,8 +90,12 @@ export class Vault{
         this.handlers[Internal.TOPIC_CREATED] = (data)=>{
             self.addNewTopic(self, data)
         }
-        this.handlers[Internal.SESSION_KEY] = (data)=>{
-            self.emit(Internal.SESSION_KEY, data)
+        this.handlers[Internal.SESSION_KEY] = (message)=>{
+            if(!Message.verifyMessage(message.body.sessionKey, message)){
+                throw new Error("Session key signature is invalid!")
+            }
+            self.sessionKey = message.body.sessionKey;
+            self.emit(Internal.SESSION_KEY, message)
         }
     }
 
@@ -173,11 +178,12 @@ export class Vault{
 
         if (unpackedTopics){
             for(let pkfp of Object.keys(unpackedTopics)){
+                console.log(`INITIALIZING TOPIC ${pkfp}`);
                 this.topics[pkfp] = new Topic(
                     pkfp,
-                    unpackedTopics.name,
-                    unpackedTopics.key,
-                    unpackedTopics.comment
+                    unpackedTopics[pkfp].name,
+                    unpackedTopics[pkfp].key,
+                    unpackedTopics[pkfp].comment
                 )
             }
         }
@@ -331,29 +337,8 @@ export class Vault{
         this.password = newPassword;
     }
 
-    unpackTopics(topics, password){
-        let res = {};
-        for(let pkfp of Object.keys(topics)){
-            let topicBlob = topics[pkfp];
-            let signLength = parseInt(topicBlob.substr(topicBlob.length - 3))
-            let signature = topicBlob.substring(topicBlob.length - signLength - 3, topicBlob.length - 3);
-            let salt = topicBlob.substring(0, 256);
-            let topicCipher = topicBlob.substring(256, topicBlob.length - signLength - 3);
-            let ic = new iCrypto();
-            ic.setRSAKey("pub", this.publicKey, "public")
-              .addBlob("cipher", topicCipher)
-              .addBlob("sign", signature)
-              .publicKeyVerify("cipher", "sign", "pub", "verified")
-            if(!ic.get("verified")) throw new Error("Topic signature is invalid!")
-
-            ic.addBlob("salt-hex", salt)
-              .createPasswordBasedSymKey("sym", password, "salt-hex")
-              .AESDecrypt("cipher", "sym", "topic-plain", true)
-            res[pkfp] = ic.get("topic-plain")
-        }
-        return res;
-    }
-
+    // Encrypts all topics and returns an object of
+    // pkfp: cipher encrypted topics
     packTopics(){
         let res = {}
         for(let pkfp of Object.keys(this.topics)){
@@ -370,6 +355,37 @@ export class Vault{
         return res;
     }
 
+    // Given topics object of pkfp: cipher
+    // decrypts each cipher and JSON parses with password
+    // returns object of pkfp: { topic raw data  }
+    unpackTopics(topics){
+        let res = {};
+        for(let pkfp of Object.keys(topics)){
+            res[pkfp] = this.decryptTopic(topics[pkfp], this.password);
+        }
+        return res;
+    }
+
+    // Decrypts topic blob with password
+    decryptTopic(topicBlob, password){
+        let signLength = parseInt(topicBlob.substr(topicBlob.length - 3))
+        let signature = topicBlob.substring(topicBlob.length - signLength - 3, topicBlob.length - 3);
+        let salt = topicBlob.substring(0, 256);
+        let topicCipher = topicBlob.substring(256, topicBlob.length - signLength - 3);
+        let ic = new iCrypto();
+        ic.setRSAKey("pub", this.publicKey, "public")
+            .addBlob("cipher", topicCipher)
+            .addBlob("sign", signature)
+            .publicKeyVerify("cipher", "sign", "pub", "verified")
+        if(!ic.get("verified")) throw new Error("Topic signature is invalid!")
+
+        ic.addBlob("salt-hex", salt)
+            .createPasswordBasedSymKey("sym", password, "salt-hex")
+            .AESDecrypt("cipher", "sym", "topic-plain", true)
+        return JSON.parse(ic.get("topic-plain"));
+    }
+
+    // Given raw topic data as arguments encrytps with password and returns cipher
     prepareVaultTopicRecord(version = Err.required("Version"),
                             pkfp = Err.required("pkfp"),
                             privateKey = Err.required("Private key"),
@@ -397,6 +413,31 @@ export class Vault{
             .merge(["blob", "sign", "sign-length"], "res")
         return ic.get("res")
     }
+
+    // Called
+    addNewTopic(self, data){
+
+        //if(!Message.verifyMessage(self.sessionKey, data)){
+        //    throw new Error("Session key signature is invalid!")
+        //}
+        let vaultRecord = data.body.vaultRecord;
+        let metadata = data.body.metadata;
+        let topicData = self.decryptTopic(vaultRecord, self.password);
+        let pkfp = topicData.pkfp;
+        let newTopic = new Topic(
+            pkfp,
+            topicData.name,
+            topicData.key,
+            topicData.comment,
+        )
+
+        newTopic.loadMetadata(metadata);
+        newTopic.bootstrap(self.messageQueue, self.arrivalHub, self.version);
+        self.topics[pkfp] = newTopic;
+        self.emit(Events.TOPIC_CREATED, pkfp);
+
+    }
+
 
 
 

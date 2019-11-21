@@ -1,4 +1,5 @@
 import { iCrypto } from "./iCrypto"
+import { IError as Err }  from "../../../../common/IError";
 
 
 export class ChatUtility{

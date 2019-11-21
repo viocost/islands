@@ -48,7 +48,7 @@ export class ChatClient{
                 console.log("Got vault. Initializing");
                 //Initialize vault
 
-                this.vault.initSaved(vault.vault, password, vault.topics,)
+                this.vault.initSaved(vault.vault, password, vault.topics)
                 this.vault.setId(vaultId);
                 console.log("Vault initialized. Initializing connector...");
 
@@ -88,13 +88,13 @@ export class ChatClient{
     }
 
     setVaultListeners(){
+        let self = this
         this.vault.on(Internal.SESSION_KEY, (message)=>{
-            if(!Message.verifyMessage(message.body.sessionKey, message)){
-                throw new Error("Session key signature is invalid!")
-            }
             this.sessionKey = message.body.sessionKey;
             console.log("Session key is set!")
-
+        })
+        this.vault.on(Events.TOPIC_CREATED, (pkfp)=>{
+            self.emit(Events.TOPIC_CREATED, pkfp);
         })
     }
 
