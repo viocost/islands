@@ -18843,7 +18843,7 @@ function () {
       };
 
       this.handlers[Events["Internal"].SESSION_KEY] = function (msg) {
-        if (!Message["a" /* Message */].verifyMessage(message.body.sessionKey, msg)) {
+        if (!Message["a" /* Message */].verifyMessage(msg.body.sessionKey, msg)) {
           throw new Error("Session key signature is invalid!");
         }
 
@@ -18897,7 +18897,8 @@ function () {
   }, {
     key: "initAdmin",
     value: function initAdmin(password, adminKey) {
-      this.init(password);
+      var version = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : IError["a" /* IError */].required("Version required!");
+      this.init(password, version);
       this.admin = true;
       this.adminKey = adminKey;
     }

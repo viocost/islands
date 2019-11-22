@@ -465,7 +465,7 @@ function adminLogin(req, res){
 }
 
 function adminSetup(req, res){
-
+    Logger.debug("Admin setup called", {cat: "admin"});
     // make sure there is no keys or
     console.log("Setting admin");
 
@@ -501,9 +501,9 @@ function adminSetup(req, res){
         res.set('Content-Type', 'application/json')
             .status(200)
             .send({vaultID: vaultID});
-            Logger.debug("Admin vault registered successfully!")
+        Logger.debug("Admin vault registered successfully!", {cat: "admin"})
     }catch(err) {
-        Logger.error("Error setting admin: " + err)
+        Logger.error("Error setting admin: " + err, {cat: "admin"})
     }
 }
 

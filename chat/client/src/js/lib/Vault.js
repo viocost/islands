@@ -98,7 +98,7 @@ export class Vault{
             console.log(`TOPIC DELETED: ${msg.body.topicPkfp}`)
         }
         this.handlers[Internal.SESSION_KEY] = (msg)=>{
-            if(!Message.verifyMessage(message.body.sessionKey, msg)){
+            if(!Message.verifyMessage(msg.body.sessionKey, msg)){
                 throw new Error("Session key signature is invalid!")
             }
             self.sessionKey = msg.body.sessionKey;
@@ -144,8 +144,8 @@ export class Vault{
      * @param adminKey
      * @returns {Vault}
      */
-    initAdmin(password, adminKey){
-        this.init(password);
+    initAdmin(password, adminKey, version = Err.required("Version required!")){
+        this.init(password, version);
         this.admin = true;
         this.adminKey = adminKey;
 

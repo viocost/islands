@@ -581,6 +581,7 @@ function processLoginData(res) {
 
 function setupIslandAdmin() {
 
+    console.log("Setting up admin");
     util.addClass('#island-setup', 'btn-loading');
 
     let password = util.$('#new-admin-password').value;
@@ -600,6 +601,7 @@ function setupIslandAdmin() {
 }
 
 function setupAdminContinue(password) {
+    console.log("Setup admin continue called");
     return new Promise((resolve, reject) => {
         loadingOn();
         let ic = new iCrypto();
@@ -610,14 +612,15 @@ function setupAdminContinue(password) {
 
 
         let vault = new Vault();
-        vault.initAdmin(password, ic.get("adminkp").privateKey);
+        vault.initAdmin(password, ic.get("adminkp").privateKey, version);
 
 
         let vaultEncData = vault.pack();
         let vaultPublicKey = vault.publicKey;
         let adminPublicKey = ic.get("adminkp").publicKey;
 
-        console.log(`Hash: ${vaultEncData.hash}`);
+        console.log(`sending register request. Hash: ${vaultEncData.hash}`);
+
 
         XHR({
             type: "POST",
@@ -634,6 +637,7 @@ function setupAdminContinue(password) {
                 vaultSign: vaultEncData.sign
             },
             success: () => {
+                console.log("Success admin register");
                 loadingOff();
                 adminSession = {
                     publicKey: ic.get('adminkp').publicKey,
@@ -648,6 +652,7 @@ function setupAdminContinue(password) {
             },
             error: err => {
                 loadingOff();
+                console.log(err.message);
                 reject("Fail!" + err);
                 util.removeClass('#island-setup', 'btn-loading');
             }
