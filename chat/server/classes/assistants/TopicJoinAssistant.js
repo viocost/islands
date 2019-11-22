@@ -1,4 +1,5 @@
 const Envelope = require("../objects/CrossIslandEnvelope.js");
+const Message = require("../objects/Message.js");
 const ClientError = require("../objects/ClientError.js");
 const Err = require("../libs/IError.js");
 const Request = require("../objects/ClientRequest.js");
@@ -7,6 +8,8 @@ const OutgoingPendingJoinRequest = require("../objects/OutgoingPendingJoinReques
 const Invite = require("../objects/Invite.js");
 const Util = require("../libs/ChatUtility.js");
 const Logger = require("../libs/Logger.js");
+const Events = require("../../../common/Events").Events;
+const Internal = require("../../../common/Events").Internal;
 
 class TopicJoinAssistant {
     constructor(connectionManager = Err.required(),
@@ -15,13 +18,15 @@ class TopicJoinAssistant {
                 historyManager = Err.required(),
                 topicAuthorityManager = Err.required(),
                 crossIslandMessenger = Err.required(),
-                connector = Err.required()) {
+                connector = Err.required(),
+                vaultManager = Err.required()) {
 
         this.connector = connector;
         this.crossIslandMessenger = crossIslandMessenger;
         this.connectionManager = connectionManager;
         this.sessionManager = sessionManager;
         this.hm = historyManager;
+        this.vaultManager = vaultManager;
         this.topicAuthorityManager = topicAuthorityManager;
         this.subscribeToClientRequests(requestEmitter);
         this.subscribeToCrossIslandsMessages(crossIslandMessenger);
@@ -39,11 +44,10 @@ class TopicJoinAssistant {
         const topicAuthority = self.topicAuthorityManager.getTopicAuthority(invite.getPkfp());
         let newTopicData = await topicAuthority.joinByInvite(request.body.inviteString, request.body.invitee, envelope.origin);
         Logger.debug("Join topic request processed by topic authority", {cat: "topic_join"});
-        const response = new Response("join_topic_success", request);
+        const response = new Response(Internal.JOIN_TOPIC_SUCCESS, request);
         response.setAttribute("metadata", newTopicData.metadata);
         response.setAttribute("inviterNickname", newTopicData.inviterNickname);
         response.setAttribute("inviterPkfp", newTopicData.inviterPkfp);
-        response.setAttribute("topicName", newTopicData.topicName);
         const responseEnvelope = new Envelope(envelope.origin, response, envelope.destination);
         responseEnvelope.setResponse();
         Logger.debug("Sending metadata to the invitee", {cat: "topic_join"});
@@ -64,12 +68,21 @@ class TopicJoinAssistant {
         self.verifyOutgoingRequest(request);
         const hsData = await self.createHiddenService();
 
+        let vault = request.vault;
+        let vaultSign = request.vaultSign;
+        let vParsed = JSON.parse(vault);
+        let publicKey = self.vaultManager.getVaultPublicKey(vParsed.id);
+
+        if (!Util.verify(vault, publicKey, vaultSign)) throw new Error("Vault signature was not verified!")
+
         const pendingJoinRequest = new OutgoingPendingJoinRequest(request.headers.pkfpSource,
             request.body.invitee.publicKey,
             hsData.serviceID,
             hsData.privateKey,
-            connectionID);
-        self.registerOutgoingPendingJoinrequest(pendingJoinRequest);
+            connectionID,
+            vParsed.record,
+            vParsed.id);
+        self.registerOutgoinTopicJoinRequest(pendingJoinRequest);
         await self.sendOutgoingRequest(request, pendingJoinRequest.hsid);
     }
 
@@ -85,17 +98,39 @@ class TopicJoinAssistant {
         //Verify, save metadata, return new topic data to the client
         try {
             Logger.debug("Finalize topic join.", {cat: "topic_join"});
-            let response = envelope.payload;
-            const pendingRequest = self.getOutgoingPendingJoinRequest(response.headers.pkfpSource);
-            const metadata = response.body.metadata;
+            let taResponse = envelope.payload;
+            const pendingRequest = self.getOutgoingPendingJoinRequest(taResponse.headers.pkfpSource);
+            const metadata = taResponse.body.metadata;
             const hsPrivateKeyEncrypted = Util.encryptStandardMessage(pendingRequest.hsPrivateKey, pendingRequest.publicKey);
-            Logger.debug("Initializing topic locally", {cat: "topic_join"});
-            self.hm.initTopic(response.headers.pkfpSource,
+
+            Logger.debug("Initializing history and service", {cat: "topic_join"});
+
+            self.hm.initTopic(taResponse.headers.pkfpSource,
                 pendingRequest.publicKey,
                 hsPrivateKeyEncrypted);
-            await self.hm.initHistory(response.headers.pkfpSource, metadata);
-            Logger.debug("Sending response to client", {cat: "topic_join"});
-            await self.connectionManager.sendResponse(pendingRequest.connectionId, response);
+            await self.hm.initHistory(taResponse.headers.pkfpSource, metadata);
+
+            Logger.debug("Saving vault record", {cat: "topic_join"});
+            await self.vaultManager.saveTopic(
+                pendingRequest.vaultId,
+                pendingRequest.pkfp,
+                pendingRequest.vaultRecord
+            )
+            Logger.debug("Topic data saved. Sending response to clients", {cat: "topic_join"});
+            let response = new Message();
+            response.setSource("island");
+            response.setCommand(Internal.JOIN_TOPIC_SUCCESS);
+            response.setDest(pendingRequest.vaultId);
+            response.body.vaultRecord = pendingRequest.vaultRecored;
+            response.body.metadata = taResponse.body.metadata;
+            let session = self.sessionManager.getSessionBySessionID(pendingRequest.vaultId);
+            if(!session){
+                Logger.warn(`Session ${pendingRequest.vaultId} not found.`)
+                return;
+            }
+            await session.sign(response);
+            session.broadcast(response);
+            Logger.debug("Join notification sent!", {cat: "topic_join"});
         } catch (err) {
             Logger.warn("Error finalizing topic join request: " + err + " " + err.stack, {cat: "topic_join"});
             await self.processJoinTopicError(envelope.payload, self, err);
@@ -131,7 +166,7 @@ class TopicJoinAssistant {
         await this.crossIslandMessenger.send(envelope);
     }
 
-    registerOutgoingPendingJoinrequest(pendingRequest) {
+    registerOutgoinTopicJoinRequest(pendingRequest) {
         this.pendingOutgoingJoinRequests[pendingRequest.pkfp] = pendingRequest;
     }
 
@@ -150,18 +185,21 @@ class TopicJoinAssistant {
 
     //Subscribes to relevant client requests
     subscribeToClientRequests(requestEmitter) {
-        this.subscribe(requestEmitter, {
-            //Handlers
-            join_topic: this.joinTopicOutgoing
-        }, this.clientRequestErrorHandler);
+        let handlers = {}
+        handlers[Internal.JOIN_TOPIC] = this.joinTopicOutgoing;
+        this.subscribe(requestEmitter, handlers, this.clientRequestErrorHandler);
     }
 
     //Subscribes to relevant cross-island requests
     subscribeToCrossIslandsMessages(ciMessenger) {
+        let handlers = {}
+        handlers[Internal.JOIN_TOPIC] = this.joinTopicIncoming;
+        handlers[Internal.JOIN_TOPIC_SUCCESS] = this.finalizeTopicJoin;
+        this.subscribe(ciMessenger, handlers, this.crossIslandErrorHandler);
+
+        //refactor this:
         this.subscribe(ciMessenger, {
-            join_topic: this.joinTopicIncoming,
             return_join_topic: this.processJoinTopicErrorOnReturn,
-            join_topic_success: this.finalizeTopicJoin
         }, this.crossIslandErrorHandler);
     }
 

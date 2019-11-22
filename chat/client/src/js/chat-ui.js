@@ -137,6 +137,12 @@ function initUI(){
 
     topicJoinModal = UI.bakeTopicJoinModal(()=>{
         console.log("Joining topic")
+        let nickname = util.$("#join-topic-nickname");
+        let topicName = util.$("#new-topic-name");
+        let inviteCode = util.$("#join-topic-invite-code");
+        chat.joinTopic(nickname, topicName, inviteCode);
+        toastr.info("Attempting to join topic");
+        topicJoinModal.close();
     })
 
     // prepare side panel
@@ -281,7 +287,7 @@ function processNewTopicClick(){
 }
 
 function processJoinTopicClick() {
-    console.log("Join topic");
+    topicJoinModal.open()
 }
 
 function processNewInviteClick() {

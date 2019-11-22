@@ -291,6 +291,12 @@ export class ChatClient{
         }, 50)
     }
 
+    //~END INIT TOPIC//////////////////////////////////////////////////////////
+
+
+
+    // ---------------------------------------------------------------------------------------------------------------------------
+    // DELETE TOPIC
     deleteTopic(pkfp){
         let self = this
        
@@ -315,6 +321,135 @@ export class ChatClient{
         request.signMessage(topic.getPrivateKey());
         self.messageQueue.enqueue(request);
     }
+
+    //~END DELETE TOPIC////////////////////////////////////////////////////////
+
+
+
+    // ---------------------------------------------------------------------------------------------------------------------------
+    // TOPIC JOIN
+
+    /**
+     * Called on INVITEE side when new user joins a topic with an invite code
+     * @param nickname
+     * @param inviteCode
+     * @returns {Promise}
+     */
+    async joinTopic(nickname, topicName, inviteCode) {
+        let self = this;
+        setTimeout(()=>{
+
+            let start = new Date();
+            console.log("joining topic with nickname: " + nickname + " | Invite code: " + inviteCode);
+
+            console.log(`Preparing keys...`);
+
+            let cryptoStart = new Date()
+            let ic = new iCrypto();
+            ic.asym.createKeyPair("rsa")
+                .getPublicKeyFingerprint('rsa', 'pkfp')
+                .addBlob("invite64", inviteCode.trim())
+                .base64Decode("invite64", "invite");
+
+            let pkfp = ic.get("pkfp")
+            let publicKey = ic.get("rsa").publicKey;
+            let privateKey = ic.get("rsa").privateKey;
+
+            let now = new Date()
+
+            console.log(`Keys generated in ${(now - cryptoStart) / 1000}sec. ${ (now - start) / 1000 } elapsed since beginning.`);
+
+            let callStart = new Date()
+
+
+            let invite = ic.get("invite").split("/");
+            let inviterResidence = invite[0];
+            let inviterID = invite[1];
+            let inviteID = invite[2];
+
+            if (!self.inviteRequestValid(inviterResidence, inviterID, inviteID)){
+                self.emit("join_topic_fail");
+                throw new Error("Invite request is invalid");
+            }
+
+            // Encrypted vault record
+            let vaultRecord = self.vault.prepareVaultTopicRecord(self.version,
+                                                                pkfp,
+                                                                privateKey,
+                                                                topicName)
+            let vault = JSON.stringify({
+                record: vaultRecord,
+                id: self.vault.id
+            })
+
+            ic.addBlob("vlt-rec", vault)
+            .setRSAKey("priv", self.vault.privateKey, "private")
+            .privateKeySign("vlt-rec", "priv", "vlt-sign")
+
+
+            let request = new Message(self.version);
+            request.setCommand(Internal.JOIN_TOPIC);
+            request.setSource(pkfp);
+            request.setDest(inviterID);
+            let body = {
+                inviteString: inviteCode.trim(),
+                inviteCode: inviteID,
+                destination: inviterResidence,
+                invitee:{
+                    publicKey: publicKey,
+                    nickname: nickname,
+                    pkfp: pkfp
+                }
+            };
+            request.set("body", body);
+            request.vaultSign = ic.get("vlt-sign");
+            request.vault = vault;
+            request.signMessage(privateKey);
+            console.log("Sending topic join request");
+            let sendStart = new Date();
+            self.messageQueue.enqueue(request);
+            //this.chatSocket.emit("request", request);
+            now = new Date()
+            console.log(`Request sent to island in  ${(now - sendStart) / 1000}sec. ${ (now - start) / 1000 } elapsed since beginning.`);
+        }, 100)
+    }
+
+
+    initSettingsOnTopicJoin(topicInfo, request){
+        let privateKey = topicInfo.privateKey;
+        let publicKey = topicInfo.publicKey;
+        let ic = new iCrypto();
+        ic.asym.setKey("pub", publicKey, "public")
+            .getPublicKeyFingerprint("pub", "pkfp");
+        let pkfp = ic.get("pkfp");
+        let topicName = ChatUtility.decryptStandardMessage(request.body.topicName, privateKey);
+        let inviterNickname = ChatUtility.decryptStandardMessage(request.body.inviterNickname, privateKey);
+        let inviterPkfp = request.body.inviterPkfp;
+        let settings = this.prepareNewTopicSettings(topicInfo.nickname, topicName, topicInfo.publicKey, false);
+
+        this.setMemberNickname(inviterPkfp, inviterNickname, settings);
+        this.saveClientSettings(settings, privateKey)
+    }
+
+    onSuccessfullSettingsUpdate(response, self){
+        console.log("Settings successfully updated!");
+        self.emit("settings_updated");
+    }
+
+    notifyJoinSuccess(request, self){
+        console.log("Join successfull received!");
+        let topicInfo = self.pendingTopicJoins[request.body.inviteCode];
+        self.initSettingsOnTopicJoin(topicInfo, request);
+
+	console.log("new topic pkfp: " + JSON.stringify(topicInfo));
+        self.emit("topic_join_success", {
+            pkfp: topicInfo.pkfp,
+            nickname: topicInfo.nickname,
+            privateKey: topicInfo.privateKey
+        });
+    }
+
+
 
     /**
      * Called initially on topic creation
@@ -474,6 +609,11 @@ export class ChatClient{
         });
         //delete self.newTopicPending[request.body.topicID];
     }
+
+
+
+
+
 
     prepareNewTopicSettings(nickname, topicName, publicKey, encrypt = true){
         //Creating and encrypting topic settings:

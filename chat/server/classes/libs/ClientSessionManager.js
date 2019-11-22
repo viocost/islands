@@ -59,7 +59,7 @@ class ClientSessionManager{
 
     getSessionBySessionID(sessionID){
         return Object.values(this.sessions).filter((val)=>{
-            return val.sessionID === sessionID;
+            return val.id === sessionID;
         });
     }
 

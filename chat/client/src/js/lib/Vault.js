@@ -85,20 +85,24 @@ export class Vault{
     initHandlers(){
         let self = this;
         this.handlers = {};
-        this.handlers[Internal.POST_LOGIN_DECRYPT] = (data)=>{ self.emit(Internal.POST_LOGIN_DECRYPT, data) }
+        this.handlers[Internal.JOIN_TOPIC_SUCCESS] = (msg)=>{
+            console.log("Topic join success! Adding new topic...");
+            self.addNewTopic(self, msg);
+        }
+        this.handlers[Internal.POST_LOGIN_DECRYPT] = (msg)=>{ self.emit(Internal.POST_LOGIN_DECRYPT, msg) }
         this.handlers[Events.POST_LOGIN_SUCCESS] = ()=>{ self.emit(Events.POST_LOGIN_SUCCESS); }
-        this.handlers[Internal.TOPIC_CREATED] = (data)=>{
-            self.addNewTopic(self, data)
+        this.handlers[Internal.TOPIC_CREATED] = (msg)=>{
+            self.addNewTopic(self, msg)
         }
-        this.handlers[Internal.TOPIC_DELETED] = (data) =>{
-            console.log(`TOPIC DELETED: ${data.body.topicPkfp}`)
+        this.handlers[Internal.TOPIC_DELETED] = (msg) =>{
+            console.log(`TOPIC DELETED: ${msg.body.topicPkfp}`)
         }
-        this.handlers[Internal.SESSION_KEY] = (message)=>{
-            if(!Message.verifyMessage(message.body.sessionKey, message)){
+        this.handlers[Internal.SESSION_KEY] = (msg)=>{
+            if(!Message.verifyMessage(message.body.sessionKey, msg)){
                 throw new Error("Session key signature is invalid!")
             }
-            self.sessionKey = message.body.sessionKey;
-            self.emit(Internal.SESSION_KEY, message)
+            self.sessionKey = msg.body.sessionKey;
+            self.emit(Internal.SESSION_KEY, msg)
         }
     }
 

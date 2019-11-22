@@ -102,6 +102,8 @@ module.exports.Internal = Object.freeze({
     SYNC_INVITES: "sync_invites",
     INVITE_REQUEST_TIMEOUT: "invite_request_timeout",
 
+    JOIN_TOPIC: "join_topic",
+    JOIN_TOPIC_SUCCESS: "join_topic_success",
 
     UPDATE_SETTINGS: "update_settings",
     SETTINGS_UPDATED: "update_settings_success",

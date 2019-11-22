@@ -70,6 +70,14 @@ class ClientSession extends EventEmitter{
         return Utility.decryptStandardMessage(msg, key);
     }
 
+    //msg must be an instance of Message
+    //
+    async sign(msg){
+        let key = await this.getPrivateKey()
+        msg.signMessage(key);
+        return msg;
+    }
+
     waitForKey(){
         let self = this;
         return new Promise((resolve, reject)=>{

@@ -66,7 +66,8 @@ class IslandsChat{
             this.hm,
             this.topicAuthorityManager,
             this.crossIslandMessenger,
-            this.torConnector
+            this.torConnector,
+            this.vaultManager
         );
 
         this.serviceAssistant = new ServiceAssistant(
