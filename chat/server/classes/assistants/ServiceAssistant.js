@@ -402,7 +402,8 @@ class ServiceAssistant{
 
     subscribeToClientRequests(requestEmitter){
         let handlers = {};
-        handlers[Internal.LOAD_MESSAGES] = this.loadMoreMessages
+        handlers[Internal.LOAD_MESSAGES] = this.loadMoreMessages;
+        handlers[Internal.UPDATE_SETTINGS] = this.registerSettingsUpdate;
 
         this.subscribe(requestEmitter, {
             whats_your_name: this.processStandardNameExchabgeRequest,
@@ -410,7 +411,6 @@ class ServiceAssistant{
             my_name_response: this.processStandardNameExchabgeRequest,
             request_invite: this.registerInviteRequest,
             boot_participant: this.registerBootMemberRequest,
-            update_settings: this.registerSettingsUpdate,
             register_service_record: this.registerClientServiceRecord
         }, this.clientErrorHandler)
 

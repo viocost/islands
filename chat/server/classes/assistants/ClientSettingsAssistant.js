@@ -3,7 +3,12 @@ const Err = require("../libs/IError.js");
 const Request = require("../objects/ClientRequest.js");
 const Response = require("../objects/ClientResponse.js");
 const Metadata = require("../objects/Metadata.js");
+const Events = require("../../../common/Events").Events;
+const Internal = require("../../../common/Events").Internal;
+const Message = require("../objects/Message.js");
+const iCrypto = require("../libs/iCrypto.js");
 
+const Logger = require("../libs/Logger.js");
 
 
 class ClientSettingsAssistant{
@@ -18,24 +23,37 @@ class ClientSettingsAssistant{
     }
 
     subscribeToClientRequests(requestEmitter){
-        this.subscribe(requestEmitter, {
-            //Handlers
-            update_settings: this.updateSettings
-        }, this.clientRequestErrorHandler);
+        let handlers = {}
+        handlers[Internal.UPDATE_SETTINGS] = this.updateSettings;
+        this.subscribe(requestEmitter, handlers, this.clientRequestErrorHandler);
     }
 
 
     async updateSettings(request, connectionID, self,){
+        console.log("Updating settings");
+        Logger.debug("Session update requesg", {cat: "settings"})
         const metadata = Metadata.parseMetadata(await self.hm.getLastMetadata(request.headers.pkfpSource));
-        if(!Request.isRequestValid(request, metadata.getParticipantPublicKey(request.headers.pkfpSource))){
-            throw new Error("Update request was not verified");
-        }
+        const publicKey = metadata.getParticipantPublicKey(request.headers.pkfpSource);
+
+        if(!Request.isRequestValid(request, publicKey))  throw new Error("Update request is invalid");
+
+        let ic = new iCrypto()
+        ic.addBlob("settings", request.body.settings)
+          .addBlob("sign", request.body.signature)
+          .setRSAKey("pub", publicKey, "public")
+          .publicKeyVerify("settings", "sign", "pub", "res")
+        if(!ic.get("res")) throw new Error("Settings blob signature verification failed")
+
+
         metadata.setSettings(request.body.settings);
-        //let clientSettingsManager = new ClientSettingsManager(self.hm);
-        //await clientSettingsManager.writeSettings(request.headers.pkfpSource, request.body.settings, metadata);
-        self.hm.appendMetadata(metadata.toBlob(), request.headers.pkfpSource);
-        let response = new Response("update_settings_success", request);
-        self.sessionManager.broadcastUserResponse(request.headers.pkfpSource, response);
+        await self.hm.appendMetadata(metadata.toBlob(), request.headers.pkfpSource);
+
+        let response =  Message.makeResponse(request, "island", Internal.SETTINGS_UPDATED);
+        response.body.settings = request.body.settings;
+        response.body.signature = request.body.signature;
+        let session = self.sessionManager.getSessionByConnectionId(connectionID);
+        Logger.debug("Settings updated. Sending ", {cat: "settings"})
+        session.broadcast(response);
     }
 
     /***** Error handlers *****/

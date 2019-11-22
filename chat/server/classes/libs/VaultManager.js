@@ -116,8 +116,19 @@ class VaultManager{
         Logger.debug("Topic record saved", {cat: "topic_create"})
     }
 
-    deleteTopic(vaultId, topicPkfp, nonce, sign){
-       
+    async deleteTopic(vaultId, topicPkfp, nonce, sign){
+        Logger.debug(`Deleting toipc record pkfp: ${topicPkfp}, vault: ${vaultId}`, {cat: "topic_delete"})
+        let publicKey = this.getVaultPublicKey(vaultId)
+        let ic = new iCrypto()
+        ic.addBlob("sign", sign)
+          .addBlob("nonce", nonce)
+          .setRSAKey("pub", publicKey, "public")
+          .publicKeyVerify("nonce", "sign", "pub", "res")
+        if(!ic.get("res")) throw new Error("Error deleting topic record: signature verification failed")
+
+        let recordPath = path.join(this.getTopicsPath(vaultId), topicPkfp);
+        fs.unlinkSync(recordPath);
+        Logger.debug("Topic record is deleted", {cat: "topic_delete"})
     }
 
 

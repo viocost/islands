@@ -52,7 +52,7 @@ class ClientSession extends EventEmitter{
             self.privateKey = ic.get("kp").privateKey;
             self.pending = false;
             Logger.debug("Session key has been generated!", {cat: "session"})
-        }, 50)
+        }, 300)
     }
 
     async getPublicKey(){

@@ -2,11 +2,13 @@ const Err = require("../libs/IError.js");
 const Assistant = require("../assistants/Assistant.js");
 const ClientError = require("../objects/ClientError.js");
 const Request = require("../objects/ClientRequest.js");
+const Message = require("../objects/Message.js");
 const Response = require("../objects/ClientResponse.js");
 const Envelope = require("../objects/CrossIslandEnvelope.js");
 const Metadata = require("../objects/Metadata.js");
 const Logger = require("../libs/Logger");
-
+const Events = require("../../../common/Events").Events;
+const Internal = require("../../../common/Events").Internal;
 
 class BootLeaveAssistant extends Assistant{
     constructor(connectionManager = Err.required(),
@@ -14,9 +16,11 @@ class BootLeaveAssistant extends Assistant{
                 requestEmitter = Err.required(),
                 historyManager = Err.required(),
                 topicAuthorityManager = Err.required(),
-                crossIslandMessenger = Err.required()){
+                crossIslandMessenger = Err.required(),
+                vaultManager = Err.required()){
         super(historyManager);
         this.crossIslandMessenger = crossIslandMessenger;
+        this.vaultManager = vaultManager;
         this.connectionManager = connectionManager;
         this.sessionManager = sessionManager;
         this.topicAuthorityManager = topicAuthorityManager;
@@ -73,14 +77,26 @@ class BootLeaveAssistant extends Assistant{
      */
     async deleteTopic(request, connectionID, self){
         Logger.debug("Deleting topic")
-        const publicKey = await self.hm.getOwnerPublicKey(request.headers.pkfpSource);
+        let pkfp = request.body.topicPkfp;
+        await self.vaultManager.deleteTopic(request.body.vaultId,
+                                            pkfp,
+                                            request.body.vaultNonce,
+                                            request.body.vaultSign)
+
+        const publicKey = await self.hm.getOwnerPublicKey(pkfp);
         if(!Request.isRequestValid(request, publicKey)){
             throw new Error("Boot request was not verified");
         }
 
         await self.hm.deleteTopic(request.headers.pkfpSource);
-        let response = new Response("delete_topic_success", request);
-        self.connectionManager.sendResponse(connectionID, response);
+        //let response = new Response("delete_topic_success", request);
+        let response = Message.makeResponse(request, "island", Internal.TOPIC_DELETED);
+        response.body.vaultNonce = request.body.vaultNonce;
+        response.body.vaultSign = request.body.vaultSign;
+        response.body.topicPkfp = request.body.pkfp;
+        Logger.debug("Topic has been deleted successfully. Sending notification to client", {cat: "topic_delete"})
+        let session = self.sessionManager.getSessionByConnectionId(connectionID);
+        session.broadcast(response);
     }
 
 
@@ -101,11 +117,11 @@ class BootLeaveAssistant extends Assistant{
 
     async clientErrorHandler(request, connectionID, self, err){
         try{
-            Logger.warn("Error handling client request: " + err.message, {stack: err.stack});
+            Logger.warn("Error handling client request: " + err.message, {stack: err.stack, cat: "topic_delete"});
             let error = new ClientError(request, self.getClientErrorType(request.header.command) , "Internal server error");
             self.connectionManager.sendResponse(connectionID, error);
         }catch(fatalError){
-            Logger.error("FATAL ERROR while handling client request: " + fatalError + " " + fatalError.stack);
+            Logger.error("FATAL ERROR while handling client request: " + fatalError + " " + fatalError.stack, {cat: "topic_delete"});
         }
     }
 

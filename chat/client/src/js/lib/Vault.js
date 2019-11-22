@@ -90,6 +90,9 @@ export class Vault{
         this.handlers[Internal.TOPIC_CREATED] = (data)=>{
             self.addNewTopic(self, data)
         }
+        this.handlers[Internal.TOPIC_DELETED] = (data) =>{
+            console.log(`TOPIC DELETED: ${data.body.topicPkfp}`)
+        }
         this.handlers[Internal.SESSION_KEY] = (message)=>{
             if(!Message.verifyMessage(message.body.sessionKey, message)){
                 throw new Error("Session key signature is invalid!")
@@ -124,6 +127,7 @@ export class Vault{
         this.pkfp = ic.get("pkfp");
         this.version = version;
         this.initialized = true;
+        this.getPrivateKey = ()=>{ return ic.get("kp").privateKey }
     }
 
 

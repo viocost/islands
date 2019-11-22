@@ -21,6 +21,8 @@ CLOSED: [2019-11-21 Thu 19:52]
 CLOSED: [2019-11-21 Thu 23:09]
 ***** TODO Delete invite
 ***** TODO Rename invite
+**** DONE Settings update
+CLOSED: [2019-11-22 Fri 22:17]
 **** TODO Topic join
 **** TODO Members' nicknames aliases management
 **** TODO Files transfer
@@ -34,6 +36,9 @@ CLOSED: [2019-11-21 Thu 23:09]
 **** TODO Vault password change
 **** TODO Delete topic
 
+***** DONE Delete history and vault record
+CLOSED: [2019-11-22 Fri 20:57]
+***** TODO Delete topic authority and take down hidden services
 *** TODO Where to put connection indicator
 
 *** DONE Append and show topics

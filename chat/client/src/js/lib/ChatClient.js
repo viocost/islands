@@ -291,6 +291,31 @@ export class ChatClient{
         }, 50)
     }
 
+    deleteTopic(pkfp){
+        let self = this
+       
+        // let privateKey = this.session.privateKey;
+        let topic = this.vault.topics[pkfp]
+        if (!topic) throw new Error(`Topic ${pkfp} not found`);
+
+        let ic = new iCrypto();
+        ic.createNonce("n")
+            .bytesToHex("n", "nhex")
+            .setRSAKey("priv", self.vault.privateKey, "private")
+            .privateKeySign("nhex", "priv", "sign")
+
+        let request = new Message(self.version);
+        request.setCommand(Internal.DELETE_TOPIC);
+        request.setSource(self.vault.id);
+        request.body.vaultId = self.vault.id;
+        request.body.topicPkfp = pkfp;
+        request.body.vaultNonce = ic.get("nhex")
+        request.body.vaultSign = ic.get("sign")
+        request.addNonce();
+        request.signMessage(topic.getPrivateKey());
+        self.messageQueue.enqueue(request);
+    }
+
     /**
      * Called initially on topic creation
      * @param {String} nickname
@@ -455,6 +480,7 @@ export class ChatClient{
         let settings = {
             version: this.version,
             membersData: {},
+            invites: {},
             soundsOn: true
         };
         if(nickname){

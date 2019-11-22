@@ -23,12 +23,12 @@ export class Topic{
         this.messages = [];
         this.settings = {};
         this.invites = {};
-
+        this.getPrivateKey = ()=>{ return key }
 
         // Meaning event listeners are set for arrivalHub
         this.isBootstrapped = false;
 
-
+        // Whether topic's metadata loaded
         this.metadataLoaded = false;
 
         // Initial messages load has been completed
@@ -58,8 +58,10 @@ export class Topic{
 
     loadMetadata(metadata){
 
-        metadata.body.settings = JSON.parse(ChatUtility.decryptStandardMessage(metadata.body.settings, this.privateKey))
+        let settings = JSON.parse(ChatUtility.decryptStandardMessage(metadata.body.settings, this.privateKey))
         this._metadata = metadata
+        this._metadata.body.settings = settings;
+        this.settings = settings;
         this.participants = {};
         for(let pkfp of Object.keys(metadata.body.participants)){
             this.participants[pkfp] = {};
@@ -69,14 +71,20 @@ export class Topic{
             this.participants[pkfp].residence = metadata.body.participants[pkfp].residence;
             this.participants[pkfp].rights = metadata.body.participants[pkfp].rights;
 
-            this.participants[pkfp].nickname = metadata.body.settings.membersData[pkfp] ?
-                metadata.body.settings.membersData[pkfp].nickname : "";
-            this.participants[pkfp].joined = metadata.body.settings.membersData[pkfp]?
-                metadata.body.settings.membersData[pkfp].joined : "";
+            if(metadata.body.settings.membersData){
+                this.participants[pkfp].nickname = metadata.body.settings.membersData[pkfp] ?
+                    metadata.body.settings.membersData[pkfp].nickname : "";
+                this.participants[pkfp].joined = metadata.body.settings.membersData[pkfp]?
+                    metadata.body.settings.membersData[pkfp].joined : "";
+            }
 
         }
 
         this.topicAuthority = metadata.body.topicAuthority;
+        if (!metadata.body.settings.invites){
+            metadata.body.settings.invites = {};
+        }
+
         this.invites = metadata.body.settings.invites;
         this.metadataLoaded = true;
 
@@ -101,13 +109,21 @@ export class Topic{
     }
 
     setHandlers(){
+        let self = this;
         this.handlers[Internal.LOAD_MESSAGES_SUCCESS] = this.processMessagesLoaded
         this.handlers[Internal.INVITE_REQUEST_TIMEOUT] = ()=>{
             console.log("Invite request timeout");
         }
-        this.handlers[Events.INVITE_CREATED] = ()=>{
-            console.log("Invite created!!");
+        this.handlers[Events.INVITE_CREATED] = (msg)=>{
+            console.log("Invite created event");
+            self.processInviteCreated(self, msg);
+
         }
+        this.handlers[Internal.SETTINGS_UPDATED] = (msg)=>{
+            console.log("Settings updated");
+            self.processSettingsUpdated(msg);
+        }
+
 
     }
 
@@ -211,12 +227,6 @@ export class Topic{
         return chatMessage;
     }
 
-
-
-    updateSettings(){
-         
-    }
-
     _loadMessages(self, quantity=25, lastMessageId){
         let request = new Message(self.version);
         request.headers.command = Internal.LOAD_MESSAGES;
@@ -304,6 +314,45 @@ export class Topic{
     }
     //END//////////////////////////////////////////////////////////////////////
 
+    // ---------------------------------------------------------------------------------------------------------------------------
+    // Settings handling
+
+    saveClientSettings(settingsRaw, privateKey){
+        if(!settingsRaw){
+            settingsRaw = this.settings;
+        }
+        if(!privateKey){
+            privateKey = this.privateKey;
+        }
+        let ic = new iCrypto();
+        ic.asym.setKey("privk", privateKey, "private")
+            .publicFromPrivate("privk", "pub")
+        let publicKey = ic.get("pub");
+
+        if(typeof settingsRaw === "object"){
+            settingsRaw = JSON.stringify(settingsRaw);
+        }
+        let settingsEnc = ChatUtility.encryptStandardMessage(settingsRaw, publicKey);
+
+        ic.addBlob("cipher", settingsEnc)
+          .privateKeySign("cipher", "privk", "sign")
+
+        let body = {
+            settings: settingsEnc,
+            signature: ic.get("sign")
+        };
+
+        let request = new Message(this.version);
+        request.setSource(this.pkfp);
+        request.setCommand(Internal.UPDATE_SETTINGS)
+        request.set("body", body);
+        request.signMessage(privateKey);
+        console.log("Sending update settings request");
+        this.messageQueue.enqueue(request);
+    }
+
+    //~END SETTINGS ///////////////////////////////////////////////////////////
+
     processMessagesLoaded(msg, self){
         console.log("Messages loaded. Processing...");
         let data = msg.body.lastMessages;
@@ -350,6 +399,21 @@ export class Topic{
         self.emit(Events.MESSAGES_LOADED, self.messages);
     }
 
+    processSettingsUpdated(msg){
+        let settings = msg.body.settings;
+        let signature = msg.body.signature;
+
+        let ic = new iCrypto()
+        ic.addBlob("settings", settings)
+          .addBlob("sign", signature)
+          .setRSAKey("pub", this.getPublicKey(), "public")
+          .publicKeyVerify("settings", "sign", "pub", "res")
+        if(!ic.get("res")) throw new Error("Settings blob signature verification failed")
+        let settingsPlain = JSON.parse(ChatUtility.decryptStandardMessage(settings, this.privateKey))
+        this.settings = settingsPlain
+        console.log("Settings updated successfully!")
+    }
+
     bootPraticipant(){
 
     }
@@ -368,6 +432,24 @@ export class Topic{
 
     processNicknameChangeNote(){
 
+    }
+
+    processInviteCreated(self, msg){
+        console.log(`New invite: ${msg.body.inviteCode}`);
+        let userInvites = msg.body.userInvites;
+        if(!self.settings.invites) self.settings.invites = {}
+
+        for(let i of userInvites){
+            if(!self.settings.invites.hasOwnProperty(i)){
+                self.settings.invites[i] = {}
+            }
+        }
+        for (let i of Object.keys(self.settings.invites)){
+            if(!userInvites.includes(i)){
+                delete self.settings.invites[i];
+            }
+        }
+        self.saveClientSettings(self.settings, self.privateKey);
     }
 
 
@@ -391,6 +473,17 @@ export class Topic{
         }
     }
 
+    getPublicKey(){
+        if(!this.privateKey) throw new Error("No private key found")
+        if(!this.publicKey){
+            let ic = new iCrypto()
+            ic.setRSAKey("priv", this.privateKey, "private")
+                .publicFromPrivate("priv", "pub")
+            this.publicKey = ic.get("pub")
+        }
+        return this.publicKey;
+    }
+
     ensureInitLoaded(){
         if(!this.initLoaded || !this.currentMetadata){
             throw new Error("Topic has no metadata");
@@ -406,41 +499,4 @@ export class Topic{
     setName(name){
         this.name = name;
     }
-
-
-    saveClientSettings(settingsRaw, privateKey){
-        if(!settingsRaw){
-            settingsRaw = this.session.settings;
-        }
-        if(!privateKey){
-            privateKey = this.session.privateKey;
-        }
-        let ic = new iCrypto();
-        ic.asym.setKey("privk", privateKey, "private")
-            .publicFromPrivate("privk", "pub")
-            .getPublicKeyFingerprint("pub", "pkfp");
-        let publicKey = ic.get("pub");
-        let pkfp = ic.get("pkfp");
-
-        if(typeof settingsRaw === "object"){
-            settingsRaw = JSON.stringify(settingsRaw);
-        }
-        let settingsEnc = ChatUtility.encryptStandardMessage(settingsRaw, publicKey);
-        let headers = {
-            command: "update_settings",
-            pkfpSource: pkfp
-        };
-        let body = {
-            settings: settingsEnc
-        };
-
-        let request = new Message(self.version);
-        request.set("headers", headers);
-        request.set("body", body);
-        request.signMessage(privateKey);
-        console.log("Sending update settings request");
-        this.chatSocket.emit("request", request);
-    }
-
-
 }

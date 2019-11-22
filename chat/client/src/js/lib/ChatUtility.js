@@ -76,7 +76,26 @@ export class ChatUtility{
         return ic.get("b")
     }
 
+    static sign(data, privateKey){
+        if (typeof data !== "string") throw new Error("Data must be a string");
+        let ic = new iCrypto()
 
+        ic.addBlob("body", data)
+            .setRSAKey("priv", privateKey, "private")
+            .privateKeySign("body", "priv", "sign");
+        return ic.get("sign");
+    }
 
+    //data must be string
+    // sign must be hexified string
+    static verify(data, publicKey, sign){
+        if (typeof data !== "string") throw new Error("Data must be a string");
+        let ic = new iCrypto();
+        ic.setRSAKey("pubk", publicKey, "public")
+            .addBlob("sign", sign)
+            .hexToBytes('sign', "signraw")
+            .addBlob("b", data);
+        ic.publicKeyVerify("b", "sign", "pubk", "v");
+        return ic.get("v");
+    }
 }
-

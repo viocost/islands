@@ -107,7 +107,8 @@ class IslandsChat{
             this.clientRequestEmitter,
             this.hm,
             this.topicAuthorityManager,
-            this.crossIslandMessenger
+            this.crossIslandMessenger,
+            this.vaultManager
         );
 
         Logger.verbose("Chat started")

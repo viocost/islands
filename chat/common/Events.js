@@ -76,6 +76,8 @@ module.exports.Internal = Object.freeze({
     // Vault update notifications
     SAVE_VAULT: "save_vault",
     TOPIC_CREATED: "topic_created",
+
+    DELETE_TOPIC: "delete_topic",
     TOPIC_DELETED: "topic_deleted",
     TOPIC_UPDATED: "topic_updated",
     VAULT_SETTINGS_UPDATED: "vault_settings_updated",
@@ -99,6 +101,10 @@ module.exports.Internal = Object.freeze({
     DELETE_INVITE: "delete_invite",
     SYNC_INVITES: "sync_invites",
     INVITE_REQUEST_TIMEOUT: "invite_request_timeout",
+
+
+    UPDATE_SETTINGS: "update_settings",
+    SETTINGS_UPDATED: "update_settings_success",
 
     LOAD_MESSAGES: "load_messages",
     LOAD_MESSAGES_SUCCESS: "load_messages_success",
