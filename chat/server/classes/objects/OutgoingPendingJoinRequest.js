@@ -6,14 +6,14 @@ class OutgoingPendingJoinRequest{
                 publicKey = Err.required(),
                 hsid = Err.required(),
                 hsPrivateKey = Err.required(),
-                connectionId = Err.required(),
+                connId = Err.required(),
                 vaultRecord = Err.required(),
                 vaultId = Err.required()){
         this.pkfp = pkfp;
         this.publicKey = publicKey;
         this.hsid = hsid.substring(0, 16) + ".onion";
         this.hsPrivateKey = hsPrivateKey;
-        this.connectionId = connectionId;
+        this.connId = connId;
         this.vaultId = vaultId;
         this.vaultRecord = vaultRecord;
     }

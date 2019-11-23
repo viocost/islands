@@ -58,9 +58,7 @@ class ClientSessionManager{
     }
 
     getSessionBySessionID(sessionID){
-        return Object.values(this.sessions).filter((val)=>{
-            return val.id === sessionID;
-        });
+        return this.sessions[sessionID];
     }
 
     getSessionByTopicPkfp(pkfp){

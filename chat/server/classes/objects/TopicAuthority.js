@@ -214,8 +214,8 @@ class TopicAuthority extends EventEmitter{
         await this.saveInviteIndex();
     }
 
-    async getInvite(inviteStringReceived = Err.required()){
-        const passedInvite = Invite.parse(inviteStringReceived);
+    async getInvite(inviteString = Err.required()){
+        const passedInvite = Invite.parse(inviteString);
         const inviteCipher = await this.hm.taGetInvite(passedInvite.getInviteCode(), this.getPkfp());
         let privateKey = this.getTAPrivateKey();
         let invite =  JSON.parse(Util.decryptStandardMessage(inviteCipher, privateKey));

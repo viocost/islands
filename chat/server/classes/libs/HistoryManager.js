@@ -352,7 +352,7 @@ class HistoryManager{
             let invitePath = this.pathToInvites(pkfp) + inviteId;
             if (! await fs.exists(invitePath)  ){
                 console.log("INVITE COULD NOT BE FOUND: " + invitePath);
-                reject("Invite does not exist");
+                reject(new Error("Invite does not exist"));
             }
             let data = await fs.readFile(invitePath);
             resolve(data.toString());
@@ -549,7 +549,7 @@ class HistoryManager{
                         }else {
                             Logger.error("Error renaming file: " + err, {cat: "files"})
                             console.log("ERROR renaming file: " + err);
-                            reject("renameTempUpload error: " + err);
+                            reject(new Error("renameTempUpload error: " + err));
                         }
                     } else {
                         //success
@@ -574,7 +574,7 @@ class HistoryManager{
         return new Promise((resolve, reject)=>{
             endPos = endPos ? endPos - 64 : undefined;
             if (endPos < 0) {
-                reject("Invalid start position for the history element");
+                reject(new Error("Invalid start position for the history element"));
                 return;
             }
             this.getHistoryElement(64, endPos, pkfp, type)
@@ -620,7 +620,7 @@ class HistoryManager{
                     return;
                 }
                 else if(!stats) {
-                    reject("History file does not exist");
+                    reject( new Error("History file does not exist"));
                     return;
                 }
 

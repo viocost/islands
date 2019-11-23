@@ -89,6 +89,11 @@ export class Vault{
             console.log("Topic join success! Adding new topic...");
             self.addNewTopic(self, msg);
         }
+
+        this.handlers[Internal.JOIN_TOPIC_FAIL] = (msg)=>{
+            console.log(`Join topic attempt has failed: ${msg.body.errorMsg}`);
+        }
+
         this.handlers[Internal.POST_LOGIN_DECRYPT] = (msg)=>{ self.emit(Internal.POST_LOGIN_DECRYPT, msg) }
         this.handlers[Events.POST_LOGIN_SUCCESS] = ()=>{ self.emit(Events.POST_LOGIN_SUCCESS); }
         this.handlers[Internal.TOPIC_CREATED] = (msg)=>{
@@ -283,57 +288,6 @@ export class Vault{
         message.signMessage(this.privateKey);
         this.messageQueue.enqueue(message)
     }
-
-    //This has to be moved outside
-    /////////////////////////////////////////////////////////////////////
-    // save(){                                                         //
-    //     if (!this.password || this.privateKey || this.topics){      //
-    //         throw new Error("Vault object structure is not valid"); //
-    //     }                                                           //
-    //                                                                 //
-    //     //Check if vault exists decrypted and loaded                //
-    //                                                                 //
-    //     //If not                                                    //
-    //         // Throw error                                          //
-    //
-    //                                                                 //
-    //     //Encrypt vault data with given password                    //
-    //     let vault = JSON.stringify({                                //
-    //         privateKey: this.privateKey,                            //
-    //         topics: JSON.parse(JSON.stringify(this.topics))         //
-    //     });                                                         //
-    //                                                                 //
-    //     let ic = new iCrypto();                                     //
-    //     ic.createNonce("salt",128)                                  //
-    //         .base64Encode("salt", "s64")                            //
-    //         .createPasswordBasedSymKey("key", this.password, "s64") //
-    //         .addBlob("vault", vault)                                //
-    //         .AESEncrypt("vault", "key", "cipher")                   //
-    //         .base64Encode("cipher", "cip64")                        //
-    //         .merge(["cip64", "s64"], "res")                         //
-    //         .setRSAKey("asymkey", this.privateKey, "private")       //
-    //         .privateKeySign("res", "asymkey", "sign");              //
-    //                                                                 //
-    //                                                                 //
-    //     //Sign encrypted vault with private key                     //
-    //     let body = {                                                //
-    //                                                                 //
-    //         vault: ic.get("res"),                                   //
-    //         sign: ic.get("sign")                                    //
-    //     };                                                          //
-    //     let xhr = new XMLHttpRequest();                             //
-    //     xhr.open("POST", "/update", true);                          //
-    //     xhr.setRequestHeader('Content-Type', 'application/json');   //
-    //     xhr.onreadystatechange = ()=>{                              //
-    //         console.log("Server said that vault is saved!");        //
-    //     };                                                          //
-    //     xhr.send(body);                                             //
-    //                                                                 //
-    //     //Send vault to the server                                  //
-    //     //Display result of save request                            //
-    //                                                                 //
-    // }                                                               //
-    /////////////////////////////////////////////////////////////////////
 
     changePassword(newPassword){
         if(!this.initialized){

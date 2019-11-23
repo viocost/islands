@@ -367,10 +367,15 @@ export class ChatClient{
             let inviterID = invite[1];
             let inviteID = invite[2];
 
-            if (!self.inviteRequestValid(inviterResidence, inviterID, inviteID)){
-                self.emit("join_topic_fail");
-                throw new Error("Invite request is invalid");
-            }
+            ///////////////////////////////////////////////////////////////////////////
+            // if (!self.inviteRequestValid(inviterResidence, inviterID, inviteID)){ //
+            //     self.emit("join_topic_fail");                                     //
+            //     throw new Error("Invite request is invalid");                     //
+            // }                                                                     //
+            ///////////////////////////////////////////////////////////////////////////
+
+            if(!inviteID || !inviterID || !(/^[a-z2-7]{16}\.onion$/.test(inviterResidence)))
+                throw new error("Invite request is invalid")
 
             // Encrypted vault record
             let vaultRecord = self.vault.prepareVaultTopicRecord(self.version,
@@ -544,7 +549,7 @@ export class ChatClient{
         let newTopicDataCipher = ChatUtility.encryptStandardMessage(JSON.stringify(newTopicData), token);
 
         //initializing topic settings
-        let settings = self.prepareNewTopicSettings(pendingTopic.ownerNickName,
+        let settings = Topic.prepareNewTopicSettings(self.version, pendingTopic.ownerNickName,
             pendingTopic.topicName,
             pendingTopic.ownerKeyPair.publicKey);
 
@@ -615,31 +620,6 @@ export class ChatClient{
 
 
 
-    prepareNewTopicSettings(nickname, topicName, publicKey, encrypt = true){
-        //Creating and encrypting topic settings:
-        let settings = {
-            version: this.version,
-            membersData: {},
-            invites: {},
-            soundsOn: true
-        };
-        if(nickname){
-            let ic = new iCrypto;
-            ic.asym.setKey("pubk", publicKey, "public")
-                .getPublicKeyFingerprint("pubk", "pkfp");
-            settings.nickname = nickname;
-            settings.membersData[ic.get("pkfp")] = {nickname: nickname};
-        }
-
-        if(topicName){
-            settings.topicName = topicName;
-        }
-        if (encrypt){
-            return ChatUtility.encryptStandardMessage(JSON.stringify(settings), publicKey);
-        }else {
-            return settings;
-        }
-    }
 
     //END//////////////////////////////////////////////////////////////////////
 

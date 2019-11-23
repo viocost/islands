@@ -104,6 +104,7 @@ module.exports.Internal = Object.freeze({
 
     JOIN_TOPIC: "join_topic",
     JOIN_TOPIC_SUCCESS: "join_topic_success",
+    JOIN_TOPIC_FAIL: "join_topic_fail",
 
     UPDATE_SETTINGS: "update_settings",
     SETTINGS_UPDATED: "update_settings_success",

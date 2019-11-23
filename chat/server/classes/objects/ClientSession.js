@@ -72,7 +72,7 @@ class ClientSession extends EventEmitter{
 
     //msg must be an instance of Message
     //
-    async sign(msg){
+    async signMessage(msg){
         let key = await this.getPrivateKey()
         msg.signMessage(key);
         return msg;
@@ -165,6 +165,11 @@ class ClientSession extends EventEmitter{
         for (connId of connIds){
             this.connectionManager.sendMesssage(connId, msg)
         }
+    }
+
+    // Sends given message to connection identified by connId
+    send(msg, connId){
+        this.connectionManager.sendMessage(connId, msg);
     }
 
     isActive(){

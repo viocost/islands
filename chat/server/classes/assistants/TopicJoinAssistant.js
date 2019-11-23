@@ -128,12 +128,12 @@ class TopicJoinAssistant {
                 Logger.warn(`Session ${pendingRequest.vaultId} not found.`)
                 return;
             }
-            await session.sign(response);
+            await session.signMessage(response);
             session.broadcast(response);
             Logger.debug("Join notification sent!", {cat: "topic_join"});
         } catch (err) {
-            Logger.warn("Error finalizing topic join request: " + err + " " + err.stack, {cat: "topic_join"});
-            await self.processJoinTopicError(envelope.payload, self, err);
+            Logger.error("Error finalizing topic join request: " + err.message + " " + err.stack, {cat: "topic_join"});
+            self.processFinalizeJoinError(self, envelope, err);
         }
 
     }
@@ -170,6 +170,20 @@ class TopicJoinAssistant {
         this.pendingOutgoingJoinRequests[pendingRequest.pkfp] = pendingRequest;
     }
 
+    async abortPendingJoinRequest(self = Err.required(), pkfp = Err.required()){
+        Logger.debug(`Aborting pending join request`, {cat: "topic_join"});
+        const pendingJoinRequest = self.pendingOutgoingJoinRequests[pkfp];
+        if(!pendingJoinRequest) return;
+        let hsid = pendingJoinRequest.hsid;
+
+        if(await self.connector.isHSUp(hsid)){
+            Logger.debug(`Taking down ${hsid} on join abort`, {cat: "topic_join"});
+            await self.connector.killHiddenService(hsid)
+        }
+
+        delete self.pendingOutgoingJoinRequests[pkfp]
+    }
+
     verifyOutgoingRequest(request) {
         Request.isRequestValid(request, request.body.invitee.publicKey, {
             pkfpSource: true,
@@ -204,46 +218,95 @@ class TopicJoinAssistant {
     }
 
 
+    async processFinalizeJoinError(self, envelope, err){
+        let errMsg = "unknown error";
+        if(err && err.message) errMsg = err.message
+        else if (err && err.constructor.name === "String") errMsg = err;
+        Logger.error(`Finalize topic join error: ${errMsg}`, {cat: "topic_join"});
+        await self.processJoinTopicError(self, envelope, errMsg)
+    }
+
+    async processJoinTopicErrorOnReturn(envelope, self){
+        Logger.warn("Join topic failed. Return envelope received. Error: " + envelope.error, {cat: "topic_join"});
+        await self.processJoinTopicError(self, envelope, envelope.error)
+    }
+
     /***** Error handlers *****/
     /**
      * This function is called when return envelope received
      * from other island.
      */
-    async processJoinTopicErrorOnReturn(envelope, self) {
-        Logger.warn("Join topic failed. Return envelope received. Error: " + envelope.error, {cat: "topic_join"});
-        let request = envelope;
+    async processJoinTopicError(self, envelope, errMsg) {
+        try{
+            let request = envelope;
 
-        while(request.payload){
-            request = request.payload;
-        }
-
-        await self.processJoinTopicError(request, self, envelope.error);
-    }
-
-    async processJoinTopicError(message, self, error = undefined) {
-        try {
-            const pendingRequest = self.getOutgoingPendingJoinRequest(message.headers.pkfpSource);
-            let clientError = new ClientError(message,
-                self.getClientErrorType(message.headers.command),
-                error ? error : "unknown error");
-            if (pendingRequest) {
-                self.connectionManager.sendResponse(pendingRequest.connectionId, clientError);
-                delete self.pendingOutgoingJoinRequests[message.headers.pkfpSorce];
+            while(request.payload){
+                request = request.payload;
             }
-        } catch (err) {
-            Logger.error("FATAL ERROR while processing join topic error: " + err + " " + err.stack, {cat: "topic_join"});
+
+            const pendingRequest = self.getOutgoingPendingJoinRequest(request.headers.pkfpSource);
+            const connId = pendingRequest.connId;
+            const vaultId = pendingRequest.vaultId;
+
+            await self.abortPendingJoinRequest(self, pendingRequest.pkfp);
+            let msg = new Message()
+            msg.setCommand(Internal.JOIN_TOPIC_FAIL)
+            msg.setSource("island")
+            msg.setDest(vaultId)
+            msg.body.errorMsg = errMsg;
+            let session = self.sessionManager.getSessionByConnectionId(connId);
+            if (!session){
+                Logger.warn(`Session ${connId} is not found`)
+            }
+            await session.signMessage(msg);
+            session.send(msg, connId);
+        } catch(err){
+            //logging
         }
     }
 
-    clientRequestErrorHandler(request, connectionID, self, err) {
-        console.trace(err);
-        try {
-            let error = new ClientError(request, self.getClientErrorType(request.headers.command), "Internal server error");
-            self.connectionManager.sendResponse(connectionID, error);
-        } catch (fatalError) {
-            Logger.error("Some big shit happened: " + fatalError + "\nOriginal error: " + err, {cat: "topic_join"});
-            console.trace(err);
+    //special case if error occurs during finalize
+
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // async processJoinTopicError(message, self, error = undefined) {                                                       //
+    //     try {                                                                                                             //
+    //         //Kill hidden services                                                                                        //
+    //         const pendingRequest = self.getOutgoingPendingJoinRequest(message.headers.pkfpSource);                        //
+    //         let message                                                                                                   //
+    //         //Send notification to that connection that invite failed                                                     //
+    //                                                                                                                       //
+    //         let clientError = new ClientError(message,                                                                    //
+    //             self.getClientErrorType(message.headers.command),                                                         //
+    //             error ? error : "unknown error");                                                                         //
+    //         if (pendingRequest) {                                                                                         //
+    //             self.connectionManager.sendResponse(pendingRequest.connectionId, clientError);                            //
+    //             delete self.pendingOutgoingJoinRequests[message.headers.pkfpSorce];                                       //
+    //         }                                                                                                             //
+    //     } catch (err) {                                                                                                   //
+    //         Logger.error("FATAL ERROR while processing join topic error: " + err + " " + err.stack, {cat: "topic_join"}); //
+    //     }                                                                                                                 //
+    // }                                                                                                                     //
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    async clientRequestErrorHandler(request, connectionId, self, err) {
+
+        let errMsg = "Unknown error";
+        if(err){
+            errMsg = err.message || err;
         }
+        let session = self.sessionManager.getSessionByConnectionId(connectionId);
+        if (!session){
+            Logger.warn(`No session found for ${connctionId}`, {cat: "topic_join"})
+        }
+
+        let msg = new Message()
+        msg.setCommand(Internal.JOIN_TOPIC_FAIL)
+        msg.setSource("island")
+        msg.setDest(session.id)
+        msg.body.errorMsg = errMsg;
+        await session.signMessage(msg);
+        session.send(msg, connectionId);
     }
 
 
@@ -259,15 +322,25 @@ class TopicJoinAssistant {
 
     async crossIslandErrorHandler(envelope, self, err) {
         try {
+
+            let errMsg = "Unknown error";
+
+            if (err && err.constructor.name === "String"){
+                errMsg = err
+            }  else if ( err && err.message){
+                errMsg = err.message
+            }
+
             if (envelope.return) {
-                Logger.error("Error handling return envelope: " + err + " stack: " + err.stack, {cat: "topic_join", stack: err.stack});
+                Logger.error("Error handling return envelope: " + errMsg , {cat: "topic_join", stack: err.stack});
                 return;
             }
-            Logger.warn("Topic join error: " + err + " returning envelope...", {cat: "topic_join", stack: err.stack});
-            await self.crossIslandMessenger.returnEnvelope(envelope, err);
+            Logger.warn("Topic join error: " + errMsg + " returning envelope...", {cat: "topic_join", stack: err.stack});
+            await self.crossIslandMessenger.returnEnvelope(envelope, errMsg);
         } catch (fatalErr) {
             Logger.error("FATAL ERROR" + fatalErr + " " + fatalErr.stack, {cat: "topic_join", stack: fatalErr.stack});
             console.trace("FATAL ERROR: " + fatalErr);
+            console.log(`envelope orig: ${envelope.origin}, dest: ${envelope.destination}`)
         }
 
     }

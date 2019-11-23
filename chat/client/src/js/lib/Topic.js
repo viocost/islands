@@ -41,6 +41,31 @@ export class Topic{
         this.awaitingMessages = false
     }
 
+    static prepareNewTopicSettings(version, nickname, topicName, publicKey, encrypt = true){
+        //Creating and encrypting topic settings:
+        let settings = {
+            version: version,
+            membersData: {},
+            invites: {},
+            soundsOn: true
+        };
+        if(nickname){
+            let ic = new iCrypto;
+            ic.asym.setKey("pubk", publicKey, "public")
+                .getPublicKeyFingerprint("pubk", "pkfp");
+            settings.nickname = nickname;
+            settings.membersData[ic.get("pkfp")] = {nickname: nickname};
+        }
+
+        if(topicName){
+            settings.topicName = topicName;
+        }
+        if (encrypt){
+            return ChatUtility.encryptStandardMessage(JSON.stringify(settings), publicKey);
+        }else {
+            return settings;
+        }
+    }
     // ---------------------------------------------------------------------------------------------------------------------------
     // INITIALIZING
     bootstrap(messageQueue, arrivalHub, version){
@@ -58,7 +83,14 @@ export class Topic{
 
     loadMetadata(metadata){
 
-        let settings = JSON.parse(ChatUtility.decryptStandardMessage(metadata.body.settings, this.privateKey))
+        let settingsCipher = metadata.body.settings;
+        let settings;
+        if (!settingsCipher){
+            settings = Topic.prepareNewTopicSettings(this.version, undefined, undefined, this.getPublicKey, false)
+        } else{
+            settings = JSON.parse(ChatUtility.decryptStandardMessage(settingsCipher, this.privateKey))
+        }
+
         this._metadata = metadata
         this._metadata.body.settings = settings;
         this.settings = settings;

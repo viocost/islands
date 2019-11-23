@@ -20,39 +20,41 @@ window.util = util;
 
 window.iCrypto = iCrypto
 
-window.testCrypto = ()=>{
-
-    let passwd = "hfgkhsdjf"
-    let stuff = "kljfgljsdkfgkdjgfdjlkfgjljgewjrkgjegjdjfgjdsgjsdfgdssdljvdcvjdcjv";
-    let ic = new iCrypto();
-    ic.createNonce("salt", 128)
-        .encode("salt","hex", "salt-hex")
-        .createPasswordBasedSymKey("key", passwd, "salt-hex")
-        .addBlob("vault", stuff)
-        .AESEncrypt("vault", "key", "cipher")
-        .encode("cipher","hex",  "cip-hex")
-        .merge(["salt-hex", "cip-hex"], "res")
-
-    let vault_encrypted = ic.get("res");
-
-    let icn = new iCrypto()
-    icn.addBlob("s16", vault_encrypted.substring(0, 256))
-        .addBlob("v_cip", vault_encrypted.substr(256))
-        .hexToBytes("s16", "salt")
-        .createPasswordBasedSymKey("sym", passwd, "s16")
-
-    console.log(ic.get("cip-hex") === v_cip);
-    icn.AESDecrypt("v_cip", "sym", "vault_raw", true);
-}
-
-window.testVault = ()=>{
-    let v = new Vault()
-    let pass = "jhdfgdslhglsdhgljhghdsfgh"
-    v.init(pass)
-    let cip = v.pack()
-    let dec = new Vault()
-    dec.initSaved(cip.vault, pass)
-}
+//////////////////////////////////////////////////////////////////////////////////////////
+// window.testCrypto = ()=>{                                                            //
+//                                                                                      //
+//     let passwd = "hfgkhsdjf"                                                         //
+//     let stuff = "kljfgljsdkfgkdjgfdjlkfgjljgewjrkgjegjdjfgjdsgjsdfgdssdljvdcvjdcjv"; //
+//     let ic = new iCrypto();                                                          //
+//     ic.createNonce("salt", 128)                                                      //
+//         .encode("salt","hex", "salt-hex")                                            //
+//         .createPasswordBasedSymKey("key", passwd, "salt-hex")                        //
+//         .addBlob("vault", stuff)                                                     //
+//         .AESEncrypt("vault", "key", "cipher")                                        //
+//         .encode("cipher","hex",  "cip-hex")                                          //
+//         .merge(["salt-hex", "cip-hex"], "res")                                       //
+//                                                                                      //
+//     let vault_encrypted = ic.get("res");                                             //
+//                                                                                      //
+//     let icn = new iCrypto()                                                          //
+//     icn.addBlob("s16", vault_encrypted.substring(0, 256))                            //
+//         .addBlob("v_cip", vault_encrypted.substr(256))                               //
+//         .hexToBytes("s16", "salt")                                                   //
+//         .createPasswordBasedSymKey("sym", passwd, "s16")                             //
+//                                                                                      //
+//     console.log(ic.get("cip-hex") === v_cip);                                        //
+//     icn.AESDecrypt("v_cip", "sym", "vault_raw", true);                               //
+// }                                                                                    //
+//                                                                                      //
+// window.testVault = ()=>{                                                             //
+//     let v = new Vault()                                                              //
+//     let pass = "jhdfgdslhglsdhgljhghdsfgh"                                           //
+//     v.init(pass)                                                                     //
+//     let cip = v.pack()                                                               //
+//     let dec = new Vault()                                                            //
+//     dec.initSaved(cip.vault, pass)                                                   //
+// }                                                                                    //
+//////////////////////////////////////////////////////////////////////////////////////////
 
 /**
  * Closure for processing admin requests while admin logged in
@@ -488,7 +490,7 @@ function adminLogin() {
         url: "/admin/vault",
         success: async res =>{
             try{
-                let decryptedVault = await decryptVault(res.vault, password);
+                let decryptedVault = await decryptVault(res.vault.vault, password);
                 await requestAdminLogin(decryptedVault.adminKey);
             }catch(err){
                 loadingOff();
@@ -511,11 +513,11 @@ function adminLogin() {
  * @param password
  * @returns {Promise<void>}
  */
-function decryptVault(vaultCipher, password){
+function decryptVault(vaultEnc, password){
     return new Promise((resolve, reject)=>{
         try{
             let vault = new Vault();
-            vault.initSaved(vaultCipher, password);
+            vault.initSaved(vaultEnc, password);
             if(!vault.admin || !vault.adminKey){
                 reject("Admin vault is invalid, or doesn't have a private key")
             }

@@ -39,16 +39,13 @@ CLOSED: [2019-11-22 Fri 22:17]
 ***** DONE Delete history and vault record
 CLOSED: [2019-11-22 Fri 20:57]
 ***** TODO Delete topic authority and take down hidden services
+
+
+*** TODO Deal with uninitialized settings on topic open
 *** TODO Where to put connection indicator
 
-*** DONE Append and show topics
-CLOSED: [2019-11-16 Sat 02:00]
-*** DONE On topic click load messages
-CLOSED: [2019-11-20 Wed 23:09]
-*** DONE Implement login
-CLOSED: [2019-11-15 Fri 17:44]
-*** DONE Implement initial layout logic
-CLOSED: [2019-11-15 Fri 17:44]
+
+*** TODO REFACTOR ASSISTANTS! self must be always FIRST ARGUMENT!!!
 *** TODO Request invites
 
 *** PROJ Topic creation
@@ -63,8 +60,6 @@ CLOSED: [2019-11-15 Fri 17:44]
 *** TODO Probably... Vault settings?
 Mute some topic notifications?
 *** TODO Fix client-server protocol such that each topic listens to messages
-*** DONE Re-implement vault registration
-CLOSED: [2019-11-20 Wed 23:09]
 *** PROJ Rework the chat interface
 **** DONE Draft static design of the chat page
 CLOSED: [2019-11-14 Thu 21:27]
@@ -85,32 +80,6 @@ CLOSED: [2019-11-14 Thu 21:27]
 *** TODO BUG! On scroll messages loaded and appended multiple times
 
 
-*** DONE Logger config parser: change format and implement self-documenting file
-CLOSED: [2019-11-10 Sun 13:53]
-*** DONE Implement message sending from queue
-CLOSED: [2019-11-08 Fri 23:16]
-*** DONE Re-design client server protocol. Remove request-response stuff
-CLOSED: [2019-11-10 Sun 12:48]
-*** DONE Vault id should be pkfp
-CLOSED: [2019-11-10 Sun 12:48]
-Not needed anymore
-*** DONE On establish connection launch all hidden services and topic authorities async
-CLOSED: [2019-11-10 Sun 12:48]
-
-*** DONE Session now keeps vault ID
-CLOSED: [2019-11-10 Sun 12:48]
-
-*** DONE Login async
-CLOSED: [2019-11-01 Fri 15:43]
-*** DONE Implement chat connection
-CLOSED: [2019-11-01 Fri 14:38]
-*** DONE Separate connector and multiplexor object
-CLOSED: [2019-11-01 Fri 14:34]
-*** DONE Draft message queue
-CLOSED: [2019-11-01 Fri 14:36]
-*** DONE Improve socket protocol. Remove requests as they are unneeded
-CLOSED: [2019-11-10 Sun 12:50]
-
 * Bugs
 ** TODO test EDGE browser
 
@@ -130,6 +99,42 @@ CLOSED: [2019-11-10 Sun 12:50]
 ** TODO Members' names background colors must match background colors in chat
 * Completed
 
+** DONE Re-implement vault registration
+CLOSED: [2019-11-20 Wed 23:09]
+** DONE Logger config parser: change format and implement self-documenting file
+CLOSED: [2019-11-10 Sun 13:53]
+** DONE Implement message sending from queue
+CLOSED: [2019-11-08 Fri 23:16]
+** DONE Re-design client server protocol. Remove request-response stuff
+CLOSED: [2019-11-10 Sun 12:48]
+** DONE Vault id should be pkfp
+CLOSED: [2019-11-10 Sun 12:48]
+Not needed anymore
+** DONE On establish connection launch all hidden services and topic authorities async
+CLOSED: [2019-11-10 Sun 12:48]
+
+** DONE Session now keeps vault ID
+CLOSED: [2019-11-10 Sun 12:48]
+
+** DONE Login async
+CLOSED: [2019-11-01 Fri 15:43]
+** DONE Implement chat connection
+CLOSED: [2019-11-01 Fri 14:38]
+** DONE Separate connector and multiplexor object
+CLOSED: [2019-11-01 Fri 14:34]
+** DONE Draft message queue
+CLOSED: [2019-11-01 Fri 14:36]
+** DONE Improve socket protocol. Remove requests as they are unneeded
+CLOSED: [2019-11-10 Sun 12:50]
+
+** DONE Append and show topics
+CLOSED: [2019-11-16 Sat 02:00]
+** DONE On topic click load messages
+CLOSED: [2019-11-20 Wed 23:09]
+** DONE Implement login
+CLOSED: [2019-11-15 Fri 17:44]
+** DONE Implement initial layout logic
+CLOSED: [2019-11-15 Fri 17:44]
 
 ** DONE Get rid of jquery
 CLOSED: [2019-10-21 Mon 17:59]

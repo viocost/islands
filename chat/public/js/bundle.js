@@ -162,6 +162,7 @@ module.exports.Internal = Object.freeze({
   INVITE_REQUEST_TIMEOUT: "invite_request_timeout",
   JOIN_TOPIC: "join_topic",
   JOIN_TOPIC_SUCCESS: "join_topic_success",
+  JOIN_TOPIC_FAIL: "join_topic_fail",
   UPDATE_SETTINGS: "update_settings",
   SETTINGS_UPDATED: "update_settings_success",
   LOAD_MESSAGES: "load_messages",
@@ -18826,6 +18827,10 @@ function () {
         self.addNewTopic(self, msg);
       };
 
+      this.handlers[Events["Internal"].JOIN_TOPIC_FAIL] = function (msg) {
+        console.log("Join topic attempt has failed: ".concat(msg.body.errorMsg));
+      };
+
       this.handlers[Events["Internal"].POST_LOGIN_DECRYPT] = function (msg) {
         self.emit(Events["Internal"].POST_LOGIN_DECRYPT, msg);
       };
@@ -19085,57 +19090,7 @@ function () {
       message.body.hash = vault.hash;
       message.signMessage(this.privateKey);
       this.messageQueue.enqueue(message);
-    } //This has to be moved outside
-    /////////////////////////////////////////////////////////////////////
-    // save(){                                                         //
-    //     if (!this.password || this.privateKey || this.topics){      //
-    //         throw new Error("Vault object structure is not valid"); //
-    //     }                                                           //
-    //                                                                 //
-    //     //Check if vault exists decrypted and loaded                //
-    //                                                                 //
-    //     //If not                                                    //
-    //         // Throw error                                          //
-    //
-    //                                                                 //
-    //     //Encrypt vault data with given password                    //
-    //     let vault = JSON.stringify({                                //
-    //         privateKey: this.privateKey,                            //
-    //         topics: JSON.parse(JSON.stringify(this.topics))         //
-    //     });                                                         //
-    //                                                                 //
-    //     let ic = new iCrypto();                                     //
-    //     ic.createNonce("salt",128)                                  //
-    //         .base64Encode("salt", "s64")                            //
-    //         .createPasswordBasedSymKey("key", this.password, "s64") //
-    //         .addBlob("vault", vault)                                //
-    //         .AESEncrypt("vault", "key", "cipher")                   //
-    //         .base64Encode("cipher", "cip64")                        //
-    //         .merge(["cip64", "s64"], "res")                         //
-    //         .setRSAKey("asymkey", this.privateKey, "private")       //
-    //         .privateKeySign("res", "asymkey", "sign");              //
-    //                                                                 //
-    //                                                                 //
-    //     //Sign encrypted vault with private key                     //
-    //     let body = {                                                //
-    //                                                                 //
-    //         vault: ic.get("res"),                                   //
-    //         sign: ic.get("sign")                                    //
-    //     };                                                          //
-    //     let xhr = new XMLHttpRequest();                             //
-    //     xhr.open("POST", "/update", true);                          //
-    //     xhr.setRequestHeader('Content-Type', 'application/json');   //
-    //     xhr.onreadystatechange = ()=>{                              //
-    //         console.log("Server said that vault is saved!");        //
-    //     };                                                          //
-    //     xhr.send(body);                                             //
-    //                                                                 //
-    //     //Send vault to the server                                  //
-    //     //Display result of save request                            //
-    //                                                                 //
-    // }                                                               //
-    /////////////////////////////////////////////////////////////////////
-
+    }
   }, {
     key: "changePassword",
     value: function changePassword(newPassword) {
@@ -19466,12 +19421,12 @@ function () {
     this.allMessagesLoaded = false; // When topic has sent load n messages from the server and awaiting result
 
     this.awaitingMessages = false;
-  } // ---------------------------------------------------------------------------------------------------------------------------
-  // INITIALIZING
-
+  }
 
   _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_10___default()(Topic, [{
     key: "bootstrap",
+    // ---------------------------------------------------------------------------------------------------------------------------
+    // INITIALIZING
     value: function bootstrap(messageQueue, arrivalHub, version) {
       var self = this;
       this.messageQueue = messageQueue;
@@ -19486,7 +19441,15 @@ function () {
   }, {
     key: "loadMetadata",
     value: function loadMetadata(metadata) {
-      var settings = JSON.parse(_ChatUtility__WEBPACK_IMPORTED_MODULE_14__[/* ChatUtility */ "a"].decryptStandardMessage(metadata.body.settings, this.privateKey));
+      var settingsCipher = metadata.body.settings;
+      var settings;
+
+      if (!settingsCipher) {
+        settings = Topic.prepareNewTopicSettings(this.version, undefined, undefined, this.getPublicKey, false);
+      } else {
+        settings = JSON.parse(_ChatUtility__WEBPACK_IMPORTED_MODULE_14__[/* ChatUtility */ "a"].decryptStandardMessage(settingsCipher, this.privateKey));
+      }
+
       this._metadata = metadata;
       this._metadata.body.settings = settings;
       this.settings = settings;
@@ -20074,6 +20037,39 @@ function () {
     key: "setName",
     value: function setName(name) {
       this.name = name;
+    }
+  }], [{
+    key: "prepareNewTopicSettings",
+    value: function prepareNewTopicSettings(version, nickname, topicName, publicKey) {
+      var encrypt = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : true;
+      //Creating and encrypting topic settings:
+      var settings = {
+        version: version,
+        membersData: {},
+        invites: {},
+        soundsOn: true
+      };
+
+      if (nickname) {
+        var _ic3 = new _iCrypto__WEBPACK_IMPORTED_MODULE_15__[/* iCrypto */ "a"]();
+
+        _ic3.asym.setKey("pubk", publicKey, "public").getPublicKeyFingerprint("pubk", "pkfp");
+
+        settings.nickname = nickname;
+        settings.membersData[_ic3.get("pkfp")] = {
+          nickname: nickname
+        };
+      }
+
+      if (topicName) {
+        settings.topicName = topicName;
+      }
+
+      if (encrypt) {
+        return _ChatUtility__WEBPACK_IMPORTED_MODULE_14__[/* ChatUtility */ "a"].encryptStandardMessage(JSON.stringify(settings), publicKey);
+      } else {
+        return settings;
+      }
     }
   }]);
 
@@ -39943,13 +39939,14 @@ function () {
                   var invite = ic.get("invite").split("/");
                   var inviterResidence = invite[0];
                   var inviterID = invite[1];
-                  var inviteID = invite[2];
+                  var inviteID = invite[2]; ///////////////////////////////////////////////////////////////////////////
+                  // if (!self.inviteRequestValid(inviterResidence, inviterID, inviteID)){ //
+                  //     self.emit("join_topic_fail");                                     //
+                  //     throw new Error("Invite request is invalid");                     //
+                  // }                                                                     //
+                  ///////////////////////////////////////////////////////////////////////////
 
-                  if (!self.inviteRequestValid(inviterResidence, inviterID, inviteID)) {
-                    self.emit("join_topic_fail");
-                    throw new Error("Invite request is invalid");
-                  } // Encrypted vault record
-
+                  if (!inviteID || !inviterID || !/^[a-z2-7]{16}\.onion$/.test(inviterResidence)) throw new error("Invite request is invalid"); // Encrypted vault record
 
                   var vaultRecord = self.vault.prepareVaultTopicRecord(self.version, pkfp, privateKey, topicName);
                   var vault = JSON.stringify({
@@ -40157,7 +40154,7 @@ function () {
       };
       var newTopicDataCipher = _ChatUtility__WEBPACK_IMPORTED_MODULE_16__[/* ChatUtility */ "a"].encryptStandardMessage(JSON.stringify(newTopicData), token); //initializing topic settings
 
-      var settings = self.prepareNewTopicSettings(pendingTopic.ownerNickName, pendingTopic.topicName, pendingTopic.ownerKeyPair.publicKey); // TODO Prepare new topic vault record
+      var settings = Topic.prepareNewTopicSettings(self.version, pendingTopic.ownerNickName, pendingTopic.topicName, pendingTopic.ownerKeyPair.publicKey); // TODO Prepare new topic vault record
 
       var vaultRecord = self.vault.prepareVaultTopicRecord(this.version, pendingTopic.ownerPkfp, pendingTopic.ownerKeyPair.privateKey, pendingTopic.topicName); //Preparing request
 
@@ -40207,37 +40204,6 @@ function () {
         nickname: pendingTopic.ownerNickName,
         privateKey: pendingTopic.ownerKeyPair.privateKey
       }); //delete self.newTopicPending[request.body.topicID];
-    }
-  }, {
-    key: "prepareNewTopicSettings",
-    value: function prepareNewTopicSettings(nickname, topicName, publicKey) {
-      var encrypt = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
-      //Creating and encrypting topic settings:
-      var settings = {
-        version: this.version,
-        membersData: {},
-        invites: {},
-        soundsOn: true
-      };
-
-      if (nickname) {
-        var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_22__[/* iCrypto */ "a"]();
-        ic.asym.setKey("pubk", publicKey, "public").getPublicKeyFingerprint("pubk", "pkfp");
-        settings.nickname = nickname;
-        settings.membersData[ic.get("pkfp")] = {
-          nickname: nickname
-        };
-      }
-
-      if (topicName) {
-        settings.topicName = topicName;
-      }
-
-      if (encrypt) {
-        return _ChatUtility__WEBPACK_IMPORTED_MODULE_16__[/* ChatUtility */ "a"].encryptStandardMessage(JSON.stringify(settings), publicKey);
-      } else {
-        return settings;
-      }
     } //END//////////////////////////////////////////////////////////////////////
     // ---------------------------------------------------------------------------------------------------------------------------
     // Main API methods used by UI
@@ -56059,9 +56025,9 @@ function initUI() {
   });
   topicJoinModal = bakeTopicJoinModal(function () {
     console.log("Joining topic");
-    var nickname = $("#join-topic-nickname");
-    var topicName = $("#new-topic-name");
-    var inviteCode = $("#join-topic-invite-code");
+    var nickname = $("#join-topic-nickname").value;
+    var topicName = $("#new-topic-name").value;
+    var inviteCode = $("#join-topic-invite-code").value;
     chat_ui_chat.joinTopic(nickname, topicName, inviteCode);
     lib_toastr.info("Attempting to join topic");
     topicJoinModal.close();
