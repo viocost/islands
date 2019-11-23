@@ -322,13 +322,10 @@ class TopicJoinAssistant {
 
     async crossIslandErrorHandler(envelope, self, err) {
         try {
-
             let errMsg = "Unknown error";
 
-            if (err && err.constructor.name === "String"){
-                errMsg = err
-            }  else if ( err && err.message){
-                errMsg = err.message
+            if(err){
+                errMsg = err.message || err;
             }
 
             if (envelope.return) {

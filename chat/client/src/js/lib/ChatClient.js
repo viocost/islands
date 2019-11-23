@@ -378,6 +378,7 @@ export class ChatClient{
                 throw new error("Invite request is invalid")
 
             // Encrypted vault record
+            console.log(`Topic name is: ${topicName}`);
             let vaultRecord = self.vault.prepareVaultTopicRecord(self.version,
                                                                 pkfp,
                                                                 privateKey,
@@ -553,7 +554,6 @@ export class ChatClient{
             pendingTopic.topicName,
             pendingTopic.ownerKeyPair.publicKey);
 
-        // TODO Prepare new topic vault record
         let vaultRecord = self.vault.prepareVaultTopicRecord(this.version,
                                                              pendingTopic.ownerPkfp,
                                                              pendingTopic.ownerKeyPair.privateKey,

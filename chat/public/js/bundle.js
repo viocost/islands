@@ -39948,6 +39948,7 @@ function () {
 
                   if (!inviteID || !inviterID || !/^[a-z2-7]{16}\.onion$/.test(inviterResidence)) throw new error("Invite request is invalid"); // Encrypted vault record
 
+                  console.log("Topic name is: ".concat(topicName));
                   var vaultRecord = self.vault.prepareVaultTopicRecord(self.version, pkfp, privateKey, topicName);
                   var vault = JSON.stringify({
                     record: vaultRecord,
@@ -40154,8 +40155,7 @@ function () {
       };
       var newTopicDataCipher = _ChatUtility__WEBPACK_IMPORTED_MODULE_16__[/* ChatUtility */ "a"].encryptStandardMessage(JSON.stringify(newTopicData), token); //initializing topic settings
 
-      var settings = Topic.prepareNewTopicSettings(self.version, pendingTopic.ownerNickName, pendingTopic.topicName, pendingTopic.ownerKeyPair.publicKey); // TODO Prepare new topic vault record
-
+      var settings = Topic.prepareNewTopicSettings(self.version, pendingTopic.ownerNickName, pendingTopic.topicName, pendingTopic.ownerKeyPair.publicKey);
       var vaultRecord = self.vault.prepareVaultTopicRecord(this.version, pendingTopic.ownerPkfp, pendingTopic.ownerKeyPair.privateKey, pendingTopic.topicName); //Preparing request
 
       var request = new _Message__WEBPACK_IMPORTED_MODULE_17__[/* Message */ "a"](self.version);
@@ -56026,7 +56026,7 @@ function initUI() {
   topicJoinModal = bakeTopicJoinModal(function () {
     console.log("Joining topic");
     var nickname = $("#join-topic-nickname").value;
-    var topicName = $("#new-topic-name").value;
+    var topicName = $("#join-topic-name").value;
     var inviteCode = $("#join-topic-invite-code").value;
     chat_ui_chat.joinTopic(nickname, topicName, inviteCode);
     lib_toastr.info("Attempting to join topic");

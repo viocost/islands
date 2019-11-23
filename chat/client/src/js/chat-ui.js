@@ -138,7 +138,7 @@ function initUI(){
     topicJoinModal = UI.bakeTopicJoinModal(()=>{
         console.log("Joining topic")
         let nickname = util.$("#join-topic-nickname").value;
-        let topicName = util.$("#new-topic-name").value;
+        let topicName = util.$("#join-topic-name").value;
         let inviteCode = util.$("#join-topic-invite-code").value;
         chat.joinTopic(nickname, topicName, inviteCode);
         toastr.info("Attempting to join topic");
