@@ -22,8 +22,12 @@ let topicCreateModal;
 let topicJoinModal;
 // ---------------------------------------------------------------------------------------------------------------------------
 // Objects
+
+//Chast client instance
 let chat;
 
+//Opened views stack for navigation
+const viewStack = []
 // Topic that is in the focused window
 // New messages are sent in context of this topic
 // Members and invites are displayed in context of this topic

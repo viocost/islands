@@ -55,7 +55,6 @@ export function bakeSidePanel(
             util.bake("div", {
                 id: "side-panel-bottom-section",
                 classes: ["side-panel-section", "bottom-section"],
-                style: "display: none",
                 children: [
                     carousel2,
 
@@ -65,6 +64,21 @@ export function bakeSidePanel(
                     //members block
                     bakeParticipantsBlock(2)
                 ]
+            }),
+
+            util.bake("div", {
+                classes: "connection-indicator-container",
+                children: [
+                    util.bake("div", {
+                        id: "connection-indicator",
+                        classes: [ "connection-indicator", "unknown"]
+                    }),
+                    util.bake("h6", {
+                        id: "connection-indicator-label",
+                        classes: "connection-indicator-label"
+                    })
+                ]
+
             })
 
         ]
@@ -91,32 +105,27 @@ function bakeTopicsBlock(newTopicHandler, joinTopicHandler){
                 id: "topics-list",
             }),
             util.bake("div", {
-                classes: "side-control-block",
+                classes:  "side-panel-button-row",
                 children: [
-                    util.bake("div", {
-                        classes:  "side-panel-button-row",
-                        children: [
 
-                            util.bake("button", {
-                                //New topic button
-                                id: "new-topic-button",
-                                classes: ["side-panel-btn", "btn"],
-                                text: "New topic",
-                                listeners: {
-                                    click: newTopicHandler
-                                }
-                            }),
+                    util.bake("button", {
+                        //New topic button
+                        id: "new-topic-button",
+                        classes: ["side-panel-btn", "btn"],
+                        text: "New topic",
+                        listeners: {
+                            click: newTopicHandler
+                        }
+                    }),
 
-                            util.bake("button", {
-                                //Join button
-                                id: "join-topic-button",
-                                classes: ["side-panel-btn", "btn"],
-                                text: "Join topic",
-                                listeners: {
-                                    click: joinTopicHandler
-                                }
-                            })
-                        ]
+                    util.bake("button", {
+                        //Join button
+                        id: "join-topic-button",
+                        classes: ["side-panel-btn", "btn"],
+                        text: "Join topic",
+                        listeners: {
+                            click: joinTopicHandler
+                        }
                     })
                 ]
             })
