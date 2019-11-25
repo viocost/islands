@@ -103,7 +103,16 @@ main
 .carousel-wrap
   width: 100%
   display: flex
+  flex-direction: row
+  align-items: center
   height: 7rem
+  .btn-rotate
+    margin: 0 2.5rem 0 0
+    transition: .2s
+    &:hover
+      border-color: $button-hover
+      transition: .2s
+
   .carousel
     flex: 1
     margin: 1.5rem 1rem 1.5rem 1rem
@@ -113,13 +122,12 @@ main
     border: none
     outline: none
     background-color: inherit
-    //appearance: none
-    //-webkit-appearance: none
-    //-moz-appearance: none
-    //-ms-appearance: none
+    appearance: none
+    -webkit-appearance: none
+    -moz-appearance: none
+    -ms-appearance: none
     &:-ms-expand
-      background-color: $main-background
-      color: $text-color
+      display: none
     option
       background-color: darken($main-background, 5%)
       border: none
@@ -160,6 +168,7 @@ main
   width: 100%
   overflow: hidden
   height: 6rem
+  margin-left: 1rem
   
 
 .side-block-data-list-item
@@ -205,10 +214,34 @@ main
 
 .connection-indicator-container
   display: flex
+  flex-direction: row
   flex-shrink: 1
-  height: 6rem
+  height: 4rem
+  align-items: center
   width: 100%
-  background-color: blue
+  padding: 1rem
+  .connection-indicator-label
+    font-size: 1.3rem
+    color: $text-color
+    font-weight: 100
+    margin-left: 1rem
+   
+
+  .connection-indicator
+    border-radius: 50%
+    width: 1rem
+    height: 1rem
+  .connected
+    background-color: green
+  .dicsonnected
+    background-color: red
+  .connecting
+    background-color: orange
+  .unknown
+    background-color: grey
+
+
+  
 //~END side panel
 
 
@@ -314,15 +347,18 @@ main
         font-size: 1.2rem
         font-style: italic
 
-#send-new-msg
+.btn-send
   border: none
+  margin: 0
   outline: none
   background-color: $main-background
   color: $text-color
   font-size: 1.8rem
   padding: .8rem
+  transition: .2s
   &:hover
     background-color: $button-hover
+    transition: .2s
 
 
 .attach-file-wrap

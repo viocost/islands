@@ -15,7 +15,12 @@ export function bakeCarousel(top=false){
             util.bake("select", {
                 classes: "carousel",
                 children: options
+            }),
+            util.bake("div", {
+                classes: ["arrow", "right", "btn-rotate"],
+       
             })
+
         ]
     })
 
@@ -75,7 +80,8 @@ export function bakeSidePanel(
                     }),
                     util.bake("h6", {
                         id: "connection-indicator-label",
-                        classes: "connection-indicator-label"
+                        classes: "connection-indicator-label",
+                        text: "Connection status unknown"
                     })
                 ]
 
@@ -300,19 +306,21 @@ export function bakeNewMessageControl(){
                         children: [
                             util.bake("button", {
                                 id: "send-new-msg",
-                                classes: "ld-ext-right",
-                                text: "Send",
-                                children: [
-                                    util.bake("div", {
-                                        classes: ["ld", "ld-ring", "ld-spin"],
-                                        children: [
-                                            util.bake("div", {
-                                                classes: "attach-file-wrap"
-                                            })
-                                        ]
-
-                                    })
-                                ]
+                                classes: "btn-send",
+                                text: "Send"
+                                //////////////////////////////////////////////////////
+                                // children: [                                      //
+                                //     util.bake("div", {                           //
+                                //         //classes: ["ld", "ld-ring", "ld-spin"], //
+                                //         children: [                              //
+                                //             util.bake("div", {                   //
+                                //                 classes: "attach-file-wrap"      //
+                                //             })                                   //
+                                //         ]                                        //
+                                //                                                  //
+                                //     })                                           //
+                                // ]                                                //
+                                //////////////////////////////////////////////////////
 
                             })
                         ]
