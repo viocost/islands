@@ -181,6 +181,17 @@ main
     background-color: darken($main-background, 5%)
     cursor: pointer
 
+.invite-list-item
+  color: $text-color
+  list-style: none
+  overflow: hidden
+  text-overflow: ellipsis
+  padding: 1rem 3rem 1rem 1.3rem
+  border-bottom: 1px solid darken($main-background, 5%)
+  cursor: pointer
+  &:hover
+    background-color: darken($main-background, 5%)
+
 .topic-name
   font-size: 1.8rem
   margin-left: 1.2rem
@@ -220,6 +231,7 @@ main
   align-items: center
   width: 100%
   padding: 1rem
+  background-color: darken($main-background, 5%)
   .connection-indicator-label
     font-size: 1.3rem
     color: $text-color

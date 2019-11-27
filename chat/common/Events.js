@@ -101,6 +101,7 @@ module.exports.Internal = Object.freeze({
     DELETE_INVITE: "delete_invite",
     SYNC_INVITES: "sync_invites",
     INVITE_REQUEST_TIMEOUT: "invite_request_timeout",
+    INVITE_REQUEST_FAIL: "invite_request_fail",
 
     JOIN_TOPIC: "join_topic",
     JOIN_TOPIC_SUCCESS: "join_topic_success",

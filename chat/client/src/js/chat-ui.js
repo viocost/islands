@@ -12,7 +12,7 @@ import { Vault } from "./lib/Vault";
 
 // ---------------------------------------------------------------------------------------------------------------------------
 // CONSTANTS
-const SMALL_WIDTH = 760;
+const SMALL_WIDTH = 760; // Width screen in pixels considered to be small
 const DAYSOFWEEK = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 let colors = ["#cfeeff", "#ffebcc", "#ccffd4", "#ccfffb", "#e6e6ff", "#f8e6ff", "#ffe6f1", "#ccefff", "#ccf1ff"]
 // ---------------------------------------------------------------------------------------------------------------------------
@@ -34,6 +34,7 @@ const viewStack = []
 // Its title displayed in the header
 // Settings displayed in context of this topic
 let topicInFocus;
+window.getTopicInFocus = topicInFocus = ()=>{console.log(topicInFocus)};
 
 // Topics that are in the split windows and display messages
 let activeTopics
@@ -110,17 +111,14 @@ function initUI(){
    
 
 
-    let sidePanel = UI.bakeSidePanel(
-        processNewTopicClick,
-        processJoinTopicClick,
-        processNewInviteClick,
-        processRefreshInvitesClick
-    );
+    let sidePanel = UI.bakeSidePanel();
 
     let newMessageBlock = UI.bakeNewMessageControl();
     let messagesPanel = UI.bakeMessagesPanel(newMessageBlock)
 
     util.appendChildren(mainContainer, [sidePanel, messagesPanel]);
+
+    setupSidePanelListeners()
 
     refreshTopics();
     // add listener to the menu button
@@ -159,6 +157,47 @@ function initUI(){
     // util.appendChildren(container, [sidePanel, messagesWrapper]);
 }
 
+function setupSidePanelListeners(){
+
+    util.$("#top-btn-new").onclick = processNewTopicClick;
+    //util.$("#bottom-btn-new").onclick = createTopic;
+    util.$("#top-btn-join").onclick = processJoinTopicClick;
+    //util.$("#bottom-btn-join").onclick = joinTopic;
+    util.$("#top-btn-manage-topics").onclick = undefined;
+    //util.$("#bottom-btn-manage-topics").onclick = undefined;
+    util.$("#top-btn-refresh-invites").onclick = undefined;
+    util.$("#bottom-btn-refresh-invites").onclick = undefined;
+    util.$("#top-btn-new-invite").onclick = processNewInviteClick;
+    util.$("#bottom-btn-new-invite").onclick = processNewInviteClick;
+    util.$("#top-btn-manage-invites").onclick = undefined;
+    util.$("#bottom-btn-manage-invites").onclick = undefined;
+    util.$("#top-btn-manage-participants").onclick = undefined;
+    util.$("#bottom-btn-manage-participants").onclick = undefined;
+    util.$("#top-btn-rotate").onclick = rotateCarousel
+    util.$("#bottom-btn-rotate").onclick = rotateCarousel
+}
+
+function rotateCarousel(ev){
+    let select = ev.target.previousSibling;
+    let numChildren = select.children.length;
+    let blockWrap = select.parentElement.nextSibling;
+
+    //if topic is in-focus
+    if (topicInFocus){
+        // rotate
+        select.selectedIndex = (select.selectedIndex + 1) % numChildren
+    }else{
+        select.selectedIndex = 0;
+    }
+    for(let i=0; i< blockWrap.children.length; i++){
+        if (i == select.selectedIndex){
+            util.flex(blockWrap.children[i]);
+        } else {
+            util.hide(blockWrap.children[i]);
+        }
+    }
+}
+
 function renderLayout(){
     console.log("Rendering layout")
     let isSidePanelOn = util.hasClass("#menu-button", "menu-on");
@@ -183,20 +222,6 @@ function renderLayout(){
     //messagesPanel.appendChild(util.bake("div", {
     //    html: `width ${window.innerWidth}`
     //}))
-
-}
-
-
-function refreshTopics(){
-    let topics = chat.getTopics();
-    let topicsList = util.$("#topics-list")
-    util.removeAllChildren(topicsList)
-    let topicsElements = []
-    Object.keys(topics).forEach(key=>{
-        topicsElements.push(UI.bakeTopicListItem(topics[key], processActivateTopicClick))
-    })
-    topicsElements.sort((el)=>{ return el.innerText })
-    util.appendChildren(topicsList, topicsElements)
 
 }
 
@@ -228,14 +253,20 @@ function processActivateTopicClick(ev){
     let element = ev.currentTarget;
     let pkfp = element.getAttribute("pkfp");
     if (!pkfp){
-        console.log("False alarm!");
+        console.log("No topic in focus")
         return;
+    } else if (pkfp === topicInFocus){
+        console.log("Topic is already in focus");
+        return
     }
     console.log(`Setting topic in focus: ${pkfp}`);
 
     setTopicInFocus(pkfp)
     // load messges in the new window
-    chat.getMessages(pkfp);
+
+    refreshMessages()
+    refreshInvites();
+    refreshParticipants();
 
     // Update participants list in side panel
     //chat.getParticipants(pkfp);
@@ -247,7 +278,7 @@ function processActivateTopicClick(ev){
 
 function setTopicInFocus(pkfp){
     topicInFocus = pkfp
-    for(let el of util.$("#topics-list").children){
+    for(let el of util.$("#top-topics-list").children){
         if (el.getAttribute("pkfp") === pkfp){
             util.addClass(el, "topic-in-focus");
             //Here set the name for active topic in header
@@ -295,8 +326,11 @@ function processJoinTopicClick() {
 }
 
 function processNewInviteClick() {
-
-    console.log("New Invite");
+    if(topicInFocus){
+        chat.requestInvite(topicInFocus);
+    } else {
+        console.log("No toipc in focus");
+    }
 }
 
 function processRefreshInvitesClick() {
@@ -346,48 +380,6 @@ function processMessagesLoaded(pkfp, messages){
 
 // ---------------------------------------------------------------------------------------------------------------------------
 // ~END Chat Event handlers
-
-// ---------------------------------------------------------------------------------------------------------------------------
-// Util
-
-function initChat(){
-    //chat = new Chat({version: version})
-    chat = new Chat({version: "2.0.0"})
-    chat.on(Events.LOGIN_ERROR, processLoginResult)
-    chat.on(Events.LOGIN_SUCCESS, processLoginResult)
-    chat.on(Events.INIT_TOPIC_SUCCESS, ()=>{
-
-        toastr.success("Init topic success")
-    })
-    chat.on(Events.INIT_TOPIC_ERROR, (err)=>{
-        toastr.warning(`Init topic error: ${err.message}`);
-    })
-
-    chat.on(Events.MESSAGES_LOADED, (data)=>{
-        processMessagesLoaded(data.pkfp, data.messages)
-    })
-    window.chat = chat;
-}
-
-
-
-function initSession(){
-    let passwordEl = util.$("#vault-password");
-    if (!passwordEl){
-        throw new Error("Vault password element is not found.");
-    }
-    console.log("Chat created. Starting session...");
-    loadingOn();
-    chat.initSession(passwordEl.value)
-}
-
-function loadingOn() {
-    spinner.loadingOn()
-}
-
-function loadingOff() {
-    spinner.loadingOff()
-}
 
 
 // ---------------------------------------------------------------------------------------------------------------------------
@@ -690,6 +682,137 @@ function getChatFormatedDate(timestamp) {
     } else {
         return DAYSOFWEEK[d.getDay()] + ", " + d.getMonth() + "/" + padWithZeroes(2, d.getDate()) + " " + padWithZeroes(2, d.getHours()) + ':' + padWithZeroes(2, d.getMinutes());
     }
+}
+
+// ---------------------------------------------------------------------------------------------------------------------------
+// Side panel handlers
+
+function refreshSidePanel(){
+    //get active topic
+    //
+
+}
+
+
+function refreshTopics(){
+    let topics = chat.getTopics();
+    let topicsList = util.$("#top-topics-list")
+    util.removeAllChildren(topicsList)
+    let topicsElements = []
+    Object.keys(topics).forEach(key=>{
+        topicsElements.push(UI.bakeTopicListItem(topics[key], processActivateTopicClick))
+    })
+    topicsElements.sort((el)=>{ return el.innerText })
+    util.appendChildren(topicsList, topicsElements)
+}
+
+function refreshInvites(){
+    let invitesListTop = util.$("#top-invites-list");
+    let invitesListBottom = util.$("#bottom-invites-list");
+
+    util.removeAllChildren(invitesListTop);
+    util.removeAllChildren(invitesListBottom);
+    if (!topicInFocus){
+        return;
+    }
+
+    let invites = chat.getInvites(topicInFocus);
+    let topListElements  = Object.keys(invites).map((i)=>{
+        return UI.bakeInviteListItem(i)
+    })
+
+    let bottomListElements  = Object.keys(invites).map((i)=>{
+        return UI.bakeInviteListItem(i)
+    })
+    util.appendChildren(invitesListTop, topListElements);
+    util.appendChildren(invitesListBottom, bottomListElements);
+}
+
+function refreshParticipants(){
+    return
+    //refresh side panel and to list
+    let membersListTop = util.$("#top-member-list");
+    let membersListBottom = util.$("#bottom-member-list");
+    util.removeAllChildren(membersListTop);
+    util.removeAllChildren(membersListBottom);
+    if (!topicInFocus){
+        return;
+    }
+
+    let participants = chat.getParticipants(topicInFocus);
+    let topListElements  = participants.map((p)=>{
+        return UI.bakeParticipantListItem(p)
+    })
+
+    let bottomListElements  = participants.map((p)=>{
+        return UI.bakeParticipantListItem(p)
+    })
+
+    util.appendChildren(membersListTop, topListElements);
+    util.appendChildren(membersListBottom, bottomListElements);
+
+}
+
+
+function refreshMessages(){
+    util.removeAllChildren('#messages-window-1');
+
+    if (!topicInFocus){
+        return
+    }
+    chat.getMessages(topicInFocus);
+}
+
+//~END SIDE PANEL HANDLERS/////////////////////////////////////////////////////
+
+
+// ---------------------------------------------------------------------------------------------------------------------------
+// Util
+
+function initChat(){
+    //chat = new Chat({version: version})
+    chat = new Chat({version: "2.0.0"})
+    chat.on(Events.LOGIN_ERROR, processLoginResult)
+    chat.on(Events.LOGIN_SUCCESS, processLoginResult)
+    chat.on(Events.INIT_TOPIC_SUCCESS, ()=>{
+
+        toastr.success("Init topic success")
+    })
+    chat.on(Events.INIT_TOPIC_ERROR, (err)=>{
+        toastr.warning(`Init topic error: ${err.message}`);
+    })
+
+    chat.on(Events.MESSAGES_LOADED, (data)=>{
+        processMessagesLoaded(data.pkfp, data.messages)
+    })
+
+    chat.on(Events.INVITE_CREATED, (data)=>{
+        console.log("Invite created event from chat");
+        if (data.pkfp === topicInFocus){
+            refreshInvites();
+        }
+    })
+    window.chat = chat;
+}
+
+
+
+function initSession(){
+    let passwordEl = util.$("#vault-password");
+    if (!passwordEl){
+        throw new Error("Vault password element is not found.");
+    }
+    console.log("Chat created. Starting session...");
+    loadingOn();
+    chat.initSession(passwordEl.value)
+}
+
+function loadingOn() {
+    spinner.loadingOn()
+}
+
+function loadingOff() {
+    spinner.loadingOff()
 }
 
 function padWithZeroes(requiredLength, value) {

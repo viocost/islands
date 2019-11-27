@@ -207,6 +207,10 @@ export class ChatClient{
         topic.on(Events.MESSAGES_LOADED, (messages)=>{
             this.emit(Events.MESSAGES_LOADED, {pkfp: topic.pkfp, messages: messages})
         })
+
+        topic.on(Events.INVITE_CREATED, ()=>{
+            this.emit(Events.INVITE_CREATED, {pkfp: topic.pkfp})
+        })
     }
     //END//////////////////////////////////////////////////////////////////////
 
@@ -217,7 +221,14 @@ export class ChatClient{
     requestInvite(topicId){
         if (!this.topics.hasOwnProperty(topicId)) throw new Error(`Topic ${topicId}, not found`)
         let topic = this.topics[topicId];
+        topic.requestInvite();
 
+    }
+
+    getInvites(topicId){
+        if (!this.topics.hasOwnProperty(topicId)) throw new Error(`Topic ${topicId}, not found`)
+        let topic = this.topics[topicId];
+        return JSON.parse(JSON.stringify(topic.invites));
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------
@@ -635,6 +646,10 @@ export class ChatClient{
         setTimeout(()=>{
             self.topics[pkfp].getMessages()
         }, 50)
+    }
+
+    getParticipants(topicPkfp){
+
     }
 
     getTopics(){

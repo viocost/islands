@@ -80,6 +80,13 @@ class ChatUtility{
         ic.publicKeyVerify("b", "sign", "pubk", "v");
         return ic.get("v");
     }
+
+    static getRandomId(length=16){
+        let ic = new iCrypto();
+        ic.createNonce("n", Math.round(length / 2))
+          .bytesToHex("n", "nhex")
+        return ic.get("nhex").substring(0, length);
+    }
 }
 
 module.exports = ChatUtility;

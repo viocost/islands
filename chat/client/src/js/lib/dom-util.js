@@ -141,8 +141,9 @@ export function appendChildren(parent, children){
  */
 export function removeAllChildren(element){
     let node = verifyGetNode(element);
-    while(node.lastChild){
-        node.removeChild(node.lastChild);
+    let last
+    while(last = node.lastChild){
+        node.removeChild(last);
     }
 }
 

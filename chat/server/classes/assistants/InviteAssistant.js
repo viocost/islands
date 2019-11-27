@@ -6,6 +6,7 @@ const Message = require("../objects/Message.js")
 const Logger = require("../libs/Logger.js");
 const Metadata = require("../objects/Metadata.js");
 const Coordinator = require("./AssistantCoordinator.js");
+const ChatUtil = require("../libs/ChatUtility");
 const Internal = require("../../../common/Events.js").Internal;
 const ChatEvents = require("../../../common/Events.js").Events;
 
@@ -36,7 +37,7 @@ class InviteAssistant{
     /**
      * Verifies and sends to topic authority on some other island
      */
-    async requestInviteOutgoing(request, connectionID, self){
+    async requestInviteOutgoing(request, connectionId, self){
 
         Logger.debug("Outgoing invite request from client", {
             source: request.headers.pkfpSource,
@@ -55,6 +56,7 @@ class InviteAssistant{
         const residenceDest = metadata.getTopicAuthorityResidence();
         const envelope = new Envelope(residenceDest, request, residenceOrigin);
         envelope.setReturnOnFail(true);
+
         Logger.debug("Sending invite request to TA...", {cat: "invite"})
         await self.crossIslandMessenger.send(envelope, 5000, (envelope)=>{
             Logger.info("INVITE REQUEST TIMEOUT: dest: " + envelope.destination)
@@ -80,7 +82,7 @@ class InviteAssistant{
         const data = await ta.processInviteRequest(request);
         const inviteCode = data.inviteCode;
         const userInvites = data.userInvites;
- //       const response = new Response("request_invite_success", request);
+        //       const response = new Response("request_invite_success", request);
         const response = Message.makeResponse(request, request.headers.pkfpDest, ChatEvents.INVITE_CREATED);
 
         response.body.inviteCode = inviteCode;
@@ -116,13 +118,18 @@ class InviteAssistant{
     }
 
     syncInvitesSuccess(envelope, self){
+        if(!envelope.errorToken){
+            Logger.error("No error token found!")
+            return
+        }
         let response = envelope.payload;
         self.sessionManager.broadcastUserResponse(response.headers.pkfpSource,
             response);
     }
 
-    requestInviteSuccess(envelope, self){
+    async requestInviteSuccess(envelope, self){
         Logger.debug("Invite success received!", {cat: "invite"})
+
         const response = envelope.payload;
         let session = self.sessionManager.getSessionByTopicPkfp(response.headers.pkfpDest)
         if (session){
@@ -133,7 +140,7 @@ class InviteAssistant{
 
     }
 
-    async deleteInviteOutgoing(request, connectionID, self){
+    async deleteInviteOutgoing(request, connectionId, self){
         await self.validateOutgoingUserRequest(request);
         const metadata = Metadata.parseMetadata(await self.hm.getLastMetadata(request.headers.pkfpSource));
         const residenceOrigin = metadata.getParticipantResidence(request.headers.pkfpSource);
@@ -152,36 +159,53 @@ class InviteAssistant{
         await self.crossIslandMessenger.send(responseEnvelope)
     }
 
-    deleteInviteSuccess(envelope, self){
+    async deleteInviteSuccess(envelope, self){
         const response = envelope.payload;
-        self.sessionManager.broadcastUserResponse(response.headers.pkfpSource,
+        await self.sessionManager.broadcastUserResponse(response.headers.pkfpSource,
             response);
     }
 
-    requestInviteError(envelope, self){
+    async requestInviteError(envelope, self){
         Logger.debug("Request invite error received.",{
             error: envelope.error
         } ) ;
-        self._processStandardClientError(envelope, self)
+        await self._processStandardClientError(envelope, self)
     }
 
 
-    deleteInviteError(envelope, self){
+    async deleteInviteError(envelope, self){
         Logger.debug("Del invite error")
-        self._processStandardClientError(envelope, self)
+        await self._processStandardClientError(envelope, self)
     }
 
-    syncInvitesError(envelope, self){
+    async syncInvitesError(envelope, self){
         Logger.debug("Sync invites error")
-        self._processStandardClientError(envelope, self)
+        await self._processStandardClientError(envelope, self)
     }
 
-    _processStandardClientError(envelope, self){
-        const originalRequest = Envelope.getOriginalPayload(envelope);
-        const error = new ClientError(originalRequest,
-            self.getClientErrorType(originalRequest.headers.command),
-            envelope.error);
-        self.sessionManager.broadcastUserResponse(originalRequest.headers.pkfpSource, error);
+    async _processStandardClientError(envelope, self){
+
+        const originalRequest = Envelope.getOriginalPayload(envelope);                        //
+        const pkfpSource = originalRequest.headers.pkfpSource;
+        let msg = new Message()
+        msg.setCommand(Internal.INVITE_REQUEST_FAIL);
+        msg.setSource("island")
+        msg.setDest(pkfpSource);
+        msg.body.errorMsg = envelope.error;
+        let session = self.sessionManager.getSessionByTopicPkfp(pkfpSource);
+        if (!session){
+            Logger.warn(`Session ${connId} is not found`)
+            return;
+        }
+        await session.signMessage(msg);
+        session.broadcast(msg);
+        ///////////////////////////////////////////////////////////////////////////////////////////
+        // const originalRequest = Envelope.getOriginalPayload(envelope);                        //
+        // const error = new ClientError(originalRequest,                                        //
+        //     self.getClientErrorType(originalRequest.headers.command),                         //
+        //     envelope.error);                                                                  //
+        // self.sessionManager.broadcastUserResponse(originalRequest.headers.pkfpSource, error); //
+        ///////////////////////////////////////////////////////////////////////////////////////////
     }
 
 
@@ -265,17 +289,18 @@ class InviteAssistant{
         }
     }
 
+
     async crossIslandErrorHandler(envelope, self, err){
         try{
             console.log("Error while handling incoming request");
-            console.trace(err);
+            let errMsg = err.message || err || "Unknown error";
+            Logger.warn(errMsg, {cat: "invite"})
             if(!envelope.return){
-                await self.crossIslandMessenger.returnEnvelope(envelope, err);
+                await self.crossIslandMessenger.returnEnvelope(envelope, errMsg);
             }
         }catch(fatalError){
             console.trace("FATAL: Could nod handle the error " + fatalError);
         }
-
     }
 
     /***** END Error handlers *****/
@@ -308,6 +333,7 @@ class InviteAssistant{
             Logger.error(`Invite assistant error on command: ${command} : ${err.message}`, {stack: err.stack, cat: "invite"} )
         }
     }
+
 
     /*****************************************************
      * ~END HELPERS

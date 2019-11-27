@@ -13,6 +13,7 @@ CLOSED: [2019-11-21 Thu 19:52]
 CLOSED: [2019-11-21 Thu 19:52]
 **** DONE Save session key on login
 CLOSED: [2019-11-21 Thu 19:52]
+
 **** DONE Split vault to multiple blobs
 CLOSED: [2019-11-21 Thu 19:52]
 **** TODO Vault update
@@ -23,7 +24,8 @@ CLOSED: [2019-11-21 Thu 23:09]
 ***** TODO Rename invite
 **** DONE Settings update
 CLOSED: [2019-11-22 Fri 22:17]
-**** TODO Topic join
+**** DONE Topic join
+CLOSED: [2019-11-26 Tue 18:35]
 **** TODO Members' nicknames aliases management
 **** TODO Files transfer
 **** TODO Reconnection
@@ -39,6 +41,14 @@ CLOSED: [2019-11-22 Fri 22:17]
 ***** DONE Delete history and vault record
 CLOSED: [2019-11-22 Fri 20:57]
 ***** TODO Delete topic authority and take down hidden services
+
+
+*** UI todo list
+**** TODO Load/update members list
+**** TODO Load/update invites list
+**** TODO Wire invites buttons
+**** TODO Selected topic name in the header
+**** TODO Topic selection handler
 
 
 *** TODO Deal with uninitialized settings on topic open

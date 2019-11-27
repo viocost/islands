@@ -146,11 +146,16 @@ export class Topic{
         this.handlers[Internal.INVITE_REQUEST_TIMEOUT] = ()=>{
             console.log("Invite request timeout");
         }
+
+        this.handlers[Internal.INVITE_REQUEST_FAIL] = (msg)=>{
+            console.log(`Invite request failed: ${msg.body.errorMsg}`);
+        }
         this.handlers[Events.INVITE_CREATED] = (msg)=>{
             console.log("Invite created event");
             self.processInviteCreated(self, msg);
-
+            self.emit(Events.INVITE_CREATED);
         }
+
         this.handlers[Internal.SETTINGS_UPDATED] = (msg)=>{
             console.log("Settings updated");
             self.processSettingsUpdated(msg);

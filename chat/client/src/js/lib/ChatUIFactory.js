@@ -4,6 +4,7 @@ import * as Modal from "./DynmaicModal";
 //Bakes select list for side panel
 // top boolean whether it is select for top block
 export function bakeCarousel(top=false){
+    let idPrefix = top ? "top" : "bottom";
     let options = []
     if(top) options.push(util.bake("option", {text: "Topics"}))
     options.push(util.bake("option", {text: "Particiapnts"}))
@@ -14,11 +15,18 @@ export function bakeCarousel(top=false){
         children: [
             util.bake("select", {
                 classes: "carousel",
-                children: options
+                id: `${idPrefix}-carousel`,
+                children: options,
+                listeners: {
+                    "mousedown": (e)=>{
+                        e.preventDefault();
+                        window.focus();
+                    }
+                }
             }),
             util.bake("div", {
-                classes: ["arrow", "right", "btn-rotate"],
-       
+                id: `${idPrefix}-btn-rotate`,
+                classes: ["arrow", "right", "btn-rotate"]
             })
 
         ]
@@ -28,12 +36,7 @@ export function bakeCarousel(top=false){
 
 
 
-export function bakeSidePanel(
-    newTopicHandler,
-    joinTopicHandler,
-    newInviteHandler,
-    refreshInvitesHandler){
-
+export function bakeSidePanel(){
     let carousel1 = bakeCarousel(true)
     let carousel2 = bakeCarousel()
     return util.bake("div", {
@@ -46,13 +49,20 @@ export function bakeSidePanel(
                 children: [
                     carousel1,
                     //topics block
-                    bakeTopicsBlock(newTopicHandler, joinTopicHandler),
+                    util.bake("div", {
+                        classes: "side-block-wrap",
+                        children: [
+                            //topics block
+                            bakeTopicsBlock("top"),
 
-                    //invites block
-                    bakeInvitesBlock(1, newInviteHandler, refreshInvitesHandler),
+                            //members block
+                            bakeParticipantsBlock("top"),
 
-                    //members block
-                    bakeParticipantsBlock(1)
+                            //invites block
+                            bakeInvitesBlock("top")
+
+                        ]
+                    })
                 ]
             }),
 
@@ -62,12 +72,19 @@ export function bakeSidePanel(
                 classes: ["side-panel-section", "bottom-section"],
                 children: [
                     carousel2,
+                    util.bake("div", {
+                        classes: "side-block-wrap",
+                        children: [
+                            //Optional topics block
+                            //bakeTopicsBlock(newTopicHandler, joinTopicHandler),
 
-                    //invites block
-                    bakeInvitesBlock(2, newInviteHandler, refreshInvitesHandler),
+                            //members block
+                            bakeParticipantsBlock("bottom"),
 
-                    //members block
-                    bakeParticipantsBlock(2)
+                            // invites block
+                            bakeInvitesBlock("bottom")
+                        ]
+                    })
                 ]
             }),
 
@@ -93,11 +110,11 @@ export function bakeSidePanel(
 
 
 // Bakes empty  topics block for side panel
-function bakeTopicsBlock(newTopicHandler, joinTopicHandler){
+function bakeTopicsBlock(idPrefix){
 
     return  util.bake("div", {
         classes: "side-panel-block",
-        id: "topics-block",
+        id: `${idPrefix}-topic-block`,
        
         children: [
             util.bake("h4", {
@@ -108,7 +125,7 @@ function bakeTopicsBlock(newTopicHandler, joinTopicHandler){
 
             util.bake("ul", {
                 classes: "side-block-data-list",
-                id: "topics-list",
+                id: `${idPrefix}-topics-list`,
             }),
             util.bake("div", {
                 classes:  "side-panel-button-row",
@@ -116,23 +133,24 @@ function bakeTopicsBlock(newTopicHandler, joinTopicHandler){
 
                     util.bake("button", {
                         //New topic button
-                        id: "new-topic-button",
+                        id: `${idPrefix}-btn-new`,
                         classes: ["side-panel-btn", "btn"],
                         text: "New topic",
-                        listeners: {
-                            click: newTopicHandler
-                        }
                     }),
 
                     util.bake("button", {
                         //Join button
-                        id: "join-topic-button",
+                        id: `${idPrefix}-btn-join`,
                         classes: ["side-panel-btn", "btn"],
                         text: "Join topic",
-                        listeners: {
-                            click: joinTopicHandler
-                        }
-                    })
+                    }),
+
+                    util.bake("button", {
+                        //Manage button
+                        id: `${idPrefix}-btn-manage-topics`,
+                        classes: ["side-panel-btn", "btn"],
+                        text: "Manage",
+                    }),
                 ]
             })
         ]
@@ -141,9 +159,9 @@ function bakeTopicsBlock(newTopicHandler, joinTopicHandler){
 
 
 //Bakes empty invites block
-function bakeInvitesBlock(id, newInviteHandler, refreshHandler){
+function bakeInvitesBlock(idPrefix){
     return util.bake("div", {
-        id: `invites-block-${id}`,
+        id: `${idPrefix}-invites-block`,
         classes: "side-panel-block",
         style: "display: none",
         children: [
@@ -155,7 +173,7 @@ function bakeInvitesBlock(id, newInviteHandler, refreshHandler){
 
             util.bake("ul", {
                 classes: "side-block-data-list",
-                id: `invites-list-${id}`,
+                id: `${idPrefix}-invites-list`,
 
             }),
 
@@ -169,18 +187,20 @@ function bakeInvitesBlock(id, newInviteHandler, refreshHandler){
                             util.bake("button", {
                                 classes: "side-panel-btn",
                                 text: "New invite",
-                                listeners: {
-                                    click: newInviteHandler
-                                }
+                                id: `${idPrefix}-btn-new-invite`
                             }),
 
                             //Refresh invites button
                             util.bake("button", {
                                 classes: "side-panel-btn",
                                 text: "Sync",
-                                listeners: {
-                                    click: refreshHandler
-                                }
+                                id: `${idPrefix}-btn-refresh-invites`
+                            }),
+
+                            util.bake("button", {
+                                classes: "side-panel-btn",
+                                text: "Manage",
+                                id: `${idPrefix}-btn-manage-invites`
                             })
                         ]
                     })
@@ -190,28 +210,55 @@ function bakeInvitesBlock(id, newInviteHandler, refreshHandler){
     })
 }
 
-function bakeParticipantsBlock(id){
+function bakeParticipantsBlock(idPrefix){
     return util.bake("div", {
-        id: `participants-block-${id}`,
+        id: `${idPrefix}-participants-block`,
         classes: "side-panel-block",
         style: "display: none",
         children: [
             util.bake("h4", {
                 class: "empty-block",
-                text: "No participants yet",
+                text: "No participants...",
                 style: "display: none"
             }),
 
             util.bake("ul", {
                 classes: "side-block-data-list",
-                id: `participants-list-${id}`,
+                id: `${idPrefix}-member-list`,
+            }),
+
+            util.bake("div", {
+                classes: "side-panel-button-row",
+                children: [
+                    //New invite button
+                    util.bake("button", {
+                        classes: "side-panel-btn",
+                        text: "Manage",
+                        id: `${idPrefix}-btn-manage-participants`
+                    }),
+                ]
             })
         ]
     })
 
 }
 
+export function bakeParticipantListItem(nickname, pkfp, alias){
+    return util.bake("li", {
+        classes: "participant-list-item",
+        html: alias ? `${nickname} -- ${alias}` : `${nicknae} -- ${nickname.substring(0, 5)}`
+    })
+}
 
+export function bakeInviteListItem(inviteCode){
+    return util.bake("li", {
+        classes: "invite-list-item",
+        attributes: {
+            "invite-code": inviteCode
+        },
+        html: inviteCode.substr(117)
+    })
+}
 
 export function bakeMessagesPanel(newMsgBlock){
     return util.bake("div", {
