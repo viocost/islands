@@ -109,7 +109,8 @@ class IslandsChat{
             this.hm,
             this.topicAuthorityManager,
             this.crossIslandMessenger,
-            this.vaultManager
+            this.vaultManager,
+            this.torConnector
         );
 
         Logger.verbose("Chat started")

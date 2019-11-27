@@ -718,11 +718,11 @@ function refreshInvites(){
 
     let invites = chat.getInvites(topicInFocus);
     let topListElements  = Object.keys(invites).map((i)=>{
-        return UI.bakeInviteListItem(i)
+        return UI.bakeInviteListItem(i, copyInviteCode)
     })
 
     let bottomListElements  = Object.keys(invites).map((i)=>{
-        return UI.bakeInviteListItem(i)
+        return UI.bakeInviteListItem(i, copyInviteCode)
     })
     util.appendChildren(invitesListTop, topListElements);
     util.appendChildren(invitesListBottom, bottomListElements);
@@ -818,6 +818,24 @@ function loadingOff() {
 function padWithZeroes(requiredLength, value) {
     let res = "0".repeat(requiredLength) + String(value).trim();
     return res.substr(res.length - requiredLength);
+}
+
+
+function copyInviteCode(event) {
+    let inviteElement = event.target;
+    let inviteID = inviteElement.getAttribute("invite-code");
+    let textArea = document.createElement("textarea");
+    textArea.value = inviteID;
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+        document.execCommand("copy");
+        toastr.info("Invite code was copied to the clipboard");
+    } catch (err) {
+        toastr.error("Error copying invite code to the clipboard");
+    }
+    textArea.remove();
 }
 // ---------------------------------------------------------------------------------------------------------------------------
 // ~END util

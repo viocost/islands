@@ -147,9 +147,13 @@ main
   flex: 1
   width: 100%
 
+.side-block-wrap
+  overflow: auto
+
 .side-panel-block
   display: flex
   flex-direction: column
+  height: 100%
 
 .side-block-data-list
   @include scroll-style
@@ -165,10 +169,11 @@ main
 .side-panel-button-row
   display: flex
   flex-direction: row
-  width: 100%
+  width: 90%
   overflow: hidden
   height: 6rem
   margin-left: 1rem
+  margin-top: 1rem
   
 
 .side-block-data-list-item
@@ -231,6 +236,7 @@ main
   align-items: center
   width: 100%
   padding: 1rem
+  border-right: 1px solid $main-background
   background-color: darken($main-background, 5%)
   .connection-indicator-label
     font-size: 1.3rem

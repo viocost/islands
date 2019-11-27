@@ -1,6 +1,7 @@
 import { Events, Internal } from "../../../../common/Events";
 import { WildEmitter } from "./WildEmitter";
 import { Message } from "./Message";
+import { Metadata } from  "./Metadata";
 import { ChatUtility } from "./ChatUtility";
 import { iCrypto } from  "./iCrypto";
 import { ChatMessage } from "./ChatMessage";
@@ -43,6 +44,7 @@ export class Topic{
 
     static prepareNewTopicSettings(version, nickname, topicName, publicKey, encrypt = true){
         //Creating and encrypting topic settings:
+        console.log("Preparing new topic settigs");
         let settings = {
             version: version,
             membersData: {},
@@ -536,5 +538,11 @@ export class Topic{
 
     setName(name){
         this.name = name;
+    }
+
+
+    //Verifies current metadata
+    verifyMetadata(){
+        return Metadata.isMetadataValid(this._metadata)
     }
 }

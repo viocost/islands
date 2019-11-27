@@ -299,6 +299,7 @@ class TopicJoinAssistant {
         let session = self.sessionManager.getSessionByConnectionId(connectionId);
         if (!session){
             Logger.warn(`No session found for ${connctionId}`, {cat: "topic_join"})
+            return
         }
 
         let msg = new Message()

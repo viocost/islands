@@ -18,8 +18,17 @@ export class Metadata{
         return ic.get("sym");
     }
 
-    static isMetadataValid(metadata, taPublicKey){
+    static isMetadataValid(metadata){
 
+        if (typeof metadata === "string"){
+            metadata = JSON.parse(metadata);
+        }
+        let ic = new iCrypto();
+        ic.setRSAKey("pub", metadata.body.topicAuthority.publicKey, "public")
+          .addBlob("body", JSON.stringify(metadata.body))
+          .addBlob("sign", metadata.signature)
+          .publicKeyVerify("body", "sign", "pub", "res")
+        return ic.get("res");
     }
 }
 

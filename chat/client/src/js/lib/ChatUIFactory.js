@@ -250,11 +250,14 @@ export function bakeParticipantListItem(nickname, pkfp, alias){
     })
 }
 
-export function bakeInviteListItem(inviteCode){
+export function bakeInviteListItem(inviteCode, onclick){
     return util.bake("li", {
         classes: "invite-list-item",
         attributes: {
             "invite-code": inviteCode
+        },
+        listeners: {
+            "click": onclick
         },
         html: inviteCode.substr(117)
     })

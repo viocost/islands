@@ -161,8 +161,8 @@ export class Vault{
               password = Err.required("Vault parse: password parameter missing"),
               topics={}){
         let ic = new iCrypto();
-        console.log(`Salt: ${vault_encrypted.substring(0, 256)}`)
-        console.log(`Vault: ${vault_encrypted.substr(256)}`)
+        //console.log(`Salt: ${vault_encrypted.substring(0, 256)}`)
+        //console.log(`Vault: ${vault_encrypted.substr(256)}`)
         ic.addBlob("s16", vault_encrypted.substring(0, 256))
             .addBlob("v_cip", vault_encrypted.substr(256))
             .hexToBytes("s16", "salt")
@@ -427,8 +427,8 @@ export class Vault{
         let topics = this.packTopics(this.password)
 
 
-        console.log(`Salt: ${ic.get("salt-hex")}`)
-        console.log(`Vault: ${ic.get("cip-hex")}`)
+        //console.log(`Salt: ${ic.get("salt-hex")}`)
+        //console.log(`Vault: ${ic.get("cip-hex")}`)
         //Sign encrypted vault with private key
         return {
             vault:  ic.get("res"),
@@ -465,8 +465,8 @@ export class Vault{
             .privateKeySign("vault-hash", "asymkey", "sign");
 
 
-        console.log(`Salt: ${ic.get("salt-hex")}`)
-        console.log(`Vault: ${ic.get("cip-hex")}`)
+        //console.log(`Salt: ${ic.get("salt-hex")}`)
+        //console.log(`Vault: ${ic.get("cip-hex")}`)
         //Sign encrypted vault with private key
         return {
             vault:  ic.get("res"),

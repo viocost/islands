@@ -78,6 +78,7 @@ module.exports.Internal = Object.freeze({
     TOPIC_CREATED: "topic_created",
 
     DELETE_TOPIC: "delete_topic",
+    DELETE_TOPIC_ERROR: "delete_topic_error",
     TOPIC_DELETED: "topic_deleted",
     TOPIC_UPDATED: "topic_updated",
     VAULT_SETTINGS_UPDATED: "vault_settings_updated",
@@ -106,6 +107,10 @@ module.exports.Internal = Object.freeze({
     JOIN_TOPIC: "join_topic",
     JOIN_TOPIC_SUCCESS: "join_topic_success",
     JOIN_TOPIC_FAIL: "join_topic_fail",
+
+
+    BOOT_PARTICIPANT: "boot_participant",
+    BOOT_PARTICIPANT_ERROR: "boot_participant_error",
 
     UPDATE_SETTINGS: "update_settings",
     SETTINGS_UPDATED: "update_settings_success",

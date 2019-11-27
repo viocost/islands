@@ -7,6 +7,7 @@ import { MessageQueue } from  "./MessageQueue";
 import { ArrivalHub } from "./ArrivalHub";
 import  { ChatUtility }  from "./ChatUtility";
 import { Message } from "./Message";
+import { Topic } from "./Topic";
 import  { Metadata } from "./Metadata";
 import  { Participant}  from "./Participant";
 import  { AttachmentInfo } from "./AttachmentInfo";
@@ -276,7 +277,7 @@ export class ChatClient{
             let newTopicDataCipher = ChatUtility.encryptStandardMessage(JSON.stringify(newTopicData), self.sessionKey);
 
             //initializing topic settings
-            let settings = self.prepareNewTopicSettings(nickname, topicName, ownerKeyPair.publicKey)
+            let settings = Topic.prepareNewTopicSettings(self.version, nickname, topicName, ownerKeyPair.publicKey)
 
             // TODO Prepare new topic vault record
             let vaultRecord = self.vault.prepareVaultTopicRecord(this.version,
@@ -649,7 +650,7 @@ export class ChatClient{
     }
 
     getParticipants(topicPkfp){
-
+       
     }
 
     getTopics(){

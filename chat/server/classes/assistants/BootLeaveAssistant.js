@@ -17,13 +17,15 @@ class BootLeaveAssistant extends Assistant{
                 historyManager = Err.required(),
                 topicAuthorityManager = Err.required(),
                 crossIslandMessenger = Err.required(),
-                vaultManager = Err.required()){
+                vaultManager = Err.required(),
+                torConnector = Err.required()){
         super(historyManager);
         this.crossIslandMessenger = crossIslandMessenger;
         this.vaultManager = vaultManager;
         this.connectionManager = connectionManager;
         this.sessionManager = sessionManager;
         this.topicAuthorityManager = topicAuthorityManager;
+        this.connector = torConnector;
         this.subscribeToClientRequests(requestEmitter);
         this.subscribeToCrossIslandsMessages(crossIslandMessenger);
     }
@@ -78,22 +80,44 @@ class BootLeaveAssistant extends Assistant{
     async deleteTopic(request, connectionID, self){
         Logger.debug("Deleting topic")
         let pkfp = request.body.topicPkfp;
-        await self.vaultManager.deleteTopic(request.body.vaultId,
-                                            pkfp,
-                                            request.body.vaultNonce,
-                                            request.body.vaultSign)
 
         const publicKey = await self.hm.getOwnerPublicKey(pkfp);
         if(!Request.isRequestValid(request, publicKey)){
             throw new Error("Boot request was not verified");
         }
 
-        await self.hm.deleteTopic(request.headers.pkfpSource);
+        let metadata = Metadata.parseMetadata(await self.hm.getLastMetadata(pkfp));
+        let userResidence = metadata.body.participants[pkfp].residence;
+        let taResidence = metadata.body.owner === pkfp ? metadata.body.topicAuthority.residence : null
+        if(await self.connector.isHSUp(userResidence)){
+            Logger.info(`Taking down user hidden service ${userResidence} on toipc delete`, {cat: "topic_delete"})
+            try{
+
+                //await self.connector.killHiddenService(userResidence);
+            }catch(err){console.log(`err deleting tor: ${err.message}`)}
+        }
+        if (metadata.body.owner === pkfp ){
+            if ( await self.connector.isHSUp(taResidence)){
+                Logger.info(`Taking down toipc authority service ${taResidence} on topic delete`, {cat: "topic_delete"})
+                try{
+                  //  await self.connector.killHiddenService(taResidence);
+                }catch(err){console.log(`err deleting tor: ${err.message}`)}
+            }
+            await self.hm.deleteTopic(metadata.body.topicAuthority.pkfp)
+        }
+
+        await self.hm.deleteTopic(pkfp);
+
+        await self.vaultManager.deleteTopic(request.body.vaultId,
+                                            pkfp,
+                                            request.body.vaultNonce,
+                                            request.body.vaultSign)
         //let response = new Response("delete_topic_success", request);
+
         let response = Message.makeResponse(request, "island", Internal.TOPIC_DELETED);
         response.body.vaultNonce = request.body.vaultNonce;
         response.body.vaultSign = request.body.vaultSign;
-        response.body.topicPkfp = request.body.pkfp;
+        response.body.topicPkfp = pkfp;
         Logger.debug("Topic has been deleted successfully. Sending notification to client", {cat: "topic_delete"})
         let session = self.sessionManager.getSessionByConnectionId(connectionID);
         session.broadcast(response);
@@ -115,11 +139,24 @@ class BootLeaveAssistant extends Assistant{
     }
 
 
-    async clientErrorHandler(request, connectionID, self, err){
+    async clientErrorHandler(request, connectionId, self, err){
         try{
             Logger.warn("Error handling client request: " + err.message, {stack: err.stack, cat: "topic_delete"});
-            let error = new ClientError(request, self.getClientErrorType(request.header.command) , "Internal server error");
-            self.connectionManager.sendResponse(connectionID, error);
+            let session = self.sessionManager.getSessionByConnectionId(connectionId);
+
+            if (!session){
+                Logger.warn(`No session found for ${connctionId}`, {cat: "topic_join"})
+                return
+            }
+
+            let msg = new Message();
+            msg.setSource("island");
+            msg.setCommand(self.getClientErrorType(request.headers.command))
+            msg.setDest(request.headers.pkfpSource);
+            msg.body.errorMsg = err.message;
+            await session.signMessage(msg);
+            session.send(msg, connectionId)
+
         }catch(fatalError){
             Logger.error("FATAL ERROR while handling client request: " + fatalError + " " + fatalError.stack, {cat: "topic_delete"});
         }
@@ -127,7 +164,15 @@ class BootLeaveAssistant extends Assistant{
 
 
     getClientErrorType(command){
-        return command+"_error";
+        let errorTypes = {}
+        errorTypes[Internal.DELETE_TOPIC] = Internal.DELETE_TOPIC_ERROR;
+        errorTypes[Internal.BOOT_PARTICPANT] = Internal.BOOT_PARTICPANT_ERROR;
+
+        if (errorTypes.hasOwnProperty(command)){
+            return errorTypes[command]
+        } else {
+            throw new Error(`Invalid error type for ${command}`)
+        }
     }
 
     /*****************************************************
