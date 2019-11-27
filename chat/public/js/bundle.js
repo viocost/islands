@@ -143,6 +143,7 @@ module.exports.Internal = Object.freeze({
   SAVE_VAULT: "save_vault",
   TOPIC_CREATED: "topic_created",
   DELETE_TOPIC: "delete_topic",
+  DELETE_TOPIC_ERROR: "delete_topic_error",
   TOPIC_DELETED: "topic_deleted",
   TOPIC_UPDATED: "topic_updated",
   VAULT_SETTINGS_UPDATED: "vault_settings_updated",
@@ -164,6 +165,8 @@ module.exports.Internal = Object.freeze({
   JOIN_TOPIC: "join_topic",
   JOIN_TOPIC_SUCCESS: "join_topic_success",
   JOIN_TOPIC_FAIL: "join_topic_fail",
+  BOOT_PARTICIPANT: "boot_participant",
+  BOOT_PARTICIPANT_ERROR: "boot_participant_error",
   UPDATE_SETTINGS: "update_settings",
   SETTINGS_UPDATED: "update_settings_success",
   LOAD_MESSAGES: "load_messages",
@@ -10768,16 +10771,15 @@ function () {
     key: "bootstrap",
     // ---------------------------------------------------------------------------------------------------------------------------
     // INITIALIZING
-    value: function bootstrap(messageQueue, arrivalHub, version) {
-      var self = this;
-      this.messageQueue = messageQueue;
-      this.arrivalHub = arrivalHub;
-      this.arrivalHub.on(this.pkfp, function (msg) {
+    value: function bootstrap(self, messageQueue, arrivalHub, version) {
+      self.messageQueue = messageQueue;
+      self.arrivalHub = arrivalHub;
+      self.arrivalHub.on(self.pkfp, function (msg) {
         self.processIncomingMessage(msg, self);
       });
-      this.version = version;
-      this.setHandlers();
-      this.bootstrapped = true;
+      self.version = version;
+      self.setHandlers();
+      self.bootstrapped = true;
     }
   }, {
     key: "loadMetadata",
@@ -19603,6 +19605,7 @@ function () {
 
       this.handlers[Events["Internal"].TOPIC_CREATED] = function (msg) {
         self.addNewTopic(self, msg);
+        self.emit(Events["Internal"].TOPIC_CREATED, msg.body.topicPkfp);
       };
 
       this.handlers[Events["Internal"].TOPIC_DELETED] = function (msg) {
@@ -19945,7 +19948,7 @@ function () {
       var pkfp = topicData.pkfp;
       var newTopic = new Topic["a" /* Topic */](pkfp, topicData.name, topicData.key, topicData.comment);
       newTopic.loadMetadata(metadata);
-      newTopic.bootstrap(self.messageQueue, self.arrivalHub, self.version);
+      newTopic.bootstrap(newTopic, self.messageQueue, self.arrivalHub, self.version);
       self.topics[pkfp] = newTopic;
       self.emit(Events["Events"].TOPIC_CREATED, pkfp);
     }
@@ -39691,7 +39694,7 @@ function () {
                 for (_i = 0, _Object$keys = Object.keys(_this.topics); _i < _Object$keys.length; _i++) {
                   pkfp = _Object$keys[_i];
 
-                  _this.topics[pkfp].bootstrap(_this.messageQueue, _this.arrivalHub, _this.version);
+                  _this.topics[pkfp].bootstrap(_this.topics[pkfp], _this.messageQueue, _this.arrivalHub, _this.version);
 
                   _this.initTopicListeners(_this.topics[pkfp]);
                 } //At this point we have loaded all topic keys, so login is successful
@@ -40279,7 +40282,7 @@ function () {
       var nickname = pendingTopic.ownerNickName;
       var topicName = pendingTopic.topicName;
       var topic = self.vault.addTopic(pkfp, topicName, privateKey);
-      topic.bootstrap(self.messageQueue, self.arrivalHub, self.version);
+      topic.bootstrap(topic, self.messageQueue, self.arrivalHub, self.version);
       topic.loadMetadata(data.body.metadata);
       self.vault.save(_common_Events__WEBPACK_IMPORTED_MODULE_10__["Internal"].TOPIC_ADDED); // Add new topic to vault and save it
 
@@ -56851,8 +56854,9 @@ function initChat() {
   });
   chat_ui_chat.on(Events["Events"].LOGIN_ERROR, processLoginResult);
   chat_ui_chat.on(Events["Events"].LOGIN_SUCCESS, processLoginResult);
-  chat_ui_chat.on(Events["Events"].INIT_TOPIC_SUCCESS, function () {
-    lib_toastr.success("Init topic success");
+  chat_ui_chat.on(Events["Events"].TOPIC_CREATED, function () {
+    refreshTopics();
+    lib_toastr.success("New topic has been initialized!");
   });
   chat_ui_chat.on(Events["Events"].INIT_TOPIC_ERROR, function (err) {
     lib_toastr.warning("Init topic error: ".concat(err.message));

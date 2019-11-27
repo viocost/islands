@@ -70,16 +70,15 @@ export class Topic{
     }
     // ---------------------------------------------------------------------------------------------------------------------------
     // INITIALIZING
-    bootstrap(messageQueue, arrivalHub, version){
-        let self = this;
-        this.messageQueue = messageQueue;
-        this.arrivalHub = arrivalHub;
-        this.arrivalHub.on(this.pkfp, (msg)=>{
+    bootstrap(self, messageQueue, arrivalHub, version){
+        self.messageQueue = messageQueue;
+        self.arrivalHub = arrivalHub;
+        self.arrivalHub.on(self.pkfp, (msg)=>{
             self.processIncomingMessage(msg, self);
         });
-        this.version = version;
-        this.setHandlers()
-        this.bootstrapped = true;
+        self.version = version;
+        self.setHandlers()
+        self.bootstrapped = true;
     }
 
 
@@ -130,7 +129,7 @@ export class Topic{
      */
     async initLoad(messagesToLoad=INITIAL_NUM_MESSAGES, waitCompletion=false){
         let self = this
-        self.ensureBootstrapped();
+        self.ensureBootstrapped(self);
         setTimeout(()=>{
             self._loadMessages(self, messagesToLoad)
             self.awaitingMessages = true;
@@ -530,8 +529,8 @@ export class Topic{
         }
     }
 
-    ensureBootstrapped(){
-        if(!this.bootstrapped || !this.messageQueue || !this.arrivalHub){
+    ensureBootstrapped(self){
+        if(!self.bootstrapped || !self.messageQueue || !self.arrivalHub){
             throw new Error("Topic is not bootstrapped!");
         }
     }

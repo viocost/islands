@@ -98,6 +98,7 @@ export class Vault{
         this.handlers[Events.POST_LOGIN_SUCCESS] = ()=>{ self.emit(Events.POST_LOGIN_SUCCESS); }
         this.handlers[Internal.TOPIC_CREATED] = (msg)=>{
             self.addNewTopic(self, msg)
+            self.emit(Internal.TOPIC_CREATED, msg.body.topicPkfp)
         }
         this.handlers[Internal.TOPIC_DELETED] = (msg) =>{
             console.log(`TOPIC DELETED: ${msg.body.topicPkfp}`)
@@ -394,7 +395,7 @@ export class Vault{
         )
 
         newTopic.loadMetadata(metadata);
-        newTopic.bootstrap(self.messageQueue, self.arrivalHub, self.version);
+        newTopic.bootstrap(newTopic, self.messageQueue, self.arrivalHub, self.version);
         self.topics[pkfp] = newTopic;
         self.emit(Events.TOPIC_CREATED, pkfp);
 

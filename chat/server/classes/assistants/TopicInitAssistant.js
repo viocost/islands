@@ -122,6 +122,7 @@ class TopicInitAssistant{
         let response = Message.makeResponse(request, "island", Internal.TOPIC_CREATED);
         response.body.metadata = metadata;
         response.body.vaultRecord = request.body.vaultRecord;
+        response.body.topicPkfp = request.body.topicPkfp;
         self.connectionManager.sendMessage(connectionId, response);
 
     }

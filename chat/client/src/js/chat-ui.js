@@ -774,9 +774,9 @@ function initChat(){
     chat = new Chat({version: "2.0.0"})
     chat.on(Events.LOGIN_ERROR, processLoginResult)
     chat.on(Events.LOGIN_SUCCESS, processLoginResult)
-    chat.on(Events.INIT_TOPIC_SUCCESS, ()=>{
-
-        toastr.success("Init topic success")
+    chat.on(Events.TOPIC_CREATED, ()=>{
+        refreshTopics()
+        toastr.success("New topic has been initialized!")
     })
     chat.on(Events.INIT_TOPIC_ERROR, (err)=>{
         toastr.warning(`Init topic error: ${err.message}`);

@@ -72,7 +72,7 @@ export class ChatClient{
                 console.log(`Initializing topic listeners...`);
                 this.topics = this.vault.topics;
                 for(let pkfp of Object.keys(this.topics)){
-                    this.topics[pkfp].bootstrap(this.messageQueue, this.arrivalHub, this.version);
+                    this.topics[pkfp].bootstrap(this.topics[pkfp], this.messageQueue, this.arrivalHub, this.version);
                     this.initTopicListeners(this.topics[pkfp])
                 }
 
@@ -612,7 +612,7 @@ export class ChatClient{
         let topicName = pendingTopic.topicName;
 
         let topic = self.vault.addTopic(pkfp, topicName, privateKey);
-        topic.bootstrap(self.messageQueue, self.arrivalHub, self.version);
+        topic.bootstrap(topic, self.messageQueue, self.arrivalHub, self.version);
         topic.loadMetadata(data.body.metadata);
         self.vault.save(Internal.TOPIC_ADDED);
 
