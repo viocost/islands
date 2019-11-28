@@ -510,7 +510,7 @@ export function bakeHeaderLeftSection(menuClickHandler){
                 }
             }),
             util.bake("h3", {
-                id: "active-title"
+                id: "topic-in-focus"
             })
         ]
     })
@@ -578,11 +578,6 @@ export function bakeHeaderRightSection(
     return  rightSection
 }
 
-export function bakeSettingsContainer(){
-    return util.bake("div", {
-        id: "settings-container",
-    })
-}
 
 export function bakeMainContainer(){
     return util.bake("div", {
@@ -720,4 +715,88 @@ export function bakeTopicJoinModal(joinClick){
                       joinClick);
     return form
 
+}
+
+export function bakeManageTopicsView(){
+    return util.bake("div", {
+        id: "manage-topics-view",
+        style: "display: none",
+        classes: "manage-topics-view",
+        children: [
+            util.bake("h1", {
+                html: "Manage topics"
+            }),
+
+            util.bake("div", {
+                id: "manage-topics-list",
+                classes: "manage-topics-list",
+
+            }),
+
+            util.bake("div", {
+                classes: "buttons-row",
+                children: [
+                    util.bake("button", {
+                        text: "Create new",
+                        id: "btn-mng-create-topic",
+                        classes: ["btn"]
+                    }),
+
+                    util.bake("button", {
+                        text: "Join",
+                        id: "btn-mng-join-topic",
+                        classes: ["btn"]
+                    }),
+                    util.bake("button", {
+                        text: "Rename",
+                        id: "btn-mng-rename-topic",
+                        classes: ["btn"]
+                    }),
+                    util.bake("button", {
+                        text: "Leave",
+                        id: "btn-mng-leave-topic",
+                        classes: ["btn"]
+                    }),
+                    util.bake("button", {
+                        text: "Delete",
+                        id: "btn-mng-delete-topic",
+                        classes: ["btn"]
+                    }),
+                    util.bake("button", {
+                        text: "Go back",
+                        id: "btn-mng-topics-go-back",
+                        classes: ["btn"]
+                    }),
+
+                ]
+            })
+        ]
+    })
+}
+
+export function bakeManageTopicListItem(key, topicName, onclick){
+    return util.bake("div", {
+        attributes: {
+            pkfp: key
+        },
+        listeners: {
+            "click": onclick
+        },
+        html: topicName,
+        classes: "mng-topic-list-item"
+    })
+}
+
+export function bakeManageInvitesView(){
+
+}
+
+export function bakeManageParticipantsView(){
+
+}
+
+export function bakeSettingsContainer(){
+    return util.bake("div", {
+        id: "settings-container",
+    })
 }

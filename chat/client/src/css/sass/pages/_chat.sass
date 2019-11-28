@@ -263,6 +263,33 @@ main
 //~END side panel
 
 
+
+// Manage topic view
+
+.manage-topics-view
+  color: $text-color
+  display: flex
+  flex-direction: column
+  margin: 4rem
+
+  @media (max-width: $medium)
+    margin: .5rem;
+
+.manage-topics-list
+  color: $text-color
+  margin: 1rem 0 2rem 0
+  div
+    font-size: 1.6rem
+    padding: 1.3rem
+    border-bottom: 1px solid darken($main-background, 5%)
+    &:hover
+      background-color: darken($main-background, 5%)
+  .selected
+    background-color:  $topic-in-focus
+
+
+// ~END Manage topic view
+
 //new message block
 
 .new-message-container

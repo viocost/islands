@@ -34,7 +34,7 @@ const viewStack = []
 // Its title displayed in the header
 // Settings displayed in context of this topic
 let topicInFocus;
-window.getTopicInFocus = topicInFocus = ()=>{console.log(topicInFocus)};
+window.getTopicInFocus = ()=>{console.log(topicInFocus)};
 
 // Topics that are in the split windows and display messages
 let activeTopics
@@ -105,10 +105,16 @@ function initUI(){
 
     let main = util.$("main")
     util.removeAllChildren(main);
+    let manageTopicsView = UI.bakeManageTopicsView()
+    let manageInvitesView = UI.bakeManageInvitesView()
+    let manageParticipantsView = UI.bakeManageParticipantsView()
+
+
+
     let settingsContainer = UI.bakeSettingsContainer()
     let mainContainer = UI.bakeMainContainer()
-    util.appendChildren(main, [settingsContainer, mainContainer])
-   
+    util.appendChildren(main, [manageTopicsView, settingsContainer, mainContainer])
+
 
 
     let sidePanel = UI.bakeSidePanel();
@@ -120,8 +126,11 @@ function initUI(){
 
     setupSidePanelListeners()
 
+
     refreshTopics();
     // add listener to the menu button
+
+    updateTopicInFocusTitle();
 
     window.onresize = renderLayout;
     renderLayout()
@@ -159,11 +168,20 @@ function initUI(){
 
 function setupSidePanelListeners(){
 
+
     util.$("#top-btn-new").onclick = processNewTopicClick;
+    util.$("#btn-mng-create-topic").onclick = processNewTopicClick;
     //util.$("#bottom-btn-new").onclick = createTopic;
     util.$("#top-btn-join").onclick = processJoinTopicClick;
+    util.$("#btn-mng-join-topic").onclick = processJoinTopicClick;
+    util.$("#btn-mng-rename-topic").onclick = processNewTopicClick;
+    util.$("#btn-mng-leave-topic").onclick = processNewTopicClick;
+    util.$("#btn-mng-delete-topic").onclick = processNewTopicClick;
+    util.$("#btn-mng-topics-go-back").onclick = backToChat;
+
+    util.$("#top-btn-join").onclick = processJoinTopicClick;
     //util.$("#bottom-btn-join").onclick = joinTopic;
-    util.$("#top-btn-manage-topics").onclick = undefined;
+    util.$("#top-btn-manage-topics").onclick = processManageTopicsClick;
     //util.$("#bottom-btn-manage-topics").onclick = undefined;
     util.$("#top-btn-refresh-invites").onclick = undefined;
     util.$("#bottom-btn-refresh-invites").onclick = undefined;
@@ -176,6 +194,7 @@ function setupSidePanelListeners(){
     util.$("#top-btn-rotate").onclick = rotateCarousel
     util.$("#bottom-btn-rotate").onclick = rotateCarousel
 }
+
 
 function rotateCarousel(ev){
     let select = ev.target.previousSibling;
@@ -268,6 +287,7 @@ function processActivateTopicClick(ev){
     refreshInvites();
     refreshParticipants();
 
+    updateTopicInFocusTitle();
     // Update participants list in side panel
     //chat.getParticipants(pkfp);
     // Update invites list in side panel
@@ -318,7 +338,26 @@ function processInfoClick(){
 }
 
 function processNewTopicClick(){
+    console.log("New topic click");
     topicCreateModal.open()
+}
+
+function processDeleteTopicClick(){
+    console.log("Delete topic click");
+    let mngTopicList = util.$("#manage-topics-list");
+
+    if (confirm("All topic data will be deleted beyond recover!\n\nProceed?")){
+    }
+
+}
+
+function processRenameTopciClick(){
+    console.log("Rename topic click");
+}
+
+function processLeaveTopicClick(){
+    console.log("Rename topic click");
+
 }
 
 function processJoinTopicClick() {
@@ -336,6 +375,52 @@ function processNewInviteClick() {
 function processRefreshInvitesClick() {
     console.log("Refresh invites");
 }
+
+
+function processManageTopicsClick(){
+    let topicsList = util.$("#manage-topics-list");
+    let mainContainer = util.$("#main-container");
+    let manageTopicsView = util.$("#manage-topics-view");
+
+    util.removeAllChildren(topicsList);
+    Object.keys(chat.topics).forEach(key=>{
+        topicsList.appendChild(UI.bakeManageTopicListItem(key,
+                                                          chat.topics[key].name,
+                                                          createSelectorFunction("pkfp",
+                                                                                 "manage-topics-list")))
+    })
+
+    util.hide(mainContainer);
+    util.flex(manageTopicsView);
+
+}
+
+//this is generic function for selecting active item on click from list
+// idAttr is id attribute that is set during list creation
+// listId is id of a list element
+function createSelectorFunction(idAttr, listId){
+    return function(ev){
+        let list = util.$(`#${listId}`);
+        for (let child of list.children){
+            if (child.getAttribute(idAttr) === ev.target.getAttribute(idAttr)){
+                util.addClass(child, "selected");
+            } else {
+                util.removeClass(child, "selected");
+            }
+        }
+    }
+}
+
+function backToChat(){
+    let topicsList = util.$("#manage-topics-view")
+    //let topicsList = util.$("#manage-topics-list")
+    //let topicsList = util.$("#manage-topics-list")
+    //util.hide(topicsList)
+    //util.hide(topicsList)
+    util.hide(topicsList)
+    util.flex("#main-container")
+}
+
 // ---------------------------------------------------------------------------------------------------------------------------
 // ~END UI handlers
 
@@ -704,6 +789,14 @@ function refreshTopics(){
     })
     topicsElements.sort((el)=>{ return el.innerText })
     util.appendChildren(topicsList, topicsElements)
+}
+
+function updateTopicInFocusTitle(){
+    let title = "Ephemeral"
+    if(topicInFocus){
+        title = chat.topics[topicInFocus].name
+    }
+    util.$("#topic-in-focus").innerHTML = title;
 }
 
 function refreshInvites(){
