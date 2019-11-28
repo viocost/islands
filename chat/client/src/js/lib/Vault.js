@@ -102,6 +102,8 @@ export class Vault{
         }
         this.handlers[Internal.TOPIC_DELETED] = (msg) =>{
             console.log(`TOPIC DELETED: ${msg.body.topicPkfp}`)
+            delete self.topics[msg.body.topicPkfp];
+            self.emit(Internal.TOPIC_DELETED, msg.body.topicPkfp);
         }
         this.handlers[Internal.SESSION_KEY] = (msg)=>{
             if(!Message.verifyMessage(msg.body.sessionKey, msg)){

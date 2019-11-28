@@ -59,6 +59,9 @@ export class ChatClient{
                 //Initializing arrival hub
                 this.arrivalHub = new ArrivalHub(this.connector);
 
+                //Initialize message queue
+                this.messageQueue = new MessageQueue(this.connector);
+
                 //bootstrapping vault
                 this.vault.bootstrap(this.arrivalHub, this.messageQueue, this.version);
                 this.setVaultListeners()
@@ -66,8 +69,6 @@ export class ChatClient{
                 await this.connector.establishConnection(vaultId);
                 console.log("Connection established. Initializing arrival hub..");
 
-                //Initialize message queue
-                this.messageQueue = new MessageQueue(this.connector);
 
                 console.log(`Initializing topic listeners...`);
                 this.topics = this.vault.topics;
@@ -96,6 +97,10 @@ export class ChatClient{
         })
         this.vault.on(Events.TOPIC_CREATED, (pkfp)=>{
             self.emit(Events.TOPIC_CREATED, pkfp);
+        })
+
+        this.vault.on(Internal.TOPIC_DELETED, (pkfp)=>{
+            self.emit(Events.TOPIC_DELETED, pkfp);
         })
     }
 

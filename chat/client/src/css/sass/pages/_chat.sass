@@ -99,12 +99,14 @@ main
   align-items: flex-start
   @media (max-width: $medium)
     width: 100%
+    max-width: 100%
 
 .carousel-wrap
   width: 100%
   display: flex
   flex-direction: row
   align-items: center
+  border-bottom: 1px solid darken($main-background, 5%)
   height: 7rem
   .btn-rotate
     margin: 0 2.5rem 0 0
@@ -115,7 +117,8 @@ main
 
   .carousel
     flex: 1
-    margin: 1.5rem 1rem 1.5rem 1rem
+    padding: 1.5rem 1rem 1.5rem 1rem
+    margin-bottom: 1rem
     color: $text-color
     font-size: 2.5rem
     font-weight: bold
@@ -181,10 +184,10 @@ main
   border-bottom: 1px solid darken($main-background, 5%)
   padding: .5rem
   display: flex
-
   &:hover
     background-color: darken($main-background, 5%)
     cursor: pointer
+
 
 .invite-list-item
   color: $text-color
@@ -216,9 +219,13 @@ main
 
 .topic-in-focus
   background-color: $topic-in-focus
+  &:hover
+    background-color: lighten($topic-in-focus, 5%)
+
 
 
 .top-section
+  border-bottom: 1rem solid darken($main-background, 5%)
   @media screen and (max-height: 800px)
     height: 80%
 
@@ -284,8 +291,13 @@ main
     border-bottom: 1px solid darken($main-background, 5%)
     &:hover
       background-color: darken($main-background, 5%)
+      cursor: pointer
   .selected
     background-color:  $topic-in-focus
+    &:hover
+      background-color:  lighten($topic-in-focus, 5%)
+      cursor: pointer
+
 
 
 // ~END Manage topic view

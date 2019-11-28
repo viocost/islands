@@ -121,7 +121,7 @@ class TopicJoinAssistant {
             response.setSource("island");
             response.setCommand(Internal.JOIN_TOPIC_SUCCESS);
             response.setDest(pendingRequest.vaultId);
-            response.body.vaultRecord = pendingRequest.vaultRecored;
+            response.body.vaultRecord = pendingRequest.vaultRecord;
             response.body.metadata = taResponse.body.metadata;
             let session = self.sessionManager.getSessionBySessionID(pendingRequest.vaultId);
             if(!session){

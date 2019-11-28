@@ -24,6 +24,13 @@ export function bakeCarousel(top=false){
                     }
                 }
             }),
+
+            util.bake("div", {
+                classes: "btn-side-split",
+                id: "btn-side-split"
+
+            }),
+
             util.bake("div", {
                 id: `${idPrefix}-btn-rotate`,
                 classes: ["arrow", "right", "btn-rotate"]

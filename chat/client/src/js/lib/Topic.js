@@ -83,7 +83,9 @@ export class Topic{
 
 
     loadMetadata(metadata){
-
+        if(typeof metadata === "string"){
+            metadata = JSON.parse(metadata);
+        }
         let settingsCipher = metadata.body.settings;
         let settings;
         if (!settingsCipher){

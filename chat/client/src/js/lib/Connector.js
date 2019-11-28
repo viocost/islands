@@ -66,6 +66,10 @@ export class Connector{
                     console.log("Successfull reconnect client")
                     self.emit("reconnect");
                 });
+
+                self.chatSocket.on('error', (err)=>{
+                    console.error(`Socket error: ${err}`)
+                })
                 resolve();
             });
 

@@ -174,9 +174,13 @@ function setupSidePanelListeners(){
     //util.$("#bottom-btn-new").onclick = createTopic;
     util.$("#top-btn-join").onclick = processJoinTopicClick;
     util.$("#btn-mng-join-topic").onclick = processJoinTopicClick;
-    util.$("#btn-mng-rename-topic").onclick = processNewTopicClick;
-    util.$("#btn-mng-leave-topic").onclick = processNewTopicClick;
-    util.$("#btn-mng-delete-topic").onclick = processNewTopicClick;
+
+    //TODO
+    util.$("#btn-mng-rename-topic").onclick = undefined;
+    util.$("#btn-mng-leave-topic").onclick = undefined;
+    //END
+
+    util.$("#btn-mng-delete-topic").onclick = processDeleteTopicClick;
     util.$("#btn-mng-topics-go-back").onclick = backToChat;
 
     util.$("#top-btn-join").onclick = processJoinTopicClick;
@@ -345,10 +349,22 @@ function processNewTopicClick(){
 function processDeleteTopicClick(){
     console.log("Delete topic click");
     let mngTopicList = util.$("#manage-topics-list");
-
-    if (confirm("All topic data will be deleted beyond recover!\n\nProceed?")){
+    let pkfp = null;
+    for(let el of mngTopicList.children){
+        if (util.hasClass(el, "selected")){
+            pkfp = el.getAttribute("pkfp");
+            break;
+        }
     }
 
+    if(!pkfp){
+        toastr.warning("Please select topic to delete.")
+        return;
+    }
+
+    if (confirm(`All topic data will be deleted beyond recover for ${chat.topics[pkfp].name}!\n\nProceed?`)){
+        chat.deleteTopic(pkfp);
+    }
 }
 
 function processRenameTopciClick(){
@@ -378,21 +394,11 @@ function processRefreshInvitesClick() {
 
 
 function processManageTopicsClick(){
-    let topicsList = util.$("#manage-topics-list");
     let mainContainer = util.$("#main-container");
     let manageTopicsView = util.$("#manage-topics-view");
-
-    util.removeAllChildren(topicsList);
-    Object.keys(chat.topics).forEach(key=>{
-        topicsList.appendChild(UI.bakeManageTopicListItem(key,
-                                                          chat.topics[key].name,
-                                                          createSelectorFunction("pkfp",
-                                                                                 "manage-topics-list")))
-    })
-
+    refreshManageTopicsView();
     util.hide(mainContainer);
     util.flex(manageTopicsView);
-
 }
 
 //this is generic function for selecting active item on click from list
@@ -791,6 +797,20 @@ function refreshTopics(){
     util.appendChildren(topicsList, topicsElements)
 }
 
+
+function refreshManageTopicsView(){
+    let topicsList = util.$("#manage-topics-list");
+
+    util.removeAllChildren(topicsList);
+    Object.keys(chat.topics).forEach(key=>{
+        topicsList.appendChild(UI.bakeManageTopicListItem(key,
+                                                          chat.topics[key].name,
+                                                          createSelectorFunction("pkfp",
+                                                                                 "manage-topics-list")))
+    })
+
+}
+
 function updateTopicInFocusTitle(){
     let title = "Ephemeral"
     if(topicInFocus){
@@ -869,8 +889,16 @@ function initChat(){
     chat.on(Events.LOGIN_SUCCESS, processLoginResult)
     chat.on(Events.TOPIC_CREATED, ()=>{
         refreshTopics()
+        refreshManageTopicsView();
         toastr.success("New topic has been initialized!")
     })
+
+    chat.on(Events.TOPIC_DELETED, (pkfp)=>{
+        refreshTopics()
+        refreshManageTopicsView();
+        toastr.info(`Topic ${pkfp.substring(0, 5)}... has been deleted.`)
+    })
+
     chat.on(Events.INIT_TOPIC_ERROR, (err)=>{
         toastr.warning(`Init topic error: ${err.message}`);
     })
