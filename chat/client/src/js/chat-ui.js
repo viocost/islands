@@ -169,34 +169,34 @@ function initUI(){
 function setupSidePanelListeners(){
 
 
-    util.$("#top-btn-new").onclick = processNewTopicClick;
+    //util.$("#top-btn-new").onclick = processNewTopicClick;
     util.$("#btn-mng-create-topic").onclick = processNewTopicClick;
     //util.$("#bottom-btn-new").onclick = createTopic;
-    util.$("#top-btn-join").onclick = processJoinTopicClick;
+    //util.$("#top-btn-join").onclick = processJoinTopicClick;
     util.$("#btn-mng-join-topic").onclick = processJoinTopicClick;
 
     //TODO
     util.$("#btn-mng-rename-topic").onclick = undefined;
     util.$("#btn-mng-leave-topic").onclick = undefined;
     //END
-
+   
     util.$("#btn-mng-delete-topic").onclick = processDeleteTopicClick;
     util.$("#btn-mng-topics-go-back").onclick = backToChat;
 
-    util.$("#top-btn-join").onclick = processJoinTopicClick;
+    //util.$("#top-btn-join").onclick = processJoinTopicClick;
     //util.$("#bottom-btn-join").onclick = joinTopic;
-    util.$("#top-btn-manage-topics").onclick = processManageTopicsClick;
+    //util.$("#top-btn-manage-topics").onclick = processManageTopicsClick;
     //util.$("#bottom-btn-manage-topics").onclick = undefined;
-    util.$("#top-btn-refresh-invites").onclick = undefined;
-    util.$("#bottom-btn-refresh-invites").onclick = undefined;
-    util.$("#top-btn-new-invite").onclick = processNewInviteClick;
-    util.$("#bottom-btn-new-invite").onclick = processNewInviteClick;
-    util.$("#top-btn-manage-invites").onclick = undefined;
-    util.$("#bottom-btn-manage-invites").onclick = undefined;
-    util.$("#top-btn-manage-participants").onclick = undefined;
-    util.$("#bottom-btn-manage-participants").onclick = undefined;
-    util.$("#top-btn-rotate").onclick = rotateCarousel
-    util.$("#bottom-btn-rotate").onclick = rotateCarousel
+    //util.$("#top-btn-refresh-invites").onclick = undefined;
+    //util.$("#bottom-btn-refresh-invites").onclick = undefined;
+    //util.$("#top-btn-new-invite").onclick = processNewInviteClick;
+    //util.$("#bottom-btn-new-invite").onclick = processNewInviteClick;
+    //util.$("#top-btn-manage-invites").onclick = undefined;
+    //util.$("#bottom-btn-manage-invites").onclick = undefined;
+    //util.$("#top-btn-manage-participants").onclick = undefined;
+    //util.$("#bottom-btn-manage-participants").onclick = undefined;
+    //util.$("#top-btn-rotate").onclick = rotateCarousel
+    //util.$("#bottom-btn-rotate").onclick = rotateCarousel
 }
 
 
@@ -268,7 +268,7 @@ function createTopic(){
 function registerVault() {
     let password = util.$("#new-passwd");
     let confirm =  util.$("#confirm-passwd");
-    return Vault.registerVault(password, confirm)
+    return Vault.registerVault(password, confirm, chat.version)
 }
 
 
@@ -288,8 +288,8 @@ function processActivateTopicClick(ev){
     // load messges in the new window
 
     refreshMessages()
-    refreshInvites();
-    refreshParticipants();
+    //refreshInvites();
+    //refreshParticipants();
 
     updateTopicInFocusTitle();
     // Update participants list in side panel
@@ -300,14 +300,27 @@ function processActivateTopicClick(ev){
     // Update to: select in new message block
 }
 
+function processExpandTopicClick(ev){
+    let expandButton = ev.target;
+    let pkfp = expandButton.parentNode.parentNode.getAttribute("pkfp")
+    if(!pkfp) throw "No pkfp found"
+
+    util.toggleClass("")
+
+
+
+
+
+}
+
 function setTopicInFocus(pkfp){
     topicInFocus = pkfp
-    for(let el of util.$("#top-topics-list").children){
+    for(let el of util.$("#topics-list").children){
         if (el.getAttribute("pkfp") === pkfp){
             util.addClass(el, "topic-in-focus");
             //Here set the name for active topic in header
         } else {
-            util.removeClass(el, "topic-in-focus");
+            util.removeCeass(el, "topic-in-focus");
         }
     }
 }
@@ -786,8 +799,9 @@ function refreshSidePanel(){
 
 
 function refreshTopics(){
+
     let topics = chat.getTopics();
-    let topicsList = util.$("#top-topics-list")
+    let topicsList = util.$("#topics-list")
     util.removeAllChildren(topicsList)
     let topicsElements = []
     Object.keys(topics).forEach(key=>{
@@ -809,14 +823,6 @@ function refreshManageTopicsView(){
                                                                                  "manage-topics-list")))
     })
 
-}
-
-function updateTopicInFocusTitle(){
-    let title = "Ephemeral"
-    if(topicInFocus){
-        title = chat.topics[topicInFocus].name
-    }
-    util.$("#topic-in-focus").innerHTML = title;
 }
 
 function refreshInvites(){

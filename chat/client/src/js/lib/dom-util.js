@@ -8,7 +8,7 @@
  * @param recipe
     * recipe is a JSON object with following properties:
  *  * id - string id
- *  * classes - list of classes. Array or single entry
+ *  * class - list of class. Array or single entry
  *  * attributes - object of attributes key vaule pairs
  *  * html - inner html
  *  * text - inner text
@@ -21,13 +21,13 @@ export function bake(name, recipe){
     let el = document.createElement(name);
     if(!recipe) return el;
 
-    if(recipe.classes){
-        if (typeof recipe.classes === "object"){
-            for (let c of recipe.classes){
+    if(recipe.class){
+        if (typeof recipe.class === "object"){
+            for (let c of recipe.class){
                 el.classList.add(c);
             }
-        }else if (typeof recipe.classes === "string"){
-            el.classList.add(recipe.classes);
+        }else if (typeof recipe.class === "string"){
+            el.classList.add(recipe.class);
         }else {throw new Error("Bake parameters invalid");}
     }
 
@@ -73,7 +73,7 @@ export function bake(name, recipe){
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------
-// CSS classes wrapers
+// CSS class wrapers
 export function addClass(element, _class){
     let node = verifyGetNode(element);
     node.classList.add(_class);
@@ -148,11 +148,11 @@ export function removeAllChildren(element){
 }
 
 // Given single node, or array of nodes wrapse them in new div element.
-// classes - single class or array of classes that will be set for the new div.
-export function wrap(elements, classes){
+// class - single class or array of class that will be set for the new div.
+export function wrap(elements, _class){
     return bake("div", {
         children: elements,
-        classes: classes
+        class: _class
     })
 }
 

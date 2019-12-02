@@ -3,19 +3,22 @@ import * as Modal from "./DynmaicModal";
 
 //Bakes select list for side panel
 // top boolean whether it is select for top block
-export function bakeCarousel(top=false){
-    let idPrefix = top ? "top" : "bottom";
+export function bakeCarousel(){
     let options = []
-    if(top) options.push(util.bake("option", {text: "Topics"}))
-    options.push(util.bake("option", {text: "Particiapnts"}))
-    options.push(util.bake("option", {text: "Invites"}))
+    options.push(util.bake("option", {text: "Topics"}))
 
     return util.bake("div", {
-        classes: "carousel-wrap",
+        class: "carousel-wrap",
         children: [
+
+            util.bake("div", {
+                id: `btn-rotate`,
+                class: ["arrow", "left", "btn-rotate"]
+            }),
+
             util.bake("select", {
-                classes: "carousel",
-                id: `${idPrefix}-carousel`,
+                class: "carousel",
+                id: `carousel`,
                 children: options,
                 listeners: {
                     "mousedown": (e)=>{
@@ -26,14 +29,8 @@ export function bakeCarousel(top=false){
             }),
 
             util.bake("div", {
-                classes: "btn-side-split",
-                id: "btn-side-split"
-
-            }),
-
-            util.bake("div", {
-                id: `${idPrefix}-btn-rotate`,
-                classes: ["arrow", "right", "btn-rotate"]
+                id: `btn-rotate`,
+                class: ["arrow", "right", "btn-rotate"]
             })
 
         ]
@@ -44,30 +41,22 @@ export function bakeCarousel(top=false){
 
 
 export function bakeSidePanel(){
-    let carousel1 = bakeCarousel(true)
-    let carousel2 = bakeCarousel()
+    let carousel = bakeCarousel()
     return util.bake("div", {
-        classes: "side-panel-container",
+        class: "side-panel-container",
         children: [
             util.bake("div", {
-                classes: ["side-panel-section", "top-section"],
+                class: ["side-panel-wrapper"],
 
-                id: "side-panel-top-section",
+                id: "side-panel-wrapper",
                 children: [
-                    carousel1,
+                    carousel,
                     //topics block
                     util.bake("div", {
-                        classes: "side-block-wrap",
+                        class: "side-block-wrap",
                         children: [
                             //topics block
-                            bakeTopicsBlock("top"),
-
-                            //members block
-                            bakeParticipantsBlock("top"),
-
-                            //invites block
-                            bakeInvitesBlock("top")
-
+                            bakeTopicsBlock(),
                         ]
                     })
                 ]
@@ -75,103 +64,55 @@ export function bakeSidePanel(){
 
 
             util.bake("div", {
-                id: "side-panel-bottom-section",
-                classes: ["side-panel-section", "bottom-section"],
+                class: "version-wrapper",
                 children: [
-                    carousel2,
-                    util.bake("div", {
-                        classes: "side-block-wrap",
-                        children: [
-                            //Optional topics block
-                            //bakeTopicsBlock(newTopicHandler, joinTopicHandler),
-
-                            //members block
-                            bakeParticipantsBlock("bottom"),
-
-                            // invites block
-                            bakeInvitesBlock("bottom")
-                        ]
-                    })
-                ]
-            }),
-
-            util.bake("div", {
-                classes: "connection-indicator-container",
-                children: [
-                    util.bake("div", {
-                        id: "connection-indicator",
-                        classes: [ "connection-indicator", "unknown"]
+                    util.bake("img", {
+                        class: "logo",
+                        attributes: {
+                            src:  "/img/island.svg"
+                        }
                     }),
-                    util.bake("h6", {
-                        id: "connection-indicator-label",
-                        classes: "connection-indicator-label",
-                        text: "Connection status unknown"
+                    util.bake("h3", {
+                        text: "Islands v1.0.0"
                     })
                 ]
-
             })
-
         ]
     })
 }
 
 
 // Bakes empty  topics block for side panel
-function bakeTopicsBlock(idPrefix){
+function bakeTopicsBlock(){
 
     return  util.bake("div", {
-        classes: "side-panel-block",
-        id: `${idPrefix}-topic-block`,
+        class: "side-panel-block",
+        id: `topic-block`,
        
         children: [
-            util.bake("h4", {
-                class: "empty-block",
-                text: "No topics yet",
-                style: "display: none"
-            }),
 
-            util.bake("ul", {
-                classes: "side-block-data-list",
-                id: `${idPrefix}-topics-list`,
-            }),
             util.bake("div", {
-                classes:  "side-panel-button-row",
+                class:  [ "side-panel-button-row", "btn-top-row" ],
                 children: [
 
                     util.bake("button", {
                         //New topic button
-                        id: `${idPrefix}-btn-new`,
-                        classes: ["side-panel-btn", "btn"],
+                        id: `btn-new-topic`,
+                        class: ["side-panel-btn", "btn", "btn-top"],
                         text: "New topic",
                     }),
 
                     util.bake("button", {
                         //Join button
-                        id: `${idPrefix}-btn-join`,
-                        classes: ["side-panel-btn", "btn"],
+                        id: `btn-join-topic`,
+                        class: ["side-panel-btn", "btn", "btn-top"],
                         text: "Join topic",
                     }),
 
-                    util.bake("button", {
-                        //Manage button
-                        id: `${idPrefix}-btn-manage-topics`,
-                        classes: ["side-panel-btn", "btn"],
-                        text: "Manage",
-                    }),
                 ]
-            })
-        ]
-    })
-}
+            }),
 
 
-//Bakes empty invites block
-function bakeInvitesBlock(idPrefix){
-    return util.bake("div", {
-        id: `${idPrefix}-invites-block`,
-        classes: "side-panel-block",
-        style: "display: none",
-        children: [
             util.bake("h4", {
                 class: "empty-block",
                 text: "No topics yet",
@@ -179,87 +120,24 @@ function bakeInvitesBlock(idPrefix){
             }),
 
             util.bake("ul", {
-                classes: "side-block-data-list",
-                id: `${idPrefix}-invites-list`,
-
+                class: "side-block-data-list",
+                id: `topics-list`,
             }),
-
-            util.bake("div", {
-                classes: "side-control-block",
-                children: [
-                    util.bake("div", {
-                        classes: "side-panel-button-row",
-                        children: [
-                            //New invite button
-                            util.bake("button", {
-                                classes: "side-panel-btn",
-                                text: "New invite",
-                                id: `${idPrefix}-btn-new-invite`
-                            }),
-
-                            //Refresh invites button
-                            util.bake("button", {
-                                classes: "side-panel-btn",
-                                text: "Sync",
-                                id: `${idPrefix}-btn-refresh-invites`
-                            }),
-
-                            util.bake("button", {
-                                classes: "side-panel-btn",
-                                text: "Manage",
-                                id: `${idPrefix}-btn-manage-invites`
-                            })
-                        ]
-                    })
-                ]
-            })
         ]
     })
 }
 
-function bakeParticipantsBlock(idPrefix){
-    return util.bake("div", {
-        id: `${idPrefix}-participants-block`,
-        classes: "side-panel-block",
-        style: "display: none",
-        children: [
-            util.bake("h4", {
-                class: "empty-block",
-                text: "No participants...",
-                style: "display: none"
-            }),
-
-            util.bake("ul", {
-                classes: "side-block-data-list",
-                id: `${idPrefix}-member-list`,
-            }),
-
-            util.bake("div", {
-                classes: "side-panel-button-row",
-                children: [
-                    //New invite button
-                    util.bake("button", {
-                        classes: "side-panel-btn",
-                        text: "Manage",
-                        id: `${idPrefix}-btn-manage-participants`
-                    }),
-                ]
-            })
-        ]
-    })
-
-}
 
 export function bakeParticipantListItem(nickname, pkfp, alias){
     return util.bake("li", {
-        classes: "participant-list-item",
+        class: "participant-list-item",
         html: alias ? `${nickname} -- ${alias}` : `${nicknae} -- ${nickname.substring(0, 5)}`
     })
 }
 
 export function bakeInviteListItem(inviteCode, onclick){
     return util.bake("li", {
-        classes: "invite-list-item",
+        class: "invite-list-item",
         attributes: {
             "invite-code": inviteCode
         },
@@ -272,12 +150,12 @@ export function bakeInviteListItem(inviteCode, onclick){
 
 export function bakeMessagesPanel(newMsgBlock){
     return util.bake("div", {
-        classes: "messages-panel-wrapper",
+        class: "messages-panel-wrapper",
         children: [
             util.bake("div", {
-                classes: "messages-panel-container",
+                class: "messages-panel-container",
                 children: util.bake("div", {
-                    classes: "messages-window",
+                    class: "messages-window",
                     id: "messages-window-1"
                 })
             }),
@@ -288,13 +166,13 @@ export function bakeMessagesPanel(newMsgBlock){
 
 export function bakeNewMessageControl(){
     return util.bake("div", {
-        classes: "new-message-container",
+        class: "new-message-container",
         children: [
             util.bake("div", {
-                classes: ["control-col", "new-msg-input"],
+                class: ["control-col", "new-msg-input"],
                 children: [
                     util.bake("div", {
-                        classes: "select-member-wrap",
+                        class: "select-member-wrap",
                         children: [
                             util.bake("h4", {
                                 html: "To"
@@ -317,10 +195,10 @@ export function bakeNewMessageControl(){
                         ]
                     }),
                     util.bake("div", {
-                        classes: "input-wrap",
+                        class: "input-wrap",
                         children: [
                             util.bake("div", {
-                                classes: "button-column",
+                                class: "button-column",
                                 children: [
                                     util.bake("label", {
                                         id: "attach-file-button",
@@ -338,7 +216,7 @@ export function bakeNewMessageControl(){
                                 ]
                             }),
                             util.bake("div", {
-                                classes: ["flex-column", "new-msg-input"],
+                                class: ["flex-column", "new-msg-input"],
                                 children: [
                                     util.bake("textarea", {
                                         id: "new-msg",
@@ -356,22 +234,22 @@ export function bakeNewMessageControl(){
                 ]
             }),
             util.bake("div", {
-                classes: ["control-col", "new-msg-buttons"],
+                class: ["control-col", "new-msg-buttons"],
                 children: [
                     util.bake("div", {
-                        classes: "send-button-wrap",
+                        class: "send-button-wrap",
                         children: [
                             util.bake("button", {
                                 id: "send-new-msg",
-                                classes: "btn-send",
+                                class: "btn-send",
                                 text: "Send"
                                 //////////////////////////////////////////////////////
                                 // children: [                                      //
                                 //     util.bake("div", {                           //
-                                //         //classes: ["ld", "ld-ring", "ld-spin"], //
+                                //         //class: ["ld", "ld-ring", "ld-spin"], //
                                 //         children: [                              //
                                 //             util.bake("div", {                   //
-                                //                 classes: "attach-file-wrap"      //
+                                //                 class: "attach-file-wrap"      //
                                 //             })                                   //
                                 //         ]                                        //
                                 //                                                  //
@@ -384,7 +262,7 @@ export function bakeNewMessageControl(){
                     }),
                     util.bake("input", {
                         id: "attach-file",
-                        classes: "inputfile",
+                        class: "inputfile",
                         attributes: {
                             type: "file",
                             name: "file",
@@ -402,15 +280,15 @@ export function bakeNewMessageControl(){
 export function bakeLoginBlock(loginClickHandler){
      return  util.bake("div", {
         id: "vault-login--wrapper",
-        classes: "form-outer-wrapper",
+        class: "form-outer-wrapper",
         children: util.bake("div", {
-            classes: "form-border",
+            class: "form-border",
             children: [
                 util.bake("h3", {html: "Vault login:"}),
                 util.bake("div",  {
                     children:  util.bake("input", {
                         id: "vault-password",
-                        classes: "form-input",
+                        class: "form-input",
                         attributes: {
                             type: "password",
                             placeholder: "Password",
@@ -421,7 +299,7 @@ export function bakeLoginBlock(loginClickHandler){
                 util.bake("div", {
                     children: util.bake("button", {
                         id: "vault-login-btn",
-                        classes: ["btn", "form-button"],
+                        class: ["btn", "form-button"],
                         text: "Login",
                         listeners: {
                             "click": loginClickHandler
@@ -437,9 +315,9 @@ export function bakeLoginBlock(loginClickHandler){
 export function bakeRegistrationBlock(onRegisterClick){
     return util.bake("div", {
         id: "vault-registration--wrapper",
-        classes: "form-outer-wrapper",
+        class: "form-outer-wrapper",
         children: util.bake("div", {
-            classes: "form-border",
+            class: "form-border",
             children: [
                 util.bake("h3", {
                     text: "Create password:"
@@ -447,7 +325,7 @@ export function bakeRegistrationBlock(onRegisterClick){
                 util.bake("input", {
                     id: "new-passwd",
 
-                    classes: "form-input",
+                    class: "form-input",
                     attributes: {
                         type: "password",
                         placeholder: "New password",
@@ -457,7 +335,7 @@ export function bakeRegistrationBlock(onRegisterClick){
 
                 util.bake("input", {
                     id: "confirm-passwd",
-                    classes: "form-input",
+                    class: "form-input",
                     attributes: {
                         type: "password",
                         placeholder: "Confirm password",
@@ -469,7 +347,7 @@ export function bakeRegistrationBlock(onRegisterClick){
                         click: onRegisterClick
                     },
                     text: "Save",
-                    classes: ["btn", "form-button"],
+                    class: ["btn", "form-button"],
                     id: "register-vault-btn",
                 })
             ]
@@ -480,10 +358,10 @@ export function bakeRegistrationBlock(onRegisterClick){
 
 export function bakeRegistrationSuccessBlock(okClick){
     return util.bake("div", {
-        classes: "form-outer-wrapper",
+        class: "form-outer-wrapper",
         children: [
             util.bake("div", {
-                classes: "form-border",
+                class: "form-border",
                 children: [
                     util.bake("h3", {
                         text: "Vault created!"
@@ -497,7 +375,7 @@ export function bakeRegistrationSuccessBlock(okClick){
                         listeners: {
                             click: okClick
                         },
-                        classes: ["btn", "form-button"]
+                        class: ["btn", "form-button"]
                     })
                 ]
             })
@@ -507,17 +385,30 @@ export function bakeRegistrationSuccessBlock(okClick){
 
 export function bakeHeaderLeftSection(menuClickHandler){
     return util.bake("div", {
-        classes: "header-section-left",
+        class: "header-section-left",
         children: [
             util.bake("div", {
                 id: "menu-button",
-                classes: "menu-on",
+                class: "menu-on",
                 listeners: {
                     "click": ()=>{menuClickHandler("#menu-button")}
                 }
             }),
-            util.bake("h3", {
-                id: "topic-in-focus"
+
+            util.bake("div", {
+                class: "connection-indicator-container",
+                children: [
+                    util.bake("div", {
+                        id: "connection-indicator",
+                        class: [ "connection-indicator", "unknown"]
+                    }),
+                    util.bake("h6", {
+                        id: "connection-indicator-label",
+                        class: "connection-indicator-label",
+                        text: "Connection status unknown"
+                    })
+                ]
+
             })
         ]
     })
@@ -533,30 +424,10 @@ export function bakeHeaderRightSection(
     adminLoginHandler
 ){
     let rightSection = util.bake("div", {
-        classes: "header-section-right",
+        class: "header-section-right",
     })
 
-    if (isAdmin){
-        util.appendChildren(rightSection, [
-            util.bake("img", {
-                id: "admin",
-                attributes: {
-                    src: "/img/admin-user.svg"
-                }
-            })
-        ])
-    }
-
     util.appendChildren(rightSection, [
-        util.bake("img", {
-            classes: "logo",
-            attributes: {
-                src: "/img/island.svg"
-            },
-            listeners: {
-                "click": infoHandler
-            }
-        }),
 
         util.bake("img", {
             id: "sound-control",
@@ -566,13 +437,6 @@ export function bakeHeaderRightSection(
             }
         }),
 
-        util.bake("img", {
-            id: "settings-btn",
-            src: "/img/settings-light.svg",
-            listeners: {
-                "click": settingsHandler
-            }
-        }),
 
         util.bake("img", {
             id: "logout",
@@ -589,7 +453,7 @@ export function bakeHeaderRightSection(
 export function bakeMainContainer(){
     return util.bake("div", {
         id: "main-container",
-        classes: ["container", "tingle-content-wrapper"],
+        class: ["container", "tingle-content-wrapper"],
         style: "display: flex"
     })
 }
@@ -597,7 +461,7 @@ export function bakeMainContainer(){
 
 export function bakeTopicListItem(topic, onClick){
     return util.bake("li", {
-        classes: "side-block-data-list-item",
+        class: "side-block-data-list-item",
         attributes: {
             pkfp: topic.pkfp
         },
@@ -605,15 +469,34 @@ export function bakeTopicListItem(topic, onClick){
             click: onClick
         },
         children: [
-            util.bake("span", {
-                classes: "topic-name",
-                text: topic.name
-            }),
+            util.bake("div", {
+                children: [
+                    util.bake("div", {
+                        class: "btn-expand-topic",
+                    }),
+                    util.bake("span", {
+                        class: "topic-name",
+                        text: topic.name
+                    }),
 
-            util.bake("span", {
-                classes: "unread-messages",
-                text: "25"
+                    util.bake("span", {
+                        class: "unread-messages",
+                        text: "25"
+                    })
+                ]
+            }),
+            util.bake("div", {
+                class: "topic-assests",
+                children: [
+                    util.bake("div", {
+
+                    }),
+                    util.bake("h5", {
+
+                    })
+                ]
             })
+
         ]
     })
 
@@ -632,7 +515,7 @@ export function bakeTopicCreateModal(createClick){
         children: [
             util.bake("input", {
                 id: "new-topic-name",
-                classes: "left-align",
+                class: "left-align",
                 attributes:{
                     placeholder: "Enter topic name",
                 maxlength: "255",
@@ -642,7 +525,7 @@ export function bakeTopicCreateModal(createClick){
 
             util.bake("input", {
                 id: "new-topic-nickname",
-                classes: "left-align",
+                class: "left-align",
                 attributes: {
                     placeholder: "Enter nickname",
                     maxlength: "255",
@@ -682,7 +565,7 @@ export function bakeTopicJoinModal(joinClick){
 
             util.bake("input", {
                 id: "join-topic-invite-code",
-                classes: "left-align",
+                class: "left-align",
                 attributes: {
                     placeholder: "Paste invite code",
                     maxlength: "255",
@@ -691,7 +574,7 @@ export function bakeTopicJoinModal(joinClick){
             }),
             util.bake("input", {
                 id: "join-topic-name",
-                classes: "left-align",
+                class: "left-align",
                 attributes:{
                     placeholder: "Enter topic name",
                 maxlength: "255",
@@ -701,7 +584,7 @@ export function bakeTopicJoinModal(joinClick){
 
             util.bake("input", {
                 id: "join-topic-nickname",
-                classes: "left-align",
+                class: "left-align",
                 attributes: {
                     placeholder: "Enter nickname",
                     maxlength: "255",
@@ -728,7 +611,7 @@ export function bakeManageTopicsView(){
     return util.bake("div", {
         id: "manage-topics-view",
         style: "display: none",
-        classes: "manage-topics-view",
+        class: "manage-topics-view",
         children: [
             util.bake("h1", {
                 html: "Manage topics"
@@ -736,70 +619,49 @@ export function bakeManageTopicsView(){
 
             util.bake("div", {
                 id: "manage-topics-list",
-                classes: "manage-topics-list",
+                class: "manage-topics-list",
 
             }),
 
             util.bake("div", {
-                classes: "buttons-row",
+                class: "buttons-row",
                 children: [
                     util.bake("button", {
                         text: "Create new",
                         id: "btn-mng-create-topic",
-                        classes: ["btn"]
+                        class: ["btn"]
                     }),
 
                     util.bake("button", {
                         text: "Join",
                         id: "btn-mng-join-topic",
-                        classes: ["btn"]
+                        class: ["btn"]
                     }),
                     util.bake("button", {
                         text: "Rename",
                         id: "btn-mng-rename-topic",
-                        classes: ["btn"]
+                        class: ["btn"]
                     }),
                     util.bake("button", {
                         text: "Leave",
                         id: "btn-mng-leave-topic",
-                        classes: ["btn"]
+                        class: ["btn"]
                     }),
                     util.bake("button", {
                         text: "Delete",
                         id: "btn-mng-delete-topic",
-                        classes: ["btn"]
+                        class: ["btn"]
                     }),
                     util.bake("button", {
                         text: "Go back",
                         id: "btn-mng-topics-go-back",
-                        classes: ["btn"]
+                        class: ["btn"]
                     }),
 
                 ]
             })
         ]
     })
-}
-
-export function bakeManageTopicListItem(key, topicName, onclick){
-    return util.bake("div", {
-        attributes: {
-            pkfp: key
-        },
-        listeners: {
-            "click": onclick
-        },
-        html: topicName,
-        classes: "mng-topic-list-item"
-    })
-}
-
-export function bakeManageInvitesView(){
-
-}
-
-export function bakeManageParticipantsView(){
-
 }
 
 export function bakeSettingsContainer(){

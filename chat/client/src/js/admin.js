@@ -343,16 +343,16 @@ function onHiddenServiceUpdate(data) {
     for (let key of Object.keys(hiddenServices)){
         let isEnabled = hiddenServices[key].enabled;
         let row = util.bake("tr");
-        let enumEl = util.bake("td", {classes: "hs-enum", text: enumer});
-        let link = util.bake("td", {classes: "hs-link", text: key + ".onion"});
+        let enumEl = util.bake("td", {class: "hs-enum", text: enumer});
+        let link = util.bake("td", {class: "hs-link", text: key + ".onion"});
 
         let description = extractDescription(hiddenServices[key].description)
 
-        let hsDesc = bakeDescriptionElement(util.bake("td", {classes: "hs-desc"}), description);
-        let hsType = util.bake("td", {classes: "hs-type", text: hiddenServices[key].admin ? "Admin" : "User"});
-        let status = util.bake("td", {classes: ["hs-status", isEnabled ? "hs-status-enabled" : "hs-status-disabled" ],
+        let hsDesc = bakeDescriptionElement(util.bake("td", {class: "hs-desc"}), description);
+        let hsType = util.bake("td", {class: "hs-type", text: hiddenServices[key].admin ? "Admin" : "User"});
+        let status = util.bake("td", {class: ["hs-status", isEnabled ? "hs-status-enabled" : "hs-status-disabled" ],
             text: isEnabled ? "Enabled" : "Disabled"});
-        let actions = bakeHsRecordActionsMenu(util.bake("td", {classes: "hs-actions"}),
+        let actions = bakeHsRecordActionsMenu(util.bake("td", {class: "hs-actions"}),
             hiddenServices[key].admin);
         util.appendChildren(row, [enumEl, link, hsDesc, hsType, status, actions]);
         tableBody.appendChild(row);
@@ -838,7 +838,7 @@ function processLogsLoaded(res) {
         row.append(msg);
         let additionalValues = new CuteSet(Object.keys(parsed)).minus(["level", "message", "timestamp"]);
         if (additionalValues.length() > 0) {
-            let addCell = util.bake("td", {classes: "add-value-cell"});
+            let addCell = util.bake("td", {class: "add-value-cell"});
             for (let key of additionalValues) {
                 let wrap = document.createElement("div");
                 wrap.classList.add("log-add-value");

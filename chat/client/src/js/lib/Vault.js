@@ -31,7 +31,7 @@ export class Vault{
         this.initHandlers();
     }
 
-    static registerVault(password, confirm){
+    static registerVault(password, confirm, version){
         return new Promise((resolve, reject) => {
             setTimeout(()=>{
 
@@ -42,7 +42,7 @@ export class Vault{
                     }
 
                     let vault = new Vault();
-                    vault.init(password.value.trim());
+                    vault.init(password.value.trim(), version);
                     let vaultEncData = vault.pack();
                     let vaultPublicKey = vault.publicKey;
 
