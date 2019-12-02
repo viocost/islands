@@ -75,22 +75,22 @@ export function bake(name, recipe){
 // ---------------------------------------------------------------------------------------------------------------------------
 // CSS class wrapers
 export function addClass(element, _class){
-    let node = verifyGetNode(element);
+    let node = verifyGetElement(element);
     node.classList.add(_class);
 }
 
 export function removeClass(element, _class){
-    let node = verifyGetNode(element);
+    let node = verifyGetElement(element);
     node.classList.remove(_class);
 }
 
 export function toggleClass(element, _class){
-    let node = verifyGetNode(element)
+    let node = verifyGetElement(element)
     return node.classList.toggle(_class);
 }
 
 export function hasClass(element, _class){
-    let node = verifyGetNode(element)
+    let node = verifyGetElement(element)
     return node.classList.contains(_class);
 }
 //end//////////////////////////////////////////////////////////////////////////
@@ -99,12 +99,12 @@ export function hasClass(element, _class){
 // ---------------------------------------------------------------------------------------------------------------------------
 // Setting text and html
 export function html(element, html){
-    let node = verifyGetNode(element);
+    let node = verifyGetElement(element);
     node.innerHTML = html;
 }
 
 export function text(element, text){
-    let node = verifyGetNode(element);
+    let node = verifyGetElement(element);
     node.innerText = text;
 }
 //end//////////////////////////////////////////////////////////////////////////
@@ -114,38 +114,73 @@ export function text(element, text){
  *
  */
 export function val(element, val){
-    let node = verifyGetNode(element);
+    let node = verifyGetElement(element);
     node.value = val;
 }
 
 /**
- * Given parent node appends one or multiple children
+ * Given parent element appends one or multiple children
  * @param parent DOM node
  * @param children can be array of nodes or a single node
  */
 export function appendChildren(parent, children){
-    let parentNode = verifyGetNode(parent);
+    let parentElement = verifyGetElement(parent);
     if (children instanceof  Array){
         for (let child of children){
-            let node = verifyGetNode(child);
-            parentNode.appendChild(node)
+            let node = verifyGetElement(child);
+            parentElement.appendChild(node)
         }
     } else {
-        let node = verifyGetNode(children)
-        parentNode.appendChild(node)
+        let node = verifyGetElement(children)
+        parentElement.appendChild(node)
     }
 }
 
 /**
- * Removes all children of a give node
+ * Removes all children of a give element
  */
 export function removeAllChildren(element){
-    let node = verifyGetNode(element);
+    let el = verifyGetElement(element);
     let last
-    while(last = node.lastChild){
-        node.removeChild(last);
+    while(last = el.lastChild){
+        el.removeChild(last);
     }
 }
+
+
+/**
+ * give element removes it from DOM
+ *
+ */
+export function remove(element){
+    let el = verifyGetElement(element)
+    el.parentNode.removeChild(el);
+}
+
+
+/**
+ * Given reference element inserts target element after referenceElement on the same level
+ * as sibiling.
+ * Both reference element and target element must exist, or error will be thrown
+ */
+export function addBefore(referenceElement, element){
+    let refElement = verifyGetElement(referenceElement);
+    let target = verifyGetElement(element);
+    refElement.insertAdjacentElement('beforebegin', target);
+}
+
+/**
+ * Given reference element inserts target element after referenceElement on the same level
+ * as sibiling.
+ * Both reference element and target element must exist, or error will be thrown
+ */
+export function addAfter(referenceElement, element){
+    let refElement = verifyGetElement(referenceElement);
+    let target = verifyGetElement(element);
+    refElement.insertAdjacentElement('afterend', target);
+}
+
+
 
 // Given single node, or array of nodes wrapse them in new div element.
 // class - single class or array of class that will be set for the new div.
@@ -158,16 +193,49 @@ export function wrap(elements, _class){
 
 /**
  * Less verbose wrapper for document.querySelector
+ * Node MUST exits or error will be thrown
+ * Element can be either DOM element or selector
  */
-export function $(element){
-    return verifyGetNode(element)
+export function $(element, parent = document){
+    if (parent === document){
+        return verifyGetElement(element)
+    }
+    parent = verifyGetElement(parent);
+    res = parent.querySelector(element);
+    if (res === undefined){
+        throw new Error(`Element ${element} is not found at ${parent.nodeName}`)
+    }
+    return res;
 }
 
 /**
  * Less verbose wrapper for document.querySelectorAll
+ * Nodes may not exist, no check is performed
+ * selector must be a string
  */
-export function $$(selector){
-    return document.querySelectorAll(selector)
+export function $$(selector, parent = document){
+    if (parent === document){
+        parent = verifyGetElement(parent);
+    }
+    return parent.querySelectorAll(selector)
+}
+
+
+/**
+ * Given element or selector returns next dom element or null if such doesn't exist
+ */
+export function $nextEl(element){
+    element = verifyGetElement(element);
+    return element.nextElementSibling;
+}
+
+
+/**
+ * Given element or selector returns previous dom element or null if such doesn't exist
+ */
+export function $prevEl(element){
+    element = verifyGetElement(element);
+    return element.previousElementSibling;
 }
 
 
@@ -207,7 +275,7 @@ export function flex(node){
 }
 
 export function isShown(el){
-    let node = verifyGetNode(el)
+    let node = verifyGetElement(el)
     return node.style.display === "flex" || node.style.display === "block";
 }
 
@@ -216,7 +284,7 @@ export function isShown(el){
  *
  */
 function displayElement(element, display){
-    let node = verifyGetNode(element);
+    let node = verifyGetElement(element);
     node.style.display = display;
 }
 
@@ -234,15 +302,30 @@ export function generateRandomId(length = 10, prefix="", postfix=""){
  * Helper function. Given either DOM element or selector
  * makes sure it exists and valid, and returns it.
  */
-function verifyGetNode(element){
+function verifyGetElement(element){
     let node = element
     if (typeof node === "string"){
-        node =  document.querySelector(element);
+        node = parent.querySelector(element);
     }
     if (!node){
         throw new Error(`Element ${element} is undefined`);
-    } else if(!node instanceof Element){
+    } else if(!(node instanceof Element)){
         throw new Error("Type of element is invalid");
     }
     return node;
+}
+
+export function isParent(parent, child){
+    if(!parent || !child || !(parent instanceof Element) || !(child instanceof Element)){
+        return false
+    }
+
+    let node = child.parentNode;
+    while(node !== null){
+        if(node === parent){
+            return true;
+        }
+        node = node.parentNode;
+    }
+    return false;
 }

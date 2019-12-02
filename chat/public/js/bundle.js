@@ -54776,7 +54776,7 @@ if(false) {}
 
 exports = module.exports = __webpack_require__(57)(false);
 // Module
-exports.push([module.i, "button{margin:.8rem .8rem .8rem 0;padding:1rem;background-color:#242831;border:none;cursor:pointer;outline:none;font-size:1.6rem;color:#eee}button:hover{background-color:#0c0;transition:.2s}.arrow{border:solid #eee;border-width:0 .3rem .3rem 0;width:1.5rem;position:relative;height:1.5rem;padding:.3rem}.arrow::before,.arrow::after{content:'';position:absolute;width:3rem;height:3rem;cursor:poninter}.arrow.right{transform:rotate(-45deg);-webkit-transform:rotate(-45deg)}.arrow.right::before,.arrow.right::after{transform:rotate(45deg);-webkit-transform:rotate(45deg);left:-1rem;top:-1rem}.arrow.down{transform:rotate(45deg);-webkit-transform:rotate(45deg)}.arrow.down::before,.arrow.down::after{transform:rotate(-45deg);-webkit-transform:rotate(-45deg)}.arrow.up{transform:rotate(-135deg);-webkit-transform:rotate(-135deg)}.arrow.up::before,.arrow.up::after{transform:rotate(135deg);-webkit-transform:rotate(135deg)}.arrow.left{transform:rotate(135deg);-webkit-transform:rotate(135deg)}.arrow.left::before,.arrow.left::after{transform:rotate(-135deg);-webkit-transform:rotate(-135deg)}button{margin:.8rem .8rem .8rem 0;padding:1rem;background-color:#242831;border:none;cursor:pointer;outline:none;font-size:1.6rem;color:#eee}button:hover{background-color:#0c0;transition:.2s}*,*::before,*::after{padding:0;margin:0;box-sizing:border-box}html{font-size:62.5%;font-family:sans-serif}body{font-size:1.5rem;height:100vh;display:flex;flex-direction:column;background-color:#2f3440}main{flex:1}header{display:flex;flex-direction:row;justify-content:space-between;background-color:#1e1f26;color:#ccc}input{margin:1rem 0 1rem 0;height:4rem;font-size:1.9rem;padding:0.6rem;border-radius:0.5rem;border:0.1rem solid #b5b5b5;outline:none}textarea{border:0.1rem solid #b5b5b5;border-radius:0.5rem;outline:none;height:10rem;width:25rem;margin:1rem 0 1rem 0}h1{font-size:4rem}h3{font-size:2rem}select{outline:none;padding:.3rem}.heading{padding:2rem 0 1rem 0}.heading .heading__main{font-weight:100;color:whitesmoke;text-transform:uppercase;font-family:monospace;font-size:3.5rem}.online__heading-icon i.fa{margin-right:1.8rem;color:green}.right-align{display:block;text-align:right}.left-align{display:block;text-align:left}.form-border{padding:3rem;border:1px solid #b5b5b5;border-radius:.5rem}.flex-column{display:flex;flex-direction:column}#help-link{margin-right:.5rem}button{margin:.8rem .8rem .8rem 0;padding:1rem;background-color:#242831;border:none;cursor:pointer;outline:none;font-size:1.6rem;color:#eee}button:hover{background-color:#0c0;transition:.2s}.header-section-left{display:flex;flex-direction:row;align-items:center}.header-section-left img{height:4rem;width:4rem;margin:1rem}.header-section-left #active-title{margin-left:1rem}#menu-button{width:4rem;height:4rem;margin:1rem;background:transparent url(\"/img/menu.svg\") no-repeat 0 50%;background-size:100% 100%}#menu-button:hover{cursor:pointer;-webkit-filter:brightness(70%);filter:birghtness(70%);transition:.2s}.menu-on{-webkit-filter:brightness(70%);filter:birghtness(70%)}.header-section-middle{display:flex;flex-direction:column;align-items:center}.header-section-middle img{margin:1rem;width:4rem;height:4rem;-webkit-filter:brightness(70%);filter:birghtness(70%)}.header-section-middle img:hover{cursor:pointer;-webkit-filter:brightness(100%);filter:birghtness(100%);transition:.2s}@media (max-width: 760px){.header-section-middle{display:none}}.header-section-right{display:flex;flex-direction:row}.header-section-right img{-webkit-filter:brightness(70%);filter:birghtness(70%);width:4rem;height:4rem;margin:1rem}.header-section-right img:hover{cursor:pointer;-webkit-filter:brightness(100%);filter:birghtness(100%);transition:.2s}main{background-color:#2f3440}#main-container{height:calc(100vh - 6rem);width:100%;display:flex;flex-direction:row}.side-panel-container{display:flex;flex-direction:column;width:30%;max-width:40rem;height:100%;align-items:flex-start}@media (max-width: 760px){.side-panel-container{width:100%;max-width:100%}}.carousel-wrap{width:100%;display:flex;flex-direction:row;align-items:center;height:7rem}.carousel-wrap .btn-rotate{margin:0 2.5rem 0 2.5rem;transition:.2s}.carousel-wrap .btn-rotate:hover{border-color:#0c0;transition:.2s}.carousel-wrap .carousel{flex:1;flex-direction:column;text-align:-webkit-center;padding:1.5rem 1rem 1.5rem 0;color:#eee;font-size:2.5rem;font-weight:bold;border:none;outline:none;background-color:inherit;appearance:none;-webkit-appearance:none;-moz-appearance:none;-ms-appearance:none}.carousel-wrap .carousel:-ms-expand{display:none}.carousel-wrap .carousel option{background-color:#242831;border:none;font-size:1.7rem;outline:none}.carousel-wrap .spin-carousel{width:2.5rem;height:2.4rem;margin:1.5rem 1rem 1.5rem 1rem}.side-panel-wrapper{display:flex;flex-direction:column;flex:1;width:100%}.side-block-wrap{overflow:auto}.side-panel-block{display:flex;flex-direction:column;height:100%}.side-block-data-list{list-style-type:none;display:flex;flex:1;flex-direction:column;list-style-type:initial;overflow:auto;scrollbar-color:#0c0 #2f3440;list-style-position:inside;align-items:center}.side-block-data-list::-webkit-scrollbar{width:.5rem;background-color:none}.side-block-data-list::-webkit-scrollbar-track{-webkit-box-shadow:none;background-color:none;border-radius:10px}.side-block-data-list::-webkit-scrollbar-thumb{border-radius:10px;background-color:none;background-image:-webkit-gradient(linear, 40% 0%, 75% 84%, from(#4D9C41), to(#19911D), color-stop(0.6, #54DE5D))}.side-panel-button-row{display:flex;flex-direction:row;width:90%;overflow:hidden;height:6rem;margin-left:1rem;margin-top:1rem}.side-block-data-list-item{flex-direction:row;border-bottom:1px solid #242831;padding:.5rem;display:flex;width:100%}.side-block-data-list-item:hover{background-color:#242831;cursor:pointer}.invite-list-item{color:#eee;list-style:none;overflow:hidden;text-overflow:ellipsis;padding:1rem 3rem 1rem 1.3rem;border-bottom:1px solid #242831;cursor:pointer}.invite-list-item:hover{background-color:#242831}.btn-expand-topic{width:2rem;height:2rem;background:url(\"/img/add-light.svg\")}.btn-top-row{width:100%;margin:0;padding-bottom:1rem;border-bottom:1px solid #242831}.btn-top{flex:1;margin:1rem;padding:0;background-color:#242831}.topic-name{font-size:1.8rem;margin-left:1.2rem;color:#eee;display:flex;flex:1}.unread-messages{font-weight:bold;display:flex;padding:.5rem;font-size:1.4rem;background-color:#0a0b0e;color:#eee;border-radius:40%;margin-right:1rem}.topic-in-focus{background-color:#385841}.topic-in-focus:hover{background-color:#42684d}.bottom-section{height:40%}@media screen and (max-height: 800px){.bottom-section{display:none}}.connection-indicator-container{display:flex;flex-direction:row;flex-shrink:1;height:4rem;align-items:center;width:100%;padding:1rem}.connection-indicator-container .connection-indicator-label{font-size:1.3rem;color:#eee;font-weight:100;margin-left:1rem}.connection-indicator-container .connection-indicator{border-radius:50%;max-width:1rem;max-height:1rem;width:100%;height:100%}.connection-indicator-container .connected{background-color:green}.connection-indicator-container .dicsonnected{background-color:red}.connection-indicator-container .connecting{background-color:orange}.connection-indicator-container .unknown{background-color:grey}.version-wrapper{display:flex;flex-direction:row;background-color:#242831;align-items:center;padding:1rem;width:100%}.version-wrapper img{margin:0 1rem 0 1rem;width:3rem;height:3rem}.version-wrapper h3{color:#e1e1e1;font-size:1.4rem;font-weight:100}.manage-topics-view{color:#eee;display:flex;flex-direction:column;margin:4rem}@media (max-width: 760px){.manage-topics-view{margin:.5rem}}.manage-topics-list{color:#eee;margin:1rem 0 2rem 0}.manage-topics-list div{font-size:1.6rem;padding:1.3rem;border-bottom:1px solid #242831}.manage-topics-list div:hover{background-color:#242831;cursor:pointer}.manage-topics-list .selected{background-color:#385841}.manage-topics-list .selected:hover{background-color:#42684d;cursor:pointer}.new-message-container{max-height:50%;background-color:inherit;display:flex;margin:2rem 2rem 1rem 0;flex-direction:row;justify-content:flex-end}.control-col{display:flex;flex-direction:column;margin-left:2rem}.select-member-wrap{display:flex;flex-direction:row;justify-content:flex-end;border-bottom:none;margin:0;color:#eee}.select-member-wrap h4{margin:auto 1rem}.select-member-wrap select{color:#eee;background:#2f3440;padding:.8rem;min-width:37%;border:none;border-bottom:1px solid #242831;border-radius:.5rem .5rem 0 0;outline:none}.input-wrap{display:flex;flex-direction:row;width:100%;justify-content:flex-end;margin:0}.input-wrap #new-msg{width:100%;border-radius:.5rem 0 .5rem .5rem;height:3.5rem;margin:0 0 .5rem 0;resize:vertical;background-color:#2f3440;color:#eee;border:none}.input-wrap .button-column{display:flex;flex-direction:column;margin:0}.input-wrap .button-column img{cursor:pointer;border-radius:1rem;margin-right:2rem;width:3rem;height:3rem;transition:filter .2s ease}.input-wrap .button-column img:hover{filter:drop-shadow(1px 1px 2px #898c97)}.input-wrap .button-column .disabled{filter:grayscale(100%)}.new-msg-input{width:100%}.new-message-wrap{display:flex;flex-direction:column;align-items:flex-end}.new-message-wrap *{display:block;margin:1rem 0 1rem 0}.new-message-wrap #new-msg{background-color:#2f3440;min-width:60%;padding:1rem;border-radius:0.5rem;resize:vertical}.new-message-wrap .send-button-wrap{display:flex;flex-direction:row;align-items:center;margin:0}.new-message-wrap .send-button-wrap .hint-wrap{display:flex;flex-direction:column;align-items:flex-end}.new-message-wrap .send-button-wrap .hint-wrap .send-new-message-hint{margin:0 1.5rem 0 1.5rem;color:#9da3ad;font-size:1.2rem;font-style:italic}.btn-send{border:none;margin:0;outline:none;background-color:#2f3440;color:#eee;font-size:1.8rem;padding:.8rem;transition:.2s}.btn-send:hover{background-color:#0c0;transition:.2s}.attach-file-wrap{height:5rem;display:flex;flex-direction:row;justify-content:flex-end;align-items:center;align-self:flex-end;width:60%;min-width:10rem;padding:1rem;border-radius:0.5rem}.new-msg-buttons{width:7rem}.new-msg-buttons label{align-self:center;margin-top:1.5rem;width:4rem;height:4rem;display:flex}#chosen-files{margin-right:1.7rem;display:flex;flex-direction:row}#chosen-files .chosen-file-wrap{background-color:#e1e1e1;padding:.2rem;border-radius:1rem;height:inherit;display:flex;align-items:center;font-size:1.8rem;font-weight:bolder;color:#1a2435}#chosen-files .chosen-file-wrap img{height:20px;width:20px}#chosen-files .chosen-file-wrap img:hover{filter:drop-shadow(1px 1px 2px #000)}.inputfile{width:0.1px;height:0.1px;opacity:0;overflow:hidden;position:absolute;z-index:-1}.inputfile+label{display:flex;flex-direction:row}.inputfile+label img{border-radius:1rem;cursor:pointer;width:32px;height:32px;transition:filter .2s ease}.inputfile+label img:hover{filter:drop-shadow(1px 1px 2px #000)}.new-msg-buttons{width:7rem}.new-msg-buttons label{align-self:center;margin-top:1.5rem;width:4rem;height:4rem;display:flex}.form-outer-wrapper{display:block;margin:10% auto;color:#eee}.form-outer-wrapper .form-border{background-color:#111113;border:none;display:flex;flex-direction:column;align-items:flex-start}.form-outer-wrapper .form-border p{margin:1rem 0 1rem 0}.form-input{background-color:#2f3440;color:#eee;border:none;outline:none}.form-button{border-radius:.4rem;background-color:#2f3440;color:#eee;border:none;outline:none;padding:1rem;font-size:1.8rem}.form-button:hover{background-color:#0c0;transition:.2s}.messages-panel-wrapper{background-color:#242831;width:70%;height:100%;display:flex;flex-direction:column;flex:1}.messages-panel-wrapper .messages-panel-container{width:100%;display:flex;flex:1;background-color:inherit;border-bottom:2px solid #2f3440;overflow-x:hidden;overflow-y:auto;flex-grow:1;border-radius:1rem;padding:1rem 2rem 1rem 2rem;resize:none;height:100%}.messages-window{width:100%;display:flex;flex-direction:column}.message{display:flex;flex-shrink:0;flex-direction:column;width:70%;border-radius:1rem;margin:0.5rem;padding:.3rem;color:#4c4c4c;height:auto;align-self:flex-start;background-color:#c4e8ff}.my_message{display:flex;flex-shrink:0;flex-direction:column;width:70%;border-radius:1rem;margin:0.5rem;padding:.3rem;color:#4c4c4c;height:auto;align-self:flex-end;background-color:#d6ffef;text-align:right}.my_message .msg-body{text-align:left}.service-record{display:flex;flex-shrink:0;flex-direction:column;width:70%;border-radius:1rem;margin:0.5rem;padding:.3rem;color:#4c4c4c;height:auto;width:100%;background-color:#e6e6e6;text-align:left;font-size:1.2rem;color:#8a8a8a}.service-record .msg-body{text-align:left}.ephemeral-msg{display:flex;flex-shrink:0;flex-direction:column;width:70%;border-radius:1rem;margin:0.5rem;padding:.3rem;color:#4c4c4c;height:auto;width:100%;background-color:#fff0da;text-align:left;font-size:1.2rem;color:#8a8a8a}.ephemeral-msg .msg-body{text-align:left}.private-message{border:.3rem solid #b0afca}.private-mark{font-style:italic;margin:0 .5rem 0 .5rem}.msg-time-stamp{font-style:italic;font-size:1rem;margin:0 .5rem 0 .5rem}.msg-body{height:auto;overflow-wrap:break-word}.m-author-id{display:none}.m-recipient-id{display:none}.attach-file-wrap{height:5rem;display:flex;flex-direction:row;justify-content:flex-end;align-items:center;align-self:flex-end;width:60%;min-width:10rem;padding:1rem;border-radius:0.5rem}.msg-attachments{display:flex;margin-top:.8rem;align-self:flex-start}.att-view{cursor:pointer;margin:1rem}.att-view .att-state{display:none}.att-view .att-state .spinner{width:1.7rem;margin-right:.3rem;display:flex}.att-view .att-name{font-weight:bold;color:#003d77;font-size:1.6rem;margin-right:.4rem}.att-view .att-size{font-size:1.1rem}.att-view .att-icon{width:1.4rem;height:1.4rem}.att-info{display:none}\n", ""]);
+exports.push([module.i, "button{margin:.8rem .8rem .8rem 0;padding:1rem;background-color:#242831;border:none;cursor:pointer;outline:none;font-size:1.6rem;color:#eee}button:hover{background-color:#0c0;transition:.2s}.arrow{border:solid #eee;border-width:0 .3rem .3rem 0;width:1.5rem;position:relative;height:1.5rem;padding:.3rem}.arrow::before,.arrow::after{content:'';position:absolute;width:3rem;height:3rem;cursor:poninter}.arrow.right{transform:rotate(-45deg);-webkit-transform:rotate(-45deg)}.arrow.right::before,.arrow.right::after{transform:rotate(45deg);-webkit-transform:rotate(45deg);left:-1rem;top:-1rem}.arrow.down{transform:rotate(45deg);-webkit-transform:rotate(45deg)}.arrow.down::before,.arrow.down::after{transform:rotate(-45deg);-webkit-transform:rotate(-45deg)}.arrow.up{transform:rotate(-135deg);-webkit-transform:rotate(-135deg)}.arrow.up::before,.arrow.up::after{transform:rotate(135deg);-webkit-transform:rotate(135deg)}.arrow.left{transform:rotate(135deg);-webkit-transform:rotate(135deg)}.arrow.left::before,.arrow.left::after{transform:rotate(-135deg);-webkit-transform:rotate(-135deg)}button{margin:.8rem .8rem .8rem 0;padding:1rem;background-color:#242831;border:none;cursor:pointer;outline:none;font-size:1.6rem;color:#eee}button:hover{background-color:#0c0;transition:.2s}*,*::before,*::after{padding:0;margin:0;box-sizing:border-box}html{font-size:62.5%;font-family:sans-serif}body{font-size:1.5rem;height:100vh;display:flex;flex-direction:column;background-color:#2f3440}main{flex:1}header{display:flex;flex-direction:row;justify-content:space-between;background-color:#1e1f26;color:#ccc}input{margin:1rem 0 1rem 0;height:4rem;font-size:1.9rem;padding:0.6rem;border-radius:0.5rem;border:0.1rem solid #b5b5b5;outline:none}textarea{border:0.1rem solid #b5b5b5;border-radius:0.5rem;outline:none;height:10rem;width:25rem;margin:1rem 0 1rem 0}h1{font-size:4rem}h3{font-size:2rem}select{outline:none;padding:.3rem}.heading{padding:2rem 0 1rem 0}.heading .heading__main{font-weight:100;color:whitesmoke;text-transform:uppercase;font-family:monospace;font-size:3.5rem}.online__heading-icon i.fa{margin-right:1.8rem;color:green}.right-align{display:block;text-align:right}.left-align{display:block;text-align:left}.form-border{padding:3rem;border:1px solid #b5b5b5;border-radius:.5rem}.flex-column{display:flex;flex-direction:column}#help-link{margin-right:.5rem}button{margin:.8rem .8rem .8rem 0;padding:1rem;background-color:#242831;border:none;cursor:pointer;outline:none;font-size:1.6rem;color:#eee}button:hover{background-color:#0c0;transition:.2s}.header-section-left{display:flex;flex-direction:row;align-items:center}.header-section-left img{height:4rem;width:4rem;margin:1rem}.header-section-left #active-title{margin-left:1rem}#menu-button{width:4rem;height:4rem;margin:1rem;background:transparent url(\"/img/menu.svg\") no-repeat 0 50%;background-size:100% 100%}#menu-button:hover{cursor:pointer;-webkit-filter:brightness(70%);filter:birghtness(70%);transition:.2s}.menu-on{-webkit-filter:brightness(70%);filter:birghtness(70%)}.header-section-middle{display:flex;flex-direction:column;align-items:center}.header-section-middle img{margin:1rem;width:4rem;height:4rem;-webkit-filter:brightness(70%);filter:birghtness(70%)}.header-section-middle img:hover{cursor:pointer;-webkit-filter:brightness(100%);filter:birghtness(100%);transition:.2s}@media (max-width: 760px){.header-section-middle{display:none}}.header-section-right{display:flex;flex-direction:row}.header-section-right img{-webkit-filter:brightness(70%);filter:birghtness(70%);width:4rem;height:4rem;margin:1rem}.header-section-right img:hover{cursor:pointer;-webkit-filter:brightness(100%);filter:birghtness(100%);transition:.2s}main{background-color:#2f3440}#main-container{height:calc(100vh - 6rem);width:100%;display:flex;flex-direction:row}.side-panel-container{display:flex;flex-direction:column;width:30%;max-width:40rem;height:100%;align-items:flex-start}@media (max-width: 760px){.side-panel-container{width:100%;max-width:100%}}.carousel-wrap{width:100%;display:flex;flex-direction:row;align-items:center;height:7rem}.carousel-wrap .btn-rotate{margin:0 2.5rem 0 2.5rem;transition:.2s}.carousel-wrap .btn-rotate:hover{border-color:#0c0;transition:.2s}.carousel-wrap .carousel{flex:1;flex-direction:column;text-align:-webkit-center;padding:1.5rem 1rem 1.5rem 0;color:#eee;font-size:2.5rem;font-weight:bold;border:none;outline:none;background-color:inherit;appearance:none;-webkit-appearance:none;-moz-appearance:none;-ms-appearance:none}.carousel-wrap .carousel:-ms-expand{display:none}.carousel-wrap .carousel option{background-color:#242831;border:none;font-size:1.7rem;outline:none}.carousel-wrap .spin-carousel{width:2.5rem;height:2.4rem;margin:1.5rem 1rem 1.5rem 1rem}.side-panel-wrapper{display:flex;flex-direction:column;flex:1;width:100%}.side-block-wrap{overflow:auto;flex:1}.side-panel-block{display:flex;flex-direction:column;height:100%}.side-block-data-list{list-style-type:none;display:flex;flex:1;flex-direction:column;list-style-type:initial;overflow:auto;scrollbar-color:#0c0 #2f3440;list-style-position:inside;align-items:center}.side-block-data-list::-webkit-scrollbar{width:.5rem;background-color:none}.side-block-data-list::-webkit-scrollbar-track{-webkit-box-shadow:none;background-color:none;border-radius:10px}.side-block-data-list::-webkit-scrollbar-thumb{border-radius:10px;background-color:none;background-image:-webkit-gradient(linear, 40% 0%, 75% 84%, from(#4D9C41), to(#19911D), color-stop(0.6, #54DE5D))}.side-panel-button-row{display:flex;flex-direction:row;width:90%;overflow:hidden;height:6rem;margin-left:1rem;margin-top:1rem}.side-block-data-list-item{flex-direction:column;border-bottom:1px solid #242831;padding:.5rem;display:flex;width:100%}.side-block-data-list-item:hover{background-color:#242831;cursor:pointer}.topic-asset-item-wrap{margin-left:2rem;width:calc(100% - 2rem)}.participant-list-item{display:flex;flex-direction:row;margin-left:2rem;width:calc(100% - 2rem)}.participant-list-item .participant-icon{background:url(\"/img/user-light.svg\");background-size:cover;width:2rem;height:2rem}.participant-list-item .participant-label{color:#eee;flex:1}.invite-list-item{color:#eee;list-style:none;overflow:hidden;text-overflow:ellipsis;padding:1rem 3rem 1rem 1.3rem;border-bottom:1px solid #242831;cursor:pointer}.invite-list-item:hover{background-color:#242831}.topic-row-wrap{display:flex;flex-direction:row}.btn-expand-topic{width:2rem;height:2rem;background:url(\"/img/add-light.svg\");background-size:cover}.btn-collapse-topic{background:url(\"/img/minus-light.svg\");background-size:cover}.btn-top-row{width:100%;margin:0;padding-bottom:1rem;border-bottom:1px solid #242831}.btn-top{flex:1;margin:1rem;padding:0;background-color:#242831}.topic-name{font-size:1.8rem;margin-left:1.2rem;color:#eee;display:flex;flex:1}.unread-messages{font-weight:bold;display:flex;padding:.5rem;font-size:1.4rem;background-color:#0a0b0e;color:#eee;border-radius:40%;margin-right:1rem}.topic-in-focus{background-color:#385841}.topic-in-focus:hover{background-color:#42684d}.ctx-topic-buttons{display:flex;flex-direction:row;margin:2rem 1rem 1rem 1rem;flex-wrap:wrap}.ctx-topic-buttons button{flex:1}.bottom-section{height:40%}@media screen and (max-height: 800px){.bottom-section{display:none}}.connection-indicator-container{display:flex;flex-direction:row;flex-shrink:1;height:4rem;align-items:center;width:100%;padding:1rem}.connection-indicator-container .connection-indicator-label{font-size:1.3rem;color:#eee;font-weight:100;margin-left:1rem}.connection-indicator-container .connection-indicator{border-radius:50%;max-width:1rem;max-height:1rem;width:100%;height:100%}.connection-indicator-container .connected{background-color:green}.connection-indicator-container .dicsonnected{background-color:red}.connection-indicator-container .connecting{background-color:orange}.connection-indicator-container .unknown{background-color:grey}.version-wrapper{display:flex;flex-direction:row;background-color:#242831;align-items:center;padding:1rem;width:100%;border-right:1px solid #2f3440}.version-wrapper img{margin:0 1rem 0 1rem;width:3rem;height:3rem}.version-wrapper h3{color:#e1e1e1;font-size:1.4rem;font-weight:100}.manage-topics-view{color:#eee;display:flex;flex-direction:column;margin:4rem}@media (max-width: 760px){.manage-topics-view{margin:.5rem}}.manage-topics-list{color:#eee;margin:1rem 0 2rem 0}.manage-topics-list div{font-size:1.6rem;padding:1.3rem;border-bottom:1px solid #242831}.manage-topics-list div:hover{background-color:#242831;cursor:pointer}.manage-topics-list .selected{background-color:#385841}.manage-topics-list .selected:hover{background-color:#42684d;cursor:pointer}.new-message-container{max-height:50%;background-color:inherit;display:flex;margin:2rem 2rem 1rem 0;flex-direction:row;justify-content:flex-end}.control-col{display:flex;flex-direction:column;margin-left:2rem}.select-member-wrap{display:flex;flex-direction:row;justify-content:flex-end;border-bottom:none;margin:0;color:#eee}.select-member-wrap h4{margin:auto 1rem}.select-member-wrap select{color:#eee;background:#2f3440;padding:.8rem;min-width:37%;border:none;border-bottom:1px solid #242831;border-radius:.5rem .5rem 0 0;outline:none}.input-wrap{display:flex;flex-direction:row;width:100%;justify-content:flex-end;margin:0}.input-wrap #new-msg{width:100%;border-radius:.5rem 0 .5rem .5rem;height:3.5rem;margin:0 0 .5rem 0;resize:vertical;background-color:#2f3440;color:#eee;border:none}.input-wrap .button-column{display:flex;flex-direction:column;margin:0}.input-wrap .button-column img{cursor:pointer;border-radius:1rem;margin-right:2rem;width:3rem;height:3rem;transition:filter .2s ease}.input-wrap .button-column img:hover{filter:drop-shadow(1px 1px 2px #898c97)}.input-wrap .button-column .disabled{filter:grayscale(100%)}.new-msg-input{width:100%}.new-message-wrap{display:flex;flex-direction:column;align-items:flex-end}.new-message-wrap *{display:block;margin:1rem 0 1rem 0}.new-message-wrap #new-msg{background-color:#2f3440;min-width:60%;padding:1rem;border-radius:0.5rem;resize:vertical}.new-message-wrap .send-button-wrap{display:flex;flex-direction:row;align-items:center;margin:0}.new-message-wrap .send-button-wrap .hint-wrap{display:flex;flex-direction:column;align-items:flex-end}.new-message-wrap .send-button-wrap .hint-wrap .send-new-message-hint{margin:0 1.5rem 0 1.5rem;color:#9da3ad;font-size:1.2rem;font-style:italic}.btn-send{border:none;margin:0;outline:none;background-color:#2f3440;color:#eee;font-size:1.8rem;padding:.8rem;transition:.2s}.btn-send:hover{background-color:#0c0;transition:.2s}.attach-file-wrap{height:5rem;display:flex;flex-direction:row;justify-content:flex-end;align-items:center;align-self:flex-end;width:60%;min-width:10rem;padding:1rem;border-radius:0.5rem}.new-msg-buttons{width:7rem}.new-msg-buttons label{align-self:center;margin-top:1.5rem;width:4rem;height:4rem;display:flex}#chosen-files{margin-right:1.7rem;display:flex;flex-direction:row}#chosen-files .chosen-file-wrap{background-color:#e1e1e1;padding:.2rem;border-radius:1rem;height:inherit;display:flex;align-items:center;font-size:1.8rem;font-weight:bolder;color:#1a2435}#chosen-files .chosen-file-wrap img{height:20px;width:20px}#chosen-files .chosen-file-wrap img:hover{filter:drop-shadow(1px 1px 2px #000)}.inputfile{width:0.1px;height:0.1px;opacity:0;overflow:hidden;position:absolute;z-index:-1}.inputfile+label{display:flex;flex-direction:row}.inputfile+label img{border-radius:1rem;cursor:pointer;width:32px;height:32px;transition:filter .2s ease}.inputfile+label img:hover{filter:drop-shadow(1px 1px 2px #000)}.new-msg-buttons{width:7rem}.new-msg-buttons label{align-self:center;margin-top:1.5rem;width:4rem;height:4rem;display:flex}.form-outer-wrapper{display:block;margin:10% auto;color:#eee}.form-outer-wrapper .form-border{background-color:#111113;border:none;display:flex;flex-direction:column;align-items:flex-start}.form-outer-wrapper .form-border p{margin:1rem 0 1rem 0}.form-input{background-color:#2f3440;color:#eee;border:none;outline:none}.form-button{border-radius:.4rem;background-color:#2f3440;color:#eee;border:none;outline:none;padding:1rem;font-size:1.8rem}.form-button:hover{background-color:#0c0;transition:.2s}.messages-panel-wrapper{background-color:#242831;width:70%;height:100%;display:flex;flex-direction:column;flex:1}.messages-panel-wrapper .messages-panel-container{width:100%;display:flex;flex:1;background-color:inherit;border-bottom:2px solid #2f3440;overflow-x:hidden;overflow-y:auto;flex-grow:1;border-radius:1rem;padding:1rem 2rem 1rem 2rem;resize:none;height:100%}.messages-window{width:100%;display:flex;flex-direction:column}.message{display:flex;flex-shrink:0;flex-direction:column;width:70%;border-radius:1rem;margin:0.5rem;padding:.3rem;color:#4c4c4c;height:auto;align-self:flex-start;background-color:#c4e8ff}.my_message{display:flex;flex-shrink:0;flex-direction:column;width:70%;border-radius:1rem;margin:0.5rem;padding:.3rem;color:#4c4c4c;height:auto;align-self:flex-end;background-color:#d6ffef;text-align:right}.my_message .msg-body{text-align:left}.service-record{display:flex;flex-shrink:0;flex-direction:column;width:70%;border-radius:1rem;margin:0.5rem;padding:.3rem;color:#4c4c4c;height:auto;width:100%;background-color:#e6e6e6;text-align:left;font-size:1.2rem;color:#8a8a8a}.service-record .msg-body{text-align:left}.ephemeral-msg{display:flex;flex-shrink:0;flex-direction:column;width:70%;border-radius:1rem;margin:0.5rem;padding:.3rem;color:#4c4c4c;height:auto;width:100%;background-color:#fff0da;text-align:left;font-size:1.2rem;color:#8a8a8a}.ephemeral-msg .msg-body{text-align:left}.private-message{border:.3rem solid #b0afca}.private-mark{font-style:italic;margin:0 .5rem 0 .5rem}.msg-time-stamp{font-style:italic;font-size:1rem;margin:0 .5rem 0 .5rem}.msg-body{height:auto;overflow-wrap:break-word}.m-author-id{display:none}.m-recipient-id{display:none}.attach-file-wrap{height:5rem;display:flex;flex-direction:row;justify-content:flex-end;align-items:center;align-self:flex-end;width:60%;min-width:10rem;padding:1rem;border-radius:0.5rem}.msg-attachments{display:flex;margin-top:.8rem;align-self:flex-start}.att-view{cursor:pointer;margin:1rem}.att-view .att-state{display:none}.att-view .att-state .spinner{width:1.7rem;margin-right:.3rem;display:flex}.att-view .att-name{font-weight:bold;color:#003d77;font-size:1.6rem;margin-right:.4rem}.att-view .att-size{font-size:1.1rem}.att-view .att-icon{width:1.4rem;height:1.4rem}.att-info{display:none}\n", ""]);
 
 
 
@@ -54902,7 +54902,7 @@ var es7_promise_finally = __webpack_require__(191);
  * @param recipe
     * recipe is a JSON object with following properties:
  *  * id - string id
- *  * classes - list of classes. Array or single entry
+ *  * class - list of class. Array or single entry
  *  * attributes - object of attributes key vaule pairs
  *  * html - inner html
  *  * text - inner text
@@ -54915,14 +54915,14 @@ function bake(name, recipe) {
   var el = document.createElement(name);
   if (!recipe) return el;
 
-  if (recipe.classes) {
-    if (typeof recipe.classes === "object") {
+  if (recipe.class) {
+    if (typeof recipe.class === "object") {
       var _iteratorNormalCompletion = true;
       var _didIteratorError = false;
       var _iteratorError = undefined;
 
       try {
-        for (var _iterator = recipe.classes[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+        for (var _iterator = recipe.class[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
           var c = _step.value;
           el.classList.add(c);
         }
@@ -54940,8 +54940,8 @@ function bake(name, recipe) {
           }
         }
       }
-    } else if (typeof recipe.classes === "string") {
-      el.classList.add(recipe.classes);
+    } else if (typeof recipe.class === "string") {
+      el.classList.add(recipe.class);
     } else {
       throw new Error("Bake parameters invalid");
     }
@@ -54983,7 +54983,7 @@ function bake(name, recipe) {
 
   return el;
 } // ---------------------------------------------------------------------------------------------------------------------------
-// CSS classes wrapers
+// CSS class wrapers
 
 function addClass(element, _class) {
   var node = verifyGetNode(element);
@@ -55074,12 +55074,12 @@ function removeAllChildren(element) {
     node.removeChild(last);
   }
 } // Given single node, or array of nodes wrapse them in new div element.
-// classes - single class or array of classes that will be set for the new div.
+// class - single class or array of class that will be set for the new div.
 
-function dom_util_wrap(elements, classes) {
+function dom_util_wrap(elements, _class) {
   return bake("div", {
     children: elements,
-    classes: classes
+    class: _class
   });
 }
 /**
@@ -55208,12 +55208,12 @@ function bakeCarousel() {
     text: "Topics"
   }));
   return bake("div", {
-    classes: "carousel-wrap",
+    class: "carousel-wrap",
     children: [bake("div", {
       id: "btn-rotate",
-      classes: ["arrow", "left", "btn-rotate"]
+      class: ["arrow", "left", "btn-rotate"]
     }), bake("select", {
-      classes: "carousel",
+      class: "carousel",
       id: "carousel",
       children: options,
       listeners: {
@@ -55224,27 +55224,27 @@ function bakeCarousel() {
       }
     }), bake("div", {
       id: "btn-rotate",
-      classes: ["arrow", "right", "btn-rotate"]
+      class: ["arrow", "right", "btn-rotate"]
     })]
   });
 }
 function bakeSidePanel() {
   var carousel = bakeCarousel();
   return bake("div", {
-    classes: "side-panel-container",
+    class: "side-panel-container",
     children: [bake("div", {
-      classes: ["side-panel-wrapper"],
+      class: ["side-panel-wrapper"],
       id: "side-panel-wrapper",
       children: [carousel, //topics block
       bake("div", {
-        classes: "side-block-wrap",
+        class: "side-block-wrap",
         children: [//topics block
         bakeTopicsBlock()]
       })]
     }), bake("div", {
-      classes: "version-wrapper",
+      class: "version-wrapper",
       children: [bake("img", {
-        classes: "logo",
+        class: "logo",
         attributes: {
           src: "/img/island.svg"
         }
@@ -55257,41 +55257,92 @@ function bakeSidePanel() {
 
 function bakeTopicsBlock() {
   return bake("div", {
-    classes: "side-panel-block",
+    class: "side-panel-block",
     id: "topic-block",
-    children: [bake("div", {
-      classes: ["side-panel-button-row", "btn-top-row"],
+    children: [//Top buttons
+    bake("div", {
+      class: ["side-panel-button-row", "btn-top-row"],
       children: [bake("button", {
         //New topic button
         id: "btn-new-topic",
-        classes: ["side-panel-btn", "btn", "btn-top"],
+        class: ["side-panel-btn", "btn", "btn-top"],
         text: "New topic"
       }), bake("button", {
         //Join button
         id: "btn-join-topic",
-        classes: ["side-panel-btn", "btn", "btn-top"],
+        class: ["side-panel-btn", "btn", "btn-top"],
         text: "Join topic"
       })]
-    }), bake("h4", {
+    }), //No topic label
+    bake("h4", {
       class: "empty-block",
       text: "No topics yet",
       style: "display: none"
-    }), bake("ul", {
-      classes: "side-block-data-list",
+    }), //List of existing topics
+    bake("ul", {
+      class: "side-block-data-list",
       id: "topics-list"
+    }), //Context button menu bottom
+    bake("div", {
+      class: "ctx-bottom-menu-wrap",
+      children: [bake("div", {
+        class: "ctx-topic-buttons",
+        children: [bake("button", {
+          text: "Alias",
+          style: "display: none",
+          class: "btn",
+          id: "btn-ctx-alias"
+        }), bake("button", {
+          text: "Invite",
+          style: "display: none",
+          class: "btn",
+          id: "btn-ctx-invite"
+        }), bake("button", {
+          text: "Mute",
+          class: "btn",
+          style: "display: none",
+          id: "btn-ctx-mute"
+        }), bake("button", {
+          text: "Leave",
+          class: "btn",
+          style: "display: none",
+          id: "btn-ctx-leave"
+        }), bake("button", {
+          text: "Delete",
+          class: "btn",
+          style: "display: none",
+          id: "btn-ctx-delete"
+        }), bake("button", {
+          text: "Boot",
+          class: "btn",
+          style: "display: none",
+          id: "btn-ctx-boot"
+        })]
+      })]
     })]
   });
 }
 
-function bakeParticipantListItem(nickname, pkfp, alias) {
-  return bake("li", {
-    classes: "participant-list-item",
-    html: alias ? "".concat(nickname, " -- ").concat(alias) : "".concat(nicknae, " -- ").concat(nickname.substring(0, 5))
+function bakeParticipantListItem(nickname, pkfp, alias, onClick) {
+  return bake("div", {
+    class: "participant-list-item",
+    listeners: {
+      click: onClick
+    },
+    attributes: {
+      pkfp: pkfp
+    },
+    children: [bake("div", {
+      class: "participant-icon"
+    }), bake("div", {
+      class: "participant-label",
+      html: alias ? "".concat(nickname, " -- ").concat(alias) : "".concat(nickname, " -- ").concat(nickname.substring(0, 5))
+    })]
   });
 }
 function bakeInviteListItem(inviteCode, onclick) {
   return bake("li", {
-    classes: "invite-list-item",
+    class: "invite-list-item",
     attributes: {
       "invite-code": inviteCode
     },
@@ -55303,11 +55354,11 @@ function bakeInviteListItem(inviteCode, onclick) {
 }
 function bakeMessagesPanel(newMsgBlock) {
   return bake("div", {
-    classes: "messages-panel-wrapper",
+    class: "messages-panel-wrapper",
     children: [bake("div", {
-      classes: "messages-panel-container",
+      class: "messages-panel-container",
       children: bake("div", {
-        classes: "messages-window",
+        class: "messages-window",
         id: "messages-window-1"
       })
     }), newMsgBlock]
@@ -55315,11 +55366,11 @@ function bakeMessagesPanel(newMsgBlock) {
 }
 function bakeNewMessageControl() {
   return bake("div", {
-    classes: "new-message-container",
+    class: "new-message-container",
     children: [bake("div", {
-      classes: ["control-col", "new-msg-input"],
+      class: ["control-col", "new-msg-input"],
       children: [bake("div", {
-        classes: "select-member-wrap",
+        class: "select-member-wrap",
         children: [bake("h4", {
           html: "To"
         }), bake("select", {
@@ -55335,9 +55386,9 @@ function bakeNewMessageControl() {
           })]
         })]
       }), bake("div", {
-        classes: "input-wrap",
+        class: "input-wrap",
         children: [bake("div", {
-          classes: "button-column",
+          class: "button-column",
           children: [bake("label", {
             id: "attach-file-button",
             attributes: {
@@ -55350,7 +55401,7 @@ function bakeNewMessageControl() {
             })]
           })]
         }), bake("div", {
-          classes: ["flex-column", "new-msg-input"],
+          class: ["flex-column", "new-msg-input"],
           children: [bake("textarea", {
             id: "new-msg",
             attributes: {
@@ -55362,19 +55413,19 @@ function bakeNewMessageControl() {
         })]
       })]
     }), bake("div", {
-      classes: ["control-col", "new-msg-buttons"],
+      class: ["control-col", "new-msg-buttons"],
       children: [bake("div", {
-        classes: "send-button-wrap",
+        class: "send-button-wrap",
         children: [bake("button", {
           id: "send-new-msg",
-          classes: "btn-send",
+          class: "btn-send",
           text: "Send" //////////////////////////////////////////////////////
           // children: [                                      //
           //     util.bake("div", {                           //
-          //         //classes: ["ld", "ld-ring", "ld-spin"], //
+          //         //class: ["ld", "ld-ring", "ld-spin"], //
           //         children: [                              //
           //             util.bake("div", {                   //
-          //                 classes: "attach-file-wrap"      //
+          //                 class: "attach-file-wrap"      //
           //             })                                   //
           //         ]                                        //
           //                                                  //
@@ -55385,7 +55436,7 @@ function bakeNewMessageControl() {
         })]
       }), bake("input", {
         id: "attach-file",
-        classes: "inputfile",
+        class: "inputfile",
         attributes: {
           type: "file",
           name: "file"
@@ -55397,15 +55448,15 @@ function bakeNewMessageControl() {
 function bakeLoginBlock(loginClickHandler) {
   return bake("div", {
     id: "vault-login--wrapper",
-    classes: "form-outer-wrapper",
+    class: "form-outer-wrapper",
     children: bake("div", {
-      classes: "form-border",
+      class: "form-border",
       children: [bake("h3", {
         html: "Vault login:"
       }), bake("div", {
         children: bake("input", {
           id: "vault-password",
-          classes: "form-input",
+          class: "form-input",
           attributes: {
             type: "password",
             placeholder: "Password",
@@ -55415,7 +55466,7 @@ function bakeLoginBlock(loginClickHandler) {
       }), bake("div", {
         children: bake("button", {
           id: "vault-login-btn",
-          classes: ["btn", "form-button"],
+          class: ["btn", "form-button"],
           text: "Login",
           listeners: {
             "click": loginClickHandler
@@ -55428,14 +55479,14 @@ function bakeLoginBlock(loginClickHandler) {
 function bakeRegistrationBlock(onRegisterClick) {
   return bake("div", {
     id: "vault-registration--wrapper",
-    classes: "form-outer-wrapper",
+    class: "form-outer-wrapper",
     children: bake("div", {
-      classes: "form-border",
+      class: "form-border",
       children: [bake("h3", {
         text: "Create password:"
       }), bake("input", {
         id: "new-passwd",
-        classes: "form-input",
+        class: "form-input",
         attributes: {
           type: "password",
           placeholder: "New password",
@@ -55443,7 +55494,7 @@ function bakeRegistrationBlock(onRegisterClick) {
         }
       }), bake("input", {
         id: "confirm-passwd",
-        classes: "form-input",
+        class: "form-input",
         attributes: {
           type: "password",
           placeholder: "Confirm password",
@@ -55454,7 +55505,7 @@ function bakeRegistrationBlock(onRegisterClick) {
           click: onRegisterClick
         },
         text: "Save",
-        classes: ["btn", "form-button"],
+        class: ["btn", "form-button"],
         id: "register-vault-btn"
       })]
     })
@@ -55462,9 +55513,9 @@ function bakeRegistrationBlock(onRegisterClick) {
 }
 function bakeRegistrationSuccessBlock(okClick) {
   return bake("div", {
-    classes: "form-outer-wrapper",
+    class: "form-outer-wrapper",
     children: [bake("div", {
-      classes: "form-border",
+      class: "form-border",
       children: [bake("h3", {
         text: "Vault created!"
       }), bake("p", {
@@ -55474,30 +55525,30 @@ function bakeRegistrationSuccessBlock(okClick) {
         listeners: {
           click: okClick
         },
-        classes: ["btn", "form-button"]
+        class: ["btn", "form-button"]
       })]
     })]
   });
 }
 function bakeHeaderLeftSection(menuClickHandler) {
   return bake("div", {
-    classes: "header-section-left",
+    class: "header-section-left",
     children: [bake("div", {
       id: "menu-button",
-      classes: "menu-on",
+      class: "menu-on",
       listeners: {
         "click": function click() {
           menuClickHandler("#menu-button");
         }
       }
     }), bake("div", {
-      classes: "connection-indicator-container",
+      class: "connection-indicator-container",
       children: [bake("div", {
         id: "connection-indicator",
-        classes: ["connection-indicator", "unknown"]
+        class: ["connection-indicator", "unknown"]
       }), bake("h6", {
         id: "connection-indicator-label",
-        classes: "connection-indicator-label",
+        class: "connection-indicator-label",
         text: "Connection status unknown"
       })]
     })]
@@ -55505,7 +55556,7 @@ function bakeHeaderLeftSection(menuClickHandler) {
 }
 function bakeHeaderRightSection(isAdmin, isMute, infoHandler, muteHandler, settingsHandler, logoutHandler, adminLoginHandler) {
   var rightSection = bake("div", {
-    classes: "header-section-right"
+    class: "header-section-right"
   });
   appendChildren(rightSection, [bake("img", {
     id: "sound-control",
@@ -55525,27 +55576,36 @@ function bakeHeaderRightSection(isAdmin, isMute, infoHandler, muteHandler, setti
 function bakeMainContainer() {
   return bake("div", {
     id: "main-container",
-    classes: ["container", "tingle-content-wrapper"],
+    class: ["container", "tingle-content-wrapper"],
     style: "display: flex"
   });
 }
-function bakeTopicListItem(topic, onClick) {
+function bakeTopicListItem(topic, topicOnClick, expandOnClick) {
   return bake("li", {
-    classes: "side-block-data-list-item",
+    class: "side-block-data-list-item",
     attributes: {
       pkfp: topic.pkfp
     },
     listeners: {
-      click: onClick
+      click: topicOnClick
     },
     children: [bake("div", {
-      classes: "btn-expand-topic"
-    }), bake("span", {
-      classes: "topic-name",
-      text: topic.name
-    }), bake("span", {
-      classes: "unread-messages",
-      text: "25"
+      class: "topic-row-wrap",
+      children: [bake("div", {
+        class: "btn-expand-topic",
+        listeners: {
+          click: expandOnClick
+        }
+      }), bake("span", {
+        class: "topic-name",
+        text: topic.name
+      }), bake("span", {
+        class: "unread-messages",
+        text: "25"
+      })]
+    }), bake("div", {
+      class: "topic-assests",
+      children: [bake("div", {}), bake("h5", {})]
     })]
   });
 }
@@ -55560,7 +55620,7 @@ function bakeTopicCreateModal(createClick) {
   var wrap = bake("div", {
     children: [bake("input", {
       id: "new-topic-name",
-      classes: "left-align",
+      class: "left-align",
       attributes: {
         placeholder: "Enter topic name",
         maxlength: "255",
@@ -55568,7 +55628,7 @@ function bakeTopicCreateModal(createClick) {
       }
     }), bake("input", {
       id: "new-topic-nickname",
-      classes: "left-align",
+      class: "left-align",
       attributes: {
         placeholder: "Enter nickname",
         maxlength: "255",
@@ -55597,7 +55657,7 @@ function bakeTopicJoinModal(joinClick) {
   var wrap = bake("div", {
     children: [bake("input", {
       id: "join-topic-invite-code",
-      classes: "left-align",
+      class: "left-align",
       attributes: {
         placeholder: "Paste invite code",
         maxlength: "255",
@@ -55605,7 +55665,7 @@ function bakeTopicJoinModal(joinClick) {
       }
     }), bake("input", {
       id: "join-topic-name",
-      classes: "left-align",
+      class: "left-align",
       attributes: {
         placeholder: "Enter topic name",
         maxlength: "255",
@@ -55613,7 +55673,7 @@ function bakeTopicJoinModal(joinClick) {
       }
     }), bake("input", {
       id: "join-topic-nickname",
-      classes: "left-align",
+      class: "left-align",
       attributes: {
         placeholder: "Enter nickname",
         maxlength: "255",
@@ -55628,66 +55688,13 @@ function bakeTopicJoinModal(joinClick) {
   });
   form.addFooterBtn('Join topic', 'tingle-btn tingle-btn--primary tingle-btn--pull-right', joinClick);
   return form;
-}
-function bakeManageTopicsView() {
-  return bake("div", {
-    id: "manage-topics-view",
-    style: "display: none",
-    classes: "manage-topics-view",
-    children: [bake("h1", {
-      html: "Manage topics"
-    }), bake("div", {
-      id: "manage-topics-list",
-      classes: "manage-topics-list"
-    }), bake("div", {
-      classes: "buttons-row",
-      children: [bake("button", {
-        text: "Create new",
-        id: "btn-mng-create-topic",
-        classes: ["btn"]
-      }), bake("button", {
-        text: "Join",
-        id: "btn-mng-join-topic",
-        classes: ["btn"]
-      }), bake("button", {
-        text: "Rename",
-        id: "btn-mng-rename-topic",
-        classes: ["btn"]
-      }), bake("button", {
-        text: "Leave",
-        id: "btn-mng-leave-topic",
-        classes: ["btn"]
-      }), bake("button", {
-        text: "Delete",
-        id: "btn-mng-delete-topic",
-        classes: ["btn"]
-      }), bake("button", {
-        text: "Go back",
-        id: "btn-mng-topics-go-back",
-        classes: ["btn"]
-      })]
-    })]
-  });
-}
-function bakeManageTopicListItem(key, topicName, onclick) {
-  return bake("div", {
-    attributes: {
-      pkfp: key
-    },
-    listeners: {
-      "click": onclick
-    },
-    html: topicName,
-    classes: "mng-topic-list-item"
-  });
-}
-function bakeManageInvitesView() {}
-function bakeManageParticipantsView() {}
-function bakeSettingsContainer() {
-  return bake("div", {
-    id: "settings-container"
-  });
-}
+} //////////////////////////////////////////////
+// export function bakeSettingsContainer(){ //
+//     return util.bake("div", {            //
+//         id: "settings-container",        //
+//     })                                   //
+// }                                        //
+//////////////////////////////////////////////
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/classCallCheck.js
 var classCallCheck = __webpack_require__(4);
 var classCallCheck_default = /*#__PURE__*/__webpack_require__.n(classCallCheck);
@@ -56083,12 +56090,8 @@ function initUI() {
   }), bakeHeaderRightSection(false, false, processInfoClick, processMuteClick, processSettingsClick, processLogoutClick)]);
   var main = $("main");
   removeAllChildren(main);
-  var manageTopicsView = bakeManageTopicsView();
-  var manageInvitesView = bakeManageInvitesView();
-  var manageParticipantsView = bakeManageParticipantsView();
-  var settingsContainer = bakeSettingsContainer();
   var mainContainer = bakeMainContainer();
-  appendChildren(main, [manageTopicsView, settingsContainer, mainContainer]);
+  appendChildren(main, mainContainer);
   var sidePanel = bakeSidePanel();
   var newMessageBlock = bakeNewMessageControl();
   var messagesPanel = bakeMessagesPanel(newMessageBlock);
@@ -56096,7 +56099,6 @@ function initUI() {
   setupSidePanelListeners();
   refreshTopics(); // add listener to the menu button
 
-  updateTopicInFocusTitle();
   window.onresize = renderLayout;
   renderLayout(); //modals
 
@@ -56125,17 +56127,10 @@ function initUI() {
 }
 
 function setupSidePanelListeners() {
-  //util.$("#top-btn-new").onclick = processNewTopicClick;
-  $("#btn-mng-create-topic").onclick = processNewTopicClick; //util.$("#bottom-btn-new").onclick = createTopic;
+  $("#btn-new-topic").onclick = processNewTopicClick;
+  $("#btn-join-topic").onclick = processJoinTopicClick; //util.$("#btn-mng-delete-topic").onclick = processDeleteTopicClick;
+  //util.$("#btn-mng-topics-go-back").onclick = backToChat;
   //util.$("#top-btn-join").onclick = processJoinTopicClick;
-
-  $("#btn-mng-join-topic").onclick = processJoinTopicClick; //TODO
-
-  $("#btn-mng-rename-topic").onclick = undefined;
-  $("#btn-mng-leave-topic").onclick = undefined; //END
-
-  $("#btn-mng-delete-topic").onclick = processDeleteTopicClick;
-  $("#btn-mng-topics-go-back").onclick = backToChat; //util.$("#top-btn-join").onclick = processJoinTopicClick;
   //util.$("#bottom-btn-join").onclick = joinTopic;
   //util.$("#top-btn-manage-topics").onclick = processManageTopicsClick;
   //util.$("#bottom-btn-manage-topics").onclick = undefined;
@@ -56232,11 +56227,36 @@ function processActivateTopicClick(ev) {
   refreshMessages(); //refreshInvites();
   //refreshParticipants();
 
-  updateTopicInFocusTitle(); // Update participants list in side panel
+  displayTopicContextButtons("topic"); //updateTopicInFocusTitle();
+  // Update participants list in side panel
   //chat.getParticipants(pkfp);
   // Update invites list in side panel
   //chat.getInvites(pkfp);
   // Update to: select in new message block
+}
+
+function processExpandTopicClick(ev) {
+  console.log("Processing expand topic click");
+  var expandButton = ev.target;
+  var pkfp = expandButton.parentNode.parentNode.getAttribute("pkfp");
+  var topicAssets = expandButton.parentNode.nextSibling;
+  if (!pkfp) throw "No pkfp found";
+  var topic = chat_ui_chat.topics[pkfp];
+  removeAllChildren(topicAssets);
+
+  if (!hasClass(expandButton, "btn-collapse-topic")) {
+    for (var _i = 0, _Object$keys = Object.keys(topic.participants); _i < _Object$keys.length; _i++) {
+      var _pkfp = _Object$keys[_i];
+      var participant = topic.participants[_pkfp];
+      topicAssets.appendChild(bakeParticipantListItem(participant.nickname, _pkfp, participant.alias, processParticipantListItemClick));
+    }
+  }
+
+  toggleClass(expandButton, "btn-collapse-topic");
+}
+
+function processParticipantListItemClick(ev) {
+  console.log("participant list item clicked");
 }
 
 function setTopicInFocus(pkfp) {
@@ -56869,7 +56889,7 @@ function refreshTopics() {
   removeAllChildren(topicsList);
   var topicsElements = [];
   Object.keys(topics).forEach(function (key) {
-    topicsElements.push(bakeTopicListItem(topics[key], processActivateTopicClick));
+    topicsElements.push(bakeTopicListItem(topics[key], processActivateTopicClick, processExpandTopicClick));
   });
   topicsElements.sort(function (el) {
     return el.innerText;
@@ -56881,7 +56901,7 @@ function refreshManageTopicsView() {
   var topicsList = $("#manage-topics-list");
   removeAllChildren(topicsList);
   Object.keys(chat_ui_chat.topics).forEach(function (key) {
-    topicsList.appendChild(bakeManageTopicListItem(key, chat_ui_chat.topics[key].name, createSelectorFunction("pkfp", "manage-topics-list")));
+    topicsList.appendChild(/* Cannot get final name for export "bakeManageTopicListItem" in "./client/src/js/lib/ChatUIFactory.js" (known exports: bakeCarousel bakeSidePanel bakeParticipantListItem bakeInviteListItem bakeMessagesPanel bakeNewMessageControl bakeLoginBlock bakeRegistrationBlock bakeRegistrationSuccessBlock bakeHeaderLeftSection bakeHeaderRightSection bakeMainContainer bakeTopicListItem bakeTopicCreateModal bakeTopicJoinModal, known reexports: ) */ undefined(key, chat_ui_chat.topics[key].name, createSelectorFunction("pkfp", "manage-topics-list")));
   });
 }
 
@@ -56937,6 +56957,71 @@ function refreshMessages() {
   }
 
   chat_ui_chat.getMessages(topicInFocus);
+} // ---------------------------------------------------------------------------------------------------------------------------
+// TOPIC CONTEXT BUTTONS
+
+/**
+ * displays certain context buttons on the topicsPanel.
+ * state must be a string, and must have following values:
+ *    "none" - hide all buttons
+ *    "topic" - show Alias, Invite, Mute, Leave, Delete
+ *    "invite" - show Alias, Delete
+ *    "participant" - show Alias, Mute, Boot only if user has rights to boot
+ * displayBoot - boolean whether user has rights to boot
+ */
+
+
+function displayTopicContextButtons(state) {
+  var displayBoot = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+  var alias = $("#btn-ctx-alias");
+  var invite = $("#btn-ctx-invite");
+  var mute = $("#btn-ctx-mute");
+  var boot = $("#btn-ctx-boot");
+
+  var _delete = $("#btn-ctx-delete");
+
+  var leave = $("#btn-ctx-leave");
+
+  switch (state) {
+    case "none":
+      hide(alias);
+      hide(invite);
+      hide(mute);
+      hide(boot);
+      hide(_delete);
+      hide(leave);
+      break;
+
+    case "topic":
+      flex(alias);
+      flex(invite);
+      flex(mute);
+      hide(boot);
+      flex(_delete);
+      flex(leave);
+      break;
+
+    case "invite":
+      flex(alias);
+      hide(invite);
+      hide(mute);
+      hide(boot);
+      flex(_delete);
+      hide(leave);
+      break;
+
+    case "participant":
+      flex(alias);
+      hide(invite);
+      flex(mute);
+      displayBoot ? flex(boot) : hide(boot);
+      hide(_delete);
+      hide(leave);
+      break;
+
+    default:
+      throw new Error("Invalid state: ".concat(state));
+  }
 } //~END SIDE PANEL HANDLERS/////////////////////////////////////////////////////
 // ---------------------------------------------------------------------------------------------------------------------------
 // Util

@@ -152,6 +152,7 @@ main
 
 .side-block-wrap
   overflow: auto
+  flex: 1
 
 .side-panel-block
   display: flex
@@ -194,6 +195,21 @@ main
   margin-left: 2rem
   width: calc(100% - 2rem)
 
+.participant-list-item
+  display: flex
+  flex-direction: row
+  margin-left: 2rem
+  width: calc(100% - 2rem)
+
+  .participant-icon
+    background: url("/img/user-light.svg")
+    background-size: cover
+    width: 2rem
+    height: 2rem
+  .participant-label
+    color: $text-color
+    flex: 1
+
 
 .invite-list-item
   color: $text-color
@@ -207,6 +223,11 @@ main
     background-color: darken($main-background, 5%)
 
 
+.topic-row-wrap
+  display: flex
+  flex-direction: row
+
+
 .btn-expand-topic
   width: 2rem
   height: 2rem
@@ -214,7 +235,8 @@ main
   background-size: cover
 
 .btn-collapse-topic
-  background: url("/img/collapse-light.svg")
+  background: url("/img/minus-light.svg")
+  background-size: cover
 
 .btn-top-row
   width: 100%
@@ -250,7 +272,13 @@ main
   &:hover
     background-color: lighten($topic-in-focus, 5%)
 
-
+.ctx-topic-buttons
+  display: flex
+  flex-direction: row
+  margin: 2rem 1rem 1rem 1rem
+  flex-wrap: wrap
+  button
+    flex: 1
 
 
 .bottom-section
@@ -297,6 +325,7 @@ main
   align-items: center
   padding: 1rem
   width: 100%
+  border-right: 1px solid $main-background
   img
     margin: 0 1rem 0 1rem
     width: 3rem

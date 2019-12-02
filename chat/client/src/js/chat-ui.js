@@ -105,15 +105,9 @@ function initUI(){
 
     let main = util.$("main")
     util.removeAllChildren(main);
-    let manageTopicsView = UI.bakeManageTopicsView()
-    let manageInvitesView = UI.bakeManageInvitesView()
-    let manageParticipantsView = UI.bakeManageParticipantsView()
 
-
-
-    let settingsContainer = UI.bakeSettingsContainer()
     let mainContainer = UI.bakeMainContainer()
-    util.appendChildren(main, [manageTopicsView, settingsContainer, mainContainer])
+    util.appendChildren(main, mainContainer)
 
 
 
@@ -129,8 +123,6 @@ function initUI(){
 
     refreshTopics();
     // add listener to the menu button
-
-    updateTopicInFocusTitle();
 
     window.onresize = renderLayout;
     renderLayout()
@@ -169,19 +161,12 @@ function initUI(){
 function setupSidePanelListeners(){
 
 
-    //util.$("#top-btn-new").onclick = processNewTopicClick;
-    util.$("#btn-mng-create-topic").onclick = processNewTopicClick;
-    //util.$("#bottom-btn-new").onclick = createTopic;
-    //util.$("#top-btn-join").onclick = processJoinTopicClick;
-    util.$("#btn-mng-join-topic").onclick = processJoinTopicClick;
+    util.$("#btn-new-topic").onclick = processNewTopicClick;
+    util.$("#btn-join-topic").onclick = processJoinTopicClick;
 
-    //TODO
-    util.$("#btn-mng-rename-topic").onclick = undefined;
-    util.$("#btn-mng-leave-topic").onclick = undefined;
-    //END
-   
-    util.$("#btn-mng-delete-topic").onclick = processDeleteTopicClick;
-    util.$("#btn-mng-topics-go-back").onclick = backToChat;
+
+    //util.$("#btn-mng-delete-topic").onclick = processDeleteTopicClick;
+    //util.$("#btn-mng-topics-go-back").onclick = backToChat;
 
     //util.$("#top-btn-join").onclick = processJoinTopicClick;
     //util.$("#bottom-btn-join").onclick = joinTopic;
@@ -290,8 +275,8 @@ function processActivateTopicClick(ev){
     refreshMessages()
     //refreshInvites();
     //refreshParticipants();
-
-    updateTopicInFocusTitle();
+    displayTopicContextButtons("topic")
+    //updateTopicInFocusTitle();
     // Update participants list in side panel
     //chat.getParticipants(pkfp);
     // Update invites list in side panel
@@ -301,16 +286,47 @@ function processActivateTopicClick(ev){
 }
 
 function processExpandTopicClick(ev){
+
+    console.log("Processing expand topic click")
     let expandButton = ev.target;
-    let pkfp = expandButton.parentNode.parentNode.getAttribute("pkfp")
+    let topicListItem = expandButton.parentNode.parentNode
+    let pkfp = topicListItem.getAttribute("pkfp")
+    let topicList = topicListItem.parentNode;
+
     if(!pkfp) throw "No pkfp found"
 
-    util.toggleClass("")
+    let topic = chat.topics[pkfp];
 
 
 
+    if(!util.hasClass(expandButton, "btn-collapse-topic")){
+        // item is not expanded already
+
+        let topicAssets = util.bake("div", {class: "topic-assets"})
+
+        for (let pkfp of Object.keys(topic.participants)){
+            let participant = topic.participants[pkfp]
+            topicAssets.appendChild(UI.bakeParticipantListItem(participant.nickname,
+                                                               pkfp,
+                                                               participant.alias,
+                                                               processParticipantListItemClick))
+        }
+
+        util.addAfter(topicListItem, topicAssets);
+    } else {
+        let nextElement = util.$nextEl(topicListItem);
+        if (util.hasClass(nextElement, "topic-assets")){
+            util.remove(nextElement);
+        }
+    }
+
+    util.toggleClass(expandButton, "btn-collapse-topic")
+
+}
 
 
+function processParticipantListItemClick(ev){
+    console.log("participant list item clicked");
 }
 
 function setTopicInFocus(pkfp){
@@ -805,7 +821,7 @@ function refreshTopics(){
     util.removeAllChildren(topicsList)
     let topicsElements = []
     Object.keys(topics).forEach(key=>{
-        topicsElements.push(UI.bakeTopicListItem(topics[key], processActivateTopicClick))
+        topicsElements.push(UI.bakeTopicListItem(topics[key], processActivateTopicClick, processExpandTopicClick))
     })
     topicsElements.sort((el)=>{ return el.innerText })
     util.appendChildren(topicsList, topicsElements)
@@ -881,6 +897,68 @@ function refreshMessages(){
     }
     chat.getMessages(topicInFocus);
 }
+
+// ---------------------------------------------------------------------------------------------------------------------------
+// TOPIC CONTEXT BUTTONS
+
+/**
+ * displays certain context buttons on the topicsPanel.
+ * state must be a string, and must have following values:
+ *    "none" - hide all buttons
+ *    "topic" - show Alias, Invite, Mute, Leave, Delete
+ *    "invite" - show Alias, Delete
+ *    "participant" - show Alias, Mute, Boot only if user has rights to boot
+ * displayBoot - boolean whether user has rights to boot
+ */
+function displayTopicContextButtons(state, displayBoot = false){
+    let alias = util.$("#btn-ctx-alias");
+    let invite = util.$("#btn-ctx-invite");
+    let mute = util.$("#btn-ctx-mute");
+    let boot = util.$("#btn-ctx-boot");
+    let _delete = util.$("#btn-ctx-delete");
+    let leave = util.$("#btn-ctx-leave");
+
+    switch(state){
+        case "none":
+            util.hide(alias);
+            util.hide(invite);
+            util.hide(mute);
+            util.hide(boot);
+            util.hide(_delete);
+            util.hide(leave);
+            break;
+        case "topic":
+            util.flex(alias);
+            util.flex(invite);
+            util.flex(mute);
+            util.hide(boot);
+            util.flex(_delete);
+            util.flex(leave);
+            break;
+
+        case "invite":
+            util.flex(alias);
+            util.hide(invite);
+            util.hide(mute);
+            util.hide(boot);
+            util.flex(_delete);
+            util.hide(leave);
+            break;
+
+        case "participant":
+            util.flex(alias);
+            util.hide(invite);
+            util.flex(mute);
+            displayBoot ? util.flex(boot) : util.hide(boot)
+            util.hide(_delete);
+            util.hide(leave);
+            break;
+        default:
+            throw new Error(`Invalid state: ${state}`)
+    }
+}
+
+
 
 //~END SIDE PANEL HANDLERS/////////////////////////////////////////////////////
 
@@ -964,5 +1042,6 @@ function copyInviteCode(event) {
     }
     textArea.remove();
 }
+
 // ---------------------------------------------------------------------------------------------------------------------------
 // ~END util
