@@ -191,15 +191,51 @@ main
     background-color: darken($main-background, 5%)
     cursor: pointer
 
-.topic-asset-item-wrap
+.topic-assets
   margin-left: 2rem
   width: calc(100% - 2rem)
 
-.participant-list-item
+.topic-asset-item-wrap
+  padding: .5rem
+
+.invite-list-item
   display: flex
   flex-direction: row
-  margin-left: 2rem
-  width: calc(100% - 2rem)
+  padding: .5rem
+  color: $text-color
+  list-style: none
+  overflow: hidden
+  text-overflow: ellipsis
+  padding: .5rem
+  border-bottom: 1px solid darken($main-background, 5%)
+  cursor: pointer
+  &:hover
+    background-color: darken($main-background, 5%)
+  .invite-icon
+    background: url("/img/invite-light.svg")
+    background-size: cover
+    width: 2rem
+    height: 2rem
+  .invite-label
+    color: $text-color
+    margin-left: 1rem
+    flex: 1
+
+.participant-list-item
+
+  display: flex
+  flex-direction: row
+  padding: .5rem
+  color: $text-color
+  list-style: none
+  overflow: hidden
+  text-overflow: ellipsis
+  padding: .5rem
+  border-bottom: 1px solid darken($main-background, 5%)
+  cursor: pointer
+
+  &:hover
+    background-color: darken($main-background, 5%)
 
   .participant-icon
     background: url("/img/user-light.svg")
@@ -208,19 +244,14 @@ main
     height: 2rem
   .participant-label
     color: $text-color
+    margin-left: 1rem
     flex: 1
 
-
-.invite-list-item
-  color: $text-color
-  list-style: none
-  overflow: hidden
-  text-overflow: ellipsis
-  padding: 1rem 3rem 1rem 1.3rem
-  border-bottom: 1px solid darken($main-background, 5%)
-  cursor: pointer
+.active-asset
+  background-color: $active-topic-asset
   &:hover
-    background-color: darken($main-background, 5%)
+    background-color: lighten($active-topic-asset, 5%)
+
 
 
 .topic-row-wrap

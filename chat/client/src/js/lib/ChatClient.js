@@ -655,7 +655,9 @@ export class ChatClient{
     }
 
     getParticipants(topicPkfp){
-       
+        if(this.topics.hasOwnProperty(topicPkfp)){
+            return this.topics[topicPkfp].participants;
+        }
     }
 
     getTopics(){

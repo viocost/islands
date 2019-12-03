@@ -212,15 +212,31 @@ export function bakeParticipantListItem(nickname, pkfp, alias, onClick){
 }
 
 export function bakeInviteListItem(inviteCode, onclick){
-    return util.bake("li", {
-        class: "invite-list-item",
+    return util.bake("div", {
         attributes: {
-            "invite-code": inviteCode
+            "code": inviteCode
         },
         listeners: {
-            "click": onclick
+            click: onclick
         },
-        html: inviteCode.substr(117)
+        class: "invite-list-item",
+        children: [
+            util.bake("div", {
+                class: "invite-icon"
+            }),
+            util.bake("div", {
+                class: "invite-label",
+                html: `Invite ${inviteCode.substring(117, 123)}`
+            })
+
+        ],
+        //////////////////////////
+        // listeners: {         //
+        //     "click": onclick //
+        // },                   //
+        //////////////////////////
+        //
+        //html: inviteCode.substr(117, )
     })
 }
 
@@ -565,17 +581,19 @@ export function bakeTopicListItem(topic, topicOnClick, expandOnClick){
                     })
                 ]
             }),
-            util.bake("div", {
-                class: "topic-assests",
-                children: [
-                    util.bake("div", {
-
-                    }),
-                    util.bake("h5", {
-
-                    })
-                ]
-            })
+            ///////////////////////////////////////////
+            // util.bake("div", {                    //
+            //     class: "topic-assests-item-wrap", //
+            //     children: [                       //
+            //         util.bake("div", {            //
+            //                                       //
+            //         }),                           //
+            //         util.bake("h5", {             //
+            //                                       //
+            //         })                            //
+            //     ]                                 //
+            // })                                    //
+            ///////////////////////////////////////////
 
         ]
     })

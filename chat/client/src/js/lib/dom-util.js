@@ -136,6 +136,23 @@ export function appendChildren(parent, children){
     }
 }
 
+export function prependChildren(parent, children){
+    let parentElement = verifyGetElement(parent);
+    if (!parentElement.firstChild){
+        appendChildren(parent, children)
+    } else {
+        if(children instanceof Array){
+            for (let i=0; i<children.length; ++i){
+                let node = verifyGetElement(children[children.length-1-i])
+                parent.insertBefore(node, parent.firstChild)
+            }
+        }else{
+                let node = verifyGetElement(children)
+                parent.insertBefore(node, parent.firstChild)
+        }
+    }
+}
+
 /**
  * Removes all children of a give element
  */
@@ -214,7 +231,7 @@ export function $(element, parent = document){
  * selector must be a string
  */
 export function $$(selector, parent = document){
-    if (parent === document){
+    if (parent !== document){
         parent = verifyGetElement(parent);
     }
     return parent.querySelectorAll(selector)
@@ -305,7 +322,7 @@ export function generateRandomId(length = 10, prefix="", postfix=""){
 function verifyGetElement(element){
     let node = element
     if (typeof node === "string"){
-        node = parent.querySelector(element);
+        node = document.querySelector(element);
     }
     if (!node){
         throw new Error(`Element ${element} is undefined`);
