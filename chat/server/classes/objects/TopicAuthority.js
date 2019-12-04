@@ -1,6 +1,7 @@
 const iCrypto = require("../libs/iCrypto.js");
 const Err = require("../libs/IError.js");
 const Metadata = require("./Metadata.js");
+const Message = require("./Message.js");
 const EventEmitter = require("events").EventEmitter;
 const MiddlewareManager = require("js-middleware").MiddlewareManager;
 const Util = require("../libs/ChatUtility.js");
@@ -11,6 +12,7 @@ const Invite = require("./Invite.js");
 const CuteSet = require("cute-set");
 const MetadataIssue = require("../enums/MetadataIssueMessages.js");
 const Logger = require("../libs/Logger.js");
+const Internal = require("../../../common/Events.js").Internal;
 
 
 
@@ -65,7 +67,8 @@ class TopicAuthority extends EventEmitter{
         }
         await this.saveInviteIndex();
         let remainingInvites =  await this.getUserInvites(request.headers.pkfpSource);
-        let response = new Response("del_invite_success", request);
+        Logger.debug(`DELETE invite success. taPkfp: ${this.pkfp}`, {cat: "invite"});
+        let response = Message.makeResponse(request, this.pkfp, Internal.DELETE_INVITE_SUCCESS)
         response.body.invites = remainingInvites;
         this.signMessage(response);
         return response;

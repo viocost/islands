@@ -48,6 +48,8 @@ class TopicJoinAssistant {
         response.setAttribute("metadata", newTopicData.metadata);
         response.setAttribute("inviterNickname", newTopicData.inviterNickname);
         response.setAttribute("inviterPkfp", newTopicData.inviterPkfp);
+        response.setAttribute("inviteCode", request.body.inviteString);
+
         const responseEnvelope = new Envelope(envelope.origin, response, envelope.destination);
         responseEnvelope.setResponse();
         Logger.debug("Sending metadata to the invitee", {cat: "topic_join"});
@@ -123,6 +125,8 @@ class TopicJoinAssistant {
             response.setDest(pendingRequest.vaultId);
             response.body.vaultRecord = pendingRequest.vaultRecord;
             response.body.metadata = taResponse.body.metadata;
+            response.inviterNickname = taResponse.body.inviterNickname;
+            response.inviterPkfp = taResponse.body.inviterPkfp;
             let session = self.sessionManager.getSessionBySessionID(pendingRequest.vaultId);
             if(!session){
                 Logger.warn(`Session ${pendingRequest.vaultId} not found.`)

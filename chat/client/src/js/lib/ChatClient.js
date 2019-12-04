@@ -231,6 +231,12 @@ export class ChatClient{
 
     }
 
+    deleteInvite(topicId, inviteCode){
+        if (!this.topics.hasOwnProperty(topicId)) throw new Error(`Topic ${topicId}, not found`)
+        let topic = this.topics[topicId];
+        topic.deleteInvite(inviteCode);
+    }
+
     getInvites(topicId){
         if (!this.topics.hasOwnProperty(topicId)) throw new Error(`Topic ${topicId}, not found`)
         let topic = this.topics[topicId];
@@ -424,35 +430,23 @@ export class ChatClient{
                     pkfp: pkfp
                 }
             };
+
             request.set("body", body);
             request.vaultSign = ic.get("vlt-sign");
             request.vault = vault;
             request.signMessage(privateKey);
             console.log("Sending topic join request");
             let sendStart = new Date();
+            this.vault.pendingInvites[inviteCode] = {
+                nickname: nickname,
+            }
             self.messageQueue.enqueue(request);
-            //this.chatSocket.emit("request", request);
             now = new Date()
             console.log(`Request sent to island in  ${(now - sendStart) / 1000}sec. ${ (now - start) / 1000 } elapsed since beginning.`);
         }, 100)
     }
 
 
-    initSettingsOnTopicJoin(topicInfo, request){
-        let privateKey = topicInfo.privateKey;
-        let publicKey = topicInfo.publicKey;
-        let ic = new iCrypto();
-        ic.asym.setKey("pub", publicKey, "public")
-            .getPublicKeyFingerprint("pub", "pkfp");
-        let pkfp = ic.get("pkfp");
-        let topicName = ChatUtility.decryptStandardMessage(request.body.topicName, privateKey);
-        let inviterNickname = ChatUtility.decryptStandardMessage(request.body.inviterNickname, privateKey);
-        let inviterPkfp = request.body.inviterPkfp;
-        let settings = this.prepareNewTopicSettings(topicInfo.nickname, topicName, topicInfo.publicKey, false);
-
-        this.setMemberNickname(inviterPkfp, inviterNickname, settings);
-        this.saveClientSettings(settings, privateKey)
-    }
 
     onSuccessfullSettingsUpdate(response, self){
         console.log("Settings successfully updated!");

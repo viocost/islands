@@ -45,7 +45,7 @@ class ClientSessionManager{
 
     getActiveUserSessions(pkfp){
         return Object.values(this.sessions).filter(val =>{
-            return val.getClientPkfp() === pkfp;
+            return val.pkfp === pkfp;
         });
     }
 

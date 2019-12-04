@@ -92,14 +92,14 @@ class BootLeaveAssistant extends Assistant{
         if(await self.connector.isHSUp(userResidence)){
             Logger.info(`Taking down user hidden service ${userResidence} on toipc delete`, {cat: "topic_delete"})
             try{
-                await self.connector.killHiddenService(userResidence);
+                //await self.connector.killHiddenService(userResidence);
             }catch(err){console.log(`err deleting tor: ${err.message}`)}
         }
         if (metadata.body.owner === pkfp ){
             if ( await self.connector.isHSUp(taResidence)){
                 Logger.info(`Taking down toipc authority service ${taResidence} on topic delete`, {cat: "topic_delete"})
                 try{
-                    await self.connector.killHiddenService(taResidence);
+                   // await self.connector.killHiddenService(taResidence);
                 }catch(err){console.log(`err deleting tor: ${err.message}`)}
             }
             await self.hm.deleteTopic(metadata.body.topicAuthority.pkfp)

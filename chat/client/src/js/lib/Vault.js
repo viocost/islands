@@ -28,6 +28,7 @@ export class Vault{
         this.handlers;
         this.messageQueue;
         this.version;
+        this.pendingInvites = {}
         this.initHandlers();
     }
 
@@ -385,6 +386,7 @@ export class Vault{
         //if(!Message.verifyMessage(self.sessionKey, data)){
         //    throw new Error("Session key signature is invalid!")
         //}
+        console.log(`Inviter nickname: ${data.body.inviterNickname}`)
         let vaultRecord = data.body.vaultRecord;
         let metadata = data.body.metadata;
         let topicData = self.decryptTopic(vaultRecord, self.password);
@@ -399,9 +401,32 @@ export class Vault{
         newTopic.loadMetadata(metadata);
         newTopic.bootstrap(newTopic, self.messageQueue, self.arrivalHub, self.version);
         self.topics[pkfp] = newTopic;
-        self.emit(Events.TOPIC_CREATED, pkfp);
 
+        if (self.pendingInvites.hasOwnProperty(data.body.inviteCode)){
+            console.log("Initialize settings  on topic join");
+        }
+        self.emit(Events.TOPIC_CREATED, pkfp);
     }
+
+
+    initSettingsOnTopicJoin(self, pkfp, topicInfo, request){
+        let topic = self.topics[pkfp];
+
+        let privateKey = topicInfo.privateKey;
+        let publicKey = topicInfo.publicKey;
+        let ic = new iCrypto();
+        ic.asym.setKey("pub", publicKey, "public")
+            .getPublicKeyFingerprint("pub", "pkfp");
+        let pkfp = ic.get("pkfp");
+        let topicName = ChatUtility.decryptStandardMessage(request.body.topicName, privateKey);
+        let inviterNickname = ChatUtility.decryptStandardMessage(request.body.inviterNickname, privateKey);
+        let inviterPkfp = request.body.inviterPkfp;
+        let settings = this.prepareNewTopicSettings(topicInfo.nickname, topicName, topicInfo.publicKey, false);
+
+        this.setMemberNickname(inviterPkfp, inviterNickname, settings);
+        this.saveClientSettings(settings, privateKey)
+    }
+
 
 
 

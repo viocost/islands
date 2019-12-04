@@ -211,13 +211,14 @@ export function bakeParticipantListItem(nickname, pkfp, alias, onClick){
     })
 }
 
-export function bakeInviteListItem(inviteCode, onclick){
+export function bakeInviteListItem(inviteCode, onclick, onDoubleClick){
     return util.bake("div", {
         attributes: {
             "code": inviteCode
         },
         listeners: {
-            click: onclick
+            click: onclick,
+            dblclick: onDoubleClick
         },
         class: "invite-list-item",
         children: [

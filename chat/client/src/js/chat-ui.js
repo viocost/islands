@@ -165,6 +165,7 @@ function setupSidePanelListeners(){
     util.$("#btn-join-topic").onclick = processJoinTopicClick;
 
     util.$("#btn-ctx-invite").onclick = processNewInviteClick;
+    util.$("#btn-ctx-delete").onclick = processCtxDeleteClick;
 
     //util.$("#btn-mng-delete-topic").onclick = processDeleteTopicClick;
     //util.$("#btn-mng-topics-go-back").onclick = backToChat;
@@ -265,7 +266,7 @@ function processActivateTopicClick(ev){
         console.log("No topic in focus")
         return;
     } else if (pkfp === topicInFocus){
-        console.log("Topic is already in focus");
+        deactivateTopicAsset(pkfp);
         return
     }
     console.log(`Setting topic in focus: ${pkfp}`);
@@ -274,16 +275,12 @@ function processActivateTopicClick(ev){
     // load messges in the new window
 
     refreshMessages()
-    refreshInvites();
-    refreshParticipants();
-    displayTopicContextButtons("topic")
-    //updateTopicInFocusTitle();
-    // Update participants list in side panel
-    //chat.getParticipants(pkfp);
-    // Update invites list in side panel
+    if(isExpanded(pkfp)){
+        refreshInvites();
+        refreshParticipants();
+    }
 
-    //chat.getInvites(pkfp);
-    // Update to: select in new message block
+    displayTopicContextButtons("topic")
 }
 
 function processExpandTopicClick(ev){
@@ -411,11 +408,31 @@ function processNewInviteClick() {
     }
 }
 
+
 function processRefreshInvitesClick() {
     console.log("Refresh invites");
 }
 
+function processCtxDeleteClick(){
+    console.log("Delete click. Processing...");
+    let inFocus = topicInFocus;
+    let topicAsset = getActiveTopicAsset()
 
+    if (!topicAsset){
+        //delete topic
+        let confirmMsg = `Topic ${inFocus} hisrory and all hidden services will be deleted. This action is irreversable. \n\nProceed?`
+        if(confirm(confirmMsg)){
+            chat.deleteTopic(inFocus)
+            return;
+        }
+    }
+
+    if(util.hasClass(topicAsset, "invite-list-item")){
+        let inviteCode = topicAsset.getAttribute("code")
+        console.log(`Deleting invite ${inviteCode}`)
+        chat.deleteInvite(inFocus, inviteCode)
+    }
+}
 
 //this is generic function for selecting active item on click from list
 // idAttr is id attribute that is set during list creation
@@ -829,7 +846,7 @@ function refreshInvites(){
     let invites = chat.getInvites(topicInFocus);
 
     Object.keys(invites).forEach((i)=>{
-        topicAssets.appendChild(UI.bakeInviteListItem(i, activateTopicAsset))
+        topicAssets.appendChild(UI.bakeInviteListItem(i, activateTopicAsset, copyInviteCode))
     })
 
 }
@@ -849,6 +866,7 @@ function activateTopicAsset(ev){
         displayTopicContextButtons("participant")
     }
 }
+
 
 
 function refreshParticipants(){
@@ -934,7 +952,28 @@ function getTopicAssets(pkfp){
     if (next && util.hasClass(next, "topic-assets")){
        return next;
     }
+}
 
+function getActiveTopicAsset(){
+    if (!topicInFocus || !isExpanded(topicInFocus)){
+        console.log("No active assets found");
+        return;
+    }
+
+    let assets = getTopicAssets(topicInFocus);
+    for(let asset of assets.children){
+        if (util.hasClass(asset, "active-asset")){
+            return asset;
+        }
+    }
+}
+
+function deactivateTopicAsset(pkfp){
+    let topicAssets = getTopicAssets(pkfp);
+    for(let asset of topicAssets.children){
+        util.removeClass(asset, "active-asset")
+    }
+    displayTopicContextButtons("topic")
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------
@@ -1034,6 +1073,7 @@ function initChat(){
             refreshInvites();
         }
     })
+
     window.chat = chat;
 }
 
@@ -1064,8 +1104,8 @@ function padWithZeroes(requiredLength, value) {
 
 
 function copyInviteCode(event) {
-    let inviteElement = event.target;
-    let inviteID = inviteElement.getAttribute("invite-code");
+    let inviteElement = event.currentTarget;
+    let inviteID = inviteElement.getAttribute("code");
     let textArea = document.createElement("textarea");
     textArea.value = inviteID;
     document.body.appendChild(textArea);

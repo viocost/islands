@@ -287,7 +287,7 @@ export class Topic{
     requestInvite(){
         let self = this;
         if(!self.metadataLoaded){
-            throw new Error("Metadata has not been loading yet.")
+            throw new Error("Metadata has not been loaded yet.")
         }
         setTimeout(()=>{
             let request = new Message(self.version);
@@ -323,19 +323,21 @@ export class Topic{
         this.saveClientSettings(this.session.settings, this.session.privateKey)
     }
 
-    deleteInvite(){
-
-        console.log("About to delete invite: " + id);
-        let request = new Message(self.version);
-        request.headers.command = "del_invite";
-        request.headers.pkfpSource = this.session.publicKeyFingerprint;
-        request.headers.pkfpDest = this.session.metadata.topicAuthority.pkfp
+    deleteInvite(inviteCode){
+        console.log("About to delete invite: " + inviteCode);
+        if(!this.invites.hasOwnProperty(inviteCode)){
+            console.error(`Invite does not exist: ${inviteCode}`)
+        }
+        let request = new Message(this.version);
+        request.headers.command = Internal.DELETE_INVITE;
+        request.headers.pkfpSource = this.pkfp;
+        request.headers.pkfpDest = this.topicAuthority.pkfp
         let body = {
-            invite: id,
+            invite: inviteCode,
         };
         request.set("body", body);
-        request.signMessage(this.session.privateKey);
-        this.chatSocket.emit("request", request);
+        request.signMessage(this.privateKey);
+        this.messageQueue.enqueue(request);
     }
 
     updatePendingInvites(userInvites){
@@ -353,6 +355,84 @@ export class Topic{
         this.saveClientSettings(this.session.settings, this.session.privateKey);
     }
     //END//////////////////////////////////////////////////////////////////////
+
+    // ---------------------------------------------------------------------------------------------------------------------------
+    // Nickname handling
+    //TODO
+    setMemberAlias(pkfp, alias){
+        if(!pkfp){
+            throw new Error("Missing required parameter");
+        }
+        if(!this.session){
+            return
+        }
+        let membersData = this.session.settings.membersData;
+        if (!membersData[pkfp]){
+            membersData[pkfp] = {}
+        }
+        if(!alias){
+            delete membersData[pkfp].alias
+        }else{
+            membersData[pkfp].alias = alias;
+        }
+
+    }
+
+    requestNickname(pkfp){
+        if(!pkfp){
+            throw new Error("Missing required parameter");
+        }
+        let request = new Message(self.version);
+        request.setCommand("whats_your_name");
+        request.setSource(this.session.publicKeyFingerprint);
+        request.setDest(pkfp);
+        request.addNonce();
+        request.signMessage(this.session.privateKey);
+        this.chatSocket.emit("request", request);
+    }
+
+    broadcastNameChange(){
+        let self = this;
+        let message = new Message(self.version);
+        message.setCommand("nickname_change_broadcast");
+        message.setSource(this.session.publicKeyFingerprint);
+        message.addNonce();
+        message.body.nickname = ChatUtility.symKeyEncrypt(self.session.settings.nickname, self.session.metadata.sharedKey);
+        message.signMessage(this.session.privateKey);
+        this.chatSocket.emit("request", message);
+    }
+
+    processNicknameResponse(request, self){
+        self._processNicknameResponseHelper(request, self)
+    }
+
+    processNicknameChangeNote(request, self){
+        self._processNicknameResponseHelper(request, self, true)
+    }
+
+    _processNicknameResponseHelper(request, self, broadcast = false){
+        console.log("Got nickname response");
+        let publicKey = self.session.metadata.participants[request.headers.pkfpSource].publicKey;
+        if(!Message.verifyMessage(publicKey, request)){
+            console.trace("Invalid signature");
+            return
+        }
+        let existingNickname = self.getMemberNickname(request.headers.pkfpSource);
+        let memberRepr = self.getMemberRepr(request.headers.pkfpSource);
+        let newNickname = broadcast ? ChatUtility.symKeyDecrypt(request.body.nickname, self.session.metadata.sharedKey) :
+            ChatUtility.decryptStandardMessage(request.body.nickname, self.session.privateKey);
+        newNickname = newNickname.toString("utf8");
+
+        if( newNickname !== existingNickname){
+            self.setMemberNickname(request.headers.pkfpSource, newNickname);
+            self.saveClientSettings();
+            if(existingNickname && existingNickname !== ""){
+                self.createServiceRecordOnMemberNicknameChange(memberRepr, newNickname, request.headers.pkfpSource);
+            }
+        }
+    }
+
+    //~END NICKNAME HANDLING///////////////////////////////////////////////////
 
     // ---------------------------------------------------------------------------------------------------------------------------
     // Settings handling

@@ -151,6 +151,8 @@ class InviteAssistant{
     }
 
     async deleteInviteIncoming(envelope, self){
+
+        Logger.debug("Delete invite incoming", {cat: "invite"})
         let request = envelope.payload;
         let ta = self.topicAuthorityManager.getTopicAuthority(request.headers.pkfpDest);
         let response = await ta.processDelInviteRequest(request);
@@ -161,6 +163,7 @@ class InviteAssistant{
 
     async deleteInviteSuccess(envelope, self){
         const response = envelope.payload;
+
         await self.sessionManager.broadcastUserResponse(response.headers.pkfpSource,
             response);
     }
@@ -194,7 +197,7 @@ class InviteAssistant{
         msg.body.errorMsg = envelope.error;
         let session = self.sessionManager.getSessionByTopicPkfp(pkfpSource);
         if (!session){
-            Logger.warn(`Session ${connId} is not found`)
+            Logger.warn(`Session ${pkfpSource} is not found`)
             return;
         }
         await session.signMessage(msg);
@@ -234,11 +237,11 @@ class InviteAssistant{
      * HELPERS
      *****************************************************/
     getClientErrorType(command){
-        const errorTypes = {
-            request_invite: "request_invite_error",
-            delete_invite: "delete_invite_error",
-            sync_invites: "sync_invites_error"
-        };
+        const errorTypes = {}
+        errorTypes[Internal.REQUEST_INVITE] = Internal.INVITE_REQUEST_FAIL;
+        errorTypes[Internal.DELETE_INVITE] = Internal.DELETE_INVITE_ERROR;
+        errorTypes[Internal.SYNC_INVITES] = Internal.SYNC_INVITES_ERROR;
+
         if (!errorTypes.hasOwnProperty(command)){
             throw new Error("invalid error type");
         }
@@ -257,12 +260,13 @@ class InviteAssistant{
     subscribeToCrossIslandsMessages(ciMessenger){
         let handlers = {}
         handlers[ChatEvents.INVITE_CREATED] = this.requestInviteSuccess;
+        handlers[Internal.DELETE_INVITE] = this.deleteInviteIncoming;
+        handlers[Internal.DELETE_INVITE_SUCCESS] = this.deleteInviteSuccess;
+
         this.subscribe(ciMessenger, handlers, this.crossIslandErrorHandler)
 
         this.subscribe(ciMessenger, {
             request_invite: this.requestInviteIncoming,
-            del_invite: this.deleteInviteIncoming,
-            del_invite_success: this.deleteInviteSuccess,
             return_request_invite: this.requestInviteError,
             return_delete_invite: this.deleteInviteError,
             return_sync_invites: this.syncInvitesError,

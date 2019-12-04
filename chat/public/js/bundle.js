@@ -160,7 +160,10 @@ module.exports.Internal = Object.freeze({
   POST_LOGIN_CHECK_SERVICES: "post_login_check_services",
   REQUEST_INVITE: "request_invite",
   DELETE_INVITE: "delete_invite",
+  DELETE_INVITE_SUCCESS: "delete_invite_success",
+  DELETE_INVITE_ERROR: "delete_invite_error",
   SYNC_INVITES: "sync_invites",
+  SYNC_INVITES_ERROR: "sync_invites_error",
   INVITE_REQUEST_TIMEOUT: "invite_request_timeout",
   INVITE_REQUEST_FAIL: "invite_request_fail",
   JOIN_TOPIC: "join_topic",
@@ -11092,7 +11095,7 @@ function () {
       var self = this;
 
       if (!self.metadataLoaded) {
-        throw new Error("Metadata has not been loading yet.");
+        throw new Error("Metadata has not been loaded yet.");
       }
 
       setTimeout(function () {
@@ -11128,18 +11131,23 @@ function () {
     }
   }, {
     key: "deleteInvite",
-    value: function deleteInvite() {
-      console.log("About to delete invite: " + id);
-      var request = new _Message__WEBPACK_IMPORTED_MODULE_13__[/* Message */ "a"](self.version);
-      request.headers.command = "del_invite";
-      request.headers.pkfpSource = this.session.publicKeyFingerprint;
-      request.headers.pkfpDest = this.session.metadata.topicAuthority.pkfp;
+    value: function deleteInvite(inviteCode) {
+      console.log("About to delete invite: " + inviteCode);
+
+      if (!this.invites.hasOwnProperty(inviteCode)) {
+        console.error("Invite does not exist: ".concat(inviteCode));
+      }
+
+      var request = new _Message__WEBPACK_IMPORTED_MODULE_13__[/* Message */ "a"](this.version);
+      request.headers.command = _common_Events__WEBPACK_IMPORTED_MODULE_11__["Internal"].DELETE_INVITE;
+      request.headers.pkfpSource = this.pkfp;
+      request.headers.pkfpDest = this.topicAuthority.pkfp;
       var body = {
-        invite: id
+        invite: inviteCode
       };
       request.set("body", body);
-      request.signMessage(this.session.privateKey);
-      this.chatSocket.emit("request", request);
+      request.signMessage(this.privateKey);
+      this.messageQueue.enqueue(request);
     }
   }, {
     key: "updatePendingInvites",
@@ -19582,6 +19590,7 @@ function () {
     this.handlers;
     this.messageQueue;
     this.version;
+    this.pendingInvites = {};
     this.initHandlers();
   }
 
@@ -19949,6 +19958,7 @@ function () {
       //if(!Message.verifyMessage(self.sessionKey, data)){
       //    throw new Error("Session key signature is invalid!")
       //}
+      console.log("Inviter nickname: ".concat(data.body.inviterNickname));
       var vaultRecord = data.body.vaultRecord;
       var metadata = data.body.metadata;
       var topicData = self.decryptTopic(vaultRecord, self.password);
@@ -19957,6 +19967,11 @@ function () {
       newTopic.loadMetadata(metadata);
       newTopic.bootstrap(newTopic, self.messageQueue, self.arrivalHub, self.version);
       self.topics[pkfp] = newTopic;
+
+      if (self.pendingInvites.hasOwnProperty(data.body.inviteCode)) {
+        console.log("Initialize settings  on topic join");
+      }
+
       self.emit(Events["Events"].TOPIC_CREATED, pkfp);
     }
   }, {
@@ -39877,6 +39892,13 @@ function () {
       topic.requestInvite();
     }
   }, {
+    key: "deleteInvite",
+    value: function deleteInvite(topicId, inviteCode) {
+      if (!this.topics.hasOwnProperty(topicId)) throw new Error("Topic ".concat(topicId, ", not found"));
+      var topic = this.topics[topicId];
+      topic.deleteInvite(inviteCode);
+    }
+  }, {
     key: "getInvites",
     value: function getInvites(topicId) {
       if (!this.topics.hasOwnProperty(topicId)) throw new Error("Topic ".concat(topicId, ", not found"));
@@ -40014,6 +40036,8 @@ function () {
       var _joinTopic = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_6___default()(
       /*#__PURE__*/
       _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default.a.mark(function _callee3(nickname, topicName, inviteCode) {
+        var _this6 = this;
+
         var self;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default.a.wrap(function _callee3$(_context3) {
           while (1) {
@@ -40072,8 +40096,10 @@ function () {
                   request.signMessage(privateKey);
                   console.log("Sending topic join request");
                   var sendStart = new Date();
-                  self.messageQueue.enqueue(request); //this.chatSocket.emit("request", request);
-
+                  _this6.vault.pendingInvites[inviteCode] = {
+                    nickname: nickname
+                  };
+                  self.messageQueue.enqueue(request);
                   now = new Date();
                   console.log("Request sent to island in  ".concat((now - sendStart) / 1000, "sec. ").concat((now - start) / 1000, " elapsed since beginning."));
                 }, 100);
@@ -55457,13 +55483,14 @@ function bakeParticipantListItem(nickname, pkfp, alias, onClick) {
     })]
   });
 }
-function bakeInviteListItem(inviteCode, onclick) {
+function bakeInviteListItem(inviteCode, onclick, onDoubleClick) {
   return bake("div", {
     attributes: {
       "code": inviteCode
     },
     listeners: {
-      click: onclick
+      click: onclick,
+      dblclick: onDoubleClick
     },
     class: "invite-list-item",
     children: [bake("div", {
@@ -56268,7 +56295,8 @@ function initUI() {
 function setupSidePanelListeners() {
   $("#btn-new-topic").onclick = processNewTopicClick;
   $("#btn-join-topic").onclick = processJoinTopicClick;
-  $("#btn-ctx-invite").onclick = processNewInviteClick; //util.$("#btn-mng-delete-topic").onclick = processDeleteTopicClick;
+  $("#btn-ctx-invite").onclick = processNewInviteClick;
+  $("#btn-ctx-delete").onclick = processCtxDeleteClick; //util.$("#btn-mng-delete-topic").onclick = processDeleteTopicClick;
   //util.$("#btn-mng-topics-go-back").onclick = backToChat;
   //util.$("#top-btn-join").onclick = processJoinTopicClick;
   //util.$("#bottom-btn-join").onclick = joinTopic;
@@ -56357,7 +56385,7 @@ function processActivateTopicClick(ev) {
     console.log("No topic in focus");
     return;
   } else if (pkfp === topicInFocus) {
-    console.log("Topic is already in focus");
+    deactivateTopicAsset(pkfp);
     return;
   }
 
@@ -56365,14 +56393,13 @@ function processActivateTopicClick(ev) {
   setTopicInFocus(pkfp); // load messges in the new window
 
   refreshMessages();
-  refreshInvites();
-  refreshParticipants();
-  displayTopicContextButtons("topic"); //updateTopicInFocusTitle();
-  // Update participants list in side panel
-  //chat.getParticipants(pkfp);
-  // Update invites list in side panel
-  //chat.getInvites(pkfp);
-  // Update to: select in new message block
+
+  if (isExpanded(pkfp)) {
+    refreshInvites();
+    refreshParticipants();
+  }
+
+  displayTopicContextButtons("topic");
 }
 
 function processExpandTopicClick(ev) {
@@ -56538,6 +56565,28 @@ function processNewInviteClick() {
 
 function processRefreshInvitesClick() {
   console.log("Refresh invites");
+}
+
+function processCtxDeleteClick() {
+  console.log("Delete click. Processing...");
+  var inFocus = topicInFocus;
+  var topicAsset = getActiveTopicAsset();
+
+  if (!topicAsset) {
+    //delete topic
+    var confirmMsg = "Topic ".concat(inFocus, " hisrory and all hidden services will be deleted. This action is irreversable. \n\nProceed?");
+
+    if (confirm(confirmMsg)) {
+      chat_ui_chat.deleteTopic(inFocus);
+      return;
+    }
+  }
+
+  if (hasClass(topicAsset, "invite-list-item")) {
+    var inviteCode = topicAsset.getAttribute("code");
+    console.log("Deleting invite ".concat(inviteCode));
+    chat_ui_chat.deleteInvite(inFocus, inviteCode);
+  }
 } //this is generic function for selecting active item on click from list
 // idAttr is id attribute that is set during list creation
 // listId is id of a list element
@@ -57047,7 +57096,7 @@ function refreshInvites() {
   var topicAssets = getTopicAssets(topicInFocus);
   var invites = chat_ui_chat.getInvites(topicInFocus);
   Object.keys(invites).forEach(function (i) {
-    topicAssets.appendChild(bakeInviteListItem(i, activateTopicAsset));
+    topicAssets.appendChild(bakeInviteListItem(i, activateTopicAsset, copyInviteCode));
   });
 }
 
@@ -57170,6 +57219,70 @@ function getTopicAssets(pkfp) {
   if (next && hasClass(next, "topic-assets")) {
     return next;
   }
+}
+
+function getActiveTopicAsset() {
+  if (!topicInFocus || !isExpanded(topicInFocus)) {
+    console.log("No active assets found");
+    return;
+  }
+
+  var assets = getTopicAssets(topicInFocus);
+  var _iteratorNormalCompletion7 = true;
+  var _didIteratorError7 = false;
+  var _iteratorError7 = undefined;
+
+  try {
+    for (var _iterator7 = assets.children[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
+      var asset = _step7.value;
+
+      if (hasClass(asset, "active-asset")) {
+        return asset;
+      }
+    }
+  } catch (err) {
+    _didIteratorError7 = true;
+    _iteratorError7 = err;
+  } finally {
+    try {
+      if (!_iteratorNormalCompletion7 && _iterator7.return != null) {
+        _iterator7.return();
+      }
+    } finally {
+      if (_didIteratorError7) {
+        throw _iteratorError7;
+      }
+    }
+  }
+}
+
+function deactivateTopicAsset(pkfp) {
+  var topicAssets = getTopicAssets(pkfp);
+  var _iteratorNormalCompletion8 = true;
+  var _didIteratorError8 = false;
+  var _iteratorError8 = undefined;
+
+  try {
+    for (var _iterator8 = topicAssets.children[Symbol.iterator](), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
+      var asset = _step8.value;
+      removeClass(asset, "active-asset");
+    }
+  } catch (err) {
+    _didIteratorError8 = true;
+    _iteratorError8 = err;
+  } finally {
+    try {
+      if (!_iteratorNormalCompletion8 && _iterator8.return != null) {
+        _iterator8.return();
+      }
+    } finally {
+      if (_didIteratorError8) {
+        throw _iteratorError8;
+      }
+    }
+  }
+
+  displayTopicContextButtons("topic");
 } // ---------------------------------------------------------------------------------------------------------------------------
 // TOPIC CONTEXT BUTTONS
 
@@ -57297,8 +57410,8 @@ function padWithZeroes(requiredLength, value) {
 }
 
 function copyInviteCode(event) {
-  var inviteElement = event.target;
-  var inviteID = inviteElement.getAttribute("invite-code");
+  var inviteElement = event.currentTarget;
+  var inviteID = inviteElement.getAttribute("code");
   var textArea = document.createElement("textarea");
   textArea.value = inviteID;
   document.body.appendChild(textArea);
