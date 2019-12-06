@@ -20,6 +20,9 @@ export class ChatClient{
         if(!opts.version){
             throw new Error("Version required!");
         }
+        if (opts.test){
+            this.connectionString = opts.connectionString;
+        }
         this.version = opts.version;
         this.vault;
         this.topics;
@@ -695,10 +698,14 @@ export class ChatClient{
 
     //requests vault and returns it
     getVault(){
+        let url = "/";
+        if (this.connectionString){
+            url = this.connectionString;
+        }
         return new Promise((resolve, reject)=>{
             XHR({
                 type: "post",
-                url: "/",
+                url: url,
                 success: (data)=>{
                     console.log("Vault obtained. Processing...");
                     try{

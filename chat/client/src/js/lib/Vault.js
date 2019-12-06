@@ -1,6 +1,7 @@
 import { IError as Err }  from "../../../../common/IError";
 import { verifyPassword } from "./PasswordVerify";
 import { Topic } from "../lib/Topic";
+import { ClientSettings } from "./ClientSettings";
 import { iCrypto } from "./iCrypto";
 import { WildEmitter } from "./WildEmitter";
 import { Message } from "./Message";
@@ -404,27 +405,20 @@ export class Vault{
 
         if (self.pendingInvites.hasOwnProperty(data.body.inviteCode)){
             console.log("Initialize settings  on topic join");
+            self.initSettingsOnTopicJoin(self, pkfp, data)
         }
         self.emit(Events.TOPIC_CREATED, pkfp);
     }
 
 
-    initSettingsOnTopicJoin(self, pkfp, topicInfo, request){
+    initSettingsOnTopicJoin(self, pkfp, request){
         let topic = self.topics[pkfp];
-
-        let privateKey = topicInfo.privateKey;
-        let publicKey = topicInfo.publicKey;
-        let ic = new iCrypto();
-        ic.asym.setKey("pub", publicKey, "public")
-            .getPublicKeyFingerprint("pub", "pkfp");
-        let pkfp = ic.get("pkfp");
-        let topicName = ChatUtility.decryptStandardMessage(request.body.topicName, privateKey);
+        let privateKey = topic.privateKey;
         let inviterNickname = ChatUtility.decryptStandardMessage(request.body.inviterNickname, privateKey);
         let inviterPkfp = request.body.inviterPkfp;
-        let settings = this.prepareNewTopicSettings(topicInfo.nickname, topicName, topicInfo.publicKey, false);
-
-        this.setMemberNickname(inviterPkfp, inviterNickname, settings);
-        this.saveClientSettings(settings, privateKey)
+        let settings = new ClientSettings(self.version, nickname, pkfp);
+        settings.setNickname(inviterPkfp, inviterNickname);
+        self.saveClientSettings(settings, privateKey)
     }
 
 

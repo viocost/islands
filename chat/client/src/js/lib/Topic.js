@@ -5,6 +5,7 @@ import { Metadata } from  "./Metadata";
 import { ChatUtility } from "./ChatUtility";
 import { iCrypto } from  "./iCrypto";
 import { ChatMessage } from "./ChatMessage";
+import { ClientSettings } from "./ClientSettings";
 import { INSPECT_MAX_BYTES } from "buffer";
 
 const INITIAL_NUM_MESSAGES = 25
@@ -44,26 +45,16 @@ export class Topic{
 
     static prepareNewTopicSettings(version, nickname, topicName, publicKey, encrypt = true){
         //Creating and encrypting topic settings:
-        console.log("Preparing new topic settigs");
-        let settings = {
-            version: version,
-            membersData: {},
-            invites: {},
-            soundsOn: true
-        };
+        let settings = new ClientSettings(version);
         if(nickname){
             let ic = new iCrypto;
             ic.asym.setKey("pubk", publicKey, "public")
                 .getPublicKeyFingerprint("pubk", "pkfp");
-            settings.nickname = nickname;
-            settings.membersData[ic.get("pkfp")] = {nickname: nickname};
+            settings.setOwnerNickname(ic.get("pkfp"), nickname);
         }
 
-        if(topicName){
-            settings.topicName = topicName;
-        }
         if (encrypt){
-            return ChatUtility.encryptStandardMessage(JSON.stringify(settings), publicKey);
+            return ClientSettings.encrypt(publicKey, settings)
         }else {
             return settings;
         }
@@ -452,7 +443,7 @@ export class Topic{
         if(typeof settingsRaw === "object"){
             settingsRaw = JSON.stringify(settingsRaw);
         }
-        let settingsEnc = ChatUtility.encryptStandardMessage(settingsRaw, publicKey);
+        let settingsEnc = ClientSettings.encrypt(publicKey, settingsRaw);
 
         ic.addBlob("cipher", settingsEnc)
           .privateKeySign("cipher", "privk", "sign")

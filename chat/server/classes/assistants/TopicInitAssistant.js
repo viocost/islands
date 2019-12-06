@@ -105,7 +105,7 @@ class TopicInitAssistant{
         const metadata = self.topicAuthorityManager.getTopicAuthority(taPkfp).getCurrentMetadata();
         metadata.body.settings = request.body.settings;
         //Persist first metadata to history
-        await self.hm.initHistory(request.body.topicPkfp, metadata.toBlob());
+        await self.hm.initHistory(request.body.topicPkfp, JSON.stringify(metadata));
 
         //Deleting new pending topic token
 
@@ -119,12 +119,13 @@ class TopicInitAssistant{
         //return success
         //
         Logger.debug("Topic created. Norifying client", {cat: "topic_create"})
+
         let response = Message.makeResponse(request, "island", Internal.TOPIC_CREATED);
         response.body.metadata = metadata;
         response.body.vaultRecord = request.body.vaultRecord;
         response.body.topicPkfp = request.body.topicPkfp;
-        self.connectionManager.sendMessage(connectionId, response);
-
+        session.addTopic(request.body.topicPkfp);
+        session.send(response, connectionId);
     }
 
     /**

@@ -42,13 +42,14 @@ class TopicJoinAssistant {
         const request = Request.parse(envelope.payload);
         const invite = Invite.parse(request.body.inviteString);
         const topicAuthority = self.topicAuthorityManager.getTopicAuthority(invite.getPkfp());
+        console.log("\n\n METADATA AT JOIN TOPIC INCOMING: " + topicAuthority.getCurrentMetadata().toBlob()+"\n\n")
+        //let currentMetadata = topicAuthority.getCurrentMetadata().toBlob();
         let newTopicData = await topicAuthority.joinByInvite(request.body.inviteString, request.body.invitee, envelope.origin);
         Logger.debug("Join topic request processed by topic authority", {cat: "topic_join"});
         const response = new Response(Internal.JOIN_TOPIC_SUCCESS, request);
         response.setAttribute("metadata", newTopicData.metadata);
-        response.setAttribute("inviterNickname", newTopicData.inviterNickname);
-        response.setAttribute("inviterPkfp", newTopicData.inviterPkfp);
-        response.setAttribute("inviteCode", request.body.inviteString);
+        response.body["inviterNickname"] =  newTopicData.inviterNickname;
+        response.body["inviterPkfp"] = newTopicData.inviterPkfp;
 
         const responseEnvelope = new Envelope(envelope.origin, response, envelope.destination);
         responseEnvelope.setResponse();
@@ -125,8 +126,8 @@ class TopicJoinAssistant {
             response.setDest(pendingRequest.vaultId);
             response.body.vaultRecord = pendingRequest.vaultRecord;
             response.body.metadata = taResponse.body.metadata;
-            response.inviterNickname = taResponse.body.inviterNickname;
-            response.inviterPkfp = taResponse.body.inviterPkfp;
+            response.body.inviterNickname = taResponse.body.inviterNickname;
+            response.body.inviterPkfp = taResponse.body.inviterPkfp;
             let session = self.sessionManager.getSessionBySessionID(pendingRequest.vaultId);
             if(!session){
                 Logger.warn(`Session ${pendingRequest.vaultId} not found.`)

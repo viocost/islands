@@ -4,8 +4,6 @@ import { Lock } from "./Lock";
 /**
  * This class is responsible for following:
  *   1. Sending arbitrary messages asyncronously in FIFO fasion.
- *
- *
  */
 export class MessageQueue{
 
@@ -27,7 +25,7 @@ export class MessageQueue{
                 console.log("Lock acquired, enqueueing");
                 this.queue.push(msg);
             }catch(err){
-                console.log(`Enqueue error: ${err.message} `);
+                console.error(`Enqueue error: ${err.message} `);
             }finally{
                 console.log("Releasing lock...");
                 self.lock.release();
@@ -53,7 +51,7 @@ export class MessageQueue{
                     self.connector.send(msg);
                 }
             }catch(err){
-                console.log(`Queue processor error ${err.message}`);
+                console.error(`Queue processor error ${err.message}`);
             }finally{
                 self.lock.release();
                 //Repeat after 300ms

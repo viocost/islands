@@ -13,7 +13,7 @@ const CuteSet = require("cute-set");
 const MetadataIssue = require("../enums/MetadataIssueMessages.js");
 const Logger = require("../libs/Logger.js");
 const Internal = require("../../../common/Events.js").Internal;
-
+const objUtil = require("../../../common/ObjectUtil");
 
 
 class TopicAuthority extends EventEmitter{
@@ -155,6 +155,7 @@ class TopicAuthority extends EventEmitter{
     }
 
     async joinByInvite(inviteString, inviteeInfo, newMemeberResidence){
+        console.log("\n\nCurrent metadata at beginning of joinByInvite:"+ this.getCurrentMetadata().toBlob())
         let invite = await this.getInvite(inviteString);
         await this.verifyInvite(invite);
         let privateKey = this.getTAPrivateKey();
@@ -173,6 +174,7 @@ class TopicAuthority extends EventEmitter{
             pkfp: inviteeInfo.pkfp
         });
         await this.consumeInvite(inviteString, invite.requesterPkfp);
+        console.log("TA CURRENT METADATA WITH NEW MEMBER JOINED: " + this.getCurrentMetadata().toBlob())
         return {
             metadata: this.getCurrentMetadata().toBlob(),
             inviterNickname: inviterNickname,
@@ -186,10 +188,11 @@ class TopicAuthority extends EventEmitter{
                         newMemeberResidence = Err.required()) {
         const newParticipant = Metadata.createNewParticiapnt(newMemberPublicKey, newMemeberResidence);
         const metadata = this.getCurrentMetadata();
-
+        console.log("Metadata before join: " + metadata.toBlob())
         metadata.addParticipant(newParticipant);
         let newMetadata = this.reKeyMetadata(metadata);
         this.signMetadata(metadata);
+        console.log("Metadata after join: " + newMetadata.toBlob())
         this.setMetadata(newMetadata);
         await this.appendCurrentMetadata()
     }
@@ -375,7 +378,9 @@ class TopicAuthority extends EventEmitter{
 
     //TODO
     async appendCurrentMetadata(){
-        await this.hm.taAppendMetadata(this.getPkfp(), this.getCurrentMetadata().toBlob());
+        let metadataBlob = this.getCurrentMetadata().toBlob()
+        console.log(`\n\nAppending current metadata: ${metadataBlob}\n\n`)
+        await this.hm.taAppendMetadata(this.getPkfp(), metadataBlob);
     }
 
 
@@ -517,7 +522,7 @@ class TopicAuthority extends EventEmitter{
     }
 
     getCurrentMetadata(){
-        return this.currentMetadata;
+        return  Metadata.parseMetadata(JSON.stringify(this.currentMetadata));
     }
 
     setResidence(residence){

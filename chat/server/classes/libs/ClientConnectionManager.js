@@ -62,7 +62,7 @@ class ClientConnectionManager extends EventEmitter{
     }
 
     isAlive(socketId){
-        return (this.socketHub.sockets[socketId] && self.socketHub.sockets[socketId].connected);
+        return (this.socketHub.sockets[socketId] && this.socketHub.sockets[socketId].connected);
     }
 
     getSocketById(id){

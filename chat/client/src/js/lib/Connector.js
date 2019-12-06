@@ -3,9 +3,14 @@ import { WildEmitter } from "./WildEmitter";
 import { Internal } from "../../../../common/Events";
 
 export class Connector{
-    constructor(){
+    constructor(connectionString){
         WildEmitter.mixin(this);
         this.chatSocket;
+        if (connectionString){
+            this.connectionString = connectionString;
+        } else {
+            this.connectionString = ""
+        }
     }
 
     async establishConnection(vaultId, connectionAttempts = 7, reconnectionDelay = 8000){
@@ -36,9 +41,10 @@ export class Connector{
                 upgrade: upgrade
             }
 
+
             socketConfig.upgrade = self.transport > 0;
 
-            self.chatSocket = io('/chat', socketConfig);
+            self.chatSocket = io(`${this.connectionString}/chat`, socketConfig);
 
             //Wildcard fix
             let onevent = self.chatSocket.onevent;
