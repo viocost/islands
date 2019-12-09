@@ -22,7 +22,7 @@ const SESSION_ID_LENGTH = 7;
  */
 class ClientSession extends EventEmitter{
 
-    constructor(vaultId = Err.required("Missing required parameter clientPkfp"),
+    constructor(vaultId = Err.required("Missing required parameter vaultId"),
                 connectionId = Err.required("Missing required parameter socketId"),
                 connectionManager = Err.required("Missing connection manager")) {
         super();

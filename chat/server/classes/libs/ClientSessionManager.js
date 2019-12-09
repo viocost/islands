@@ -20,6 +20,10 @@ class ClientSessionManager{
 
             let socket = connectionManager.getSocketById(connectionId);
             let vaultId = socket.handshake.query.vaultId;
+            if(!vaultId){
+                Logger.warn("Warning: no vaultID provided at the connection.", {cat: "connection"})
+                return;
+            }
             if(this.sessions.hasOwnProperty(vaultId)){
                 console.log(`Session exists. Adding connection...`);
                 self.sessions[vaultId].addConnection(connectionId);
