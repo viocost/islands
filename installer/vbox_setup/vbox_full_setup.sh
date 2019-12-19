@@ -65,7 +65,7 @@ apt update -y
 apt install dirmngr -y
 apt install unzip -y
 
-echo Installing Node.JS
+
 apt install curl -y
 apt install apt-transport-https -y
 
@@ -93,26 +93,44 @@ sleep 1s
 service tor start
 
 echo Installing Node.JS!
-curl -sL https://deb.nodesource.com/setup_10.x | bash -
-apt install -y nodejs
+curl -sL https://deb.nodesource.com/setup_13.x | bash -
+apt-get install -y nodejs
 
-mkdir /usr/src/app
+# mkdir /usr/src/app
 
-curl -sL https://github.com/viocost/islands/archive/${BRANCH}.zip -o /tmp/${BRANCH}.zip
-cd /tmp
-unzip ${BRANCH}.zip 
-cp islands-${BRANCH}/chat/* /usr/src/app/ -r
-cd /usr/src/app/
-npm install
+# curl -sL https://github.com/viocost/islands/archive/${BRANCH}.zip -o /tmp/${BRANCH}.zip
+# cd /tmp
+# unzip ${BRANCH}.zip
+# cp islands-${BRANCH}/chat/* /usr/src/app/ -r
+# cd /usr/src/app/
+
+apt install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev -y
+
+wget  https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tar.xz
+tar -xf Python-3.7.3.tar.xz
+
+cd Python-3.7.3
+./configure --enable-optimizations
+make
+make install
+update-alternatives --install /usr/bin/python3 python3 /usr/local/bin/python3 10
+
+cd ../
+mv /usr/bin/lsb_release /usr/bin/lsb_release.bak
+
+wget https://bootstrap.pypa.io/get-pip.py
+python3 get-pip.py
+
+
 npm install -g pm2
 pm2 update
 
 
 #starting app
 
-pm2 start /usr/src/app/server/app.js --node-args="--experimental-worker" -- -c /usr/src/app/server/config/configvbox.json
-pm2 save
-pm2 startup
+# pm2 start /usr/src/app/server/app.js --node-args="--experimental-worker" -- -c /usr/src/app/server/config/configvbox.json
+# pm2 save
+# pm2 startup
 
 echo About to install services.
 sleep 3
@@ -120,6 +138,7 @@ sleep 3
 echo "
 #!/bin/bash
 
+# checking if trusted key is supplied
 if [ ! -f /root/already_ran ]; then
    while true
    do
@@ -139,6 +158,17 @@ if [ ! -f /root/already_ran ]; then
        sleep 4
    done
    touch /root/already_ran;
+fi
+
+# Checking for the source code.
+if (( \$(mount | egrep -c islandsData) > 0 )); then
+   if [ -f /media/sf_islandsData/source.zip ]; then
+      # copy to temp
+      # unpack
+      # verify
+      # copy to the working dir
+      # launch pm2
+   fi
 fi
 
 exit 0

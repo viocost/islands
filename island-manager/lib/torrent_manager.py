@@ -533,7 +533,7 @@ class TorrentManager:
             raise FileNotFoundError("Path to data is invalid")
         storage = lt.file_storage()
         lt.add_files(storage, path_to_payload)
-        ct = lt.create_torrent(storage)
+        ct = lt.create_torrent(storage) # ct - create torrent object
         ct.add_node("127.0.0.1", 6881)
         lt.set_piece_hashes(ct, os.path.dirname(path_to_payload))
 

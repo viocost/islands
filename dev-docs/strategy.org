@@ -1,6 +1,34 @@
 #+TITLE: Islands development strategy and tasks
 
 * Current tasks
+
+** PROJ Whole big change
+*** Use cases:
+1. No source.zip found and nothing inside
+   Virgin - request manifest
+2. source.zip found and nothing inside:
+   verify - install
+3. source.zip found and matches what's inside
+   proceed normal boot
+4. source.zip found and does NOT match what's inside
+   update
+
+*** DONE Install:
+CLOSED: [2019-12-14 Sat 14:40]
+- python 3.8
+- pip
+- nodejs 13
+- npm
+- redis
+- pm2
+- transmission server cli
+*** TODO Implement bootstrap app
+
+
+
+*** TODO implement source verification / install script
+
+
 ** TODO When tab is activated - the cursor must go to new message textarea
 ** TODO Send message in queue
 ** PROJ Implement multiplexing
