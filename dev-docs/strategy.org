@@ -2,7 +2,7 @@
 
 * Current tasks
 
-** PROJ Whole big change
+** PROJ Implement bootstrapping
 *** Use cases:
 1. No source.zip found and nothing inside
    Virgin - request manifest
@@ -12,6 +12,32 @@
    proceed normal boot
 4. source.zip found and does NOT match what's inside
    update
+*** Pseudocode
+prepare_source:
+   zip source
+   sign with private key
+   zip archive and signature
+   create torrent
+   return magnet
+
+prepare_manifest(source magnet):
+   create manifest.json(source magnet)
+   create torrent
+   return manifest magnet
+
+
+bootstrap(manifest_magnet):
+   add manifest magnet
+   get source magnet from manifest
+   add source
+   unzip
+   if (signature valid)
+      copy source.zip to source dir
+      reboot
+   else
+      notify user("Source is invalid")
+
+
 
 *** DONE Install:
 CLOSED: [2019-12-14 Sat 14:40]

@@ -11,6 +11,7 @@
   "dependencies": {
     "express": "^4.17.1",
     "node-rtorrent": "^1.1.0",
+    "parse-magnet-uri": "^4.0.0",
     "qbittorrent-api": "^1.0.0",
     "transmission": "^0.4.9"
   }

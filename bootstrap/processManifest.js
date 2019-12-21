@@ -8,8 +8,8 @@
 const path = require("path");
 const fs = require("fs");
 const QBT = require("qbittorrent-api");
-
-
+const PMT = require("parse-magnet-uri");
+const parseMagnet = PMT.parseMagnet
 
 const ERROR = {
     NO_MANIFEST_LINK: 1,
@@ -32,9 +32,15 @@ process.on("SIGINT", ()=>{
     process.exit();
 })
 
-if (process.argv.length < 3) process.exit(ERROR.NO_MANIFEST_LINK)
+if (process.argv.length < 3){
+    console.log("Manifest argument is not provided! exititin...");
+    process.exit(ERROR.NO_MANIFEST_LINK)
+}
 
 let qbt = QBT.connect("https://localhost:8080", "admin", "adminadmin")
+
+console.log("Connection request sent..");
+
 qbt.version((err, data)=>{
     if (err){
         console.error(err)
@@ -50,11 +56,13 @@ let manifestDownloadStart;
 let sourceDownloadStart;
 let exiting = false
 
-let magnet = fs.readFileSync(process.argv[2], "utf8");
-console.log(`Loaded magnet: ${magnet}`);
+let manifestMagnet = fs.readFileSync(process.argv[2], "utf8");
+console.log(`Loaded magnet: ${manifestMagnet}`);
 
 
 function addManifest(){
+    let manifestHash = parseMagnet(manifestMagnet).infoHash;
+
     qbt.add(magnet, (err, result)=>{
         if (err){
             console.log(err);
@@ -64,50 +72,49 @@ function addManifest(){
             return;
         }
 
-        //console.log(result)
-        manifestId = result.id;
-        manifestDownloadStart = new Date();
-        waitManifest();
+        waitManifest(manifestHash);
     })
 }
 
 
 
 
-function waitManifest(){
+function waitManifest(manifestIHash){
     console.log("Waiting for manifest");
-    qbt.get(manifestId, (err, res)=>{
+    qbt.active((err, res=[])=>{
         if (err){
             console.log(err);
             process.exit(TORRENT_DAEMON_ERROR);
         }
 
-
-
-        let percentDone = res.torrents[0].percentDone*100;
-        console.log(`Manifest percent done: ${percentDone}`);
-        manifestPath = path.join(res.torrents[0].downloadDir, res.torrents[0].name)
-
-        console.log(`Downloaded to ${manifestPath}`);
-
         if(exiting){
             return;
-        }else if (percentDone < 100){
-            console.log("Waiting manifest...");
-            setTimeout(waitManifest, 4000)
-        } else {
-            processManifest()
         }
+
+        let manifest = res.filter((torrent)=>{ return torrent.hash.toLowerCase() === manifestHash.toLowerCase()})[0]
+
+        if (!manifest){
+            console.log("Manifets has not been added");
+            process.exit(TORRENT_DAEMON_ERROR);
+        }
+
+        if (manifest.progress === 1){
+            //Torrent is finished
+            processManifest(manifest)
+        } else {
+            console.log("Manifest is not ready yet. Waitig.");
+            setTimeout(waitManifest, 4000)
+        }
+
+
     })
 
 }
 
 
-function processManifest(){
+function processManifest(manifestTorrent){
     if (exiting) return;
     console.log("Processing manifest");
-
-
 }
 
 
