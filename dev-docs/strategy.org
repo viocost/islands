@@ -28,12 +28,18 @@ prepare_manifest(source magnet):
 
 bootstrap(manifest_magnet):
    add manifest magnet
+   parse manifest
+
+   if (not source compatable)
+       notify "Source incompatable"
+       terminate
+
    get source magnet from manifest
    add source
    unzip
    if (signature valid)
       copy source.zip to source dir
-      reboot
+      start app
    else
       notify user("Source is invalid")
 

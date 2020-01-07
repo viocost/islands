@@ -1,0 +1,93 @@
+doctype html
+html
+    head
+        style(type="text/css").
+
+            button, input, textarea{
+                border:none;
+                background-image:none;
+                background-color:transparent;
+                -webkit-box-shadow: none;
+                -moz-box-shadow: none;
+                box-shadow: none;
+            }
+
+
+            .container{
+                height: 100vh;
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+
+            }
+
+            .manifest-magnet {
+                padding: 10px;
+                margin: 0 10px 0 0 ;
+                border: 1px solid #e2e2e2;
+                border-radius: 5px;
+            }
+
+            .btn{
+                padding: 10px;
+                border-radius: 5px;
+                border: 1px solid #e2e2e2;
+                cursor: pointer;
+            }
+
+            .btn:hover{
+                background-color: #e2e2e2
+
+                }
+
+            .wrapper{
+                margin-top: 10%;
+                display: flex;
+                flex-direction: row;
+
+            }
+
+
+    body
+        .container
+            .wrapper
+                input.manifest-magnet#magnet(placeholder="Manifest magnet")
+                .btn#bootstrap Bootstrap
+
+    script.
+        document.addEventListener('DOMContentLoaded', function(event){
+            document.querySelector("#bootstrap").onclick = bootstrap;
+        });
+
+        function bootstrap(){
+            console.log("Running bootstrap")
+
+            let magnet = document.querySelector("#magnet").value;
+            if (magnet.length === 0){
+                alert("Please paste magnet link for manifest.");
+                return;
+            }
+
+            let xhr = new XMLHttpRequest();
+            xhr.open("POST", "/bootstrap");
+            xhr.setRequestHeader("Content-type", "application/json;charset=UTF-8");
+
+            xhr.onreadystatechange = function(){
+                if(xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200){
+                    processBootstrapRes(xhr);
+                }
+            }
+
+            let data = JSON.stringify({
+                magnet: magnet
+            })
+
+            xhr.send(data);
+
+        }
+
+        function processBootstrapRes(xhr){
+           console.log(`Response: ${xhr.response}, text: ${xhr.responseText}`)
+
+        }
