@@ -69,6 +69,24 @@ html
                 return;
             }
 
+            let socket = new WebSocket(`ws://${document.location.host}`);
+
+            socket.onopen = ()=>{
+                 console.log("Socket opened")
+                 let processMessage = (ev)=>{
+
+                 }
+
+                 socket.onmessage = processMessage;
+                 socket.send(JSON.stringify({
+                     command: "bootstrap",
+                     data: {
+                         magnet: magnet
+                     }
+                 }))
+
+            }
+            return;
             let xhr = new XMLHttpRequest();
             xhr.open("POST", "/bootstrap");
             xhr.setRequestHeader("Content-type", "application/json;charset=UTF-8");
