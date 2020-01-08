@@ -1,6 +1,7 @@
 doctype html
 html
     head
+        script(src="/client.js")
         style(type="text/css").
 
             button, input, textarea{
@@ -55,57 +56,3 @@ html
                 input.manifest-magnet#magnet(placeholder="Manifest magnet")
                 .btn#bootstrap Bootstrap
 
-    script.
-        document.addEventListener('DOMContentLoaded', function(event){
-            document.querySelector("#bootstrap").onclick = bootstrap;
-        });
-
-        function bootstrap(){
-            console.log("Running bootstrap")
-
-            let magnet = document.querySelector("#magnet").value;
-            if (magnet.length === 0){
-                alert("Please paste magnet link for manifest.");
-                return;
-            }
-
-            let socket = new WebSocket(`ws://${document.location.host}`);
-
-            socket.onopen = ()=>{
-                 console.log("Socket opened")
-                 let processMessage = (ev)=>{
-
-                 }
-
-                 socket.onmessage = processMessage;
-                 socket.send(JSON.stringify({
-                     command: "bootstrap",
-                     data: {
-                         magnet: magnet
-                     }
-                 }))
-
-            }
-            return;
-            let xhr = new XMLHttpRequest();
-            xhr.open("POST", "/bootstrap");
-            xhr.setRequestHeader("Content-type", "application/json;charset=UTF-8");
-
-            xhr.onreadystatechange = function(){
-                if(xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200){
-                    processBootstrapRes(xhr);
-                }
-            }
-
-            let data = JSON.stringify({
-                magnet: magnet
-            })
-
-            xhr.send(data);
-
-        }
-
-        function processBootstrapRes(xhr){
-           console.log(`Response: ${xhr.response}, text: ${xhr.responseText}`)
-
-        }
