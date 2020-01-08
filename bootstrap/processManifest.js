@@ -37,7 +37,7 @@ if (process.argv.length < 3){
     process.exit(ERROR.NO_MANIFEST_LINK)
 }
 
-let qbt = QBT.connect("https://localhost:8080", "admin", "adminadmin")
+let qbt = QBT.connect("http://localhost:8080", "admin", "adminadmin")
 
 console.log("Connection request sent..");
 

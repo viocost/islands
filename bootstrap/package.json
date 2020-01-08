@@ -15,6 +15,7 @@
     "parse-magnet-uri": "^4.0.0",
     "pug": "^2.0.4",
     "qbittorrent-api": "^1.0.0",
+    "qbittorrent-client": "^1.1.0",
     "ws": "^7.2.1"
   }
 }

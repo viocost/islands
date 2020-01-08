@@ -38,12 +38,26 @@ function sjsend(socket, data){
 }
 
 function bootstrap(socket, data){
-    console.log(`Bootstrapping with ${data.magnet}`);
-    let Bootstrapper = new Bootstrapper();
-    Bootstrapper.getManifest(data.magnet);
+    return new Promise( async (resolve, reject)=>{
+        try{
+
+            console.log(`Bootstrapping with ${data.magnet}`);
+            let bootstrapper = new Bootstrapper();
+            //await bootstrapper.checkQbtConnection()
+            //let infohash = await bootstrapper.getManifest(data.magnet)
+            //console.log("Manifest downloaded!");
+
+        }catch(err){
+            console.log(`Bootstrap error: ${err}`);
+        }
+
+
+    })
+
 
 
     // Init bootstrapper class
+
 
     // hash = getManifest
     // sourceMagnet = processManifest(hash)
@@ -63,10 +77,10 @@ function bootstrap(socket, data){
 
 }
 
-wsServer.on('connection', (socket)=>{
+wsServer.on('connection', async (socket)=>{
     console.log("Got connection");
 
-    let processMessage = (ev) => {
+    let processMessage = async (ev) => {
         let msg = JSON.parse(ev.data)
         console.log(`Got message from client: ${msg.data}`);
 
@@ -78,11 +92,14 @@ wsServer.on('connection', (socket)=>{
             console.error(`Invalid request: ${msg.command}`)
             return;
         }
-
-        handlers[msg.command](socket, msg.data)
+        try{
+            await handlers[msg.command](socket, msg.data)
+        }catch(err){
+            console.log(err);
+        }
 
 
     }
 
-    socket.onmessage =  processMessage;
+    socket.onmessage = processMessage;
 })
