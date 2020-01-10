@@ -1,0 +1,473 @@
+[[./kostia_2020_01_09_01.png]]
+
+* Requirements
+** Island Core and Apps
+*Islands Core consists of following components:*
+- TOR
+- i2p
+- Redis
+- Node.js
+- Torrent facility
+- Island Software Installer
+- Control Admin Page
+- Application Launcher
+...
+
+*These components are pre-installed and cannot be updated or replaced without full VM update.*
+
+*Core components that are not daemons are mostly libraries (scripts) that can be invoked.*
+
+*Internal coordination is done via Redi*
+
+*Apps can be installed, updated, deleted, downgraded at will, and should no*
+*replicate core functionality*
+*** Chat log:
+
+Anyway, in what I drew ... the stuff on the left hooks to the VM ... manager, vm, Island core, and so on.
+That stuff should _not_ update without a new version of the VM.
+That's where the local web-browser that talks to the VM to get "the control admin page" comes into being.
+That's the page that _can't be updated_ without releasing a new version of the VM.
+
+It has nothing to do with chat, or muck, or file transfer. It MAY be reachable through TOR, but it doesn't _have_ to be.
+It's key use is JUST to get an island going from a fresh install. It's "always there" in the sense that if you go to that address it's there.
+It's not part of the "single page app."
+That is on the Island App side of the world.
+
+Island apps (such as chat) are accessed via TOR Browser and "share" space in the single-page app.
+
+They are distributed in torrents and can be released multiple times a day as needed.
+
+They _must not_ do what the core does. They _ask_ the core to do those things. That's why there's an Admin Island App.
+
+That's a set of "facilities" (whatever name you
+call different views in the single-page app) that
+lets you do the same things as the Control Admin
+Page ... in that _it shows the same data and lets
+you issue the same commands_.
+
+BUT ... it does so in a user-friendly way. It does not have its own torrent
+facility, for instance. It "talks" to the torrent facility that's part of the
+core. But, unlike the Control Admin Page, _it_ can be updated to change fonts,
+or give "batch operations", or to put in controls on who can start/stop what,
+and so on. The Island Core has _facilities_ but is not "upgradable" or "pretty"
+
+Island Apps are pretty, can be upgraded/downgraded, and have the ability to
+delegate authority and all sorts of wonderful whizzy stuff that people like to
+see and interact with. But the apps _do not_ replicate the work of the Core.
+
+They delegate when they're tasked with exposing core features. Now, if somebody
+wants to use their web browser to hit the Control Admin Page ... sure, let it be
+"running." Why not?
+
+That page is always going to look the same, act the same,
+can be book marked, etc. But it can't do chat. It can't hook to the MUCK. It can
+upgrade/downgrade chat, of course ... because it talks to the Application
+Launcher, the Torrent Facility, and the Island Software Installer. But to run
+Chat, you hook up to the single-page app via your vault through TOR.
+
+SERVICES:
+
+Now, I _believe_ that the core can be done with libraries instead of APIs.
+Meaning, the Island Software Installer could be a script that is called with an
+argument that is a zip file.
+The application launcher can be a script called
+with the argument being a directory for the entry script of the app (the one
+that launches the python, node, whatever). The torrent facility is a daemon by
+its nature. As is TOR. But ... if you wanted to make them all "services" that
+works. It means you should really consider redis. It's more complex.
+
+And depending on how smart you get, you could have redis be the ONLY networking
+between the parts ... and TOR goes through a "gateway" that just does TOR <->
+Redis.
+
+And you don't have any websocket or URL stuff anywhere inside any of the Island App at _all_.
+That's not going to be this coming version. But it's not actually that hard and makes some things easier.
+It unifies communications. So adding I2P doesn't change ANY of the Island App code at all.
+
+Ideally, it should be _really_ easy to add a new Island App. The thing's UX should "appear" in the single-page app, alongside the other apps installed. It's persistence should be encrypted through common library, it's crypto needs met by common library, etc.
+
+
+** Vault, crypto
+- Vault is a part of core
+- Crypto is  a part of core
+
+*** Chat log:
+
+The crypto systems are probably in core (as is "the vault" itself).
+The "vault" that we use to launch chats is pretty much part of the chat system.
+But a MU would have sets of keys for each MU object. That's NOT at all the same UX as the chat's topic vault.
+
+So the chat "vault" probably uses a vault facility from core and UX from chat. Which is ... perfect.
+
+Because the core doesn't have any pretty ux. But it _does_ have the foundation bits.
+
+You should recall: I expect adding the _second_ Island App to cause a major re-engineering.
+
+Chat is not Islands.
+
+
+
+** UX
+- A single-page app renders UI of all installed apps
+
+*** Chat log:
+
+A single-page app "for chat" doesn't work. Because it would mean I would need
+another single-page app for the mU. And a third single-page app for file
+transfer.
+
+The idea of the single-page app is to host Islands applications. Including admin.
+
+Because _mobile is too weak_ for multiple pages.
+
+To get mobile, we must have "a platform" that works through a single TOR connection for any number of apps at once.
+
+
+* Conversation log
+
+
+
+
+
+7:47kostia
+So, when we initially start the new island, that brings control admin page, that actually installs the chat app via provided manifest? And Island's owner can install any other apps this way?
+
+Um, steps.
+
+We install a new island.
+
+Manager launches the VM, and starts a proxy so that localhost:8081/control-admin-page.html always works.
+
+They bring up their browser to that page.
+
+I expect that page to do "something" for security. We haven't even discussed it. But, assume that's done.
+7:49kostia
+Sure
+
+They should be able to give magnet links to the torrent facility. They should be able to see what torrents are known (and their percent downloaded or complete). They should be able to see which torrents are Island App versions (metadata in teh torrent file probably).
+
+And they should be able to request an app be installed, which would cause upgrade or downgrade if what they pick already has a version running.
+
+And they should be able to see which island apps are running, and stop and start them.
+
+That's the Island Software Installer (version install/upgrade/downgrade), the Torrent Facility (list of torrents and status), and Application Launcher (start/stop).
+
+There may be other functions.
+
+But, notice what this isn't?
+
+It's not chat.
+
+It's not the vault.
+
+It doesn't have a TOR accessible single-page app.
+
+If someone doesn't like the UX, changing it will take a whole new version of the Manager/VM.
+
+The manager is ONLY needed if there's a VM. If there's no VM, then the browser can hit the control admin page directly just fine (because bare metal has a non-changing fixed IP).
+
+If there IS a VM, the manager app does a PROXY for the browser that's localhost only. In this way, there's a fixed IP address for the bookmark. It's not _needed_, but without it, you'll need some way to find the VM's IP address.
+
+All of this works with ZERO Island App installed.
+
+Now, there should be a MUCH prettier admin app.
+
+That lets you grant permissions to people to start/stop chat, or to bounce your island, etc.
+
+That app does NOT re-write any torrent control stuff, though. It _asks_ the Torrent Facility to do Torrent stuff.
+7:54kostia
+I see.
+
+It doesn't have a TOR accessible single-page app.
+
+If someone doesn't like the UX, changing it will take a whole new version of the Manager/VM.
+
+The manager is ONLY needed if there's a VM. If there's no VM, then the browser can hit the control admin page directly just fine (because bare metal has a non-changing fixed IP).
+
+If there IS a VM, the manager app does a PROXY for the browser that's localhost only. In this way, there's a fixed IP address for the bookmark. It's not _needed_, but without it, you'll need some way to find the VM's IP address.
+
+All of this works with ZERO Island App installed.
+
+Now, there should be a MUCH prettier admin app.
+
+That lets you grant permissions to people to start/stop chat, or to bounce your island, etc.
+
+That app does NOT re-write any torrent control stuff, though. It _asks_ the Torrent Facility to do Torrent stuff.
+7:54kostia
+I see.
+
+If you were to have both the Control Admin Page in your Firefox going, and the TOR Browser running the admin app, and you use the TOR Browser's app to request a new torrent then the Control Admin Page view would show the torrent suddenly appear and start downloading. Though not via something clever like WebSocket. Most likely through a simple meta-refresh every five seconds.
+
+Because the control admin page is NOT an Island app. It's a control page for the Island Core's direct operation control.
+
+It is _most likely_ that once the Admin app is installed, the user will NEVER hit the control admin page again.
+
+However, even if TOR is down, the control admin page is up. So, fetching logs (to find out why TOR is down) or perhaps adding a new ssh key so you could log in to the Island VM itself could be done through the control admin page too.
+
+Right now, in my condo, I've got an Island running.
+
+There's no way for me to let you start hidden guest services. You have to ask me to add a guest if you wanted one.
+
+The control admin page won't solve that.
+
+Because it's local-host only.
+
+You would be insane to "expose" it.
+
+Even if you're running bare metal, you'll want your _firewall_ blocking access to that.
+
+But, in the Island Admin App, we could enable delegation of permission. So I can _grant_ you the right to start/stop guest services YOU created.
+
+The Island App would _delegate_ the actual request to the TOR system.
+
+Actually, the control admin page wouldn't let you do that either. Those services are Chat App services.
+
+So only the chat app's admin can do guest chat users.
+
+We really need to break 'vault' and "chat" apart.
+
+The hidden services are really exposing _vaults_.
+
+They are key storage mechanisms.
+
+But the UX is hooked to chat.
+
+Even if you're running bare metal, you'll want your _firewall_ blocking access to that.
+
+But, in the Island Admin App, we could enable delegation of permission. So I can _grant_ you the right to start/stop guest services YOU created.
+
+The Island App would _delegate_ the actual request to the TOR system.
+
+Actually, the control admin page wouldn't let you do that either. Those services are Chat App services.
+
+So only the chat app's admin can do guest chat users.
+
+We really need to break 'vault' and "chat" apart.
+
+The hidden services are really exposing _vaults_.
+
+They are key storage mechanisms.
+
+But the UX is hooked to chat.
+
+That's not correct. The chat UX should be able to "find" in the vault the chat-specific keys it needs.
+
+We're just not there yet.
+
+So, yeah, vault creation/destruction and hidden service links to vaults, that's stuff that should be possible in the control admin page.
+
+But what's IN those vaults? The pretty views are part of the Island App.
+
+There could be a vault browser/inspector. It would likely be a simple tree.
+
+With branches like chat, file-transfer, muck, admin.
+
+An under each branch a collection of keys/metadata.
+
+The chat's channel selection page uses the vault to find the various keys under chat/.. and that's what drives the view you currently show.
+
+But the core doesn't care ... the core only cares that a vault _file_ is associated with a hidden service onion address.
+
+Zero or more onion addresses.
+
+It doesn't care how the app that services that address works with what's in the vault.
+8:04kostia
+This diagram is super useful!
+
+Hell, this is the unix model. Replace my "Island Core" with "Kernel." Replace my facilities with "drivers baked into the kernel." Replace the launcher with "shell."
+
+And the apps are apps.
+
+When you start Linux, it has a command line.
+
+Only later does the X11 start.
+
+X11 is our "single page apop."
+
+Anyway, think on the diagram. I'm fading. It's late for me.
+
+Zero or more onion addresses.
+
+It doesn't care how the app that services that address works with what's in the vault.
+8:04kostia
+This diagram is super useful!
+
+Hell, this is the unix model. Replace my "Island Core" with "Kernel." Replace my facilities with "drivers baked into the kernel." Replace the launcher with "shell."
+
+And the apps are apps.
+
+When you start Linux, it has a command line.
+
+Only later does the X11 start.
+
+X11 is our "single page apop."
+
+Anyway, think on the diagram. I'm fading. It's late for me.
+8:05kostia
+did I tell you, that I recently switched to Arch linux ?
+
+So I'm off to bed.
+
+No, but ... I'm really glad I'm on OS X.
+8:07kostia
+Sure, I will study the diagram, think of it, compile everything in a design doc an upload it to github. This is extremely useful!
+8:07kostia
+Have a good night!
+
+Don't make a detailed design doc.
+
+Make a list of _what_ should be in the core.
+
+Because everything that ends up "in the core" will come back to hurt us.
+8:08kostia
+I won't, I'll just make a dump of all your messages along with the diagram, think of it, maybe add some questinos
+8:05kostia
+did I tell you, that I recently switched to Arch linux ?
+
+So I'm off to bed.
+
+No, but ... I'm really glad I'm on OS X.
+8:07kostia
+Sure, I will study the diagram, think of it, compile everything in a design doc an upload it to github. This is extremely useful!
+8:07kostia
+Have a good night!
+
+Don't make a detailed design doc.
+
+Make a list of _what_ should be in the core.
+
+Because everything that ends up "in the core" will come back to hurt us.
+8:08kostia
+I won't, I'll just make a dump of all your messages along with the diagram, think of it, maybe add some questinos
+8:09kostia
+yeah, adding vault and hidden service mmanagement to core increases the complexity
+8:09kostia
+maybe make it a "mandatory" app?
+
+There are no mandator apps.
+
+Think of X11.
+8:10kostia
+But it could be a "dependency" app
+
+When you run Linux app to configure your computer ...
+
+That app does NOT do things to the daemons.
+
+It updates configuration files and _restarts_ the daemons.
+
+You do NOT need X11 control panel to run your computer. Ever.
+8:09kostia
+yeah, adding vault and hidden service mmanagement to core increases the complexity
+8:09kostia
+maybe make it a "mandatory" app?
+
+There are no mandator apps.
+
+Think of X11.
+8:10kostia
+But it could be a "dependency" app
+
+When you run Linux app to configure your computer ...
+
+That app does NOT do things to the daemons.
+
+It updates configuration files and _restarts_ the daemons.
+
+You do NOT need X11 control panel to run your computer. Ever.
+
+You don't need X11 at all.
+
+The minute you _force_ X11 ... all hell breaks loose. You have Windows and OS X.
+
+You can't run OS X without the UX.
+8:11kostia
+But you need X11 to run a window manager
+
+You _can't_.
+
+Right. But yuou don't need a window manager to run UNIX.
+
+EVER.
+8:11kostia
+right
+8:11kostia
+So, chat needs vault and chat needs hidden service management. Could they all be apps that chat depends on?
+
+The vault is actually a crypto secure block of storage that contains different blocks.
+
+They aren't apops.
+
+Apps.
+
+The vault isn't an app.
+8:12kostia
+or they must be a part of the core?
+
+It's a storage facility.
+8:12kostia
+ok
+
+Services are a TOR facility. That's part of the core. Because TOR must be part of the core.
+
+But, any "linking" of a vault to a hidden service is probably wrong.
+
+Actually, no, it's right.
+8:13kostia
+Well, technically, anything can issue commands to tor control to launch or take down hidden service
+
+Because the term hidden service is wrong.
+
+There are "island app login services."
+
+Those link to a vault.
+
+Each login service is a "TOR hidden service" that hits the single-page app "thing" that is currently undefined and links to a (single) vault.
+
+That's what it means to "login" to an island, after all. It means "go to the TOR onion that grants me access to my vault. All the apps on the island require the vault for their crypto needs."
+
+The vault isn't a service. It's a storage item. You already have it as a storage item/tool. I don't think we're having a problem with the vault.
+
+The mix-up is that when you hit the hidden service, that actually goes to _chat_ right now. NOT to the single-page app.
+
+Because we don't _have_ the single page app.
+
+But, INSIDE chat, when you create a topic, that _also_ creates a hidden service, right?
+
+THAT hidden service is NOT able to be logged into and provide a single-page app. It's a data thing that carries messages specific to chat.
+8:16kostia
+Well, actually chat 2.0 design is a single page app that can be anything
+
+Right, I think you need to flip that.
+
+Islands 2.0 has a single-page JS app that lets ALL installed Islands apps be access through it.
+
+Including chat.
+
+The single page app is a "container" for the various views of ALL installed Islands apps that the user has access to run.
+8:17kostia
+Yes, I think it is really straight forward with current design, because it can fetch any data and build page components on fly
+
+But there is no "it" in that diagram yet.
+
+Our single-page app is X11.
+
+And Chat is an X11 _app_.
+
+And our core is the Kernel.
+
+We have no Window Manager yet.
+
+Right now, our X11 and Window Manager are "kinda linked."
+
+BOTH of those need to be on the Island App side. NOT in the core.
+
+Or we can't update our UX without a VM/Manager release.
+
+Remember: everything in the core means pain.
+8:20kostia
+I see... Well, core has to be built first anyway
+
+Yes, desperately first. So we can get it installed (and an installer that works with Windows, Mac, and lets David play with bare metal and perhaps EC2).
+
+OUta here.
