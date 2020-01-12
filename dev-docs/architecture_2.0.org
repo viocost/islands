@@ -1,5 +1,10 @@
 [[./kostia_2020_01_09_01.png]]
 
+* Questions
+1. What are environment requirements for apps?  Do we restrict Island apps to node.js?
+
+
+
 * Requirements
 ** Island Core and Apps
 *Islands Core consists of following components:*
@@ -144,13 +149,20 @@ I expect that page to do "something" for security. We haven't even discussed it.
 7:49kostia
 Sure
 
-They should be able to give magnet links to the torrent facility. They should be able to see what torrents are known (and their percent downloaded or complete). They should be able to see which torrents are Island App versions (metadata in teh torrent file probably).
+They should be able to give magnet links to the torrent facility. They should be
+able to see what torrents are known (and their percent downloaded or complete).
+They should be able to see which torrents are Island App versions (metadata in
+teh torrent file probably).
 
 And they should be able to request an app be installed, which would cause upgrade or downgrade if what they pick already has a version running.
 
-And they should be able to see which island apps are running, and stop and start them.
+And they should be able to see which island apps are running, and stop and start
+them.
 
-That's the Island Software Installer (version install/upgrade/downgrade), the Torrent Facility (list of torrents and status), and Application Launcher (start/stop).
+
+That's the Island Software Installer (version install/upgrade/downgrade), the
+Torrent Facility (list of torrents and status), and Application Launcher
+(start/stop).
 
 There may be other functions.
 
@@ -274,7 +286,9 @@ It doesn't care how the app that services that address works with what's in the 
 8:04kostia
 This diagram is super useful!
 
-Hell, this is the unix model. Replace my "Island Core" with "Kernel." Replace my facilities with "drivers baked into the kernel." Replace the launcher with "shell."
+Hell, this is the unix model. Replace my "Island Core" with "Kernel." Replace my
+facilities with "drivers baked into the kernel." Replace the launcher with
+"hell."
 
 And the apps are apps.
 

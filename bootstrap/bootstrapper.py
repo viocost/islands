@@ -16,17 +16,17 @@ class Status(Enum):
 
 class Bootstrapper:
     def __init__(self):
-        self.status = Status.IDLE
-        self.status_string = ""
-        self.error = None
-        alpha = "qweryuiopasdfhghzxcvbnm1234567890"
-        self.token = "".join([alpha[randint(0, len(alpha)-1)] for _ in range(16)])
-        self.qbt = qbittorrentapi.Client(host='localhost:8080', username='admin', password='adminadmin')
         try:
-
+            self.status = Status.IDLE
+            self.status_string = ""
+            self.error = None
+            alpha = "qweryuiopasdfhghzxcvbnm1234567890"
+            self.token = "".join([alpha[randint(0, len(alpha)-1)] for _ in range(16)])
+            self.qbt = qbittorrentapi.Client(host='localhost:8080', username='admin', password='adminadmin')
             self.qbt.auth_log_in()
-        except qbittorrentapi.LoginFailed as e:
+        except (qbittorrentapi.LoginFailed, qbittorrentapi.exceptions.APIConnectionError) as e:
             self.set_error(str(e))
+            print("Bootstrapper initialization failed")
 
 
     def get_status(self):
@@ -52,7 +52,6 @@ class Bootstrapper:
                 save_path = manifest.save_path
                 with open(save_path, "r") as fp:
                     m_data = json.load(fp)
-                     1
 
 
                 # find where it is saved
