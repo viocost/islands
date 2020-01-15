@@ -1,7 +1,6 @@
 #! /bin/bash
 #
 # vbox_full_setup.sh
-# Copyright (C) 2018 kostia <kostia@i.planet-a.ru>
 #
 # Distributed under terms of the MIT license.
 #
@@ -50,6 +49,10 @@ case $key in
     HELP=true
     shift
     ;;
+    -e | --enable-optimizations)
+    OPTIMIZE=true
+    shift
+    ;;
 esac
 done
 
@@ -92,7 +95,7 @@ echo Tor configuration completed. Launching service...
 sleep 1s
 service tor start
 
-echo Installing Node.JS!
+echo Installing Node.JS
 curl -sL https://deb.nodesource.com/setup_13.x | bash -
 apt-get install -y nodejs
 
@@ -110,7 +113,12 @@ wget  https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tar.xz
 tar -xf Python-3.7.3.tar.xz
 
 cd Python-3.7.3
-./configure --enable-optimizations
+if [[ ${OPTIMIZE} ]]; then
+    ./configure --enable-optimizations
+else
+    ./configure
+fi
+
 make
 make install
 update-alternatives --install /usr/bin/python3 python3 /usr/local/bin/python3 10
@@ -125,12 +133,40 @@ python3 get-pip.py
 npm install -g pm2
 pm2 update
 
+# installing redis
+apt install redis-server -y
+
+# qbittorrent-nox install and configure
+apt install qbittorrent-nox -y
+
+echo "[Unit]
+Description=qBittorrent Daemon Service
+Documentation=man:qbittorrent-nox(1)
+Wants=network-online.target
+After=network-online.target nss-lookup.target
+
+[Service]
+# if you have systemd >= 240, you probably want to use Type=exec instead
+Type=simple
+User=qbtuser
+ExecStart=/usr/bin/qbittorrent-nox
+TimeoutStopSec=infinity
+
+[Install]
+WantedBy=multi-user.target
+" > /etc/systemd/system/qbittorrent.service
+
 
 #starting app
 
 # pm2 start /usr/src/app/server/app.js --node-args="--experimental-worker" -- -c /usr/src/app/server/config/configvbox.json
 # pm2 save
 # pm2 startup
+
+
+
+# Services installation and disabling terminals (skipping for now)
+exit 0
 
 echo About to install services.
 sleep 3

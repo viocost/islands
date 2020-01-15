@@ -7,7 +7,7 @@
 # 
 # This script runs on first launch of blank Islands image
 # It detects virtual environment and installs appropriate tools.
-# For virtualbox it installs guest additions, for Vmware - vmware tools
+# For virtualbox it installs guest additions, for Vmware - vmware tools (NOT YET IMPLEMENTED)
 # If any tool appear to be installed - script removes itself from startup and exits
 
 sleep 4s
