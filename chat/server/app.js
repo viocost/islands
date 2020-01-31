@@ -35,7 +35,7 @@ let HOST = '0.0.0.0';
 global.DEBUG = true;
 
 
-let configPath = './config/config.json';
+let configPath = './server/config/config.json';
 let historyPath = "../history/";
 let adminKeysPath = "../keys/";
 let servicePath = "../service/";

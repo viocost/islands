@@ -1,134 +1,25 @@
 [[./kostia_2020_01_09_01.png]]
 
-* Questions
-1. What are environment requirements for apps?  Do we restrict Island apps to node.js?
+
+* Dir structure
 
 
+** base_dir/
+*** core
+**** bin
+**** share
+**** etc
+**** ...
 
-* Requirements
-** Island Core and Apps
-*Islands Core consists of following components:*
-- TOR
-- i2p
-- Redis
-- Node.js
-- Torrent facility
-- Island Software Installer
-- Control Admin Page
-- Application Launcher
-...
+*** apps
+**** chat
+**** red_wall
 
-*These components are pre-installed and cannot be updated or replaced without full VM update.*
+*** islands.conf
+*** islands
 
-*Core components that are not daemons are mostly libraries (scripts) that can be invoked.*
-
-*Internal coordination is done via Redi*
-
-*Apps can be installed, updated, deleted, downgraded at will, and should no*
-*replicate core functionality*
-*** Chat log:
-
-Anyway, in what I drew ... the stuff on the left hooks to the VM ... manager, vm, Island core, and so on.
-That stuff should _not_ update without a new version of the VM.
-That's where the local web-browser that talks to the VM to get "the control admin page" comes into being.
-That's the page that _can't be updated_ without releasing a new version of the VM.
-
-It has nothing to do with chat, or muck, or file transfer. It MAY be reachable through TOR, but it doesn't _have_ to be.
-It's key use is JUST to get an island going from a fresh install. It's "always there" in the sense that if you go to that address it's there.
-It's not part of the "single page app."
-That is on the Island App side of the world.
-
-Island apps (such as chat) are accessed via TOR Browser and "share" space in the single-page app.
-
-They are distributed in torrents and can be released multiple times a day as needed.
-
-They _must not_ do what the core does. They _ask_ the core to do those things. That's why there's an Admin Island App.
-
-That's a set of "facilities" (whatever name you
-call different views in the single-page app) that
-lets you do the same things as the Control Admin
-Page ... in that _it shows the same data and lets
-you issue the same commands_.
-
-BUT ... it does so in a user-friendly way. It does not have its own torrent
-facility, for instance. It "talks" to the torrent facility that's part of the
-core. But, unlike the Control Admin Page, _it_ can be updated to change fonts,
-or give "batch operations", or to put in controls on who can start/stop what,
-and so on. The Island Core has _facilities_ but is not "upgradable" or "pretty"
-
-Island Apps are pretty, can be upgraded/downgraded, and have the ability to
-delegate authority and all sorts of wonderful whizzy stuff that people like to
-see and interact with. But the apps _do not_ replicate the work of the Core.
-
-They delegate when they're tasked with exposing core features. Now, if somebody
-wants to use their web browser to hit the Control Admin Page ... sure, let it be
-"running." Why not?
-
-That page is always going to look the same, act the same,
-can be book marked, etc. But it can't do chat. It can't hook to the MUCK. It can
-upgrade/downgrade chat, of course ... because it talks to the Application
-Launcher, the Torrent Facility, and the Island Software Installer. But to run
-Chat, you hook up to the single-page app via your vault through TOR.
-
-SERVICES:
-
-Now, I _believe_ that the core can be done with libraries instead of APIs.
-Meaning, the Island Software Installer could be a script that is called with an
-argument that is a zip file.
-The application launcher can be a script called
-with the argument being a directory for the entry script of the app (the one
-that launches the python, node, whatever). The torrent facility is a daemon by
-its nature. As is TOR. But ... if you wanted to make them all "services" that
-works. It means you should really consider redis. It's more complex.
-
-And depending on how smart you get, you could have redis be the ONLY networking
-between the parts ... and TOR goes through a "gateway" that just does TOR <->
-Redis.
-
-And you don't have any websocket or URL stuff anywhere inside any of the Island App at _all_.
-That's not going to be this coming version. But it's not actually that hard and makes some things easier.
-It unifies communications. So adding I2P doesn't change ANY of the Island App code at all.
-
-Ideally, it should be _really_ easy to add a new Island App. The thing's UX should "appear" in the single-page app, alongside the other apps installed. It's persistence should be encrypted through common library, it's crypto needs met by common library, etc.
-
-
-** Vault, crypto
-- Vault is a part of core
-- Crypto is  a part of core
-
-*** Chat log:
-
-The crypto systems are probably in core (as is "the vault" itself).
-The "vault" that we use to launch chats is pretty much part of the chat system.
-But a MU would have sets of keys for each MU object. That's NOT at all the same UX as the chat's topic vault.
-
-So the chat "vault" probably uses a vault facility from core and UX from chat. Which is ... perfect.
-
-Because the core doesn't have any pretty ux. But it _does_ have the foundation bits.
-
-You should recall: I expect adding the _second_ Island App to cause a major re-engineering.
-
-Chat is not Islands.
-
-
-
-** UX
-- A single-page app renders UI of all installed apps
-
-*** Chat log:
-
-A single-page app "for chat" doesn't work. Because it would mean I would need
-another single-page app for the mU. And a third single-page app for file
-transfer.
-
-The idea of the single-page app is to host Islands applications. Including admin.
-
-Because _mobile is too weak_ for multiple pages.
-
-To get mobile, we must have "a platform" that works through a single TOR connection for any number of apps at once.
-
-
-* Conversation log
+* Depricated
+** Conversation log
 
 
 

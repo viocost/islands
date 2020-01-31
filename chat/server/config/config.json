@@ -1,19 +1,19 @@
 {
-  "historyPath": "/islandsData/history/",
-  "updatePath": "/islandsData/update/",
-  "adminKeyPath": "/islandsData/keys/",
-  "vaultsPath": "/islandsData/vaults/",
-  "servicePath": "/islandsData/service/",
-  "hsVaultMap": "/islandsData/hsmap/",
-  "hiddenServicesPath": "/islandsData/hs/",
-  "basePath": "/islandsData/",
+  "historyPath": "/home/kostia/islandsData/history/",
+  "updatePath": "/home/kostia/islandsData/update/",
+  "adminKeyPath": "/home/kostia/islandsData/keys/",
+  "vaultsPath": "/home/kostia/islandsData/vaults/",
+  "servicePath": "/home/kostia/islandsData/service/",
+  "hsVaultMap": "/home/kostia/islandsData/hsmap/",
+  "hiddenServicesPath": "/home/kostia/islandsData/hs/",
+  "basePath": "/home/kostia/islandsData/",
   "torConnector" :{
     "hiddenServiceHOST": "127.0.0.1",
     "hiddenServicePORT": 4003,
     "torListenerPort": 80,
     "torControlHost": "127.0.0.1",
     "torControlPort": 9051,
-    "torControlPassword" : "TheP@$sw0rd"
+    "torControlPassword" : ""
   },
   "vaultIdLength": 64
 }
