@@ -7,6 +7,12 @@
 ** base_dir/
 *** core
 **** bin
+tor
+python
+redis
+pip
+npm
+...
 **** share
 **** etc
 **** ...
@@ -18,6 +24,159 @@
 *** islands.conf
 *** islands
 
+** Conversation log
+8:20kostia
+yes
+Brian -- Otter8:21
+Ie: cd ~/islandsData1/ ; ~/git/islands/release/launch.sh
+8:21kostia
+you mean launch island?
+Brian -- Otter8:22
+And when the Application Launcher launches chat, it would be _as if_ it did this: cd chat ; PATHTOISLANDS/apps/chat/entry.sh
+Brian -- Otter8:22
+Yes, I mean launch island.
+Brian -- Otter8:22
+This is why the launch script must setup the path for the binaries (including PYTHONPATH etc.)
+8:22kostia
+Yes, the script would go over config, check daemons, check all the installed apps
+Brian -- Otter8:23
+And why the Application Launcher _inside_ of Islands (in the core) that starts things like chat needs to _start them_ in the chat directory.
+Brian -- Otter8:23
+That 'script' is probably a node application that actually keeps all the program alive, and NONE of them running in daemon mode.
+Brian -- Otter8:23
+For instance, the tor executable. You don't want it going daemon.
+Brian -- Otter8:23
+You want it running "under" the Island entry program.
+8:23kostia
+huh?
+Brian -- Otter8:24
+Hmm.
+8:24kostia
+Tor not daemon?
+Brian -- Otter8:24
+Do NOT run any of those binaries as daemons.
+8:22kostia
+Yes, the script would go over config, check daemons, check all the installed apps
+Brian -- Otter8:23
+And why the Application Launcher _inside_ of Islands (in the core) that starts things like chat needs to _start them_ in the chat directory.
+Brian -- Otter8:23
+That 'script' is probably a node application that actually keeps all the program alive, and NONE of them running in daemon mode.
+Brian -- Otter8:23
+For instance, the tor executable. You don't want it going daemon.
+Brian -- Otter8:23
+You want it running "under" the Island entry program.
+8:23kostia
+huh?
+Brian -- Otter8:24
+Hmm.
+8:24kostia
+Tor not daemon?
+Brian -- Otter8:24
+Do NOT run any of those binaries as daemons.
+8:24kostia
+what about redis
+Brian -- Otter8:24
+All of them have switches to run as daemons or not. You do NOT want them running as daemons.
+Brian -- Otter8:24
+Not even redis. None of them.
+8:24kostia
+it is a daemon
+Brian -- Otter8:24
+It _can_ be a daemon. You don't want that.
+8:24kostia
+oh, good note
+Brian -- Otter8:25
+# By default Redis does not run as a daemon. Use 'yes' if you need it. # Note that Redis will write a pid file in /var/run/redis.pid when daemonized. daemonize yes
+Brian -- Otter8:25
+You don't want it as a daemon because ...
+Brian -- Otter8:25
+You want the node to run a _child proces_ for ech of them.
+Brian -- Otter8:26
+That means when they spit something out their stdout or stderr it goes into node.
+Brian -- Otter8:26
+So you can log it.
+8:25kostia
+and node will be the only daemon?
+Brian -- Otter8:26
+Further, if they _exit_ then you get notified that it exits.
+Brian -- Otter8:26
+Node is not a daemon either.
+Brian -- Otter8:26
+Not by default.
+8:26kostia
+I mean that node program that manages them?
+8:26kostia
+also not a daemon?
+Brian -- Otter8:26
+Remember how I said "let the icon call a bat file that launches an ugly cmd.exe window that closes when it exits?"
+Brian -- Otter8:26
+Right. NOT a daemon.
+Brian -- Otter8:26
+We can _allow_ it to go daemon, since some people will want that.
+8:26kostia
+ok
+Brian -- Otter8:27
+But it is NOT required to go daemon.
+Brian -- Otter8:27
+This is really important.
+Brian -- Otter8:27
+It is shockingly hard to test/interact with a daemon.
+Brian -- Otter8:27
+But it's easy to do so with a program that you invoke and it gives you a prompt that you can type commands into if you want.
+Brian -- Otter8:27
+Including EOF to exit...and then it stops all its children and exits.
+Brian -- Otter8:27
+No daemons.
+Brian -- Otter8:28
+Then you make THAT take a flag (like --daemon) and you can test easily but STILL add it to rc3.d if you want.
+Brian -- Otter8:28
+Or to Windows as a service. Or to Mac as a service.
+8:27kostia
+I need ti wrap my head around it:)
+Brian -- Otter8:28
+But the "key" is that you should be able to just invoke it and it runs _tying up_ that shell.
+Brian -- Otter8:28
+And it invokes things like redis, tor, etc., by running them as "child proceses" that detect when the child exits.
+8:28kostia
+so, you want to launch chat, what do you do? you hit the script that starts all the daemons, then your island is up, then you go to chat. After chatting you exit, all services are stopped?
+Brian -- Otter8:29
+So if tor or redis crash, the node says "Oh, weird, it crashed. If I am not shutting down, I better restart it."
+Brian -- Otter8:29
+Islands runs how many apps?
+Brian -- Otter8:29
+At once?
+Brian -- Otter8:29
+Islands is a pure server, right?
+Brian -- Otter8:29
+So you run Islands.
+8:29kostia
+all of them?
+Brian -- Otter8:29
+Any configured app is launched _as a child process_ in paralle.
+Brian -- Otter8:29
+Of ocures.
+Brian -- Otter8:29
+IF you don't launch chat, how can it be there collecting inbound messages until you connect your TOR browser?
+Brian -- Otter8:30
+Every app runs all the time.
+Brian -- Otter8:30
+The "apps" are the server-side. They also have JS _client side_ that is in the single-page app.
+Brian -- Otter8:31
+When islands is started, it starts all the "apps" and then it waits until someone tells it to shutdown. It's the _apps_ that actually cause Islands to do stuff.
+8:32kostia
+What if you want your island to be up all the time?
+Brian -- Otter8:32
+An interesting thing to write first ... a node library that lets you _launch_ an application, route its standard out to the screen (and its standard error to the screen) and to a file as well. And lets you type into the node app, and sends that into the running programs stdin.
+Brian -- Otter8:32
+Then you have your boot launch it as a daemon.
+Brian -- Otter8:33
+Hence the need for --daemon
+Brian -- Otter8:33
+But that's NOT how you want to debug it, is it?
+8:33kostia
+absolutely
+Brian -- Otter8:33
+Also, once you have that node library, you should be able to keep as MANY apps running as you want, not just one.
 * Depricated
 ** Conversation log
 
