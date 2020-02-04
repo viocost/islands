@@ -4,7 +4,7 @@
 
 USAGE="
 USAGE:
-./linux-build.sh -p _BUILD_DIR_PATH_ [OPTIONS]
+./linux-build.sh -p _BUILD_DICORE_PATH_ [OPTIONS]
 
 OPTIONS:
 
@@ -51,7 +51,7 @@ while [[ $# -gt 0 ]]; do
     case $key in
 
         -p|--path)
-            R_PATH=$(readlink -f "$2")
+            BUILD_PATH=$(readlink -f "$2")
             shift
             shift
             ;;
@@ -76,12 +76,28 @@ while [[ $# -gt 0 ]]; do
 done
 
 
-echo Path is $R_PATH
 
-if [[ ! -d $R_PATH ]]; then
-    echo "Build directory not found"
-    exit 1
+if [[ ! -d $BUILD_PATH ]]; then
+    echo Build directory does not exist. Creating
+    if ! mkdir $BUILD_PATH; then
+        echo "Unable to create build directory"
+        exit 1
+    fi
 fi
+
+CORE_PATH="${BUILD_PATH}/core"
+
+if [[ ! -d  $CORE_PATH ]]; then
+    if ! mkdir $CORE_PATH; then
+        echo "Unable to create core path."
+        exit 1
+    fi
+fi
+
+
+cd $BUILD_PATH
+echo Path is $CORE_PATH
+
 
 if [[ -n $COMPONENTS ]]; then
     echo $COMPONENTS
@@ -92,7 +108,7 @@ function install_nodejs(){
     wget https://nodejs.org/dist/v12.14.1/node-v12.14.1-linux-x64.tar.xz
     tar -xvf node-v12.14.1-linux-x64.tar.xz
     cd  node-v12.14.1-linux-x64
-    cp -r * $R_PATH
+    cp -r * $CORE_PATH
     cd ../
     echo Node js installation finished
 }
@@ -101,10 +117,13 @@ function install_python(){
     wget "https://www.python.org/ftp/python/3.7.6/Python-3.7.6.tar.xz"
     tar -xvf Python-3.7.6.tar.xz
     cd Python-3.7.6
-    ./configure --prefix=$R_PATH
+    ./configure --prefix=$CORE_PATH
     make -j 12 && make install
-    cd ../
-    echo Python installation finished
+    echo Python installation finished. Creating virtual environment
+    if [[ -d  ./islands-pyenv ]]; then
+        rm -rf ./islands-pyenv/*
+    fi
+    ${CORE_PATH}/bin/python3 -m venv  ${CORE_PATH}/islands-pyenv
 
 }
 
@@ -113,7 +132,7 @@ function install_redis(){
     tar -xvf redis-5.0.7.tar.gz
     cd redis-5.0.7
     make -j 12
-    make PREFIX=$R_PATH install
+    make PREFIX=$CORE_PATH install
     cd ../
     echo Redis install finished
 }
@@ -123,7 +142,7 @@ function install_tor(){
     wget "https://dist.torproject.org/tor-0.4.2.6.tar.gz"
     tar -xvf tor-0.4.2.6.tar.gz
     cd tor-0.4.2.6
-    ./configure --prefix=$R_PATH
+    ./configure --prefix=$CORE_PATH
     make -j 12&& make install
     cd ../
     echo Tor installation completed
@@ -140,4 +159,4 @@ if [[ $COMPONENTS == *"r"* ]]; then install_redis; fi
 if [[ $COMPONENTS == *"i"* ]]; then install_i2p; fi
 
 # cleanup
-rm -rf redis* tor* node* Python*
+rm -rf ${BUILD_PATH}/redis* ${BUILD_PATH}/tor* ${BUILD_PATH}/node* ${BUILD_PATH}/Python*
