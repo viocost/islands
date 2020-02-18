@@ -4,6 +4,7 @@
 * Dir structure
 
 
+
 ** base_dir/
 *** core
 **** bin
@@ -177,6 +178,30 @@ But that's NOT how you want to debug it, is it?
 absolutely
 Brian -- Otter8:33
 Also, once you have that node library, you should be able to keep as MANY apps running as you want, not just one.
+
+* App structure
+App should consist of main script,  manifest and optional configuration file.
+
+** Manifest structure
+Manifest must be in JSON format
+{
+    "ManifestVersion": "1.0.0",
+    "AppVersion": "1.0.0",
+    "Interpriter": "node",  // can be node or python or none if it is standalone binary
+    "Publisher": "<some public key hash>",
+    "PublicKey": "some public key",
+    "Signature": "signature",
+    "Entry": "/path/to/entry"
+    "Config": "/path/to/config"
+    "Services": [
+        "tor",
+        "redis",
+        ...
+    ]
+
+
+}
+
 * Depricated
 ** Conversation log
 

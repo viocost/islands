@@ -32,11 +32,11 @@ Please enter number 1-5 and press Enter
 clear
 
 
-echo "${TITLE}"
-echo "${STATS}"
-echo "${MENU}"
+echo -e "${TITLE}"
+echo -e "${STATS}"
+echo -e "${MENU}"
 
 
 while read in; do
-    echo $in
+    echo -e $in
 done

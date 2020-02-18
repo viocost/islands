@@ -2,6 +2,21 @@
 #
 #
 
+# Default config
+CONFIG="
+
+[Tor]
+TorSOCKSPort=15140
+TorControlPort=15141
+TorExitPolicy=reject *:*
+TorPassword=${TORPASSWD}
+TorPassHash=${TORPASSWDHASH}
+    p - python
+
+
+[i2p]
+"
+
 USAGE="
 USAGE:
 ./linux-build.sh -p _BUILD_DICORE_PATH_ [OPTIONS]
@@ -18,13 +33,12 @@ OPTIONS:
 -c, --components
     Components to install:
     t - tor
-    r - redis
     n - node
     p - python
     i - i2p
 
-    Ex.:node-c nrt
-    Python in installing only node.js, redis and tor
+    Ex.:node -c nrt
+    The script will install only node.js, redis and tor
     Order does not matter
 
 -h, --help
@@ -44,7 +58,9 @@ WORKERS=1
 # i - i2p
 #
 #By default all will be installed
-COMPONENTS="trnpi"
+COMPONENTS="tnpi"
+
+INSTALLER_PATH=$(pwd)
 
 while [[ $# -gt 0 ]]; do
     key="$1"
@@ -125,16 +141,15 @@ function install_python(){
     fi
     ${CORE_PATH}/bin/python3 -m venv  ${CORE_PATH}/islands-pyenv
 
-}
+    echo Activating python venv
+    source ${CORE_PATH}/islands-pyenv/bin/activate
+    echo installing python libraries
+    pip install stem
 
-function install_redis(){
-    wget "http://download.redis.io/releases/redis-5.0.7.tar.gz"
-    tar -xvf redis-5.0.7.tar.gz
-    cd redis-5.0.7
-    make -j 12
-    make PREFIX=$CORE_PATH install
-    cd ../
-    echo Redis install finished
+    echo deactivating
+    diactivate
+    echo all set
+
 }
 
 
@@ -150,13 +165,42 @@ function install_tor(){
 
 function install_i2p(){
     echo installing i2p
+    if [[ ! -d $CORE_PATH/bin ]]; then
+        mkdir $CORE_PATH/bin
+    fi
+
+    cp $INSTALLER_PATH/pre-compiled/i2p/i2pd  $CORE_PATH/bin
+    echo i2p installed
 }
+
+# Installing core services
+function install_services(){
+    if [[ ! -d ${CORE_PATH}/services ]]; then
+        mkdir ${CORE_PATH}/services
+    fi
+
+    # Copying core services
+    cp -r ./services/* ${CORE_PATH}/services
+
+    # Copying driver script
+    cp ./drivers/linux.sh ${BUILD_PATH}/island.sh
+    chmod +x ${BUILD_PATH}/island.sh
+
+}
+
+
+
+
 
 if [[ $COMPONENTS == *"p"* ]]; then install_python; fi
 if [[ $COMPONENTS == *"n"* ]]; then install_nodejs; fi
 if [[ $COMPONENTS == *"t"* ]]; then install_tor; fi
-if [[ $COMPONENTS == *"r"* ]]; then install_redis; fi
 if [[ $COMPONENTS == *"i"* ]]; then install_i2p; fi
+
+
 
 # cleanup
 rm -rf ${BUILD_PATH}/redis* ${BUILD_PATH}/tor* ${BUILD_PATH}/node* ${BUILD_PATH}/Python*
+
+# copy service files
+cd $INSTALLER_PATH && install_services &&  ./genconf.sh -p ${BUILD_PATH} -t ${CORE_PATH}/bin/tor
