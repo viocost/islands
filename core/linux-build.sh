@@ -110,6 +110,17 @@ if [[ ! -d  $CORE_PATH ]]; then
     fi
 fi
 
+DEP_PATH="${BUILD_PATH}/dep"
+
+
+if [[ ! -d  $DEP_PATH ]]; then
+    if ! mkdir $DEP_PATH; then
+        echo "Unable to create core path."
+        exit 1
+    fi
+fi
+
+
 
 cd $BUILD_PATH
 echo Path is $CORE_PATH
@@ -152,13 +163,56 @@ function install_python(){
 
 }
 
+# TOR dependencies
+
+function zlib(){
+    wget -O -  "https://zlib.net/zlib-1.2.11.tar.gz" | tar zxvf -
+    cd zlib-1.2.11
+    ./configure --prefix="${DEP_PATH}"
+    make -j$(nproc)
+    make install
+    cd ..
+
+}
+
+function libevent(){
+    wget -O - "https://github.com/libevent/libevent/releases/download/release-2.1.11-stable/libevent-2.1.11-stable.tar.gz" | tar zxvf -
+    cd libevent-2.1.11-stable
+    ./configure --prefix="${DEP_PATH}" \
+            --disable-shared \
+            --enable-static \
+            --with-pic
+    make -j $(nproc)
+    make install
+    cd ..
+
+}
+
+function libssl(){
+    ~/sandboxwget -O - "https://www.openssl.org/source/old/1.0.2/openssl-1.0.2.tar.gz" | tar zxvf -
+    cd openssl-1.0.2
+    ./config --prefix="${DEP_PATH}" no-shared no-dso
+    make -j $(nproc)
+    make install
+    cd ..
+}
+
+
 
 function install_tor(){
+    libevent
+    libssl
+    zlib
+
     wget "https://dist.torproject.org/tor-0.4.2.6.tar.gz"
     tar -xvf tor-0.4.2.6.tar.gz
     cd tor-0.4.2.6
-    ./configure --prefix=$CORE_PATH
-    make -j 12&& make install
+    ./configure --prefix=${CORE_PATH} \
+            --enable-static-tor \
+            --with-libevent-dir="${DEP_PATH}/lib" \
+            --with-openssl-dir="${DEP_PATH}/lib" \
+            --with-zlib-dir="${DEP_PATH}/lib"
+    make -j $(nproc) && make install
     cd ../
     echo Tor installation completed
 }
@@ -200,7 +254,7 @@ if [[ $COMPONENTS == *"i"* ]]; then install_i2p; fi
 
 
 # cleanup
-rm -rf ${BUILD_PATH}/redis* ${BUILD_PATH}/tor* ${BUILD_PATH}/node* ${BUILD_PATH}/Python*
+#rm -rf  ${BUILD_PATH}/tor* ${BUILD_PATH}/node* ${BUILD_PATH}/Python*
 
 # copy service files
 cd $INSTALLER_PATH && install_services &&  ./genconf.sh -p ${BUILD_PATH} -t ${CORE_PATH}/bin/tor
