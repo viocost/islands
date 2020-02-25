@@ -46,7 +46,9 @@ OPTIONS:
 "
 
 # To make up for lack of proper readlink
-alias lsf='function _lsf(){ (cd $(dirname "$1") && echo $(pwd)/$(basename "$1")) };_lsf'
+function lsf(){
+    (cd $(dirname "$1") && echo $(pwd)/$(basename "$1"))
+}
 
 # Number of cores default
 # Will be used during the compilation
