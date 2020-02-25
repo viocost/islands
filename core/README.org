@@ -1,1 +1,24 @@
 #+TITLE Building core
+
+Core package contains all necessary scripts for building islands core
+
+To make a core release run linux-build.sh on Linux, mac-build.sh on MacOS and
+win-build.bat on Windows. Provide release dir as -p option. That will
+automatically build all binaries and copy all scripts to the release dir.
+Once release dir is built - the islands are ready to use, copy or distribute.
+
+* Islands core structure for linux and macos
+** BASE_DIR
+*** core            - contains set of core binaries and dependencies
+**** bin             - binaries
+**** lib             - libraries
+**** share
+**** etc             - Core config
+*** scripts
+*** apps            - islands apps
+**** chat
+**** file_transfer_
+**** ...
+*** islands.sh      - launcher
+*** version         - core version
+*** signature       - core signature

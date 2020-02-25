@@ -52,7 +52,6 @@ WORKERS=1
 
 # Components to build and install
 # t - tor
-# r - redis
 # n - node
 # p - python
 # i - i2p
@@ -67,7 +66,7 @@ while [[ $# -gt 0 ]]; do
     case $key in
 
         -p|--path)
-            BUILD_PATH=$(readlink -f "$2")
+            BASE_PATH=$(readlink -f "$2")
             shift
             shift
             ;;
@@ -93,6 +92,17 @@ done
 
 
 
+
+if [[ ! -d $BASE_PATH ]]; then
+    echo Build directory does not exist. Creating
+    if ! mkdir $BASE_PATH; then
+        echo "Unable to create build directory"
+        exit 1
+    fi
+fi
+
+BUILD_PATH=${BASE_PATH}/linux
+
 if [[ ! -d $BUILD_PATH ]]; then
     echo Build directory does not exist. Creating
     if ! mkdir $BUILD_PATH; then
@@ -101,7 +111,9 @@ if [[ ! -d $BUILD_PATH ]]; then
     fi
 fi
 
+
 CORE_PATH="${BUILD_PATH}/core"
+LIB_PATH="${CORE_PATH}/lib"
 
 if [[ ! -d  $CORE_PATH ]]; then
     if ! mkdir $CORE_PATH; then
@@ -110,15 +122,6 @@ if [[ ! -d  $CORE_PATH ]]; then
     fi
 fi
 
-DEP_PATH="${BUILD_PATH}/dep"
-
-
-if [[ ! -d  $DEP_PATH ]]; then
-    if ! mkdir $DEP_PATH; then
-        echo "Unable to create core path."
-        exit 1
-    fi
-fi
 
 
 
@@ -145,7 +148,7 @@ function install_python(){
     tar -xvf Python-3.7.6.tar.xz
     cd Python-3.7.6
     ./configure --prefix=$CORE_PATH
-    make -j 12 && make install
+    make -j $(nproc) && make install
     echo Python installation finished. Creating virtual environment
     if [[ -d  ./islands-pyenv ]]; then
         rm -rf ./islands-pyenv/*
@@ -156,9 +159,6 @@ function install_python(){
     source ${CORE_PATH}/islands-pyenv/bin/activate
     echo installing python libraries
     pip install stem
-
-    echo deactivating
-    diactivate
     echo all set
 
 }
@@ -168,7 +168,7 @@ function install_python(){
 function zlib(){
     wget -O -  "https://zlib.net/zlib-1.2.11.tar.gz" | tar zxvf -
     cd zlib-1.2.11
-    ./configure --prefix="${DEP_PATH}"
+    ./configure --prefix="${CORE_PATH}"
     make -j$(nproc)
     make install
     cd ..
@@ -178,10 +178,7 @@ function zlib(){
 function libevent(){
     wget -O - "https://github.com/libevent/libevent/releases/download/release-2.1.11-stable/libevent-2.1.11-stable.tar.gz" | tar zxvf -
     cd libevent-2.1.11-stable
-    ./configure --prefix="${DEP_PATH}" \
-            --disable-shared \
-            --enable-static \
-            --with-pic
+    ./configure --prefix="${CORE_PATH}"
     make -j $(nproc)
     make install
     cd ..
@@ -189,15 +186,24 @@ function libevent(){
 }
 
 function libssl(){
-    ~/sandboxwget -O - "https://www.openssl.org/source/old/1.0.2/openssl-1.0.2.tar.gz" | tar zxvf -
-    cd openssl-1.0.2
-    ./config --prefix="${DEP_PATH}" no-shared no-dso
+    wget -O - "https://www.openssl.org/source/openssl-1.1.1d.tar.gz" | tar zxvf -
+    cd openssl-1.1.1d
+    ./config --prefix="${CORE_PATH}"
     make -j $(nproc)
     make install
     cd ..
 }
 
 
+function getall_mac(){
+
+    wget -O -  "https://zlib.net/zlib-1.2.11.tar.gz" | tar zxvf -
+    wget -O - "https://github.com/libevent/libevent/releases/download/release-2.1.11-stable/libevent-2.1.11-stable.tar.gz" | tar zxvf -
+    wget -O - "https://www.openssl.org/source/openssl-1.1.1d.tar.gz" | tar zxvf -
+    wget -O - "https://dist.torproject.org/tor-0.4.2.6.tar.gz" | tar zxvf -
+
+
+}
 
 function install_tor(){
     libevent
@@ -208,10 +214,9 @@ function install_tor(){
     tar -xvf tor-0.4.2.6.tar.gz
     cd tor-0.4.2.6
     ./configure --prefix=${CORE_PATH} \
-            --enable-static-tor \
-            --with-libevent-dir="${DEP_PATH}/lib" \
-            --with-openssl-dir="${DEP_PATH}/lib" \
-            --with-zlib-dir="${DEP_PATH}/lib"
+            --with-libevent-dir="${LIB_PATH}" \
+            --with-openssl-dir="${LIB_PATH}" \
+            --with-zlib-dir="${LIB_PATH}"
     make -j $(nproc) && make install
     cd ../
     echo Tor installation completed
@@ -222,7 +227,6 @@ function install_i2p(){
     if [[ ! -d $CORE_PATH/bin ]]; then
         mkdir $CORE_PATH/bin
     fi
-
     cp $INSTALLER_PATH/pre-compiled/i2p/i2pd  $CORE_PATH/bin
     echo i2p installed
 }
@@ -257,4 +261,4 @@ if [[ $COMPONENTS == *"i"* ]]; then install_i2p; fi
 #rm -rf  ${BUILD_PATH}/tor* ${BUILD_PATH}/node* ${BUILD_PATH}/Python*
 
 # copy service files
-cd $INSTALLER_PATH && install_services &&  ./genconf.sh -p ${BUILD_PATH} -t ${CORE_PATH}/bin/tor
+#cd $INSTALLER_PATH && install_services &&  ./genconf.sh -p ${BUILD_PATH} -t ${CORE_PATH}/bin/tor
