@@ -141,7 +141,7 @@ fi
 
 function install_nodejs(){
     echo "Downloading node.js..."
-    curl -O https://nodejs.org/dist/v12.16.1/node-v12.16.1-darwin-x64.tar.gz
+    curl -L -O https://nodejs.org/dist/v12.16.1/node-v12.16.1-darwin-x64.tar.gz
     tar -xvf node-v12.16.1-darwin-x64.tar.gz
     cd  node-v12.14.1-linux-x64
     cp -r * $CORE_PATH
@@ -150,7 +150,7 @@ function install_nodejs(){
 }
 
 function install_python(){
-    curl -O "https://www.python.org/ftp/python/3.7.6/Python-3.7.6.tar.xz"
+    curl -L -O "https://www.python.org/ftp/python/3.7.6/Python-3.7.6.tar.xz"
     tar -xvf Python-3.7.6.tar.xz
     cd Python-3.7.6
     ./configure --prefix=$CORE_PATH
@@ -173,7 +173,7 @@ function install_python(){
 # TOR dependencies
 
 function zlib(){
-    curl  "https://zlib.net/zlib-1.2.11.tar.gz" | tar zxvf -
+    curl -L  "https://zlib.net/zlib-1.2.11.tar.gz" | tar zxvf -
     cd zlib-1.2.11
     ./configure --prefix="${CORE_PATH}"
     make -j$(sysctl -n hw.ncpu)
@@ -183,7 +183,7 @@ function zlib(){
 }
 
 function libevent(){
-    curl "https://github.com/libevent/libevent/releases/download/release-2.1.11-stable/libevent-2.1.11-stable.tar.gz" | tar zxvf -
+    curl -L "https://github.com/libevent/libevent/releases/download/release-2.1.11-stable/libevent-2.1.11-stable.tar.gz" | tar zxvf -
     cd libevent-2.1.11-stable
     ./configure --prefix="${CORE_PATH}"
     make -j $(sysctl -n hw.ncpu)
@@ -193,7 +193,7 @@ function libevent(){
 }
 
 function libssl(){
-    curl "https://www.openssl.org/source/openssl-1.1.1d.tar.gz" | tar zxvf -
+    curl -L "https://www.openssl.org/source/openssl-1.1.1d.tar.gz" | tar zxvf -
     cd openssl-1.1.1d
     ./config --prefix="${CORE_PATH}"
     make -j $(sysctl -n hw.ncpu)
@@ -204,10 +204,10 @@ function libssl(){
 
 function getall_mac(){
 
-    curl  "https://zlib.net/zlib-1.2.11.tar.gz" | tar zxvf -
-    curl "https://github.com/libevent/libevent/releases/download/release-2.1.11-stable/libevent-2.1.11-stable.tar.gz" | tar zxvf -
-    curl "https://www.openssl.org/source/openssl-1.1.1d.tar.gz" | tar zxvf -
-    curl "https://dist.torproject.org/tor-0.4.2.6.tar.gz" | tar zxvf -
+    curl -L  "https://zlib.net/zlib-1.2.11.tar.gz" | tar zxvf -
+    curl -L "https://github.com/libevent/libevent/releases/download/release-2.1.11-stable/libevent-2.1.11-stable.tar.gz" | tar zxvf -
+    curl -L "https://www.openssl.org/source/openssl-1.1.1d.tar.gz" | tar zxvf -
+    curl -L "https://dist.torproject.org/tor-0.4.2.6.tar.gz" | tar zxvf -
 
 
 }
@@ -217,7 +217,7 @@ function install_tor(){
     libssl
     zlib
 
-    curl -O "https://dist.torproject.org/tor-0.4.2.6.tar.gz"
+    curl -L -O "https://dist.torproject.org/tor-0.4.2.6.tar.gz"
     tar -xvf tor-0.4.2.6.tar.gz
     cd tor-0.4.2.6
     ./configure --prefix=${CORE_PATH} \
