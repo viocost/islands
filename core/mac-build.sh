@@ -45,6 +45,9 @@ OPTIONS:
     Print this message
 "
 
+# To make up for lack of proper readlink
+alias lsf='function _lsf(){ (cd $(dirname "$1") && echo $(pwd)/$(basename "$1")) };_lsf'
+
 # Number of cores default
 # Will be used during the compilation
 WORKERS=1
@@ -66,7 +69,7 @@ while [[ $# -gt 0 ]]; do
     case $key in
 
         -p|--path)
-            BASE_PATH=$(readlink -f "$2")
+            BASE_PATH=$(lsf "$2")
             shift
             shift
             ;;
@@ -149,7 +152,7 @@ function install_python(){
     tar -xvf Python-3.7.6.tar.xz
     cd Python-3.7.6
     ./configure --prefix=$CORE_PATH
-    make -j $(nproc) && make install
+    make -j $(sysctl -n hw.ncpu) && make install
     echo Python installation finished. Creating virtual environment
     if [[ -d  ./islands-pyenv ]]; then
         rm -rf ./islands-pyenv/*
@@ -171,7 +174,7 @@ function zlib(){
     curl  "https://zlib.net/zlib-1.2.11.tar.gz" | tar zxvf -
     cd zlib-1.2.11
     ./configure --prefix="${CORE_PATH}"
-    make -j$(nproc)
+    make -j$(sysctl -n hw.ncpu)
     make install
     cd ../
 
@@ -181,7 +184,7 @@ function libevent(){
     curl "https://github.com/libevent/libevent/releases/download/release-2.1.11-stable/libevent-2.1.11-stable.tar.gz" | tar zxvf -
     cd libevent-2.1.11-stable
     ./configure --prefix="${CORE_PATH}"
-    make -j $(nproc)
+    make -j $(sysctl -n hw.ncpu)
     make install
     cd ..
 
@@ -191,7 +194,7 @@ function libssl(){
     curl "https://www.openssl.org/source/openssl-1.1.1d.tar.gz" | tar zxvf -
     cd openssl-1.1.1d
     ./config --prefix="${CORE_PATH}"
-    make -j $(nproc)
+    make -j $(sysctl -n hw.ncpu)
     make install
     cd ..
 }
@@ -219,7 +222,7 @@ function install_tor(){
             --with-libevent-dir="${LIB_PATH}" \
             --with-openssl-dir="${LIB_PATH}" \
             --with-zlib-dir="${LIB_PATH}"
-    make -j $(nproc) && make install
+    make -j $(sysctl -n hw.ncpu) && make install
     cd ../
     echo Tor installation completed
 }
