@@ -143,7 +143,7 @@ function install_nodejs(){
     echo "Downloading node.js..."
     curl -L -O https://nodejs.org/dist/v12.16.1/node-v12.16.1-darwin-x64.tar.gz
     tar -xvf node-v12.16.1-darwin-x64.tar.gz
-    cd  node-v12.14.1-linux-x64
+    cd  node-v12.16.1-darwin-x64
     cp -r * $CORE_PATH
     cd ../
     echo Node js installation finished
