@@ -19,7 +19,7 @@ TorPassHash=${TORPASSWDHASH}
 
 USAGE="
 USAGE:
-./linux-build.sh -p _BUILD_DICORE_PATH_ [OPTIONS]
+./linux-build.sh -p _BUILD_DIBUILD_PATH_ [OPTIONS]
 
 OPTIONS:
 
@@ -101,7 +101,8 @@ if [[ ! -d $BASE_PATH ]]; then
     fi
 fi
 
-BUILD_PATH=${BASE_PATH}/linux
+BUILD_PATH=${BASE_PATH}/islands
+CORE_PATH=${BUILD_PATH}/linux
 
 if [[ ! -d $BUILD_PATH ]]; then
     echo Build directory does not exist. Creating
@@ -112,21 +113,21 @@ if [[ ! -d $BUILD_PATH ]]; then
 fi
 
 
-CORE_PATH="${BUILD_PATH}/core"
-LIB_PATH="${CORE_PATH}/lib"
-
-if [[ ! -d  $CORE_PATH ]]; then
+if [[ ! -d $CORE_PATH ]]; then
+    echo Build directory does not exist. Creating
     if ! mkdir $CORE_PATH; then
-        echo "Unable to create core path."
+        echo "Unable to create build directory"
         exit 1
     fi
 fi
 
 
+LIB_PATH="${CORE_PATH}/lib"
+
 
 
 cd $BUILD_PATH
-echo Path is $CORE_PATH
+echo Path is $BUILD_PATH
 
 
 if [[ -n $COMPONENTS ]]; then
@@ -159,6 +160,7 @@ function install_python(){
     source ${CORE_PATH}/islands-pyenv/bin/activate
     echo installing python libraries
     pip install stem
+    cd ../
     echo all set
 
 }
@@ -171,7 +173,7 @@ function zlib(){
     ./configure --prefix="${CORE_PATH}"
     make -j$(nproc)
     make install
-    cd ..
+    cd ../
 
 }
 
@@ -224,27 +226,27 @@ function install_tor(){
 
 function install_i2p(){
     echo installing i2p
-    if [[ ! -d $CORE_PATH/bin ]]; then
-        mkdir $CORE_PATH/bin
-    fi
-    cp $INSTALLER_PATH/pre-compiled/i2p/i2pd  $CORE_PATH/bin
+    # if [[ ! -d $BUILD_PATH/bin ]]; then
+    #    mkdir $BUILD_PATH/bin
+    # fi
+    #cp $INSTALLER_PATH/pre-compiled/i2p/i2pd  $BUILD_PATH/bin
     echo i2p installed
 }
 
 # Installing core services
-function install_services(){
-    if [[ ! -d ${CORE_PATH}/services ]]; then
-        mkdir ${CORE_PATH}/services
-    fi
+#function install_services(){
+    #if [[ ! -d ${BUILD_PATH}/services ]]; then
+    #    mkdir ${BUILD_PATH}/services
+    #fi
+#
+    ## Copying core services
+    #cp -r ./services/* ${BUILD_PATH}/services
+#
+    ## Copying driver script
+    #cp ./drivers/linux.sh ${BUILD_PATH}/island.sh
+    #chmod +x ${BUILD_PATH}/island.sh
 
-    # Copying core services
-    cp -r ./services/* ${CORE_PATH}/services
-
-    # Copying driver script
-    cp ./drivers/linux.sh ${BUILD_PATH}/island.sh
-    chmod +x ${BUILD_PATH}/island.sh
-
-}
+#}
 
 
 
@@ -258,7 +260,7 @@ if [[ $COMPONENTS == *"i"* ]]; then install_i2p; fi
 
 
 # cleanup
-#rm -rf  ${BUILD_PATH}/tor* ${BUILD_PATH}/node* ${BUILD_PATH}/Python*
+rm -rf  ${BUILD_PATH}/tor* ${BUILD_PATH}/zlib* ${BUILD_PATH}/openssl* ${BUILD_PATH}/libevent* ${BUILD_PATH}/node* ${BUILD_PATH}/Python*
 
 # copy service files
-#cd $INSTALLER_PATH && install_services &&  ./genconf.sh -p ${BUILD_PATH} -t ${CORE_PATH}/bin/tor
+#cd $INSTALLER_PATH && install_services &&  ./genconf.sh -p ${BUILD_PATH} -t ${BUILD_PATH}/bin/tor

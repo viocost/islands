@@ -9,16 +9,33 @@ Once release dir is built - the islands are ready to use, copy or distribute.
 
 * Islands core structure for linux and macos
 ** BASE_DIR
+
 *** core            - contains set of core binaries and dependencies
-**** bin             - binaries
-**** lib             - libraries
-**** share
-**** etc             - Core config
+**** mac
+***** bin             - binaries
+***** lib             - libraries
+***** share
+***** etc             - Core config
+***** version         - Versions.json
+
+**** linux
+***** bin             - binaries
+***** lib             - libraries
+***** share
+***** etc             - Core config
+***** version         - Versions.json
+**** windows
+***** bin             - binaries
+***** lib             - libraries
+***** share
+***** etc             - Core config
+***** version         - Versions.json
 *** scripts
 *** apps            - islands apps
 **** chat
 **** file_transfer_
 **** ...
+*** data            - islands data directory
 *** islands.sh      - launcher
 *** version         - core version
 *** signature       - core signature
