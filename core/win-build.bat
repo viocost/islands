@@ -70,6 +70,8 @@ if not exist !win64_path! (
     mkdir !win64_path!
 )
 
+rem =================== MAIN INSTALL FUNCTIONS CALLS
+
 cd !build_path!
 echo installing node
 call :install_node
@@ -77,9 +79,14 @@ call :install_node
 echo installing python
 call :install_python
 
+echo installing tor
+call :install_tor
+
 cd !installer_path!
 
 exit /b %ERRORLEVEL%
+
+rem =================== END MAIN INSTALL FUNCTIONS CALLS
 
 :install_python
   SETLOCAL
@@ -96,8 +103,8 @@ exit /b %ERRORLEVEL%
 
   mkdir !python32_path! !python64_path!
 
-  curl -O "https://www.python.org/ftp/python/3.7.6/python-3.7.6-embed-win32.zip" 
-  curl -O "https://www.python.org/ftp/python/3.7.6/python-3.7.6-embed-amd64.zip"
+  curl -L -O "https://www.python.org/ftp/python/3.7.6/python-3.7.6-embed-win32.zip" 
+  curl -L -O "https://www.python.org/ftp/python/3.7.6/python-3.7.6-embed-amd64.zip"
   7z x python-3.7.6-embed-win32.zip -O%python32_path%
   7z x python-3.7.6-embed-amd64.zip -O%python64_path%
 
@@ -125,8 +132,8 @@ EXIT /B 0
 
   rem mkdir !nodejs32_path! !nodejs64_path!
 
-  curl -O  "https://nodejs.org/dist/v12.16.1/node-v12.16.1-win-x86.zip"  
-  curl -O  "https://nodejs.org/dist/v12.16.1/node-v12.16.1-win-x64.zip"
+  curl -L -O  "https://nodejs.org/dist/v12.16.1/node-v12.16.1-win-x86.zip"  
+  curl -L -O  "https://nodejs.org/dist/v12.16.1/node-v12.16.1-win-x64.zip"
 
   7z x node-v12.16.1-win-x86.zip 
   move node-v12.16.1-win-x86 !nodejs32_path!
@@ -159,20 +166,22 @@ EXIT /B 0
 
   rem mkdir !tor32_path! !tor64_path!
 
-  curl -O "https://www.torproject.org/dist/torbrowser/9.0.5/tor-win32-0.4.2.6.zip"
-  curl -O "https://www.torproject.org/dist/torbrowser/9.0.5/tor-win64-0.4.2.6.zip" 
+  curl -L -O "https://www.torproject.org/dist/torbrowser/9.0.5/tor-win32-0.4.2.6.zip"
+  curl -L -O "https://www.torproject.org/dist/torbrowser/9.0.5/tor-win64-0.4.2.6.zip" 
 
     
 
   7z x  tor-win32-0.4.2.6.zip  
-  rem move node-v12.16.1-win-x86 !tor32_path!
+  move Tor !tor32_path!
+  rd Data /Q /S
 
   7z x  tor-win64-0.4.2.6.zip  
-  rem move node-v12.16.1-win-x64 !tor64_path!
+  move Tor !tor64_path!
+  rd Data /Q /S
 
   rem Cleanup
-  rem del /F /Q node-v12.16.1-win-x86.zip  
-  rem del /F /Q node-v12.16.1-win-x64.zip  
+  del /F /Q tor-win32-0.4.2.6.zip
+  del /F /Q tor-win64-0.4.2.6.zip
 
   ENDLOCAL
 EXIT /B 0
