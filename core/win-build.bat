@@ -71,7 +71,108 @@ if not exist !win64_path! (
 )
 
 cd !build_path!
-curl -O "https://www.python.org/ftp/python/3.7.6/python-3.7.6-embed-win32.zip" 
+echo installing node
+call :install_node
 
+echo installing python
+call :install_python
 
 cd !installer_path!
+
+exit /b %ERRORLEVEL%
+
+:install_python
+  SETLOCAL
+  set python32_path=!win32_path!\python
+  set python64_path=!win64_path!\python
+
+  if exist !python32_path! (
+      rd /S /Q  !python32_path!
+  )
+  
+  if  exist !python64_path! (
+      rd /S /Q !python64_path!
+  )
+
+  mkdir !python32_path! !python64_path!
+
+  curl -O "https://www.python.org/ftp/python/3.7.6/python-3.7.6-embed-win32.zip" 
+  curl -O "https://www.python.org/ftp/python/3.7.6/python-3.7.6-embed-amd64.zip"
+  7z x python-3.7.6-embed-win32.zip -O%python32_path%
+  7z x python-3.7.6-embed-amd64.zip -O%python64_path%
+
+  rem Cleanup
+  del /F /Q python-3.7.6-embed-win32.zip 
+  del /F /Q python-3.7.6-embed-amd64.zip 
+
+  ENDLOCAL
+
+EXIT /B 0
+
+:install_node
+
+  SETLOCAL
+  set nodejs32_path=!win32_path!\node
+  set nodejs64_path=!win64_path!\node
+
+  if exist !nodejs32_path! (
+      rd /S /Q  !nodejs32_path!
+  )
+  
+  if  exist !nodejs64_path! (
+      rd /S /Q !nodejs64_path!
+  )
+
+  rem mkdir !nodejs32_path! !nodejs64_path!
+
+  curl -O  "https://nodejs.org/dist/v12.16.1/node-v12.16.1-win-x86.zip"  
+  curl -O  "https://nodejs.org/dist/v12.16.1/node-v12.16.1-win-x64.zip"
+
+  7z x node-v12.16.1-win-x86.zip 
+  move node-v12.16.1-win-x86 !nodejs32_path!
+
+  7z x node-v12.16.1-win-x64.zip 
+  move node-v12.16.1-win-x64 !nodejs64_path!
+
+  rem Cleanup
+  del /F /Q node-v12.16.1-win-x86.zip  
+  del /F /Q node-v12.16.1-win-x64.zip  
+
+  ENDLOCAL
+EXIT /B 0
+
+
+
+:install_tor
+
+  SETLOCAL
+  set tor32_path=!win32_path!\tor
+  set tor64_path=!win64_path!\tor
+
+  if exist !tor32_path! (
+      rd /S /Q  !tor32_path!
+  )
+  
+  if  exist !tor64_path! (
+      rd /S /Q !tor64_path!
+  )
+
+  rem mkdir !tor32_path! !tor64_path!
+
+  curl -O "https://www.torproject.org/dist/torbrowser/9.0.5/tor-win32-0.4.2.6.zip"
+  curl -O "https://www.torproject.org/dist/torbrowser/9.0.5/tor-win64-0.4.2.6.zip" 
+
+    
+
+  7z x  tor-win32-0.4.2.6.zip  
+  rem move node-v12.16.1-win-x86 !tor32_path!
+
+  7z x  tor-win64-0.4.2.6.zip  
+  rem move node-v12.16.1-win-x64 !tor64_path!
+
+  rem Cleanup
+  rem del /F /Q node-v12.16.1-win-x86.zip  
+  rem del /F /Q node-v12.16.1-win-x64.zip  
+
+  ENDLOCAL
+EXIT /B 0
