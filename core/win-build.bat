@@ -82,6 +82,10 @@ call :install_python
 echo installing tor
 call :install_tor
 
+echo packing binaries...
+cd !build_path!
+7z a windows.zip -r win32 win64 -tzip
+
 cd !installer_path!
 
 exit /b %ERRORLEVEL%
@@ -136,9 +140,11 @@ EXIT /B 0
   curl -L -O  "https://nodejs.org/dist/v12.16.1/node-v12.16.1-win-x64.zip"
 
   7z x node-v12.16.1-win-x86.zip 
+  timeout 1
   move node-v12.16.1-win-x86 !nodejs32_path!
 
   7z x node-v12.16.1-win-x64.zip 
+  timeout 1
   move node-v12.16.1-win-x64 !nodejs64_path!
 
   rem Cleanup
@@ -172,10 +178,12 @@ EXIT /B 0
     
 
   7z x  tor-win32-0.4.2.6.zip  
+  timeout 1
   move Tor !tor32_path!
   rd Data /Q /S
 
   7z x  tor-win64-0.4.2.6.zip  
+  timeout 1
   move Tor !tor64_path!
   rd Data /Q /S
 
