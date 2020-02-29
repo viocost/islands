@@ -15,12 +15,7 @@ Things to organize
    - Sign verify scripts
 
 
-   
-
-
-
 ** base_dir/
-
 *** core
 **** win32
 ***** tor
@@ -59,8 +54,11 @@ npm
 **** chat
 **** red_wall
 
+*** data
 *** islands.conf
-*** islands
+*** linux-run.sh
+*** windows-run.bat
+*** mac-run.sh
 
 ** Conversation log
 8:20kostia

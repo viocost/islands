@@ -28,6 +28,10 @@ OPTIONS:
 
 INSTALLER_PATH=$(pwd)
 
+MAC_ARCHIVE="mac.zip"
+WINDOWS_ARCHIVE="windows.zip"
+LINUX_ARCHIVE="linux.zip"
+
 # Parse  args
 
 while [[ $# -gt 0 ]]; do
@@ -66,31 +70,71 @@ done
 
 
 # Create directory tree
+#
 
-if [[ ! -d $BASE_PATH ]]; then
-    echo Build directory does not exist. Creating
-    if ! mkdir $BASE_PATH; then
-        echo "Unable to create build directory"
-        exit 1
+function make_dir(){
+    # $1 - full path to new directory
+    if [[ ! -d $1 ]]; then
+        if ! mkdir $1; then
+            echo "Unable to create new directory: ${1}"
+            echo "Exiting..."
+            exit 1
+        fi
     fi
-fi
+}
 
+
+function prepare_core_bin(){
+    # this function copies or downloads archive with binaries to the core path
+    # unpacks and removes it
+    # It assumes that archive contains directories with core binaries for specific os
+    #
+    # Args:
+    # $1 - path or url to archive
+    # $2 - archive name
+
+   
+
+    cd ${CORE_PATH}
+
+    if [[ -f ${1} ]]; then
+        cp ${1} ${CORE_PATH}
+    else
+        if ! wget ${1}; then
+            echo "Failed to download mac core files. Exiting..."
+            exit 1
+        fi
+    fi
+
+    unzip ${2}
+    rm ${2}
+}
+
+# Create directory tree
 BUILD_PATH=${BASE_PATH}/islands
+CORE_PATH=${BUILD_PATH}/core
+DATA_PATH=${BUILD_PATH}/data
+APPS_PATH=${BUILD_PATH}/apps
 
-if [[ ! -d $BUILD_PATH ]]; then
-    echo Build directory does not exist. Creating
-    if ! mkdir $BUILD_PATH; then
-        echo "Unable to create build directory"
-        exit 1
-    fi
-fi
+make_dir $BASE_PATH
+make_dir $BUILD_PATH
+make_dir $CORE_PATH
+make_dir $DATA_PATH
+make_dir $APPS_PATH
 
-
-#
 # Fetch all binaries into the build dir
-#
-# unzip binaries
-#
+prepare_core_bin ${MAC} ${MAC_ARCHIVE}
+prepare_core_bin ${LINUX} ${LINUX_ARCHIVE}
+prepare_core_bin ${WINDOWS} ${WINDOWS_ARCHIVE}
+
+
+
+
+
 # copy driver scripts
 #
-# copy apps
+# generate default config
+#
+# copy apps and core scripts
+#
+# cleanup
