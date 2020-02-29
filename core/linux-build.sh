@@ -19,7 +19,7 @@ TorPassHash=${TORPASSWDHASH}
 
 USAGE="
 USAGE:
-./linux-build.sh -p _BUILD_DIBUILD_PATH_ [OPTIONS]
+./linux-build.sh -p BUILD_PATH_ [OPTIONS]
 
 OPTIONS:
 

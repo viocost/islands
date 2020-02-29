@@ -3,20 +3,57 @@
 
 * Dir structure
 
+Things to organize
+1. binaries
+2. apps
+3. data
+4. launchers
+5. configuration
+6. service scripts
+   - Driver node.js script
+   - App installer script
+   - Sign verify scripts
+
+
+   
+
 
 
 ** base_dir/
+
 *** core
-**** bin
+**** win32
+***** tor
+***** node
+***** python
+**** win64
+***** tor
+***** node
+***** python
+**** linux
+***** bin
 tor
 python
 redis
 pip
 npm
 ...
-**** share
-**** etc
-**** ...
+***** share
+***** etc
+***** ...
+
+**** mac
+
+***** bin
+tor
+python
+redis
+pip
+npm
+...
+***** share
+***** etc
+***** ...
 
 *** apps
 **** chat
