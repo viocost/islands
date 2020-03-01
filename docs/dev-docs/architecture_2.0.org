@@ -55,7 +55,10 @@ npm
 **** red_wall
 
 *** data
-*** islands.conf
+*** config
+- torrc
+- islands.conf
+- ...
 *** linux-run.sh
 *** windows-run.bat
 *** mac-run.sh
