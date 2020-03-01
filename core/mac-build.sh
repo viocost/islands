@@ -269,3 +269,9 @@ rm -rf  ${BUILD_PATH}/tor* ${BUILD_PATH}/zlib* ${BUILD_PATH}/openssl* ${BUILD_PA
 
 # copy service files
 #cd $INSTALLER_PATH && install_services &&  ./genconf.sh -p ${BUILD_PATH} -t ${BUILD_PATH}/bin/tor
+
+cd $CORE_PATH
+
+zip -r mac.zip ./mac
+
+cd $INSTALLER_PATH

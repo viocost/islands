@@ -262,5 +262,8 @@ if [[ $COMPONENTS == *"i"* ]]; then install_i2p; fi
 # cleanup
 rm -rf  ${BUILD_PATH}/tor* ${BUILD_PATH}/zlib* ${BUILD_PATH}/openssl* ${BUILD_PATH}/libevent* ${BUILD_PATH}/node* ${BUILD_PATH}/Python*
 
+cd ${CORE}
+
+zip -r linux.zip ./linux
 # copy service files
 #cd $INSTALLER_PATH && install_services &&  ./genconf.sh -p ${BUILD_PATH} -t ${BUILD_PATH}/bin/tor
