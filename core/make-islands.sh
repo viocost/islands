@@ -128,8 +128,8 @@ prepare_core_bin ${LINUX} ${LINUX_ARCHIVE}
 prepare_core_bin ${WINDOWS} ${WINDOWS_ARCHIVE}
 
 
-
-
+echo Copying drivers
+cp ${INSTALLER_PATH}/drivers/* ${BUILD_PATH}
 
 
 # copy driver scripts

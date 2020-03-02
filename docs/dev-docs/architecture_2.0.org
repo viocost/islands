@@ -51,6 +51,7 @@ npm
 ***** ...
 
 *** apps
+**** engine
 **** chat
 **** red_wall
 
