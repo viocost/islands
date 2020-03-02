@@ -1,7 +1,6 @@
 #!/bin/bash
 
-BASE_DIR=$(pwd)
+BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-echo Starting island
-
-${BASE_DIR}/core/bin/node ${BASE_DIR}/core/services/island.js ${BASE_DIR}/island.conf
+echo Starting island.
+echo Base dir is ${BASE_DIR}
