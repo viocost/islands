@@ -1,5 +1,5 @@
-import { CoreUnit } from "CoreUnit";
-import { spawn } from "child_process"
+const  CoreUnit = require("./CoreUnit.js");
+const  spawn = require("child_process").spawn
 const readline = require("readline")
 const fs = require("fs")
 const path = require("path")
@@ -7,7 +7,18 @@ const path = require("path")
 const binPath = path.join(__dirname, "..", "bin")
 console.log(`Bin path: ${binPath}`);
 
+
 // Checking environment variables
+const envVariables = ['NODEJS', 'NPM', 'PYTHON', 'PIP', 'TOR', 'ISLANDS_DATA', 'APPS', 'ISLANDS_CONF', 'TORIFY'];
+
+for (let env of envVariables){
+    if (!process.env.hasOwnProperty(env)){
+        console.log(`Missing environment variable ${env}`)
+        process.exit(1);
+    }
+}
+
+
 // if not present
 // try to look for them
 //    if unsuccessful

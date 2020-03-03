@@ -1,7 +1,8 @@
 
-export class CoreUnit{
+class CoreUnit{
     constructor(binPath, confPath){
         console.log("Launching core unit: " + binPath)
+
         this.binPath = binPath
         this.confPath = confPath
         this.restartTimeout = 0;
@@ -32,3 +33,6 @@ export class CoreUnit{
         this.process.kill("SIGTERM")
     }
 }
+
+
+module.exports = CoreUnit;
