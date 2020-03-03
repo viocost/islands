@@ -1,4 +1,3 @@
-// This is a main core driver script
 import { CoreUnit } from "CoreUnit";
 import { spawn } from "child_process"
 const readline = require("readline")
@@ -8,6 +7,11 @@ const path = require("path")
 const binPath = path.join(__dirname, "..", "bin")
 console.log(`Bin path: ${binPath}`);
 
+// Checking environment variables
+// if not present
+// try to look for them
+//    if unsuccessful
+//       die
 
 // Assuming that core binaries provided with environment variables
 if (!fs.existsSync(path.join(binPath, "tor")) ||
