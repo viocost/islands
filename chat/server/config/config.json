@@ -1,19 +1,9 @@
 {
-  "historyPath": "/home/kostia/islandsData/history/",
-  "updatePath": "/home/kostia/islandsData/update/",
-  "adminKeyPath": "/home/kostia/islandsData/keys/",
-  "vaultsPath": "/home/kostia/islandsData/vaults/",
-  "servicePath": "/home/kostia/islandsData/service/",
-  "hsVaultMap": "/home/kostia/islandsData/hsmap/",
-  "hiddenServicesPath": "/home/kostia/islandsData/hs/",
-  "basePath": "/home/kostia/islandsData/",
-  "torConnector" :{
-    "hiddenServiceHOST": "127.0.0.1",
-    "hiddenServicePORT": 4003,
-    "torListenerPort": 80,
-    "torControlHost": "127.0.0.1",
-    "torControlPort": 9051,
-    "torControlPassword" : ""
-  },
+  "BASE_PATH": "./islandsData",
+  "TOR_PASSWD": "",
+  "TOR_CONTROL_PORT": 15141,
+  "TOR_CONTROL_HOST": "127.0.0.1",
+  "TOR_PORT": 15140,
+  "TOR_HOST": "127.0.0.1",
   "vaultIdLength": 64
 }

@@ -1,8 +1,12 @@
 const  CoreUnit = require("./CoreUnit.js");
-const  spawn = require("child_process").spawn
-const readline = require("readline")
-const fs = require("fs")
-const path = require("path")
+const readline = require("readline");
+const fs = require("fs");
+const path = require("path");
+const CuteSet = require("./CuteSet.js")
+const { platform } = require("os");
+const { readdirSync } = require("fs");
+
+
 
 const binPath = path.join(__dirname, "..", "bin")
 console.log(`Bin path: ${binPath}`);
@@ -10,44 +14,40 @@ console.log(`Bin path: ${binPath}`);
 
 // Checking environment variables
 const envVariables = ['NODEJS', 'NPM', 'PYTHON', 'PIP', 'TOR', 'ISLANDS_DATA', 'APPS', 'ISLANDS_CONF', 'TORIFY'];
+const osEnv = {
+    "darvin": ['DYLD_LIBRARY_PATH'],
+    "linux": ['LD_LIBRARY_PATH'],
+    "win32": []
+}
 
-for (let env of envVariables){
+
+
+for (let env of envVariables.concat(osEnv[platform()])){
     if (!process.env.hasOwnProperty(env)){
         console.log(`Missing environment variable ${env}`)
         process.exit(1);
     }
 }
 
-
-// if not present
-// try to look for them
-//    if unsuccessful
-//       die
-
-// Assuming that core binaries provided with environment variables
-if (!fs.existsSync(path.join(binPath, "tor")) ||
-    !fs.existsSync(path.join(binPath, "node")) ||
-    !fs.existsSync(path.join(binPath, "python3")) ||
-    !fs.existsSync(path.join(binPath, "npm"))
-   ){
-    console.log("Core binares not found.")
-    process.exit(1)
-}
-
-
 console.log("Launching tor...")
+
+//Generate torrc
+// Set tor env variables
+// launch tor
 
 const tor = new CoreUnit(path.join(binPath, "tor"))
 tor.launch();
 
-console.log("Done.");
+console.log("Done. Launching apps.");
 
-console.log("Launching i2p...")
-const i2p = new CoreUnit(path.join(binPath, "i2pd"))
-i2p.launch();
+const coreApps = new CuteSet(["engine"])
+const appDirs = new CuteSet(readdirSync(process.env["APPS"]).filter((app)=>{
+    return !coreApps.has(app);
+}))
 
-console.log("Done.");
-
+for (let app of appDirs){
+    console.log(`Starting ${app}`);
+}
 
 const rl = readline.createInterface({
     input: process.stdin,
@@ -87,20 +87,3 @@ rl.on('line', (line)=>{
     console.log("closing");
 })
 
-
-// ---------------------------------------------------------------------------------------------------------------------------
-// Util
-
-function getLimitedLengthArray(length){
-    let arr = new Array();
-
-    arr.push = function(){
-        if (this.length >= length){
-            this.shift();
-        }
-        return Array.prototype.push.apply(this, arguments);
-
-    }
-
-    return arr;
-}

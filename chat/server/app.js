@@ -29,10 +29,10 @@ try{
 app.use(fileUpload());
 
 
-let PORT = 4000;
+let PORT = 15140;
 let HOST = '0.0.0.0';
 
-global.DEBUG = true;
+global.DEBUG = false;
 
 
 let configPath = './server/config/config.json';
@@ -42,19 +42,64 @@ let servicePath = "../service/";
 let logger;
 
 process.argv.forEach((val, index, array)=>{
-    if (val === "-p"){
-        PORT = process.argv[index+1];
-    } else if(val === "-h"){
-        HOST = process.argv[index+1];
-    } else if (val === "-c") {
-        configPath = process.argv[index+1];
-    } else if (val === "-k"){
-        adminKeysPath = process.argv[index+1];
+    switch(val){
+        case "-p":
+            PORT = process.argv[index+1];
+            break;
+        case "-h":
+            HOST = process.argv[index+1];
+            break;
+        case "-k":
+            adminKeysPath = process.argv[index+1];
+            break
+        case "--debug":
+            global.DEBUG = true;
+            break
     }
 });
 
 
-let config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+let configFile = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+
+function verifyGetConfigParameter(param, configFile){
+    if(process.env[param]){
+        return process.env[param]
+    } else if (!global.DEBUG || !configFile[param]){
+        console.error(`Required parameter ${param} has not been provided. Note that production mode requires paramters to be passed via environment variables. \nExiting...`)
+        process.exit(1)
+    } else {
+        return configFile[param]
+    }
+}
+
+//Building configuration
+const basePath = verifyGetConfigParameter("ISLANDS_DATA");
+const torPassword = verifyGetConfigParameter("TOR_PASSWD");
+const torControlPort = verifyGetConfigParameter("TOR_CONTROL_PORT");
+const torControlHost = verifyGetConfigParameter("TOR_CONTROL_HOST");
+const torHost = verifyGetConfigParameter("TOR_HOST");
+const torPort = verifyGetConfigParameter("TOR_PORT");
+
+const config = {
+    "historyPath":        path.join(basePath, "history"),
+    "updatePath":         path.join(basePath, "update"),
+    "adminKeyPath":       path.join(basePath, "keys"),
+    "vaultsPath":         path.join(basePath, "vaults"),
+    "servicePath":        path.join(basePath, "service"),
+    "hsVaultMap":         path.join(basePath, "hsmap"),
+    "hiddenServicesPath": path.join(basePath, "hs"),
+    "basePath":           basePath,
+    "vaultIdLength":      64,
+    "torConnector": {
+        "hiddenServiceHOST":torHost,
+        "hiddenServicePORT": torPort,
+        "torListenerPort": 80,
+        "torControlHost": torControlHost,
+        "torControlPort": torControlPort,
+        "torControlPassword" : torPassword
+    }
+}
+
 
 Logger.initLogger(config.servicePath, "debug");
 let helloMsg = "!!=====ISLANDS v." + VERSION + " =====!!"

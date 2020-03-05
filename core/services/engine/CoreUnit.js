@@ -1,10 +1,16 @@
+const { spawn, exec }  = require("child_process");
 
+/**
+ * This class provides simple process management functionality
+ * such as start, stop, restart, handle crash, get output etc.
+ *
+ * @param cmd - command to start a process
+ */
 class CoreUnit{
-    constructor(binPath, confPath){
+    constructor(cmd){
         console.log("Launching core unit: " + binPath)
 
-        this.binPath = binPath
-        this.confPath = confPath
+        this.cmd = cmd
         this.restartTimeout = 0;
         this.crashes = getLimitedLengthArray(10);
         this.process = null //  process handle
@@ -13,7 +19,7 @@ class CoreUnit{
 
     launch(){
         let self = this;
-        this.process = spawn(this.binPath)
+        this.process = exec(this.cmd)
         let handler = ()=>{
                 setTimeout(()=>{
                     if (self.killing) return;
@@ -34,5 +40,23 @@ class CoreUnit{
     }
 }
 
+
+
+// ---------------------------------------------------------------------------------------------------------------------------
+// Util
+
+function getLimitedLengthArray(length){
+    let arr = new Array();
+
+    arr.push = function(){
+        if (this.length >= length){
+            this.shift();
+        }
+        return Array.prototype.push.apply(this, arguments);
+
+    }
+
+    return arr;
+}
 
 module.exports = CoreUnit;

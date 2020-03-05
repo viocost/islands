@@ -8,6 +8,7 @@ export PYTHON=${BASE}/core/linux/bin/python3
 export PIP=${BASE}/core/linux/bin/pip3
 export TOR=${BASE}/core/linux/bin/tor
 export TORIFY=${BASE}/core/linux/bin/torify
+export LD_LIBRARY_PATH=${BASE}/core/linux/lib
 
 # Data dir
 export ISLANDS_DATA=${BASE}/data
@@ -16,7 +17,7 @@ export ISLANDS_DATA=${BASE}/data
 export APPS=${BASE}/apps
 
 # Config file
-export ISLANDS_CONF=${base}
+export ISLANDS_CONF=${base}/config.json
 
 echo Starting up island...
 ${NODEJS} ${APPS}/engine/engine.js
