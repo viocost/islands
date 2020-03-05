@@ -15,4 +15,4 @@ fi
 cp ${BASE}/drivers/* ${1}
 cp -r ${BASE}/services/engine ${1}/apps
 
-${BASE}/config-gen/generate.py -p $1
+${BASE}/config-gen/generate.py -p ${1}/config

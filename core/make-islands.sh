@@ -115,12 +115,14 @@ BUILD_PATH=${BASE_PATH}/islands
 CORE_PATH=${BUILD_PATH}/core
 DATA_PATH=${BUILD_PATH}/data
 APPS_PATH=${BUILD_PATH}/apps
+CONFIG_PATH=${BUILD_PATH}/config
 
 make_dir $BASE_PATH
 make_dir $BUILD_PATH
 make_dir $CORE_PATH
 make_dir $DATA_PATH
 make_dir $APPS_PATH
+make_dir $CONFIG_PATH
 
 # Fetch all binaries into the build dir
 prepare_core_bin ${MAC} ${MAC_ARCHIVE}

@@ -23,14 +23,14 @@ def main(*args, **kwargs):
         sys.exit(1)
 
 
-    with open(os.path.join(args.dest_path, "config.json"), "w") as fp:
+    with open(os.path.join(args.dest_path, "island_conf.json"), "w") as fp:
         json.dump({
             "tor": {
                 "torSOCKSPort": 15140,
                 "torControlPort": 15141,
                 "torExitPolicy": "reject *:*",
             },
-            "data": "default"
+            "data": ""
         }, fp, indent=4)
 
     print("Config written successfully")

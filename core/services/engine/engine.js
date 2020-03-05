@@ -13,7 +13,7 @@ console.log(`Bin path: ${binPath}`);
 
 
 // Checking environment variables
-const envVariables = ['NODEJS', 'NPM', 'PYTHON', 'PIP', 'TOR', 'ISLANDS_DATA', 'APPS', 'ISLANDS_CONF', 'TORIFY'];
+const envVariables = ['NODEJS', 'NPM', 'PYTHON', 'PIP', 'TOR', 'TOR_PASSWD', 'TOR_PASSWD_HASH', 'ISLANDS_DATA', 'APPS', 'CONFIG', 'TORIFY'];
 const osEnv = {
     "darvin": ['DYLD_LIBRARY_PATH'],
     "linux": ['LD_LIBRARY_PATH'],
@@ -29,9 +29,29 @@ for (let env of envVariables.concat(osEnv[platform()])){
     }
 }
 
+//Parse islands config
+const config = JSON.parse(fs.readFileSync(path.join(process.env["CONFIG"], "island_conf.json"))
+if (!config.tor ||
+    !config.tor.torControlPort ||
+    !config.tor.torExitPolicy  ||
+    !config.tor.torSOCKSPort){
+        console.log(`Missing required tor parameter in config.`)
+        process.exit(1);
+}
+
+let torConfig = `
+ControlPort ${config.tor.torControlPort}\n
+HashedControlPassword ${process.env["TOR_PASSWD_HASH"]}\n
+ExitPolicy ${config.tor.torExitPolicy}\n
+`
+let torrcPath = path.join(process.env['CONFIG'], "torrc");
+fs.writeFileSync(torrcPath, torConfig);
+
 console.log("Launching tor...")
 
 //Generate torrc
+
+
 // Set tor env variables
 // launch tor
 
