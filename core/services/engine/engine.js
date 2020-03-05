@@ -13,7 +13,7 @@ console.log(`Bin path: ${binPath}`);
 
 
 // Checking environment variables
-const envVariables = ['NODEJS', 'NPM', 'PYTHON', 'PIP', 'TOR', 'TOR_PASSWD', 'TOR_PASSWD_HASH', 'ISLANDS_DATA', 'APPS', 'CONFIG', 'TORIFY'];
+const envVariables = ['BASE', 'NODEJS', 'NPM', 'PYTHON', 'PIP', 'TOR', 'TOR_PASSWD', 'TOR_PASSWD_HASH', 'ISLANDS_DATA', 'APPS', 'CONFIG', 'TORIFY'];
 const osEnv = {
     "darvin": ['DYLD_LIBRARY_PATH'],
     "linux": ['LD_LIBRARY_PATH'],
@@ -30,7 +30,7 @@ for (let env of envVariables.concat(osEnv[platform()])){
 }
 
 //Parse islands config
-const config = JSON.parse(fs.readFileSync(path.join(process.env["CONFIG"], "island_conf.json"))
+const config = JSON.parse(fs.readFileSync(path.join(process.env["CONFIG"], "island_conf.json")));
 if (!config.tor ||
     !config.tor.torControlPort ||
     !config.tor.torExitPolicy  ||
@@ -54,8 +54,8 @@ console.log("Launching tor...")
 
 // Set tor env variables
 // launch tor
-
-const tor = new CoreUnit(path.join(binPath, "tor"))
+let torCmd = `${process.env["TOR"]} -f ${torrcPath}`
+const tor = new CoreUnit(torCmd)
 tor.launch();
 
 console.log("Done. Launching apps.");
@@ -95,11 +95,9 @@ rl.on('line', (line)=>{
             break
         case 'exit':
             console.log('Killing core services')
-            i2p.kill()
             tor.kill()
             console.log('Exiting...');
             process.exit(0)
-            break;
     }
     rl.prompt();
 

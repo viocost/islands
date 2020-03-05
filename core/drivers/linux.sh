@@ -19,7 +19,7 @@ export ISLANDS_DATA=${BASE}/data
 export APPS=${BASE}/apps
 
 # Config dir
-export CONFIG=${base}/config
+export CONFIG=${BASE}/config
 
 # Tor dynamic password
 export TOR_PASSWD=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)

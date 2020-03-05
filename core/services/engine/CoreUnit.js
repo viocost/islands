@@ -8,7 +8,7 @@ const { spawn, exec }  = require("child_process");
  */
 class CoreUnit{
     constructor(cmd){
-        console.log("Launching core unit: " + binPath)
+        console.log("Launching core unit: " + cmd)
 
         this.cmd = cmd
         this.restartTimeout = 0;
