@@ -1,7 +1,5 @@
 #!/bin/bash
 
-
-
 # Core binaries for easy access
 export BASE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export NODEJS=${BASE}/core/linux/bin/node
@@ -22,8 +20,5 @@ export APPS=${BASE}/apps
 export CONFIG=${BASE}/config
 
 # Tor dynamic password
-export TOR_PASSWD=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
-export TOR_PASSWD_HASH=$(${TOR} --hash-password ${TOR_PASSWD})
-
 echo Starting up island...
 ${NODEJS} ${APPS}/engine/engine.js

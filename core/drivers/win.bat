@@ -23,22 +23,7 @@ set APPS=!BASE!/apps
 rem Config dir
 set CONFIG=!BASE!/config
 
-rem Tor dynamic password
-set "string=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-set TOR_PASSWD=
-for /L %%i in (1,1,16) do call :add
-
-%TOR% --hash-password !TOR_PASSWD! > %BASE%\tmphash
-set /p TOR_PASSWD_HASH= < %BASE%\tmphash
-del %BASE%/tmphash
-
 echo Starting up island...
 !NODEJS! !APPS!/engine/engine.js
 
 
-goto :eof
-
-:add
-set /a x=%random% %% 62
-set TOR_PASSWD=%TOR_PASSWD%!string:~%x%,1!
-goto :eof

@@ -3,9 +3,10 @@ const readline = require("readline");
 const fs = require("fs");
 const path = require("path");
 const CuteSet = require("./CuteSet.js")
+const { execSync } = require("child_process")
 const { platform } = require("os");
 const { readdirSync } = require("fs");
-
+const crypto = require("crypto");
 
 
 const binPath = path.join(__dirname, "..", "bin")
@@ -13,7 +14,7 @@ console.log(`Bin path: ${binPath}`);
 
 
 // Checking environment variables
-const envVariables = ['BASE', 'NODEJS', 'PYTHON', 'TOR', 'TOR_PASSWD', 'TOR_PASSWD_HASH', 'ISLANDS_DATA', 'APPS', 'CONFIG'];
+const envVariables = ['BASE', 'NODEJS', 'PYTHON', 'TOR', 'ISLANDS_DATA', 'APPS', 'CONFIG'];
 const osEnv = {
     "darwin": ['DYLD_LIBRARY_PATH'],
     "linux": ['LD_LIBRARY_PATH'],
@@ -39,6 +40,15 @@ if (!config.tor ||
         process.exit(1);
 }
 
+//gen dynamic tor password
+process.env["TOR_PASSWD"] = crypto.randomBytes(20).toString('hex');
+
+//get tor hash
+let torHashCmd = `${process.env["TOR"]} --hash-password ${process.env["TOR_PASSWD"]} --quiet`
+process.env["TOR_PASSWD_HASH"] = execSync(torHashCmd).toString("utf8")
+console.log(`TOR HASH IS ${process.env["TOR_PASSWD_HASH"]}`)
+
+//Generate torrc
 let torConfig = `
 ControlPort ${config.tor.torControlPort}\n
 HashedControlPassword ${process.env["TOR_PASSWD_HASH"]}\n
@@ -53,7 +63,7 @@ process.env["TOR_CONTROL_HOST"] = '127.0.0.1';
 process.env["TOR_PORT"] = 15140;
 process.env["TOR_HOST"] = '127.0.0.1';
 
-//Generate torrc
+
 
 
 // Set tor env variables
@@ -76,6 +86,8 @@ const appDirs = new CuteSet(readdirSync(process.env["APPS"]).filter((app)=>{
 for (let app of appDirs){
     console.log(`Starting ${app}`);
 }
+
+
 
 const rl = readline.createInterface({
     input: process.stdin,
