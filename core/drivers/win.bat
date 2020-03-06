@@ -11,29 +11,29 @@ if %OS%==64BIT (
     set WINDIR=win32
 )
 set NODEJS=!BASE!/core/!WINDIR!/node/node.exe
-set PYTHON=${BASE}/core/!WINDIR!/python/python.exe
-set TOR=${BASE}/core/!WINDIR!/tor/tor.exe
+set PYTHON=!BASE!/core/!WINDIR!/python/python.exe
+set TOR=!BASE!/core/!WINDIR!/tor/tor.exe
 
-# Data dir
+rem Data dir
 set ISLANDS_DATA=!BASE!/data
 
-# Apps dir
+rem Apps dir
 set APPS=!BASE!/apps
 
-# Config dir
+rem Config dir
 set CONFIG=!BASE!/config
 
-# Tor dynamic password
+rem Tor dynamic password
 set "string=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 set TOR_PASSWD=
 for /L %%i in (1,1,16) do call :add
 
-%TOR% --hash-password !TOR_PASSWD! > %BASE%/tmphash
-set /p TOR_PASSWD_HASH= < %BASE%/tmphash
+%TOR% --hash-password !TOR_PASSWD! > %BASE%\tmphash
+set /p TOR_PASSWD_HASH= < %BASE%\tmphash
 del %BASE%/tmphash
 
 echo Starting up island...
-${NODEJS} ${APPS}/engine/engine.js
+!NODEJS! !APPS!/engine/engine.js
 
 
 goto :eof
