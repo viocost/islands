@@ -148,6 +148,10 @@ cp ${INSTALLER_PATH}/drivers/* ${BUILD_PATH}
 ${INSTALLER_PATH}/config-gen/generate.py -p ${CONFIG_PATH}
 #
 # copy apps and core scripts
+
+echo Copying engine
+cp -r ${INSTALLER_PATH}/services/engine ${BUILD_PATH}/apps
+
 echo Copying chat
 cp -r ${INSTALLER_PATH}/../chat ${BUILD_PATH}/apps
 

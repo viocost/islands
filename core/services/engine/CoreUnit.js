@@ -7,9 +7,9 @@ const { spawn, exec }  = require("child_process");
  * @param cmd - command to start a process
  */
 class CoreUnit{
-    constructor(cmd){
+    constructor(cmd, output){
         console.log("Launching core unit: " + cmd)
-
+        this.output = output; //if true then print to console
         this.cmd = cmd
         this.restartTimeout = 200;
         this.crashLevel = 0;
@@ -20,28 +20,33 @@ class CoreUnit{
 
     setCrashLevel(level){
         this.crashLevel = level;
+        this.crashes.splice(0, this.crashes.length-1)
     }
 
     calculateRestartTimeout(){
         let curTime = new Date()
-        let timeoutPerLevel = [200, 2000, 5000]
-        let timeWindow = timeWindow[this.crashLevel] * 15;
+        let timeoutPerLevel = [350, 2000]
+        let timeWindow = timeoutPerLevel[this.crashLevel] * 15;
 
         let crashCount = 0;
 
-        for(let ts of this.crashes.reverse()){
-            if (curTime - ts <= timeWindow){
-                crashCount++
+        for(let i=this.crashes.length-1; i>=0; --i){
+            if (curTime - this.crashes[i] <= timeWindow){
+                crashCount++;
             }
         }
 
-        if (crashCount >= 10 && this.crashLevel < 2){
+        console.log("Crash count: " + crashCount)
+        console.log("Level: " + this.crashLevel)
+
+        if (crashCount >= 9 && this.crashLevel < 1){
+            console.log("Increasing crash level!");
             this.setCrashLevel(this.crashLevel + 1)
-        } else {
-            this.setCrashLevel(0)
         }
 
-        return timeoutPerLevel[this.crashLevel]
+        let res = timeoutPerLevel[this.crashLevel]
+        console.log(`Timeout is ${res}`);
+        return res
     }
 
     launch(){
@@ -49,22 +54,30 @@ class CoreUnit{
         this.process = exec(this.cmd)
         let handler = ()=>{
             self.crashes.push(new Date())
-                setTimeout(()=>{
-                    if (self.killing) return;
-                    self.launch()
-                }, self.calculateRestartTimeout())
+            let tmt = self.calculateRestartTimeout()
+            setTimeout(()=>{
+                if (self.killing) return;
+                self.launch()
+            }, tmt)
         }
-        this.process.on('close', handler)
         this.process.on('exit', handler)
-        this.process.stdout.on("data", (data)=>{console.log(data.toString())})
-        this.process.stderr.on("data", (data)=>{console.log(data.toString())})
+        this.process.stdout.on("data", (data)=>{
+            if (this.output){
+                console.log(data.toString('utf8'))
+            }
+        })
+        this.process.stderr.on("data", (data)=>{
+            if(this.output){
+                console.log(data.toString('utf8'))
+            }
+        })
     }
 
 
     kill(){
         console.log("Killing core unit")
         this.killing = true;
-        this.process.kill("SIGTERM")
+        this.process.kill()
     }
 }
 

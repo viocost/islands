@@ -48,6 +48,10 @@ let torrcPath = path.join(process.env['CONFIG'], "torrc");
 fs.writeFileSync(torrcPath, torConfig);
 
 console.log("Launching tor...")
+process.env["TOR_CONTROL_PORT"] = config.tor.torControlPort;
+process.env["TOR_CONTROL_HOST"] = '127.0.0.1';
+process.env["TOR_PORT"] = 15140;
+process.env["TOR_HOST"] = '127.0.0.1';
 
 //Generate torrc
 
@@ -55,8 +59,12 @@ console.log("Launching tor...")
 // Set tor env variables
 // launch tor
 let torCmd = `${process.env["TOR"]} -f ${torrcPath}`
-const tor = new CoreUnit(torCmd)
+const tor = new CoreUnit(torCmd, false)
 tor.launch();
+
+let chatCmd = `${process.env["NODEJS"]} ${process.env["APPS"]}/chat/server/app.js`
+const chat = new CoreUnit(chatCmd, true)
+chat.launch();
 
 console.log("Done. Launching apps.");
 

@@ -1,7 +1,6 @@
 const fs = require("fs-extra");
 const Logger = require("./Logger");
-const p = require("../../../package")
-
+const path = require('path');
 
 let version;
 

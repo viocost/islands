@@ -15,11 +15,10 @@ let appPort;
 let appHost;
 let islandHiddenServiceManager;
 let vaultManager;
-let VERSION;
 
 
 
-module.exports.initAdminEnv = function(app, config, host, port, version, hsManager){
+module.exports.initAdminEnv = function(app, config, host, port, hsManager){
     AdminKey.init(config)
     Logger.debug("initAdminEnv called");
     islandConfig = config;
@@ -29,7 +28,6 @@ module.exports.initAdminEnv = function(app, config, host, port, version, hsManag
     islandHiddenServiceManager  = new HiddenServiceManager(config, host, port);
     islandHiddenServiceManager.init();
     vaultManager = new VaultManager(config);
-    VERSION = version
 };
 
 

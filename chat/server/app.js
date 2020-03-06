@@ -14,16 +14,16 @@ const adminRouter = require("./adminRouter");
 const chatRouter = require("./chatRouter");
 const HSVaultMap = require("./classes/libs/HSVaultMap");
 const mobileRouter = require("./mobileRouter");
-let VERSION;
 
 console.log("\n\nINITIALIZING ISLANDS....")
 
 try{
-    VERSION = "v" + JSON.parse(fs.readFileSync('./package.json').toString()).version
-    console.log(`Version is set to ${VERSION}`)
+    global.VERSION = JSON.parse(fs.readFileSync(path.join(__dirname, "../",'package.json' )).toString()).version;
+
+    console.log(`Version is set to ${global.VERSION}`)
 }catch(err){
     console.trace("Failed to set version: " + err );
-    VERSION = "version unknown";
+    global.VERSION = "version unknown";
 }
 
 app.use(fileUpload());
@@ -35,7 +35,7 @@ let HOST = '0.0.0.0';
 global.DEBUG = false;
 
 
-let configPath = './server/config/config.json';
+let configPath = path.join(__dirname, 'config', 'config.json');
 let historyPath = "../history/";
 let adminKeysPath = "../keys/";
 let servicePath = "../service/";
@@ -74,11 +74,11 @@ function verifyGetConfigParameter(param, configFile){
 
 //Building configuration
 const basePath = path.join(verifyGetConfigParameter("ISLANDS_DATA"), "IslandsChat");
-const torPassword = verifyGetConfigParameter("TOR_PASSWD");
-const torControlPort = verifyGetConfigParameter("TOR_CONTROL_PORT");
-const torControlHost = verifyGetConfigParameter("TOR_CONTROL_HOST");
-const torHost = verifyGetConfigParameter("TOR_HOST");
-const torPort = verifyGetConfigParameter("TOR_PORT");
+const torPassword = verifyGetConfigParameter("TOR_PASSWD", configFile);
+const torControlPort = verifyGetConfigParameter("TOR_CONTROL_PORT", configFile);
+const torControlHost = verifyGetConfigParameter("TOR_CONTROL_HOST", configFile);
+const torHost = verifyGetConfigParameter("TOR_HOST", configFile);
+const torPort = verifyGetConfigParameter("TOR_PORT", configFile);
 
 const config = {
     "historyPath":        path.join(basePath, "history"),
@@ -111,7 +111,7 @@ if(!fs.existsSync(basePath)){
 }
 
 Logger.initLogger(config.servicePath, "debug");
-let helloMsg = "!!=====ISLANDS v." + VERSION + " =====!!"
+let helloMsg = "!!=====ISLANDS v." + global.VERSION + " =====!!"
 console.log(helloMsg);
 Logger.info(helloMsg);
 
@@ -142,9 +142,8 @@ app.use(express.static(path.join(__dirname, '../public')));
 HSVaultMap.init(config.hsVaultMap);
 
 
-adminRouter.init(app, config, HOST, PORT, VERSION, adminKeyPath, updatePath);
-vaultRouter.init(config, VERSION);
-mobileRouter.init(VERSION);
+adminRouter.init(app, config, HOST, PORT, adminKeyPath, updatePath);
+vaultRouter.init(config);
 
 app.use("/", vaultRouter.router);
 app.use("/mobile", mobileRouter.router);

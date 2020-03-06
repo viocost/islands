@@ -4,12 +4,10 @@ const VaultManager = require("./classes/libs/VaultManager");
 const HSMap = require("./classes/libs/HSVaultMap");
 const AdminKey = require("./classes/libs/AdminKey");
 const Logger = require("./classes/libs/Logger");
-const version = require("./classes/libs/Version");
 
 let vaultManager;
 
-module.exports.init = function(config, version, hsManager) {
-    VERSION = version;
+module.exports.init = function(config, hsManager) {
     vaultManager = new VaultManager(config);
     hiddenServiceManager = hsManager
 };
@@ -19,7 +17,7 @@ router.get('/', (req, res)=>{
     let isRegistration = isVaultAwaitingRegistration(onion);
 
     res.render("vault", {
-        version: version.getVersion(),
+        version: global.VERSION,
         title: "Islands chat - Vault",
         registration: isRegistration,
     });
