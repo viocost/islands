@@ -84,6 +84,22 @@ function make_dir(){
 }
 
 
+
+# Create directory tree
+BUILD_PATH=${BASE_PATH}/islands
+CORE_PATH=${BUILD_PATH}/core
+DATA_PATH=${BUILD_PATH}/data
+APPS_PATH=${BUILD_PATH}/apps
+CONFIG_PATH=${BUILD_PATH}/config
+
+make_dir $BASE_PATH
+make_dir $BUILD_PATH
+make_dir $CORE_PATH
+make_dir $DATA_PATH
+make_dir $APPS_PATH
+make_dir $CONFIG_PATH
+
+
 function prepare_core_bin(){
     # this function copies or downloads archive with binaries to the core path
     # unpacks and removes it
@@ -92,8 +108,6 @@ function prepare_core_bin(){
     # Args:
     # $1 - path or url to archive
     # $2 - archive name
-
-   
 
     cd ${CORE_PATH}
 
@@ -110,24 +124,18 @@ function prepare_core_bin(){
     rm ${2}
 }
 
-# Create directory tree
-BUILD_PATH=${BASE_PATH}/islands
-CORE_PATH=${BUILD_PATH}/core
-DATA_PATH=${BUILD_PATH}/data
-APPS_PATH=${BUILD_PATH}/apps
-CONFIG_PATH=${BUILD_PATH}/config
+# Fetch all binaries into the build dir if required
+if [ ! -z ${MAC+x} ]; then
+    prepare_core_bin ${MAC} ${MAC_ARCHIVE}
+fi
 
-make_dir $BASE_PATH
-make_dir $BUILD_PATH
-make_dir $CORE_PATH
-make_dir $DATA_PATH
-make_dir $APPS_PATH
-make_dir $CONFIG_PATH
+if [ ! -z ${LINUX+x} ]; then
+    prepare_core_bin ${LINUX} ${LINUX_ARCHIVE}
+fi
 
-# Fetch all binaries into the build dir
-prepare_core_bin ${MAC} ${MAC_ARCHIVE}
-prepare_core_bin ${LINUX} ${LINUX_ARCHIVE}
-prepare_core_bin ${WINDOWS} ${WINDOWS_ARCHIVE}
+if [ ! -z ${WINDOWS+x} ]; then
+    prepare_core_bin ${WINDOWS} ${WINDOWS_ARCHIVE}
+fi
 
 
 echo Copying drivers
@@ -137,7 +145,9 @@ cp ${INSTALLER_PATH}/drivers/* ${BUILD_PATH}
 # copy driver scripts
 #
 # generate default config
+${INSTALLER_PATH}/config-gen/generate.py -p ${CONFIG_PATH}
 #
 # copy apps and core scripts
-#
-# cleanup
+echo Copying chat
+cp -r ${INSTALLER_PATH}/../chat ${BUILD_PATH}/apps
+
