@@ -12,7 +12,9 @@ if [[ ! -d $1 ]]; then
     exit 1
 fi
 
-cp ${BASE}/drivers/* ${1}
-cp -r ${BASE}/services/engine ${1}/apps
 
+cp ${BASE}/drivers/* ${1}
+cp ${BASE}/dev-activate.sh ${1}
+cp -r ${BASE}/services/engine ${1}/apps
+cp -r ${BASE}/../chat ${1}/apps
 ${BASE}/config-gen/generate.py -p ${1}/config

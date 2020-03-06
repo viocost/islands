@@ -1069,14 +1069,7 @@ class HistoryManager{
     //TODO
     /***** REFACTORING NEEDED!!! *******************/
     pathToHistory(pkfp = Err.required("Path to history")){
-
-        if (this.historyDirectory.slice(-1) !== "/"){
-            this.historyDirectory += "/";
-        }
-
-        this.historyDirectory.replace(/\/+$/, "/");
-
-        return this.historyDirectory + pkfp + "/history_store";
+        return path.join(this.historyDirectory , pkfp , "history_store");
     }
 
     pathToInvites(pkfp = Err.required("pkfp - pathToInvites")){
@@ -1086,27 +1079,15 @@ class HistoryManager{
 
 
     pathToHSPrivateKey(pkfp = Err.required("Path to history")){
-        if (this.historyDirectory.slice(-1) !== "/"){
-            this.historyDirectory += "/";
-        }
-        this.historyDirectory.replace(/\/+$/, "/");
-        return this.historyDirectory + pkfp + "/owner_hs_private_key";
+        return path.join(this.historyDirectory , pkfp , "owner_hs_private_key");
     }
 
     pathToOwnerPublicKey(pkfp = Err.required("Path to history")){
-        if (this.historyDirectory.slice(-1) !== "/"){
-            this.historyDirectory += "/";
-        }
-        this.historyDirectory.replace(/\/+$/, "/");
-        return this.historyDirectory + pkfp + "/owner_public_key";
+        return path.join(this.historyDirectory , pkfp , "owner_public_key");
     }
 
     pathToAttachments(pkfp = Err.required(('pathToAttachments'))){
-        if (this.historyDirectory.slice(-1) !== "/"){
-            this.historyDirectory += "/";
-        }
-        this.historyDirectory.replace(/\/+$/, "/");
-        return this.historyDirectory + pkfp + "/files/";
+        return path.join(this.historyDirectory , pkfp , "files");
     }
 
     /**
@@ -1122,11 +1103,7 @@ class HistoryManager{
             throw("error getPath: invalid history object: "  + pathTo)
         }
 
-        if (this.historyDirectory.slice(-1) !== "/"){
-            this.historyDirectory += "/";
-        }
-        this.historyDirectory.replace(/\/+$/, "/");
-        return this.historyDirectory + pkfp + this.commonPaths[pathTo]
+        return path.join(this.historyDirectory , pkfp , this.commonPaths[pathTo])
     }
 
     getKeyPath(pkfp = Err.required('getPath: pkfp'),
@@ -1135,23 +1112,19 @@ class HistoryManager{
             throw("error getPath: invalid history object: "  + pathTo)
         }
 
-        if (this.historyDirectory.slice(-1) !== "/"){
-            this.historyDirectory += "/";
-        }
-        this.historyDirectory.replace(/\/+$/, "/");
-        return this.historyDirectory + pkfp + this.topicKeyPaths[pathTo]
+        return path.join(this.historyDirectory , pkfp , this.topicKeyPaths[pathTo])
     }
 
     isTopicExist(pkfp){
-        return fs.existsSync(this.historyDirectory + pkfp);
+        return fs.existsSync(path.join(this.historyDirectory , pkfp));
     }
 
     isHistoryExist(pkfp){
-        return fs.existsSync(this.historyDirectory + pkfp + "/history_store");
+        return fs.existsSync(path.join(this.historyDirectory , pkfp , "history_store"));
     }
 
     async fixHistory(pkfp){
-        let historyFixer = new HistoryFixer("this.historyDirectory" + pkfp,  "/history_store")
+        let historyFixer = new HistoryFixer("this.historyDirectory" + pkfp,  "history_store")
         await historyFixer.fixHistory();
         await historyFixer.finalize();
     }

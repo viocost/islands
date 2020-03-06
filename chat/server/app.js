@@ -29,7 +29,7 @@ try{
 app.use(fileUpload());
 
 
-let PORT = 15140;
+let PORT = 4000;
 let HOST = '0.0.0.0';
 
 global.DEBUG = false;
@@ -73,7 +73,7 @@ function verifyGetConfigParameter(param, configFile){
 }
 
 //Building configuration
-const basePath = verifyGetConfigParameter("ISLANDS_DATA");
+const basePath = path.join(verifyGetConfigParameter("ISLANDS_DATA"), "IslandsChat");
 const torPassword = verifyGetConfigParameter("TOR_PASSWD");
 const torControlPort = verifyGetConfigParameter("TOR_CONTROL_PORT");
 const torControlHost = verifyGetConfigParameter("TOR_CONTROL_HOST");
@@ -100,6 +100,15 @@ const config = {
     }
 }
 
+if(!fs.existsSync(basePath)){
+    try{
+        fs.mkdirSync(basePath)
+    }catch (err){
+        console.log(`Unable to create base directory: ${err}`)
+        console.log("Exiting...");
+        process.exit
+    }
+}
 
 Logger.initLogger(config.servicePath, "debug");
 let helloMsg = "!!=====ISLANDS v." + VERSION + " =====!!"
