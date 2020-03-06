@@ -15,7 +15,7 @@ console.log(`Bin path: ${binPath}`);
 // Checking environment variables
 const envVariables = ['BASE', 'NODEJS', 'NPM', 'PYTHON', 'PIP', 'TOR', 'TOR_PASSWD', 'TOR_PASSWD_HASH', 'ISLANDS_DATA', 'APPS', 'CONFIG', 'TORIFY'];
 const osEnv = {
-    "darvin": ['DYLD_LIBRARY_PATH'],
+    "darwin": ['DYLD_LIBRARY_PATH'],
     "linux": ['LD_LIBRARY_PATH'],
     "win32": []
 }
