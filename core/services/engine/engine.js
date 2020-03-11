@@ -45,10 +45,24 @@ process.env["TOR_PASSWD"] = crypto.randomBytes(20).toString('hex');
 
 //get tor hash
 let torHashCmd = `${process.env["TOR"]} --hash-password ${process.env["TOR_PASSWD"]} --quiet`
-process.env["TOR_PASSWD_HASH"] = execSync(torHashCmd).toString("utf8")
+for (let i=0; i<50; i++){
+    process.env["TOR_PASSWD_HASH"] = execSync(torHashCmd).toString("utf8") || ""
+    if(process.env["TOR_PASSWD_HASH"].length > 5){
+        console.log("Tor control password hash has been successfully generated.");
+        break
+    }
+
+}
+
+if (!process.env["TOR_PASSWD_HASH"]){
+    console.log(`Tor password hash has not been successfully generated. This behavior was observed on some Windows versions under Virtualbox.\n
+                Try another Windows edition, or virtualization platform.`)
+    process.exit(1)
+}
+
 console.log(`TOR HASH IS ${process.env["TOR_PASSWD_HASH"]}`)
 
-//Generate torrc
+//generate torrc
 let torConfig = `
 ControlPort ${config.tor.torControlPort}\n
 HashedControlPassword ${process.env["TOR_PASSWD_HASH"]}\n

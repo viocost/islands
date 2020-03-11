@@ -170,7 +170,7 @@ function install_python(){
 function zlib(){
     wget -O -  "https://zlib.net/zlib-1.2.11.tar.gz" | tar zxvf -
     cd zlib-1.2.11
-    ./configure --prefix="${CORE_PATH}"
+    ./configure --prefix="${CORE_PATH}" --libdir="${CORE_PATH}/lib" --sharedlibdir="${CORE_PATH}/lib" --includedir="${CORE_PATH}/include"
     make -j$(nproc)
     make install
     cd ../

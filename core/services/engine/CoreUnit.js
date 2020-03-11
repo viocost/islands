@@ -1,4 +1,4 @@
-const { spawn, exec }  = require("child_process");
+const { execFile }  = require("child_process");
 
 /**
  * This class provides simple process management functionality
@@ -7,10 +7,11 @@ const { spawn, exec }  = require("child_process");
  * @param cmd - command to start a process
  */
 class CoreUnit{
-    constructor(cmd, output){
+    constructor(executable, args, output){
         console.log("Launching core unit: " + cmd)
         this.output = output; //if true then print to console
-        this.cmd = cmd
+        this.executable = executable;
+        this.args = args;
         this.restartTimeout = 200;
         this.crashLevel = 0;
         this.crashes = getLimitedLengthArray(15);
@@ -51,7 +52,7 @@ class CoreUnit{
 
     launch(){
         let self = this;
-        this.process = exec(this.cmd)
+        this.process = execFile(this.executable, this.args)
         let handler = ()=>{
             self.crashes.push(new Date())
             let tmt = self.calculateRestartTimeout()
