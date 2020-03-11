@@ -145,7 +145,7 @@ function install_nodejs(){
     tar -xvf node-v12.16.1-darwin-x64.tar.gz
     cd  node-v12.16.1-darwin-x64
     cp -r * $CORE_PATH
-    cd ../
+    cd $BUILD_PATH
     echo Node js installation finished
 }
 
@@ -155,19 +155,7 @@ function install_python(){
     cd Python-3.7.6
     ./configure --prefix=$CORE_PATH
     make -j $(sysctl -n hw.ncpu) && make install
-    echo Python installation finished. Creating virtual environment
-    if [[ -d  ./islands-pyenv ]]; then
-        rm -rf ./islands-pyenv/*
-    fi
-    ${CORE_PATH}/bin/python3 -m venv  ${CORE_PATH}/islands-pyenv
-
-    echo Activating python venv
-    source ${CORE_PATH}/islands-pyenv/bin/activate
-    echo installing python libraries
-    pip install stem
-    cd ../
-    echo all set
-
+    cd $BUILD_PATH
 }
 
 # TOR dependencies
@@ -178,8 +166,19 @@ function zlib(){
     ./configure --prefix="${CORE_PATH}"
     make -j$(sysctl -n hw.ncpu)
     make install
-    cd ../
+    cd $BUILD_PATH
 
+}
+
+
+function zstd(){
+    curl -O -L "https://github.com/facebook/zstd/archive/dev.zip"
+    unzip ./dev.zip -d ./zstd
+    cd ./zstd/zstd-dev/
+    make
+    cp ./lib/libzstd.* ${LIB_PATH}
+    cd $BUILD_PATH
+    rm -rf ./dev.zip ./zstd
 }
 
 function libevent(){
@@ -188,7 +187,7 @@ function libevent(){
     ./configure --prefix="${CORE_PATH}"
     make -j $(sysctl -n hw.ncpu)
     make install
-    cd ..
+    cd $BUILD_PATH
 
 }
 
@@ -198,7 +197,7 @@ function libssl(){
     ./config --prefix="${CORE_PATH}"
     make -j $(sysctl -n hw.ncpu)
     make install
-    cd ..
+    cd $BUILD_PATH
 }
 
 
@@ -215,6 +214,7 @@ function getall_mac(){
 function install_tor(){
     libevent
     libssl
+    zstd
     zlib
 
     curl -L -O "https://dist.torproject.org/tor-0.4.2.6.tar.gz"
@@ -225,7 +225,7 @@ function install_tor(){
             --with-openssl-dir="${LIB_PATH}" \
             --with-zlib-dir="${LIB_PATH}"
     make -j $(sysctl -n hw.ncpu) && make install
-    cd ../
+    cd $BUILD_PATH
     echo Tor installation completed
 }
 
@@ -257,10 +257,33 @@ function install_i2p(){
 
 
 
-if [[ $COMPONENTS == *"p"* ]]; then install_python; fi
-if [[ $COMPONENTS == *"n"* ]]; then install_nodejs; fi
-if [[ $COMPONENTS == *"t"* ]]; then install_tor; fi
-if [[ $COMPONENTS == *"i"* ]]; then install_i2p; fi
+if [[ $COMPONENTS == *"p"* ]]; then
+    if ! install_python; then
+        echo Python build failed
+        exit 1
+    fi
+fi
+if [[ $COMPONENTS == *"n"* ]]; then
+
+    if ! install_nodejs; then
+        echo Node.JS build failed
+        exit 1
+    fi
+fi
+if [[ $COMPONENTS == *"t"* ]]; then
+    if ! install_tor; then
+        echo Tor build failed
+        exit 1
+    else
+        echo Tor build success.
+    fi
+fi
+if [[ $COMPONENTS == *"i"* ]]; then
+    if ! install_i2p; then
+        echo Tor build failed
+        exit 1
+    fi
+fi
 
 
 

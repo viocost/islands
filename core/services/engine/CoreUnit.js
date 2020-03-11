@@ -8,7 +8,7 @@ const { execFile }  = require("child_process");
  */
 class CoreUnit{
     constructor(executable, args, output){
-        console.log("Launching core unit: " + cmd)
+        console.log("Launching core unit: " + executable)
         this.output = output; //if true then print to console
         this.executable = executable;
         this.args = args;

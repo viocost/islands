@@ -135,34 +135,20 @@ if [[ -n $COMPONENTS ]]; then
 fi
 
 function install_nodejs(){
-    echo "Downloading node.js..."
     wget https://nodejs.org/dist/v12.14.1/node-v12.14.1-linux-x64.tar.xz
     tar -xvf node-v12.14.1-linux-x64.tar.xz
     cd  node-v12.14.1-linux-x64
     cp -r * $CORE_PATH
-    cd ../
-    echo Node js installation finished
+    cd $BUILD_PATH
 }
 
 function install_python(){
+    cd $BUILD_PATH
     wget "https://www.python.org/ftp/python/3.7.6/Python-3.7.6.tar.xz"
     tar -xvf Python-3.7.6.tar.xz
     cd Python-3.7.6
     ./configure --prefix=$CORE_PATH
     make -j $(nproc) && make install
-    echo Python installation finished. Creating virtual environment
-    if [[ -d  ./islands-pyenv ]]; then
-        rm -rf ./islands-pyenv/*
-    fi
-    ${CORE_PATH}/bin/python3 -m venv  ${CORE_PATH}/islands-pyenv
-
-    echo Activating python venv
-    source ${CORE_PATH}/islands-pyenv/bin/activate
-    echo installing python libraries
-    pip install stem
-    cd ../
-    echo all set
-
 }
 
 # TOR dependencies
@@ -173,8 +159,17 @@ function zlib(){
     ./configure --prefix="${CORE_PATH}" --libdir="${CORE_PATH}/lib" --sharedlibdir="${CORE_PATH}/lib" --includedir="${CORE_PATH}/include"
     make -j$(nproc)
     make install
-    cd ../
+    cd $BUILD_PATH
+}
 
+function zstd(){
+    wget "https://github.com/facebook/zstd/archive/dev.zip"
+    unzip ./dev.zip -d ./zstd
+    cd ./zstd/zstd-dev/
+    make
+    cp ./lib/libzstd.* ${LIB_PATH}
+    cd $BUILD_PATH
+    rm -rf ./dev.zip ./zstd
 }
 
 function libevent(){
@@ -183,8 +178,7 @@ function libevent(){
     ./configure --prefix="${CORE_PATH}"
     make -j $(nproc)
     make install
-    cd ..
-
+    cd $BUILD_PATH
 }
 
 function libssl(){
@@ -193,7 +187,7 @@ function libssl(){
     ./config --prefix="${CORE_PATH}"
     make -j $(nproc)
     make install
-    cd ..
+    cd $BUILD_PATH
 }
 
 
@@ -211,7 +205,8 @@ function install_tor(){
     libevent
     libssl
     zlib
-
+    zstd
+    cd $BUILD_PATH
     wget "https://dist.torproject.org/tor-0.4.2.6.tar.gz"
     tar -xvf tor-0.4.2.6.tar.gz
     cd tor-0.4.2.6
@@ -220,8 +215,7 @@ function install_tor(){
             --with-openssl-dir="${LIB_PATH}" \
             --with-zlib-dir="${LIB_PATH}"
     make -j $(nproc) && make install
-    cd ../
-    echo Tor installation completed
+    cd $BUILD_PATH
 }
 
 function install_i2p(){
@@ -250,14 +244,33 @@ function install_i2p(){
 
 
 
+if [[ $COMPONENTS == *"p"* ]]; then
+    if ! install_python; then
+        echo Python build failed
+        exit 1
+    fi
+fi
+if [[ $COMPONENTS == *"n"* ]]; then
 
-
-if [[ $COMPONENTS == *"p"* ]]; then install_python; fi
-if [[ $COMPONENTS == *"n"* ]]; then install_nodejs; fi
-if [[ $COMPONENTS == *"t"* ]]; then install_tor; fi
-if [[ $COMPONENTS == *"i"* ]]; then install_i2p; fi
-
-
+    if ! install_nodejs; then
+        echo Node.JS build failed
+        exit 1
+    fi
+fi
+if [[ $COMPONENTS == *"t"* ]]; then
+    if ! install_tor; then
+        echo Tor build failed
+        exit 1
+    else
+        echo Tor build success.
+    fi
+fi
+if [[ $COMPONENTS == *"i"* ]]; then
+    if ! install_i2p; then
+        echo Tor build failed
+        exit 1
+    fi
+fi
 
 # cleanup
 rm -rf  ${BUILD_PATH}/tor* ${BUILD_PATH}/zlib* ${BUILD_PATH}/openssl* ${BUILD_PATH}/libevent* ${BUILD_PATH}/node* ${BUILD_PATH}/Python*
@@ -265,5 +278,7 @@ rm -rf  ${BUILD_PATH}/tor* ${BUILD_PATH}/zlib* ${BUILD_PATH}/openssl* ${BUILD_PA
 cd ${BUILD_PATH}
 
 zip -r linux.zip ./linux
+
+echo BUILD SUCCESSFUL!
 # copy service files
 #cd $INSTALLER_PATH && install_services &&  ./genconf.sh -p ${BUILD_PATH} -t ${BUILD_PATH}/bin/tor

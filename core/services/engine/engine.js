@@ -3,7 +3,7 @@ const readline = require("readline");
 const fs = require("fs");
 const path = require("path");
 const CuteSet = require("./CuteSet.js")
-const { execSync } = require("child_process")
+const { execFileSync } = require("child_process")
 const { platform } = require("os");
 const { readdirSync } = require("fs");
 const crypto = require("crypto");
@@ -44,14 +44,13 @@ if (!config.tor ||
 process.env["TOR_PASSWD"] = crypto.randomBytes(20).toString('hex');
 
 //get tor hash
-let torHashCmd = `${process.env["TOR"]} --hash-password ${process.env["TOR_PASSWD"]} --quiet`
+let hashCmdArgs = ["--hash-password", process.env["TOR_PASSWD"], "--quiet"]
 for (let i=0; i<50; i++){
-    process.env["TOR_PASSWD_HASH"] = execSync(torHashCmd).toString("utf8") || ""
+    process.env["TOR_PASSWD_HASH"] = execFileSync(process.env["TOR"], hashCmdArgs).toString("utf8") || ""
     if(process.env["TOR_PASSWD_HASH"].length > 5){
         console.log("Tor control password hash has been successfully generated.");
         break
     }
-
 }
 
 if (!process.env["TOR_PASSWD_HASH"]){
@@ -82,12 +81,12 @@ process.env["TOR_HOST"] = '127.0.0.1';
 
 // Set tor env variables
 // launch tor
-let torCmd = `${process.env["TOR"]} -f ${torrcPath}`
-const tor = new CoreUnit(torCmd, false)
+let torCmdArgs = ["-f", torrcPath];
+const tor = new CoreUnit(process.env["TOR"], torCmdArgs, false);
 tor.launch();
 
-let chatCmd = `${process.env["NODEJS"]} ${process.env["APPS"]}/chat/server/app.js`
-const chat = new CoreUnit(chatCmd, true)
+let chatCmdArgs = [`${process.env["APPS"]}/chat/server/app.js`];
+const chat = new CoreUnit(process.env["NODEJS"], chatCmdArgs, true)
 chat.launch();
 
 console.log("Done. Launching apps.");
