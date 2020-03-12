@@ -57,7 +57,7 @@ WORKERS=1
 # i - i2p
 #
 #By default all will be installed
-COMPONENTS="tnpi"
+COMPONENTS="tn"
 
 INSTALLER_PATH=$(pwd)
 
@@ -213,7 +213,10 @@ function install_tor(){
     ./configure --prefix=${CORE_PATH} \
             --with-libevent-dir="${LIB_PATH}" \
             --with-openssl-dir="${LIB_PATH}" \
-            --with-zlib-dir="${LIB_PATH}"
+            --with-zlib-dir="${LIB_PATH}" \
+            --disable-manpage \
+            --disable-html-manual \
+            --disable-asciidoc
     make -j $(nproc) && make install
     cd $BUILD_PATH
 }
@@ -274,6 +277,10 @@ fi
 
 # cleanup
 rm -rf  ${BUILD_PATH}/tor* ${BUILD_PATH}/zlib* ${BUILD_PATH}/openssl* ${BUILD_PATH}/libevent* ${BUILD_PATH}/node* ${BUILD_PATH}/Python*
+
+
+# removing manpages and docs
+rm -rf ${CORE_PATH}/share/man ${CORE_PATH}/share/doc
 
 cd ${BUILD_PATH}
 

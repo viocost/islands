@@ -21,6 +21,8 @@ OPTIONS:
 -m, --mac
     Path or link to mac build
 
+-v, --version
+    Binaries version
 "
 
 
@@ -56,6 +58,11 @@ while [[ $# -gt 0 ]]; do
 
         -l|--linux)
             LINUX=$2
+            shift
+            shift
+            ;;
+        -v|--version)
+            VERSION=$2
             shift
             shift
             ;;
@@ -155,3 +162,7 @@ cp -r ${INSTALLER_PATH}/services/engine ${BUILD_PATH}/apps
 echo Copying chat
 cp -r ${INSTALLER_PATH}/../chat ${BUILD_PATH}/apps
 
+
+if [ ! -z ${VERSION+x} ]; then
+    echo Core version: ${VERSION} > ${CORE_PATH}/core.version
+fi
