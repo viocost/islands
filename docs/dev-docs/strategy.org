@@ -1,66 +1,6 @@
 #+TITLE: Islands development strategy and tasks
 
 * Current tasks
-
-** PROJ Implement bootstrapping
-*** Use cases:
-1. No source.zip found and nothing inside
-   Virgin - request manifest
-2. source.zip found and nothing inside:
-   verify - install
-3. source.zip found and matches what's inside
-   proceed normal boot
-4. source.zip found and does NOT match what's inside
-   update
-*** Pseudocode
-prepare_source:
-   zip source
-   sign with private key
-   zip archive and signature
-   create torrent
-   return magnet
-
-prepare_manifest(source magnet):
-   create manifest.json(source magnet)
-   create torrent
-   return manifest magnet
-
-
-bootstrap(manifest_magnet):
-   add manifest magnet
-   parse manifest
-
-   if (not source compatable)
-       notify "Source incompatable"
-       terminate
-
-   get source magnet from manifest
-   add source
-   unzip
-   if (signature valid)
-      copy source.zip to source dir
-      start app
-   else
-      notify user("Source is invalid")
-
-
-
-*** DONE Install:
-CLOSED: [2019-12-14 Sat 14:40]
-- python 3.8
-- pip
-- nodejs 13
-- npm
-- redis
-- pm2
-- transmission server cli
-*** TODO Implement bootstrap app
-
-
-
-*** TODO implement source verification / install script
-
-
 ** TODO When tab is activated - the cursor must go to new message textarea
 ** TODO Send message in queue
 ** PROJ Implement multiplexing
@@ -214,3 +154,65 @@ CLOSED: [2019-09-13 Fri 21:48]
 <2019-09-10 Tue>
 ** DONE In settings there should be not boot button for those who has no rights
 CLOSED: [2019-09-13 Fri 23:19]
+
+** DONE Implement bootstrapping
+CLOSED: [2020-03-16 Mon 12:34]
+Cancelled
+*** Use cases:
+1. No source.zip found and nothing inside
+   Virgin - request manifest
+2. source.zip found and nothing inside:
+   verify - install
+3. source.zip found and matches what's inside
+   proceed normal boot
+4. source.zip found and does NOT match what's inside
+   update
+*** Pseudocode
+prepare_source:
+   zip source
+   sign with private key
+   zip archive and signature
+   create torrent
+   return magnet
+
+prepare_manifest(source magnet):
+   create manifest.json(source magnet)
+   create torrent
+   return manifest magnet
+
+
+bootstrap(manifest_magnet):
+   add manifest magnet
+   parse manifest
+
+   if (not source compatable)
+       notify "Source incompatable"
+       terminate
+
+   get source magnet from manifest
+   add source
+   unzip
+   if (signature valid)
+      copy source.zip to source dir
+      start app
+   else
+      notify user("Source is invalid")
+
+
+
+*** DONE Install:
+CLOSED: [2019-12-14 Sat 14:40]
+- python 3.8
+- pip
+- nodejs 13
+- npm
+- redis
+- pm2
+- transmission server cli
+*** DONE Implement bootstrap app
+CLOSED: [2020-03-16 Mon 12:34]
+
+
+
+*** DONE implement source verification / install script
+CLOSED: [2020-03-16 Mon 12:34]
