@@ -145,10 +145,10 @@ HSVaultMap.init(config.hsVaultMap);
 adminRouter.init(app, config, HOST, PORT, adminKeyPath, updatePath);
 vaultRouter.init(config);
 
-app.use("/", vaultRouter.router);
-app.use("/mobile", mobileRouter.router);
-app.use("/help", helpRouter);
-app.use("/chat", chatRouter.router);
+app.use("/", chatRouter.router);
+//app.use("/mobile", mobileRouter.router);
+//app.use("/help", helpRouter);
+//app.use("/chat", chatRouter.router);
 app.use("/admin", adminRouter.router);
 
 
