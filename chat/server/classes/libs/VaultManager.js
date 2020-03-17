@@ -4,6 +4,7 @@ const path = require("path")
 const RandExp = require("randexp");
 const iCrypto = require("./iCrypto");
 const AdminKey = require("./AdminKey");
+const path = require("path")
 
 
 
@@ -18,7 +19,7 @@ class VaultManager{
         if (!config.vaultsPath){
             throw new Error("Init error: Vaults path is not specified!");
         }
-        this.setVaultsPath(config.vaultsPath);
+        this.vaultsPath = config.vaultsPath;
 
         if(!fs.existsSync(this.vaultsPath)){
             Logger.debug("Vaults directory doesn't exist. Creating...");
@@ -29,10 +30,6 @@ class VaultManager{
         this.vaultIdLength = config.vaultIdLength || 64;
     }
 
-    setVaultsPath(path){
-        this.vaultsPath = /[\\\/]/.test(path[path.length-1]) ? path : path + "/";
-        Logger.debug("Vaults path set to: " + this.vaultsPath)
-    }
 
 
     updateVault(vaultBlob, id, hash, previousHash, signature, publicKey = null){
@@ -177,10 +174,10 @@ class VaultManager{
 
     isRegistrationPending(vaultID){
         Logger.debug("Registration pending called but not implemented!");
-        return  fs.existsSync(this.vaultsPath + vaultID) &&
-        !fs.existsSync(this.vaultsPath + vaultID + "/" + VAULT) &&
-        !fs.existsSync(this.vaultsPath + vaultID + "/" + PUBLICKEY) &&
-        fs.existsSync(this.vaultsPath + vaultID + "/" + PENDING)
+        return  fs.existsSync(path.join(this.vaultsPath,  vaultID)) &&
+            !fs.existsSync(path.join(this.vaultsPath, vaultID,  VAULT)) &&
+            !fs.existsSync(path.join(this.vaultsPath, vaultID,  PUBLICKEY)) &&
+            fs.existsSync(path.join(this.vaultsPath,  vaultID,  PENDING))
     }
 
     isRegistrationActive(vaultID){
@@ -189,7 +186,7 @@ class VaultManager{
             return false
         }
 
-        let signData =  fs.readFileSync(this.vaultsPath + vaultID + "/" + PENDING, "utf8");
+        let signData =  fs.readFileSync(path.join(this.vaultsPath, vaultID, PENDING), "utf8");
         let ic = new iCrypto();
         ic.addBlob("sign", signData)
             .addBlob("idhex", vaultID)
@@ -297,6 +294,7 @@ class VaultManager{
 
 module.exports = VaultManager;
 
+   
 /**
  *  dir-id
  *    vault

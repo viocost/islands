@@ -42,9 +42,9 @@ function isOnion(host){
     return pattern.test(host);
 }
 
-module.exports.init = (app, config, HOST, PORT, VERSION, adminKeyPath, updatePath)=>{
+module.exports.init = (app, config, HOST, PORT, adminKeyPath, updatePath)=>{
     adminServer.setKeyFolder(adminKeyPath, updatePath);
-    adminServer.initAdminEnv(app, config, HOST, PORT, VERSION);
+    adminServer.initAdminEnv(app, config, HOST, PORT);
 };
 
 module.exports.router = router;
