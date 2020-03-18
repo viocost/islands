@@ -5,15 +5,15 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const fs = require("fs-extra");
 const fileUpload = require('express-fileupload');
-const HiddenServiceManager = require("./classes/libs/HiddenServiceManager");
+//const HiddenServiceManager = require("./classes/libs/HiddenServiceManager");
 
 const Logger = require("./classes/libs/Logger.js");
-const helpRouter = require("./helpRouter.js");
-const vaultRouter = require("./vaultRouter");
+//const helpRouter = require("./helpRouter.js");
+//const vaultRouter = require("./vaultRouter");
 const adminRouter = require("./adminRouter");
 const appRouter = require("./appRouter");
 const HSVaultMap = require("./classes/libs/HSVaultMap");
-const mobileRouter = require("./mobileRouter");
+//const mobileRouter = require("./mobileRouter");
 
 console.log("\n\nINITIALIZING ISLANDS....")
 
@@ -37,8 +37,8 @@ global.DEBUG = false;
 
 let configPath = path.join(__dirname, 'config', 'config.json');
 let historyPath = "../history/";
-let adminKeysPath = "../keys/";
-let servicePath = "../service/";
+//let adminKeysPath = "../keys/";
+//let servicePath = "../service/";
 let logger;
 
 process.argv.forEach((val, index, array)=>{
@@ -144,8 +144,7 @@ HSVaultMap.init(config.hsVaultMap);
 
 
 adminRouter.init(app, config, HOST, PORT, adminKeyPath, updatePath);
-vaultRouter.init(config);
-
+appRouter.init(config);
 app.use("/", appRouter.router);
 //app.use("/mobile", mobileRouter.router);
 //app.use("/help", helpRouter);

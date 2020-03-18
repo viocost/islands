@@ -2,6 +2,9 @@ const { Router } = require("express");
 const router = Router();
 const VaultManager = require("./classes/libs/VaultManager");
 const Logger = require("./classes/libs/Logger");
+const AdminKey = require("./classes/libs/AdminKey");
+
+let vaultManager;
 
 module.exports.init = function(config) {
     vaultManager = new VaultManager(config);
@@ -34,5 +37,34 @@ router.post("/", (req, res)=>{
 });
 
 
+function isVaultAwaitingRegistration(onion){
+    let vaultID = HSMap.getVaultId(onion);
+    if (!vaultID){
+        return false;
+    }
+    return vaultManager.isRegistrationPending(vaultID);
+
+}
+
+//Given a host returns vault ID associated with it
+//IF host is not an onion address - id of admin vault returned
+//If no vault matches onion address - undefined returned
+function getVaultId (host){
+    if (!isOnion(host)) {
+        return AdminKey.getPkfp();
+    } else {
+        return HSMap.getVaultId(extractOnion(host));
+    }
+}
+
+
+function isOnion(host){
+    let pattern = /.*[a-z2-7]{16}\.onion.*/;
+    return pattern.test(host);
+}
+
+function extractOnion(host){
+    return host.match(/[a-z2-7]{16}\.onion/)[0];
+}
 
 module.exports.router = router;

@@ -172,7 +172,7 @@ class Logger{
             return
         }
 
-        let additionalData = data ? JSON.stringify(data) : "";
+        let additionalData = data ? JSON.stringify(data, null, 4) : "";
         level = level ? level.toUpperCase() : "UNDEFINED";
         if (!CONFIG.consoleFilter){
 
