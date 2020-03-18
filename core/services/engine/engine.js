@@ -9,9 +9,8 @@ const { readdirSync } = require("fs");
 const crypto = require("crypto");
 
 
-const binPath = path.join(__dirname, "..", "bin")
-console.log(`Bin path: ${binPath}`);
-
+process.env["DEBUG"] = true;
+console.log(`Debug ${process.env["DEBUG"]}`)
 
 // Checking environment variables
 const envVariables = ['BASE', 'NODEJS', 'PYTHON', 'TOR', 'ISLANDS_DATA', 'APPS', 'CONFIG'];
@@ -78,7 +77,6 @@ process.env["TOR_HOST"] = '127.0.0.1';
 
 
 
-
 // Set tor env variables
 // launch tor
 let torCmdArgs = ["-f", torrcPath];
@@ -86,6 +84,12 @@ const tor = new CoreUnit(process.env["TOR"], torCmdArgs, false);
 tor.launch();
 
 let chatCmdArgs = [`${process.env["APPS"]}/chat/server/app.js`];
+if (process.env["DEBUG"]){
+    console.log("Setting DEUBG flag for chat")
+    chatCmdArgs.push("--debug")
+} else {
+    console.log("DEBUG IS OFF!")
+}
 const chat = new CoreUnit(process.env["NODEJS"], chatCmdArgs, true)
 chat.launch();
 

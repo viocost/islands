@@ -1,99 +1,20 @@
 #+TITLE: Islands development strategy and tasks
 
+
 * Current tasks
-** PROJ New client
-*** Milestones
-**** DONE Messges loading, topic activation, metadata settings loading
-CLOSED: [2019-11-18 Mon 18:54]
-**** DONE Vault registration
-CLOSED: [2019-11-19 Tue 15:53]
-**** DONE Create topic
-CLOSED: [2019-11-21 Thu 19:52]
-***** DONE Init session made with one request
-CLOSED: [2019-11-21 Thu 19:52]
-**** DONE Save session key on login
-CLOSED: [2019-11-21 Thu 19:52]
 
-**** DONE Split vault to multiple blobs
-CLOSED: [2019-11-21 Thu 19:52]
-**** TODO Vault update
-**** TODO Create/delete/rename invites
-***** DONE Create invite
-CLOSED: [2019-11-21 Thu 23:09]
-***** TODO Delete invite
-***** TODO Rename invite
-**** DONE Settings update
-CLOSED: [2019-11-22 Fri 22:17]
-**** DONE Topic join
-CLOSED: [2019-11-26 Tue 18:35]
-**** TODO Members' nicknames aliases management
-**** TODO Files transfer
-**** TODO Reconnection
-**** TODO Send/receive messages
-**** TODO Unread messages display
-**** TODO Boot member/leave
-**** TODO Mute topics
-**** TODO Mute members
-**** TODO Light theme / dark theme
-**** TODO Vault password change
-**** TODO Delete topic
+Chat, file transfer, chat admin, island admin, file transfer admin, updates.
+I think that's the "tasks" that the user performs with the single-page app.
 
-***** DONE Delete history and vault record
-CLOSED: [2019-11-22 Fri 20:57]
-***** TODO Delete topic authority and take down hidden services
-
-
-*** UI todo list
-**** TODO Load/update members list
-**** TODO Load/update invites list
-**** TODO Wire invites buttons
-**** TODO Selected topic name in the header
-**** TODO Topic selection handler
-
-
-*** TODO Deal with uninitialized settings on topic open
-*** TODO Where to put connection indicator
-
-
-*** TODO REFACTOR ASSISTANTS! self must be always FIRST ARGUMENT!!!
-*** TODO Request invites
-
-*** PROJ Topic creation
-- Proper error handling
-- Vault update when topic is created, joined or deleted
-**** TODO Topic create
-**** TODO Topic join
-**** TODO Topic Delete
-
-
-*** TODO Implement error processing with general message
-*** TODO Probably... Vault settings?
-Mute some topic notifications?
-*** TODO Fix client-server protocol such that each topic listens to messages
-*** PROJ Rework the chat interface
-**** DONE Draft static design of the chat page
-CLOSED: [2019-11-14 Thu 21:27]
-
-**** DONE draft layout wireframes
-CLOSED: [2019-11-14 Thu 21:27]
-
-**** TODO When tab is activated - the cursor must go to new message textarea
-**** TODO Scrolling behavior
-<2019-09-10 Tue>
-**** TODO White spaces in messages
-<2019-09-10 Tue>
-*** TODO BUG: on reconnection mute settings are reset
-
-*** TODO debug reconnection 
-
-*** TODO Figure out socket.io connection bugs and dead sockets
-*** TODO BUG! On scroll messages loaded and appended multiple times
-
+** TODO Implement debug mode in all core scripts
+** TODO Admin vault registration
+When island is virgin there must be a vault registration page, where admin
+enters password twice.
 
 * Bugs
 ** TODO test EDGE browser
 
-* Feature requests
+* Feature requests for later....
 ** TODO Backup strategy <2019-09-08 Sun>
 ** PROJ Ability to mute/unmute particular participant
 ** PROJ Implement ECC cryptography

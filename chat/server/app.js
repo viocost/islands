@@ -11,7 +11,7 @@ const Logger = require("./classes/libs/Logger.js");
 const helpRouter = require("./helpRouter.js");
 const vaultRouter = require("./vaultRouter");
 const adminRouter = require("./adminRouter");
-const chatRouter = require("./chatRouter");
+const appRouter = require("./appRouter");
 const HSVaultMap = require("./classes/libs/HSVaultMap");
 const mobileRouter = require("./mobileRouter");
 
@@ -53,6 +53,7 @@ process.argv.forEach((val, index, array)=>{
             adminKeysPath = process.argv[index+1];
             break
         case "--debug":
+            console.log("Setting global debug to true");
             global.DEBUG = true;
             break
     }
@@ -145,10 +146,10 @@ HSVaultMap.init(config.hsVaultMap);
 adminRouter.init(app, config, HOST, PORT, adminKeyPath, updatePath);
 vaultRouter.init(config);
 
-app.use("/", chatRouter.router);
+app.use("/", appRouter.router);
 //app.use("/mobile", mobileRouter.router);
 //app.use("/help", helpRouter);
-//app.use("/chat", chatRouter.router);
+//app.use("/vault", vaultsPath.router);
 app.use("/admin", adminRouter.router);
 
 

@@ -1,6 +1,26 @@
 #!/bin/bash
 #
-# This script runs chat in new core
+# This script is for development work only
+#
+
+
+
+USAGE="
+This script is for dev work only
+It replaces chat source and engine source in core directory
+provided as -p argument and launches linux.sh.
+
+USAGE:
+./run.sh -p <path/to/core> [ OPTIONS ]
+
+-p, --p Path to islands core. This parameter is required.
+
+-db, --debug Run in debug mode
+
+-bf, --build-front Run build front script before running to recompile front-end
+
+-h, --help print this message
+"
 
 
 while [[ $# -gt 0 ]]
@@ -30,6 +50,11 @@ case $key in
 esac
 done
 
+if [[ $HELP ]]; then
+    echo $USAGE
+    exit 0
+fi
+
 # Assuming new core structure
 # CORE_PATH is path to islands root
 # Setting other paths
@@ -37,7 +62,10 @@ done
 RUN=${CORE_PATH}/linux.sh
 APPS_PATH=${CORE_PATH}/apps
 CHAT_PATH=${APPS_PATH}/chat
+ENGINE_PATH=${APPS_PATH}/engine
 CHAT_SOURCE_PATH=$(readlink -f .)
+ENGINE_SOURCE_PATH=${CHAT_SOURCE_PATH}/../core/services/engine
+
 
 
 if [[ ! -d ${CORE_PATH} ]]; then
@@ -57,8 +85,12 @@ fi
 
 
 if [[ $BUILD_FRONT ]]; then
-    npm run build
-    npm prune --production
+    npm run build-front
+    # npm prune --production
 fi
 
 cp -r $CHAT_SOURCE_PATH $APPS_PATH
+cp -r $ENGINE_SOURCE_PATH $APPS_PATH
+
+cd $CORE_PATH
+${RUN}

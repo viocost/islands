@@ -167,8 +167,8 @@ class Logger{
 
     //prints log message to console if required
     static _consoleLog(msg, data, level){
-        if (!CONFIG.console){
-            //console turned off
+        if (!global.DEBUG){
+            console.log("Global debug is off")
             return
         }
 
