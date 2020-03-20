@@ -58,12 +58,20 @@ if (!process.env["TOR_PASSWD_HASH"]){
 
 console.log(`TOR HASH IS ${process.env["TOR_PASSWD_HASH"]}`)
 
+//preparing tor data directory
+let torDir = path.join(process.env["ISLANDS_DATA"], "tor")
+if (!fs.existsSync(torDir)){
+    fs.mkdirSync(torDir);
+}
+
+console.log(`Tor data directory is ${torDir}`);
 //generate torrc
 let torConfig = `
 ControlPort ${config.tor.torControlPort}
 HashedControlPassword ${process.env["TOR_PASSWD_HASH"]}
 ExitPolicy ${config.tor.torExitPolicy}
 SOCKSPort ${config.tor.torSOCKSPort}
+DataDirectory ${torDir}
 `
 let torrcPath = path.join(process.env['CONFIG'], "torrc");
 fs.writeFileSync(torrcPath, torConfig);
@@ -79,7 +87,7 @@ process.env["TOR_HOST"] = '127.0.0.1';
 // Set tor env variables
 // launch tor
 let torCmdArgs = ["-f", torrcPath];
-const tor = new CoreUnit(process.env["TOR"], torCmdArgs, false);
+const tor = new CoreUnit(process.env["TOR"], torCmdArgs, true);
 tor.launch();
 
 let chatCmdArgs = [`${process.env["APPS"]}/chat/server/app.js`];
