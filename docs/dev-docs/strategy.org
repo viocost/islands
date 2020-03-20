@@ -2,18 +2,46 @@
 
 
 * Current tasks
-
-Chat, file transfer, chat admin, island admin, file transfer admin, updates.
-I think that's the "tasks" that the user performs with the single-page app.
-
 ** TODO Implement debug mode in all core scripts
 ** TODO Admin vault registration
 When island is virgin there must be a vault registration page, where admin
 enters password twice.
 
-* Bugs
-** TODO test EDGE browser
 
+* Roadmap
+Chat, file transfer, chat admin, island admin, file transfer admin, updates.
+I think that's the "tasks" that the user performs with the single-page app.
+
+** Finish implementation chat 2.0
+
+** Integrate admin
+
+** Integrate file management
+
+
+
+
+
+
+* Chat feature checklist
+** TODO Vault registration
+** TODO Join topic
+** TODO Create invite
+** TODO Boot member
+** TODO Send message
+** TODO New message count
+** TODO Private messages
+** TODO Member alias
+** TODO Topic alias
+
+** DONE Vault Login
+CLOSED: [2020-03-20 Fri 17:40]
+
+** DONE Create topic
+CLOSED: [2020-03-20 Fri 17:40]
+** DONE Delete topic CLOSED: [2020-03-20 Fri 17:42]
+* Bugs
+** TODO Collapsing / expanding topic works incorrectly
 * Feature requests for later....
 ** TODO Backup strategy <2019-09-08 Sun>
 ** PROJ Ability to mute/unmute particular participant
@@ -234,3 +262,6 @@ CLOSED: [2020-03-16 Mon 12:34]
 
 *** DONE implement source verification / install script
 CLOSED: [2020-03-16 Mon 12:34]
+
+** DONE test EDGE browser
+CLOSED: [2020-03-20 Fri 11:42]

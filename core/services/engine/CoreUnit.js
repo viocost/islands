@@ -74,6 +74,10 @@ class CoreUnit{
         })
     }
 
+    restart(){
+        this.process.kill("SIGTERM");
+    }
+
 
     kill(){
         console.log("Killing core unit")

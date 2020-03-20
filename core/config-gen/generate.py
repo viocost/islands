@@ -28,6 +28,7 @@ def main(*args, **kwargs):
             "tor": {
                 "torSOCKSPort": 15140,
                 "torControlPort": 15141,
+                "hiddenServicePort": 15142,
                 "torExitPolicy": "reject *:*",
             },
             "data": ""

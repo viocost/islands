@@ -9,11 +9,8 @@ const { readdirSync } = require("fs");
 const crypto = require("crypto");
 
 
-process.env["DEBUG"] = true;
-console.log(`Debug ${process.env["DEBUG"]}`)
-
 // Checking environment variables
-const envVariables = ['BASE', 'NODEJS', 'PYTHON', 'TOR', 'ISLANDS_DATA', 'APPS', 'CONFIG'];
+const envVariables = ['BASE', 'NODEJS', 'TOR', 'ISLANDS_DATA', 'APPS', 'CONFIG'];
 const osEnv = {
     "darwin": ['DYLD_LIBRARY_PATH'],
     "linux": ['LD_LIBRARY_PATH'],
@@ -31,9 +28,10 @@ for (let env of envVariables.concat(osEnv[platform()])){
 
 //Parse islands config
 const config = JSON.parse(fs.readFileSync(path.join(process.env["CONFIG"], "island_conf.json")));
-if (!config.tor ||
-    !config.tor.torControlPort ||
-    !config.tor.torExitPolicy  ||
+if (!config.tor                    ||
+    !config.tor.torControlPort     ||
+    !config.tor.torExitPolicy      ||
+    !config.tor.hiddenServicePort  ||
     !config.tor.torSOCKSPort){
         console.log(`Missing required tor parameter in config.`)
         process.exit(1);
@@ -62,9 +60,10 @@ console.log(`TOR HASH IS ${process.env["TOR_PASSWD_HASH"]}`)
 
 //generate torrc
 let torConfig = `
-ControlPort ${config.tor.torControlPort}\n
-HashedControlPassword ${process.env["TOR_PASSWD_HASH"]}\n
-ExitPolicy ${config.tor.torExitPolicy}\n
+ControlPort ${config.tor.torControlPort}
+HashedControlPassword ${process.env["TOR_PASSWD_HASH"]}
+ExitPolicy ${config.tor.torExitPolicy}
+SOCKSPort ${config.tor.torSOCKSPort}
 `
 let torrcPath = path.join(process.env['CONFIG'], "torrc");
 fs.writeFileSync(torrcPath, torConfig);
@@ -72,7 +71,7 @@ fs.writeFileSync(torrcPath, torConfig);
 console.log("Launching tor...")
 process.env["TOR_CONTROL_PORT"] = config.tor.torControlPort;
 process.env["TOR_CONTROL_HOST"] = '127.0.0.1';
-process.env["TOR_PORT"] = 15140;
+process.env["TOR_PORT"] = config.tor.hiddenServicePort;
 process.env["TOR_HOST"] = '127.0.0.1';
 
 
@@ -87,9 +86,15 @@ let chatCmdArgs = [`${process.env["APPS"]}/chat/server/app.js`];
 if (process.env["DEBUG"]){
     console.log("Setting DEUBG flag for chat")
     chatCmdArgs.push("--debug")
-} else {
-    console.log("DEBUG IS OFF!")
 }
+
+console.log(`In engine. Chat port is: ${process.env["CHAT_PORT"]}`);
+
+if (process.env["CHAT_PORT"] && parseInt(process.env["CHAT_PORT"]) < 65536){
+    chatCmdArgs.push("-p")
+    chatCmdArgs.push(process.env["CHAT_PORT"]);
+}
+
 const chat = new CoreUnit(process.env["NODEJS"], chatCmdArgs, true)
 chat.launch();
 
@@ -114,7 +119,7 @@ const rl = readline.createInterface({
 
 
 
-rl.setPrompt("island:> ")
+rl.setPrompt(process.env["PROMPT"] ? `${process.env["PROMPT"]}:>` : "island:> ")
 rl.prompt
 
 
@@ -122,7 +127,11 @@ rl.on('line', (line)=>{
     console.log("processing command");
     switch(line.trim()){
         case 'help':
-            console.log("Wassup?");
+            console.log("Here will be help message");
+            break;
+        case "rc":
+            console.log("Restarting chat...")
+            chat.restart()
             break;
         case 'start':
             console.log("Starting services")

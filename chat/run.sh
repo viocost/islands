@@ -34,6 +34,16 @@ case $key in
     shift
     shift
     ;;
+    --chat-port)
+    CHAT_PORT="$2"
+    shift
+    shift
+    ;;
+    --prompt)
+    export PROMPT="$2"
+    shift
+    shift
+    ;;
     -db|--debug)
     DEBUG=true
     shift
@@ -59,12 +69,21 @@ fi
 # CORE_PATH is path to islands root
 # Setting other paths
 
+
 RUN=${CORE_PATH}/linux.sh
+if [[ ! -f ${RUN} ]]; then
+    echo "Run file not found inside the core"
+    exit 1
+fi
+[[ ! -z $CHAT_PORT  ]] && RUN="${RUN} -p ${CHAT_PORT}" && echo RUN COMMAND IS ${RUN}
 APPS_PATH=${CORE_PATH}/apps
 CHAT_PATH=${APPS_PATH}/chat
 ENGINE_PATH=${APPS_PATH}/engine
 CHAT_SOURCE_PATH=$(readlink -f .)
+
 ENGINE_SOURCE_PATH=${CHAT_SOURCE_PATH}/../core/services/engine
+DRIVERS_SOURCE_PATH=${CHAT_SOURCE_PATH}/../core/drivers
+
 
 
 
@@ -73,10 +92,6 @@ if [[ ! -d ${CORE_PATH} ]]; then
     exit 1
 fi
 
-if [[ ! -f ${RUN} ]]; then
-    echo "Run file not found inside the core"
-    exit 1
-fi
 
 if [[ ! -d  ${APPS_PATH} ]]; then
     echo "Apps path not found instde the core"
@@ -91,6 +106,7 @@ fi
 
 cp -r $CHAT_SOURCE_PATH $APPS_PATH
 cp -r $ENGINE_SOURCE_PATH $APPS_PATH
+cp -r ${DRIVERS_SOURCE_PATH}/*  $CORE_PATH
 
 cd $CORE_PATH
 ${RUN}

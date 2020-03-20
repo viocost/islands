@@ -160,7 +160,6 @@ function initUI(){
 
 function setupSidePanelListeners(){
 
-
     util.$("#btn-new-topic").onclick = processNewTopicClick;
     util.$("#btn-join-topic").onclick = processJoinTopicClick;
 

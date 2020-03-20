@@ -37,8 +37,8 @@ global.DEBUG = false;
 
 let configPath = path.join(__dirname, 'config', 'config.json');
 let historyPath = "../history/";
-//let adminKeysPath = "../keys/";
-//let servicePath = "../service/";
+let adminKeysPath = "../keys/";
+let servicePath = "../service/";
 let logger;
 
 process.argv.forEach((val, index, array)=>{
@@ -92,7 +92,7 @@ const config = {
     "basePath":           basePath,
     "vaultIdLength":      64,
     "torConnector": {
-        "hiddenServiceHOST":torHost,
+        "hiddenServiceHOST": torHost,
         "hiddenServicePORT": torPort,
         "torListenerPort": 80,
         "torControlHost": torControlHost,
