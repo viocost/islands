@@ -58,7 +58,7 @@ class InviteAssistant{
         envelope.setReturnOnFail(true);
 
         Logger.debug("Sending invite request to TA...", {cat: "invite"})
-        await self.crossIslandMessenger.send(envelope, 5000, (envelope)=>{
+        await self.crossIslandMessenger.send(envelope, 20000, (envelope)=>{
             Logger.info("INVITE REQUEST TIMEOUT: dest: " + envelope.destination)
             envelope.error = "Invite request timeout. If you have just created the topic, allow some time for invite hidden service to be published and try again. That ususally takes 20sec - 2min.";
             Coordinator.notify(Internal.INVITE_REQUEST_TIMEOUT, envelope);

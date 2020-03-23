@@ -76,6 +76,7 @@ if [[ ! -f ${RUN} ]]; then
     exit 1
 fi
 [[ ! -z $CHAT_PORT  ]] && RUN="${RUN} -p ${CHAT_PORT}" && echo RUN COMMAND IS ${RUN}
+[[ ! -z $DEBUG ]] && RUN="${RUN} -d"  && echo RUN COMMAND IS ${RUN}
 APPS_PATH=${CORE_PATH}/apps
 CHAT_PATH=${APPS_PATH}/chat
 ENGINE_PATH=${APPS_PATH}/engine

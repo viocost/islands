@@ -216,6 +216,7 @@ class TorConnector extends EventEmitter{
         Logger.debug("Calling hidden peer", {
             origin: onionOrig,
             destination: onionDest,
+            cat: "connection"
         });
 
         const agent = new SocksProxyAgent({
@@ -242,6 +243,8 @@ class TorConnector extends EventEmitter{
                 origin: onionOrig,
                 destination: onionDest,
                 attempt: attempt,
+                socksHost: socksProxyHost,
+                socksPort: socksProxyPort,
                 cat: "connection"
             });
             socket.open();

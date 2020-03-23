@@ -168,7 +168,6 @@ class Logger{
     //prints log message to console if required
     static _consoleLog(msg, data, level){
         if (!global.DEBUG){
-            console.log("Global debug is off")
             return
         }
 

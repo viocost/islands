@@ -2,7 +2,16 @@
 
 
 * Current tasks
-** TODO Implement debug mode in all core scripts
+** TODO Invites are not created. Timeout. (Prob wrong proxy port)
+** TODO Need better dev environment with single running tor instance and multiple islands
+*** TODO Implement source update script
+
+** DONE Logger filter not working
+All is working. To apply filtering edit logger conf file in _data_ dir.
+CLOSED: [2020-03-23 Mon 12:16]
+** DONE Implement debug mode in all core scripts
+CLOSED: [2020-03-21 Sat 13:46]
+
 ** TODO Admin vault registration
 When island is virgin there must be a vault registration page, where admin
 enters password twice.
