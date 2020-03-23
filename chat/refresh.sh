@@ -35,7 +35,10 @@ done
     }
 }
 
-echo ISLANDS: ${ISLANDS[@]}
+
+CHAT_SOURCE_PATH=$(readlink -f $(pwd))
+ENGINE_PATH=$(readlink -f $(pwd)/../core/services/engine)
+DRIVERS_PATH=$(readlink -f $(pwd)/../core/drivers)
 
 
 for IPATH in ${ISLANDS[@]}; do
@@ -48,10 +51,11 @@ for IPATH in ${ISLANDS[@]}; do
         continue
     }
 
-    CHAT_SOURCE_PATH=$(readlink -f $(pwd))
     APPS_PATH="${IPATH}/apps"
 
     cp -r $CHAT_SOURCE_PATH $APPS_PATH
+    cp -r $ENGINE_PATH $APPS_PATH
+    cp -r ${DRIVERS_PATH}/*  $IPATH
 
     echo Island at ${IPATH} updated.
 done

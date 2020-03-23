@@ -24,7 +24,7 @@ let torControlHost = '127.0.0.1';
 let torControlPort = 9051;
 let torControlPassword = "";
 let socksProxyHost = "127.0.0.1";
-let socksProxyPort = "9050";
+let torSOCKSPort = "9050";
 
 class TorConnector extends EventEmitter{
 
@@ -48,6 +48,7 @@ class TorConnector extends EventEmitter{
         this.torControlPort = torOpts.torControlPort || 9051;
         this.torControlHost = torOpts.torControlHost || torControlHost;
         this.torControlPassword = torOpts.torControlPassword || torControlPassword;
+        this.torSOCKSPort = torOpts.torSOCKSPort || torSOCKSPort;
         this.reconnnectAttempts = 7;
         this.reconnectDelay = 15000;
 
@@ -135,7 +136,7 @@ class TorConnector extends EventEmitter{
                 this.setPendingConnection(onionDest);
                 const agent = new SocksProxyAgent({
                     socksHost: self.httpHOST,
-                    socksPort: self.httpPORT
+                    socksPort: self.torSOCKSPort
                 });
                 const endpoint = this.getWSOnionConnectionString(onionDest);
                 let socket = ioClient(endpoint + '/file', {
@@ -222,7 +223,7 @@ class TorConnector extends EventEmitter{
 
         const agent = new SocksProxyAgent({
             socksHost: self.httpHOST,
-            socksPort: self.httpPORT
+            socksPort: self.torSOCKSPort
         });
 
         const endpoint = self.getWSOnionConnectionString(onionDest);
@@ -240,7 +241,7 @@ class TorConnector extends EventEmitter{
         });
 
         let attemptConnection = ()=>{
-            Logger.debug("Attempting !!! to call hidden peer", {
+            Logger.debug("Attempting to call hidden peer", {
                 origin: onionOrig,
                 destination: onionDest,
                 attempt: attempt,

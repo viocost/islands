@@ -7,6 +7,7 @@ const { execFileSync } = require("child_process")
 const { platform } = require("os");
 const { readdirSync } = require("fs");
 const crypto = require("crypto");
+const hound = require('hound')
 
 
 // Checking environment variables
@@ -81,7 +82,7 @@ process.env["TOR_CONTROL_PORT"] = config.tor.torControlPort;
 process.env["TOR_CONTROL_HOST"] = '127.0.0.1';
 process.env["TOR_PORT"] = config.tor.hiddenServicePort;
 process.env["TOR_HOST"] = '127.0.0.1';
-
+process.env["TOR_SOCKS_PORT"] = config.tor.torSOCKSPort;
 
 
 // Set tor env variables
@@ -117,6 +118,25 @@ for (let app of appDirs){
     console.log(`Starting ${app}`);
 }
 
+if (process.env["DEBUG"]){
+    console.log("Enabling chat debug source watcher")
+    let watcher = hound.watch(path.join(process.env["APPS"], "chat"))
+
+    watcher.on("change", ()=>{
+        chat.restart()
+        console.log("Something has changed")
+    })
+
+    watcher.on("create", ()=>{
+        console.log("Something has been created")
+        chat.restart()
+    })
+
+    watcher.on("delete", ()=>{
+        console.log("Something has been deleted")
+        chat.restart()
+    })
+}
 
 
 const rl = readline.createInterface({
