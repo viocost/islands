@@ -130,12 +130,17 @@ const rl = readline.createInterface({
 rl.setPrompt(process.env["PROMPT"] ? `${process.env["PROMPT"]}:>` : "island:> ")
 rl.prompt
 
+const usage = `
+    help - print this message
+    rc   - restart chat
+    exit - exit
+`
 
 rl.on('line', (line)=>{
     console.log("processing command");
     switch(line.trim()){
         case 'help':
-            console.log("Here will be help message");
+            console.log(usage);
             break;
         case "rc":
             console.log("Restarting chat...")

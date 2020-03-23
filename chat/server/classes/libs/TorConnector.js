@@ -51,6 +51,7 @@ class TorConnector extends EventEmitter{
         this.reconnnectAttempts = 7;
         this.reconnectDelay = 15000;
 
+
         //maps socketID <=> onion address
         //For all active connections
         this.connectionsIncoming = new Bimap();
@@ -64,7 +65,6 @@ class TorConnector extends EventEmitter{
         this.pendingConnections = {};
         this.filePendingConnections = {};
 
-        console.log("Setting password for tor control to " + this.torControlPassword);
         this.torController = new TorController({
             host: this.torControlHost,
             port: this.torControlPort,
@@ -122,6 +122,7 @@ class TorConnector extends EventEmitter{
     }
 
     callPeerFileTransfer(onionDest){
+        let self = this;
         return new Promise((resolve, reject)=>{
             try{
                 console.log("CALLING HIDDEN PEER: " + onionDest  + " TO GET THE FILE");
@@ -133,8 +134,8 @@ class TorConnector extends EventEmitter{
 
                 this.setPendingConnection(onionDest);
                 const agent = new SocksProxyAgent({
-                    socksHost: socksProxyHost,
-                    socksPort: socksProxyPort
+                    socksHost: self.httpHOST,
+                    socksPort: self.httpPORT
                 });
                 const endpoint = this.getWSOnionConnectionString(onionDest);
                 let socket = ioClient(endpoint + '/file', {
@@ -220,8 +221,8 @@ class TorConnector extends EventEmitter{
         });
 
         const agent = new SocksProxyAgent({
-            socksHost: socksProxyHost,
-            socksPort: socksProxyPort
+            socksHost: self.httpHOST,
+            socksPort: self.httpPORT
         });
 
         const endpoint = self.getWSOnionConnectionString(onionDest);
@@ -239,12 +240,12 @@ class TorConnector extends EventEmitter{
         });
 
         let attemptConnection = ()=>{
-            Logger.debug("Attempting to call hidden peer", {
+            Logger.debug("Attempting !!! to call hidden peer", {
                 origin: onionOrig,
                 destination: onionDest,
                 attempt: attempt,
-                socksHost: socksProxyHost,
-                socksPort: socksProxyPort,
+                socksHost: self.httpHOST,
+                socksPort: self.httpPORT,
                 cat: "connection"
             });
             socket.open();
