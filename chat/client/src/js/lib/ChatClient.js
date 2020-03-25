@@ -440,7 +440,7 @@ export class ChatClient{
             request.signMessage(privateKey);
             console.log("Sending topic join request");
             let sendStart = new Date();
-            this.vault.pendingInvites[inviteCode] = {
+            this.vault.pendingInvites[inviteID] = {
                 nickname: nickname,
             }
             self.messageQueue.enqueue(request);
@@ -459,7 +459,7 @@ export class ChatClient{
     notifyJoinSuccess(request, self){
         console.log("Join successfull received!");
         let topicInfo = self.pendingTopicJoins[request.body.inviteCode];
-        self.initSettingsOnTopicJoin(topicInfo, request);
+        this.initSettingsOnTopicJoin(topicInfo, request);
 
 	console.log("new topic pkfp: " + JSON.stringify(topicInfo));
         self.emit("topic_join_success", {

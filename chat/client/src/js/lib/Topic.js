@@ -11,7 +11,7 @@ import { INSPECT_MAX_BYTES } from "buffer";
 const INITIAL_NUM_MESSAGES = 25
 
 export class Topic{
-    constructor(pkfp, name, key, comment){
+    constructor(version, pkfp, name, key, comment){
         WildEmitter.mixin(this);
         this.pkfp = pkfp;
         this.name = name; // Topic alias. Not shared.
@@ -25,6 +25,7 @@ export class Topic{
         this.messages = [];
         this.settings = {};
         this.invites = {};
+        this.version  = version;
         this.getPrivateKey = ()=>{ return key }
 
         // Meaning event listeners are set for arrivalHub
@@ -61,7 +62,10 @@ export class Topic{
     }
     // ---------------------------------------------------------------------------------------------------------------------------
     // INITIALIZING
-    bootstrap(self, messageQueue, arrivalHub, version){
+    bootstrap(self,
+              messageQueue,
+              arrivalHub,
+              version){
         self.messageQueue = messageQueue;
         self.arrivalHub = arrivalHub;
         self.arrivalHub.on(self.pkfp, (msg)=>{

@@ -174,7 +174,12 @@ class TopicAuthority extends EventEmitter{
             pkfp: inviteeInfo.pkfp
         });
         await this.consumeInvite(inviteString, invite.requesterPkfp);
-        console.log("TA CURRENT METADATA WITH NEW MEMBER JOINED: " + this.getCurrentMetadata().toBlob())
+
+        Logger.debug("Topic join: ", {
+            nickname: inviteeInfo.nickname,
+            cat: "topic_join"
+        })
+
         return {
             metadata: this.getCurrentMetadata().toBlob(),
             inviterNickname: inviterNickname,

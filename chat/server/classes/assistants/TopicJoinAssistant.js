@@ -78,7 +78,9 @@ class TopicJoinAssistant {
 
         if (!Util.verify(vault, publicKey, vaultSign)) throw new Error("Vault signature was not verified!")
 
-        const pendingJoinRequest = new OutgoingPendingJoinRequest(request.headers.pkfpSource,
+        const pendingJoinRequest = new OutgoingPendingJoinRequest(
+            request.headers.pkfpSource,
+            request.body.inviteCode,
             request.body.invitee.publicKey,
             hsData.serviceID,
             hsData.privateKey,
@@ -128,6 +130,7 @@ class TopicJoinAssistant {
             response.body.metadata = taResponse.body.metadata;
             response.body.inviterNickname = taResponse.body.inviterNickname;
             response.body.inviterPkfp = taResponse.body.inviterPkfp;
+            response.body.inviteCode = pendingRequest.inviteCode;
             let session = self.sessionManager.getSessionBySessionID(pendingRequest.vaultId);
             if(!session){
                 Logger.warn(`Session ${pendingRequest.vaultId} not found.`)

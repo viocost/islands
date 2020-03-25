@@ -6,6 +6,7 @@ import { iCrypto } from "./iCrypto";
 import { WildEmitter } from "./WildEmitter";
 import { Message } from "./Message";
 import { Events, Internal  } from "../../../../common/Events";
+import { ChatUtility } from "./ChatUtility";
 import { XHR } from "./xhr"
 import * as semver from "semver";
 
@@ -198,6 +199,7 @@ export class Vault{
             for(let pkfp of Object.keys(unpackedTopics)){
                 console.log(`INITIALIZING TOPIC ${pkfp}`);
                 this.topics[pkfp] = new Topic(
+                    this.version,
                     pkfp,
                     unpackedTopics[pkfp].name,
                     unpackedTopics[pkfp].key,
@@ -381,7 +383,6 @@ export class Vault{
         return ic.get("res")
     }
 
-    // Called
     addNewTopic(self, data){
 
         //if(!Message.verifyMessage(self.sessionKey, data)){
@@ -393,32 +394,35 @@ export class Vault{
         let topicData = self.decryptTopic(vaultRecord, self.password);
         let pkfp = topicData.pkfp;
         let newTopic = new Topic(
+            this.version,
             pkfp,
             topicData.name,
             topicData.key,
-            topicData.comment,
+            topicData.comment
         )
 
+        console.log(`New topic initialized: ${pkfp}, ${topicData.name} `)
         newTopic.loadMetadata(metadata);
         newTopic.bootstrap(newTopic, self.messageQueue, self.arrivalHub, self.version);
         self.topics[pkfp] = newTopic;
 
         if (self.pendingInvites.hasOwnProperty(data.body.inviteCode)){
-            console.log("Initialize settings  on topic join");
-            self.initSettingsOnTopicJoin(self, pkfp, data)
+            let inviteeNickname = self.pendingInvites[data.body.inviteCode].nickname
+            console.log(`Initialize settings  on topic join. Invitee ${inviteeNickname}`);
+            self.initSettingsOnTopicJoin(self, pkfp, inviteeNickname, data)
         }
         self.emit(Events.TOPIC_CREATED, pkfp);
     }
 
 
-    initSettingsOnTopicJoin(self, pkfp, request){
+    initSettingsOnTopicJoin(self, pkfp, inviteeNickname, request){
         let topic = self.topics[pkfp];
         let privateKey = topic.privateKey;
         let inviterNickname = ChatUtility.decryptStandardMessage(request.body.inviterNickname, privateKey);
         let inviterPkfp = request.body.inviterPkfp;
-        let settings = new ClientSettings(self.version, nickname, pkfp);
+        let settings = new ClientSettings(self.version, inviteeNickname, pkfp);
         settings.setNickname(inviterPkfp, inviterNickname);
-        self.saveClientSettings(settings, privateKey)
+        topic.saveClientSettings(settings, privateKey)
     }
 
 
@@ -508,7 +512,7 @@ export class Vault{
 
     addTopic(pkfp, name, privateKey, comment){
         if (this.topics.hasOwnProperty(pkfp)) throw new Error("Topic with such id already exists");
-        let newTopic = new Topic(pkfp, name, privateKey, comment)
+        let newTopic = new Topic(this.version, pkfp, name, privateKey, comment)
         this.topics[pkfp] = newTopic;
         return newTopic
     }
