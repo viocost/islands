@@ -2,8 +2,8 @@ const Err = require("../libs/IError.js");
 const iCrypto = require("../libs/iCrypto.js");
 
 class Invite{
-    constructor(taResidence = Err.required(),
-                taPkfp = Err.required(),
+    constructor(taResidence = Err.required("Missing TA Residence"),
+                taPkfp = Err.required("Missing taPkfp"),
                 inviteCode){
         this.residence = taResidence;
         this.pkfp = taPkfp;

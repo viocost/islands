@@ -125,7 +125,7 @@ class TopicJoinAssistant {
             let response = new Message();
             response.setSource("island");
             response.setCommand(Internal.JOIN_TOPIC_SUCCESS);
-            response.setDest(pendingRequest.vaultId);
+            response.setDest(pendingRequest.inviteCode);
             response.body.vaultRecord = pendingRequest.vaultRecord;
             response.body.metadata = taResponse.body.metadata;
             response.body.inviterNickname = taResponse.body.inviterNickname;
@@ -260,7 +260,7 @@ class TopicJoinAssistant {
             let msg = new Message()
             msg.setCommand(Internal.JOIN_TOPIC_FAIL)
             msg.setSource("island")
-            msg.setDest(vaultId)
+            msg.setDest(pendingRequest.inviteCode)
             msg.body.errorMsg = errMsg;
             let session = self.sessionManager.getSessionByConnectionId(connId);
             if (!session){

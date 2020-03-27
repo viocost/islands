@@ -85,17 +85,53 @@ export class Vault{
         })
     }
 
+    // Given raw topic data as arguments encrytps with password and returns cipher
+    prepareVaultTopicRecord(version = Err.required("Version"),
+                            pkfp = Err.required("pkfp"),
+                            privateKey = Err.required("Private key"),
+                            name = Err.required("Name"),
+                            settings,
+                            comment){
+        let topicBlob = JSON.stringify({
+            version: version,
+            name:  name,
+            key:  privateKey,
+            settings: settings,
+            comment: comment,
+            pkfp: pkfp
+        })
+        let ic = new iCrypto()
+        ic.createNonce("salt", 128)
+            .encode("salt", "hex", "salt-hex")
+            .createPasswordBasedSymKey("key", this.password, "salt-hex")
+            .addBlob("topic", topicBlob)
+            .AESEncrypt("topic", "key", "cipher", true, "CBC", "utf8")
+            .merge(["salt-hex", "cipher"], "blob")
+            .setRSAKey("priv", this.privateKey, "private")
+            .privateKeySign("cipher", "priv", "sign")
+            .encodeBlobLength("sign", 3, "0", "sign-length")
+            .merge(["blob", "sign", "sign-length"], "res")
+        return ic.get("res")
+    }
+
     initHandlers(){
         let self = this;
         this.handlers = {};
-        this.handlers[Internal.JOIN_TOPIC_SUCCESS] = (msg)=>{
-            console.log("Topic join success! Adding new topic...");
-            self.addNewTopic(self, msg);
-        }
 
-        this.handlers[Internal.JOIN_TOPIC_FAIL] = (msg)=>{
-            console.log(`Join topic attempt has failed: ${msg.body.errorMsg}`);
-        }
+        /////////////////////////////////////////////////////////////////////////////
+        // this.handlers[Internal.JOIN_TOPIC_SUCCESS] = (msg)=>{                   //
+        //     console.log("Topic join success! Adding new topic...");             //
+        //     let topicPkfp = self.addNewTopic(self, msg);                        //
+        //     self.vault.topics[topicPkfp].exchangeNicknames()                    //
+        //                                                                         //
+        //                                                                         //
+        //                                                                         //
+        // }                                                                       //
+        //                                                                         //
+        // this.handlers[Internal.JOIN_TOPIC_FAIL] = (msg)=>{                      //
+        //     console.log(`Join topic attempt has failed: ${msg.body.errorMsg}`); //
+        // }                                                                       //
+        /////////////////////////////////////////////////////////////////////////////
 
         this.handlers[Internal.POST_LOGIN_DECRYPT] = (msg)=>{ self.emit(Internal.POST_LOGIN_DECRYPT, msg) }
         this.handlers[Events.POST_LOGIN_SUCCESS] = ()=>{ self.emit(Events.POST_LOGIN_SUCCESS); }
@@ -354,34 +390,6 @@ export class Vault{
         return JSON.parse(ic.get("topic-plain"));
     }
 
-    // Given raw topic data as arguments encrytps with password and returns cipher
-    prepareVaultTopicRecord(version = Err.required("Version"),
-                            pkfp = Err.required("pkfp"),
-                            privateKey = Err.required("Private key"),
-                            name = Err.required("Name"),
-                            settings,
-                            comment){
-        let topicBlob = JSON.stringify({
-            version: version,
-            name:  name,
-            key:  privateKey,
-            settings: settings,
-            comment: comment,
-            pkfp: pkfp
-        })
-        let ic = new iCrypto()
-        ic.createNonce("salt", 128)
-            .encode("salt", "hex", "salt-hex")
-            .createPasswordBasedSymKey("key", this.password, "salt-hex")
-            .addBlob("topic", topicBlob)
-            .AESEncrypt("topic", "key", "cipher", true, "CBC", "utf8")
-            .merge(["salt-hex", "cipher"], "blob")
-            .setRSAKey("priv", this.privateKey, "private")
-            .privateKeySign("cipher", "priv", "sign")
-            .encodeBlobLength("sign", 3, "0", "sign-length")
-            .merge(["blob", "sign", "sign-length"], "res")
-        return ic.get("res")
-    }
 
     addNewTopic(self, data){
 
@@ -412,6 +420,7 @@ export class Vault{
             self.initSettingsOnTopicJoin(self, pkfp, inviteeNickname, data)
         }
         self.emit(Events.TOPIC_CREATED, pkfp);
+        return pkfp
     }
 
 
@@ -424,10 +433,6 @@ export class Vault{
         settings.setNickname(inviterPkfp, inviterNickname);
         topic.saveClientSettings(settings, privateKey)
     }
-
-
-
-
 
     pack(){
          let vaultBlob =  JSON.stringify({

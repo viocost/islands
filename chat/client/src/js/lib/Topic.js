@@ -354,6 +354,13 @@ export class Topic{
     // ---------------------------------------------------------------------------------------------------------------------------
     // Nickname handling
     //TODO
+    exchangeNicknames(){
+        for(let pkfp of Object.keys(this.participants)){
+
+        }
+
+    }
+
     setMemberAlias(pkfp, alias){
         if(!pkfp){
             throw new Error("Missing required parameter");

@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 265);
+/******/ 	return __webpack_require__(__webpack_require__.s = 266);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -123,6 +123,9 @@ module.exports.Events = Object.freeze({
   SEND_OK: "message_sent",
   SEND_ERROR: "send_fail",
   MESSAGES_UPDATED: "messages_updated",
+  //Nickname exchange
+  NICKNAME_REQUEST: "whats_your_name",
+  NICKNAME_NOTE: "nickname_note",
   NEW_SERVICE_RECORD: "new_service_record",
   //Connection
   CONNECTION_STATUS_CHANGED: "connection_status_changed",
@@ -185,7 +188,7 @@ module.exports.Internal = Object.freeze({
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return iCrypto; });
-/* harmony import */ var core_js_modules_es6_typed_uint16_array__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(207);
+/* harmony import */ var core_js_modules_es6_typed_uint16_array__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(208);
 /* harmony import */ var core_js_modules_es6_typed_uint16_array__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_typed_uint16_array__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(132);
 /* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_1__);
@@ -195,17 +198,17 @@ module.exports.Internal = Object.freeze({
 /* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(133);
 /* harmony import */ var core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(68);
+/* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(69);
 /* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(49);
 /* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_6__);
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(15);
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(71);
+/* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(72);
 /* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_8__);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(4);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_9__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(6);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(5);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_10__);
 
 
@@ -221,11 +224,11 @@ module.exports.Internal = Object.freeze({
 
 
 
-var forge = __webpack_require__(213);
+var forge = __webpack_require__(214);
 
-var sjcl = __webpack_require__(226);
+var sjcl = __webpack_require__(227);
 
-var Base32 = __webpack_require__(227);
+var Base32 = __webpack_require__(228);
 
 var iCrypto = /*#__PURE__*/function () {
   function iCrypto(settings) {
@@ -1760,7 +1763,7 @@ module.exports = {
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(170);
+module.exports = __webpack_require__(171);
 
 
 /***/ }),
@@ -1777,6 +1780,28 @@ module.exports = _classCallCheck;
 
 /***/ }),
 /* 5 */
+/***/ (function(module, exports) {
+
+function _defineProperties(target, props) {
+  for (var i = 0; i < props.length; i++) {
+    var descriptor = props[i];
+    descriptor.enumerable = descriptor.enumerable || false;
+    descriptor.configurable = true;
+    if ("value" in descriptor) descriptor.writable = true;
+    Object.defineProperty(target, descriptor.key, descriptor);
+  }
+}
+
+function _createClass(Constructor, protoProps, staticProps) {
+  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+  if (staticProps) _defineProperties(Constructor, staticProps);
+  return Constructor;
+}
+
+module.exports = _createClass;
+
+/***/ }),
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process, setImmediate, Buffer) {/**
@@ -1787,7 +1812,7 @@ module.exports = _classCallCheck;
  * Copyright (c) 2010-2018 Digital Bazaar, Inc.
  */
 var forge = __webpack_require__(2);
-var baseN = __webpack_require__(217);
+var baseN = __webpack_require__(218);
 
 /* Utilities API */
 var util = module.exports = forge.util = forge.util || {};
@@ -4763,28 +4788,6 @@ util.estimateCores = function(options, callback) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(26), __webpack_require__(60).setImmediate, __webpack_require__(31).Buffer))
 
 /***/ }),
-/* 6 */
-/***/ (function(module, exports) {
-
-function _defineProperties(target, props) {
-  for (var i = 0; i < props.length; i++) {
-    var descriptor = props[i];
-    descriptor.enumerable = descriptor.enumerable || false;
-    descriptor.configurable = true;
-    if ("value" in descriptor) descriptor.writable = true;
-    Object.defineProperty(target, descriptor.key, descriptor);
-  }
-}
-
-function _createClass(Constructor, protoProps, staticProps) {
-  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
-  if (staticProps) _defineProperties(Constructor, staticProps);
-  return Constructor;
-}
-
-module.exports = _createClass;
-
-/***/ }),
 /* 7 */
 /***/ (function(module, exports) {
 
@@ -4831,39 +4834,8 @@ module.exports = _asyncToGenerator;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return IError; });
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__);
-
-
-var IError = /*#__PURE__*/function () {
-  function IError() {
-    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0___default()(this, IError);
-  }
-
-  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1___default()(IError, null, [{
-    key: "required",
-    value: function required(msg) {
-      if (!msg) {
-        msg = "Missing required parameter";
-      }
-
-      throw new Error(msg);
-    }
-  }]);
-
-  return IError;
-}();
-
-/***/ }),
-/* 9 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Message; });
-/* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(71);
+/* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(72);
 /* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(21);
 /* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_1__);
@@ -4871,7 +4843,7 @@ var IError = /*#__PURE__*/function () {
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(6);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(5);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(1);
 
@@ -5005,6 +4977,37 @@ var Message = /*#__PURE__*/function () {
 Message.properties = ["headers", "body", "signature"];
 
 /***/ }),
+/* 9 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return IError; });
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__);
+
+
+var IError = /*#__PURE__*/function () {
+  function IError() {
+    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0___default()(this, IError);
+  }
+
+  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1___default()(IError, null, [{
+    key: "required",
+    value: function required(msg) {
+      if (!msg) {
+        msg = "Missing required parameter";
+      }
+
+      throw new Error(msg);
+    }
+  }]);
+
+  return IError;
+}();
+
+/***/ }),
 /* 10 */
 /***/ (function(module, exports) {
 
@@ -5020,7 +5023,7 @@ if (typeof __g == 'number') __g = global; // eslint-disable-line no-undef
 /* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var store = __webpack_require__(65)('wks');
+var store = __webpack_require__(66)('wks');
 var uid = __webpack_require__(33);
 var Symbol = __webpack_require__(10).Symbol;
 var USE_SYMBOL = typeof Symbol == 'function';
@@ -5035,128 +5038,6 @@ $exports.store = store;
 
 /***/ }),
 /* 12 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ChatUtility; });
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1);
-/* harmony import */ var _common_IError__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(8);
-
-
-
-
-var ChatUtility = /*#__PURE__*/function () {
-  function ChatUtility() {
-    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0___default()(this, ChatUtility);
-  }
-
-  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1___default()(ChatUtility, null, [{
-    key: "decryptStandardMessage",
-
-    /**
-     * Standard message referred to string of form [payload] + [sym key cipher] + [const length sym key length encoded]
-     * All messages in the system encrypted and decrypted in the described way except for chat messages files and streams.
-     * Sym key generated randomly every time
-     * @param blob - cipher blob
-     * @param lengthSymLengthEncoded number of digits used to encode length of the sym key
-     * @param privateKey
-     * @returns {}
-     */
-    value: function decryptStandardMessage() {
-      var blob = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _common_IError__WEBPACK_IMPORTED_MODULE_3__[/* IError */ "a"].required();
-      var privateKey = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _common_IError__WEBPACK_IMPORTED_MODULE_3__[/* IError */ "a"].required();
-      var lengthSymLengthEncoded = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 4;
-      var symKeyLength = parseInt(blob.substr(blob.length - lengthSymLengthEncoded));
-      var symKeyCipher = blob.substring(blob.length - lengthSymLengthEncoded - symKeyLength, blob.length - lengthSymLengthEncoded);
-      var payloadCipher = blob.substring(0, blob.length - lengthSymLengthEncoded - symKeyLength);
-      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_2__[/* iCrypto */ "a"]();
-      ic.addBlob("blobcip", payloadCipher).addBlob("symkcip", symKeyCipher).asym.setKey("privk", privateKey, "private").privateKeyDecrypt("symkcip", "privk", "symk", "hex").AESDecrypt("blobcip", "symk", "blob-raw", true, "CBC", "utf8");
-      return ic.get("blob-raw");
-    }
-  }, {
-    key: "encryptStandardMessage",
-    value: function encryptStandardMessage() {
-      var blob = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _common_IError__WEBPACK_IMPORTED_MODULE_3__[/* IError */ "a"].required();
-      var publicKey = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _common_IError__WEBPACK_IMPORTED_MODULE_3__[/* IError */ "a"].required();
-      var lengthSymLengthEncoded = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 4;
-      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_2__[/* iCrypto */ "a"]();
-      ic.sym.createKey("symk").addBlob("payload", blob).asym.setKey("pubk", publicKey, "public").AESEncrypt("payload", "symk", "blobcip", true, "CBC", "utf8").asym.encrypt("symk", "pubk", "symcip", "hex").encodeBlobLength("symcip", lengthSymLengthEncoded, "0", "symciplength").merge(["blobcip", "symcip", "symciplength"], "res");
-      return ic.get("res");
-    }
-  }, {
-    key: "publicKeyEncrypt",
-    value: function publicKeyEncrypt() {
-      var blob = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _common_IError__WEBPACK_IMPORTED_MODULE_3__[/* IError */ "a"].required();
-      var publicKey = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _common_IError__WEBPACK_IMPORTED_MODULE_3__[/* IError */ "a"].required();
-      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_2__[/* iCrypto */ "a"]();
-      ic.addBlob("blob", blob).asym.setKey("pubk", publicKey, "public").publicKeyEncrypt("blob", "pubk", "blobcip", "hex");
-      return ic.get("blobcip");
-    }
-  }, {
-    key: "privateKeyDecrypt",
-    value: function privateKeyDecrypt(blob, privateKey) {
-      var encoding = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "hex";
-      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_2__[/* iCrypto */ "a"]();
-      ic.addBlob("blobcip", blob).asym.setKey("priv", privateKey, "private").privateKeyDecrypt("blobcip", "priv", "blob", encoding);
-      return ic.get("blob");
-    }
-  }, {
-    key: "symKeyEncrypt",
-    value: function symKeyEncrypt(blob, key) {
-      var hexify = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_2__[/* iCrypto */ "a"]();
-      ic.addBlob("b", blob).sym.setKey("sym", key).AESEncrypt("b", "sym", "cip", hexify, "CBC", "utf8");
-      return ic.get("cip");
-    }
-  }, {
-    key: "symKeyDecrypt",
-    value: function symKeyDecrypt(cip, key) {
-      var dehexify = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_2__[/* iCrypto */ "a"]();
-      ic.addBlob("cip", cip).sym.setKey("sym", key).AESDecrypt("cip", "sym", "b", dehexify, "CBC", "utf8");
-      return ic.get("b");
-    }
-  }, {
-    key: "sign",
-    value: function sign(data, privateKey) {
-      if (typeof data !== "string") throw new Error("Data must be a string");
-      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_2__[/* iCrypto */ "a"]();
-      ic.addBlob("body", data).setRSAKey("priv", privateKey, "private").privateKeySign("body", "priv", "sign");
-      return ic.get("sign");
-    } //data must be string
-    // sign must be hexified string
-
-  }, {
-    key: "verify",
-    value: function verify(data, publicKey, sign) {
-      if (typeof data !== "string") throw new Error("Data must be a string");
-      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_2__[/* iCrypto */ "a"]();
-      ic.setRSAKey("pubk", publicKey, "public").addBlob("sign", sign).hexToBytes('sign', "signraw").addBlob("b", data);
-      ic.publicKeyVerify("b", "sign", "pubk", "v");
-      return ic.get("v");
-    }
-  }]);
-
-  return ChatUtility;
-}();
-
-/***/ }),
-/* 13 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var isObject = __webpack_require__(24);
-module.exports = function (it) {
-  if (!isObject(it)) throw TypeError(it + ' is not an object!');
-  return it;
-};
-
-
-/***/ }),
-/* 14 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5305,6 +5186,128 @@ WildEmitter.mixin = function (constructor) {
 WildEmitter.mixin(WildEmitter);
 
 /***/ }),
+/* 13 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ChatUtility; });
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1);
+/* harmony import */ var _common_IError__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(9);
+
+
+
+
+var ChatUtility = /*#__PURE__*/function () {
+  function ChatUtility() {
+    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0___default()(this, ChatUtility);
+  }
+
+  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1___default()(ChatUtility, null, [{
+    key: "decryptStandardMessage",
+
+    /**
+     * Standard message referred to string of form [payload] + [sym key cipher] + [const length sym key length encoded]
+     * All messages in the system encrypted and decrypted in the described way except for chat messages files and streams.
+     * Sym key generated randomly every time
+     * @param blob - cipher blob
+     * @param lengthSymLengthEncoded number of digits used to encode length of the sym key
+     * @param privateKey
+     * @returns {}
+     */
+    value: function decryptStandardMessage() {
+      var blob = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _common_IError__WEBPACK_IMPORTED_MODULE_3__[/* IError */ "a"].required();
+      var privateKey = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _common_IError__WEBPACK_IMPORTED_MODULE_3__[/* IError */ "a"].required();
+      var lengthSymLengthEncoded = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 4;
+      var symKeyLength = parseInt(blob.substr(blob.length - lengthSymLengthEncoded));
+      var symKeyCipher = blob.substring(blob.length - lengthSymLengthEncoded - symKeyLength, blob.length - lengthSymLengthEncoded);
+      var payloadCipher = blob.substring(0, blob.length - lengthSymLengthEncoded - symKeyLength);
+      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_2__[/* iCrypto */ "a"]();
+      ic.addBlob("blobcip", payloadCipher).addBlob("symkcip", symKeyCipher).asym.setKey("privk", privateKey, "private").privateKeyDecrypt("symkcip", "privk", "symk", "hex").AESDecrypt("blobcip", "symk", "blob-raw", true, "CBC", "utf8");
+      return ic.get("blob-raw");
+    }
+  }, {
+    key: "encryptStandardMessage",
+    value: function encryptStandardMessage() {
+      var blob = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _common_IError__WEBPACK_IMPORTED_MODULE_3__[/* IError */ "a"].required();
+      var publicKey = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _common_IError__WEBPACK_IMPORTED_MODULE_3__[/* IError */ "a"].required();
+      var lengthSymLengthEncoded = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 4;
+      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_2__[/* iCrypto */ "a"]();
+      ic.sym.createKey("symk").addBlob("payload", blob).asym.setKey("pubk", publicKey, "public").AESEncrypt("payload", "symk", "blobcip", true, "CBC", "utf8").asym.encrypt("symk", "pubk", "symcip", "hex").encodeBlobLength("symcip", lengthSymLengthEncoded, "0", "symciplength").merge(["blobcip", "symcip", "symciplength"], "res");
+      return ic.get("res");
+    }
+  }, {
+    key: "publicKeyEncrypt",
+    value: function publicKeyEncrypt() {
+      var blob = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _common_IError__WEBPACK_IMPORTED_MODULE_3__[/* IError */ "a"].required();
+      var publicKey = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _common_IError__WEBPACK_IMPORTED_MODULE_3__[/* IError */ "a"].required();
+      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_2__[/* iCrypto */ "a"]();
+      ic.addBlob("blob", blob).asym.setKey("pubk", publicKey, "public").publicKeyEncrypt("blob", "pubk", "blobcip", "hex");
+      return ic.get("blobcip");
+    }
+  }, {
+    key: "privateKeyDecrypt",
+    value: function privateKeyDecrypt(blob, privateKey) {
+      var encoding = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "hex";
+      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_2__[/* iCrypto */ "a"]();
+      ic.addBlob("blobcip", blob).asym.setKey("priv", privateKey, "private").privateKeyDecrypt("blobcip", "priv", "blob", encoding);
+      return ic.get("blob");
+    }
+  }, {
+    key: "symKeyEncrypt",
+    value: function symKeyEncrypt(blob, key) {
+      var hexify = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_2__[/* iCrypto */ "a"]();
+      ic.addBlob("b", blob).sym.setKey("sym", key).AESEncrypt("b", "sym", "cip", hexify, "CBC", "utf8");
+      return ic.get("cip");
+    }
+  }, {
+    key: "symKeyDecrypt",
+    value: function symKeyDecrypt(cip, key) {
+      var dehexify = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_2__[/* iCrypto */ "a"]();
+      ic.addBlob("cip", cip).sym.setKey("sym", key).AESDecrypt("cip", "sym", "b", dehexify, "CBC", "utf8");
+      return ic.get("b");
+    }
+  }, {
+    key: "sign",
+    value: function sign(data, privateKey) {
+      if (typeof data !== "string") throw new Error("Data must be a string");
+      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_2__[/* iCrypto */ "a"]();
+      ic.addBlob("body", data).setRSAKey("priv", privateKey, "private").privateKeySign("body", "priv", "sign");
+      return ic.get("sign");
+    } //data must be string
+    // sign must be hexified string
+
+  }, {
+    key: "verify",
+    value: function verify(data, publicKey, sign) {
+      if (typeof data !== "string") throw new Error("Data must be a string");
+      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_2__[/* iCrypto */ "a"]();
+      ic.setRSAKey("pubk", publicKey, "public").addBlob("sign", sign).hexToBytes('sign', "signraw").addBlob("b", data);
+      ic.publicKeyVerify("b", "sign", "pubk", "v");
+      return ic.get("v");
+    }
+  }]);
+
+  return ChatUtility;
+}();
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var isObject = __webpack_require__(24);
+module.exports = function (it) {
+  if (!isObject(it)) throw TypeError(it + ' is not an object!');
+  return it;
+};
+
+
+/***/ }),
 /* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -5339,9 +5342,9 @@ module.exports = __webpack_require__(18) ? function (object, key, value) {
 /* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var anObject = __webpack_require__(13);
+var anObject = __webpack_require__(14);
 var IE8_DOM_DEFINE = __webpack_require__(111);
-var toPrimitive = __webpack_require__(64);
+var toPrimitive = __webpack_require__(65);
 var dP = Object.defineProperty;
 
 exports.f = __webpack_require__(18) ? Object.defineProperty : function defineProperty(O, P, Attributes) {
@@ -5397,7 +5400,7 @@ module.exports = function (it) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var $iterators = __webpack_require__(119);
-var getKeys = __webpack_require__(69);
+var getKeys = __webpack_require__(70);
 var redefine = __webpack_require__(29);
 var global = __webpack_require__(10);
 var hide = __webpack_require__(16);
@@ -5479,7 +5482,7 @@ var forge = __webpack_require__(2);
 __webpack_require__(39);
 __webpack_require__(139);
 __webpack_require__(140);
-__webpack_require__(5);
+__webpack_require__(6);
 
 (function() {
 
@@ -5716,7 +5719,7 @@ module.exports = function (it) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.1.13 ToObject(argument)
-var defined = __webpack_require__(66);
+var defined = __webpack_require__(67);
 module.exports = function (it) {
   return Object(defined(it));
 };
@@ -6052,7 +6055,7 @@ process.umask = function() { return 0; };
  * 0x06062A864886F70D
  */
 var forge = __webpack_require__(2);
-__webpack_require__(5);
+__webpack_require__(6);
 __webpack_require__(40);
 
 /* ASN.1 API */
@@ -7351,7 +7354,7 @@ var global = __webpack_require__(10);
 var hide = __webpack_require__(16);
 var has = __webpack_require__(30);
 var SRC = __webpack_require__(33)('src');
-var $toString = __webpack_require__(172);
+var $toString = __webpack_require__(173);
 var TO_STRING = 'toString';
 var TPL = ('' + $toString).split(TO_STRING);
 
@@ -7405,9 +7408,9 @@ module.exports = function (it, key) {
 
 
 
-var base64 = __webpack_require__(214)
-var ieee754 = __webpack_require__(215)
-var isArray = __webpack_require__(216)
+var base64 = __webpack_require__(215)
+var ieee754 = __webpack_require__(216)
+var isArray = __webpack_require__(217)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = SlowBuffer
@@ -9246,9 +9249,9 @@ module.exports = function (fn, that, length) {
 "use strict";
 
 
-var isRegExp = __webpack_require__(174);
-var anObject = __webpack_require__(13);
-var speciesConstructor = __webpack_require__(67);
+var isRegExp = __webpack_require__(175);
+var anObject = __webpack_require__(14);
+var speciesConstructor = __webpack_require__(68);
 var advanceStringIndex = __webpack_require__(112);
 var toLength = __webpack_require__(20);
 var callRegExpExec = __webpack_require__(82);
@@ -9398,7 +9401,7 @@ module.exports = function (it) {
 
 // to indexed object, toObject with fallback for non-array-like ES3 strings
 var IObject = __webpack_require__(116);
-var defined = __webpack_require__(66);
+var defined = __webpack_require__(67);
 module.exports = function (it) {
   return IObject(defined(it));
 };
@@ -9428,7 +9431,7 @@ module.exports = function (it) {
 var forge = __webpack_require__(2);
 __webpack_require__(98);
 __webpack_require__(134);
-__webpack_require__(5);
+__webpack_require__(6);
 
 /* AES API */
 module.exports = forge.aes = forge.aes || {};
@@ -10676,10 +10679,10 @@ _IN('1.3.6.1.5.5.7.3.8', 'timeStamping');
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ClientSettings; });
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _common_IError__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(8);
-/* harmony import */ var _ChatUtility__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(12);
+/* harmony import */ var _common_IError__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(9);
+/* harmony import */ var _ChatUtility__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(13);
 
 
 
@@ -10745,9 +10748,9 @@ var ClientSettings = /*#__PURE__*/function () {
 /* WEBPACK VAR INJECTION */(function(setImmediate) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Topic; });
 /* harmony import */ var _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(108);
 /* harmony import */ var _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(68);
+/* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(69);
 /* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(71);
+/* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(72);
 /* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(46);
 /* harmony import */ var core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_3__);
@@ -10765,14 +10768,14 @@ var ClientSettings = /*#__PURE__*/function () {
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_9__);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(4);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_10__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(6);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(5);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_11__);
 /* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(0);
 /* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(_common_Events__WEBPACK_IMPORTED_MODULE_12__);
-/* harmony import */ var _WildEmitter__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(14);
-/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(9);
+/* harmony import */ var _WildEmitter__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(12);
+/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(8);
 /* harmony import */ var _Metadata__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(106);
-/* harmony import */ var _ChatUtility__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(12);
+/* harmony import */ var _ChatUtility__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(13);
 /* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(1);
 /* harmony import */ var _ChatMessage__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(109);
 /* harmony import */ var _ClientSettings__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(41);
@@ -11253,6 +11256,13 @@ var Topic = /*#__PURE__*/function () {
     //TODO
 
   }, {
+    key: "exchangeNicknames",
+    value: function exchangeNicknames() {
+      for (var _i4 = 0, _Object$keys3 = Object.keys(this.participants); _i4 < _Object$keys3.length; _i4++) {
+        var pkfp = _Object$keys3[_i4];
+      }
+    }
+  }, {
     key: "setMemberAlias",
     value: function setMemberAlias(pkfp, alias) {
       if (!pkfp) {
@@ -11394,8 +11404,8 @@ var Topic = /*#__PURE__*/function () {
       var messages = data.messages;
       var result = [];
 
-      for (var _i4 = 0; _i4 < messages.length; ++_i4) {
-        var message = new _ChatMessage__WEBPACK_IMPORTED_MODULE_18__[/* ChatMessage */ "a"](messages[_i4]);
+      for (var _i5 = 0; _i5 < messages.length; ++_i5) {
+        var message = new _ChatMessage__WEBPACK_IMPORTED_MODULE_18__[/* ChatMessage */ "a"](messages[_i5]);
 
         if (message.header.service) {
           message.body = _ChatUtility__WEBPACK_IMPORTED_MODULE_16__[/* ChatUtility */ "a"].decryptStandardMessage(message.body, self.privateKey);
@@ -11482,11 +11492,11 @@ var Topic = /*#__PURE__*/function () {
         }
       }
 
-      for (var _i5 = 0, _Object$keys3 = Object.keys(self.settings.invites); _i5 < _Object$keys3.length; _i5++) {
-        var _i6 = _Object$keys3[_i5];
+      for (var _i6 = 0, _Object$keys4 = Object.keys(self.settings.invites); _i6 < _Object$keys4.length; _i6++) {
+        var _i7 = _Object$keys4[_i6];
 
-        if (!userInvites.includes(_i6)) {
-          delete self.settings.invites[_i6];
+        if (!userInvites.includes(_i7)) {
+          delete self.settings.invites[_i7];
         }
       }
 
@@ -12358,28 +12368,28 @@ var has = __webpack_require__(30);
 var DESCRIPTORS = __webpack_require__(18);
 var $export = __webpack_require__(23);
 var redefine = __webpack_require__(29);
-var META = __webpack_require__(180).KEY;
+var META = __webpack_require__(181).KEY;
 var $fails = __webpack_require__(19);
-var shared = __webpack_require__(65);
+var shared = __webpack_require__(66);
 var setToStringTag = __webpack_require__(56);
 var uid = __webpack_require__(33);
 var wks = __webpack_require__(11);
 var wksExt = __webpack_require__(114);
 var wksDefine = __webpack_require__(113);
-var enumKeys = __webpack_require__(181);
+var enumKeys = __webpack_require__(182);
 var isArray = __webpack_require__(117);
-var anObject = __webpack_require__(13);
+var anObject = __webpack_require__(14);
 var isObject = __webpack_require__(24);
 var toObject = __webpack_require__(25);
 var toIObject = __webpack_require__(38);
-var toPrimitive = __webpack_require__(64);
+var toPrimitive = __webpack_require__(65);
 var createDesc = __webpack_require__(44);
 var _create = __webpack_require__(91);
-var gOPNExt = __webpack_require__(183);
+var gOPNExt = __webpack_require__(184);
 var $GOPD = __webpack_require__(92);
 var $GOPS = __webpack_require__(89);
 var $DP = __webpack_require__(17);
-var $keys = __webpack_require__(69);
+var $keys = __webpack_require__(70);
 var gOPD = $GOPD.f;
 var dP = $DP.f;
 var gOPN = gOPNExt.f;
@@ -12620,13 +12630,13 @@ var $export = __webpack_require__(23);
 var isObject = __webpack_require__(24);
 var aFunction = __webpack_require__(54);
 var anInstance = __webpack_require__(93);
-var forOf = __webpack_require__(187);
-var speciesConstructor = __webpack_require__(67);
+var forOf = __webpack_require__(188);
+var speciesConstructor = __webpack_require__(68);
 var task = __webpack_require__(123).set;
-var microtask = __webpack_require__(189)();
+var microtask = __webpack_require__(190)();
 var newPromiseCapabilityModule = __webpack_require__(124);
-var perform = __webpack_require__(190);
-var userAgent = __webpack_require__(191);
+var perform = __webpack_require__(191);
+var userAgent = __webpack_require__(192);
 var promiseResolve = __webpack_require__(125);
 var PROMISE = 'Promise';
 var TypeError = global.TypeError;
@@ -12932,7 +12942,7 @@ $export($export.S + $export.F * !(USE_NATIVE && __webpack_require__(97)(function
  * body: the binary-encoded body.
  */
 var forge = __webpack_require__(2);
-__webpack_require__(5);
+__webpack_require__(6);
 
 // shortcut for pem API
 var pem = module.exports = forge.pem = forge.pem || {};
@@ -13312,15 +13322,15 @@ Emitter.prototype.hasListeners = function(event){
  * Module dependencies.
  */
 
-var keys = __webpack_require__(246);
+var keys = __webpack_require__(247);
 var hasBinary = __webpack_require__(156);
-var sliceBuffer = __webpack_require__(248);
-var after = __webpack_require__(249);
-var utf8 = __webpack_require__(250);
+var sliceBuffer = __webpack_require__(249);
+var after = __webpack_require__(250);
+var utf8 = __webpack_require__(251);
 
 var base64encoder;
 if (typeof ArrayBuffer !== 'undefined') {
-  base64encoder = __webpack_require__(251);
+  base64encoder = __webpack_require__(252);
 }
 
 /**
@@ -13378,7 +13388,7 @@ var err = { type: 'error', data: 'parser error' };
  * Create a blob api even for blob builder when vendor prefixes exist
  */
 
-var Blob = __webpack_require__(252);
+var Blob = __webpack_require__(253);
 
 /**
  * Encodes a packet.
@@ -13919,7 +13929,7 @@ exports.decodePayloadAsBinary = function (data, binaryType, callback) {
 /* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(230);
+module.exports = __webpack_require__(231);
 
 /***/ }),
 /* 54 */
@@ -14147,7 +14157,7 @@ var singleton = null;
 var	singletonCounter = 0;
 var	stylesInsertedAtTop = [];
 
-var	fixUrls = __webpack_require__(195);
+var	fixUrls = __webpack_require__(196);
 
 module.exports = function(list, options) {
 	if (typeof DEBUG !== "undefined" && DEBUG) {
@@ -14538,7 +14548,7 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(203);
+__webpack_require__(204);
 // On some exotic environments, it's not clear which object `setimmediate` was
 // able to install onto.  Search each possibility in the same order as the
 // `setimmediate` library.
@@ -14592,7 +14602,7 @@ module.exports = g;
  */
 var forge = __webpack_require__(2);
 __webpack_require__(28);
-__webpack_require__(5);
+__webpack_require__(6);
 
 /* HMAC API */
 var hmac = module.exports = forge.hmac = forge.hmac || {};
@@ -14742,7 +14752,7 @@ hmac.create = function() {
  */
 var forge = __webpack_require__(2);
 __webpack_require__(28);
-__webpack_require__(5);
+__webpack_require__(6);
 
 var sha1 = module.exports = forge.sha1 = forge.sha1 || {};
 forge.md.sha1 = forge.md.algorithms.sha1 = sha1;
@@ -15056,6 +15066,667 @@ function _update(s, w, bytes) {
 
 /***/ }),
 /* 64 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, "a", function() { return /* binding */ Vault_Vault; });
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.promise.js
+var es6_promise = __webpack_require__(49);
+
+// EXTERNAL MODULE: ./node_modules/@babel/runtime/regenerator/index.js
+var regenerator = __webpack_require__(3);
+var regenerator_default = /*#__PURE__*/__webpack_require__.n(regenerator);
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/web.dom.iterable.js
+var web_dom_iterable = __webpack_require__(21);
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.object.to-string.js
+var es6_object_to_string = __webpack_require__(15);
+
+// EXTERNAL MODULE: ./node_modules/regenerator-runtime/runtime.js
+var runtime = __webpack_require__(43);
+
+// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/asyncToGenerator.js
+var asyncToGenerator = __webpack_require__(7);
+var asyncToGenerator_default = /*#__PURE__*/__webpack_require__.n(asyncToGenerator);
+
+// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/classCallCheck.js
+var classCallCheck = __webpack_require__(4);
+var classCallCheck_default = /*#__PURE__*/__webpack_require__.n(classCallCheck);
+
+// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/createClass.js
+var createClass = __webpack_require__(5);
+var createClass_default = /*#__PURE__*/__webpack_require__.n(createClass);
+
+// EXTERNAL MODULE: ./common/IError.js
+var IError = __webpack_require__(9);
+
+// CONCATENATED MODULE: ./client/src/js/lib/PasswordVerify.js
+function verifyPassword(password, confirm) {
+  if (!password || !password.trim() || !/^[a-zA-Z0-9!@#$%^&*]{9,}$/.test(password)) {
+    return "Password or passphrase must be at least 9 characters long and can contain only lowercase a-z, uppercase A-Z and symbols !@#$%^&*";
+  }
+
+  if (password !== confirm) {
+    return "Password and confirmation do not match.";
+  }
+}
+// EXTERNAL MODULE: ./client/src/js/lib/Topic.js
+var Topic = __webpack_require__(42);
+
+// EXTERNAL MODULE: ./client/src/js/lib/ClientSettings.js
+var ClientSettings = __webpack_require__(41);
+
+// EXTERNAL MODULE: ./client/src/js/lib/iCrypto.js
+var iCrypto = __webpack_require__(1);
+
+// EXTERNAL MODULE: ./client/src/js/lib/WildEmitter.js
+var WildEmitter = __webpack_require__(12);
+
+// EXTERNAL MODULE: ./client/src/js/lib/Message.js
+var Message = __webpack_require__(8);
+
+// EXTERNAL MODULE: ./common/Events.js
+var Events = __webpack_require__(0);
+
+// EXTERNAL MODULE: ./client/src/js/lib/ChatUtility.js
+var ChatUtility = __webpack_require__(13);
+
+// EXTERNAL MODULE: ./client/src/js/lib/xhr.js
+var xhr = __webpack_require__(80);
+
+// EXTERNAL MODULE: ./node_modules/semver/semver.js
+var semver = __webpack_require__(165);
+
+// CONCATENATED MODULE: ./client/src/js/lib/Vault.js
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * Represents key vault
+ *
+ *
+ */
+
+var Vault_Vault = /*#__PURE__*/function () {
+  function Vault() {
+    classCallCheck_default()(this, Vault);
+
+    WildEmitter["a" /* WildEmitter */].mixin(this);
+    this.id = null;
+    this.pkfp;
+    this.initialized = false;
+    this.admin = null;
+    this.adminKey = null;
+    this.topics = {};
+    this.password = null;
+    this.publicKey = null;
+    this.privateKey = null;
+    this.handlers;
+    this.messageQueue;
+    this.version;
+    this.pendingInvites = {};
+    this.initHandlers();
+  }
+
+  createClass_default()(Vault, [{
+    key: "prepareVaultTopicRecord",
+    // Given raw topic data as arguments encrytps with password and returns cipher
+    value: function prepareVaultTopicRecord() {
+      var version = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : IError["a" /* IError */].required("Version");
+      var pkfp = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : IError["a" /* IError */].required("pkfp");
+      var privateKey = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : IError["a" /* IError */].required("Private key");
+      var name = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : IError["a" /* IError */].required("Name");
+      var settings = arguments.length > 4 ? arguments[4] : undefined;
+      var comment = arguments.length > 5 ? arguments[5] : undefined;
+      var topicBlob = JSON.stringify({
+        version: version,
+        name: name,
+        key: privateKey,
+        settings: settings,
+        comment: comment,
+        pkfp: pkfp
+      });
+      var ic = new iCrypto["a" /* iCrypto */]();
+      ic.createNonce("salt", 128).encode("salt", "hex", "salt-hex").createPasswordBasedSymKey("key", this.password, "salt-hex").addBlob("topic", topicBlob).AESEncrypt("topic", "key", "cipher", true, "CBC", "utf8").merge(["salt-hex", "cipher"], "blob").setRSAKey("priv", this.privateKey, "private").privateKeySign("cipher", "priv", "sign").encodeBlobLength("sign", 3, "0", "sign-length").merge(["blob", "sign", "sign-length"], "res");
+      return ic.get("res");
+    }
+  }, {
+    key: "initHandlers",
+    value: function initHandlers() {
+      var self = this;
+      this.handlers = {}; /////////////////////////////////////////////////////////////////////////////
+      // this.handlers[Internal.JOIN_TOPIC_SUCCESS] = (msg)=>{                   //
+      //     console.log("Topic join success! Adding new topic...");             //
+      //     let topicPkfp = self.addNewTopic(self, msg);                        //
+      //     self.vault.topics[topicPkfp].exchangeNicknames()                    //
+      //                                                                         //
+      //                                                                         //
+      //                                                                         //
+      // }                                                                       //
+      //                                                                         //
+      // this.handlers[Internal.JOIN_TOPIC_FAIL] = (msg)=>{                      //
+      //     console.log(`Join topic attempt has failed: ${msg.body.errorMsg}`); //
+      // }                                                                       //
+      /////////////////////////////////////////////////////////////////////////////
+
+      this.handlers[Events["Internal"].POST_LOGIN_DECRYPT] = function (msg) {
+        self.emit(Events["Internal"].POST_LOGIN_DECRYPT, msg);
+      };
+
+      this.handlers[Events["Events"].POST_LOGIN_SUCCESS] = function () {
+        self.emit(Events["Events"].POST_LOGIN_SUCCESS);
+      };
+
+      this.handlers[Events["Internal"].TOPIC_CREATED] = function (msg) {
+        self.addNewTopic(self, msg);
+        self.emit(Events["Internal"].TOPIC_CREATED, msg.body.topicPkfp);
+      };
+
+      this.handlers[Events["Internal"].TOPIC_DELETED] = function (msg) {
+        console.log("TOPIC DELETED: ".concat(msg.body.topicPkfp));
+        delete self.topics[msg.body.topicPkfp];
+        self.emit(Events["Internal"].TOPIC_DELETED, msg.body.topicPkfp);
+      };
+
+      this.handlers[Events["Internal"].SESSION_KEY] = function (msg) {
+        if (!Message["a" /* Message */].verifyMessage(msg.body.sessionKey, msg)) {
+          throw new Error("Session key signature is invalid!");
+        }
+
+        self.sessionKey = msg.body.sessionKey;
+        self.emit(Events["Internal"].SESSION_KEY, msg);
+      };
+    }
+    /**
+     * Given a password creates an empty vault
+     * with generated update private key inside
+     * @param password
+     * @returns {Vault}
+     */
+
+  }, {
+    key: "init",
+    value: function init() {
+      var password = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : IError["a" /* IError */].required();
+      var version = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : IError["a" /* IError */].required("Version required");
+
+      if (!password || password.trim === "") {
+        throw new Error("Password required");
+      } //CHECK password strength and reject if not strong enough
+
+
+      var ic = new iCrypto["a" /* iCrypto */]();
+      ic.generateRSAKeyPair("kp").getPublicKeyFingerprint("kp", "pkfp"); //Create new Vault object
+
+      this.password = password;
+      this.topics = {};
+      this.privateKey = ic.get("kp").privateKey;
+      this.publicKey = ic.get("kp").publicKey;
+      this.pkfp = ic.get("pkfp");
+      this.version = version;
+      this.initialized = true;
+
+      this.getPrivateKey = function () {
+        return ic.get("kp").privateKey;
+      };
+    }
+    /**
+     * Given a password and a key
+     * initializes a vault, creates update key
+     * sets it to admin vault and sets admin private key
+     *
+     * @param password
+     * @param adminKey
+     * @returns {Vault}
+     */
+
+  }, {
+    key: "initAdmin",
+    value: function initAdmin(password, adminKey) {
+      var version = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : IError["a" /* IError */].required("Version required!");
+      this.init(password, version);
+      this.admin = true;
+      this.adminKey = adminKey;
+    }
+  }, {
+    key: "initSaved",
+    value: function () {
+      var _initSaved = asyncToGenerator_default()( /*#__PURE__*/regenerator_default.a.mark(function _callee() {
+        var vault_encrypted,
+            password,
+            topics,
+            ic,
+            data,
+            unpackedTopics,
+            _i,
+            _Object$keys,
+            pkfp,
+            _args = arguments;
+
+        return regenerator_default.a.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                vault_encrypted = _args.length > 0 && _args[0] !== undefined ? _args[0] : IError["a" /* IError */].required("Vault parse: data parameter missing");
+                password = _args.length > 1 && _args[1] !== undefined ? _args[1] : IError["a" /* IError */].required("Vault parse: password parameter missing");
+                topics = _args.length > 2 && _args[2] !== undefined ? _args[2] : {};
+                ic = new iCrypto["a" /* iCrypto */](); //console.log(`Salt: ${vault_encrypted.substring(0, 256)}`)
+                //console.log(`Vault: ${vault_encrypted.substr(256)}`)
+
+                ic.addBlob("s16", vault_encrypted.substring(0, 256)).addBlob("v_cip", vault_encrypted.substr(256)).hexToBytes("s16", "salt").createPasswordBasedSymKey("sym", password, "s16").AESDecrypt("v_cip", "sym", "vault_raw", true); //Populating new object
+
+                data = JSON.parse(ic.get("vault_raw"));
+                this.adminKey = data.adminKey;
+                this.admin = data.admin;
+                this.publicKey = data.publicKey;
+                this.privateKey = data.privateKey;
+                this.password = password;
+
+                if (!data.pkfp) {
+                  ic.setRSAKey("pub", data.publicKey, "public").getPublicKeyFingerprint("pub", "pkfp");
+                  this.pkfp = ic.get("pkfp");
+                } else {
+                  this.pkfp = data.pkfp;
+                }
+
+                unpackedTopics = this.unpackTopics(topics, password);
+
+                if (unpackedTopics) {
+                  for (_i = 0, _Object$keys = Object.keys(unpackedTopics); _i < _Object$keys.length; _i++) {
+                    pkfp = _Object$keys[_i];
+                    console.log("INITIALIZING TOPIC ".concat(pkfp));
+                    this.topics[pkfp] = new Topic["a" /* Topic */](this.version, pkfp, unpackedTopics[pkfp].name, unpackedTopics[pkfp].key, unpackedTopics[pkfp].comment);
+                  }
+                } //     this.topics[pkfp] = new Topic(         //
+                //         pkfp,                              //
+                //         data.topics[pkfp].name,            //
+                //         data.topics[pkfp].key,             //
+                //         data.topics[pkfp].comment);        //
+                // });                                        //
+
+
+                if (!(!data.version || semver["lt"](data.version, "1.0.5"))) {
+                  _context.next = 18;
+                  break;
+                }
+
+                // TODO format update required!
+                console.log("vault format update required");
+                _context.next = 18;
+                return this.updateVaultFormat(data);
+
+              case 18:
+                this.initialized = true;
+
+              case 19:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, this);
+      }));
+
+      function initSaved() {
+        return _initSaved.apply(this, arguments);
+      }
+
+      return initSaved;
+    }()
+  }, {
+    key: "updateVaultFormat",
+    value: function () {
+      var _updateVaultFormat = asyncToGenerator_default()( /*#__PURE__*/regenerator_default.a.mark(function _callee2(data) {
+        return regenerator_default.a.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                console.log("Updating vault format..."); ////////////////////////////////////////////////
+                // Object.keys(data.topics).forEach((pkfp)=>{ //
+                //     this.topics[pkfp] = new Topic(         //
+                //         pkfp,                              //
+                //         data.topics[pkfp].name,            //
+                //         data.topics[pkfp].key,             //
+                //         data.topics[pkfp].comment);        //
+                // });                                        //
+                ////////////////////////////////////////////////
+
+              case 1:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
+      }));
+
+      function updateVaultFormat(_x) {
+        return _updateVaultFormat.apply(this, arguments);
+      }
+
+      return updateVaultFormat;
+    }()
+  }, {
+    key: "setId",
+    value: function setId() {
+      var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : IError["a" /* IError */].required("ID is required");
+      this.id = id;
+    }
+  }, {
+    key: "getId",
+    value: function getId() {
+      return this.id;
+    }
+  }, {
+    key: "isAdmin",
+    value: function isAdmin() {
+      return this.admin;
+    }
+  }, {
+    key: "bootstrap",
+    value: function bootstrap(arrivalHub, messageQueue, version) {
+      var self = this;
+      this.version = version;
+      this.arrivalHub = arrivalHub;
+      this.messageQueue = messageQueue;
+      this.arrivalHub.on(this.id, function (msg) {
+        self.processIncomingMessage(msg, self);
+      });
+    }
+  }, {
+    key: "processIncomingMessage",
+    value: function processIncomingMessage(msg, self) {
+      console.log("Processing vault incoming message");
+
+      if (msg.headers.error) {
+        throw new Error("Error received: ".concat(msg.headers.error, ". WARNING ERROR HADLING NOT IMPLEMENTED!!!"));
+      }
+
+      if (!self.handlers.hasOwnProperty(msg.headers.command)) {
+        console.error("Invalid vault command received: ".concat(msg.headers.command));
+        return;
+      }
+
+      self.handlers[msg.headers.command](msg);
+    } // Saves current sate of the vault on the island
+    // cause - cause for vault update
+
+  }, {
+    key: "save",
+    value: function save(cause) {
+      if (!this.password || this.privateKey || this.topics) {
+        throw new Error("Vault object structure is not valid");
+      }
+
+      var vault = this.pack();
+      var message = new Message["a" /* Message */](this.version);
+      message.setSource(this.id);
+      message.setCommand(Events["Internal"].SAVE_VAULT);
+      message.addNonce();
+      message.body.vault = vault;
+      message.body.sign = sign;
+      message.body.cause = cause;
+      message.body.hash = vault.hash;
+      message.signMessage(this.privateKey);
+      this.messageQueue.enqueue(message);
+    }
+  }, {
+    key: "changePassword",
+    value: function changePassword(newPassword) {
+      if (!this.initialized) {
+        throw new Error("The vault hasn't been initialized");
+      }
+
+      if (!newPassword || newPassword.trim === "") {
+        throw new Error("Password required");
+      }
+
+      this.password = newPassword;
+    } // Encrypts all topics and returns an object of
+    // pkfp: cipher encrypted topics
+
+  }, {
+    key: "packTopics",
+    value: function packTopics() {
+      var res = {};
+
+      for (var _i2 = 0, _Object$keys2 = Object.keys(this.topics); _i2 < _Object$keys2.length; _i2++) {
+        var pkfp = _Object$keys2[_i2];
+        var topic = this.topics[pkfp];
+        res[pkfp] = this.prepareVaultTopicRecord(this.version, topic.pkfp, topic.privateKey, topic.name, topic.settings, topic.comment);
+      }
+
+      return res;
+    } // Given topics object of pkfp: cipher
+    // decrypts each cipher and JSON parses with password
+    // returns object of pkfp: { topic raw data  }
+
+  }, {
+    key: "unpackTopics",
+    value: function unpackTopics(topics) {
+      var res = {};
+
+      for (var _i3 = 0, _Object$keys3 = Object.keys(topics); _i3 < _Object$keys3.length; _i3++) {
+        var pkfp = _Object$keys3[_i3];
+        res[pkfp] = this.decryptTopic(topics[pkfp], this.password);
+      }
+
+      return res;
+    } // Decrypts topic blob with password
+
+  }, {
+    key: "decryptTopic",
+    value: function decryptTopic(topicBlob, password) {
+      var signLength = parseInt(topicBlob.substr(topicBlob.length - 3));
+      var signature = topicBlob.substring(topicBlob.length - signLength - 3, topicBlob.length - 3);
+      var salt = topicBlob.substring(0, 256);
+      var topicCipher = topicBlob.substring(256, topicBlob.length - signLength - 3);
+      var ic = new iCrypto["a" /* iCrypto */]();
+      ic.setRSAKey("pub", this.publicKey, "public").addBlob("cipher", topicCipher).addBlob("sign", signature).publicKeyVerify("cipher", "sign", "pub", "verified");
+      if (!ic.get("verified")) throw new Error("Topic signature is invalid!");
+      ic.addBlob("salt-hex", salt).createPasswordBasedSymKey("sym", password, "salt-hex").AESDecrypt("cipher", "sym", "topic-plain", true);
+      return JSON.parse(ic.get("topic-plain"));
+    }
+  }, {
+    key: "addNewTopic",
+    value: function addNewTopic(self, data) {
+      //if(!Message.verifyMessage(self.sessionKey, data)){
+      //    throw new Error("Session key signature is invalid!")
+      //}
+      console.log("Inviter nickname: ".concat(data.body.inviterNickname));
+      var vaultRecord = data.body.vaultRecord;
+      var metadata = data.body.metadata;
+      var topicData = self.decryptTopic(vaultRecord, self.password);
+      var pkfp = topicData.pkfp;
+      var newTopic = new Topic["a" /* Topic */](this.version, pkfp, topicData.name, topicData.key, topicData.comment);
+      console.log("New topic initialized: ".concat(pkfp, ", ").concat(topicData.name, " "));
+      newTopic.loadMetadata(metadata);
+      newTopic.bootstrap(newTopic, self.messageQueue, self.arrivalHub, self.version);
+      self.topics[pkfp] = newTopic;
+
+      if (self.pendingInvites.hasOwnProperty(data.body.inviteCode)) {
+        var inviteeNickname = self.pendingInvites[data.body.inviteCode].nickname;
+        console.log("Initialize settings  on topic join. Invitee ".concat(inviteeNickname));
+        self.initSettingsOnTopicJoin(self, pkfp, inviteeNickname, data);
+      }
+
+      self.emit(Events["Events"].TOPIC_CREATED, pkfp);
+      return pkfp;
+    }
+  }, {
+    key: "initSettingsOnTopicJoin",
+    value: function initSettingsOnTopicJoin(self, pkfp, inviteeNickname, request) {
+      var topic = self.topics[pkfp];
+      var privateKey = topic.privateKey;
+      var inviterNickname = ChatUtility["a" /* ChatUtility */].decryptStandardMessage(request.body.inviterNickname, privateKey);
+      var inviterPkfp = request.body.inviterPkfp;
+      var settings = new ClientSettings["a" /* ClientSettings */](self.version, inviteeNickname, pkfp);
+      settings.setNickname(inviterPkfp, inviterNickname);
+      topic.saveClientSettings(settings, privateKey);
+    }
+  }, {
+    key: "pack",
+    value: function pack() {
+      var vaultBlob = JSON.stringify({
+        version: this.version,
+        publicKey: this.publicKey,
+        privateKey: this.privateKey,
+        admin: this.admin,
+        adminKey: this.adminKey,
+        settings: this.settings
+      });
+      var ic = new iCrypto["a" /* iCrypto */]();
+      ic.createNonce("salt", 128).encode("salt", "hex", "salt-hex").createPasswordBasedSymKey("key", this.password, "salt-hex").addBlob("vault", vaultBlob).AESEncrypt("vault", "key", "cip-hex", true, "CBC", "utf8").merge(["salt-hex", "cip-hex"], "res").hash("res", "vault-hash").setRSAKey("asymkey", this.privateKey, "private").privateKeySign("vault-hash", "asymkey", "sign");
+      var topics = this.packTopics(this.password); //console.log(`Salt: ${ic.get("salt-hex")}`)
+      //console.log(`Vault: ${ic.get("cip-hex")}`)
+      //Sign encrypted vault with private key
+
+      return {
+        vault: ic.get("res"),
+        topics: topics,
+        hash: ic.get("vault-hash"),
+        sign: ic.get("sign")
+      };
+    }
+    /**
+     * Stringifies this vault and topics, hashes, signes and encrypts it
+     */
+
+  }, {
+    key: "packBAK",
+    value: function packBAK() {
+      var vaultBlob = JSON.stringify({
+        topics: this.packTopics(),
+        publicKey: this.publicKey,
+        privateKey: this.privateKey,
+        admin: this.admin,
+        adminKey: this.adminKey,
+        settings: this.settings
+      });
+      var ic = new iCrypto["a" /* iCrypto */]();
+      ic.createNonce("salt", 128).encode("salt", "hex", "salt-hex").createPasswordBasedSymKey("key", this.password, "salt-hex").addBlob("vault", vaultBlob).AESEncrypt("vault", "key", "cip-hex", true, "CBC", "utf8").merge(["salt-hex", "cip-hex"], "res").hash("res", "vault-hash").setRSAKey("asymkey", this.privateKey, "private").privateKeySign("vault-hash", "asymkey", "sign"); //console.log(`Salt: ${ic.get("salt-hex")}`)
+      //console.log(`Vault: ${ic.get("cip-hex")}`)
+      //Sign encrypted vault with private key
+
+      return {
+        vault: ic.get("res"),
+        hash: ic.get("vault-hash"),
+        sign: ic.get("sign")
+      };
+    }
+  }, {
+    key: "processNewTopicEvent",
+    value: function processNewTopicEvent(self, data) {
+      //verify session key
+      var metadata = data.body.metadata;
+    }
+  }, {
+    key: "addTopic",
+    value: function addTopic(pkfp, name, privateKey, comment) {
+      if (this.topics.hasOwnProperty(pkfp)) throw new Error("Topic with such id already exists");
+      var newTopic = new Topic["a" /* Topic */](this.version, pkfp, name, privateKey, comment);
+      this.topics[pkfp] = newTopic;
+      return newTopic;
+    }
+  }, {
+    key: "removeTopic",
+    value: function removeTopic() {}
+  }], [{
+    key: "registerVault",
+    value: function registerVault(password, confirm, version) {
+      return new Promise(function (resolve, reject) {
+        setTimeout(function () {
+          try {
+            var result = verifyPassword(password.value.trim(), confirm.value.trim());
+
+            if (result !== undefined) {
+              reject(new Error(result));
+            }
+
+            var vault = new Vault();
+            vault.init(password.value.trim(), version);
+            var vaultEncData = vault.pack();
+            var vaultPublicKey = vault.publicKey;
+            var ic = new iCrypto["a" /* iCrypto */]();
+            ic.generateRSAKeyPair("adminkp").createNonce("n").privateKeySign("n", "adminkp", "sign").bytesToHex("n", "nhex");
+            console.log("Hash: ".concat(vaultEncData.hash));
+
+            if (!vaultEncData.hash) {
+              throw new Error("NO HASH!");
+            }
+
+            Object(xhr["a" /* XHR */])({
+              type: "POST",
+              url: "/register",
+              dataType: "json",
+              data: {
+                nonce: ic.get('nhex'),
+                sign: ic.get("sign"),
+                vault: vaultEncData.vault,
+                vaultHash: vaultEncData.hash,
+                vaultSign: vaultEncData.sign,
+                vaultPublicKey: vaultPublicKey
+              },
+              success: function success() {
+                resolve();
+              },
+              error: function error(err) {
+                reject(err);
+              }
+            });
+          } catch (err) {
+            reject(err);
+          }
+        }, 50);
+      });
+    }
+  }]);
+
+  return Vault;
+}(); // a = {
+//
+//
+//     encrypted: "some-bytes",
+//
+//     privateKey: "key",
+//     publicKey: "key",
+//     password: passwordRaw
+//
+//     topics: {
+//         topicName1: {
+//             key: "key",
+//             comment: "comment"
+//         },
+//         topicName2: {
+//             key: "key",
+//             comment: "comment"
+//         }
+//
+//         //...
+//     }
+//
+// };
+
+/***/ }),
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.1.1 ToPrimitive(input [, PreferredType])
@@ -15073,7 +15744,7 @@ module.exports = function (it, S) {
 
 
 /***/ }),
-/* 65 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var core = __webpack_require__(32);
@@ -15091,7 +15762,7 @@ var store = global[SHARED] || (global[SHARED] = {});
 
 
 /***/ }),
-/* 66 */
+/* 67 */
 /***/ (function(module, exports) {
 
 // 7.2.1 RequireObjectCoercible(argument)
@@ -15102,11 +15773,11 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 67 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.3.20 SpeciesConstructor(O, defaultConstructor)
-var anObject = __webpack_require__(13);
+var anObject = __webpack_require__(14);
 var aFunction = __webpack_require__(54);
 var SPECIES = __webpack_require__(11)('species');
 module.exports = function (O, D) {
@@ -15117,13 +15788,13 @@ module.exports = function (O, D) {
 
 
 /***/ }),
-/* 68 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-__webpack_require__(179);
-var anObject = __webpack_require__(13);
+__webpack_require__(180);
+var anObject = __webpack_require__(14);
 var $flags = __webpack_require__(84);
 var DESCRIPTORS = __webpack_require__(18);
 var TO_STRING = 'toString';
@@ -15149,7 +15820,7 @@ if (__webpack_require__(19)(function () { return $toString.call({ source: 'a', f
 
 
 /***/ }),
-/* 69 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.14 / 15.2.3.14 Object.keys(O)
@@ -15162,7 +15833,7 @@ module.exports = Object.keys || function keys(O) {
 
 
 /***/ }),
-/* 70 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var toInteger = __webpack_require__(37);
@@ -15175,7 +15846,7 @@ module.exports = function (index, length) {
 
 
 /***/ }),
-/* 71 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15194,7 +15865,7 @@ __webpack_require__(120)('includes');
 
 
 /***/ }),
-/* 72 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -15230,7 +15901,7 @@ __webpack_require__(120)('includes');
 var forge = __webpack_require__(2);
 __webpack_require__(98);
 __webpack_require__(134);
-__webpack_require__(5);
+__webpack_require__(6);
 
 /* DES API */
 module.exports = forge.des = forge.des || {};
@@ -15695,7 +16366,7 @@ function _createCipher(options) {
 
 
 /***/ }),
-/* 73 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -15763,12 +16434,12 @@ function _createCipher(options) {
  */
 var forge = __webpack_require__(2);
 __webpack_require__(27);
-__webpack_require__(74);
+__webpack_require__(75);
 __webpack_require__(40);
 __webpack_require__(142);
 __webpack_require__(143);
 __webpack_require__(22);
-__webpack_require__(5);
+__webpack_require__(6);
 
 if(typeof BigInteger === 'undefined') {
   var BigInteger = forge.jsbn.BigInteger;
@@ -17497,7 +18168,7 @@ function _base64ToBigInt(b64) {
 
 
 /***/ }),
-/* 74 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Copyright (c) 2005  Tom Wu
@@ -18767,7 +19438,7 @@ BigInteger.prototype.isProbablePrime = bnIsProbablePrime;
 
 
 /***/ }),
-/* 75 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {/* eslint-env browser */
@@ -19019,7 +19690,7 @@ function localstorage() {
 	}
 }
 
-module.exports = __webpack_require__(236)(exports);
+module.exports = __webpack_require__(237)(exports);
 
 const {formatters} = module.exports;
 
@@ -19038,7 +19709,7 @@ formatters.j = function (v) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(26)))
 
 /***/ }),
-/* 76 */
+/* 77 */
 /***/ (function(module, exports) {
 
 /**
@@ -19081,7 +19752,7 @@ exports.decode = function(qs){
 
 
 /***/ }),
-/* 77 */
+/* 78 */
 /***/ (function(module, exports) {
 
 
@@ -19093,7 +19764,7 @@ module.exports = function(a, b){
 };
 
 /***/ }),
-/* 78 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {/* eslint-env browser */
@@ -19345,7 +20016,7 @@ function localstorage() {
 	}
 }
 
-module.exports = __webpack_require__(253)(exports);
+module.exports = __webpack_require__(254)(exports);
 
 const {formatters} = module.exports;
 
@@ -19364,7 +20035,7 @@ formatters.j = function (v) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(26)))
 
 /***/ }),
-/* 79 */
+/* 80 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -19381,7 +20052,7 @@ formatters.j = function (v) {
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var cute_set__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(53);
 /* harmony import */ var cute_set__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(cute_set__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var util__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(232);
+/* harmony import */ var util__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(233);
 /* harmony import */ var util__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(util__WEBPACK_IMPORTED_MODULE_6__);
 
 
@@ -19647,662 +20318,6 @@ function parseHeaders(headers) {
 }
 
 /***/ }),
-/* 80 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-
-// EXPORTS
-__webpack_require__.d(__webpack_exports__, "a", function() { return /* binding */ Vault_Vault; });
-
-// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.promise.js
-var es6_promise = __webpack_require__(49);
-
-// EXTERNAL MODULE: ./node_modules/@babel/runtime/regenerator/index.js
-var regenerator = __webpack_require__(3);
-var regenerator_default = /*#__PURE__*/__webpack_require__.n(regenerator);
-
-// EXTERNAL MODULE: ./node_modules/core-js/modules/web.dom.iterable.js
-var web_dom_iterable = __webpack_require__(21);
-
-// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.object.to-string.js
-var es6_object_to_string = __webpack_require__(15);
-
-// EXTERNAL MODULE: ./node_modules/regenerator-runtime/runtime.js
-var runtime = __webpack_require__(43);
-
-// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/asyncToGenerator.js
-var asyncToGenerator = __webpack_require__(7);
-var asyncToGenerator_default = /*#__PURE__*/__webpack_require__.n(asyncToGenerator);
-
-// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/classCallCheck.js
-var classCallCheck = __webpack_require__(4);
-var classCallCheck_default = /*#__PURE__*/__webpack_require__.n(classCallCheck);
-
-// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/createClass.js
-var createClass = __webpack_require__(6);
-var createClass_default = /*#__PURE__*/__webpack_require__.n(createClass);
-
-// EXTERNAL MODULE: ./common/IError.js
-var IError = __webpack_require__(8);
-
-// CONCATENATED MODULE: ./client/src/js/lib/PasswordVerify.js
-function verifyPassword(password, confirm) {
-  if (!password || !password.trim() || !/^[a-zA-Z0-9!@#$%^&*]{9,}$/.test(password)) {
-    return "Password or passphrase must be at least 9 characters long and can contain only lowercase a-z, uppercase A-Z and symbols !@#$%^&*";
-  }
-
-  if (password !== confirm) {
-    return "Password and confirmation do not match.";
-  }
-}
-// EXTERNAL MODULE: ./client/src/js/lib/Topic.js
-var Topic = __webpack_require__(42);
-
-// EXTERNAL MODULE: ./client/src/js/lib/ClientSettings.js
-var ClientSettings = __webpack_require__(41);
-
-// EXTERNAL MODULE: ./client/src/js/lib/iCrypto.js
-var iCrypto = __webpack_require__(1);
-
-// EXTERNAL MODULE: ./client/src/js/lib/WildEmitter.js
-var WildEmitter = __webpack_require__(14);
-
-// EXTERNAL MODULE: ./client/src/js/lib/Message.js
-var Message = __webpack_require__(9);
-
-// EXTERNAL MODULE: ./common/Events.js
-var Events = __webpack_require__(0);
-
-// EXTERNAL MODULE: ./client/src/js/lib/ChatUtility.js
-var ChatUtility = __webpack_require__(12);
-
-// EXTERNAL MODULE: ./client/src/js/lib/xhr.js
-var xhr = __webpack_require__(79);
-
-// EXTERNAL MODULE: ./node_modules/semver/semver.js
-var semver = __webpack_require__(165);
-
-// CONCATENATED MODULE: ./client/src/js/lib/Vault.js
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/**
- * Represents key vault
- *
- *
- */
-
-var Vault_Vault = /*#__PURE__*/function () {
-  function Vault() {
-    classCallCheck_default()(this, Vault);
-
-    WildEmitter["a" /* WildEmitter */].mixin(this);
-    this.id = null;
-    this.pkfp;
-    this.initialized = false;
-    this.admin = null;
-    this.adminKey = null;
-    this.topics = {};
-    this.password = null;
-    this.publicKey = null;
-    this.privateKey = null;
-    this.handlers;
-    this.messageQueue;
-    this.version;
-    this.pendingInvites = {};
-    this.initHandlers();
-  }
-
-  createClass_default()(Vault, [{
-    key: "initHandlers",
-    value: function initHandlers() {
-      var self = this;
-      this.handlers = {};
-
-      this.handlers[Events["Internal"].JOIN_TOPIC_SUCCESS] = function (msg) {
-        console.log("Topic join success! Adding new topic...");
-        self.addNewTopic(self, msg);
-      };
-
-      this.handlers[Events["Internal"].JOIN_TOPIC_FAIL] = function (msg) {
-        console.log("Join topic attempt has failed: ".concat(msg.body.errorMsg));
-      };
-
-      this.handlers[Events["Internal"].POST_LOGIN_DECRYPT] = function (msg) {
-        self.emit(Events["Internal"].POST_LOGIN_DECRYPT, msg);
-      };
-
-      this.handlers[Events["Events"].POST_LOGIN_SUCCESS] = function () {
-        self.emit(Events["Events"].POST_LOGIN_SUCCESS);
-      };
-
-      this.handlers[Events["Internal"].TOPIC_CREATED] = function (msg) {
-        self.addNewTopic(self, msg);
-        self.emit(Events["Internal"].TOPIC_CREATED, msg.body.topicPkfp);
-      };
-
-      this.handlers[Events["Internal"].TOPIC_DELETED] = function (msg) {
-        console.log("TOPIC DELETED: ".concat(msg.body.topicPkfp));
-        delete self.topics[msg.body.topicPkfp];
-        self.emit(Events["Internal"].TOPIC_DELETED, msg.body.topicPkfp);
-      };
-
-      this.handlers[Events["Internal"].SESSION_KEY] = function (msg) {
-        if (!Message["a" /* Message */].verifyMessage(msg.body.sessionKey, msg)) {
-          throw new Error("Session key signature is invalid!");
-        }
-
-        self.sessionKey = msg.body.sessionKey;
-        self.emit(Events["Internal"].SESSION_KEY, msg);
-      };
-    }
-    /**
-     * Given a password creates an empty vault
-     * with generated update private key inside
-     * @param password
-     * @returns {Vault}
-     */
-
-  }, {
-    key: "init",
-    value: function init() {
-      var password = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : IError["a" /* IError */].required();
-      var version = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : IError["a" /* IError */].required("Version required");
-
-      if (!password || password.trim === "") {
-        throw new Error("Password required");
-      } //CHECK password strength and reject if not strong enough
-
-
-      var ic = new iCrypto["a" /* iCrypto */]();
-      ic.generateRSAKeyPair("kp").getPublicKeyFingerprint("kp", "pkfp"); //Create new Vault object
-
-      this.password = password;
-      this.topics = {};
-      this.privateKey = ic.get("kp").privateKey;
-      this.publicKey = ic.get("kp").publicKey;
-      this.pkfp = ic.get("pkfp");
-      this.version = version;
-      this.initialized = true;
-
-      this.getPrivateKey = function () {
-        return ic.get("kp").privateKey;
-      };
-    }
-    /**
-     * Given a password and a key
-     * initializes a vault, creates update key
-     * sets it to admin vault and sets admin private key
-     *
-     * @param password
-     * @param adminKey
-     * @returns {Vault}
-     */
-
-  }, {
-    key: "initAdmin",
-    value: function initAdmin(password, adminKey) {
-      var version = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : IError["a" /* IError */].required("Version required!");
-      this.init(password, version);
-      this.admin = true;
-      this.adminKey = adminKey;
-    }
-  }, {
-    key: "initSaved",
-    value: function () {
-      var _initSaved = asyncToGenerator_default()( /*#__PURE__*/regenerator_default.a.mark(function _callee() {
-        var vault_encrypted,
-            password,
-            topics,
-            ic,
-            data,
-            unpackedTopics,
-            _i,
-            _Object$keys,
-            pkfp,
-            _args = arguments;
-
-        return regenerator_default.a.wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                vault_encrypted = _args.length > 0 && _args[0] !== undefined ? _args[0] : IError["a" /* IError */].required("Vault parse: data parameter missing");
-                password = _args.length > 1 && _args[1] !== undefined ? _args[1] : IError["a" /* IError */].required("Vault parse: password parameter missing");
-                topics = _args.length > 2 && _args[2] !== undefined ? _args[2] : {};
-                ic = new iCrypto["a" /* iCrypto */](); //console.log(`Salt: ${vault_encrypted.substring(0, 256)}`)
-                //console.log(`Vault: ${vault_encrypted.substr(256)}`)
-
-                ic.addBlob("s16", vault_encrypted.substring(0, 256)).addBlob("v_cip", vault_encrypted.substr(256)).hexToBytes("s16", "salt").createPasswordBasedSymKey("sym", password, "s16").AESDecrypt("v_cip", "sym", "vault_raw", true); //Populating new object
-
-                data = JSON.parse(ic.get("vault_raw"));
-                this.adminKey = data.adminKey;
-                this.admin = data.admin;
-                this.publicKey = data.publicKey;
-                this.privateKey = data.privateKey;
-                this.password = password;
-
-                if (!data.pkfp) {
-                  ic.setRSAKey("pub", data.publicKey, "public").getPublicKeyFingerprint("pub", "pkfp");
-                  this.pkfp = ic.get("pkfp");
-                } else {
-                  this.pkfp = data.pkfp;
-                }
-
-                unpackedTopics = this.unpackTopics(topics, password);
-
-                if (unpackedTopics) {
-                  for (_i = 0, _Object$keys = Object.keys(unpackedTopics); _i < _Object$keys.length; _i++) {
-                    pkfp = _Object$keys[_i];
-                    console.log("INITIALIZING TOPIC ".concat(pkfp));
-                    this.topics[pkfp] = new Topic["a" /* Topic */](this.version, pkfp, unpackedTopics[pkfp].name, unpackedTopics[pkfp].key, unpackedTopics[pkfp].comment);
-                  }
-                } //     this.topics[pkfp] = new Topic(         //
-                //         pkfp,                              //
-                //         data.topics[pkfp].name,            //
-                //         data.topics[pkfp].key,             //
-                //         data.topics[pkfp].comment);        //
-                // });                                        //
-
-
-                if (!(!data.version || semver["lt"](data.version, "1.0.5"))) {
-                  _context.next = 18;
-                  break;
-                }
-
-                // TODO format update required!
-                console.log("vault format update required");
-                _context.next = 18;
-                return this.updateVaultFormat(data);
-
-              case 18:
-                this.initialized = true;
-
-              case 19:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee, this);
-      }));
-
-      function initSaved() {
-        return _initSaved.apply(this, arguments);
-      }
-
-      return initSaved;
-    }()
-  }, {
-    key: "updateVaultFormat",
-    value: function () {
-      var _updateVaultFormat = asyncToGenerator_default()( /*#__PURE__*/regenerator_default.a.mark(function _callee2(data) {
-        return regenerator_default.a.wrap(function _callee2$(_context2) {
-          while (1) {
-            switch (_context2.prev = _context2.next) {
-              case 0:
-                console.log("Updating vault format..."); ////////////////////////////////////////////////
-                // Object.keys(data.topics).forEach((pkfp)=>{ //
-                //     this.topics[pkfp] = new Topic(         //
-                //         pkfp,                              //
-                //         data.topics[pkfp].name,            //
-                //         data.topics[pkfp].key,             //
-                //         data.topics[pkfp].comment);        //
-                // });                                        //
-                ////////////////////////////////////////////////
-
-              case 1:
-              case "end":
-                return _context2.stop();
-            }
-          }
-        }, _callee2);
-      }));
-
-      function updateVaultFormat(_x) {
-        return _updateVaultFormat.apply(this, arguments);
-      }
-
-      return updateVaultFormat;
-    }()
-  }, {
-    key: "setId",
-    value: function setId() {
-      var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : IError["a" /* IError */].required("ID is required");
-      this.id = id;
-    }
-  }, {
-    key: "getId",
-    value: function getId() {
-      return this.id;
-    }
-  }, {
-    key: "isAdmin",
-    value: function isAdmin() {
-      return this.admin;
-    }
-  }, {
-    key: "bootstrap",
-    value: function bootstrap(arrivalHub, messageQueue, version) {
-      var self = this;
-      this.version = version;
-      this.arrivalHub = arrivalHub;
-      this.messageQueue = messageQueue;
-      this.arrivalHub.on(this.id, function (msg) {
-        self.processIncomingMessage(msg, self);
-      });
-    }
-  }, {
-    key: "processIncomingMessage",
-    value: function processIncomingMessage(msg, self) {
-      console.log("Processing vault incoming message");
-
-      if (msg.headers.error) {
-        throw new Error("Error received: ".concat(msg.headers.error, ". WARNING ERROR HADLING NOT IMPLEMENTED!!!"));
-      }
-
-      if (!self.handlers.hasOwnProperty(msg.headers.command)) {
-        console.error("Invalid vault command received: ".concat(msg.headers.command));
-        return;
-      }
-
-      self.handlers[msg.headers.command](msg);
-    } // Saves current sate of the vault on the island
-    // cause - cause for vault update
-
-  }, {
-    key: "save",
-    value: function save(cause) {
-      if (!this.password || this.privateKey || this.topics) {
-        throw new Error("Vault object structure is not valid");
-      }
-
-      var vault = this.pack();
-      var message = new Message["a" /* Message */](this.version);
-      message.setSource(this.id);
-      message.setCommand(Events["Internal"].SAVE_VAULT);
-      message.addNonce();
-      message.body.vault = vault;
-      message.body.sign = sign;
-      message.body.cause = cause;
-      message.body.hash = vault.hash;
-      message.signMessage(this.privateKey);
-      this.messageQueue.enqueue(message);
-    }
-  }, {
-    key: "changePassword",
-    value: function changePassword(newPassword) {
-      if (!this.initialized) {
-        throw new Error("The vault hasn't been initialized");
-      }
-
-      if (!newPassword || newPassword.trim === "") {
-        throw new Error("Password required");
-      }
-
-      this.password = newPassword;
-    } // Encrypts all topics and returns an object of
-    // pkfp: cipher encrypted topics
-
-  }, {
-    key: "packTopics",
-    value: function packTopics() {
-      var res = {};
-
-      for (var _i2 = 0, _Object$keys2 = Object.keys(this.topics); _i2 < _Object$keys2.length; _i2++) {
-        var pkfp = _Object$keys2[_i2];
-        var topic = this.topics[pkfp];
-        res[pkfp] = this.prepareVaultTopicRecord(this.version, topic.pkfp, topic.privateKey, topic.name, topic.settings, topic.comment);
-      }
-
-      return res;
-    } // Given topics object of pkfp: cipher
-    // decrypts each cipher and JSON parses with password
-    // returns object of pkfp: { topic raw data  }
-
-  }, {
-    key: "unpackTopics",
-    value: function unpackTopics(topics) {
-      var res = {};
-
-      for (var _i3 = 0, _Object$keys3 = Object.keys(topics); _i3 < _Object$keys3.length; _i3++) {
-        var pkfp = _Object$keys3[_i3];
-        res[pkfp] = this.decryptTopic(topics[pkfp], this.password);
-      }
-
-      return res;
-    } // Decrypts topic blob with password
-
-  }, {
-    key: "decryptTopic",
-    value: function decryptTopic(topicBlob, password) {
-      var signLength = parseInt(topicBlob.substr(topicBlob.length - 3));
-      var signature = topicBlob.substring(topicBlob.length - signLength - 3, topicBlob.length - 3);
-      var salt = topicBlob.substring(0, 256);
-      var topicCipher = topicBlob.substring(256, topicBlob.length - signLength - 3);
-      var ic = new iCrypto["a" /* iCrypto */]();
-      ic.setRSAKey("pub", this.publicKey, "public").addBlob("cipher", topicCipher).addBlob("sign", signature).publicKeyVerify("cipher", "sign", "pub", "verified");
-      if (!ic.get("verified")) throw new Error("Topic signature is invalid!");
-      ic.addBlob("salt-hex", salt).createPasswordBasedSymKey("sym", password, "salt-hex").AESDecrypt("cipher", "sym", "topic-plain", true);
-      return JSON.parse(ic.get("topic-plain"));
-    } // Given raw topic data as arguments encrytps with password and returns cipher
-
-  }, {
-    key: "prepareVaultTopicRecord",
-    value: function prepareVaultTopicRecord() {
-      var version = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : IError["a" /* IError */].required("Version");
-      var pkfp = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : IError["a" /* IError */].required("pkfp");
-      var privateKey = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : IError["a" /* IError */].required("Private key");
-      var name = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : IError["a" /* IError */].required("Name");
-      var settings = arguments.length > 4 ? arguments[4] : undefined;
-      var comment = arguments.length > 5 ? arguments[5] : undefined;
-      var topicBlob = JSON.stringify({
-        version: version,
-        name: name,
-        key: privateKey,
-        settings: settings,
-        comment: comment,
-        pkfp: pkfp
-      });
-      var ic = new iCrypto["a" /* iCrypto */]();
-      ic.createNonce("salt", 128).encode("salt", "hex", "salt-hex").createPasswordBasedSymKey("key", this.password, "salt-hex").addBlob("topic", topicBlob).AESEncrypt("topic", "key", "cipher", true, "CBC", "utf8").merge(["salt-hex", "cipher"], "blob").setRSAKey("priv", this.privateKey, "private").privateKeySign("cipher", "priv", "sign").encodeBlobLength("sign", 3, "0", "sign-length").merge(["blob", "sign", "sign-length"], "res");
-      return ic.get("res");
-    }
-  }, {
-    key: "addNewTopic",
-    value: function addNewTopic(self, data) {
-      //if(!Message.verifyMessage(self.sessionKey, data)){
-      //    throw new Error("Session key signature is invalid!")
-      //}
-      console.log("Inviter nickname: ".concat(data.body.inviterNickname));
-      var vaultRecord = data.body.vaultRecord;
-      var metadata = data.body.metadata;
-      var topicData = self.decryptTopic(vaultRecord, self.password);
-      var pkfp = topicData.pkfp;
-      var newTopic = new Topic["a" /* Topic */](this.version, pkfp, topicData.name, topicData.key, topicData.comment);
-      console.log("New topic initialized: ".concat(pkfp, ", ").concat(topicData.name, " "));
-      newTopic.loadMetadata(metadata);
-      newTopic.bootstrap(newTopic, self.messageQueue, self.arrivalHub, self.version);
-      self.topics[pkfp] = newTopic;
-
-      if (self.pendingInvites.hasOwnProperty(data.body.inviteCode)) {
-        var inviteeNickname = self.pendingInvites[data.body.inviteCode].nickname;
-        console.log("Initialize settings  on topic join. Invitee ".concat(inviteeNickname));
-        self.initSettingsOnTopicJoin(self, pkfp, inviteeNickname, data);
-      }
-
-      self.emit(Events["Events"].TOPIC_CREATED, pkfp);
-    }
-  }, {
-    key: "initSettingsOnTopicJoin",
-    value: function initSettingsOnTopicJoin(self, pkfp, inviteeNickname, request) {
-      var topic = self.topics[pkfp];
-      var privateKey = topic.privateKey;
-      var inviterNickname = ChatUtility["a" /* ChatUtility */].decryptStandardMessage(request.body.inviterNickname, privateKey);
-      var inviterPkfp = request.body.inviterPkfp;
-      var settings = new ClientSettings["a" /* ClientSettings */](self.version, inviteeNickname, pkfp);
-      settings.setNickname(inviterPkfp, inviterNickname);
-      topic.saveClientSettings(settings, privateKey);
-    }
-  }, {
-    key: "pack",
-    value: function pack() {
-      var vaultBlob = JSON.stringify({
-        version: this.version,
-        publicKey: this.publicKey,
-        privateKey: this.privateKey,
-        admin: this.admin,
-        adminKey: this.adminKey,
-        settings: this.settings
-      });
-      var ic = new iCrypto["a" /* iCrypto */]();
-      ic.createNonce("salt", 128).encode("salt", "hex", "salt-hex").createPasswordBasedSymKey("key", this.password, "salt-hex").addBlob("vault", vaultBlob).AESEncrypt("vault", "key", "cip-hex", true, "CBC", "utf8").merge(["salt-hex", "cip-hex"], "res").hash("res", "vault-hash").setRSAKey("asymkey", this.privateKey, "private").privateKeySign("vault-hash", "asymkey", "sign");
-      var topics = this.packTopics(this.password); //console.log(`Salt: ${ic.get("salt-hex")}`)
-      //console.log(`Vault: ${ic.get("cip-hex")}`)
-      //Sign encrypted vault with private key
-
-      return {
-        vault: ic.get("res"),
-        topics: topics,
-        hash: ic.get("vault-hash"),
-        sign: ic.get("sign")
-      };
-    }
-    /**
-     * Stringifies this vault and topics, hashes, signes and encrypts it
-     */
-
-  }, {
-    key: "packBAK",
-    value: function packBAK() {
-      var vaultBlob = JSON.stringify({
-        topics: this.packTopics(),
-        publicKey: this.publicKey,
-        privateKey: this.privateKey,
-        admin: this.admin,
-        adminKey: this.adminKey,
-        settings: this.settings
-      });
-      var ic = new iCrypto["a" /* iCrypto */]();
-      ic.createNonce("salt", 128).encode("salt", "hex", "salt-hex").createPasswordBasedSymKey("key", this.password, "salt-hex").addBlob("vault", vaultBlob).AESEncrypt("vault", "key", "cip-hex", true, "CBC", "utf8").merge(["salt-hex", "cip-hex"], "res").hash("res", "vault-hash").setRSAKey("asymkey", this.privateKey, "private").privateKeySign("vault-hash", "asymkey", "sign"); //console.log(`Salt: ${ic.get("salt-hex")}`)
-      //console.log(`Vault: ${ic.get("cip-hex")}`)
-      //Sign encrypted vault with private key
-
-      return {
-        vault: ic.get("res"),
-        hash: ic.get("vault-hash"),
-        sign: ic.get("sign")
-      };
-    }
-  }, {
-    key: "processNewTopicEvent",
-    value: function processNewTopicEvent(self, data) {
-      //verify session key
-      var metadata = data.body.metadata;
-    }
-  }, {
-    key: "addTopic",
-    value: function addTopic(pkfp, name, privateKey, comment) {
-      if (this.topics.hasOwnProperty(pkfp)) throw new Error("Topic with such id already exists");
-      var newTopic = new Topic["a" /* Topic */](this.version, pkfp, name, privateKey, comment);
-      this.topics[pkfp] = newTopic;
-      return newTopic;
-    }
-  }, {
-    key: "removeTopic",
-    value: function removeTopic() {}
-  }], [{
-    key: "registerVault",
-    value: function registerVault(password, confirm, version) {
-      return new Promise(function (resolve, reject) {
-        setTimeout(function () {
-          try {
-            var result = verifyPassword(password.value.trim(), confirm.value.trim());
-
-            if (result !== undefined) {
-              reject(new Error(result));
-            }
-
-            var vault = new Vault();
-            vault.init(password.value.trim(), version);
-            var vaultEncData = vault.pack();
-            var vaultPublicKey = vault.publicKey;
-            var ic = new iCrypto["a" /* iCrypto */]();
-            ic.generateRSAKeyPair("adminkp").createNonce("n").privateKeySign("n", "adminkp", "sign").bytesToHex("n", "nhex");
-            console.log("Hash: ".concat(vaultEncData.hash));
-
-            if (!vaultEncData.hash) {
-              throw new Error("NO HASH!");
-            }
-
-            Object(xhr["a" /* XHR */])({
-              type: "POST",
-              url: "/register",
-              dataType: "json",
-              data: {
-                nonce: ic.get('nhex'),
-                sign: ic.get("sign"),
-                vault: vaultEncData.vault,
-                vaultHash: vaultEncData.hash,
-                vaultSign: vaultEncData.sign,
-                vaultPublicKey: vaultPublicKey
-              },
-              success: function success() {
-                resolve();
-              },
-              error: function error(err) {
-                reject(err);
-              }
-            });
-          } catch (err) {
-            reject(err);
-          }
-        }, 50);
-      });
-    }
-  }]);
-
-  return Vault;
-}(); // a = {
-//
-//
-//     encrypted: "some-bytes",
-//
-//     privateKey: "key",
-//     publicKey: "key",
-//     password: passwordRaw
-//
-//     topics: {
-//         topicName1: {
-//             key: "key",
-//             comment: "comment"
-//         },
-//         topicName2: {
-//             key: "key",
-//             comment: "comment"
-//         }
-//
-//         //...
-//     }
-//
-// };
-
-/***/ }),
 /* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -20415,7 +20430,7 @@ module.exports = patchedExec;
 "use strict";
 
 // 21.2.5.3 get RegExp.prototype.flags
-var anObject = __webpack_require__(13);
+var anObject = __webpack_require__(14);
 module.exports = function () {
   var that = anObject(this);
   var result = '';
@@ -20434,11 +20449,11 @@ module.exports = function () {
 
 "use strict";
 
-__webpack_require__(176);
+__webpack_require__(177);
 var redefine = __webpack_require__(29);
 var hide = __webpack_require__(16);
 var fails = __webpack_require__(19);
-var defined = __webpack_require__(66);
+var defined = __webpack_require__(67);
 var wks = __webpack_require__(11);
 var regexpExec = __webpack_require__(83);
 
@@ -20539,7 +20554,7 @@ module.exports = function (KEY, length, exec) {
 // true  -> Array#includes
 var toIObject = __webpack_require__(38);
 var toLength = __webpack_require__(20);
-var toAbsoluteIndex = __webpack_require__(70);
+var toAbsoluteIndex = __webpack_require__(71);
 module.exports = function (IS_INCLUDES) {
   return function ($this, el, fromIndex) {
     var O = toIObject($this);
@@ -20564,7 +20579,7 @@ module.exports = function (IS_INCLUDES) {
 /* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var shared = __webpack_require__(65)('keys');
+var shared = __webpack_require__(66)('keys');
 var uid = __webpack_require__(33);
 module.exports = function (key) {
   return shared[key] || (shared[key] = uid(key));
@@ -20600,8 +20615,8 @@ exports.f = {}.propertyIsEnumerable;
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.2 / 15.2.3.5 Object.create(O [, Properties])
-var anObject = __webpack_require__(13);
-var dPs = __webpack_require__(182);
+var anObject = __webpack_require__(14);
+var dPs = __webpack_require__(183);
 var enumBugKeys = __webpack_require__(88);
 var IE_PROTO = __webpack_require__(87)('IE_PROTO');
 var Empty = function () { /* empty */ };
@@ -20649,7 +20664,7 @@ module.exports = Object.create || function create(O, Properties) {
 var pIE = __webpack_require__(90);
 var createDesc = __webpack_require__(44);
 var toIObject = __webpack_require__(38);
-var toPrimitive = __webpack_require__(64);
+var toPrimitive = __webpack_require__(65);
 var has = __webpack_require__(30);
 var IE8_DOM_DEFINE = __webpack_require__(111);
 var gOPD = Object.getOwnPropertyDescriptor;
@@ -20754,7 +20769,7 @@ module.exports = function (exec, skipClosing) {
  * Copyright (c) 2010-2014 Digital Bazaar, Inc.
  */
 var forge = __webpack_require__(2);
-__webpack_require__(5);
+__webpack_require__(6);
 
 module.exports = forge.cipher = forge.cipher || {};
 
@@ -20991,7 +21006,7 @@ BlockCipher.prototype.finish = function(pad) {
  */
 var forge = __webpack_require__(2);
 __webpack_require__(28);
-__webpack_require__(5);
+__webpack_require__(6);
 
 var md5 = module.exports = forge.md5 = forge.md5 || {};
 forge.md.md5 = forge.md.algorithms.md5 = md5;
@@ -21289,7 +21304,7 @@ function _update(s, w, bytes) {
 var forge = __webpack_require__(2);
 __webpack_require__(62);
 __webpack_require__(28);
-__webpack_require__(5);
+__webpack_require__(6);
 
 var pkcs5 = forge.pkcs5 = forge.pkcs5 || {};
 
@@ -21607,14 +21622,14 @@ module.exports = forge.pbkdf2 = pkcs5.pbkdf2 = function(
 var forge = __webpack_require__(2);
 __webpack_require__(39);
 __webpack_require__(27);
-__webpack_require__(72);
+__webpack_require__(73);
 __webpack_require__(28);
-__webpack_require__(219);
+__webpack_require__(220);
 __webpack_require__(40);
 __webpack_require__(50);
 __webpack_require__(102);
-__webpack_require__(73);
-__webpack_require__(5);
+__webpack_require__(74);
+__webpack_require__(6);
 
 // shortcut for asn.1 API
 var asn1 = forge.asn1;
@@ -24781,7 +24796,7 @@ pki.verifyCertificateChain = function(caStore, chain, verify) {
  */
 var forge = __webpack_require__(2);
 __webpack_require__(22);
-__webpack_require__(5);
+__webpack_require__(6);
 
 // shortcut for PSS API
 var pss = module.exports = forge.pss = forge.pss || {};
@@ -25024,9 +25039,9 @@ pss.create = function(options) {
  * Module dependencies.
  */
 
-var debug = __webpack_require__(238)('socket.io-parser');
+var debug = __webpack_require__(239)('socket.io-parser');
 var Emitter = __webpack_require__(51);
-var binary = __webpack_require__(241);
+var binary = __webpack_require__(242);
 var isArray = __webpack_require__(151);
 var isBuf = __webpack_require__(152);
 
@@ -25442,7 +25457,7 @@ function error(msg) {
 
 // browser shim for xmlhttprequest module
 
-var hasCORS = __webpack_require__(244);
+var hasCORS = __webpack_require__(245);
 
 module.exports = function (opts) {
   var xdomain = opts.xdomain;
@@ -25654,7 +25669,7 @@ Transport.prototype.onClose = function () {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Metadata; });
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1);
 
@@ -25708,7 +25723,7 @@ var Metadata = /*#__PURE__*/function () {
 /* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(4);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(6);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(5);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(1);
 
@@ -25826,11 +25841,11 @@ AttachmentInfo.properties = ["name", "size", "type", "lastModified", "hashUnencr
 /* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var arrayWithoutHoles = __webpack_require__(204);
+var arrayWithoutHoles = __webpack_require__(205);
 
-var iterableToArray = __webpack_require__(205);
+var iterableToArray = __webpack_require__(206);
 
-var nonIterableSpread = __webpack_require__(206);
+var nonIterableSpread = __webpack_require__(207);
 
 function _toConsumableArray(arr) {
   return arrayWithoutHoles(arr) || iterableToArray(arr) || nonIterableSpread();
@@ -25854,7 +25869,7 @@ module.exports = _toConsumableArray;
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(4);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(6);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(5);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var _AttachmentInfo__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(107);
 /* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(1);
@@ -26082,9 +26097,9 @@ var ChatMessage = /*#__PURE__*/function () {
 /* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(6);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(5);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _WildEmitter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(14);
+/* harmony import */ var _WildEmitter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(12);
 /* harmony import */ var _Lock__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(168);
 
 
@@ -26279,7 +26294,7 @@ module.exports = !__webpack_require__(18) && !__webpack_require__(19)(function (
 
 "use strict";
 
-var at = __webpack_require__(175)(true);
+var at = __webpack_require__(176)(true);
 
  // `AdvanceStringIndex` abstract operation
 // https://tc39.github.io/ecma262/#sec-advancestringindex
@@ -26371,7 +26386,7 @@ module.exports = document && document.documentElement;
 "use strict";
 
 var addToUnscopables = __webpack_require__(120);
-var step = __webpack_require__(184);
+var step = __webpack_require__(185);
 var Iterators = __webpack_require__(48);
 var toIObject = __webpack_require__(38);
 
@@ -26379,7 +26394,7 @@ var toIObject = __webpack_require__(38);
 // 22.1.3.13 Array.prototype.keys()
 // 22.1.3.29 Array.prototype.values()
 // 22.1.3.30 Array.prototype[@@iterator]()
-module.exports = __webpack_require__(185)(Array, 'Array', function (iterated, kind) {
+module.exports = __webpack_require__(186)(Array, 'Array', function (iterated, kind) {
   this._t = toIObject(iterated); // target
   this._i = 0;                   // next index
   this._k = kind;                // kind
@@ -26442,7 +26457,7 @@ module.exports = Object.getPrototypeOf || function (O) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // call something on iterator step with safe closing on error
-var anObject = __webpack_require__(13);
+var anObject = __webpack_require__(14);
 module.exports = function (iterator, fn, value, entries) {
   try {
     return entries ? fn(anObject(value)[0], value[1]) : fn(value);
@@ -26460,7 +26475,7 @@ module.exports = function (iterator, fn, value, entries) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var ctx = __webpack_require__(35);
-var invoke = __webpack_require__(188);
+var invoke = __webpack_require__(189);
 var html = __webpack_require__(118);
 var cel = __webpack_require__(81);
 var global = __webpack_require__(10);
@@ -26574,7 +26589,7 @@ module.exports.f = function (C) {
 /* 125 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var anObject = __webpack_require__(13);
+var anObject = __webpack_require__(14);
 var isObject = __webpack_require__(24);
 var newPromiseCapability = __webpack_require__(124);
 
@@ -26635,7 +26650,7 @@ if (__webpack_require__(18)) {
   var fails = __webpack_require__(19);
   var $export = __webpack_require__(23);
   var $typed = __webpack_require__(129);
-  var $buffer = __webpack_require__(208);
+  var $buffer = __webpack_require__(209);
   var ctx = __webpack_require__(35);
   var anInstance = __webpack_require__(93);
   var propertyDesc = __webpack_require__(44);
@@ -26644,8 +26659,8 @@ if (__webpack_require__(18)) {
   var toInteger = __webpack_require__(37);
   var toLength = __webpack_require__(20);
   var toIndex = __webpack_require__(130);
-  var toAbsoluteIndex = __webpack_require__(70);
-  var toPrimitive = __webpack_require__(64);
+  var toAbsoluteIndex = __webpack_require__(71);
+  var toPrimitive = __webpack_require__(65);
   var has = __webpack_require__(30);
   var classof = __webpack_require__(55);
   var isObject = __webpack_require__(24);
@@ -26657,15 +26672,15 @@ if (__webpack_require__(18)) {
   var getIterFn = __webpack_require__(95);
   var uid = __webpack_require__(33);
   var wks = __webpack_require__(11);
-  var createArrayMethod = __webpack_require__(209);
+  var createArrayMethod = __webpack_require__(210);
   var createArrayIncludes = __webpack_require__(86);
-  var speciesConstructor = __webpack_require__(67);
+  var speciesConstructor = __webpack_require__(68);
   var ArrayIterators = __webpack_require__(119);
   var Iterators = __webpack_require__(48);
   var $iterDetect = __webpack_require__(97);
   var setSpecies = __webpack_require__(126);
   var arrayFill = __webpack_require__(131);
-  var arrayCopyWithin = __webpack_require__(212);
+  var arrayCopyWithin = __webpack_require__(213);
   var $DP = __webpack_require__(17);
   var $GOPD = __webpack_require__(92);
   var dP = $DP.f;
@@ -27168,7 +27183,7 @@ module.exports = function (it) {
 // 22.1.3.6 Array.prototype.fill(value, start = 0, end = this.length)
 
 var toObject = __webpack_require__(25);
-var toAbsoluteIndex = __webpack_require__(70);
+var toAbsoluteIndex = __webpack_require__(71);
 var toLength = __webpack_require__(20);
 module.exports = function fill(value /* , start = 0, end = @length */) {
   var O = toObject(this);
@@ -27189,7 +27204,7 @@ module.exports = function fill(value /* , start = 0, end = @length */) {
 "use strict";
 
 
-var anObject = __webpack_require__(13);
+var anObject = __webpack_require__(14);
 var toObject = __webpack_require__(25);
 var toLength = __webpack_require__(20);
 var toInteger = __webpack_require__(37);
@@ -27330,7 +27345,7 @@ __webpack_require__(128)('Uint8', 1, function (init) {
  * Copyright (c) 2010-2014 Digital Bazaar, Inc.
  */
 var forge = __webpack_require__(2);
-__webpack_require__(5);
+__webpack_require__(6);
 
 forge.cipher = forge.cipher || {};
 
@@ -28555,7 +28570,7 @@ __webpack_require__(50);
 __webpack_require__(136);
 __webpack_require__(22);
 __webpack_require__(63);
-__webpack_require__(5);
+__webpack_require__(6);
 
 /**
  * Generates pseudo random bytes by mixing the result of two hash functions,
@@ -32606,8 +32621,8 @@ __webpack_require__(50);
 __webpack_require__(100);
 __webpack_require__(144);
 __webpack_require__(102);
-__webpack_require__(73);
-__webpack_require__(5);
+__webpack_require__(74);
+__webpack_require__(6);
 __webpack_require__(101);
 
 // shortcut for asn.1 API
@@ -32720,15 +32735,15 @@ pki.privateKeyInfoToPem = function(pki, maxline) {
 var forge = __webpack_require__(2);
 __webpack_require__(39);
 __webpack_require__(27);
-__webpack_require__(72);
+__webpack_require__(73);
 __webpack_require__(28);
 __webpack_require__(40);
 __webpack_require__(100);
 __webpack_require__(50);
 __webpack_require__(22);
 __webpack_require__(141);
-__webpack_require__(73);
-__webpack_require__(5);
+__webpack_require__(74);
+__webpack_require__(6);
 
 if(typeof BigInteger === 'undefined') {
   var BigInteger = forge.jsbn.BigInteger;
@@ -33744,7 +33759,7 @@ function createPbkdf2Params(salt, countBytes, dkLen, prfAlgorithm) {
  */
 var forge = __webpack_require__(2);
 __webpack_require__(28);
-__webpack_require__(5);
+__webpack_require__(6);
 
 var sha256 = module.exports = forge.sha256 = forge.sha256 || {};
 forge.md.sha256 = forge.md.algorithms.sha256 = sha256;
@@ -34078,7 +34093,7 @@ function _update(s, w, bytes) {
  * Copyright (c) 2010-2014 Digital Bazaar, Inc.
  */
 var forge = __webpack_require__(2);
-__webpack_require__(5);
+__webpack_require__(6);
 
 var _crypto = null;
 if(forge.util.isNodejs && !forge.options.usePureJavaScript &&
@@ -34504,7 +34519,7 @@ prng.create = function(plugin) {
  * http://www.ietf.org/rfc/rfc2268.txt
  */
 var forge = __webpack_require__(2);
-__webpack_require__(5);
+__webpack_require__(6);
 
 var piTable = [
   0xd9, 0x78, 0xf9, 0xc4, 0x19, 0xdd, 0xb5, 0xed, 0x28, 0xe9, 0xfd, 0x79, 0x4a, 0xa0, 0xd8, 0x9d,
@@ -34955,7 +34970,7 @@ forge.rc2.createDecryptionCipher = function(key, bits) {
  * Copyright (c) 2013-2014 Digital Bazaar, Inc.
  */
 var forge = __webpack_require__(2);
-__webpack_require__(5);
+__webpack_require__(6);
 __webpack_require__(22);
 __webpack_require__(63);
 
@@ -35199,8 +35214,8 @@ function rsa_mgf1(seed, maskLength, hash) {
  * Copyright (c) 2014 Digital Bazaar, Inc.
  */
 var forge = __webpack_require__(2);
-__webpack_require__(5);
-__webpack_require__(74);
+__webpack_require__(6);
+__webpack_require__(75);
 __webpack_require__(22);
 
 (function() {
@@ -35596,9 +35611,9 @@ __webpack_require__(40);
 __webpack_require__(145);
 __webpack_require__(137);
 __webpack_require__(22);
-__webpack_require__(73);
+__webpack_require__(74);
 __webpack_require__(63);
-__webpack_require__(5);
+__webpack_require__(6);
 __webpack_require__(101);
 
 // shortcut for asn.1 & PKI API
@@ -36685,7 +36700,7 @@ p12.generateKey = forge.pbe.generatePkcs12Key;
  */
 var forge = __webpack_require__(2);
 __webpack_require__(27);
-__webpack_require__(5);
+__webpack_require__(6);
 
 // shortcut for ASN.1 API
 var asn1 = forge.asn1;
@@ -36999,7 +37014,7 @@ p7v.recipientInfoValidator = {
  * Copyright (c) 2014 Digital Bazaar, Inc.
  */
 var forge = __webpack_require__(2);
-__webpack_require__(5);
+__webpack_require__(6);
 
 forge.mgf = forge.mgf || {};
 var mgf1 = module.exports = forge.mgf.mgf1 = forge.mgf1 = forge.mgf1 || {};
@@ -37150,7 +37165,7 @@ forge.debug.clear = function(cat, name) {
  */
 var forge = __webpack_require__(2);
 __webpack_require__(28);
-__webpack_require__(5);
+__webpack_require__(6);
 
 var sha512 = module.exports = forge.sha512 = forge.sha512 || {};
 
@@ -37711,7 +37726,7 @@ function _update(s, w, bytes) {
  * Copyright (c) 2008-2013 Digital Bazaar, Inc.
  */
 var forge = __webpack_require__(2);
-__webpack_require__(5);
+__webpack_require__(6);
 
 /* LOG API */
 module.exports = forge.log = forge.log || {};
@@ -38114,15 +38129,15 @@ function isBuf(obj) {
  * Module dependencies.
  */
 
-var eio = __webpack_require__(242);
+var eio = __webpack_require__(243);
 var Socket = __webpack_require__(159);
 var Emitter = __webpack_require__(51);
 var parser = __webpack_require__(103);
 var on = __webpack_require__(160);
 var bind = __webpack_require__(161);
-var debug = __webpack_require__(75)('socket.io-client:manager');
+var debug = __webpack_require__(76)('socket.io-client:manager');
 var indexOf = __webpack_require__(158);
-var Backoff = __webpack_require__(259);
+var Backoff = __webpack_require__(260);
 
 /**
  * IE6+ hasOwnProperty
@@ -38693,9 +38708,9 @@ Manager.prototype.onreconnect = function () {
  */
 
 var XMLHttpRequest = __webpack_require__(104);
-var XHR = __webpack_require__(245);
-var JSONP = __webpack_require__(255);
-var websocket = __webpack_require__(256);
+var XHR = __webpack_require__(246);
+var JSONP = __webpack_require__(256);
+var websocket = __webpack_require__(257);
 
 /**
  * Export transports.
@@ -38752,11 +38767,11 @@ function polling (opts) {
  */
 
 var Transport = __webpack_require__(105);
-var parseqs = __webpack_require__(76);
+var parseqs = __webpack_require__(77);
 var parser = __webpack_require__(52);
-var inherit = __webpack_require__(77);
+var inherit = __webpack_require__(78);
 var yeast = __webpack_require__(157);
-var debug = __webpack_require__(78)('engine.io-client:polling');
+var debug = __webpack_require__(79)('engine.io-client:polling');
 
 /**
  * Module exports.
@@ -39004,7 +39019,7 @@ Polling.prototype.uri = function () {
  * Module requirements.
  */
 
-var isArray = __webpack_require__(247);
+var isArray = __webpack_require__(248);
 
 var toString = Object.prototype.toString;
 var withNativeBlob = typeof Blob === 'function' ||
@@ -39166,11 +39181,11 @@ module.exports = function(arr, obj){
 
 var parser = __webpack_require__(103);
 var Emitter = __webpack_require__(51);
-var toArray = __webpack_require__(258);
+var toArray = __webpack_require__(259);
 var on = __webpack_require__(160);
 var bind = __webpack_require__(161);
-var debug = __webpack_require__(75)('socket.io-client:socket');
-var parseqs = __webpack_require__(76);
+var debug = __webpack_require__(76)('socket.io-client:socket');
+var parseqs = __webpack_require__(77);
 var hasBin = __webpack_require__(156);
 
 /**
@@ -39697,38 +39712,37 @@ module.exports = _defineProperty;
 /* WEBPACK VAR INJECTION */(function(setImmediate) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ChatClient; });
 /* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(49);
 /* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(36);
-/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
-/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(21);
-/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(15);
-/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(43);
-/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(7);
-/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(4);
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(6);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_8__);
-/* harmony import */ var _WildEmitter__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(14);
-/* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(0);
-/* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(_common_Events__WEBPACK_IMPORTED_MODULE_10__);
-/* harmony import */ var _Vault__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(80);
-/* harmony import */ var _xhr__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(79);
-/* harmony import */ var _Connector__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(166);
-/* harmony import */ var _MessageQueue__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(110);
-/* harmony import */ var _ArrivalHub__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(169);
-/* harmony import */ var _ChatUtility__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(12);
-/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(9);
-/* harmony import */ var _Topic__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(42);
-/* harmony import */ var _Metadata__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(106);
-/* harmony import */ var _Participant__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(260);
-/* harmony import */ var _AttachmentInfo__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(107);
-/* harmony import */ var _ClientSettings__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(41);
-/* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(1);
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(21);
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(15);
+/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(43);
+/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(7);
+/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(4);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(5);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var _WildEmitter__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(12);
+/* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(0);
+/* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(_common_Events__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var _Vault__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(64);
+/* harmony import */ var _xhr__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(80);
+/* harmony import */ var _Connector__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(166);
+/* harmony import */ var _MessageQueue__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(110);
+/* harmony import */ var _ArrivalHub__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(169);
+/* harmony import */ var _ChatUtility__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(13);
+/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(8);
+/* harmony import */ var _Topic__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(42);
+/* harmony import */ var _Metadata__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(106);
+/* harmony import */ var _Participant__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(261);
+/* harmony import */ var _AttachmentInfo__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(107);
+/* harmony import */ var _ClientSettings__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(41);
+/* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(1);
+/* harmony import */ var _TopicJoinAgent__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(170);
 
 
 
@@ -39755,9 +39769,9 @@ module.exports = _defineProperty;
 
 var ChatClient = /*#__PURE__*/function () {
   function ChatClient(opts) {
-    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_7___default()(this, ChatClient);
+    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_6___default()(this, ChatClient);
 
-    _WildEmitter__WEBPACK_IMPORTED_MODULE_9__[/* WildEmitter */ "a"].mixin(this);
+    _WildEmitter__WEBPACK_IMPORTED_MODULE_8__[/* WildEmitter */ "a"].mixin(this);
 
     if (!opts.version) {
       throw new Error("Version required!");
@@ -39774,19 +39788,20 @@ var ChatClient = /*#__PURE__*/function () {
     this.connector;
     this.arrivalHub;
     this.sessionKey;
+    this.agents = [];
   } // ---------------------------------------------------------------------------------------------------------------------------
   // Login and session initialization
 
 
-  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_8___default()(ChatClient, [{
+  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_7___default()(ChatClient, [{
     key: "initSession",
     value: function initSession(password) {
       var _this = this;
 
-      setImmediate( /*#__PURE__*/_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_6___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default.a.mark(function _callee() {
+      setImmediate( /*#__PURE__*/_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_5___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.mark(function _callee() {
         var response, vault, vaultId, _i, _Object$keys, pkfp;
 
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default.a.wrap(function _callee$(_context) {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
@@ -39815,7 +39830,7 @@ var ChatClient = /*#__PURE__*/function () {
                 throw new Error("Vault not found");
 
               case 9:
-                _this.vault = new _Vault__WEBPACK_IMPORTED_MODULE_11__[/* Vault */ "a"]();
+                _this.vault = new _Vault__WEBPACK_IMPORTED_MODULE_10__[/* Vault */ "a"]();
                 vault = response.vault;
                 vaultId = response.vaultId;
                 console.log("Got vault. Initializing"); //Initialize vault
@@ -39826,11 +39841,11 @@ var ChatClient = /*#__PURE__*/function () {
 
                 console.log("Vault initialized. Initializing connector..."); //Initialize multiplexor socket
 
-                _this.connector = new _Connector__WEBPACK_IMPORTED_MODULE_13__[/* Connector */ "a"](); //Initializing arrival hub
+                _this.connector = new _Connector__WEBPACK_IMPORTED_MODULE_12__[/* Connector */ "a"](); //Initializing arrival hub
 
-                _this.arrivalHub = new _ArrivalHub__WEBPACK_IMPORTED_MODULE_15__[/* ArrivalHub */ "a"](_this.connector); //Initialize message queue
+                _this.arrivalHub = new _ArrivalHub__WEBPACK_IMPORTED_MODULE_14__[/* ArrivalHub */ "a"](_this.connector); //Initialize message queue
 
-                _this.messageQueue = new _MessageQueue__WEBPACK_IMPORTED_MODULE_14__[/* MessageQueue */ "a"](_this.connector); //bootstrapping vault
+                _this.messageQueue = new _MessageQueue__WEBPACK_IMPORTED_MODULE_13__[/* MessageQueue */ "a"](_this.connector); //bootstrapping vault
 
                 _this.vault.bootstrap(_this.arrivalHub, _this.messageQueue, _this.version);
 
@@ -39853,7 +39868,7 @@ var ChatClient = /*#__PURE__*/function () {
                 } //At this point we have loaded all topic keys, so login is successful
 
 
-                _this.emit(_common_Events__WEBPACK_IMPORTED_MODULE_10__["Events"].LOGIN_SUCCESS); // Post-login
+                _this.emit(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].LOGIN_SUCCESS); // Post-login
 
 
                 _this.postLogin();
@@ -39865,7 +39880,7 @@ var ChatClient = /*#__PURE__*/function () {
                 _context.prev = 31;
                 _context.t0 = _context["catch"](0);
 
-                _this.emit(_common_Events__WEBPACK_IMPORTED_MODULE_10__["Events"].LOGIN_ERROR, _context.t0);
+                _this.emit(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].LOGIN_ERROR, _context.t0);
 
                 console.trace(_context.t0);
 
@@ -39883,15 +39898,15 @@ var ChatClient = /*#__PURE__*/function () {
       var _this2 = this;
 
       var self = this;
-      this.vault.on(_common_Events__WEBPACK_IMPORTED_MODULE_10__["Internal"].SESSION_KEY, function (message) {
+      this.vault.on(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Internal"].SESSION_KEY, function (message) {
         _this2.sessionKey = message.body.sessionKey;
         console.log("Session key is set!");
       });
-      this.vault.on(_common_Events__WEBPACK_IMPORTED_MODULE_10__["Events"].TOPIC_CREATED, function (pkfp) {
-        self.emit(_common_Events__WEBPACK_IMPORTED_MODULE_10__["Events"].TOPIC_CREATED, pkfp);
+      this.vault.on(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].TOPIC_CREATED, function (pkfp) {
+        self.emit(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].TOPIC_CREATED, pkfp);
       });
-      this.vault.on(_common_Events__WEBPACK_IMPORTED_MODULE_10__["Internal"].TOPIC_DELETED, function (pkfp) {
-        self.emit(_common_Events__WEBPACK_IMPORTED_MODULE_10__["Events"].TOPIC_DELETED, pkfp);
+      this.vault.on(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Internal"].TOPIC_DELETED, function (pkfp) {
+        self.emit(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].TOPIC_DELETED, pkfp);
       });
     } // Sends all topic pkfps (ids) to gather metadata and encrypted services
 
@@ -39901,13 +39916,13 @@ var ChatClient = /*#__PURE__*/function () {
       var _this3 = this;
 
       //sending post_login request
-      var message = new _Message__WEBPACK_IMPORTED_MODULE_17__[/* Message */ "a"](this.version);
+      var message = new _Message__WEBPACK_IMPORTED_MODULE_16__[/* Message */ "a"](this.version);
       message.setSource(this.vault.id);
-      message.setCommand(_common_Events__WEBPACK_IMPORTED_MODULE_10__["Internal"].POST_LOGIN);
+      message.setCommand(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Internal"].POST_LOGIN);
       message.addNonce();
       message.body.topics = Object.keys(this.topics);
       message.signMessage(this.vault.privateKey);
-      this.vault.once(_common_Events__WEBPACK_IMPORTED_MODULE_10__["Internal"].POST_LOGIN_DECRYPT, function (msg) {
+      this.vault.once(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Internal"].POST_LOGIN_DECRYPT, function (msg) {
         _this3.postLoginDecrypt(msg, _this3);
       });
       this.messageQueue.enqueue(message);
@@ -39921,7 +39936,7 @@ var ChatClient = /*#__PURE__*/function () {
 
       var decryptBlob = function decryptBlob(privateKey, blob) {
         var lengthChars = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 4;
-        var icn = new _iCrypto__WEBPACK_IMPORTED_MODULE_23__[/* iCrypto */ "a"]();
+        var icn = new _iCrypto__WEBPACK_IMPORTED_MODULE_22__[/* iCrypto */ "a"]();
         var symLength = parseInt(blob.substr(-lengthChars));
         var blobLength = blob.length;
         var symk = blob.substring(blobLength - symLength - lengthChars, blobLength - lengthChars);
@@ -39932,7 +39947,7 @@ var ChatClient = /*#__PURE__*/function () {
 
       var encryptBlob = function encryptBlob(publicKey, blob) {
         var lengthChars = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 4;
-        var icn = new _iCrypto__WEBPACK_IMPORTED_MODULE_23__[/* iCrypto */ "a"]();
+        var icn = new _iCrypto__WEBPACK_IMPORTED_MODULE_22__[/* iCrypto */ "a"]();
         icn.createSYMKey("sym").asym.setKey("pub", publicKey, "public").addBlob("blob-raw", blob).sym.encrypt("blob-raw", "sym", "blob-cip", true).asym.encrypt("sym", "pub", "symcip", "hex").encodeBlobLength("symcip", 4, "0", "symcipl").merge(["blob-cip", "symcip", "symcipl"], "res");
         return icn.get("res");
       };
@@ -39984,14 +39999,14 @@ var ChatClient = /*#__PURE__*/function () {
       }
 
       console.log("Decryption is successfull.");
-      var message = new _Message__WEBPACK_IMPORTED_MODULE_17__[/* Message */ "a"](self.version);
-      message.setCommand(_common_Events__WEBPACK_IMPORTED_MODULE_10__["Internal"].POST_LOGIN_CHECK_SERVICES);
+      var message = new _Message__WEBPACK_IMPORTED_MODULE_16__[/* Message */ "a"](self.version);
+      message.setCommand(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Internal"].POST_LOGIN_CHECK_SERVICES);
       message.setSource(self.vault.getId());
       message.body.services = res;
       message.signMessage(self.vault.privateKey);
-      self.vault.once(_common_Events__WEBPACK_IMPORTED_MODULE_10__["Events"].POST_LOGIN_SUCCESS, function () {
+      self.vault.once(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].POST_LOGIN_SUCCESS, function () {
         console.log("Post login success!");
-        self.emit(_common_Events__WEBPACK_IMPORTED_MODULE_10__["Events"].POST_LOGIN_SUCCESS);
+        self.emit(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].POST_LOGIN_SUCCESS);
       });
       this.messageQueue.enqueue(message);
     }
@@ -40000,14 +40015,14 @@ var ChatClient = /*#__PURE__*/function () {
     value: function initTopicListeners(topic) {
       var _this4 = this;
 
-      topic.on(_common_Events__WEBPACK_IMPORTED_MODULE_10__["Events"].MESSAGES_LOADED, function (messages) {
-        _this4.emit(_common_Events__WEBPACK_IMPORTED_MODULE_10__["Events"].MESSAGES_LOADED, {
+      topic.on(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].MESSAGES_LOADED, function (messages) {
+        _this4.emit(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].MESSAGES_LOADED, {
           pkfp: topic.pkfp,
           messages: messages
         });
       });
-      topic.on(_common_Events__WEBPACK_IMPORTED_MODULE_10__["Events"].INVITE_CREATED, function () {
-        _this4.emit(_common_Events__WEBPACK_IMPORTED_MODULE_10__["Events"].INVITE_CREATED, {
+      topic.on(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].INVITE_CREATED, function () {
+        _this4.emit(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].INVITE_CREATED, {
           pkfp: topic.pkfp
         });
       });
@@ -40044,9 +40059,9 @@ var ChatClient = /*#__PURE__*/function () {
       var _this5 = this;
 
       var self = this;
-      setTimeout( /*#__PURE__*/_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_6___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default.a.mark(function _callee2() {
+      setTimeout( /*#__PURE__*/_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_5___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.mark(function _callee2() {
         var ic, ownerKeyPair, topicKeyPair, ownerPkfp, topicID, newTopicData, newTopicDataCipher, settings, vaultRecord, request;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default.a.wrap(function _callee2$(_context2) {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
@@ -40058,7 +40073,7 @@ var ChatClient = /*#__PURE__*/function () {
                   break;
                 }
 
-                self.emit(_common_Events__WEBPACK_IMPORTED_MODULE_10__["Events"].INIT_TOPIC_ERROR, "Nickname entered is invalid");
+                self.emit(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].INIT_TOPIC_ERROR, "Nickname entered is invalid");
                 return _context2.abrupt("return");
 
               case 5:
@@ -40067,13 +40082,13 @@ var ChatClient = /*#__PURE__*/function () {
                   break;
                 }
 
-                self.emit(_common_Events__WEBPACK_IMPORTED_MODULE_10__["Events"].INIT_TOPIC_ERROR, "Topic name entered is invalid");
+                self.emit(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].INIT_TOPIC_ERROR, "Topic name entered is invalid");
                 return _context2.abrupt("return");
 
               case 8:
                 console.log("Generating keys"); //CREATE NEW TOPIC PENDING
 
-                ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_23__[/* iCrypto */ "a"](); //Generate keypairs one for user, other for topic
+                ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_22__[/* iCrypto */ "a"](); //Generate keypairs one for user, other for topic
 
                 _context2.next = 12;
                 return ic.asym.asyncCreateKeyPair('owner-keys');
@@ -40097,14 +40112,14 @@ var ChatClient = /*#__PURE__*/function () {
                   ownerPublicKey: ownerKeyPair.publicKey
                 };
                 console.log("Preparing request");
-                newTopicDataCipher = _ChatUtility__WEBPACK_IMPORTED_MODULE_16__[/* ChatUtility */ "a"].encryptStandardMessage(JSON.stringify(newTopicData), self.sessionKey); //initializing topic settings
+                newTopicDataCipher = _ChatUtility__WEBPACK_IMPORTED_MODULE_15__[/* ChatUtility */ "a"].encryptStandardMessage(JSON.stringify(newTopicData), self.sessionKey); //initializing topic settings
 
-                settings = _Topic__WEBPACK_IMPORTED_MODULE_18__[/* Topic */ "a"].prepareNewTopicSettings(self.version, nickname, topicName, ownerKeyPair.publicKey); // TODO Prepare new topic vault record
+                settings = _Topic__WEBPACK_IMPORTED_MODULE_17__[/* Topic */ "a"].prepareNewTopicSettings(self.version, nickname, topicName, ownerKeyPair.publicKey); // TODO Prepare new topic vault record
 
                 vaultRecord = self.vault.prepareVaultTopicRecord(_this5.version, ownerPkfp, ownerKeyPair.privateKey, topicName); //Preparing request
 
-                request = new _Message__WEBPACK_IMPORTED_MODULE_17__[/* Message */ "a"](self.version);
-                request.headers.command = _common_Events__WEBPACK_IMPORTED_MODULE_10__["Internal"].INIT_TOPIC;
+                request = new _Message__WEBPACK_IMPORTED_MODULE_16__[/* Message */ "a"](self.version);
+                request.headers.command = _common_Events__WEBPACK_IMPORTED_MODULE_9__["Internal"].INIT_TOPIC;
                 request.headers.pkfpSource = self.vault.id;
                 request.body.topicID = topicID;
                 request.body.topicPkfp = ownerPkfp;
@@ -40134,10 +40149,10 @@ var ChatClient = /*#__PURE__*/function () {
 
       var topic = this.vault.topics[pkfp];
       if (!topic) throw new Error("Topic ".concat(pkfp, " not found"));
-      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_23__[/* iCrypto */ "a"]();
+      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_22__[/* iCrypto */ "a"]();
       ic.createNonce("n").bytesToHex("n", "nhex").setRSAKey("priv", self.vault.privateKey, "private").privateKeySign("nhex", "priv", "sign");
-      var request = new _Message__WEBPACK_IMPORTED_MODULE_17__[/* Message */ "a"](self.version);
-      request.setCommand(_common_Events__WEBPACK_IMPORTED_MODULE_10__["Internal"].DELETE_TOPIC);
+      var request = new _Message__WEBPACK_IMPORTED_MODULE_16__[/* Message */ "a"](self.version);
+      request.setCommand(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Internal"].DELETE_TOPIC);
       request.setSource(self.vault.id);
       request.body.vaultId = self.vault.id;
       request.body.topicPkfp = pkfp;
@@ -40160,76 +40175,105 @@ var ChatClient = /*#__PURE__*/function () {
   }, {
     key: "joinTopic",
     value: function () {
-      var _joinTopic = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_6___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default.a.mark(function _callee3(nickname, topicName, inviteCode) {
-        var _this6 = this;
-
-        var self;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default.a.wrap(function _callee3$(_context3) {
+      var _joinTopic = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_5___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.mark(function _callee3(nickname, topicName, inviteString) {
+        var topicJoinAgent;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
-                self = this;
-                setTimeout(function () {
-                  var start = new Date();
-                  console.log("joining topic with nickname: " + nickname + " | Invite code: " + inviteCode);
-                  console.log("Preparing keys...");
-                  var cryptoStart = new Date();
-                  var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_23__[/* iCrypto */ "a"]();
-                  ic.asym.createKeyPair("rsa").getPublicKeyFingerprint('rsa', 'pkfp').addBlob("invite64", inviteCode.trim()).base64Decode("invite64", "invite");
-                  var pkfp = ic.get("pkfp");
-                  var publicKey = ic.get("rsa").publicKey;
-                  var privateKey = ic.get("rsa").privateKey;
-                  var now = new Date();
-                  console.log("Keys generated in ".concat((now - cryptoStart) / 1000, "sec. ").concat((now - start) / 1000, " elapsed since beginning."));
-                  var callStart = new Date();
-                  var invite = ic.get("invite").split("/");
-                  var inviterResidence = invite[0];
-                  var inviterID = invite[1];
-                  var inviteID = invite[2]; ///////////////////////////////////////////////////////////////////////////
-                  // if (!self.inviteRequestValid(inviterResidence, inviterID, inviteID)){ //
-                  //     self.emit("join_topic_fail");                                     //
-                  //     throw new Error("Invite request is invalid");                     //
-                  // }                                                                     //
-                  ///////////////////////////////////////////////////////////////////////////
+                topicJoinAgent = new _TopicJoinAgent__WEBPACK_IMPORTED_MODULE_23__[/* TopicJoinAgent */ "a"](nickname, topicName, inviteString, this.arrivalHub, this.messageQueue, this.vault);
+                topicJoinAgent.on(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].JOIN_TOPIC_SUCCESS, this.notifyJoinSuccess);
+                topicJoinAgent.on(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].JOIN_TOPIC_FAIL, function () {
+                  console.log("Join topic fail received from the agent");
+                });
+                topicJoinAgent.start();
+                this.agents.push(topicJoinAgent); ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                // setTimeout(()=>{                                                                                                                  //
+                //                                                                                                                                   //
+                //     let start = new Date();                                                                                                       //
+                //     console.log("joining topic with nickname: " + nickname + " | Invite code: " + inviteCode);                                    //
+                //                                                                                                                                   //
+                //     console.log(`Preparing keys...`);                                                                                             //
+                //                                                                                                                                   //
+                //     let cryptoStart = new Date()                                                                                                  //
+                //     let ic = new iCrypto();                                                                                                       //
+                //     ic.asym.createKeyPair("rsa")                                                                                                  //
+                //         .getPublicKeyFingerprint('rsa', 'pkfp')                                                                                   //
+                //         .addBlob("invite64", inviteCode.trim())                                                                                   //
+                //         .base64Decode("invite64", "invite");                                                                                      //
+                //                                                                                                                                   //
+                //     let pkfp = ic.get("pkfp")                                                                                                     //
+                //     let publicKey = ic.get("rsa").publicKey;                                                                                      //
+                //     let privateKey = ic.get("rsa").privateKey;                                                                                    //
+                //                                                                                                                                   //
+                //     let now = new Date()                                                                                                          //
+                //                                                                                                                                   //
+                //     console.log(`Keys generated in ${(now - cryptoStart) / 1000}sec. ${ (now - start) / 1000 } elapsed since beginning.`);        //
+                //                                                                                                                                   //
+                //     let callStart = new Date()                                                                                                    //
+                //                                                                                                                                   //
+                //                                                                                                                                   //
+                //     let invite = ic.get("invite").split("/");                                                                                     //
+                //     let inviterResidence = invite[0];                                                                                             //
+                //     let inviterID = invite[1];                                                                                                    //
+                //     let inviteID = invite[2];                                                                                                     //
+                //                                                                                                                                   //
+                //     ///////////////////////////////////////////////////////////////////////////                                                   //
+                //     // if (!self.inviteRequestValid(inviterResidence, inviterID, inviteID)){ //                                                   //
+                //     //     self.emit("join_topic_fail");                                     //                                                   //
+                //     //     throw new Error("Invite request is invalid");                     //                                                   //
+                //     // }                                                                     //                                                   //
+                //     ///////////////////////////////////////////////////////////////////////////                                                   //
+                //                                                                                                                                   //
+                //     if(!inviteID || !inviterID || !(/^[a-z2-7]{16}\.onion$/.test(inviterResidence)))                                              //
+                //         throw new error("Invite request is invalid")                                                                              //
+                //                                                                                                                                   //
+                //     // Encrypted vault record                                                                                                     //
+                //     console.log(`Topic name is: ${topicName}`);                                                                                   //
+                //     let vaultRecord = self.vault.prepareVaultTopicRecord(self.version,                                                            //
+                //                                                         pkfp,                                                                     //
+                //                                                         privateKey,                                                               //
+                //                                                         topicName)                                                                //
+                //     let vault = JSON.stringify({                                                                                                  //
+                //         record: vaultRecord,                                                                                                      //
+                //         id: self.vault.id                                                                                                         //
+                //     })                                                                                                                            //
+                //                                                                                                                                   //
+                //     ic.addBlob("vlt-rec", vault)                                                                                                  //
+                //     .setRSAKey("priv", self.vault.privateKey, "private")                                                                          //
+                //     .privateKeySign("vlt-rec", "priv", "vlt-sign")                                                                                //
+                //                                                                                                                                   //
+                //                                                                                                                                   //
+                //     let request = new Message(self.version);                                                                                      //
+                //     request.setCommand(Internal.JOIN_TOPIC);                                                                                      //
+                //     request.setSource(pkfp);                                                                                                      //
+                //     request.setDest(inviterID);                                                                                                   //
+                //     let body = {                                                                                                                  //
+                //         inviteString: inviteCode.trim(),                                                                                          //
+                //         inviteCode: inviteID,                                                                                                     //
+                //         destination: inviterResidence,                                                                                            //
+                //         invitee:{                                                                                                                 //
+                //             publicKey: publicKey,                                                                                                 //
+                //             pkfp: pkfp                                                                                                            //
+                //         }                                                                                                                         //
+                //     };                                                                                                                            //
+                //                                                                                                                                   //
+                //     request.set("body", body);                                                                                                    //
+                //     request.vaultSign = ic.get("vlt-sign");                                                                                       //
+                //     request.vault = vault;                                                                                                        //
+                //     request.signMessage(privateKey);                                                                                              //
+                //     console.log("Sending topic join request");                                                                                    //
+                //     let sendStart = new Date();                                                                                                   //
+                //     this.vault.pendingInvites[inviteID] = {                                                                                       //
+                //         nickname: nickname,                                                                                                       //
+                //     }                                                                                                                             //
+                //     self.messageQueue.enqueue(request);                                                                                           //
+                //     now = new Date()                                                                                                              //
+                //     console.log(`Request sent to island in  ${(now - sendStart) / 1000}sec. ${ (now - start) / 1000 } elapsed since beginning.`); //
+                // }, 100)                                                                                                                           //
+                ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-                  if (!inviteID || !inviterID || !/^[a-z2-7]{16}\.onion$/.test(inviterResidence)) throw new error("Invite request is invalid"); // Encrypted vault record
-
-                  console.log("Topic name is: ".concat(topicName));
-                  var vaultRecord = self.vault.prepareVaultTopicRecord(self.version, pkfp, privateKey, topicName);
-                  var vault = JSON.stringify({
-                    record: vaultRecord,
-                    id: self.vault.id
-                  });
-                  ic.addBlob("vlt-rec", vault).setRSAKey("priv", self.vault.privateKey, "private").privateKeySign("vlt-rec", "priv", "vlt-sign");
-                  var request = new _Message__WEBPACK_IMPORTED_MODULE_17__[/* Message */ "a"](self.version);
-                  request.setCommand(_common_Events__WEBPACK_IMPORTED_MODULE_10__["Internal"].JOIN_TOPIC);
-                  request.setSource(pkfp);
-                  request.setDest(inviterID);
-                  var body = {
-                    inviteString: inviteCode.trim(),
-                    inviteCode: inviteID,
-                    destination: inviterResidence,
-                    invitee: {
-                      publicKey: publicKey,
-                      nickname: nickname,
-                      pkfp: pkfp
-                    }
-                  };
-                  request.set("body", body);
-                  request.vaultSign = ic.get("vlt-sign");
-                  request.vault = vault;
-                  request.signMessage(privateKey);
-                  console.log("Sending topic join request");
-                  var sendStart = new Date();
-                  _this6.vault.pendingInvites[inviteID] = {
-                    nickname: nickname
-                  };
-                  self.messageQueue.enqueue(request);
-                  now = new Date();
-                  console.log("Request sent to island in  ".concat((now - sendStart) / 1000, "sec. ").concat((now - start) / 1000, " elapsed since beginning."));
-                }, 100);
-
-              case 2:
+              case 5:
               case "end":
                 return _context3.stop();
             }
@@ -40273,9 +40317,9 @@ var ChatClient = /*#__PURE__*/function () {
     key: "initTopicBAK",
     value: function initTopicBAK(nickname, topicName) {
       var self = this;
-      setImmediate( /*#__PURE__*/_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_6___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default.a.mark(function _callee4() {
+      setImmediate( /*#__PURE__*/_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_5___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.mark(function _callee4() {
         var ic, newTopic, request, body;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default.a.wrap(function _callee4$(_context4) {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.wrap(function _callee4$(_context4) {
           while (1) {
             switch (_context4.prev = _context4.next) {
               case 0:
@@ -40287,7 +40331,7 @@ var ChatClient = /*#__PURE__*/function () {
                   break;
                 }
 
-                self.emit(_common_Events__WEBPACK_IMPORTED_MODULE_10__["Events"].INIT_TOPIC_ERROR, "Nickname entered is invalid");
+                self.emit(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].INIT_TOPIC_ERROR, "Nickname entered is invalid");
                 return _context4.abrupt("return");
 
               case 5:
@@ -40296,12 +40340,12 @@ var ChatClient = /*#__PURE__*/function () {
                   break;
                 }
 
-                self.emit(_common_Events__WEBPACK_IMPORTED_MODULE_10__["Events"].INIT_TOPIC_ERROR, "Topic name entered is invalid");
+                self.emit(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].INIT_TOPIC_ERROR, "Topic name entered is invalid");
                 return _context4.abrupt("return");
 
               case 8:
                 //CREATE NEW TOPIC PENDING
-                ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_23__[/* iCrypto */ "a"](); //Generate keypairs one for user, other for topic
+                ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_22__[/* iCrypto */ "a"](); //Generate keypairs one for user, other for topic
 
                 _context4.next = 11;
                 return ic.asym.asyncCreateKeyPair('owner-keys');
@@ -40324,8 +40368,8 @@ var ChatClient = /*#__PURE__*/function () {
                   topicName: topicName
                 }; //Request island to init topic creation and get one-time key.
 
-                request = new _Message__WEBPACK_IMPORTED_MODULE_17__[/* Message */ "a"](self.version);
-                request.headers.command = _common_Events__WEBPACK_IMPORTED_MODULE_10__["Internal"].INIT_TOPIC_GET_TOKEN;
+                request = new _Message__WEBPACK_IMPORTED_MODULE_16__[/* Message */ "a"](self.version);
+                request.headers.command = _common_Events__WEBPACK_IMPORTED_MODULE_9__["Internal"].INIT_TOPIC_GET_TOKEN;
                 request.setSource(newTopic.ownerPkfp);
                 body = {
                   topicID: newTopic.topicID,
@@ -40334,11 +40378,11 @@ var ChatClient = /*#__PURE__*/function () {
                 request.set("body", body);
                 self.arrivalHub.once(newTopic.ownerPkfp, function (data) {
                   switch (data.headers.response) {
-                    case _common_Events__WEBPACK_IMPORTED_MODULE_10__["Internal"].INIT_TOPIC_TOKEN:
+                    case _common_Events__WEBPACK_IMPORTED_MODULE_9__["Internal"].INIT_TOPIC_TOKEN:
                       self.initTopicContinueAfterTokenReceived(self, data, newTopic);
                       break;
 
-                    case _common_Events__WEBPACK_IMPORTED_MODULE_10__["Events"].INIT_TOPIC_ERROR:
+                    case _common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].INIT_TOPIC_ERROR:
                       self.processInitTopicError(data, self);
                       break;
 
@@ -40354,7 +40398,7 @@ var ChatClient = /*#__PURE__*/function () {
               case 27:
                 _context4.prev = 27;
                 _context4.t0 = _context4["catch"](0);
-                self.emit(_common_Events__WEBPACK_IMPORTED_MODULE_10__["Events"].INIT_TOPIC_ERROR, "Nickname entered is invalid");
+                self.emit(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].INIT_TOPIC_ERROR, "Nickname entered is invalid");
                 throw _context4.t0;
 
               case 31:
@@ -40382,13 +40426,13 @@ var ChatClient = /*#__PURE__*/function () {
         topicKeyPair: pendingTopic.topicKeyPair,
         ownerPublicKey: pendingTopic.ownerKeyPair.publicKey
       };
-      var newTopicDataCipher = _ChatUtility__WEBPACK_IMPORTED_MODULE_16__[/* ChatUtility */ "a"].encryptStandardMessage(JSON.stringify(newTopicData), token); //initializing topic settings
+      var newTopicDataCipher = _ChatUtility__WEBPACK_IMPORTED_MODULE_15__[/* ChatUtility */ "a"].encryptStandardMessage(JSON.stringify(newTopicData), token); //initializing topic settings
 
-      var settings = _Topic__WEBPACK_IMPORTED_MODULE_18__[/* Topic */ "a"].prepareNewTopicSettings(self.version, pendingTopic.ownerNickName, pendingTopic.topicName, pendingTopic.ownerKeyPair.publicKey);
+      var settings = _Topic__WEBPACK_IMPORTED_MODULE_17__[/* Topic */ "a"].prepareNewTopicSettings(self.version, pendingTopic.ownerNickName, pendingTopic.topicName, pendingTopic.ownerKeyPair.publicKey);
       var vaultRecord = self.vault.prepareVaultTopicRecord(this.version, pendingTopic.ownerPkfp, pendingTopic.ownerKeyPair.privateKey, pendingTopic.topicName); //Preparing request
 
-      var request = new _Message__WEBPACK_IMPORTED_MODULE_17__[/* Message */ "a"](self.version);
-      request.headers.command = _common_Events__WEBPACK_IMPORTED_MODULE_10__["Internal"].INIT_TOPIC;
+      var request = new _Message__WEBPACK_IMPORTED_MODULE_16__[/* Message */ "a"](self.version);
+      request.headers.command = _common_Events__WEBPACK_IMPORTED_MODULE_9__["Internal"].INIT_TOPIC;
       request.headers.pkfpSource = pendingTopic.ownerPkfp;
       request.body.topicID = pendingTopic.topicID;
       request.body.settings = settings;
@@ -40398,15 +40442,15 @@ var ChatClient = /*#__PURE__*/function () {
       request.body.vaultId = self.vault.id;
       self.arrivalHub.once(pendingTopic.ownerPkfp, function (data) {
         switch (data.headers.message) {
-          case _common_Events__WEBPACK_IMPORTED_MODULE_10__["Events"].INIT_TOPIC_SUCCESS:
+          case _common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].INIT_TOPIC_SUCCESS:
             self.initTopicSuccess(self, data, pendingTopic);
             break;
 
-          case _common_Events__WEBPACK_IMPORTED_MODULE_10__["Events"].INIT_TOPIC_ERROR:
+          case _common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].INIT_TOPIC_ERROR:
             self.processInitTopicError(data, self);
             console.error("Init topic error");
             console.error(data.headers.error);
-            self.emit(_common_Events__WEBPACK_IMPORTED_MODULE_10__["Events"].INIT_TOPIC_ERROR);
+            self.emit(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].INIT_TOPIC_ERROR);
             break;
 
           default:
@@ -40426,7 +40470,7 @@ var ChatClient = /*#__PURE__*/function () {
       var topic = self.vault.addTopic(pkfp, topicName, privateKey);
       topic.bootstrap(topic, self.messageQueue, self.arrivalHub, self.version);
       topic.loadMetadata(data.body.metadata);
-      self.vault.save(_common_Events__WEBPACK_IMPORTED_MODULE_10__["Internal"].TOPIC_ADDED); // Add new topic to vault and save it
+      self.vault.save(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Internal"].TOPIC_ADDED); // Add new topic to vault and save it
 
       self.emit("init_topic_success", {
         pkfp: pendingTopic.ownerPkfp,
@@ -40491,8 +40535,8 @@ var ChatClient = /*#__PURE__*/function () {
   }, {
     key: "_vaultLogin",
     value: function () {
-      var _vaultLogin2 = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_6___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default.a.mark(function _callee5(vaultData, password) {
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default.a.wrap(function _callee5$(_context5) {
+      var _vaultLogin2 = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_5___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.mark(function _callee5(vaultData, password) {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.wrap(function _callee5$(_context5) {
           while (1) {
             switch (_context5.prev = _context5.next) {
               case 0:
@@ -40512,12 +40556,12 @@ var ChatClient = /*#__PURE__*/function () {
   }, {
     key: "_initMessageQueue",
     value: function () {
-      var _initMessageQueue2 = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_6___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default.a.mark(function _callee6() {
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default.a.wrap(function _callee6$(_context6) {
+      var _initMessageQueue2 = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_5___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.mark(function _callee6() {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.wrap(function _callee6$(_context6) {
           while (1) {
             switch (_context6.prev = _context6.next) {
               case 0:
-                this.messageQueue = new _MessageQueue__WEBPACK_IMPORTED_MODULE_14__[/* MessageQueue */ "a"]();
+                this.messageQueue = new _MessageQueue__WEBPACK_IMPORTED_MODULE_13__[/* MessageQueue */ "a"]();
 
               case 1:
               case "end":
@@ -40546,7 +40590,7 @@ var ChatClient = /*#__PURE__*/function () {
       }
 
       return new Promise(function (resolve, reject) {
-        Object(_xhr__WEBPACK_IMPORTED_MODULE_12__[/* XHR */ "a"])({
+        Object(_xhr__WEBPACK_IMPORTED_MODULE_11__[/* XHR */ "a"])({
           type: "post",
           url: url,
           success: function success(data) {
@@ -42191,11 +42235,11 @@ function coerce (version, options) {
 /* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(4);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(6);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(5);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_6__);
 /* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(167);
 /* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(socket_io_client__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var _WildEmitter__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(14);
+/* harmony import */ var _WildEmitter__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(12);
 /* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(0);
 /* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(_common_Events__WEBPACK_IMPORTED_MODULE_9__);
 
@@ -42389,10 +42433,10 @@ var Connector = /*#__PURE__*/function () {
  * Module dependencies.
  */
 
-var url = __webpack_require__(235);
+var url = __webpack_require__(236);
 var parser = __webpack_require__(103);
 var Manager = __webpack_require__(153);
-var debug = __webpack_require__(75)('socket.io-client');
+var debug = __webpack_require__(76)('socket.io-client');
 
 /**
  * Module exports.
@@ -42492,9 +42536,9 @@ exports.Socket = __webpack_require__(159);
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(4);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(6);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(5);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _WildEmitter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(14);
+/* harmony import */ var _WildEmitter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(12);
 
 
 
@@ -42562,7 +42606,7 @@ var Lock = /*#__PURE__*/function () {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ArrivalHub; });
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _WildEmitter__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(14);
+/* harmony import */ var _WildEmitter__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(12);
 
 
 var ArrivalHub = function ArrivalHub(connector) {
@@ -42595,6 +42639,159 @@ var ArrivalHub = function ArrivalHub(connector) {
 
 /***/ }),
 /* 170 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return TopicJoinAgent; });
+/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(36);
+/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(4);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(5);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(1);
+/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(8);
+/* harmony import */ var _WildEmitter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(12);
+/* harmony import */ var _Vault__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(64);
+/* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(0);
+/* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_common_Events__WEBPACK_IMPORTED_MODULE_7__);
+
+
+
+
+
+
+
+
+var TopicJoinAgent = /*#__PURE__*/function () {
+  function TopicJoinAgent(nickname, topicName, inviteString, arrivalHub, messageQueue, vault) {
+    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1___default()(this, TopicJoinAgent);
+
+    _WildEmitter__WEBPACK_IMPORTED_MODULE_5__[/* WildEmitter */ "a"].mixin(this);
+    this.nickname = nickname;
+    this.topicName = topicName;
+    this.inviteString = inviteString;
+    this.messageQueue = messageQueue;
+    this.arrivalHub = arrivalHub;
+    this.vault = vault;
+  }
+  /**
+   * Called on INVITEE side when new user joins a topic with an invite code
+   * @param nickname
+   * @param inviteCode
+   * @returns {Promise}
+   */
+
+
+  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2___default()(TopicJoinAgent, [{
+    key: "start",
+    value: function start() {
+      var self = this;
+      setTimeout(function () {
+        var start = new Date();
+        console.log("joining topic with nickname: " + self.nickname + " | Invite string: " + self.inviteString);
+        console.log("Preparing keys...");
+        var cryptoStart = new Date();
+        var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_3__[/* iCrypto */ "a"]();
+        ic.asym.createKeyPair("rsa").getPublicKeyFingerprint('rsa', 'pkfp').addBlob("invite64", self.inviteString.trim()).base64Decode("invite64", "invite");
+        self.pkfp = ic.get("pkfp");
+        self.publicKey = ic.get("rsa").publicKey;
+        self.privateKey = ic.get("rsa").privateKey;
+        var now = new Date();
+        console.log("Keys generated in ".concat((now - cryptoStart) / 1000, "sec. ").concat((now - start) / 1000, " elapsed since beginning."));
+        var callStart = new Date();
+        var invite = ic.get("invite").split("/");
+        self.inviterResidence = invite[0];
+        self.inviterPkfp = invite[1];
+        self.inviteCode = invite[2]; ///////////////////////////////////////////////////////////////////////////
+        // if (!self.inviteRequestValid(inviterResidence, inviterPkfp, inviteCode)){ //
+        //     self.emit("join_topic_fail");                                     //
+        //     throw new Error("Invite request is invalid");                     //
+        // }                                                                     //
+        ///////////////////////////////////////////////////////////////////////////
+
+        if (!self.inviteCode || !self.inviterPkfp || !/^[a-z2-7]{16}\.onion$/.test(self.inviterResidence)) throw new error("Invite request is invalid"); // Encrypted vault record
+
+        console.log("Topic name is: ".concat(self.topicName));
+        var vaultRecord = self.vault.prepareVaultTopicRecord(self.vault.version, self.pkfp, self.privateKey, self.topicName);
+        var vault = JSON.stringify({
+          record: vaultRecord,
+          id: self.vault.id
+        });
+        ic.addBlob("vlt-rec", vault).setRSAKey("priv", self.vault.privateKey, "private").privateKeySign("vlt-rec", "priv", "vlt-sign");
+        var request = new _Message__WEBPACK_IMPORTED_MODULE_4__[/* Message */ "a"](self.vault.version);
+        request.setCommand(_common_Events__WEBPACK_IMPORTED_MODULE_7__["Internal"].JOIN_TOPIC);
+        request.setSource(self.pkfp);
+        request.setDest(self.inviterPkfp);
+        var body = {
+          inviteString: self.inviteString,
+          inviteCode: self.inviteCode,
+          destination: self.inviterResidence,
+          invitee: {
+            publicKey: self.publicKey,
+            pkfp: self.pkfp
+          }
+        };
+        request.set("body", body);
+        request.vaultSign = ic.get("vlt-sign");
+        request.vault = vault;
+        request.signMessage(self.privateKey);
+        console.log("Sending topic join request");
+        var sendStart = new Date(); //self.vault.pendingInvites[self.inviteCode] = {
+        //    nickname: nickname,
+        //}
+
+        self.arrivalHub.on(self.inviteCode.trim(), function (msg) {
+          self.processServerMessage(self, msg);
+        });
+        self.arrivalHub.on(_common_Events__WEBPACK_IMPORTED_MODULE_7__["Events"].JOIN_TOPIC_FAIL, function (msg) {
+          self.onJoinTopicFail(self, msg);
+        });
+        self.messageQueue.enqueue(request);
+        now = new Date();
+        console.log("Request sent to island in  ".concat((now - sendStart) / 1000, "sec. ").concat((now - start) / 1000, " elapsed since beginning."));
+      }, 100);
+    }
+  }, {
+    key: "processServerMessage",
+    value: function processServerMessage(self, msg) {
+      console.log("Join agent got message from the server");
+      console.log(msg.headers.command);
+    }
+  }, {
+    key: "notifyJoinSuccess",
+    value: function notifyJoinSuccess(request, self) {
+      console.log("Join successfull received!");
+      return;
+      var topicInfo = self.pendingTopicJoins[request.body.inviteCode];
+      self.initSettingsOnTopicJoin(topicInfo, request);
+      console.log("new topic pkfp: " + JSON.stringify(topicInfo));
+      self.emit("topic_join_success", {
+        pkfp: topicInfo.pkfp,
+        nickname: topicInfo.nickname,
+        privateKey: topicInfo.privateKey
+      });
+    }
+  }, {
+    key: "onJoinTopicSuccess",
+    value: function onJoinTopicSuccess(self, msg) {
+      console.log("Topic join success! Adding new topic...");
+      return;
+      var topicPkfp = self.addNewTopic(self, msg); //self.vault.topics[topicPkfp].exchangeNicknames()
+    }
+  }, {
+    key: "onJoinTopicFail",
+    value: function onJoinTopicFail(self, msg) {
+      console.log("Join topic attempt has failed: ".concat(msg.body.errorMsg));
+      return;
+    }
+  }]);
+
+  return TopicJoinAgent;
+}();
+
+/***/ }),
+/* 171 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -43329,7 +43526,7 @@ try {
 
 
 /***/ }),
-/* 171 */
+/* 172 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -43348,7 +43545,7 @@ $export($export.P + $export.F * (fails(function () {
   // V8 bug
   test.sort(null);
   // Old WebKit
-}) || !__webpack_require__(173)($sort)), 'Array', {
+}) || !__webpack_require__(174)($sort)), 'Array', {
   // 22.1.3.25 Array.prototype.sort(comparefn)
   sort: function sort(comparefn) {
     return comparefn === undefined
@@ -43359,14 +43556,14 @@ $export($export.P + $export.F * (fails(function () {
 
 
 /***/ }),
-/* 172 */
+/* 173 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(65)('native-function-to-string', Function.toString);
+module.exports = __webpack_require__(66)('native-function-to-string', Function.toString);
 
 
 /***/ }),
-/* 173 */
+/* 174 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -43382,7 +43579,7 @@ module.exports = function (method, arg) {
 
 
 /***/ }),
-/* 174 */
+/* 175 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.2.8 IsRegExp(argument)
@@ -43396,11 +43593,11 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 175 */
+/* 176 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var toInteger = __webpack_require__(37);
-var defined = __webpack_require__(66);
+var defined = __webpack_require__(67);
 // true  -> String#at
 // false -> String#codePointAt
 module.exports = function (TO_STRING) {
@@ -43419,7 +43616,7 @@ module.exports = function (TO_STRING) {
 
 
 /***/ }),
-/* 176 */
+/* 177 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -43435,14 +43632,14 @@ __webpack_require__(23)({
 
 
 /***/ }),
-/* 177 */
+/* 178 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var anObject = __webpack_require__(13);
-var sameValue = __webpack_require__(178);
+var anObject = __webpack_require__(14);
+var sameValue = __webpack_require__(179);
 var regExpExec = __webpack_require__(82);
 
 // @@search logic
@@ -43473,7 +43670,7 @@ __webpack_require__(85)('search', 1, function (defined, SEARCH, $search, maybeCa
 
 
 /***/ }),
-/* 178 */
+/* 179 */
 /***/ (function(module, exports) {
 
 // 7.2.9 SameValue(x, y)
@@ -43484,7 +43681,7 @@ module.exports = Object.is || function is(x, y) {
 
 
 /***/ }),
-/* 179 */
+/* 180 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 21.2.5.3 get RegExp.prototype.flags()
@@ -43495,7 +43692,7 @@ if (__webpack_require__(18) && /./g.flags != 'g') __webpack_require__(17).f(RegE
 
 
 /***/ }),
-/* 180 */
+/* 181 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var META = __webpack_require__(33)('meta');
@@ -43554,11 +43751,11 @@ var meta = module.exports = {
 
 
 /***/ }),
-/* 181 */
+/* 182 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // all enumerable object keys, includes symbols
-var getKeys = __webpack_require__(69);
+var getKeys = __webpack_require__(70);
 var gOPS = __webpack_require__(89);
 var pIE = __webpack_require__(90);
 module.exports = function (it) {
@@ -43575,12 +43772,12 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 182 */
+/* 183 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var dP = __webpack_require__(17);
-var anObject = __webpack_require__(13);
-var getKeys = __webpack_require__(69);
+var anObject = __webpack_require__(14);
+var getKeys = __webpack_require__(70);
 
 module.exports = __webpack_require__(18) ? Object.defineProperties : function defineProperties(O, Properties) {
   anObject(O);
@@ -43594,7 +43791,7 @@ module.exports = __webpack_require__(18) ? Object.defineProperties : function de
 
 
 /***/ }),
-/* 183 */
+/* 184 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // fallback for IE11 buggy Object.getOwnPropertyNames with iframe and window
@@ -43619,7 +43816,7 @@ module.exports.f = function getOwnPropertyNames(it) {
 
 
 /***/ }),
-/* 184 */
+/* 185 */
 /***/ (function(module, exports) {
 
 module.exports = function (done, value) {
@@ -43628,7 +43825,7 @@ module.exports = function (done, value) {
 
 
 /***/ }),
-/* 185 */
+/* 186 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -43638,7 +43835,7 @@ var $export = __webpack_require__(23);
 var redefine = __webpack_require__(29);
 var hide = __webpack_require__(16);
 var Iterators = __webpack_require__(48);
-var $iterCreate = __webpack_require__(186);
+var $iterCreate = __webpack_require__(187);
 var setToStringTag = __webpack_require__(56);
 var getPrototypeOf = __webpack_require__(121);
 var ITERATOR = __webpack_require__(11)('iterator');
@@ -43704,7 +43901,7 @@ module.exports = function (Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCE
 
 
 /***/ }),
-/* 186 */
+/* 187 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -43724,13 +43921,13 @@ module.exports = function (Constructor, NAME, next) {
 
 
 /***/ }),
-/* 187 */
+/* 188 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var ctx = __webpack_require__(35);
 var call = __webpack_require__(122);
 var isArrayIter = __webpack_require__(94);
-var anObject = __webpack_require__(13);
+var anObject = __webpack_require__(14);
 var toLength = __webpack_require__(20);
 var getIterFn = __webpack_require__(95);
 var BREAK = {};
@@ -43755,7 +43952,7 @@ exports.RETURN = RETURN;
 
 
 /***/ }),
-/* 188 */
+/* 189 */
 /***/ (function(module, exports) {
 
 // fast apply, http://jsperf.lnkit.com/fast-apply/5
@@ -43777,7 +43974,7 @@ module.exports = function (fn, args, that) {
 
 
 /***/ }),
-/* 189 */
+/* 190 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var global = __webpack_require__(10);
@@ -43852,7 +44049,7 @@ module.exports = function () {
 
 
 /***/ }),
-/* 190 */
+/* 191 */
 /***/ (function(module, exports) {
 
 module.exports = function (exec) {
@@ -43865,7 +44062,7 @@ module.exports = function (exec) {
 
 
 /***/ }),
-/* 191 */
+/* 192 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var global = __webpack_require__(10);
@@ -43875,7 +44072,7 @@ module.exports = navigator && navigator.userAgent || '';
 
 
 /***/ }),
-/* 192 */
+/* 193 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -43884,7 +44081,7 @@ module.exports = navigator && navigator.userAgent || '';
 var $export = __webpack_require__(23);
 var core = __webpack_require__(32);
 var global = __webpack_require__(10);
-var speciesConstructor = __webpack_require__(67);
+var speciesConstructor = __webpack_require__(68);
 var promiseResolve = __webpack_require__(125);
 
 $export($export.P + $export.R, 'Promise', { 'finally': function (onFinally) {
@@ -43902,11 +44099,11 @@ $export($export.P + $export.R, 'Promise', { 'finally': function (onFinally) {
 
 
 /***/ }),
-/* 193 */
+/* 194 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-var content = __webpack_require__(194);
+var content = __webpack_require__(195);
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -43927,7 +44124,7 @@ if(content.locals) module.exports = content.locals;
 if(false) {}
 
 /***/ }),
-/* 194 */
+/* 195 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(58)(false);
@@ -43937,7 +44134,7 @@ exports.push([module.i, ".tingle-modal *{box-sizing:border-box}.tingle-modal{pos
 
 
 /***/ }),
-/* 195 */
+/* 196 */
 /***/ (function(module, exports) {
 
 
@@ -44032,11 +44229,11 @@ module.exports = function (css) {
 
 
 /***/ }),
-/* 196 */
+/* 197 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-var content = __webpack_require__(197);
+var content = __webpack_require__(198);
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -44057,7 +44254,7 @@ if(content.locals) module.exports = content.locals;
 if(false) {}
 
 /***/ }),
-/* 197 */
+/* 198 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(58)(false);
@@ -44067,12 +44264,12 @@ exports.push([module.i, "@keyframes spin{0%{transform:translateZ(0) rotate(0)}10
 
 
 /***/ }),
-/* 198 */
+/* 199 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://github.com/tc39/proposal-object-getownpropertydescriptors
 var $export = __webpack_require__(23);
-var ownKeys = __webpack_require__(199);
+var ownKeys = __webpack_require__(200);
 var toIObject = __webpack_require__(38);
 var gOPD = __webpack_require__(92);
 var createProperty = __webpack_require__(127);
@@ -44095,13 +44292,13 @@ $export($export.S, 'Object', {
 
 
 /***/ }),
-/* 199 */
+/* 200 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // all object keys, includes non-enumerable and symbols
 var gOPN = __webpack_require__(57);
 var gOPS = __webpack_require__(89);
-var anObject = __webpack_require__(13);
+var anObject = __webpack_require__(14);
 var Reflect = __webpack_require__(10).Reflect;
 module.exports = Reflect && Reflect.ownKeys || function ownKeys(it) {
   var keys = gOPN.f(anObject(it));
@@ -44111,7 +44308,7 @@ module.exports = Reflect && Reflect.ownKeys || function ownKeys(it) {
 
 
 /***/ }),
-/* 200 */
+/* 201 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44155,11 +44352,11 @@ $export($export.S + $export.F * !__webpack_require__(97)(function (iter) { Array
 
 
 /***/ }),
-/* 201 */
+/* 202 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-var content = __webpack_require__(202);
+var content = __webpack_require__(203);
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -44180,7 +44377,7 @@ if(content.locals) module.exports = content.locals;
 if(false) {}
 
 /***/ }),
-/* 202 */
+/* 203 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(58)(false);
@@ -44190,7 +44387,7 @@ exports.push([module.i, ".siiimpleToast{position:absolute;padding:14px 18px;min-
 
 
 /***/ }),
-/* 203 */
+/* 204 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -44383,7 +44580,7 @@ exports.push([module.i, ".siiimpleToast{position:absolute;padding:14px 18px;min-
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(61), __webpack_require__(26)))
 
 /***/ }),
-/* 204 */
+/* 205 */
 /***/ (function(module, exports) {
 
 function _arrayWithoutHoles(arr) {
@@ -44399,7 +44596,7 @@ function _arrayWithoutHoles(arr) {
 module.exports = _arrayWithoutHoles;
 
 /***/ }),
-/* 205 */
+/* 206 */
 /***/ (function(module, exports) {
 
 function _iterableToArray(iter) {
@@ -44409,7 +44606,7 @@ function _iterableToArray(iter) {
 module.exports = _iterableToArray;
 
 /***/ }),
-/* 206 */
+/* 207 */
 /***/ (function(module, exports) {
 
 function _nonIterableSpread() {
@@ -44419,7 +44616,7 @@ function _nonIterableSpread() {
 module.exports = _nonIterableSpread;
 
 /***/ }),
-/* 207 */
+/* 208 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(128)('Uint16', 2, function (init) {
@@ -44430,7 +44627,7 @@ __webpack_require__(128)('Uint16', 2, function (init) {
 
 
 /***/ }),
-/* 208 */
+/* 209 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44713,7 +44910,7 @@ exports[DATA_VIEW] = $DataView;
 
 
 /***/ }),
-/* 209 */
+/* 210 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 0 -> Array#forEach
@@ -44727,7 +44924,7 @@ var ctx = __webpack_require__(35);
 var IObject = __webpack_require__(116);
 var toObject = __webpack_require__(25);
 var toLength = __webpack_require__(20);
-var asc = __webpack_require__(210);
+var asc = __webpack_require__(211);
 module.exports = function (TYPE, $create) {
   var IS_MAP = TYPE == 1;
   var IS_FILTER = TYPE == 2;
@@ -44763,11 +44960,11 @@ module.exports = function (TYPE, $create) {
 
 
 /***/ }),
-/* 210 */
+/* 211 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 9.4.2.3 ArraySpeciesCreate(originalArray, length)
-var speciesConstructor = __webpack_require__(211);
+var speciesConstructor = __webpack_require__(212);
 
 module.exports = function (original, length) {
   return new (speciesConstructor(original))(length);
@@ -44775,7 +44972,7 @@ module.exports = function (original, length) {
 
 
 /***/ }),
-/* 211 */
+/* 212 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var isObject = __webpack_require__(24);
@@ -44797,14 +44994,14 @@ module.exports = function (original) {
 
 
 /***/ }),
-/* 212 */
+/* 213 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 // 22.1.3.3 Array.prototype.copyWithin(target, start, end = this.length)
 
 var toObject = __webpack_require__(25);
-var toAbsoluteIndex = __webpack_require__(70);
+var toAbsoluteIndex = __webpack_require__(71);
 var toLength = __webpack_require__(20);
 
 module.exports = [].copyWithin || function copyWithin(target /* = 0 */, start /* = 0, end = @length */) {
@@ -44830,7 +45027,7 @@ module.exports = [].copyWithin || function copyWithin(target /* = 0 */, start /*
 
 
 /***/ }),
-/* 213 */
+/* 214 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -44842,36 +45039,36 @@ module.exports = [].copyWithin || function copyWithin(target /* = 0 */, start /*
  */
 module.exports = __webpack_require__(2);
 __webpack_require__(39);
-__webpack_require__(218);
+__webpack_require__(219);
 __webpack_require__(27);
 __webpack_require__(98);
 __webpack_require__(147);
-__webpack_require__(72);
-__webpack_require__(220);
-__webpack_require__(62);
+__webpack_require__(73);
 __webpack_require__(221);
-__webpack_require__(149);
+__webpack_require__(62);
 __webpack_require__(222);
+__webpack_require__(149);
+__webpack_require__(223);
 __webpack_require__(146);
 __webpack_require__(100);
 __webpack_require__(50);
 __webpack_require__(142);
 __webpack_require__(144);
-__webpack_require__(223);
+__webpack_require__(224);
 __webpack_require__(136);
 __webpack_require__(143);
 __webpack_require__(140);
 __webpack_require__(102);
 __webpack_require__(22);
 __webpack_require__(141);
-__webpack_require__(224);
 __webpack_require__(225);
+__webpack_require__(226);
 __webpack_require__(135);
-__webpack_require__(5);
+__webpack_require__(6);
 
 
 /***/ }),
-/* 214 */
+/* 215 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -45030,7 +45227,7 @@ function fromByteArray (uint8) {
 
 
 /***/ }),
-/* 215 */
+/* 216 */
 /***/ (function(module, exports) {
 
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -45120,7 +45317,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
 
 /***/ }),
-/* 216 */
+/* 217 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -45131,7 +45328,7 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ }),
-/* 217 */
+/* 218 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {/**
@@ -45324,7 +45521,7 @@ function _encodeWithByteBuffer(input, alphabet) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(31).Buffer))
 
 /***/ }),
-/* 218 */
+/* 219 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -45614,7 +45811,7 @@ function compareMacs(key, mac1, mac2) {
 
 
 /***/ }),
-/* 219 */
+/* 220 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -45632,7 +45829,7 @@ forge.mgf.mgf1 = forge.mgf1;
 
 
 /***/ }),
-/* 220 */
+/* 221 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {/**
@@ -45646,10 +45843,10 @@ forge.mgf.mgf1 = forge.mgf1;
  * https://github.com/dchest/tweetnacl-js
  */
 var forge = __webpack_require__(2);
-__webpack_require__(74);
+__webpack_require__(75);
 __webpack_require__(22);
 __webpack_require__(148);
-__webpack_require__(5);
+__webpack_require__(6);
 
 if(typeof BigInteger === 'undefined') {
   var BigInteger = forge.jsbn.BigInteger;
@@ -46635,7 +46832,7 @@ function M(o, a, b) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(31).Buffer))
 
 /***/ }),
-/* 221 */
+/* 222 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -46648,9 +46845,9 @@ function M(o, a, b) {
  * Copyright (c) 2014 Digital Bazaar, Inc.
  */
 var forge = __webpack_require__(2);
-__webpack_require__(5);
+__webpack_require__(6);
 __webpack_require__(22);
-__webpack_require__(74);
+__webpack_require__(75);
 
 module.exports = forge.kem = forge.kem || {};
 
@@ -46809,7 +47006,7 @@ function _createKDF(kdf, md, counterStart, digestLength) {
 
 
 /***/ }),
-/* 222 */
+/* 223 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -46828,7 +47025,7 @@ __webpack_require__(148);
 
 
 /***/ }),
-/* 223 */
+/* 224 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -46852,12 +47049,12 @@ __webpack_require__(148);
 var forge = __webpack_require__(2);
 __webpack_require__(39);
 __webpack_require__(27);
-__webpack_require__(72);
+__webpack_require__(73);
 __webpack_require__(40);
 __webpack_require__(50);
 __webpack_require__(145);
 __webpack_require__(22);
-__webpack_require__(5);
+__webpack_require__(6);
 __webpack_require__(101);
 
 // shortcut for ASN.1 API
@@ -48091,7 +48288,7 @@ function _decryptContent(msg) {
 
 
 /***/ }),
-/* 224 */
+/* 225 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -48109,7 +48306,7 @@ __webpack_require__(39);
 __webpack_require__(62);
 __webpack_require__(99);
 __webpack_require__(63);
-__webpack_require__(5);
+__webpack_require__(6);
 
 var ssh = module.exports = forge.ssh = forge.ssh || {};
 
@@ -48333,7 +48530,7 @@ function _sha1() {
 
 
 /***/ }),
-/* 225 */
+/* 226 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -48348,7 +48545,7 @@ function _sha1() {
 var forge = __webpack_require__(2);
 __webpack_require__(147);
 __webpack_require__(149);
-__webpack_require__(5);
+__webpack_require__(6);
 
 // logging category
 var cat = 'forge.task';
@@ -49064,14 +49261,14 @@ forge.task.createCondition = function() {
 
 
 /***/ }),
-/* 226 */
+/* 227 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 /***/ }),
-/* 227 */
+/* 228 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -49107,7 +49304,7 @@ __webpack_require__.r(__webpack_exports__);
   }
 
   var COMMON_JS = !root.HI_BASE32_NO_COMMON_JS && typeof module === 'object' && module.exports;
-  var AMD = typeof define === 'function' && __webpack_require__(229);
+  var AMD = typeof define === 'function' && __webpack_require__(230);
   var BASE32_ENCODE_CHAR = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'.split('');
   var BASE32_DECODE_CHAR = {
     'A': 0,
@@ -49542,10 +49739,10 @@ __webpack_require__.r(__webpack_exports__);
     }
   }
 })();
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(26), __webpack_require__(61), __webpack_require__(228)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(26), __webpack_require__(61), __webpack_require__(229)(module)))
 
 /***/ }),
-/* 228 */
+/* 229 */
 /***/ (function(module, exports) {
 
 module.exports = function(originalModule) {
@@ -49575,7 +49772,7 @@ module.exports = function(originalModule) {
 
 
 /***/ }),
-/* 229 */
+/* 230 */
 /***/ (function(module, exports) {
 
 /* WEBPACK VAR INJECTION */(function(__webpack_amd_options__) {/* globals __webpack_amd_options__ */
@@ -49584,7 +49781,7 @@ module.exports = __webpack_amd_options__;
 /* WEBPACK VAR INJECTION */}.call(this, {}))
 
 /***/ }),
-/* 230 */
+/* 231 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {// MIT License
@@ -49808,10 +50005,10 @@ if( true && module.hasOwnProperty('exports')){
 
 
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(231)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(232)(module)))
 
 /***/ }),
-/* 231 */
+/* 232 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -49839,7 +50036,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 232 */
+/* 233 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {// Copyright Joyent, Inc. and other Node contributors.
@@ -50377,7 +50574,7 @@ function isPrimitive(arg) {
 }
 exports.isPrimitive = isPrimitive;
 
-exports.isBuffer = __webpack_require__(233);
+exports.isBuffer = __webpack_require__(234);
 
 function objectToString(o) {
   return Object.prototype.toString.call(o);
@@ -50421,7 +50618,7 @@ exports.log = function() {
  *     prototype.
  * @param {function} superCtor Constructor function to inherit prototype from.
  */
-exports.inherits = __webpack_require__(234);
+exports.inherits = __webpack_require__(235);
 
 exports._extend = function(origin, add) {
   // Don't do anything if add isn't an object
@@ -50549,7 +50746,7 @@ exports.callbackify = callbackify;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(26)))
 
 /***/ }),
-/* 233 */
+/* 234 */
 /***/ (function(module, exports) {
 
 module.exports = function isBuffer(arg) {
@@ -50560,7 +50757,7 @@ module.exports = function isBuffer(arg) {
 }
 
 /***/ }),
-/* 234 */
+/* 235 */
 /***/ (function(module, exports) {
 
 if (typeof Object.create === 'function') {
@@ -50589,7 +50786,7 @@ if (typeof Object.create === 'function') {
 
 
 /***/ }),
-/* 235 */
+/* 236 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -50598,7 +50795,7 @@ if (typeof Object.create === 'function') {
  */
 
 var parseuri = __webpack_require__(150);
-var debug = __webpack_require__(75)('socket.io-client:url');
+var debug = __webpack_require__(76)('socket.io-client:url');
 
 /**
  * Module exports.
@@ -50670,7 +50867,7 @@ function url (uri, loc) {
 
 
 /***/ }),
-/* 236 */
+/* 237 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -50686,7 +50883,7 @@ function setup(env) {
 	createDebug.disable = disable;
 	createDebug.enable = enable;
 	createDebug.enabled = enabled;
-	createDebug.humanize = __webpack_require__(237);
+	createDebug.humanize = __webpack_require__(238);
 
 	Object.keys(env).forEach(key => {
 		createDebug[key] = env[key];
@@ -50942,7 +51139,7 @@ module.exports = setup;
 
 
 /***/ }),
-/* 237 */
+/* 238 */
 /***/ (function(module, exports) {
 
 /**
@@ -51110,7 +51307,7 @@ function plural(ms, msAbs, n, name) {
 
 
 /***/ }),
-/* 238 */
+/* 239 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {/**
@@ -51119,7 +51316,7 @@ function plural(ms, msAbs, n, name) {
  * Expose `debug()` as the module.
  */
 
-exports = module.exports = __webpack_require__(239);
+exports = module.exports = __webpack_require__(240);
 exports.log = log;
 exports.formatArgs = formatArgs;
 exports.save = save;
@@ -51312,7 +51509,7 @@ function localstorage() {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(26)))
 
 /***/ }),
-/* 239 */
+/* 240 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -51328,7 +51525,7 @@ exports.coerce = coerce;
 exports.disable = disable;
 exports.enable = enable;
 exports.enabled = enabled;
-exports.humanize = __webpack_require__(240);
+exports.humanize = __webpack_require__(241);
 
 /**
  * Active `debug` instances.
@@ -51543,7 +51740,7 @@ function coerce(val) {
 
 
 /***/ }),
-/* 240 */
+/* 241 */
 /***/ (function(module, exports) {
 
 /**
@@ -51701,7 +51898,7 @@ function plural(ms, n, name) {
 
 
 /***/ }),
-/* 241 */
+/* 242 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*global Blob,File*/
@@ -51848,11 +52045,11 @@ exports.removeBlobs = function(data, callback) {
 
 
 /***/ }),
-/* 242 */
+/* 243 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-module.exports = __webpack_require__(243);
+module.exports = __webpack_require__(244);
 
 /**
  * Exports parser
@@ -51864,7 +52061,7 @@ module.exports.parser = __webpack_require__(52);
 
 
 /***/ }),
-/* 243 */
+/* 244 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -51873,11 +52070,11 @@ module.exports.parser = __webpack_require__(52);
 
 var transports = __webpack_require__(154);
 var Emitter = __webpack_require__(51);
-var debug = __webpack_require__(78)('engine.io-client:socket');
+var debug = __webpack_require__(79)('engine.io-client:socket');
 var index = __webpack_require__(158);
 var parser = __webpack_require__(52);
 var parseuri = __webpack_require__(150);
-var parseqs = __webpack_require__(76);
+var parseqs = __webpack_require__(77);
 
 /**
  * Module exports.
@@ -52618,7 +52815,7 @@ Socket.prototype.filterUpgrades = function (upgrades) {
 
 
 /***/ }),
-/* 244 */
+/* 245 */
 /***/ (function(module, exports) {
 
 
@@ -52641,7 +52838,7 @@ try {
 
 
 /***/ }),
-/* 245 */
+/* 246 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* global attachEvent */
@@ -52653,8 +52850,8 @@ try {
 var XMLHttpRequest = __webpack_require__(104);
 var Polling = __webpack_require__(155);
 var Emitter = __webpack_require__(51);
-var inherit = __webpack_require__(77);
-var debug = __webpack_require__(78)('engine.io-client:polling-xhr');
+var inherit = __webpack_require__(78);
+var debug = __webpack_require__(79)('engine.io-client:polling-xhr');
 
 /**
  * Module exports.
@@ -53064,7 +53261,7 @@ function unloadHandler () {
 
 
 /***/ }),
-/* 246 */
+/* 247 */
 /***/ (function(module, exports) {
 
 
@@ -53089,7 +53286,7 @@ module.exports = Object.keys || function keys (obj){
 
 
 /***/ }),
-/* 247 */
+/* 248 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -53100,7 +53297,7 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ }),
-/* 248 */
+/* 249 */
 /***/ (function(module, exports) {
 
 /**
@@ -53135,7 +53332,7 @@ module.exports = function(arraybuffer, start, end) {
 
 
 /***/ }),
-/* 249 */
+/* 250 */
 /***/ (function(module, exports) {
 
 module.exports = after
@@ -53169,7 +53366,7 @@ function noop() {}
 
 
 /***/ }),
-/* 250 */
+/* 251 */
 /***/ (function(module, exports) {
 
 /*! https://mths.be/utf8js v2.1.2 by @mathias */
@@ -53385,7 +53582,7 @@ module.exports = {
 
 
 /***/ }),
-/* 251 */
+/* 252 */
 /***/ (function(module, exports) {
 
 /*
@@ -53458,7 +53655,7 @@ module.exports = {
 
 
 /***/ }),
-/* 252 */
+/* 253 */
 /***/ (function(module, exports) {
 
 /**
@@ -53564,7 +53761,7 @@ module.exports = (function() {
 
 
 /***/ }),
-/* 253 */
+/* 254 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -53580,7 +53777,7 @@ function setup(env) {
 	createDebug.disable = disable;
 	createDebug.enable = enable;
 	createDebug.enabled = enabled;
-	createDebug.humanize = __webpack_require__(254);
+	createDebug.humanize = __webpack_require__(255);
 
 	Object.keys(env).forEach(key => {
 		createDebug[key] = env[key];
@@ -53836,7 +54033,7 @@ module.exports = setup;
 
 
 /***/ }),
-/* 254 */
+/* 255 */
 /***/ (function(module, exports) {
 
 /**
@@ -54004,7 +54201,7 @@ function plural(ms, msAbs, n, name) {
 
 
 /***/ }),
-/* 255 */
+/* 256 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -54012,7 +54209,7 @@ function plural(ms, msAbs, n, name) {
  */
 
 var Polling = __webpack_require__(155);
-var inherit = __webpack_require__(77);
+var inherit = __webpack_require__(78);
 
 /**
  * Module exports.
@@ -54250,7 +54447,7 @@ JSONPPolling.prototype.doWrite = function (data, fn) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(61)))
 
 /***/ }),
-/* 256 */
+/* 257 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {/**
@@ -54259,10 +54456,10 @@ JSONPPolling.prototype.doWrite = function (data, fn) {
 
 var Transport = __webpack_require__(105);
 var parser = __webpack_require__(52);
-var parseqs = __webpack_require__(76);
-var inherit = __webpack_require__(77);
+var parseqs = __webpack_require__(77);
+var inherit = __webpack_require__(78);
 var yeast = __webpack_require__(157);
-var debug = __webpack_require__(78)('engine.io-client:websocket');
+var debug = __webpack_require__(79)('engine.io-client:websocket');
 
 var BrowserWebSocket, NodeWebSocket;
 
@@ -54274,7 +54471,7 @@ if (typeof WebSocket !== 'undefined') {
 
 if (typeof window === 'undefined') {
   try {
-    NodeWebSocket = __webpack_require__(257);
+    NodeWebSocket = __webpack_require__(258);
   } catch (e) { }
 }
 
@@ -54552,13 +54749,13 @@ WS.prototype.check = function () {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(31).Buffer))
 
 /***/ }),
-/* 257 */
+/* 258 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
-/* 258 */
+/* 259 */
 /***/ (function(module, exports) {
 
 module.exports = toArray
@@ -54577,7 +54774,7 @@ function toArray(list, index) {
 
 
 /***/ }),
-/* 259 */
+/* 260 */
 /***/ (function(module, exports) {
 
 
@@ -54668,14 +54865,14 @@ Backoff.prototype.setJitter = function(jitter){
 
 
 /***/ }),
-/* 260 */
+/* 261 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* unused harmony export Participant */
-/* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(68);
+/* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(69);
 /* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(71);
+/* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(72);
 /* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(21);
 /* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2__);
@@ -54683,7 +54880,7 @@ Backoff.prototype.setJitter = function(jitter){
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(4);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(6);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(5);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_5__);
 
 
@@ -54795,11 +54992,11 @@ var Participant = /*#__PURE__*/function () {
 Participant.properties = ["nickname", "publicKey", "publicKeyFingerprint", "residence", "rights"];
 
 /***/ }),
-/* 261 */
+/* 262 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-var content = __webpack_require__(262);
+var content = __webpack_require__(263);
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -54820,7 +55017,7 @@ if(content.locals) module.exports = content.locals;
 if(false) {}
 
 /***/ }),
-/* 262 */
+/* 263 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(58)(false);
@@ -54830,11 +55027,11 @@ exports.push([module.i, "button{margin:.8rem .8rem .8rem 0;padding:1rem;backgrou
 
 
 /***/ }),
-/* 263 */
+/* 264 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-var content = __webpack_require__(264);
+var content = __webpack_require__(265);
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -54855,7 +55052,7 @@ if(content.locals) module.exports = content.locals;
 if(false) {}
 
 /***/ }),
-/* 264 */
+/* 265 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(58)(false);
@@ -54865,7 +55062,7 @@ exports.push([module.i, ".ld.reverse{-webkit-animation-direction:reverse;animati
 
 
 /***/ }),
-/* 265 */
+/* 266 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -54912,7 +55109,7 @@ var regenerator_default = /*#__PURE__*/__webpack_require__.n(regenerator);
 var runtime = __webpack_require__(43);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.array.sort.js
-var es6_array_sort = __webpack_require__(171);
+var es6_array_sort = __webpack_require__(172);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/asyncToGenerator.js
 var asyncToGenerator = __webpack_require__(7);
@@ -54922,10 +55119,10 @@ var asyncToGenerator_default = /*#__PURE__*/__webpack_require__.n(asyncToGenerat
 var es6_regexp_split = __webpack_require__(36);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.search.js
-var es6_regexp_search = __webpack_require__(177);
+var es6_regexp_search = __webpack_require__(178);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.to-string.js
-var es6_regexp_to_string = __webpack_require__(68);
+var es6_regexp_to_string = __webpack_require__(69);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es7.symbol.async-iterator.js
 var es7_symbol_async_iterator = __webpack_require__(46);
@@ -54943,7 +55140,7 @@ var es6_promise = __webpack_require__(49);
 var es6_object_to_string = __webpack_require__(15);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es7.promise.finally.js
-var es7_promise_finally = __webpack_require__(192);
+var es7_promise_finally = __webpack_require__(193);
 
 // CONCATENATED MODULE: ./client/src/js/lib/dom-util.js
 
@@ -55341,7 +55538,7 @@ function isParent(parent, child) {
 var tingle_min = __webpack_require__(162);
 
 // EXTERNAL MODULE: ./client/src/css/vendor/tingle.css
-var tingle = __webpack_require__(193);
+var tingle = __webpack_require__(194);
 
 // CONCATENATED MODULE: ./client/src/js/lib/DynmaicModal.js
 
@@ -55888,11 +56085,11 @@ var classCallCheck = __webpack_require__(4);
 var classCallCheck_default = /*#__PURE__*/__webpack_require__.n(classCallCheck);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/createClass.js
-var createClass = __webpack_require__(6);
+var createClass = __webpack_require__(5);
 var createClass_default = /*#__PURE__*/__webpack_require__.n(createClass);
 
 // EXTERNAL MODULE: ./client/src/css/vendor/blocking-spinner.min.css
-var blocking_spinner_min = __webpack_require__(196);
+var blocking_spinner_min = __webpack_require__(197);
 
 // CONCATENATED MODULE: ./client/src/js/lib/BlockingSpinner.js
 
@@ -55958,17 +56155,17 @@ var BlockingSpinner_BlockingSpinner = /*#__PURE__*/function () {
   return BlockingSpinner;
 }();
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es7.object.get-own-property-descriptors.js
-var es7_object_get_own_property_descriptors = __webpack_require__(198);
+var es7_object_get_own_property_descriptors = __webpack_require__(199);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.array.from.js
-var es6_array_from = __webpack_require__(200);
+var es6_array_from = __webpack_require__(201);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/defineProperty.js
 var defineProperty = __webpack_require__(163);
 var defineProperty_default = /*#__PURE__*/__webpack_require__.n(defineProperty);
 
 // EXTERNAL MODULE: ./client/src/css/vendor/toastr.css
-var toastr = __webpack_require__(201);
+var toastr = __webpack_require__(202);
 
 // CONCATENATED MODULE: ./client/src/js/lib/toastr.js
 
@@ -56162,13 +56359,13 @@ var ChatClient = __webpack_require__(164);
 var Events = __webpack_require__(0);
 
 // EXTERNAL MODULE: ./client/src/css/chat.sass
-var chat = __webpack_require__(261);
+var chat = __webpack_require__(262);
 
 // EXTERNAL MODULE: ./client/src/css/vendor/loading.css
-var loading = __webpack_require__(263);
+var loading = __webpack_require__(264);
 
 // EXTERNAL MODULE: ./client/src/js/lib/Vault.js + 1 modules
-var Vault = __webpack_require__(80);
+var Vault = __webpack_require__(64);
 
 // CONCATENATED MODULE: ./client/src/js/chat-ui.js
 

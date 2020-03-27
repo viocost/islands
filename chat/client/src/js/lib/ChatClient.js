@@ -13,6 +13,7 @@ import  { Participant}  from "./Participant";
 import  { AttachmentInfo } from "./AttachmentInfo";
 import { ClientSettings } from  "./ClientSettings";
 import { iCrypto } from "./iCrypto"
+import { TopicJoinAgent } from "./TopicJoinAgent";
 
 export class ChatClient{
     constructor(opts){
@@ -30,6 +31,7 @@ export class ChatClient{
         this.connector;
         this.arrivalHub;
         this.sessionKey;
+        this.agents = [];
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------
@@ -361,92 +363,99 @@ export class ChatClient{
      * @param inviteCode
      * @returns {Promise}
      */
-    async joinTopic(nickname, topicName, inviteCode) {
-        let self = this;
-        setTimeout(()=>{
-
-            let start = new Date();
-            console.log("joining topic with nickname: " + nickname + " | Invite code: " + inviteCode);
-
-            console.log(`Preparing keys...`);
-
-            let cryptoStart = new Date()
-            let ic = new iCrypto();
-            ic.asym.createKeyPair("rsa")
-                .getPublicKeyFingerprint('rsa', 'pkfp')
-                .addBlob("invite64", inviteCode.trim())
-                .base64Decode("invite64", "invite");
-
-            let pkfp = ic.get("pkfp")
-            let publicKey = ic.get("rsa").publicKey;
-            let privateKey = ic.get("rsa").privateKey;
-
-            let now = new Date()
-
-            console.log(`Keys generated in ${(now - cryptoStart) / 1000}sec. ${ (now - start) / 1000 } elapsed since beginning.`);
-
-            let callStart = new Date()
+    async joinTopic(nickname, topicName, inviteString) {
+        let topicJoinAgent = new TopicJoinAgent(nickname, topicName, inviteString, this.arrivalHub, this.messageQueue, this.vault);
+        topicJoinAgent.on(Events.JOIN_TOPIC_SUCCESS, this.notifyJoinSuccess)
+        topicJoinAgent.on(Events.JOIN_TOPIC_FAIL, ()=>{ console.log("Join topic fail received from the agent")})
+        topicJoinAgent.start()
+        this.agents.push(topicJoinAgent);
 
 
-            let invite = ic.get("invite").split("/");
-            let inviterResidence = invite[0];
-            let inviterID = invite[1];
-            let inviteID = invite[2];
-
-            ///////////////////////////////////////////////////////////////////////////
-            // if (!self.inviteRequestValid(inviterResidence, inviterID, inviteID)){ //
-            //     self.emit("join_topic_fail");                                     //
-            //     throw new Error("Invite request is invalid");                     //
-            // }                                                                     //
-            ///////////////////////////////////////////////////////////////////////////
-
-            if(!inviteID || !inviterID || !(/^[a-z2-7]{16}\.onion$/.test(inviterResidence)))
-                throw new error("Invite request is invalid")
-
-            // Encrypted vault record
-            console.log(`Topic name is: ${topicName}`);
-            let vaultRecord = self.vault.prepareVaultTopicRecord(self.version,
-                                                                pkfp,
-                                                                privateKey,
-                                                                topicName)
-            let vault = JSON.stringify({
-                record: vaultRecord,
-                id: self.vault.id
-            })
-
-            ic.addBlob("vlt-rec", vault)
-            .setRSAKey("priv", self.vault.privateKey, "private")
-            .privateKeySign("vlt-rec", "priv", "vlt-sign")
-
-
-            let request = new Message(self.version);
-            request.setCommand(Internal.JOIN_TOPIC);
-            request.setSource(pkfp);
-            request.setDest(inviterID);
-            let body = {
-                inviteString: inviteCode.trim(),
-                inviteCode: inviteID,
-                destination: inviterResidence,
-                invitee:{
-                    publicKey: publicKey,
-                    nickname: nickname,
-                    pkfp: pkfp
-                }
-            };
-
-            request.set("body", body);
-            request.vaultSign = ic.get("vlt-sign");
-            request.vault = vault;
-            request.signMessage(privateKey);
-            console.log("Sending topic join request");
-            let sendStart = new Date();
-            this.vault.pendingInvites[inviteID] = {
-                nickname: nickname,
-            }
-            self.messageQueue.enqueue(request);
-            now = new Date()
-            console.log(`Request sent to island in  ${(now - sendStart) / 1000}sec. ${ (now - start) / 1000 } elapsed since beginning.`);
-        }, 100)
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // setTimeout(()=>{                                                                                                                  //
+        //                                                                                                                                   //
+        //     let start = new Date();                                                                                                       //
+        //     console.log("joining topic with nickname: " + nickname + " | Invite code: " + inviteCode);                                    //
+        //                                                                                                                                   //
+        //     console.log(`Preparing keys...`);                                                                                             //
+        //                                                                                                                                   //
+        //     let cryptoStart = new Date()                                                                                                  //
+        //     let ic = new iCrypto();                                                                                                       //
+        //     ic.asym.createKeyPair("rsa")                                                                                                  //
+        //         .getPublicKeyFingerprint('rsa', 'pkfp')                                                                                   //
+        //         .addBlob("invite64", inviteCode.trim())                                                                                   //
+        //         .base64Decode("invite64", "invite");                                                                                      //
+        //                                                                                                                                   //
+        //     let pkfp = ic.get("pkfp")                                                                                                     //
+        //     let publicKey = ic.get("rsa").publicKey;                                                                                      //
+        //     let privateKey = ic.get("rsa").privateKey;                                                                                    //
+        //                                                                                                                                   //
+        //     let now = new Date()                                                                                                          //
+        //                                                                                                                                   //
+        //     console.log(`Keys generated in ${(now - cryptoStart) / 1000}sec. ${ (now - start) / 1000 } elapsed since beginning.`);        //
+        //                                                                                                                                   //
+        //     let callStart = new Date()                                                                                                    //
+        //                                                                                                                                   //
+        //                                                                                                                                   //
+        //     let invite = ic.get("invite").split("/");                                                                                     //
+        //     let inviterResidence = invite[0];                                                                                             //
+        //     let inviterID = invite[1];                                                                                                    //
+        //     let inviteID = invite[2];                                                                                                     //
+        //                                                                                                                                   //
+        //     ///////////////////////////////////////////////////////////////////////////                                                   //
+        //     // if (!self.inviteRequestValid(inviterResidence, inviterID, inviteID)){ //                                                   //
+        //     //     self.emit("join_topic_fail");                                     //                                                   //
+        //     //     throw new Error("Invite request is invalid");                     //                                                   //
+        //     // }                                                                     //                                                   //
+        //     ///////////////////////////////////////////////////////////////////////////                                                   //
+        //                                                                                                                                   //
+        //     if(!inviteID || !inviterID || !(/^[a-z2-7]{16}\.onion$/.test(inviterResidence)))                                              //
+        //         throw new error("Invite request is invalid")                                                                              //
+        //                                                                                                                                   //
+        //     // Encrypted vault record                                                                                                     //
+        //     console.log(`Topic name is: ${topicName}`);                                                                                   //
+        //     let vaultRecord = self.vault.prepareVaultTopicRecord(self.version,                                                            //
+        //                                                         pkfp,                                                                     //
+        //                                                         privateKey,                                                               //
+        //                                                         topicName)                                                                //
+        //     let vault = JSON.stringify({                                                                                                  //
+        //         record: vaultRecord,                                                                                                      //
+        //         id: self.vault.id                                                                                                         //
+        //     })                                                                                                                            //
+        //                                                                                                                                   //
+        //     ic.addBlob("vlt-rec", vault)                                                                                                  //
+        //     .setRSAKey("priv", self.vault.privateKey, "private")                                                                          //
+        //     .privateKeySign("vlt-rec", "priv", "vlt-sign")                                                                                //
+        //                                                                                                                                   //
+        //                                                                                                                                   //
+        //     let request = new Message(self.version);                                                                                      //
+        //     request.setCommand(Internal.JOIN_TOPIC);                                                                                      //
+        //     request.setSource(pkfp);                                                                                                      //
+        //     request.setDest(inviterID);                                                                                                   //
+        //     let body = {                                                                                                                  //
+        //         inviteString: inviteCode.trim(),                                                                                          //
+        //         inviteCode: inviteID,                                                                                                     //
+        //         destination: inviterResidence,                                                                                            //
+        //         invitee:{                                                                                                                 //
+        //             publicKey: publicKey,                                                                                                 //
+        //             pkfp: pkfp                                                                                                            //
+        //         }                                                                                                                         //
+        //     };                                                                                                                            //
+        //                                                                                                                                   //
+        //     request.set("body", body);                                                                                                    //
+        //     request.vaultSign = ic.get("vlt-sign");                                                                                       //
+        //     request.vault = vault;                                                                                                        //
+        //     request.signMessage(privateKey);                                                                                              //
+        //     console.log("Sending topic join request");                                                                                    //
+        //     let sendStart = new Date();                                                                                                   //
+        //     this.vault.pendingInvites[inviteID] = {                                                                                       //
+        //         nickname: nickname,                                                                                                       //
+        //     }                                                                                                                             //
+        //     self.messageQueue.enqueue(request);                                                                                           //
+        //     now = new Date()                                                                                                              //
+        //     console.log(`Request sent to island in  ${(now - sendStart) / 1000}sec. ${ (now - start) / 1000 } elapsed since beginning.`); //
+        // }, 100)                                                                                                                           //
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     }
 
 
@@ -461,7 +470,7 @@ export class ChatClient{
         let topicInfo = self.pendingTopicJoins[request.body.inviteCode];
         this.initSettingsOnTopicJoin(topicInfo, request);
 
-	console.log("new topic pkfp: " + JSON.stringify(topicInfo));
+        console.log("new topic pkfp: " + JSON.stringify(topicInfo));
         self.emit("topic_join_success", {
             pkfp: topicInfo.pkfp,
             nickname: topicInfo.nickname,

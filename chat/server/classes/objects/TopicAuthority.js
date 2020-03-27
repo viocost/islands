@@ -170,13 +170,11 @@ class TopicAuthority extends EventEmitter{
         this.issueMetadata({
             recipients: currentMemebers,
             event: MetadataIssue.events.newMemberJoin,
-            nickname: inviteeInfo.nickname,
             pkfp: inviteeInfo.pkfp
         });
         await this.consumeInvite(inviteString, invite.requesterPkfp);
 
         Logger.debug("Topic join: ", {
-            nickname: inviteeInfo.nickname,
             cat: "topic_join"
         })
 

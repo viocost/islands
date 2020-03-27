@@ -57,7 +57,6 @@ class ServiceAssistant{
         let newMetadata = Metadata.parseMetadata(message.body.metadata);
         newMetadata.setSettings(prevMeta.body.settings);
         await self.hm.appendMetadata(newMetadata.toBlob(), message.headers.pkfpDest);
-        console.log("Metadata appended");
         self.sessionManager.broadcastServiceMessage(message.headers.pkfpDest, message);
         await self.registerMetadataUpdate(message, message.headers.pkfpDest);
 
@@ -65,7 +64,7 @@ class ServiceAssistant{
 
     async requestMetadataSync(pkfp, self){
         if(this.syncInProgress.has(pkfp)){
-            Logger.debug("Sync a;ready in progress. Returning...", {pkfp: pkfp});
+            Logger.debug("Sync already in progress. Returning...", {pkfp: pkfp});
             return
         } else {
             this.syncInProgress.add(pkfp);
@@ -200,7 +199,10 @@ class ServiceAssistant{
 
     generateMessageOnMetadataIssue(message){
         if(message.headers.event === "new_member_joined"){
-            return "Member " + message.body.nickname + " has joined the channel."
+            Logger.debug("Member joined the channel", {
+                cat: "topic_join"
+            })
+            return "New member has joined the channel."
         }else if(message.headers.event === "member_booted"){
             return "Member id: " + message.body.bootedPkfp + " has left the channel."
         } else if(message.headers.response === "meta_sync_success"){
@@ -282,7 +284,7 @@ class ServiceAssistant{
         }
     }
 
-    async processStandardNameExchabgeRequest(request, connectionId, self){
+    async processStandardNameExchangeRequest(request, connectionId, self){
         Logger.debug("Sending name request", {
             pkfpSource: request.headers.pkfpSource,
             pkfpDest: request.headers.pkfpDest
@@ -406,9 +408,9 @@ class ServiceAssistant{
         handlers[Internal.UPDATE_SETTINGS] = this.registerSettingsUpdate;
 
         this.subscribe(requestEmitter, {
-            whats_your_name: this.processStandardNameExchabgeRequest,
-            nickname_change_broadcast: this.processStandardNameExchabgeRequest,
-            my_name_response: this.processStandardNameExchabgeRequest,
+            whats_your_name: this.processStandardNameExchangeRequest,
+            nickname_change_broadcast: this.processStandardNameExchangeRequest,
+            my_name_response: this.processStandardNameExchangeRequest,
             request_invite: this.registerInviteRequest,
             boot_participant: this.registerBootMemberRequest,
             register_service_record: this.registerClientServiceRecord
