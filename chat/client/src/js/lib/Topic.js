@@ -116,9 +116,8 @@ export class Topic{
 
         }
 
-        this.sharedKey = ChatUtility.decryptStandardMessage(this.participants[pkfp].key, this.privateKey);
+        this.sharedKey = ChatUtility.privateKeyDecrypt(this.participants[this.pkfp].key, this.privateKey);
         this.metadataId = metadata.id
-        console.log(`Shared key is ${this.sharedKey}`);
         this.topicAuthority = metadata.body.topicAuthority;
         if (!metadata.body.settings.invites){
             metadata.body.settings.invites = {};
