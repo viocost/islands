@@ -6,7 +6,10 @@ import { ChatUtility } from "./ChatUtility";
 import { iCrypto } from  "./iCrypto";
 import { ChatMessage } from "./ChatMessage";
 import { ClientSettings } from "./ClientSettings";
+import { CuteSet } from  "cute-set";
 import { INSPECT_MAX_BYTES } from "buffer";
+import { NicknameExchangeAgent } from "./NicknameExchangeAgent";
+
 
 const INITIAL_NUM_MESSAGES = 25
 
@@ -73,6 +76,7 @@ export class Topic{
         });
         self.version = version;
         self.setHandlers()
+
         self.bootstrapped = true;
     }
 
@@ -355,9 +359,21 @@ export class Topic{
     // Nickname handling
     //TODO
     exchangeNicknames(){
-        for(let pkfp of Object.keys(this.participants)){
+        if(!this.isBootstrapped){
+            console.log("Cannot exchange nicknames: topic not bootstrapped.");
+            return;
+        }
+
+        // All members except for current participant
+        let participants = new CuteSet(Object.keys(this.participants)).minus(this.pkfp);
+
+        for (let pkfp of participants){
+            let msg = new ServiceMessage()
 
         }
+
+
+
 
     }
 

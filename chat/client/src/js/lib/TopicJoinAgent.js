@@ -1,8 +1,9 @@
 import { iCrypto } from "./iCrypto";
 import { Message } from "./Message";
 import { WildEmitter } from "./WildEmitter";
-import { Vault } from  "./Vault";
+import { Topic } from "./Topic";
 import { Events, Internal } from "../../../../common/Events";
+import { ChatUtility } from "./ChatUtility";
 
 export class TopicJoinAgent{
 
@@ -14,6 +15,13 @@ export class TopicJoinAgent{
         this.messageQueue = messageQueue;
         this.arrivalHub = arrivalHub;
         this.vault = vault
+        this.version = vault.version
+        this.pkfp = null
+        this.publicKey = null
+        this.privateKey = null
+        this.inviterResidence = null
+        this.inviterPkfp = null
+        this.inviteCode = null
     }
 
     /**
@@ -42,7 +50,7 @@ export class TopicJoinAgent{
             self.publicKey = ic.get("rsa").publicKey;
             self.privateKey = ic.get("rsa").privateKey;
 
-            let now = new Date()
+
 
             console.log(`Keys generated in ${(now - cryptoStart) / 1000}sec. ${ (now - start) / 1000 } elapsed since beginning.`);
 
@@ -65,7 +73,7 @@ export class TopicJoinAgent{
 
             // Encrypted vault record
             console.log(`Topic name is: ${self.topicName}`);
-            let vaultRecord = self.vault.prepareVaultTopicRecord(self.vault.version,
+            let vaultRecord = self.vault.prepareVaultTopicRecord(self.version,
                                                                  self.pkfp,
                                                                  self.privateKey,
                                                                  self.topicName)
@@ -79,7 +87,7 @@ export class TopicJoinAgent{
             .privateKeySign("vlt-rec", "priv", "vlt-sign")
 
 
-            let request = new Message(self.vault.version);
+            let request = new Message(self.version);
             request.setCommand(Internal.JOIN_TOPIC);
             request.setSource(self.pkfp);
             request.setDest(self.inviterPkfp);
@@ -114,6 +122,16 @@ export class TopicJoinAgent{
     processServerMessage(self, msg){
         console.log("Join agent got message from the server");
         console.log(msg.headers.command)
+        switch (msg.headers.command){
+            case Internal.JOIN_TOPIC_SUCCESS:
+                self.onJoinTopicSuccess(self, msg);
+                break
+            case Internal.JOIN_TOPIC_FAIL:
+                self.onJoinTopicFail(self, msg)
+                break
+            default:
+                console.log("Unkonwn event.")
+        }
     }
 
     notifyJoinSuccess(request, self){
@@ -131,12 +149,24 @@ export class TopicJoinAgent{
     }
 
     onJoinTopicSuccess(self, msg){
+        let topic = new Topic(self.version, self.pkfp, self.topicName, self.privateKey);
+        if (!msg.body.metadata){
+            console.log("Error. No metadata.");
+        }
+
+        let metadata = msg.body.metadata;
+        topic.loadMetadata(metadata);
+        topic.bootstrap(topic, self.messageQueue, self.arrivalHub, self.version)
+        topic.settings = Topic.prepareNewTopicSettings(self.version, self.nickname, self.topicName, self.publicKey, false)
+        topic.saveClientSettings();
+        self.vault.registerTopic(topic);
+
+        self.emit(Internal.JOIN_TOPIC_SUCCESS, {
+            pkfp: self.pkfp,
+            nickname: self.nickname
+        })
 
 
-        console.log("Topic join success! Adding new topic...");
-        return
-        let topicPkfp = self.addNewTopic(self, msg);
-        //self.vault.topics[topicPkfp].exchangeNicknames()
     }
 
     onJoinTopicFail(self, msg){
@@ -144,4 +174,16 @@ export class TopicJoinAgent{
         return
     }
 
+        // this.handlers[Internal.JOIN_TOPIC_SUCCESS] = (msg)=>{                   //
+        //     console.log("Topic join success! Adding new topic...");             //
+        //     let topicPkfp = self.addNewTopic(self, msg);                        //
+        //     self.vault.topics[topicPkfp].exchangeNicknames()                    //
+        //                                                                         //
+        //                                                                         //
+        //                                                                         //
+        // }                                                                       //
+        //                                                                         //
+        // this.handlers[Internal.JOIN_TOPIC_FAIL] = (msg)=>{                      //
+        //     console.log(`Join topic attempt has failed: ${msg.body.errorMsg}`); //
+        // }                                                                       //
 }

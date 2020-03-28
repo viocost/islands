@@ -526,6 +526,12 @@ export class Vault{
 
     }
 
+    //Only adds initialized topic to vault topics
+    registerTopic(topic = Err.required()){
+        console.log(`Registring topic ${topic.pkfp}`);
+        this.topics[topic.pkfp] = topic;
+    }
+
 
 
 }

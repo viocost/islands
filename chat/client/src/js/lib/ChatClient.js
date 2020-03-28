@@ -365,10 +365,11 @@ export class ChatClient{
      */
     async joinTopic(nickname, topicName, inviteString) {
         let topicJoinAgent = new TopicJoinAgent(nickname, topicName, inviteString, this.arrivalHub, this.messageQueue, this.vault);
-        topicJoinAgent.on(Events.JOIN_TOPIC_SUCCESS, this.notifyJoinSuccess)
-        topicJoinAgent.on(Events.JOIN_TOPIC_FAIL, ()=>{ console.log("Join topic fail received from the agent")})
+        topicJoinAgent.on(Internal.JOIN_TOPIC_SUCCESS, (data)=>{
+            this.notifyJoinSuccess(this, data);
+        })
+        topicJoinAgent.on(Internal.JOIN_TOPIC_FAIL, ()=>{ console.log("Join topic fail received from the agent")})
         topicJoinAgent.start()
-        this.agents.push(topicJoinAgent);
 
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -465,11 +466,8 @@ export class ChatClient{
         self.emit("settings_updated");
     }
 
-    notifyJoinSuccess(request, self){
+    notifyJoinSuccess(self, data){
         console.log("Join successfull received!");
-        let topicInfo = self.pendingTopicJoins[request.body.inviteCode];
-        this.initSettingsOnTopicJoin(topicInfo, request);
-
         console.log("new topic pkfp: " + JSON.stringify(topicInfo));
         self.emit("topic_join_success", {
             pkfp: topicInfo.pkfp,
