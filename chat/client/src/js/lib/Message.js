@@ -1,4 +1,5 @@
 import { iCrypto } from "./iCrypto"
+import { IError as Err  } from "../../../../common/IError"
 
 
 /**
@@ -46,6 +47,28 @@ export class Message{
         return ic.get("v");
     }
 
+
+    static createRequest(version = Err.required("Version"),
+                         pkfpSource = Err.required("pkfpSource"),
+                         command = Err.require("command"),
+                         pkfpDest,
+                         body){
+        let request = new Message(version);
+        request.setSource(pkfpSource);
+        request.setCommand(command);
+        if(pkfpDest){
+            request.setDest(pkfpDest)
+        }
+
+        if (body){
+            for (let key of Object.keys(body) ){
+                request.body[key] = body[key];
+            }
+        }
+
+        return request;
+    }
+
     setError(error){
         this.headers.error = error || "Unknown error";
     }
@@ -88,6 +111,10 @@ export class Message{
 
     setCommand(command){
         this.headers.command = command
+    }
+
+    setHeader(k=Err.required("k"), v=Err.required("v")){
+        this.headers[k]=v;
     }
 
     addNonce(){

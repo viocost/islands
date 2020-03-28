@@ -47,10 +47,7 @@ module.exports.Events = Object.freeze({
     SEND_ERROR: "send_fail",
     MESSAGES_UPDATED: "messages_updated",
 
-    //Nickname exchange
-    NICKNAME_REQUEST: "whats_your_name",
-    NICKNAME_NOTE: "nickname_note",
-   
+
 
     NEW_SERVICE_RECORD: "new_service_record",
 
@@ -97,6 +94,10 @@ module.exports.Internal = Object.freeze({
 
     //Sent by client to server after establishing the connection
     POST_LOGIN: "post_login",
+
+    //Nickname exchange
+    NICKNAME_REQUEST: "whats_your_name",
+    NICKNAME_NOTE: "nickname_note",
 
     //Response sent by server to client.
     POST_LOGIN_DECRYPT: "post_login_decrypt_services",

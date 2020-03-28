@@ -8,7 +8,6 @@ import { ChatMessage } from "./ChatMessage";
 import { ClientSettings } from "./ClientSettings";
 import { CuteSet } from  "cute-set";
 import { INSPECT_MAX_BYTES } from "buffer";
-import { NicknameExchangeAgent } from "./NicknameExchangeAgent";
 
 
 const INITIAL_NUM_MESSAGES = 25
@@ -24,6 +23,8 @@ export class Topic{
         this.messageQueue;
         this.arrivalHub;
         this.currentMetadata;
+        this.sharedKey;
+        this.metadataId;
         this.participants = {};
         this.messages = [];
         this.settings = {};
@@ -93,6 +94,7 @@ export class Topic{
             settings = JSON.parse(ChatUtility.decryptStandardMessage(settingsCipher, this.privateKey))
         }
 
+
         this._metadata = metadata
         this._metadata.body.settings = settings;
         this.settings = settings;
@@ -114,6 +116,9 @@ export class Topic{
 
         }
 
+        this.sharedKey = ChatUtility.decryptStandardMessage(this.participants[pkfp].key, this.privateKey);
+        this.metadataId = metadata.id
+        console.log(`Shared key is ${this.sharedKey}`);
         this.topicAuthority = metadata.body.topicAuthority;
         if (!metadata.body.settings.invites){
             metadata.body.settings.invites = {};
@@ -364,17 +369,15 @@ export class Topic{
             return;
         }
 
-        // All members except for current participant
-        let participants = new CuteSet(Object.keys(this.participants)).minus(this.pkfp);
-
-        for (let pkfp of participants){
-            let msg = new ServiceMessage()
-
-        }
-
-
-
-
+        let myNickname = ChatUtility.symKeyEncrypt(this.participants[this.pkfp].nickname,  this.sharedKey);
+        let request = Message.createRequest(this.version,
+                                            this.pkfp,
+                                            Internal.NICKNAME_REQUEST,
+                                            pkfp)
+        request.body.metadataId = this.metadataId;
+        request.body.myNickname = myNickname;
+        request.signMessage(this.privateKey);
+        this.messageQueue.enqueue(request);
     }
 
     setMemberAlias(pkfp, alias){
