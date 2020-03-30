@@ -98,6 +98,8 @@ module.exports.Internal = Object.freeze({
     //Nickname exchange
     NICKNAME_REQUEST: "whats_your_name",
     NICKNAME_NOTE: "nickname_note",
+    NICKNAME_INITAL_EXCHANGE: "nickname_exchange",
+
 
     //Response sent by server to client.
     POST_LOGIN_DECRYPT: "post_login_decrypt_services",

@@ -257,7 +257,7 @@ export function bakeMessagesPanel(newMsgBlock){
     })
 }
 
-export function bakeNewMessageControl(){
+export function bakeNewMessageControl(sendHandler){
     return util.bake("div", {
         class: "new-message-container",
         children: [
@@ -326,6 +326,8 @@ export function bakeNewMessageControl(){
                     })
                 ]
             }),
+
+            // New message button block
             util.bake("div", {
                 class: ["control-col", "new-msg-buttons"],
                 children: [
@@ -335,7 +337,11 @@ export function bakeNewMessageControl(){
                             util.bake("button", {
                                 id: "send-new-msg",
                                 class: "btn-send",
-                                text: "Send"
+                                text: "SEND",
+                                listeners: {
+                                    click: sendHandler
+                                }
+
                                 //////////////////////////////////////////////////////
                                 // children: [                                      //
                                 //     util.bake("div", {                           //

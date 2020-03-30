@@ -41,6 +41,7 @@ let activeTopics
 
 // ---------------------------------------------------------------------------------------------------------------------------
 // TEST ONLY!
+// Comment out for production!
 window.util = util;
 window.toastr = toastr;
 window.chat = chat;
@@ -243,6 +244,15 @@ function renderLayout(){
 
 // ---------------------------------------------------------------------------------------------------------------------------
 // UI handlers
+
+function sendMessage(){
+    console.log("Sending message...");
+    let msg = util.$("#new-msg").value;
+    let recipient = util.$("#select-member");
+    let files = null;
+    //pass files later
+    chat.sendMessage(msg, topicInFocus, recipient, files);
+}
 
 function createTopic(){
     let nickname = util.$("new-topic-nickname");

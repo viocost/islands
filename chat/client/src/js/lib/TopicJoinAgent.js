@@ -50,26 +50,14 @@ export class TopicJoinAgent{
             self.publicKey = ic.get("rsa").publicKey;
             self.privateKey = ic.get("rsa").privateKey;
 
-
-
-            console.log(`Keys generated in ${(now - cryptoStart) / 1000}sec. ${ (now - start) / 1000 } elapsed since beginning.`);
-
             let callStart = new Date()
             let invite = ic.get("invite").split("/");
             self.inviterResidence = invite[0];
             self.inviterPkfp = invite[1];
             self.inviteCode = invite[2];
 
-            ///////////////////////////////////////////////////////////////////////////
-            // if (!self.inviteRequestValid(inviterResidence, inviterPkfp, inviteCode)){ //
-            //     self.emit("join_topic_fail");                                     //
-            //     throw new Error("Invite request is invalid");                     //
-            // }                                                                     //
-            ///////////////////////////////////////////////////////////////////////////
-
             if(!self.inviteCode || !self.inviterPkfp || !(/^[a-z2-7]{16}\.onion$/.test(self.inviterResidence)))
                 throw new error("Invite request is invalid")
-
 
             // Encrypted vault record
             console.log(`Topic name is: ${self.topicName}`);
@@ -81,6 +69,8 @@ export class TopicJoinAgent{
                 record: vaultRecord,
                 id: self.vault.id
             })
+
+            console.log("Encrypting vault record...");
 
             ic.addBlob("vlt-rec", vault)
             .setRSAKey("priv", self.vault.privateKey, "private")
@@ -107,15 +97,11 @@ export class TopicJoinAgent{
             request.signMessage(self.privateKey);
             console.log("Sending topic join request");
             let sendStart = new Date();
-            //self.vault.pendingInvites[self.inviteCode] = {
-            //    nickname: nickname,
-            //}
 
             self.arrivalHub.on(self.inviteCode.trim(), (msg)=>{ self.processServerMessage(self, msg)})
             self.arrivalHub.on(Events.JOIN_TOPIC_FAIL, (msg)=>{ self.onJoinTopicFail(self, msg)})
+            console.log("Sending join request");
             self.messageQueue.enqueue(request);
-            now = new Date()
-            console.log(`Request sent to island in  ${(now - sendStart) / 1000}sec. ${ (now - start) / 1000 } elapsed since beginning.`);
         }, 100)
     }
 
@@ -136,11 +122,6 @@ export class TopicJoinAgent{
 
     notifyJoinSuccess(request, self){
         console.log("Join successfull received!");
-        return;
-        let topicInfo = self.pendingTopicJoins[request.body.inviteCode];
-        self.initSettingsOnTopicJoin(topicInfo, request);
-
-        console.log("new topic pkfp: " + JSON.stringify(topicInfo));
         self.emit("topic_join_success", {
             pkfp: topicInfo.pkfp,
             nickname: topicInfo.nickname,
@@ -160,6 +141,7 @@ export class TopicJoinAgent{
         topic.settings = Topic.prepareNewTopicSettings(self.version, self.nickname, self.topicName, self.publicKey, false)
         topic.saveClientSettings();
         self.vault.registerTopic(topic);
+        topic.exchangeNicknames();
 
         self.emit(Internal.JOIN_TOPIC_SUCCESS, {
             pkfp: self.pkfp,

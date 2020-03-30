@@ -189,6 +189,12 @@ export class Topic{
         }
     }
 
+    sendMessage(msg, recipient, files){
+        if(recipient === "ALL"){
+            this.shout(msg, files)
+        }
+    }
+
     shout(messageContent, filesAttached){
         let self = this;
         this.ensureBootstrapped();
@@ -221,6 +227,7 @@ export class Topic{
                 message.travelLog[currentTime] = "Outgoing processed on client.";
                 let userPrivateKey = this.session.privateKey;
                 message.signMessage(userPrivateKey);
+                console.log("Sending outgoing broadcast message");
                 this.chatSocket.emit("request", message);
             }catch(err){
                 console.error(`Error sending message: ${err.message}`)
@@ -371,8 +378,7 @@ export class Topic{
         let myNickname = ChatUtility.symKeyEncrypt(this.participants[this.pkfp].nickname,  this.sharedKey);
         let request = Message.createRequest(this.version,
                                             this.pkfp,
-                                            Internal.NICKNAME_REQUEST,
-                                            pkfp)
+                                            Internal.NICKNAME_INITAL_EXCHANGE)
         request.body.metadataId = this.metadataId;
         request.body.myNickname = myNickname;
         request.signMessage(this.privateKey);

@@ -158,6 +158,7 @@ module.exports.Internal = Object.freeze({
   //Nickname exchange
   NICKNAME_REQUEST: "whats_your_name",
   NICKNAME_NOTE: "nickname_note",
+  NICKNAME_INITAL_EXCHANGE: "nickname_exchange",
   //Response sent by server to client.
   POST_LOGIN_DECRYPT: "post_login_decrypt_services",
   POST_LOGIN_CHECK_SERVICES: "post_login_check_services",
@@ -5888,23 +5889,22 @@ var Topic = /*#__PURE__*/function () {
       this.participants = {};
 
       for (var _i = 0, _Object$keys = Object.keys(metadata.body.participants); _i < _Object$keys.length; _i++) {
-        var _pkfp = _Object$keys[_i];
-        this.participants[_pkfp] = {};
-        this.participants[_pkfp].key = metadata.body.participants[_pkfp].key;
-        this.participants[_pkfp].pkfp = metadata.body.participants[_pkfp].pkfp;
-        this.participants[_pkfp].publicKey = metadata.body.participants[_pkfp].publicKey;
-        this.participants[_pkfp].residence = metadata.body.participants[_pkfp].residence;
-        this.participants[_pkfp].rights = metadata.body.participants[_pkfp].rights;
+        var pkfp = _Object$keys[_i];
+        this.participants[pkfp] = {};
+        this.participants[pkfp].key = metadata.body.participants[pkfp].key;
+        this.participants[pkfp].pkfp = metadata.body.participants[pkfp].pkfp;
+        this.participants[pkfp].publicKey = metadata.body.participants[pkfp].publicKey;
+        this.participants[pkfp].residence = metadata.body.participants[pkfp].residence;
+        this.participants[pkfp].rights = metadata.body.participants[pkfp].rights;
 
         if (metadata.body.settings.membersData) {
-          this.participants[_pkfp].nickname = metadata.body.settings.membersData[_pkfp] ? metadata.body.settings.membersData[_pkfp].nickname : "";
-          this.participants[_pkfp].joined = metadata.body.settings.membersData[_pkfp] ? metadata.body.settings.membersData[_pkfp].joined : "";
+          this.participants[pkfp].nickname = metadata.body.settings.membersData[pkfp] ? metadata.body.settings.membersData[pkfp].nickname : "";
+          this.participants[pkfp].joined = metadata.body.settings.membersData[pkfp] ? metadata.body.settings.membersData[pkfp].joined : "";
         }
       }
 
       this.sharedKey = _ChatUtility__WEBPACK_IMPORTED_MODULE_16__[/* ChatUtility */ "a"].privateKeyDecrypt(this.participants[this.pkfp].key, this.privateKey);
       this.metadataId = metadata.id;
-      console.log("Shared key is ".concat(this.sharedKey));
       this.topicAuthority = metadata.body.topicAuthority;
 
       if (!metadata.body.settings.invites) {
@@ -6280,7 +6280,7 @@ var Topic = /*#__PURE__*/function () {
       }
 
       var myNickname = _ChatUtility__WEBPACK_IMPORTED_MODULE_16__[/* ChatUtility */ "a"].symKeyEncrypt(this.participants[this.pkfp].nickname, this.sharedKey);
-      var request = _Message__WEBPACK_IMPORTED_MODULE_14__[/* Message */ "a"].createRequest(this.version, this.pkfp, _common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].NICKNAME_REQUEST, pkfp);
+      var request = _Message__WEBPACK_IMPORTED_MODULE_14__[/* Message */ "a"].createRequest(this.version, this.pkfp, _common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].NICKNAME_INITAL_EXCHANGE);
       request.body.metadataId = this.metadataId;
       request.body.myNickname = myNickname;
       request.signMessage(this.privateKey);
@@ -40357,13 +40357,7 @@ var ChatClient = /*#__PURE__*/function () {
   }, {
     key: "notifyJoinSuccess",
     value: function notifyJoinSuccess(self, data) {
-      console.log("Join successfull received!");
-      console.log("new topic pkfp: " + JSON.stringify(topicInfo));
-      self.emit("topic_join_success", {
-        pkfp: topicInfo.pkfp,
-        nickname: topicInfo.nickname,
-        privateKey: topicInfo.privateKey
-      });
+      console.log("Join successfull received by ChatClient");
     }
     /**
      * Called initially on topic creation
@@ -42765,18 +42759,11 @@ var TopicJoinAgent = /*#__PURE__*/function () {
         self.pkfp = ic.get("pkfp");
         self.publicKey = ic.get("rsa").publicKey;
         self.privateKey = ic.get("rsa").privateKey;
-        console.log("Keys generated in ".concat((now - cryptoStart) / 1000, "sec. ").concat((now - start) / 1000, " elapsed since beginning."));
         var callStart = new Date();
         var invite = ic.get("invite").split("/");
         self.inviterResidence = invite[0];
         self.inviterPkfp = invite[1];
-        self.inviteCode = invite[2]; ///////////////////////////////////////////////////////////////////////////
-        // if (!self.inviteRequestValid(inviterResidence, inviterPkfp, inviteCode)){ //
-        //     self.emit("join_topic_fail");                                     //
-        //     throw new Error("Invite request is invalid");                     //
-        // }                                                                     //
-        ///////////////////////////////////////////////////////////////////////////
-
+        self.inviteCode = invite[2];
         if (!self.inviteCode || !self.inviterPkfp || !/^[a-z2-7]{16}\.onion$/.test(self.inviterResidence)) throw new error("Invite request is invalid"); // Encrypted vault record
 
         console.log("Topic name is: ".concat(self.topicName));
@@ -42785,6 +42772,7 @@ var TopicJoinAgent = /*#__PURE__*/function () {
           record: vaultRecord,
           id: self.vault.id
         });
+        console.log("Encrypting vault record...");
         ic.addBlob("vlt-rec", vault).setRSAKey("priv", self.vault.privateKey, "private").privateKeySign("vlt-rec", "priv", "vlt-sign");
         var request = new _Message__WEBPACK_IMPORTED_MODULE_4__[/* Message */ "a"](self.version);
         request.setCommand(_common_Events__WEBPACK_IMPORTED_MODULE_7__["Internal"].JOIN_TOPIC);
@@ -42804,19 +42792,15 @@ var TopicJoinAgent = /*#__PURE__*/function () {
         request.vault = vault;
         request.signMessage(self.privateKey);
         console.log("Sending topic join request");
-        var sendStart = new Date(); //self.vault.pendingInvites[self.inviteCode] = {
-        //    nickname: nickname,
-        //}
-
+        var sendStart = new Date();
         self.arrivalHub.on(self.inviteCode.trim(), function (msg) {
           self.processServerMessage(self, msg);
         });
         self.arrivalHub.on(_common_Events__WEBPACK_IMPORTED_MODULE_7__["Events"].JOIN_TOPIC_FAIL, function (msg) {
           self.onJoinTopicFail(self, msg);
         });
+        console.log("Sending join request");
         self.messageQueue.enqueue(request);
-        now = new Date();
-        console.log("Request sent to island in  ".concat((now - sendStart) / 1000, "sec. ").concat((now - start) / 1000, " elapsed since beginning."));
       }, 100);
     }
   }, {
@@ -42842,10 +42826,6 @@ var TopicJoinAgent = /*#__PURE__*/function () {
     key: "notifyJoinSuccess",
     value: function notifyJoinSuccess(request, self) {
       console.log("Join successfull received!");
-      return;
-      var topicInfo = self.pendingTopicJoins[request.body.inviteCode];
-      self.initSettingsOnTopicJoin(topicInfo, request);
-      console.log("new topic pkfp: " + JSON.stringify(topicInfo));
       self.emit("topic_join_success", {
         pkfp: topicInfo.pkfp,
         nickname: topicInfo.nickname,
@@ -42867,6 +42847,7 @@ var TopicJoinAgent = /*#__PURE__*/function () {
       topic.settings = _Topic__WEBPACK_IMPORTED_MODULE_6__[/* Topic */ "a"].prepareNewTopicSettings(self.version, self.nickname, self.topicName, self.publicKey, false);
       topic.saveClientSettings();
       self.vault.registerTopic(topic);
+      topic.exchangeNicknames();
       self.emit(_common_Events__WEBPACK_IMPORTED_MODULE_7__["Internal"].JOIN_TOPIC_SUCCESS, {
         pkfp: self.pkfp,
         nickname: self.nickname

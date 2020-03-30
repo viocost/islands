@@ -10,7 +10,7 @@ const Metadata = require("../objects/Metadata.js");
 const Logger = require("../libs/Logger.js");
 const Coordinator = require("../assistants/AssistantCoordinator.js");
 const Internal = require("../../../common/Events.js").Internal
-const Events = require("../../../common/Events.js").Events
+const { Events, Internal } = require("../../../common/Events.js")
 
 class ServiceAssistant{
     constructor(connectionManager = Err.required(),
@@ -245,6 +245,7 @@ class ServiceAssistant{
 
 
     async processIncomingNicknameRequest(envelope, self){
+        Logger.debug("Incoming nickname request received", { cat: "service" })
         return self.verifyAndForwardServiceMessage(envelope, self)
     }
 
@@ -258,7 +259,7 @@ class ServiceAssistant{
     }
 
     async verifyAndForwardServiceMessage(envelope, self, broadcast = false){
-        Logger.debug("Received service message. Verifying and forwarding to ")
+        Logger.debug("Received service message. ", { cat: "service" })
         let request = Envelope.getOriginalPayload(envelope);
         let pkfpDest = request.headers.pkfpDest;
         let metadata = Metadata.parseMetadata(await self.hm.getLastMetadata(pkfpDest));
@@ -284,7 +285,8 @@ class ServiceAssistant{
         }
     }
 
-    async processStandardNameExchangeRequest(request, connectionId, self){
+
+    async processStandardNameExchangeRequest(request, self){
         Logger.debug("Sending name request", {
             pkfpSource: request.headers.pkfpSource,
             pkfpDest: request.headers.pkfpDest
@@ -406,6 +408,7 @@ class ServiceAssistant{
         let handlers = {};
         handlers[Internal.LOAD_MESSAGES] = this.loadMoreMessages;
         handlers[Internal.UPDATE_SETTINGS] = this.registerSettingsUpdate;
+        handlers[Internal.NICKNAME_INITAL_EXCHANGE] = this.processStandardNameExchangeRequest;
 
         this.subscribe(requestEmitter, {
             whats_your_name: this.processStandardNameExchangeRequest,

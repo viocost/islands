@@ -467,13 +467,7 @@ export class ChatClient{
     }
 
     notifyJoinSuccess(self, data){
-        console.log("Join successfull received!");
-        console.log("new topic pkfp: " + JSON.stringify(topicInfo));
-        self.emit("topic_join_success", {
-            pkfp: topicInfo.pkfp,
-            nickname: topicInfo.nickname,
-            privateKey: topicInfo.privateKey
-        });
+        console.log("Join successfull received by ChatClient");
     }
 
 
@@ -668,15 +662,6 @@ export class ChatClient{
         return this.topics;
     }
 
-    shout(msg){
-        this.messageQueue.enqueue(msg)
-    }
-
-    whisper(msg){
-        this.messageQueue.enqueue(msg)
-    }
-
-
     getParticipantAlias(topicPkfp, participantPkfp){
         if (!this.topics[topicPkfp]){
             throw new Error(`Topic ${topicPkfp} not found`)
@@ -691,6 +676,13 @@ export class ChatClient{
         return this.topics[topicPkfp].getParticipantRepr(participantPkfp);
     }
 
+    // Sends message
+    sendMessage(msg, recipient, files){
+        if (!this.topics[topicPkfp]){
+            throw new Error(`Topic ${topicPkfp} not found`)
+        }
+        this.topics[topicPkfp].sendMessage(msg, toipc, recipient, files)
+    }
 
     async _vaultLogin(vaultData, password){
     }
