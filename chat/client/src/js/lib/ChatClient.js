@@ -14,6 +14,7 @@ import  { AttachmentInfo } from "./AttachmentInfo";
 import { ClientSettings } from  "./ClientSettings";
 import { iCrypto } from "./iCrypto"
 import { TopicJoinAgent } from "./TopicJoinAgent";
+import { SendMessageAgent } from "./SendMessageAgent";
 
 export class ChatClient{
     constructor(opts){
@@ -677,11 +678,14 @@ export class ChatClient{
     }
 
     // Sends message
-    sendMessage(msg, recipient, files){
-        if (!this.topics[topicPkfp]){
-            throw new Error(`Topic ${topicPkfp} not found`)
+    sendMessage(msg, topicPkfp, recipient, files){
+        let topic = this.topics[topicPkfp]
+
+        if (!this.topics[topic]){
+            throw new Error(`Topic ${topic} not found`)
         }
-        this.topics[topicPkfp].sendMessage(msg, toipc, recipient, files)
+        let sendMessageAgent = new SendMessageAgent(topic, msg, recipient, files)
+        return sendMessageAgent.send();
     }
 
     async _vaultLogin(vaultData, password){

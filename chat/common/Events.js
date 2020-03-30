@@ -47,8 +47,6 @@ module.exports.Events = Object.freeze({
     SEND_ERROR: "send_fail",
     MESSAGES_UPDATED: "messages_updated",
 
-
-
     NEW_SERVICE_RECORD: "new_service_record",
 
     //Connection
@@ -73,6 +71,11 @@ module.exports.Events = Object.freeze({
 // This defines internal events and commands that may ever occur in the Islands Chat system
 // but not part of public API.
 module.exports.Internal = Object.freeze({
+
+    // ---------------------------------------------------------------------------------------------------------------------------
+    // Chat messages
+    BROADCAST_MESSAGE: "broadcast_message",
+    SEND_MESSAGE: "send_message",
 
     // ---------------------------------------------------------------------------------------------------------------------------
     // Vault update notifications

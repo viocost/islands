@@ -189,59 +189,6 @@ export class Topic{
         }
     }
 
-    sendMessage(msg, recipient, files){
-        if(recipient === "ALL"){
-            this.shout(msg, files)
-        }
-    }
-
-    shout(messageContent, filesAttached){
-        let self = this;
-        this.ensureBootstrapped();
-        setImmediate(async ()=>{
-            try{
-
-                let attachmentsInfo;
-
-                const metaID = self.session.metadata.id;
-                const chatMessage = await self.prepareMessage(this.version, messageContent);
-
-                if (filesAttached && filesAttached.length >0){
-                    attachmentsInfo = await self.uploadAttachments(filesAttached, chatMessage.header.id, metaID);
-                    for (let att of attachmentsInfo) {
-                        chatMessage.addAttachmentInfo(att);
-                    }
-                }
-
-                chatMessage.encryptMessage(this.session.metadata.sharedKey);
-                chatMessage.sign(this.session.privateKey);
-
-                //Preparing request
-                let message = new Message(self.version);
-
-                message.headers.pkfpSource = this.session.publicKeyFingerprint;
-                message.headers.command = "broadcast_message";
-                message.body.message = chatMessage.toBlob();
-                let currentTime = new Date().getTime();
-                message.travelLog = {};
-                message.travelLog[currentTime] = "Outgoing processed on client.";
-                let userPrivateKey = this.session.privateKey;
-                message.signMessage(userPrivateKey);
-                console.log("Sending outgoing broadcast message");
-                this.chatSocket.emit("request", message);
-            }catch(err){
-                console.error(`Error sending message: ${err.message}`)
-                throw err;
-            }
-        })
-    }
-
-
-    //Send private message
-    whisper(msg, addressee){
-
-    }
-
 
 
     //Incoming message
@@ -257,24 +204,13 @@ export class Topic{
     }
 
 
-    prepareMessage(version, messageContent, recipientPkfp) {
-        if(version === undefined || version === "") throw new Error("Chat message initialization error: Version is required");
-        let self = this;
-        console.log("Preparing message: " + messageContent);
-        //if (!self.isLoggedIn()) {
-        //    self.emit("login_required");
-        //    reject();
-        //}
-        //Preparing chat message
-        let chatMessage = new ChatMessage();
-        chatMessage.version = version;
-        chatMessage.header.metadataID = this.session.metadata.id;
-        chatMessage.header.author = this.session.publicKeyFingerprint;
-        chatMessage.header.recipient = recipientPkfp ? recipientPkfp : "ALL";
-        chatMessage.header.private = !!recipientPkfp;
-        chatMessage.header.nickname = self.session.settings.nickname;
-        chatMessage.body = messageContent;
-        return chatMessage;
+
+
+    getCurrentNickname(){
+        if (!this.metadataLoaded){
+            throw new Error("Cannot get current nickname: metadata is not loaded.")
+        }
+        return this.participants[this.pkfp].nickname;
     }
 
     _loadMessages(self, quantity=25, lastMessageId){

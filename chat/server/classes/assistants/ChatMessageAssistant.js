@@ -58,7 +58,9 @@ class ChatMessageAssistant{
 
         Logger.debug("Broadcasting chat message", {
             pkfp: pkfp,
-            msg: message.body.message
+            msg: message.body.message,
+            cat: "chat"
+
         });
 
         if (message.body.message.length > 65535){

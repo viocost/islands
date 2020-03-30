@@ -20,7 +20,7 @@ export class ChatMessage{
             metadataID :"",
             author: "",
             nickname: "", //AUTHOR PKFP
-            recipient: "all", //RCIPIENT PKFP
+            recipient: "ALL", //RCIPIENT PKFP
         };
         this.body = blob ? blob.body : "";
         this.attachments = blob ? blob.attachments : undefined;

@@ -140,6 +140,10 @@ module.exports.Events = Object.freeze({
 
 module.exports.Internal = Object.freeze({
   // ---------------------------------------------------------------------------------------------------------------------------
+  // Chat messages
+  BROADCAST_MESSAGE: "broadcast_message",
+  SEND_MESSAGE: "send_message",
+  // ---------------------------------------------------------------------------------------------------------------------------
   // Vault update notifications
   SAVE_VAULT: "save_vault",
   TOPIC_CREATED: "topic_created",
@@ -4821,6 +4825,48 @@ var IError = /*#__PURE__*/function () {
 
 /***/ }),
 /* 8 */
+/***/ (function(module, exports) {
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
+  try {
+    var info = gen[key](arg);
+    var value = info.value;
+  } catch (error) {
+    reject(error);
+    return;
+  }
+
+  if (info.done) {
+    resolve(value);
+  } else {
+    Promise.resolve(value).then(_next, _throw);
+  }
+}
+
+function _asyncToGenerator(fn) {
+  return function () {
+    var self = this,
+        args = arguments;
+    return new Promise(function (resolve, reject) {
+      var gen = fn.apply(self, args);
+
+      function _next(value) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
+      }
+
+      function _throw(err) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
+      }
+
+      _next(undefined);
+    });
+  };
+}
+
+module.exports = _asyncToGenerator;
+
+/***/ }),
+/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4999,48 +5045,6 @@ var Message = /*#__PURE__*/function () {
   return Message;
 }();
 Message.properties = ["headers", "body", "signature"];
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports) {
-
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
-  try {
-    var info = gen[key](arg);
-    var value = info.value;
-  } catch (error) {
-    reject(error);
-    return;
-  }
-
-  if (info.done) {
-    resolve(value);
-  } else {
-    Promise.resolve(value).then(_next, _throw);
-  }
-}
-
-function _asyncToGenerator(fn) {
-  return function () {
-    var self = this,
-        args = arguments;
-    return new Promise(function (resolve, reject) {
-      var gen = fn.apply(self, args);
-
-      function _next(value) {
-        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
-      }
-
-      function _throw(err) {
-        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
-      }
-
-      _next(undefined);
-    });
-  };
-}
-
-module.exports = _asyncToGenerator;
 
 /***/ }),
 /* 10 */
@@ -5769,7 +5773,7 @@ module.exports = function (it) {
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(44);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(9);
+/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(8);
 /* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_7__);
 /* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(21);
 /* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_8__);
@@ -5782,7 +5786,7 @@ module.exports = function (it) {
 /* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(0);
 /* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(_common_Events__WEBPACK_IMPORTED_MODULE_12__);
 /* harmony import */ var _WildEmitter__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(13);
-/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(8);
+/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(9);
 /* harmony import */ var _Metadata__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(106);
 /* harmony import */ var _ChatUtility__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(12);
 /* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(1);
@@ -6002,111 +6006,124 @@ var Topic = /*#__PURE__*/function () {
       }
     }
   }, {
-    key: "shout",
-    value: function shout(messageContent, filesAttached) {
+    key: "sendMessage",
+    value: function sendMessage(messageContent, recipient, filesAttached) {
       var _this = this;
 
       var self = this;
-      this.ensureBootstrapped();
-      setImmediate( /*#__PURE__*/_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_7___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_5___default.a.mark(function _callee2() {
-        var attachmentsInfo, metaID, chatMessage, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, att, message, currentTime, userPrivateKey;
+      setTimeout( /*#__PURE__*/_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_7___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_5___default.a.mark(function _callee2() {
+        var attachmentsInfo, metaID, chatMessage, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, att, message, currentTime;
 
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_5___default.a.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                _context2.prev = 0;
-                metaID = self.session.metadata.id;
-                _context2.next = 4;
-                return self.prepareMessage(_this.version, messageContent);
-
-              case 4:
-                chatMessage = _context2.sent;
+                metaID = self.metadataId;
+                chatMessage = self.prepareMessage(_this.version, messageContent, recipient);
 
                 if (!(filesAttached && filesAttached.length > 0)) {
-                  _context2.next = 28;
+                  _context2.next = 25;
                   break;
                 }
 
-                _context2.next = 8;
+                _context2.next = 5;
                 return self.uploadAttachments(filesAttached, chatMessage.header.id, metaID);
 
-              case 8:
+              case 5:
                 attachmentsInfo = _context2.sent;
                 _iteratorNormalCompletion = true;
                 _didIteratorError = false;
                 _iteratorError = undefined;
-                _context2.prev = 12;
+                _context2.prev = 9;
 
                 for (_iterator = attachmentsInfo[Symbol.iterator](); !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                   att = _step.value;
                   chatMessage.addAttachmentInfo(att);
                 }
 
-                _context2.next = 20;
+                _context2.next = 17;
                 break;
 
-              case 16:
-                _context2.prev = 16;
-                _context2.t0 = _context2["catch"](12);
+              case 13:
+                _context2.prev = 13;
+                _context2.t0 = _context2["catch"](9);
                 _didIteratorError = true;
                 _iteratorError = _context2.t0;
 
-              case 20:
-                _context2.prev = 20;
-                _context2.prev = 21;
+              case 17:
+                _context2.prev = 17;
+                _context2.prev = 18;
 
                 if (!_iteratorNormalCompletion && _iterator.return != null) {
                   _iterator.return();
                 }
 
-              case 23:
-                _context2.prev = 23;
+              case 20:
+                _context2.prev = 20;
 
                 if (!_didIteratorError) {
-                  _context2.next = 26;
+                  _context2.next = 23;
                   break;
                 }
 
                 throw _iteratorError;
 
-              case 26:
-                return _context2.finish(23);
-
-              case 27:
+              case 23:
                 return _context2.finish(20);
 
-              case 28:
-                chatMessage.encryptMessage(_this.session.metadata.sharedKey);
-                chatMessage.sign(_this.session.privateKey); //Preparing request
+              case 24:
+                return _context2.finish(17);
+
+              case 25:
+                chatMessage.encryptMessage(self.sharedKey);
+                chatMessage.sign(self.privateKey); //Preparing request
 
                 message = new _Message__WEBPACK_IMPORTED_MODULE_14__[/* Message */ "a"](self.version);
-                message.headers.pkfpSource = _this.session.publicKeyFingerprint;
-                message.headers.command = "broadcast_message";
+                message.headers.pkfpSource = self.pkfp;
+                message.headers.command = !recipient || recipient === "ALL" ? _common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].BROADCAST_MESSAGE : _common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].SEND_MESSAGE;
                 message.body.message = chatMessage.toBlob();
                 currentTime = new Date().getTime();
                 message.travelLog = {};
                 message.travelLog[currentTime] = "Outgoing processed on client.";
-                userPrivateKey = _this.session.privateKey;
-                message.signMessage(userPrivateKey);
+                message.signMessage(self.privateKey);
+                console.log("Sending outgoing broadcast message");
+                self.messageQueue.enqueue(message);
+                console.log("Chat message enqueued");
 
-                _this.chatSocket.emit("request", message);
-
-                _context2.next = 46;
-                break;
-
-              case 42:
-                _context2.prev = 42;
-                _context2.t1 = _context2["catch"](0);
-                console.error("Error sending message: ".concat(_context2.t1.message));
-                throw _context2.t1;
-
-              case 46:
+              case 38:
               case "end":
                 return _context2.stop();
             }
           }
-        }, _callee2, null, [[0, 42], [12, 16, 20, 28], [21,, 23, 27]]);
+        }, _callee2, null, [[9, 13, 17, 25], [18,, 20, 24]]);
+      })), 100);
+    }
+  }, {
+    key: "shout",
+    value: function shout(messageContent, filesAttached) {
+      var self = this;
+      this.ensureBootstrapped();
+      setImmediate( /*#__PURE__*/_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_7___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_5___default.a.mark(function _callee3() {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_5___default.a.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                _context3.prev = 0;
+                _context3.next = 7;
+                break;
+
+              case 3:
+                _context3.prev = 3;
+                _context3.t0 = _context3["catch"](0);
+                console.error("Error sending message: ".concat(_context3.t0.message));
+                throw _context3.t0;
+
+              case 7:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3, null, [[0, 3]]);
       })));
     } //Send private message
 
@@ -6128,24 +6145,27 @@ var Topic = /*#__PURE__*/function () {
     }
   }, {
     key: "prepareMessage",
-    value: function prepareMessage(version, messageContent, recipientPkfp) {
+    value: function prepareMessage(version, messageContent, recipient) {
       if (version === undefined || version === "") throw new Error("Chat message initialization error: Version is required");
-      var self = this;
-      console.log("Preparing message: " + messageContent); //if (!self.isLoggedIn()) {
-      //    self.emit("login_required");
-      //    reject();
-      //}
-      //Preparing chat message
-
+      console.log("Preparing message: " + messageContent);
       var chatMessage = new _ChatMessage__WEBPACK_IMPORTED_MODULE_18__[/* ChatMessage */ "a"]();
       chatMessage.version = version;
-      chatMessage.header.metadataID = this.session.metadata.id;
-      chatMessage.header.author = this.session.publicKeyFingerprint;
-      chatMessage.header.recipient = recipientPkfp ? recipientPkfp : "ALL";
-      chatMessage.header.private = !!recipientPkfp;
-      chatMessage.header.nickname = self.session.settings.nickname;
+      chatMessage.header.metadataID = this.metadataId;
+      chatMessage.header.author = this.pkfp;
+      chatMessage.header.recipient = recipient ? recipient : "ALL";
+      chatMessage.header.private = !!recipient && chatMessage.header.recipient !== "ALL";
+      chatMessage.header.nickname = this.getCurrentNickname();
       chatMessage.body = messageContent;
       return chatMessage;
+    }
+  }, {
+    key: "getCurrentNickname",
+    value: function getCurrentNickname() {
+      if (!this.metadataLoaded) {
+        throw new Error("Cannot get current nickname: metadata is not loaded.");
+      }
+
+      return this.participants[this.pkfp].nickname;
     }
   }, {
     key: "_loadMessages",
@@ -19732,7 +19752,7 @@ var es6_object_to_string = __webpack_require__(15);
 var runtime = __webpack_require__(44);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/asyncToGenerator.js
-var asyncToGenerator = __webpack_require__(9);
+var asyncToGenerator = __webpack_require__(8);
 var asyncToGenerator_default = /*#__PURE__*/__webpack_require__.n(asyncToGenerator);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/classCallCheck.js
@@ -19769,7 +19789,7 @@ var iCrypto = __webpack_require__(1);
 var WildEmitter = __webpack_require__(13);
 
 // EXTERNAL MODULE: ./client/src/js/lib/Message.js
-var Message = __webpack_require__(8);
+var Message = __webpack_require__(9);
 
 // EXTERNAL MODULE: ./common/Events.js
 var Events = __webpack_require__(0);
@@ -26151,7 +26171,7 @@ var ChatMessage = /*#__PURE__*/function () {
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(44);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(9);
+/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(8);
 /* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_3__);
@@ -39778,7 +39798,7 @@ module.exports = _defineProperty;
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(44);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(9);
+/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(8);
 /* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(4);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_6__);
@@ -39793,7 +39813,7 @@ module.exports = _defineProperty;
 /* harmony import */ var _MessageQueue__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(110);
 /* harmony import */ var _ArrivalHub__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(169);
 /* harmony import */ var _ChatUtility__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(12);
-/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(8);
+/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(9);
 /* harmony import */ var _Topic__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(25);
 /* harmony import */ var _Metadata__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(106);
 /* harmony import */ var _Participant__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(261);
@@ -40558,16 +40578,6 @@ var ChatClient = /*#__PURE__*/function () {
       return this.topics;
     }
   }, {
-    key: "shout",
-    value: function shout(msg) {
-      this.messageQueue.enqueue(msg);
-    }
-  }, {
-    key: "whisper",
-    value: function whisper(msg) {
-      this.messageQueue.enqueue(msg);
-    }
-  }, {
     key: "getParticipantAlias",
     value: function getParticipantAlias(topicPkfp, participantPkfp) {
       if (!this.topics[topicPkfp]) {
@@ -40584,6 +40594,16 @@ var ChatClient = /*#__PURE__*/function () {
       }
 
       return this.topics[topicPkfp].getParticipantRepr(participantPkfp);
+    } // Sends message
+
+  }, {
+    key: "sendMessage",
+    value: function sendMessage(msg, topic, recipient, files) {
+      if (!this.topics[topic]) {
+        throw new Error("Topic ".concat(topic, " not found"));
+      }
+
+      this.topics[topic].sendMessage(msg, recipient, files);
     }
   }, {
     key: "_vaultLogin",
@@ -42284,7 +42304,7 @@ function coerce (version, options) {
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(44);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(9);
+/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(8);
 /* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(4);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_5__);
@@ -42703,7 +42723,7 @@ var ArrivalHub = function ArrivalHub(connector) {
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(5);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(1);
-/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(8);
+/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(9);
 /* harmony import */ var _WildEmitter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(13);
 /* harmony import */ var _Topic__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(25);
 /* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(0);
@@ -55198,7 +55218,7 @@ var runtime = __webpack_require__(44);
 var es6_array_sort = __webpack_require__(172);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/asyncToGenerator.js
-var asyncToGenerator = __webpack_require__(9);
+var asyncToGenerator = __webpack_require__(8);
 var asyncToGenerator_default = /*#__PURE__*/__webpack_require__.n(asyncToGenerator);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.split.js
@@ -55825,7 +55845,7 @@ function bakeMessagesPanel(newMsgBlock) {
     }), newMsgBlock]
   });
 }
-function bakeNewMessageControl() {
+function bakeNewMessageControl(sendHandler) {
   return bake("div", {
     class: "new-message-container",
     children: [bake("div", {
@@ -55873,14 +55893,18 @@ function bakeNewMessageControl() {
           })]
         })]
       })]
-    }), bake("div", {
+    }), // New message button block
+    bake("div", {
       class: ["control-col", "new-msg-buttons"],
       children: [bake("div", {
         class: "send-button-wrap",
         children: [bake("button", {
           id: "send-new-msg",
           class: "btn-send",
-          text: "Send" //////////////////////////////////////////////////////
+          text: "SEND",
+          listeners: {
+            click: sendHandler
+          } //////////////////////////////////////////////////////
           // children: [                                      //
           //     util.bake("div", {                           //
           //         //class: ["ld", "ld-ring", "ld-spin"], //
@@ -56508,6 +56532,7 @@ window.getTopicInFocus = function () {
 
 var activeTopics; // ---------------------------------------------------------------------------------------------------------------------------
 // TEST ONLY!
+// Comment out for production!
 
 window.util = dom_util_namespaceObject;
 window.toastr = lib_toastr;
@@ -56562,7 +56587,7 @@ function initUI() {
   var mainContainer = bakeMainContainer();
   appendChildren(main, mainContainer);
   var sidePanel = bakeSidePanel();
-  var newMessageBlock = bakeNewMessageControl();
+  var newMessageBlock = bakeNewMessageControl(sendMessage);
   var messagesPanel = bakeMessagesPanel(newMessageBlock);
   appendChildren(mainContainer, [sidePanel, messagesPanel]);
   setupSidePanelListeners();
@@ -56666,6 +56691,26 @@ function renderLayout() {
 // ---------------------------------------------------------------------------------------------------------------------------
 // UI handlers
 
+
+function sendMessage() {
+  console.log("Sending message...");
+  var msg = $("#new-msg").value;
+
+  if (msg.length === 0) {
+    console.log("Empty message");
+    return;
+  }
+
+  var recipient = $("#select-member");
+  var files = null; //pass files later
+
+  if (!topicInFocus) {
+    console.error("No topic selected to write to.");
+    return;
+  }
+
+  chat_ui_chat.sendMessage(msg, topicInFocus, recipient, files);
+}
 
 function createTopic() {
   var nickname = $("new-topic-nickname");

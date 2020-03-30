@@ -114,7 +114,7 @@ function initUI(){
 
     let sidePanel = UI.bakeSidePanel();
 
-    let newMessageBlock = UI.bakeNewMessageControl();
+    let newMessageBlock = UI.bakeNewMessageControl(sendMessage);
     let messagesPanel = UI.bakeMessagesPanel(newMessageBlock)
 
     util.appendChildren(mainContainer, [sidePanel, messagesPanel]);
@@ -248,9 +248,17 @@ function renderLayout(){
 function sendMessage(){
     console.log("Sending message...");
     let msg = util.$("#new-msg").value;
+    if (msg.length === 0){
+        console.log("Empty message");
+        return;
+    }
     let recipient = util.$("#select-member");
     let files = null;
     //pass files later
+    if (!topicInFocus){
+        console.error("No topic selected to write to.")
+        return;
+    }
     chat.sendMessage(msg, topicInFocus, recipient, files);
 }
 
