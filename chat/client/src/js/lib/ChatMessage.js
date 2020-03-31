@@ -32,6 +32,7 @@ export class ChatMessage{
      */
     encryptMessage(key){
         let self = this;
+        console.log(`Body is: ${self.body} `);
         let ic = new iCrypto();
         ic.setSYMKey("k", key)
             .addBlob("body", self.body)

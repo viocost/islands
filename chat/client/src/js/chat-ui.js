@@ -252,14 +252,26 @@ function sendMessage(){
         console.log("Empty message");
         return;
     }
-    let recipient = util.$("#select-member");
+    let recipient = util.$("#select-member").value;
     let files = null;
     //pass files later
     if (!topicInFocus){
         console.error("No topic selected to write to.")
         return;
     }
-    chat.sendMessage(msg, topicInFocus, recipient, files);
+    let message = chat.sendMessage(msg, topicInFocus, recipient, files);
+    appendMessageToChat({
+        nickname: message.header.nickname,
+        alias: "alias",//alias,
+        body: message.body,
+        timestamp: message.header.timestamp,
+        pkfp: message.header.author,
+        messageID: message.header.id,
+        service: message.header.service,
+        private: message.header.private,
+        recipient: message.header.recipient,
+        attachments: message.attachments
+    }, topicInFocus, windowInFocus);
 }
 
 function createTopic(){
