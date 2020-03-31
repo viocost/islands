@@ -2,6 +2,11 @@ const EventEmitter = require('events');
 const Err = require("./IError.js");
 const Logger = require("./Logger");
 
+/**
+ * This is wrapper class around connectionManager, whichi is wrapper around socket.io
+ * Yeah, nuts. Refactor this in future.
+ *
+ */
 class ClientRequestCollector extends EventEmitter{
 
     constructor(connectionManager = Err.required()){

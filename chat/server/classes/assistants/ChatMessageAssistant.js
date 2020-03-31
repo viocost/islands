@@ -39,11 +39,10 @@ class ChatMessageAssistant{
     }
 
     subscribeToCrossIslandsMessages(ciMessenger){
-        this.subscribe(ciMessenger, {
-            //HANDLERS
-            broadcast_message: this.processIncomingMessage,
-            send_message: this.processIncomingMessage
-        }, this.crossIslandErrorHandler)
+        let handlers = {}
+        handlers[Internal.BROADCAST_MESSAGE] = this.processIncomingMessage;
+        handlers[Internal.SEND_MESSAGE] = this.processIncomingMessage;
+        this.subscribe(ciMessenger, handlers, this.crossIslandErrorHandler)
     }
 
 
@@ -146,13 +145,9 @@ class ChatMessageAssistant{
 
     async processIncomingMessage(envelope, self){
         const message = envelope.payload;
-        if(message.body.message.length > 65535){
-            Logger.warn("Incoming message exeeds length limit. Origin: " + evnelope.origin +
-                " Length: " + message.body.message.length);
-            return;
-        }
+        assert(message.body.message.length < 65535, "Incoming message exeeds length limit.")
         const chatMessage = JSON.parse(message.body.message);
-		
+
         Logger.verbose("Received incoming chat message", {
             origResidence: envelope.origin,
             messageID: chatMessage.header.id,
@@ -160,36 +155,20 @@ class ChatMessageAssistant{
             private: message.headers.private,
             pkfpSource: message.headers.pkfpSource,
             pkfpDest: message.headers.pkfpDest,
+            cat: "chat"
         });
 
         let authorPkfp = message.headers.pkfpSource;
         let myPkfp = message.headers.pkfpDest;
         const metadata = JSON.parse(await self.hm.getLastMetadata(myPkfp));
-        if(!metadata.body.participants[authorPkfp]){
-            Logger.warn("Incoming message: Author's pkfp is not registered in this topic.", {
-                origResidence: envelope.origin,
-                destResidence: envelope.destination,
-                messageID: chatMessage.header.id
-            });
-            return
-        }
+        assert(metadata.body.participants[authorPkfp], "Incoming message: Author's pkfp is not registered in this topic.");
 
         let authorPublicKey = metadata.body.participants[authorPkfp].publicKey;
         if(!message.headers.private){
             delete message.headers.pkfpDest;
         }
 
-        if(!Message.verifyMessage(authorPublicKey, message)){
-            Logger.warn("Message signature is invalid.", {
-                origResidence: envelope.origin,
-                destResidence: envelope.destination,
-                messageID: chatMessage.header.id,
-                signature: chatMessage.signature,
-                msg: JSON.stringify(message)
-            });
-            return
-        }
-
+        assert(Message.verifyMessage(authorPublicKey, message), "Message signature is invalid.")
         await self.incomingMessageProcessAfterVerification(envelope, metadata, myPkfp);
 
     }

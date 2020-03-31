@@ -1,5 +1,5 @@
 const iCrypto = require("../libs/iCrypto.js");
-const Internal = require("../../../common/Events").Internal;
+const { Internal, Events } = require("../../../common/Events");
 const Err = require("../libs/IError.js");
 const CuteSet = require("cute-set");
 const EventEmitter = require("events");
@@ -24,10 +24,12 @@ class ClientSession extends EventEmitter{
 
     constructor(vaultId = Err.required("Missing required parameter vaultId"),
                 connectionId = Err.required("Missing required parameter socketId"),
-                connectionManager = Err.required("Missing connection manager")) {
+                connectionManager = Err.required("Missing connection manager"),
+                requestEmitter = Err.required("Missing request emitter.")) {
         super();
         this.pending = true;
         this.connectionManager = connectionManager;
+        this.requestEmitter = requestEmitter;
         this.timeInitialized = Date.now();
         this.timeInactive = null;
         this.id = vaultId;
@@ -38,7 +40,10 @@ class ClientSession extends EventEmitter{
         this.pkfp;
         this.initKey();
         this.sendSessionKey(connectionId);
+
     }
+
+
 
     initKey(){
         let self = this;
@@ -149,6 +154,7 @@ class ClientSession extends EventEmitter{
 
     //pushes msg to all active sockets as message
     broadcast(msg){
+        Logger.debug(`Broadcasting to all connections. Topics: ${this.topics}`, { cat: "session" })
         for (let connId of this.connections){
             this.connectionManager.sendMessage(connId, msg)
         }
@@ -159,6 +165,8 @@ class ClientSession extends EventEmitter{
     // if exclusive set to true, then message will be sent to
     // all active connections but those that are passed in connections argument
     multicast(msg, connections, exclusive=false){
+
+        Logger.debug(`Multicasting. Topics: ${this.topics}`, { cat: "session" })
         let connIds = exclusive ?
             this.connections.minus(connections) :
             connections;
@@ -169,6 +177,7 @@ class ClientSession extends EventEmitter{
 
     // Sends given message to connection identified by connId
     send(msg, connId){
+        Logger.debug(`Unicasting. Topics: ${this.topics}`, { cat: "session" })
         this.connectionManager.sendMessage(connId, msg);
     }
 

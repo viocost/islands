@@ -22,7 +22,6 @@ export class SendMessageAgent{
         setTimeout(async ()=>{
             let attachmentsInfo;
             const metaID = self.topic.metadataId;
-            console.log(`ON SEND: metadata id: ${metaID}`  )
 
             if (self.files && self.files.length >0){
                 attachmentsInfo = await self.uploadAttachments(filesAttached, chatMessage.header.id, metaID);
@@ -44,7 +43,6 @@ export class SendMessageAgent{
             message.travelLog = {};
             message.travelLog[currentTime] = "Outgoing processed on client.";
             message.signMessage(self.topic.privateKey);
-            console.log(`Sending outgoing broadcast message. command: ${message.headers.command}`);
             self.topic.messageQueue.enqueue(message);
             console.log("Chat message enqueued");
         }, 100)

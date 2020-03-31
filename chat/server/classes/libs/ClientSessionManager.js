@@ -6,11 +6,13 @@ const Internal = require("../../../common/Events").Internal
 
 
 class ClientSessionManager{
-    constructor(connectionManager = Err.required()){
+    constructor(connectionManager = Err.required(),
+                requestEmitter = Err.required()){
 
         // Sessions are stored by vaultID
         this.sessions = {};
         this.connectionManager = connectionManager;
+        this.requestEmitter = requestEmitter;
         this.registerConnectionManager(connectionManager);
     }
 
@@ -29,8 +31,9 @@ class ClientSessionManager{
                 self.sessions[vaultId].addConnection(connectionId);
             } else {
                 console.log(`Session does not exist. Creating...`);
-                let newSession = new ClientSession(vaultId, connectionId, connectionManager);
-                this.sessions[vaultId] = newSession
+                let newSession = new ClientSession(vaultId, connectionId, connectionManager, requestEmitter);
+                this.sessions[vaultId] = newSession;
+
                 newSession.on(Internal.KILL_SESSION, (session)=>{
                     Logger.debug(`Killing session ${session.id} on timeout`)
                     delete this.sessions[session.id]
@@ -137,7 +140,8 @@ class ClientSessionManager{
         const activeConnections = this.getActiveUserSessions(pkfp);
         Logger.verbose("Broadcasting chat message",{
             pkfp: pkfp,
-            activeConnections: JSON.stringify(activeConnections)
+            activeConnections: JSON.stringify(activeConnections),
+            cat: "chat"
         });
         activeConnections.forEach((session)=>{
             this.connectionManager.sendChatMessage(session.getConnectionID(), message)

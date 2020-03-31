@@ -2,9 +2,16 @@
 
 
 * Current tasks
+** TODO Need to implement topicPkfp => vaultId mechanism
+One way is to call ClientSession on each topic CRUD operation
+Another way is ClientSession itself listens for some events and manages topics
+Vault => topics mapping can be achieved through listing topics direcroyt at
+vault
+
 ** DONE Join topic error on client
 CLOSED: [2020-03-24 Tue 18:32]
-** TODO BUG Messages are not decrypted on load.
+** DONE BUG Messages are not decrypted on load.
+CLOSED: [2020-04-01 Wed 00:56]
 ** TODO BUG Topic name and member name are not appear
 ** TODO BUG aliases are not set when joining the topic
 ** TODO BUG Spamming topic join - unhandled rejection

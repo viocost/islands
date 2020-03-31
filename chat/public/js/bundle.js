@@ -5668,6 +5668,14 @@ var Topic = /*#__PURE__*/function () {
         console.log("Settings updated");
         self.processSettingsUpdated(msg);
       };
+
+      this.handlers[_common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].BROADCAST_MESSAGE] = function (msg) {
+        console.log("Incoming message received");
+      };
+
+      this.handlers[_common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].SEND_MESSAGE] = function (msg) {
+        console.log("Incoming private message received");
+      };
     } //End//////////////////////////////////////////////////////////////////////
     // ---------------------------------------------------------------------------------------------------------------------------
     // MESSAGE HANDLING
@@ -42836,62 +42844,61 @@ var SendMessageAgent = /*#__PURE__*/function () {
             switch (_context.prev = _context.next) {
               case 0:
                 metaID = self.topic.metadataId;
-                console.log("ON SEND: metadata id: ".concat(metaID));
 
                 if (!(self.files && self.files.length > 0)) {
-                  _context.next = 25;
+                  _context.next = 24;
                   break;
                 }
 
-                _context.next = 5;
+                _context.next = 4;
                 return self.uploadAttachments(filesAttached, chatMessage.header.id, metaID);
 
-              case 5:
+              case 4:
                 attachmentsInfo = _context.sent;
                 _iteratorNormalCompletion = true;
                 _didIteratorError = false;
                 _iteratorError = undefined;
-                _context.prev = 9;
+                _context.prev = 8;
 
                 for (_iterator = attachmentsInfo[Symbol.iterator](); !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                   att = _step.value;
                   chatMessage.addAttachmentInfo(att);
                 }
 
-                _context.next = 17;
+                _context.next = 16;
                 break;
 
-              case 13:
-                _context.prev = 13;
-                _context.t0 = _context["catch"](9);
+              case 12:
+                _context.prev = 12;
+                _context.t0 = _context["catch"](8);
                 _didIteratorError = true;
                 _iteratorError = _context.t0;
 
-              case 17:
+              case 16:
+                _context.prev = 16;
                 _context.prev = 17;
-                _context.prev = 18;
 
                 if (!_iteratorNormalCompletion && _iterator.return != null) {
                   _iterator.return();
                 }
 
-              case 20:
-                _context.prev = 20;
+              case 19:
+                _context.prev = 19;
 
                 if (!_didIteratorError) {
-                  _context.next = 23;
+                  _context.next = 22;
                   break;
                 }
 
                 throw _iteratorError;
 
+              case 22:
+                return _context.finish(19);
+
               case 23:
-                return _context.finish(20);
+                return _context.finish(16);
 
               case 24:
-                return _context.finish(17);
-
-              case 25:
                 self.chatMessage.encryptMessage(self.topic.sharedKey);
                 self.chatMessage.sign(self.topic.privateKey); //Preparing request
 
@@ -42903,16 +42910,15 @@ var SendMessageAgent = /*#__PURE__*/function () {
                 message.travelLog = {};
                 message.travelLog[currentTime] = "Outgoing processed on client.";
                 message.signMessage(self.topic.privateKey);
-                console.log("Sending outgoing broadcast message. command: ".concat(message.headers.command));
                 self.topic.messageQueue.enqueue(message);
                 console.log("Chat message enqueued");
 
-              case 38:
+              case 36:
               case "end":
                 return _context.stop();
             }
           }
-        }, _callee, null, [[9, 13, 17, 25], [18,, 20, 24]]);
+        }, _callee, null, [[8, 12, 16, 24], [17,, 19, 23]]);
       })), 100);
       return self.chatMessage;
     }

@@ -168,6 +168,13 @@ export class Topic{
             self.processSettingsUpdated(msg);
         }
 
+        this.handlers[Internal.BROADCAST_MESSAGE] = (msg)=>{
+            console.log("Incoming message received");
+        }
+
+        this.handlers[Internal.SEND_MESSAGE] = (msg)=>{
+            console.log("Incoming private message received");
+        }
 
     }
 
