@@ -5589,7 +5589,7 @@ var Topic = /*#__PURE__*/function () {
       }
 
       this.sharedKey = _ChatUtility__WEBPACK_IMPORTED_MODULE_16__[/* ChatUtility */ "a"].privateKeyDecrypt(this.participants[this.pkfp].key, this.privateKey);
-      this.metadataId = metadata.id;
+      this.metadataId = metadata.body.id;
       this.topicAuthority = metadata.body.topicAuthority;
 
       if (!metadata.body.settings.invites) {
@@ -5973,9 +5973,9 @@ var Topic = /*#__PURE__*/function () {
   }, {
     key: "processMessagesLoaded",
     value: function processMessagesLoaded(msg, self) {
-      console.log("Messages loaded. Processing...");
       var data = msg.body.lastMessages;
       var keys = data.keys;
+      console.log("Messages loaded. Processing.... Keys: ".concat(keys));
       var metaIDs = Object.keys(keys);
 
       for (var i = 0; i < metaIDs.length; ++i) {
@@ -42836,61 +42836,62 @@ var SendMessageAgent = /*#__PURE__*/function () {
             switch (_context.prev = _context.next) {
               case 0:
                 metaID = self.topic.metadataId;
+                console.log("ON SEND: metadata id: ".concat(metaID));
 
                 if (!(self.files && self.files.length > 0)) {
-                  _context.next = 24;
+                  _context.next = 25;
                   break;
                 }
 
-                _context.next = 4;
+                _context.next = 5;
                 return self.uploadAttachments(filesAttached, chatMessage.header.id, metaID);
 
-              case 4:
+              case 5:
                 attachmentsInfo = _context.sent;
                 _iteratorNormalCompletion = true;
                 _didIteratorError = false;
                 _iteratorError = undefined;
-                _context.prev = 8;
+                _context.prev = 9;
 
                 for (_iterator = attachmentsInfo[Symbol.iterator](); !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                   att = _step.value;
                   chatMessage.addAttachmentInfo(att);
                 }
 
-                _context.next = 16;
+                _context.next = 17;
                 break;
 
-              case 12:
-                _context.prev = 12;
-                _context.t0 = _context["catch"](8);
+              case 13:
+                _context.prev = 13;
+                _context.t0 = _context["catch"](9);
                 _didIteratorError = true;
                 _iteratorError = _context.t0;
 
-              case 16:
-                _context.prev = 16;
+              case 17:
                 _context.prev = 17;
+                _context.prev = 18;
 
                 if (!_iteratorNormalCompletion && _iterator.return != null) {
                   _iterator.return();
                 }
 
-              case 19:
-                _context.prev = 19;
+              case 20:
+                _context.prev = 20;
 
                 if (!_didIteratorError) {
-                  _context.next = 22;
+                  _context.next = 23;
                   break;
                 }
 
                 throw _iteratorError;
 
-              case 22:
-                return _context.finish(19);
-
               case 23:
-                return _context.finish(16);
+                return _context.finish(20);
 
               case 24:
+                return _context.finish(17);
+
+              case 25:
                 self.chatMessage.encryptMessage(self.topic.sharedKey);
                 self.chatMessage.sign(self.topic.privateKey); //Preparing request
 
@@ -42906,12 +42907,12 @@ var SendMessageAgent = /*#__PURE__*/function () {
                 self.topic.messageQueue.enqueue(message);
                 console.log("Chat message enqueued");
 
-              case 37:
+              case 38:
               case "end":
                 return _context.stop();
             }
           }
-        }, _callee, null, [[8, 12, 16, 24], [17,, 19, 23]]);
+        }, _callee, null, [[9, 13, 17, 25], [18,, 20, 24]]);
       })), 100);
       return self.chatMessage;
     }
@@ -42922,7 +42923,8 @@ var SendMessageAgent = /*#__PURE__*/function () {
       console.log("Preparing message: ".concat(version, ", ").concat(messageContent, ", ").concat(recipient));
       var chatMessage = new _ChatMessage__WEBPACK_IMPORTED_MODULE_8__[/* ChatMessage */ "a"]();
       chatMessage.version = version;
-      chatMessage.header.metadataID = this.metadataId;
+      chatMessage.header.metadataID = this.topic.metadataId;
+      console.log("Metadata id is set to ".concat(chatMessage.header.metadataID));
       chatMessage.header.author = this.pkfp;
       chatMessage.header.recipient = this.recipient ? this.recipient : "ALL";
       chatMessage.header.private = this.private;

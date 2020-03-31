@@ -117,7 +117,8 @@ export class Topic{
         }
 
         this.sharedKey = ChatUtility.privateKeyDecrypt(this.participants[this.pkfp].key, this.privateKey);
-        this.metadataId = metadata.id
+        this.metadataId = metadata.body.id;
+
         this.topicAuthority = metadata.body.topicAuthority;
         if (!metadata.body.settings.invites){
             metadata.body.settings.invites = {};
@@ -436,11 +437,12 @@ export class Topic{
     //~END SETTINGS ///////////////////////////////////////////////////////////
 
     processMessagesLoaded(msg, self){
-        console.log("Messages loaded. Processing...");
         let data = msg.body.lastMessages;
 
 
         let keys = data.keys;
+
+        console.log(`Messages loaded. Processing.... Keys: ${keys}`);
         let metaIDs = Object.keys(keys);
         for (let i=0;i<metaIDs.length; ++i){
             let ic = new iCrypto;

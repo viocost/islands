@@ -10,6 +10,7 @@ const Metadata = require("../objects/Metadata.js");
 const Logger = require("../libs/Logger.js");
 const Coordinator = require("../assistants/AssistantCoordinator.js");
 const { Internal } = require("../../../common/Events.js")
+const assert = require("../libs/assert");
 
 class ServiceAssistant{
     constructor(connectionManager = Err.required(),
@@ -217,10 +218,7 @@ class ServiceAssistant{
 
         //Getting public key og the owner
         let publicKey = await self.hm.getOwnerPublicKey(request.headers.pkfpSource)
-
-        if (!Request.isRequestValid(request, publicKey)){
-            throw new Error("Request was not verified");
-        }
+        assert(Request.isRequestValid(request, publicKey), "Request was not verified")
 
         let data = await self.hm.loadMoreMessages(request.headers.pkfpSource,
                                                   request.body.lastLoadedMessageID);

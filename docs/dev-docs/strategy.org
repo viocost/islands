@@ -4,10 +4,12 @@
 * Current tasks
 ** DONE Join topic error on client
 CLOSED: [2020-03-24 Tue 18:32]
+** TODO BUG Messages are not decrypted on load.
 ** TODO BUG Topic name and member name are not appear
 ** TODO BUG aliases are not set when joining the topic
 ** TODO BUG Spamming topic join - unhandled rejection
-** TODO Implement messages sending
+** DONE Implement messages sending
+CLOSED: [2020-03-31 Tue 21:19]
 
 ** TODO Admin vault registration
 When island is virgin there must be a vault registration page, where admin
