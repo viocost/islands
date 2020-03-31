@@ -1,11 +1,12 @@
-const Err = require("../libs/IError.js");
+const Err = require("../libs/IError");
+const assert = require("../libs/assert");
 const CuteSet = require("cute-set");
 const Envelope = require("../objects/CrossIslandEnvelope.js");
 const Message = require("../objects/ChatMessage.js");
 const ClientError = require("../objects/ClientError.js");
 const Logger = require("../libs/Logger.js");
 const Coordinator = require("../assistants/AssistantCoordinator.js");
-
+const { Internal, Events } = require("../../../common/Events");
 
 class ChatMessageAssistant{
     constructor(connectionManager = Err.required(),
@@ -30,12 +31,11 @@ class ChatMessageAssistant{
 
 
     subscribeToClientRequests(requestEmitter){
-        this.subscribe(requestEmitter, {
-            //HANDLERS
-            // delete_invite: this.deleteInviteOutgoing,
-            broadcast_message: this.broadcastMessage,
-            send_message: this.sendPrivateMessage
-        }, this.clientErrorHandler)
+        console.log("Subscribing to chat events", {cat: "chat"});
+        let handlers = {}
+        handlers[Internal.BROADCAST_MESSAGE] = this.broadcastMessage;
+        handlers[Internal.SEND_MESSAGE] = this.sendPrivateMessage;
+        this.subscribe(requestEmitter, handlers, this.clientErrorHandler)
     }
 
     subscribeToCrossIslandsMessages(ciMessenger){
@@ -49,34 +49,26 @@ class ChatMessageAssistant{
 
     async broadcastMessage(message, connectionId, self){
         let pkfp = message.headers.pkfpSource;
-        if(!self.sessionManager.isSessionActive(pkfp)){
-            Logger.warn("Attempt to send a message without logging in", {
-                pkfp: pkfp
-            });
-            throw new Error("Login required");
-        }
-
         Logger.debug("Broadcasting chat message", {
             pkfp: pkfp,
             msg: message.body.message,
             cat: "chat"
-
         });
+        ///////////////////////////////////////////////////////////////////////
+        // if(!self.sessionManager.isSessionActive(pkfp)){                   //
+        //     Logger.warn("Attempt to send a message without logging in", { //
+        //         pkfp: pkfp,                                               //
+        //         cat: "chat"                                               //
+        //     });                                                           //
+        //     throw new Error("Login required");                            //
+        // }                                                                 //
+        ///////////////////////////////////////////////////////////////////////
 
-        if (message.body.message.length > 65535){
-            Logger.warn("Attempt to send message of length more than 65535 bytes. Actual length is " + message.body.message.length);
-            throw new Error("Message is too long");
-        }
-	
+        assert(message.body.message.length < 65535, "Message is too long")
+
         const metadata = JSON.parse(await self.hm.getLastMetadata(pkfp));
         const myPublicKey = metadata.body.participants[pkfp].publicKey;
-        const verified = Message.verifyMessage(myPublicKey, message);
-        if(!verified){
-            Logger.warn("Broadcasting message error: signature is not valid!", {
-                pkfp: pkfp
-            });
-            throw new Error("Broadcasting message error: signature is not valid!") ;
-        }
+        assert(Message.verifyMessage(myPublicKey, message), "Broadcasting message error: signature is not valid!")
 
         //Adding processed timestamp
         let currentTime = new Date().getTime();
@@ -103,7 +95,8 @@ class ChatMessageAssistant{
             })
         }
         Logger.verbose("Message sent",{
-            pkfpSource: pkfp
+            pkfpSource: pkfp,
+            cat: "chat"
         });
         message.headers.response = "send_success";
         self.sessionManager.broadcastUserResponse(pkfp, message)
@@ -111,21 +104,27 @@ class ChatMessageAssistant{
 
 
     async sendPrivateMessage(message, connectionId, self){
+        Logger.debug("Sending private message", {
+            cat: "chat"
+        })
         const metadata = JSON.parse(await self.hm.getLastMetadata(message.headers.pkfpSource));
         const recipient = metadata.body.participants[message.headers.pkfpDest];
         const sender = metadata.body.participants[message.headers.pkfpSource];
         const myPublicKey = sender.publicKey;
-        if(!self.sessionManager.isSessionActive(message.headers.pkfpSource)){
-            Logger.warn("Attempt to send a message without logging in", {
-                pkfp: message.headers.pkfpSource
-            });
-            throw new Error("Login required");
-        }
+        ///////////////////////////////////////////////////////////////////////////
+        // if(!self.sessionManager.isSessionActive(message.headers.pkfpSource)){ //
+        //     Logger.warn("Attempt to send a message without logging in", {     //
+        //         pkfp: message.headers.pkfpSource,                             //
+        //         cat: "chat"                                                   //
+        //     });                                                               //
+        //     throw new Error("Login required");                                //
+        // }                                                                     //
+        ///////////////////////////////////////////////////////////////////////////
 
-	if (message.body.message.length > 65535){
-	    Logger.warn("Attempt to send message of length more than 65535 bytes. Actual length is " + message.body.message.length);
-	    throw new Error("Message is too long");
-	}
+        if (message.body.message.length > 65535){
+            Logger.warn("Attempt to send message of length more than 65535 bytes. Actual length is " + message.body.message.length);
+            throw new Error("Message is too long");
+        }
 	
         const verified = Message.verifyMessage(myPublicKey, message);
         if(!verified){

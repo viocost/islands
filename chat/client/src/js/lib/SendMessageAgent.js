@@ -36,14 +36,14 @@ export class SendMessageAgent{
             //Preparing request
             let message = new Message(self.version);
             message.headers.pkfpSource = self.topic.pkfp;
-            message.headers.command = (!self.recipient || self.recipient === "ALL") ?
-                Internal.BROADCAST_MESSAGE : Internal.SEND_MESSAGE;
+            message.headers.command = (self.private) ?
+                Internal.SEND_MESSAGE : Internal.BROADCAST_MESSAGE;
             message.body.message = self.chatMessage.toBlob();
             let currentTime = new Date().getTime();
             message.travelLog = {};
             message.travelLog[currentTime] = "Outgoing processed on client.";
             message.signMessage(self.topic.privateKey);
-            console.log("Sending outgoing broadcast message");
+            console.log(`Sending outgoing broadcast message. command: ${message.headers.command}`);
             self.topic.messageQueue.enqueue(message);
             console.log("Chat message enqueued");
         }, 100)

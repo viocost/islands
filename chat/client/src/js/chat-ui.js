@@ -271,7 +271,7 @@ function sendMessage(){
         private: message.header.private,
         recipient: message.header.recipient,
         attachments: message.attachments
-    }, topicInFocus, windowInFocus);
+    }, topicInFocus, util.$("#messages-window-1"));
 }
 
 function createTopic(){

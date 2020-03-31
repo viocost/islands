@@ -42896,13 +42896,13 @@ var SendMessageAgent = /*#__PURE__*/function () {
 
                 message = new _Message__WEBPACK_IMPORTED_MODULE_9__[/* Message */ "a"](self.version);
                 message.headers.pkfpSource = self.topic.pkfp;
-                message.headers.command = !self.recipient || self.recipient === "ALL" ? _common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].BROADCAST_MESSAGE : _common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].SEND_MESSAGE;
+                message.headers.command = self.private ? _common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].SEND_MESSAGE : _common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].BROADCAST_MESSAGE;
                 message.body.message = self.chatMessage.toBlob();
                 currentTime = new Date().getTime();
                 message.travelLog = {};
                 message.travelLog[currentTime] = "Outgoing processed on client.";
                 message.signMessage(self.topic.privateKey);
-                console.log("Sending outgoing broadcast message");
+                console.log("Sending outgoing broadcast message. command: ".concat(message.headers.command));
                 self.topic.messageQueue.enqueue(message);
                 console.log("Chat message enqueued");
 
@@ -56764,7 +56764,7 @@ function sendMessage() {
     private: message.header.private,
     recipient: message.header.recipient,
     attachments: message.attachments
-  }, topicInFocus, windowInFocus);
+  }, topicInFocus, $("#messages-window-1"));
 }
 
 function createTopic() {
@@ -57057,10 +57057,8 @@ function processLoginResult(err) {
 function processMessagesLoaded(pkfp, messages) {
   if (topicInFocus === pkfp) {
     console.log("Appending messages to view");
-
-    var _windowInFocus = getChatWindowInFocus();
-
-    clearMessagesWindow(_windowInFocus);
+    var windowInFocus = getChatWindowInFocus();
+    clearMessagesWindow(windowInFocus);
     var _iteratorNormalCompletion4 = true;
     var _didIteratorError4 = false;
     var _iteratorError4 = undefined;
@@ -57080,7 +57078,7 @@ function processMessagesLoaded(pkfp, messages) {
           private: message.header.private,
           recipient: message.header.recipient,
           attachments: message.attachments
-        }, pkfp, _windowInFocus);
+        }, pkfp, windowInFocus);
       }
     } catch (err) {
       _didIteratorError4 = true;

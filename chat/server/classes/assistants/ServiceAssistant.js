@@ -9,8 +9,7 @@ const ServiceMessage = require("../objects/ServiceMessage.js");
 const Metadata = require("../objects/Metadata.js");
 const Logger = require("../libs/Logger.js");
 const Coordinator = require("../assistants/AssistantCoordinator.js");
-const Internal = require("../../../common/Events.js").Internal
-const { Events, Internal } = require("../../../common/Events.js")
+const { Internal } = require("../../../common/Events.js")
 
 class ServiceAssistant{
     constructor(connectionManager = Err.required(),

@@ -10,7 +10,7 @@ const TopicJoinAssistant = require("./assistants/TopicJoinAssistant.js");
 const TopicInitAssistant = require("./assistants/TopicInitAssistant.js");
 const LoginAssistant = require("./assistants/LoginAssistant.js");
 const ServiceAssistant = require("./assistants/ServiceAssistant.js");
-const ChatMessageAssistant = require("./assistants/ChatMessageAssistant");
+const ChatMessageAssistant = require("./assistants/ChatMessageAssistant.js");
 const ClientSettingsAssistant = require("./assistants/ClientSettingsAssistant.js");
 const DataTransferAssistant = require("./assistants/DataTransferAssistant.js");
 const BootLeaveAssistant = require("./assistants/BootLeaveAssistant.js");
@@ -43,11 +43,11 @@ class IslandsChat{
             this.vaultManager,
             this.clientSessionManager);
 
-    this.LoginAssistant = new LoginAssistant(this.chatConnectionManager,
-        this.clientRequestEmitter,
-        this.hm,
-        this.topicAuthorityManager,
-        this.torConnector,
+        this.LoginAssistant = new LoginAssistant(this.chatConnectionManager,
+            this.clientRequestEmitter,
+            this.hm,
+            this.topicAuthorityManager,
+            this.torConnector,
             this.clientSessionManager,
             this.vaultManager);
 
