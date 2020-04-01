@@ -2,7 +2,18 @@
 
 
 * Current tasks
-** TODO Need to implement topicPkfp => vaultId mechanism
+** TODO Implement send pending, receipt mechanism for outgoing messages
+** TODO Bug Incoming message not verified in browser
+** TODO finish with nickname exchange
+** TODO Implement Boot member mechanism
+** TODO Implement Leave mechanism
+** TODO Implement mute topic
+** TODO Implement black list member
+
+** DONE Implement basic messages delivery
+CLOSED: [2020-04-01 Wed 23:00]
+** DONE Need to implement topicPkfp => vaultId mechanism
+CLOSED: [2020-04-01 Wed 22:59]
 One way is to call ClientSession on each topic CRUD operation
 Another way is ClientSession itself listens for some events and manages topics
 Vault => topics mapping can be achieved through listing topics direcroyt at
