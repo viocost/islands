@@ -94,6 +94,7 @@ export class ChatMessage{
                     .AESDecrypt("nnamecip", "sym", "nname", true,  "CBC", "utf8");
                 this.header.nickname= ic.get("nname");
             }
+
         }catch(err){
             console.log("Error decrypting private message: " + err);
         }

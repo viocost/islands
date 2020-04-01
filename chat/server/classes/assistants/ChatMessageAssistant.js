@@ -164,11 +164,13 @@ class ChatMessageAssistant{
         assert(metadata.body.participants[authorPkfp], "Incoming message: Author's pkfp is not registered in this topic.");
 
         let authorPublicKey = metadata.body.participants[authorPkfp].publicKey;
-        if(!message.headers.private){
-            delete message.headers.pkfpDest;
+
+        let msgCopy = JSON.parse(JSON.stringify(message))
+        if(!msgCopy.headers.private){
+            delete msgCopy.headers.pkfpDest;
         }
 
-        assert(Message.verifyMessage(authorPublicKey, message), "Message signature is invalid.")
+        assert(Message.verifyMessage(authorPublicKey, msgCopy), "Message signature is invalid.")
         await self.incomingMessageProcessAfterVerification(envelope, metadata, myPkfp);
 
     }
@@ -233,7 +235,7 @@ class ChatMessageAssistant{
     }
     async appendBroadcastIncomingMessage(pkfp, message, key){
         await this.hm.appendMessage(message.body.message, pkfp);
-        this.sessionManager.broadcastChatMessage(pkfp, {message:message, key: key})
+        this.sessionManager.broadcastMessage(pkfp, message)
     }
 
 

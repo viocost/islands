@@ -24,12 +24,10 @@ class ClientSession extends EventEmitter{
 
     constructor(vaultId = Err.required("Missing required parameter vaultId"),
                 connectionId = Err.required("Missing required parameter socketId"),
-                connectionManager = Err.required("Missing connection manager"),
-                requestEmitter = Err.required("Missing request emitter.")) {
+                connectionManager = Err.required("Missing connection manager")) {
         super();
         this.pending = true;
         this.connectionManager = connectionManager;
-        this.requestEmitter = requestEmitter;
         this.timeInitialized = Date.now();
         this.timeInactive = null;
         this.id = vaultId;
@@ -40,7 +38,6 @@ class ClientSession extends EventEmitter{
         this.pkfp;
         this.initKey();
         this.sendSessionKey(connectionId);
-
     }
 
 
@@ -115,6 +112,12 @@ class ClientSession extends EventEmitter{
 
     addTopic(pkfp){
         this.topics.add(pkfp);
+        this.emit(Internal.TOPIC_ADDED, pkfp)
+    }
+
+    deleteTopic(pkfp){
+        this.topics.remove(pkfp);
+        this.emit(Internal.TOPIC_DELETED, pkfp)
     }
 
     addConnection(connectionId){

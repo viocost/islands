@@ -23,7 +23,7 @@ class IslandsChat{
         this.historyPath = (opts ? opts.historyPath : null);
         this.chatConnectionManager = new ClientConnectionManager(server);
         this.clientRequestEmitter = new ClientRequestRouter(this.chatConnectionManager);
-        this.clientSessionManager = new ClientSessionManager(this.chatConnectionManager, this.clientRequestEmitter);
+        this.clientSessionManager = new ClientSessionManager(this.chatConnectionManager);
         this.torConnector = new TorConnector(opts);
         this.crossIslandMessenger = new CrossIslandMessenger(this.torConnector);
         this.vaultManager = new VaultManager(opts);

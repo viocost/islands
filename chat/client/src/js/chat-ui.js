@@ -1103,6 +1103,30 @@ function initChat(){
         }
     })
 
+    chat.on(Events.NEW_CHAT_MESSAGE, (message, topicPkfp)=>{
+        console.log(`New incoming chat message received for ${topicPkfp}`)
+
+        if (topicInFocus !== topicPkfp){
+            console.log("Topic not in focus")
+            return
+        }
+
+        console.log("Appending message");
+        appendMessageToChat({
+            nickname: message.header.nickname,
+            alias: "alias",//alias,
+            body: message.body,
+            timestamp: message.header.timestamp,
+            pkfp: message.header.author,
+            messageID: message.header.id,
+            service: message.header.service,
+            private: message.header.private,
+            recipient: message.header.recipient,
+            attachments: message.attachments
+        }, topicInFocus, util.$("#messages-window-1"));
+    })
+
+    //DEBUGGING! Comment out for production;
     window.chat = chat;
 }
 

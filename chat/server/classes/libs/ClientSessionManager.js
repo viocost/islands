@@ -1,18 +1,17 @@
 const ClientSession = require("../objects/ClientSession.js");
 const Err = require("./IError.js");
 const Logger = require("../libs/Logger.js");
-const Internal = require("../../../common/Events").Internal
+const { Internal, Events } = require("../../../common/Events")
 
 
 
 class ClientSessionManager{
-    constructor(connectionManager = Err.required(),
-                requestEmitter = Err.required()){
+    constructor(connectionManager = Err.required()){
 
         // Sessions are stored by vaultID
         this.sessions = {};
         this.connectionManager = connectionManager;
-        this.requestEmitter = requestEmitter;
+        this.topicToSessionMap = {};
         this.registerConnectionManager(connectionManager);
     }
 
@@ -31,12 +30,29 @@ class ClientSessionManager{
                 self.sessions[vaultId].addConnection(connectionId);
             } else {
                 console.log(`Session does not exist. Creating...`);
-                let newSession = new ClientSession(vaultId, connectionId, connectionManager, requestEmitter);
+                let newSession = new ClientSession(vaultId, connectionId, connectionManager);
                 this.sessions[vaultId] = newSession;
 
                 newSession.on(Internal.KILL_SESSION, (session)=>{
                     Logger.debug(`Killing session ${session.id} on timeout`)
+                    for(let pkfp of Object.keys(session.topics)){
+                        delete self.topicToSessionMap[pkfp];
+                    }
                     delete this.sessions[session.id]
+                })
+
+                newSession.on(Internal.TOPIC_ADDED, (pkfp)=>{
+                    Logger.debug(`Topic ${pkfp} added for session ${newSession.id}`, {
+                        cat: "session"
+                    })
+                    self.topicToSessionMap[pkfp] = newSession;
+                })
+
+                newSession.on(Internal.TOPIC_DELETED, (pkfp)=>{
+                    Logger.debug(`Topic ${pkfp} deleted for session ${newSession.id}`, {
+                        cat: "session"
+                    })
+                    delete self.topicToSessionMap[pkfp];
                 })
             }
         })
@@ -69,13 +85,10 @@ class ClientSessionManager{
     }
 
     getSessionByTopicPkfp(pkfp){
-        for (let session of Object.values(this.sessions)){
-            if (session.hasTopic(pkfp)){
-                return session;
-            } else {
-                console.log(`topic not found. topics:`);
-                console.log(JSON.stringify(session.topics.toArray()))
-            }
+        if (this.topicToSessionMap.hasOwnProperty(pkfp)){
+            return this.topicToSessionMap[pkfp]
+        } else {
+            console.log(`No active sessions found for ${pkfp}` );
         }
     }
 
@@ -136,16 +149,20 @@ class ClientSessionManager{
         })
     }
 
-    broadcastChatMessage(pkfp, message){
-        const activeConnections = this.getActiveUserSessions(pkfp);
+    broadcastMessage(pkfp, message){
+        let session = this.topicToSessionMap[pkfp];
+        if(!(session instanceof ClientSession)){
+            Logger.debug(`No active sessions found for topic ${pkfp}`, {
+                cat: "chat"
+            })
+            return;
+        }
+
         Logger.verbose("Broadcasting chat message",{
             pkfp: pkfp,
-            activeConnections: JSON.stringify(activeConnections),
             cat: "chat"
         });
-        activeConnections.forEach((session)=>{
-            this.connectionManager.sendChatMessage(session.getConnectionID(), message)
-        })
+        session.broadcast(message);
     }
 
     isSessionActive(pkfp){

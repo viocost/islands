@@ -119,6 +119,7 @@ class BootLeaveAssistant extends Assistant{
         response.body.topicPkfp = pkfp;
         Logger.debug("Topic has been deleted successfully. Sending notification to client", {cat: "topic_delete"})
         let session = self.sessionManager.getSessionByConnectionId(connectionID);
+        session.deleteTopic(pkfp);
         session.broadcast(response);
     }
 

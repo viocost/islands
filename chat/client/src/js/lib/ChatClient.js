@@ -223,6 +223,10 @@ export class ChatClient{
         topic.on(Events.INVITE_CREATED, ()=>{
             this.emit(Events.INVITE_CREATED, {pkfp: topic.pkfp})
         })
+
+        topic.on(Events.NEW_CHAT_MESSAGE, (msg, pkfp)=>{
+            this.emit(Events.NEW_CHAT_MESSAGE, msg, pkfp);
+        })
     }
     //END//////////////////////////////////////////////////////////////////////
 

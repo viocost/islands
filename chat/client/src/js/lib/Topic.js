@@ -8,6 +8,7 @@ import { ChatMessage } from "./ChatMessage";
 import { ClientSettings } from "./ClientSettings";
 import { CuteSet } from  "cute-set";
 import { INSPECT_MAX_BYTES } from "buffer";
+import { assert } from "../../../../common/IError";
 
 
 const INITIAL_NUM_MESSAGES = 25
@@ -73,7 +74,7 @@ export class Topic{
         self.messageQueue = messageQueue;
         self.arrivalHub = arrivalHub;
         self.arrivalHub.on(self.pkfp, (msg)=>{
-            self.processIncomingMessage(msg, self);
+            self.preprocessIncomingMessage(msg, self);
         });
         self.version = version;
         self.setHandlers()
@@ -169,11 +170,28 @@ export class Topic{
         }
 
         this.handlers[Internal.BROADCAST_MESSAGE] = (msg)=>{
-            console.log("Incoming message received");
+            let msgCopy = JSON.parse(JSON.stringify(msg))
+            // pkfpDest is added by server when message is broadcasted, so to verify it
+            // must be deleted
+            delete msgCopy.pkfpDest;
+            assert(self.participants[msg.headers.pkfpSource], `The participant ${msgCopy.pkfpDest} not found`)
+
+            let publicKey = self.participants[msg.headers.pkfpSource].publicKey;
+
+            //assert(Message.verifyMessage(publicKey, msgCopy), "Message was not verified")
+            let message = new ChatMessage(msg.body.message)
+            message.decryptMessage(self.sharedKey);
+            self.addNewMessage(self, message);
+
         }
 
         this.handlers[Internal.SEND_MESSAGE] = (msg)=>{
-            console.log("Incoming private message received");
+            assert(self.participants[msg.headers.pkfpSource])
+            let publicKey = self.participants[msg.headers.pkfpSource].publicKey;
+            assert(Message.verifyMessage(msg, self.publicKey))
+            let message = new ChatMessage(msg.body.message)
+            message.decryptMessage(self.sharedKey);
+            self.addNewMessage(self, message);
         }
 
     }
@@ -186,6 +204,13 @@ export class Topic{
 
     // ---------------------------------------------------------------------------------------------------------------------------
     // MESSAGE HANDLING
+
+    addNewMessage(self, chatMessage){
+        console.log("Adding new chat message");
+        self.messages.push[chatMessage];
+        console.log("Message added");
+        self.emit(Events.NEW_CHAT_MESSAGE, chatMessage, self.pkfp)
+    }
 
     getMessages(messagesToLoad=INITIAL_NUM_MESSAGES, lastMessageId){
         if(this.initLoaded){
@@ -200,7 +225,7 @@ export class Topic{
 
 
     //Incoming message
-    processIncomingMessage(msg, self){
+    preprocessIncomingMessage(msg, self){
         console.log(`Incoming message on ${this.pkfp} received!`);
 
         if(self.handlers.hasOwnProperty(msg.headers.command)){
@@ -505,6 +530,7 @@ export class Topic{
         console.log("Settings updated successfully!")
     }
 
+    //TODO Cleanup or implememnt
     bootPraticipant(){
 
     }

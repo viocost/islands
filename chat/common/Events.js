@@ -85,6 +85,7 @@ module.exports.Internal = Object.freeze({
     DELETE_TOPIC: "delete_topic",
     DELETE_TOPIC_ERROR: "delete_topic_error",
     TOPIC_DELETED: "topic_deleted",
+    TOPIC_ADDED: "topic_added",
     TOPIC_UPDATED: "topic_updated",
     VAULT_SETTINGS_UPDATED: "vault_settings_updated",
     //END//////////////////////////////////////////////////////////////////////
