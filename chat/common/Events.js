@@ -76,6 +76,8 @@ module.exports.Internal = Object.freeze({
     // Chat messages
     BROADCAST_MESSAGE: "broadcast_message",
     SEND_MESSAGE: "send_message",
+    MESSAGE_SENT: "send_success",
+
 
     // ---------------------------------------------------------------------------------------------------------------------------
     // Vault update notifications

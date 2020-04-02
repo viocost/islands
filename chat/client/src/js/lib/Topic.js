@@ -194,6 +194,11 @@ export class Topic{
             self.addNewMessage(self, message);
         }
 
+        this.handlers[Internal.MESSAGE_SENT] = (msg)=>{
+            console.log(`Message sent received. Message: ${msg.body.message}`);
+            this.processMessageSent(this, msg)
+        }
+
     }
 
     //End//////////////////////////////////////////////////////////////////////
@@ -204,6 +209,26 @@ export class Topic{
 
     // ---------------------------------------------------------------------------------------------------------------------------
     // MESSAGE HANDLING
+
+    processMessageSent(self, msg){
+        let sentMessage = new ChatMessage(msg.body.message);
+            console.log("Setting existing message from pending to delivered")
+        let existingMessages = self.messages.filter((m)=>{
+            return m.header.id === sentMessage.header.id;
+        })
+        assert(existingMessages.length < 2, `Message doubling error: ${existingMessages.length}`);
+        let existingMessage = existingMessages[0];
+        if (existingMessage){
+            existingMessage.pending = false;
+            self.emit(Internal.MESSAGE_SENT, existingMessage);
+        } else {
+            console.log("Decrypting and adding sent message.");
+            sentMessage.header.private ?
+                sentMessage.decryptPrivateMessage(self.privateKey) :
+                sentMessage.decryptMessage(self.sharedKey)
+            self.addNewMessage(self, sentMessage);
+        }
+    }
 
     addNewMessage(self, chatMessage){
         console.log("Adding new chat message");

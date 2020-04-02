@@ -693,10 +693,6 @@ export class ChatClient{
         return sendMessageAgent.send();
     }
 
-    async _vaultLogin(vaultData, password){
-    }
-
-
     async _initMessageQueue(){
         this.messageQueue = new MessageQueue();
     }

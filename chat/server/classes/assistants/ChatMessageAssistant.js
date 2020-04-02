@@ -97,8 +97,13 @@ class ChatMessageAssistant{
             pkfpSource: pkfp,
             cat: "chat"
         });
-        message.headers.response = "send_success";
-        self.sessionManager.broadcastUserResponse(pkfp, message)
+
+        let receipt  = Message.makeResponse(message, "island", Internal.MESSAGE_SENT);
+        receipt.body.message = message.body.message;
+        let session = self.sessionManager.getSessionByConnectionId(connectionId);
+        if (session){
+            session.broadcast(receipt);
+        }
     }
 
 

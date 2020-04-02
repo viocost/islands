@@ -259,19 +259,7 @@ function sendMessage(){
         console.error("No topic selected to write to.")
         return;
     }
-    let message = chat.sendMessage(msg, topicInFocus, recipient, files);
-    appendMessageToChat({
-        nickname: message.header.nickname,
-        alias: "alias",//alias,
-        body: message.body,
-        timestamp: message.header.timestamp,
-        pkfp: message.header.author,
-        messageID: message.header.id,
-        service: message.header.service,
-        private: message.header.private,
-        recipient: message.header.recipient,
-        attachments: message.attachments
-    }, topicInFocus, util.$("#messages-window-1"));
+    chat.sendMessage(msg, topicInFocus, recipient, files);
 }
 
 function createTopic(){
