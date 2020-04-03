@@ -2,13 +2,18 @@
 
 
 * Current tasks
-** TODO Implement send pending, receipt mechanism for outgoing messages
+** DONE Implement send pending, receipt mechanism for outgoing messages
+CLOSED: [2020-04-02 Thu 23:37]
 ** TODO Bug Incoming message not verified in browser
 ** TODO finish with nickname exchange
+** TODO Wire file transfer
+
 ** TODO Implement Boot member mechanism
 ** TODO Implement Leave mechanism
-** TODO Implement mute topic
-** TODO Implement black list member
+** TODO Implement topic rename
+
+** TODO Re-implement reconnection protocol and pings
+
 
 ** DONE Implement basic messages delivery
 CLOSED: [2020-04-01 Wed 23:00]

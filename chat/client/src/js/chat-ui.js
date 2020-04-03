@@ -114,7 +114,7 @@ function initUI(){
 
     let sidePanel = UI.bakeSidePanel();
 
-    let newMessageBlock = UI.bakeNewMessageControl(sendMessage);
+    let newMessageBlock = UI.bakeNewMessageControl(sendMessage, processAttachmentChosen);
     let messagesPanel = UI.bakeMessagesPanel(newMessageBlock)
 
     util.appendChildren(mainContainer, [sidePanel, messagesPanel]);
@@ -260,6 +260,28 @@ function sendMessage(){
         return;
     }
     chat.sendMessage(msg, topicInFocus, recipient, files);
+}
+
+
+function processAttachmentChosen(ev) {
+    console.log("Processing attachment chosen");
+    let attachemtsWrapper = document.querySelector("#chosen-files");
+    let fileData = ev.target.files[0];
+    attachemtsWrapper.innerHTML = "";
+    if (!fileData) {
+        return;
+    }
+
+    let attachmentEl = UI.bakeFileAttachmentElement(fileData.name, clearAttachments)
+    util.appendChildren(attachemtsWrapper, attachmentEl);
+}
+
+
+function clearAttachments() {
+    let attachemtsInput = util.$("#attach-file");
+    attachemtsInput.value = "";
+    let attachemtsWrapper = util.$("#chosen-files");
+    attachemtsWrapper.innerHTML = "";
 }
 
 function createTopic(){

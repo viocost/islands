@@ -1,5 +1,6 @@
 import * as util from "./dom-util"
 import * as Modal from "./DynmaicModal";
+import { IError as Err } from "../../../../common/IError";
 
 //Bakes select list for side panel
 // top boolean whether it is select for top block
@@ -257,7 +258,8 @@ export function bakeMessagesPanel(newMsgBlock){
     })
 }
 
-export function bakeNewMessageControl(sendHandler){
+export function bakeNewMessageControl(sendHandler = Err.required("sendMessage handler"),
+                                      attachmentChosenHandler = Err.required("attachmentChosen handler")){
     return util.bake("div", {
         class: "new-message-container",
         children: [
@@ -323,6 +325,10 @@ export function bakeNewMessageControl(sendHandler){
                                 ]
                             })
                         ]
+                    }),
+
+                    util.bake("div", {
+                        id: "chosen-files"
                     })
                 ]
             }),
@@ -341,21 +347,6 @@ export function bakeNewMessageControl(sendHandler){
                                 listeners: {
                                     click: sendHandler
                                 }
-
-                                //////////////////////////////////////////////////////
-                                // children: [                                      //
-                                //     util.bake("div", {                           //
-                                //         //class: ["ld", "ld-ring", "ld-spin"], //
-                                //         children: [                              //
-                                //             util.bake("div", {                   //
-                                //                 class: "attach-file-wrap"      //
-                                //             })                                   //
-                                //         ]                                        //
-                                //                                                  //
-                                //     })                                           //
-                                // ]                                                //
-                                //////////////////////////////////////////////////////
-
                             })
                         ]
                     }),
@@ -366,6 +357,9 @@ export function bakeNewMessageControl(sendHandler){
                             type: "file",
                             name: "file",
 
+                        },
+                        listeners: {
+                            "change": attachmentChosenHandler
                         }
                     })
                 ]
@@ -373,6 +367,30 @@ export function bakeNewMessageControl(sendHandler){
 
         ]
 
+    })
+}
+
+
+export function bakeFileAttachmentElement(fileName = Err.required("File name"),
+                                          clearAttachments = Err.required("Clear attachment handler")){
+    return util.bake("div", {
+        class: "chosen-file-wrap",
+        children: [
+            util.bake("img", {
+                attributes: {
+                    src: "/img/close.png"
+                },
+                listeners: {
+                    click: clearAttachments
+                }
+            }),
+
+            util.bake("div", {
+                class: "chosen-file",
+                text: fileName
+
+            })
+        ]
     })
 }
 
