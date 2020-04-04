@@ -2,39 +2,47 @@ import { WildEmitter } from "./WildEmitter";
 import { FileWorker } from "./FileWorker";
 import { IError as Err } from "../../../../common/IError";
 
+import { Events, Internal } from "../../../../common/Events";
 
-export class DownloadAttachmentAgent extends WildEmitter{
-    constructor(fileInfo = Err.required("File info")){
-        super();
+
+export class DownloadAttachmentAgent {
+    constructor(fileInfo = Err.required("File info"),
+                topic = Err.require("topic")){
+        WildEmitter.mixin(this);
+        this.topic = topic;
         this.fileInfo = fileInfo;
     }
-/**
+     /**
      * Downloads requested attachment
      *
      * @param {string} fileInfo - Stringified JSON of type AttachmentInfo.
      *          Must contain all required info including hashes, signatures, and link
      */
-    downloadAttachment(){
-        return new Promise(async (resolve, reject)=>{
-            console.log("About to download the attachment");
+    download(){
+        let self = this;
+        setTimeout(async ()=>{
             try{
                 let self = this;
-                let privk = self.session.privateKey; //To decrypt SYM key
+                let privk = self.topic.privateKey; //To decrypt SYM key
 
                 //Getting public key of
-                let parsedFileInfo = JSON.parse(fileInfo);
+                let parsedFileInfo = JSON.parse(self.fileInfo);
 
-                let fileOwnerPublicKey = self.session.metadata.participants[parsedFileInfo.pkfp].publicKey;
+                let fileOwnerPublicKey = self.topic.metadata.participants[parsedFileInfo.pkfp].publicKey;
 
                 console.log(`Downloading with worker or sync`);
-                const myPkfp = self.session.publicKeyFingerprint;
+                const myPkfp = self.topic.pkfp;
                 let fileData = await self.downloadAttachmentDefault(fileInfo, myPkfp, privk, fileOwnerPublicKey, parsedFileInfo.name);
-                self.emit("download_complete", {fileInfo: fileInfo, fileData: fileData});
-                resolve()
+                self.emit(Events.DOWNLOAD_SUCCESS, {
+                    fileInfo: fileInfo,
+                    fileData: fileData
+                });
             } catch (err){
-                reject(err)
+                console.log(`Download failed: ${err}`);
+                self.emit(Events.DOWNLOAD_FAIL, err);
             }
-        })
+
+        }, 100)
 
     }
 

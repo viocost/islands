@@ -62,7 +62,8 @@ module.exports.Events = Object.freeze({
     //Files
     FILE_AVAILABLE_LOCALLY: "file_available_locally",
     FILE_PEER_REQUEST: "file_peer_request",
-    DOWNLOAD_OK: "download_ok",
+    DOWNLOAD_SUCCESS: "download_success",
+    DOWNLOAD_FAIL: "download_fail"
 })
 
 

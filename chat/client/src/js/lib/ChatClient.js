@@ -1,5 +1,6 @@
 import { WildEmitter } from "./WildEmitter";
 import { Events, Internal } from "../../../../common/Events";
+import { assert } from "../../../../common/IError";
 import { Vault } from "./Vault"
 import { XHR } from "./xhr";
 import { Connector } from "./Connector";
@@ -676,9 +677,19 @@ export class ChatClient{
         return sendMessageAgent.send();
     }
 
-    downloadAttachment(fileInfo){
-        let downloadAttachmentAgent = new DownloadAttachmentAgent(fileInfo);
+    downloadAttachment(fileInfo, topicPkfp){
+        assert(this.topics[topicPkfp], "Topic is invalid");
+        let topic = this.topics[topicPkfp];
+        let downloadAttachmentAgent = new DownloadAttachmentAgent(fileInfo, topic);
+        this.downloadAttachment.once(Events.DOWNLOAD_SUCCESS, (data)=>{
+            console.log("Download successful event from agent");
+        })
+        this.downloadAttachment.once(Events.DOWNLOAD_FAIL, (data)=>{
+            console.log("Download failed event from agent");
+        })
 
+
+        downloadAttachmentAgent.download();
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------

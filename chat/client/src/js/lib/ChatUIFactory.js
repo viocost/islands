@@ -403,7 +403,7 @@ export function bakeEphemeralMessage(timeStamp = Err.required("Timestamp"),
                 class: "msg-heading",
                 children: [
                     util.bake("b", {
-                        text: "Note"
+                        text: "Islands"
                     }),
 
                     util.bake("span", {

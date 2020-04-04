@@ -2,8 +2,6 @@
 
 
 * Current tasks
-** DONE Implement send pending, receipt mechanism for outgoing messages
-CLOSED: [2020-04-02 Thu 23:37]
 ** TODO Bug Incoming message not verified in browser
 ** TODO finish with nickname exchange
 ** TODO Wire file transfer
@@ -17,6 +15,8 @@ CLOSED: [2020-04-02 Thu 23:37]
 
 ** DONE Implement basic messages delivery
 CLOSED: [2020-04-01 Wed 23:00]
+** DONE Implement send pending, receipt mechanism for outgoing messages
+CLOSED: [2020-04-02 Thu 23:37]
 ** DONE Need to implement topicPkfp => vaultId mechanism
 CLOSED: [2020-04-01 Wed 22:59]
 One way is to call ClientSession on each topic CRUD operation

@@ -809,8 +809,8 @@ async function downloadOnClick(ev) {
     let fileName = JSON.parse(fileInfo).name;
     target.childNodes[0].style.display = "inline-block";
     try {
-        await chat.downloadAttachment(fileInfo); //download file
-        console.log("Download complete!");
+        chat.downloadAttachment(fileInfo, topicInFocus); //download file
+        console.log("Download started");
     } catch(err){
         toastr.warning("file download unsuccessfull: " + err)
         appendEphemeralMessage(fileName + " Download finished with error: " + err)
@@ -835,21 +835,8 @@ function appendEphemeralMessage(msg){
         return
     }
     try{
-        let msgEl = UI.bakeEphemeralMessage(getChatFormatDate(new Date()), msg);
-        util.$("#message-window-1").appendChild(msgEl);
-        /////////////////////////////////////////////////////////////////////////////
-        // let msgContainer = util.bake("div", {classes: "ephemeral-msg"})         //
-        // let headingContainer = util.bake("div", {classes: "msg-heading"})       //
-        // let text = util.bake("b", {text: "Ephemeral"})                          //
-        // let timestamp = util.bake("span", {classes: "msg-time-stamp"})          //
-        // timestamp.innerText = getChatFormatedDate(new Date());                  //
-        // util.appendChildren(headingContainer, [text, timestamp])                //
-        // let msgBodyContainer = util.bake("div", {classes: "msg-body"})          //
-        // let msgBody = util.bake("div", {html: msg})                             //
-        // msgBodyContainer.appendChild(msgBody)                                   //
-        // util.appendChildren(msgContainer, [headingContainer, msgBodyContainer]) //
-        // util.$("#chat_window").appendChild(msgContainer);                       //
-        /////////////////////////////////////////////////////////////////////////////
+        let msgEl = UI.bakeEphemeralMessage(getChatFormatedDate(new Date()), msg);
+        util.$("#messages-window-1").appendChild(msgEl);
     }catch(err){
         console.log("EPHEMERAL ERROR: " + err)
     }
