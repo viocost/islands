@@ -33,10 +33,8 @@ export class DownloadAttachmentAgent {
                 console.log(`Downloading with worker or sync`);
                 const myPkfp = self.topic.pkfp;
                 let fileData = await self.downloadAttachmentDefault(self.fileInfo, myPkfp, privk, fileOwnerPublicKey, parsedFileInfo.name);
-                self.emit(Events.DOWNLOAD_SUCCESS, {
-                    fileInfo: self.fileInfo,
-                    fileData: fileData
-                });
+
+                self.emit(Events.DOWNLOAD_SUCCESS, fileData, parsedFileInfo.name);
             } catch (err){
                 console.log(`Download failed: ${err}`);
                 self.emit(Events.DOWNLOAD_FAIL, err);

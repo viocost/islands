@@ -681,11 +681,12 @@ export class ChatClient{
         assert(this.topics[topicPkfp], "Topic is invalid");
         let topic = this.topics[topicPkfp];
         let downloadAttachmentAgent = new DownloadAttachmentAgent(fileInfo, topic);
-        downloadAttachmentAgent.once(Events.DOWNLOAD_SUCCESS, (data)=>{
+        downloadAttachmentAgent.once(Events.DOWNLOAD_SUCCESS, (fileData, fileName)=>{
             console.log("Download successful event from agent");
+            this.emit(Events.DOWNLOAD_SUCCESS, fileData, fileName);
         })
-        downloadAttachmentAgent.once(Events.DOWNLOAD_FAIL, (data)=>{
-            console.log("Download failed event from agent");
+        downloadAttachmentAgent.once(Events.DOWNLOAD_FAIL, (err)=>{
+            this.emit(Events.DOWNLOAD_FAIL, err);
         })
 
 

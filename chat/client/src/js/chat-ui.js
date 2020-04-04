@@ -819,6 +819,25 @@ async function downloadOnClick(ev) {
     }
 }
 
+
+function downloadURI(uri, name) {
+    var link = document.createElement("a");
+    link.download = name;
+    link.href = uri;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+///Testing blob download
+function downloadBuffer(data, fileName) {
+    appendEphemeralMessage(fileName + " Download successfull.")
+    let arr = new Uint8Array(data);
+    let fileURL = URL.createObjectURL(new Blob([arr]));
+    downloadURI(fileURL, fileName);
+}
+
+
 function showCodeView(event) {
     let pre = document.createElement("pre");
     pre.innerHTML = event.target.innerHTML;
@@ -1150,6 +1169,15 @@ function initChat(){
             recipient: message.header.recipient,
             attachments: message.attachments
         }, topicInFocus, util.$("#messages-window-1"));
+    })
+
+    chat.on(Events.DOWNLOAD_SUCCESS, (data, fileName)=>{
+        downloadBuffer(data, fileName);
+    })
+
+    chat.on(Events.DOWNLOAD_FAIL, (err)=>{
+        console.log(`Download error received from chat: ${err}`);
+        appendEphemeralMessage(`Download error: ${err}`);
     })
 
     //DEBUGGING! Comment out for production;
