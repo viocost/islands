@@ -28,13 +28,13 @@ export class DownloadAttachmentAgent {
                 //Getting public key of
                 let parsedFileInfo = JSON.parse(self.fileInfo);
 
-                let fileOwnerPublicKey = self.topic.metadata.participants[parsedFileInfo.pkfp].publicKey;
+                let fileOwnerPublicKey = self.topic.participants[parsedFileInfo.pkfp].publicKey;
 
                 console.log(`Downloading with worker or sync`);
                 const myPkfp = self.topic.pkfp;
-                let fileData = await self.downloadAttachmentDefault(fileInfo, myPkfp, privk, fileOwnerPublicKey, parsedFileInfo.name);
+                let fileData = await self.downloadAttachmentDefault(self.fileInfo, myPkfp, privk, fileOwnerPublicKey, parsedFileInfo.name);
                 self.emit(Events.DOWNLOAD_SUCCESS, {
-                    fileInfo: fileInfo,
+                    fileInfo: self.fileInfo,
                     fileData: fileData
                 });
             } catch (err){

@@ -45638,10 +45638,10 @@ var ChatClient = /*#__PURE__*/function () {
       Object(_common_IError__WEBPACK_IMPORTED_MODULE_10__[/* assert */ "b"])(this.topics[topicPkfp], "Topic is invalid");
       var topic = this.topics[topicPkfp];
       var downloadAttachmentAgent = new _DownloadAttachmentAgent__WEBPACK_IMPORTED_MODULE_19__[/* DownloadAttachmentAgent */ "a"](fileInfo, topic);
-      this.downloadAttachment.once(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].DOWNLOAD_SUCCESS, function (data) {
+      downloadAttachmentAgent.once(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].DOWNLOAD_SUCCESS, function (data) {
         console.log("Download successful event from agent");
       });
-      this.downloadAttachment.once(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].DOWNLOAD_FAIL, function (data) {
+      downloadAttachmentAgent.once(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].DOWNLOAD_FAIL, function (data) {
         console.log("Download failed event from agent");
       });
       downloadAttachmentAgent.download();
@@ -47726,17 +47726,17 @@ var DownloadAttachmentAgent = /*#__PURE__*/function () {
                 //Getting public key of
 
                 parsedFileInfo = JSON.parse(_self.fileInfo);
-                fileOwnerPublicKey = _self.topic.metadata.participants[parsedFileInfo.pkfp].publicKey;
+                fileOwnerPublicKey = _self.topic.participants[parsedFileInfo.pkfp].publicKey;
                 console.log("Downloading with worker or sync");
                 myPkfp = _self.topic.pkfp;
                 _context.next = 9;
-                return _self.downloadAttachmentDefault(fileInfo, myPkfp, privk, fileOwnerPublicKey, parsedFileInfo.name);
+                return _self.downloadAttachmentDefault(_self.fileInfo, myPkfp, privk, fileOwnerPublicKey, parsedFileInfo.name);
 
               case 9:
                 fileData = _context.sent;
 
                 _self.emit(_common_Events__WEBPACK_IMPORTED_MODULE_10__["Events"].DOWNLOAD_SUCCESS, {
-                  fileInfo: fileInfo,
+                  fileInfo: _self.fileInfo,
                   fileData: fileData
                 });
 
@@ -62244,7 +62244,7 @@ function bakeEphemeralMessage() {
     children: [bake("div", {
       class: "msg-heading",
       children: [bake("b", {
-        text: "Note"
+        text: "Islands"
       }), bake("span", {
         class: "msg-time-stamp",
         text: timeStamp
