@@ -394,6 +394,33 @@ export function bakeFileAttachmentElement(fileName = Err.required("File name"),
     })
 }
 
+export function bakeEphemeralMessage(timeStamp = Err.required("Timestamp"),
+                                     msg = Err.required("Message")){
+    return util.bake("div", {
+        class: "ephemeral-msg",
+        children: [
+            util.bake("div", {
+                class: "msg-heading",
+                children: [
+                    util.bake("b", {
+                        text: "Note"
+                    }),
+
+                    util.bake("span", {
+                        class: "msg-time-stamp",
+                        text: timeStamp
+                    })
+                ]
+            }),
+
+            util.bake("div", {
+                class: "msg-body",
+                html: msg
+            })
+        ]
+    })
+}
+
 export function bakeLoginBlock(loginClickHandler){
      return  util.bake("div", {
         id: "vault-login--wrapper",

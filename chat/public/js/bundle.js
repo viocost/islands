@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 303);
+/******/ 	return __webpack_require__(__webpack_require__.s = 309);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -195,23 +195,23 @@ module.exports.Internal = Object.freeze({
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return iCrypto; });
-/* harmony import */ var core_js_modules_es6_typed_uint16_array__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(227);
+/* harmony import */ var core_js_modules_es6_typed_uint16_array__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(231);
 /* harmony import */ var core_js_modules_es6_typed_uint16_array__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_typed_uint16_array__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(146);
 /* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(35);
+/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(36);
 /* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(17);
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(24);
 /* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(109);
+/* harmony import */ var core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(110);
 /* harmony import */ var core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(77);
+/* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(96);
 /* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(36);
+/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(30);
 /* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_6__);
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(14);
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(80);
+/* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(109);
 /* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_8__);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(5);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_9__);
@@ -231,13 +231,13 @@ module.exports.Internal = Object.freeze({
 
 
 
-var forge = __webpack_require__(233);
+var forge = __webpack_require__(237);
 
-var sjcl = __webpack_require__(246);
+var sjcl = __webpack_require__(250);
 
-var Base32 = __webpack_require__(248);
+var Base32 = __webpack_require__(252);
 
-var JSChaCha20 = __webpack_require__(251);
+var JSChaCha20 = __webpack_require__(255);
 
 var iCrypto = /*#__PURE__*/function () {
   function iCrypto(settings) {
@@ -1753,7 +1753,7 @@ var iCrypto = /*#__PURE__*/function () {
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(190);
+module.exports = __webpack_require__(194);
 
 
 /***/ }),
@@ -1859,7 +1859,7 @@ module.exports = _createClass;
  * Copyright (c) 2010-2018 Digital Bazaar, Inc.
  */
 var forge = __webpack_require__(4);
-var baseN = __webpack_require__(237);
+var baseN = __webpack_require__(241);
 
 /* Utilities API */
 var util = module.exports = forge.util = forge.util || {};
@@ -4832,7 +4832,7 @@ util.estimateCores = function(options, callback) {
   }
 };
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(18), __webpack_require__(64).setImmediate, __webpack_require__(16).Buffer))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(17), __webpack_require__(64).setImmediate, __webpack_require__(16).Buffer))
 
 /***/ }),
 /* 8 */
@@ -4882,9 +4882,9 @@ module.exports = _asyncToGenerator;
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Message; });
-/* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(80);
+/* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(109);
 /* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(17);
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(24);
 /* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(14);
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_2__);
@@ -5059,151 +5059,11 @@ Message.properties = ["headers", "body", "signature"];
 
 /***/ }),
 /* 10 */
-/***/ (function(module, exports) {
-
-// https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
-var global = module.exports = typeof window != 'undefined' && window.Math == Math
-  ? window : typeof self != 'undefined' && self.Math == Math ? self
-  // eslint-disable-next-line no-new-func
-  : Function('return this')();
-if (typeof __g == 'number') __g = global; // eslint-disable-line no-undef
-
-
-/***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var store = __webpack_require__(74)('wks');
-var uid = __webpack_require__(38);
-var Symbol = __webpack_require__(10).Symbol;
-var USE_SYMBOL = typeof Symbol == 'function';
-
-var $exports = module.exports = function (name) {
-  return store[name] || (store[name] =
-    USE_SYMBOL && Symbol[name] || (USE_SYMBOL ? Symbol : uid)('Symbol.' + name));
-};
-
-$exports.store = store;
-
-
-/***/ }),
-/* 12 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ChatUtility; });
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5);
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1);
-/* harmony import */ var _common_IError__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(3);
-
-
-
-
-var ChatUtility = /*#__PURE__*/function () {
-  function ChatUtility() {
-    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0___default()(this, ChatUtility);
-  }
-
-  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1___default()(ChatUtility, null, [{
-    key: "decryptStandardMessage",
-
-    /**
-     * Standard message referred to string of form [payload] + [sym key cipher] + [const length sym key length encoded]
-     * All messages in the system encrypted and decrypted in the described way except for chat messages files and streams.
-     * Sym key generated randomly every time
-     * @param blob - cipher blob
-     * @param lengthSymLengthEncoded number of digits used to encode length of the sym key
-     * @param privateKey
-     * @returns {}
-     */
-    value: function decryptStandardMessage() {
-      var blob = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _common_IError__WEBPACK_IMPORTED_MODULE_3__[/* IError */ "a"].required();
-      var privateKey = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _common_IError__WEBPACK_IMPORTED_MODULE_3__[/* IError */ "a"].required();
-      var lengthSymLengthEncoded = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 4;
-      var symKeyLength = parseInt(blob.substr(blob.length - lengthSymLengthEncoded));
-      var symKeyCipher = blob.substring(blob.length - lengthSymLengthEncoded - symKeyLength, blob.length - lengthSymLengthEncoded);
-      var payloadCipher = blob.substring(0, blob.length - lengthSymLengthEncoded - symKeyLength);
-      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_2__[/* iCrypto */ "a"]();
-      ic.addBlob("blobcip", payloadCipher).addBlob("symkcip", symKeyCipher).asym.setKey("privk", privateKey, "private").privateKeyDecrypt("symkcip", "privk", "symk", "hex").AESDecrypt("blobcip", "symk", "blob-raw", true, "CBC", "utf8");
-      return ic.get("blob-raw");
-    }
-  }, {
-    key: "encryptStandardMessage",
-    value: function encryptStandardMessage() {
-      var blob = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _common_IError__WEBPACK_IMPORTED_MODULE_3__[/* IError */ "a"].required();
-      var publicKey = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _common_IError__WEBPACK_IMPORTED_MODULE_3__[/* IError */ "a"].required();
-      var lengthSymLengthEncoded = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 4;
-      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_2__[/* iCrypto */ "a"]();
-      ic.sym.createKey("symk").addBlob("payload", blob).asym.setKey("pubk", publicKey, "public").AESEncrypt("payload", "symk", "blobcip", true, "CBC", "utf8").asym.encrypt("symk", "pubk", "symcip", "hex").encodeBlobLength("symcip", lengthSymLengthEncoded, "0", "symciplength").merge(["blobcip", "symcip", "symciplength"], "res");
-      return ic.get("res");
-    }
-  }, {
-    key: "publicKeyEncrypt",
-    value: function publicKeyEncrypt() {
-      var blob = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _common_IError__WEBPACK_IMPORTED_MODULE_3__[/* IError */ "a"].required();
-      var publicKey = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _common_IError__WEBPACK_IMPORTED_MODULE_3__[/* IError */ "a"].required();
-      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_2__[/* iCrypto */ "a"]();
-      ic.addBlob("blob", blob).asym.setKey("pubk", publicKey, "public").publicKeyEncrypt("blob", "pubk", "blobcip", "hex");
-      return ic.get("blobcip");
-    }
-  }, {
-    key: "privateKeyDecrypt",
-    value: function privateKeyDecrypt(blob, privateKey) {
-      var encoding = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "hex";
-      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_2__[/* iCrypto */ "a"]();
-      ic.addBlob("blobcip", blob).asym.setKey("priv", privateKey, "private").privateKeyDecrypt("blobcip", "priv", "blob", encoding);
-      return ic.get("blob");
-    }
-  }, {
-    key: "symKeyEncrypt",
-    value: function symKeyEncrypt(blob, key) {
-      var hexify = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_2__[/* iCrypto */ "a"]();
-      ic.addBlob("b", blob).sym.setKey("sym", key).AESEncrypt("b", "sym", "cip", hexify, "CBC", "utf8");
-      return ic.get("cip");
-    }
-  }, {
-    key: "symKeyDecrypt",
-    value: function symKeyDecrypt(cip, key) {
-      var dehexify = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_2__[/* iCrypto */ "a"]();
-      ic.addBlob("cip", cip).sym.setKey("sym", key).AESDecrypt("cip", "sym", "b", dehexify, "CBC", "utf8");
-      return ic.get("b");
-    }
-  }, {
-    key: "sign",
-    value: function sign(data, privateKey) {
-      if (typeof data !== "string") throw new Error("Data must be a string");
-      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_2__[/* iCrypto */ "a"]();
-      ic.addBlob("body", data).setRSAKey("priv", privateKey, "private").privateKeySign("body", "priv", "sign");
-      return ic.get("sign");
-    } //data must be string
-    // sign must be hexified string
-
-  }, {
-    key: "verify",
-    value: function verify(data, publicKey, sign) {
-      if (typeof data !== "string") throw new Error("Data must be a string");
-      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_2__[/* iCrypto */ "a"]();
-      ic.setRSAKey("pubk", publicKey, "public").addBlob("sign", sign).hexToBytes('sign', "signraw").addBlob("b", data);
-      ic.publicKeyVerify("b", "sign", "pubk", "v");
-      return ic.get("v");
-    }
-  }]);
-
-  return ChatUtility;
-}();
-
-/***/ }),
-/* 13 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return WildEmitter; });
-/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(35);
+/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(36);
 /* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__);
 
 function WildEmitter() {}
@@ -5347,6 +5207,146 @@ WildEmitter.mixin = function (constructor) {
 WildEmitter.mixin(WildEmitter);
 
 /***/ }),
+/* 11 */
+/***/ (function(module, exports) {
+
+// https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
+var global = module.exports = typeof window != 'undefined' && window.Math == Math
+  ? window : typeof self != 'undefined' && self.Math == Math ? self
+  // eslint-disable-next-line no-new-func
+  : Function('return this')();
+if (typeof __g == 'number') __g = global; // eslint-disable-line no-undef
+
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var store = __webpack_require__(73)('wks');
+var uid = __webpack_require__(38);
+var Symbol = __webpack_require__(11).Symbol;
+var USE_SYMBOL = typeof Symbol == 'function';
+
+var $exports = module.exports = function (name) {
+  return store[name] || (store[name] =
+    USE_SYMBOL && Symbol[name] || (USE_SYMBOL ? Symbol : uid)('Symbol.' + name));
+};
+
+$exports.store = store;
+
+
+/***/ }),
+/* 13 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ChatUtility; });
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1);
+/* harmony import */ var _common_IError__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(3);
+
+
+
+
+var ChatUtility = /*#__PURE__*/function () {
+  function ChatUtility() {
+    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0___default()(this, ChatUtility);
+  }
+
+  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1___default()(ChatUtility, null, [{
+    key: "decryptStandardMessage",
+
+    /**
+     * Standard message referred to string of form [payload] + [sym key cipher] + [const length sym key length encoded]
+     * All messages in the system encrypted and decrypted in the described way except for chat messages files and streams.
+     * Sym key generated randomly every time
+     * @param blob - cipher blob
+     * @param lengthSymLengthEncoded number of digits used to encode length of the sym key
+     * @param privateKey
+     * @returns {}
+     */
+    value: function decryptStandardMessage() {
+      var blob = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _common_IError__WEBPACK_IMPORTED_MODULE_3__[/* IError */ "a"].required();
+      var privateKey = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _common_IError__WEBPACK_IMPORTED_MODULE_3__[/* IError */ "a"].required();
+      var lengthSymLengthEncoded = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 4;
+      var symKeyLength = parseInt(blob.substr(blob.length - lengthSymLengthEncoded));
+      var symKeyCipher = blob.substring(blob.length - lengthSymLengthEncoded - symKeyLength, blob.length - lengthSymLengthEncoded);
+      var payloadCipher = blob.substring(0, blob.length - lengthSymLengthEncoded - symKeyLength);
+      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_2__[/* iCrypto */ "a"]();
+      ic.addBlob("blobcip", payloadCipher).addBlob("symkcip", symKeyCipher).asym.setKey("privk", privateKey, "private").privateKeyDecrypt("symkcip", "privk", "symk", "hex").AESDecrypt("blobcip", "symk", "blob-raw", true, "CBC", "utf8");
+      return ic.get("blob-raw");
+    }
+  }, {
+    key: "encryptStandardMessage",
+    value: function encryptStandardMessage() {
+      var blob = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _common_IError__WEBPACK_IMPORTED_MODULE_3__[/* IError */ "a"].required();
+      var publicKey = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _common_IError__WEBPACK_IMPORTED_MODULE_3__[/* IError */ "a"].required();
+      var lengthSymLengthEncoded = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 4;
+      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_2__[/* iCrypto */ "a"]();
+      ic.sym.createKey("symk").addBlob("payload", blob).asym.setKey("pubk", publicKey, "public").AESEncrypt("payload", "symk", "blobcip", true, "CBC", "utf8").asym.encrypt("symk", "pubk", "symcip", "hex").encodeBlobLength("symcip", lengthSymLengthEncoded, "0", "symciplength").merge(["blobcip", "symcip", "symciplength"], "res");
+      return ic.get("res");
+    }
+  }, {
+    key: "publicKeyEncrypt",
+    value: function publicKeyEncrypt() {
+      var blob = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _common_IError__WEBPACK_IMPORTED_MODULE_3__[/* IError */ "a"].required();
+      var publicKey = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _common_IError__WEBPACK_IMPORTED_MODULE_3__[/* IError */ "a"].required();
+      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_2__[/* iCrypto */ "a"]();
+      ic.addBlob("blob", blob).asym.setKey("pubk", publicKey, "public").publicKeyEncrypt("blob", "pubk", "blobcip", "hex");
+      return ic.get("blobcip");
+    }
+  }, {
+    key: "privateKeyDecrypt",
+    value: function privateKeyDecrypt(blob, privateKey) {
+      var encoding = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "hex";
+      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_2__[/* iCrypto */ "a"]();
+      ic.addBlob("blobcip", blob).asym.setKey("priv", privateKey, "private").privateKeyDecrypt("blobcip", "priv", "blob", encoding);
+      return ic.get("blob");
+    }
+  }, {
+    key: "symKeyEncrypt",
+    value: function symKeyEncrypt(blob, key) {
+      var hexify = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_2__[/* iCrypto */ "a"]();
+      ic.addBlob("b", blob).sym.setKey("sym", key).AESEncrypt("b", "sym", "cip", hexify, "CBC", "utf8");
+      return ic.get("cip");
+    }
+  }, {
+    key: "symKeyDecrypt",
+    value: function symKeyDecrypt(cip, key) {
+      var dehexify = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_2__[/* iCrypto */ "a"]();
+      ic.addBlob("cip", cip).sym.setKey("sym", key).AESDecrypt("cip", "sym", "b", dehexify, "CBC", "utf8");
+      return ic.get("b");
+    }
+  }, {
+    key: "sign",
+    value: function sign(data, privateKey) {
+      if (typeof data !== "string") throw new Error("Data must be a string");
+      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_2__[/* iCrypto */ "a"]();
+      ic.addBlob("body", data).setRSAKey("priv", privateKey, "private").privateKeySign("body", "priv", "sign");
+      return ic.get("sign");
+    } //data must be string
+    // sign must be hexified string
+
+  }, {
+    key: "verify",
+    value: function verify(data, publicKey, sign) {
+      if (typeof data !== "string") throw new Error("Data must be a string");
+      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_2__[/* iCrypto */ "a"]();
+      ic.setRSAKey("pubk", publicKey, "public").addBlob("sign", sign).hexToBytes('sign', "signraw").addBlob("b", data);
+      ic.publicKeyVerify("b", "sign", "pubk", "v");
+      return ic.get("v");
+    }
+  }]);
+
+  return ChatUtility;
+}();
+
+/***/ }),
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -5355,9 +5355,9 @@ WildEmitter.mixin(WildEmitter);
 // 19.1.3.6 Object.prototype.toString()
 var classof = __webpack_require__(59);
 var test = {};
-test[__webpack_require__(11)('toStringTag')] = 'z';
+test[__webpack_require__(12)('toStringTag')] = 'z';
 if (test + '' != '[object z]') {
-  __webpack_require__(33)(Object.prototype, 'toString', function toString() {
+  __webpack_require__(34)(Object.prototype, 'toString', function toString() {
     return '[object ' + classof(this) + ']';
   }, true);
 }
@@ -5389,9 +5389,9 @@ module.exports = function (it) {
 
 
 
-var base64 = __webpack_require__(234)
-var ieee754 = __webpack_require__(235)
-var isArray = __webpack_require__(236)
+var base64 = __webpack_require__(238)
+var ieee754 = __webpack_require__(239)
+var isArray = __webpack_require__(240)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = SlowBuffer
@@ -7169,74 +7169,10 @@ function isnan (val) {
   return val !== val // eslint-disable-line no-self-compare
 }
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(29)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(31)))
 
 /***/ }),
 /* 17 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var $iterators = __webpack_require__(133);
-var getKeys = __webpack_require__(78);
-var redefine = __webpack_require__(33);
-var global = __webpack_require__(10);
-var hide = __webpack_require__(20);
-var Iterators = __webpack_require__(54);
-var wks = __webpack_require__(11);
-var ITERATOR = wks('iterator');
-var TO_STRING_TAG = wks('toStringTag');
-var ArrayValues = Iterators.Array;
-
-var DOMIterables = {
-  CSSRuleList: true, // TODO: Not spec compliant, should be false.
-  CSSStyleDeclaration: false,
-  CSSValueList: false,
-  ClientRectList: false,
-  DOMRectList: false,
-  DOMStringList: false,
-  DOMTokenList: true,
-  DataTransferItemList: false,
-  FileList: false,
-  HTMLAllCollection: false,
-  HTMLCollection: false,
-  HTMLFormElement: false,
-  HTMLSelectElement: false,
-  MediaList: true, // TODO: Not spec compliant, should be false.
-  MimeTypeArray: false,
-  NamedNodeMap: false,
-  NodeList: true,
-  PaintRequestList: false,
-  Plugin: false,
-  PluginArray: false,
-  SVGLengthList: false,
-  SVGNumberList: false,
-  SVGPathSegList: false,
-  SVGPointList: false,
-  SVGStringList: false,
-  SVGTransformList: false,
-  SourceBufferList: false,
-  StyleSheetList: true, // TODO: Not spec compliant, should be false.
-  TextTrackCueList: false,
-  TextTrackList: false,
-  TouchList: false
-};
-
-for (var collections = getKeys(DOMIterables), i = 0; i < collections.length; i++) {
-  var NAME = collections[i];
-  var explicit = DOMIterables[NAME];
-  var Collection = global[NAME];
-  var proto = Collection && Collection.prototype;
-  var key;
-  if (proto) {
-    if (!proto[ITERATOR]) hide(proto, ITERATOR, ArrayValues);
-    if (!proto[TO_STRING_TAG]) hide(proto, TO_STRING_TAG, NAME);
-    Iterators[NAME] = ArrayValues;
-    if (explicit) for (key in $iterators) if (!proto[key]) redefine(proto, key, $iterators[key], true);
-  }
-}
-
-
-/***/ }),
-/* 18 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -7426,49 +7362,127 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 19 */
+/* 18 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Topic; });
-/* harmony import */ var _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(123);
-/* harmony import */ var _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(77);
-/* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(80);
-/* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(42);
-/* harmony import */ var core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(43);
-/* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(2);
-/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(32);
-/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(8);
-/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(17);
-/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_8__);
-/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(14);
-/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_9__);
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(5);
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_10__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(6);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_11__);
-/* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(0);
-/* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(_common_Events__WEBPACK_IMPORTED_MODULE_12__);
-/* harmony import */ var _WildEmitter__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(13);
-/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(9);
-/* harmony import */ var _Metadata__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(122);
-/* harmony import */ var _ChatUtility__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(12);
-/* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(1);
-/* harmony import */ var _ChatMessage__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(50);
-/* harmony import */ var _ClientSettings__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(49);
-/* harmony import */ var cute_set__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(51);
-/* harmony import */ var cute_set__WEBPACK_IMPORTED_MODULE_20___default = /*#__PURE__*/__webpack_require__.n(cute_set__WEBPACK_IMPORTED_MODULE_20__);
-/* harmony import */ var buffer__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(16);
-/* harmony import */ var buffer__WEBPACK_IMPORTED_MODULE_21___default = /*#__PURE__*/__webpack_require__.n(buffer__WEBPACK_IMPORTED_MODULE_21__);
-/* harmony import */ var _common_IError__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(3);
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, "a", function() { return /* binding */ Topic_Topic; });
+
+// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/toConsumableArray.js
+var toConsumableArray = __webpack_require__(123);
+var toConsumableArray_default = /*#__PURE__*/__webpack_require__.n(toConsumableArray);
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.to-string.js
+var es6_regexp_to_string = __webpack_require__(96);
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es7.array.includes.js
+var es7_array_includes = __webpack_require__(109);
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es7.symbol.async-iterator.js
+var es7_symbol_async_iterator = __webpack_require__(42);
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.symbol.js
+var es6_symbol = __webpack_require__(43);
+
+// EXTERNAL MODULE: ./node_modules/@babel/runtime/regenerator/index.js
+var regenerator = __webpack_require__(2);
+var regenerator_default = /*#__PURE__*/__webpack_require__.n(regenerator);
+
+// EXTERNAL MODULE: ./node_modules/regenerator-runtime/runtime.js
+var runtime = __webpack_require__(28);
+
+// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/asyncToGenerator.js
+var asyncToGenerator = __webpack_require__(8);
+var asyncToGenerator_default = /*#__PURE__*/__webpack_require__.n(asyncToGenerator);
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/web.dom.iterable.js
+var web_dom_iterable = __webpack_require__(24);
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.object.to-string.js
+var es6_object_to_string = __webpack_require__(14);
+
+// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/classCallCheck.js
+var classCallCheck = __webpack_require__(5);
+var classCallCheck_default = /*#__PURE__*/__webpack_require__.n(classCallCheck);
+
+// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/createClass.js
+var createClass = __webpack_require__(6);
+var createClass_default = /*#__PURE__*/__webpack_require__.n(createClass);
+
+// EXTERNAL MODULE: ./common/Events.js
+var Events = __webpack_require__(0);
+
+// EXTERNAL MODULE: ./client/src/js/lib/WildEmitter.js
+var WildEmitter = __webpack_require__(10);
+
+// EXTERNAL MODULE: ./client/src/js/lib/Message.js
+var Message = __webpack_require__(9);
+
+// EXTERNAL MODULE: ./client/src/js/lib/iCrypto.js
+var iCrypto = __webpack_require__(1);
+
+// CONCATENATED MODULE: ./client/src/js/lib/Metadata.js
+
+
+
+var Metadata_Metadata = /*#__PURE__*/function () {
+  function Metadata() {
+    classCallCheck_default()(this, Metadata);
+  }
+
+  createClass_default()(Metadata, null, [{
+    key: "parseMetadata",
+    value: function parseMetadata(blob) {
+      if (typeof blob === "string") {
+        return JSON.parse(blob);
+      } else {
+        return blob;
+      }
+    }
+  }, {
+    key: "extractSharedKey",
+    value: function extractSharedKey(pkfp, privateKey, metadata) {
+      var keyCipher = metadata.body.participants[pkfp].key;
+      var ic = new iCrypto["a" /* iCrypto */]();
+      ic.addBlob("symcip", keyCipher).asym.setKey("priv", privateKey, "private").asym.decrypt("symcip", "priv", "sym", "hex");
+      return ic.get("sym");
+    }
+  }, {
+    key: "isMetadataValid",
+    value: function isMetadataValid(metadata) {
+      if (typeof metadata === "string") {
+        metadata = JSON.parse(metadata);
+      }
+
+      var ic = new iCrypto["a" /* iCrypto */]();
+      ic.setRSAKey("pub", metadata.body.topicAuthority.publicKey, "public").addBlob("body", JSON.stringify(metadata.body)).addBlob("sign", metadata.signature).publicKeyVerify("body", "sign", "pub", "res");
+      return ic.get("res");
+    }
+  }]);
+
+  return Metadata;
+}();
+// EXTERNAL MODULE: ./client/src/js/lib/ChatUtility.js
+var ChatUtility = __webpack_require__(13);
+
+// EXTERNAL MODULE: ./client/src/js/lib/ChatMessage.js
+var ChatMessage = __webpack_require__(49);
+
+// EXTERNAL MODULE: ./client/src/js/lib/ClientSettings.js
+var ClientSettings = __webpack_require__(57);
+
+// EXTERNAL MODULE: ./node_modules/cute-set/index.js
+var cute_set = __webpack_require__(50);
+
+// EXTERNAL MODULE: ./node_modules/buffer/index.js
+var buffer = __webpack_require__(16);
+
+// EXTERNAL MODULE: ./common/IError.js
+var IError = __webpack_require__(3);
+
+// CONCATENATED MODULE: ./client/src/js/lib/Topic.js
 
 
 
@@ -7493,11 +7507,11 @@ process.umask = function() { return 0; };
 
 
 var INITIAL_NUM_MESSAGES = 25;
-var Topic = /*#__PURE__*/function () {
+var Topic_Topic = /*#__PURE__*/function () {
   function Topic(version, pkfp, name, key, comment) {
-    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_10___default()(this, Topic);
+    classCallCheck_default()(this, Topic);
 
-    _WildEmitter__WEBPACK_IMPORTED_MODULE_13__[/* WildEmitter */ "a"].mixin(this);
+    WildEmitter["a" /* WildEmitter */].mixin(this);
     this.pkfp = pkfp;
     this.name = name; // Topic alias. Not shared.
 
@@ -7531,7 +7545,7 @@ var Topic = /*#__PURE__*/function () {
     this.awaitingMessages = false;
   }
 
-  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_11___default()(Topic, [{
+  createClass_default()(Topic, [{
     key: "bootstrap",
     // ---------------------------------------------------------------------------------------------------------------------------
     // INITIALIZING
@@ -7558,7 +7572,7 @@ var Topic = /*#__PURE__*/function () {
       if (!settingsCipher) {
         settings = Topic.prepareNewTopicSettings(this.version, undefined, undefined, this.getPublicKey, false);
       } else {
-        settings = JSON.parse(_ChatUtility__WEBPACK_IMPORTED_MODULE_16__[/* ChatUtility */ "a"].decryptStandardMessage(settingsCipher, this.privateKey));
+        settings = JSON.parse(ChatUtility["a" /* ChatUtility */].decryptStandardMessage(settingsCipher, this.privateKey));
       }
 
       this._metadata = metadata;
@@ -7581,7 +7595,7 @@ var Topic = /*#__PURE__*/function () {
         }
       }
 
-      this.sharedKey = _ChatUtility__WEBPACK_IMPORTED_MODULE_16__[/* ChatUtility */ "a"].privateKeyDecrypt(this.participants[this.pkfp].key, this.privateKey);
+      this.sharedKey = ChatUtility["a" /* ChatUtility */].privateKeyDecrypt(this.participants[this.pkfp].key, this.privateKey);
       this.metadataId = metadata.body.id;
       this.topicAuthority = metadata.body.topicAuthority;
 
@@ -7600,12 +7614,12 @@ var Topic = /*#__PURE__*/function () {
   }, {
     key: "initLoad",
     value: function () {
-      var _initLoad = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_7___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_5___default.a.mark(function _callee() {
+      var _initLoad = asyncToGenerator_default()( /*#__PURE__*/regenerator_default.a.mark(function _callee() {
         var messagesToLoad,
             waitCompletion,
             self,
             _args = arguments;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_5___default.a.wrap(function _callee$(_context) {
+        return regenerator_default.a.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
@@ -7643,50 +7657,50 @@ var Topic = /*#__PURE__*/function () {
       var _this = this;
 
       var self = this;
-      this.handlers[_common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].LOAD_MESSAGES_SUCCESS] = this.processMessagesLoaded;
+      this.handlers[Events["Internal"].LOAD_MESSAGES_SUCCESS] = this.processMessagesLoaded;
 
-      this.handlers[_common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].INVITE_REQUEST_TIMEOUT] = function () {
+      this.handlers[Events["Internal"].INVITE_REQUEST_TIMEOUT] = function () {
         console.log("Invite request timeout");
       };
 
-      this.handlers[_common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].INVITE_REQUEST_FAIL] = function (msg) {
+      this.handlers[Events["Internal"].INVITE_REQUEST_FAIL] = function (msg) {
         console.log("Invite request failed: ".concat(msg.body.errorMsg));
       };
 
-      this.handlers[_common_Events__WEBPACK_IMPORTED_MODULE_12__["Events"].INVITE_CREATED] = function (msg) {
+      this.handlers[Events["Events"].INVITE_CREATED] = function (msg) {
         console.log("Invite created event");
         self.processInviteCreated(self, msg);
-        self.emit(_common_Events__WEBPACK_IMPORTED_MODULE_12__["Events"].INVITE_CREATED);
+        self.emit(Events["Events"].INVITE_CREATED);
       };
 
-      this.handlers[_common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].SETTINGS_UPDATED] = function (msg) {
+      this.handlers[Events["Internal"].SETTINGS_UPDATED] = function (msg) {
         console.log("Settings updated");
         self.processSettingsUpdated(msg);
       };
 
-      this.handlers[_common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].BROADCAST_MESSAGE] = function (msg) {
+      this.handlers[Events["Internal"].BROADCAST_MESSAGE] = function (msg) {
         var msgCopy = JSON.parse(JSON.stringify(msg)); // pkfpDest is added by server when message is broadcasted, so to verify it
         // must be deleted
 
         delete msgCopy.pkfpDest;
-        Object(_common_IError__WEBPACK_IMPORTED_MODULE_22__[/* assert */ "b"])(self.participants[msg.headers.pkfpSource], "The participant ".concat(msgCopy.pkfpDest, " not found"));
+        Object(IError["b" /* assert */])(self.participants[msg.headers.pkfpSource], "The participant ".concat(msgCopy.pkfpDest, " not found"));
         var publicKey = self.participants[msg.headers.pkfpSource].publicKey; //assert(Message.verifyMessage(publicKey, msgCopy), "Message was not verified")
 
-        var message = new _ChatMessage__WEBPACK_IMPORTED_MODULE_18__[/* ChatMessage */ "a"](msg.body.message);
+        var message = new ChatMessage["a" /* ChatMessage */](msg.body.message);
         message.decryptMessage(self.sharedKey);
         self.addNewMessage(self, message);
       };
 
-      this.handlers[_common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].SEND_MESSAGE] = function (msg) {
-        Object(_common_IError__WEBPACK_IMPORTED_MODULE_22__[/* assert */ "b"])(self.participants[msg.headers.pkfpSource]);
+      this.handlers[Events["Internal"].SEND_MESSAGE] = function (msg) {
+        Object(IError["b" /* assert */])(self.participants[msg.headers.pkfpSource]);
         var publicKey = self.participants[msg.headers.pkfpSource].publicKey;
-        Object(_common_IError__WEBPACK_IMPORTED_MODULE_22__[/* assert */ "b"])(_Message__WEBPACK_IMPORTED_MODULE_14__[/* Message */ "a"].verifyMessage(msg, self.publicKey));
-        var message = new _ChatMessage__WEBPACK_IMPORTED_MODULE_18__[/* ChatMessage */ "a"](msg.body.message);
+        Object(IError["b" /* assert */])(Message["a" /* Message */].verifyMessage(msg, self.publicKey));
+        var message = new ChatMessage["a" /* ChatMessage */](msg.body.message);
         message.decryptMessage(self.sharedKey);
         self.addNewMessage(self, message);
       };
 
-      this.handlers[_common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].MESSAGE_SENT] = function (msg) {
+      this.handlers[Events["Internal"].MESSAGE_SENT] = function (msg) {
         console.log("Message sent received. Message: ".concat(msg.body.message));
 
         _this.processMessageSent(_this, msg);
@@ -7698,17 +7712,17 @@ var Topic = /*#__PURE__*/function () {
   }, {
     key: "processMessageSent",
     value: function processMessageSent(self, msg) {
-      var sentMessage = new _ChatMessage__WEBPACK_IMPORTED_MODULE_18__[/* ChatMessage */ "a"](msg.body.message);
+      var sentMessage = new ChatMessage["a" /* ChatMessage */](msg.body.message);
       console.log("Setting existing message from pending to delivered");
       var existingMessages = self.messages.filter(function (m) {
         return m.header.id === sentMessage.header.id;
       });
-      Object(_common_IError__WEBPACK_IMPORTED_MODULE_22__[/* assert */ "b"])(existingMessages.length < 2, "Message doubling error: ".concat(existingMessages.length));
+      Object(IError["b" /* assert */])(existingMessages.length < 2, "Message doubling error: ".concat(existingMessages.length));
       var existingMessage = existingMessages[0];
 
       if (existingMessage) {
         existingMessage.pending = false;
-        self.emit(_common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].MESSAGE_SENT, existingMessage);
+        self.emit(Events["Internal"].MESSAGE_SENT, existingMessage);
       } else {
         console.log("Decrypting and adding sent message.");
         sentMessage.header.private ? sentMessage.decryptPrivateMessage(self.privateKey) : sentMessage.decryptMessage(self.sharedKey);
@@ -7721,7 +7735,7 @@ var Topic = /*#__PURE__*/function () {
       console.log("Adding new chat message");
       self.messages.push[chatMessage];
       console.log("Message added");
-      self.emit(_common_Events__WEBPACK_IMPORTED_MODULE_12__["Events"].NEW_CHAT_MESSAGE, chatMessage, self.pkfp);
+      self.emit(Events["Events"].NEW_CHAT_MESSAGE, chatMessage, self.pkfp);
     }
   }, {
     key: "getMessages",
@@ -7730,7 +7744,7 @@ var Topic = /*#__PURE__*/function () {
       var lastMessageId = arguments.length > 1 ? arguments[1] : undefined;
 
       if (this.initLoaded) {
-        this.emit(_common_Events__WEBPACK_IMPORTED_MODULE_12__["Events"].MESSAGES_LOADED, this.messages);
+        this.emit(Events["Events"].MESSAGES_LOADED, this.messages);
       } else {
         console.log("Messages has not been loaded. Loading...."); //init load and then emit
 
@@ -7764,8 +7778,8 @@ var Topic = /*#__PURE__*/function () {
     value: function _loadMessages(self) {
       var quantity = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 25;
       var lastMessageId = arguments.length > 2 ? arguments[2] : undefined;
-      var request = new _Message__WEBPACK_IMPORTED_MODULE_14__[/* Message */ "a"](self.version);
-      request.headers.command = _common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].LOAD_MESSAGES;
+      var request = new Message["a" /* Message */](self.version);
+      request.headers.command = Events["Internal"].LOAD_MESSAGES;
       request.headers.pkfpSource = self.pkfp;
       request.body.quantity = quantity;
 
@@ -7789,11 +7803,11 @@ var Topic = /*#__PURE__*/function () {
       }
 
       setTimeout(function () {
-        var request = new _Message__WEBPACK_IMPORTED_MODULE_14__[/* Message */ "a"](self.version);
+        var request = new Message["a" /* Message */](self.version);
         var taPublicKey = self.topicAuthority.publicKey;
-        var myNickNameEncrypted = _ChatUtility__WEBPACK_IMPORTED_MODULE_16__[/* ChatUtility */ "a"].encryptStandardMessage(self.participants[self.pkfp].nickname, taPublicKey);
-        var topicNameEncrypted = _ChatUtility__WEBPACK_IMPORTED_MODULE_16__[/* ChatUtility */ "a"].encryptStandardMessage(self.name, taPublicKey);
-        request.setCommand(_common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].REQUEST_INVITE);
+        var myNickNameEncrypted = ChatUtility["a" /* ChatUtility */].encryptStandardMessage(self.participants[self.pkfp].nickname, taPublicKey);
+        var topicNameEncrypted = ChatUtility["a" /* ChatUtility */].encryptStandardMessage(self.name, taPublicKey);
+        request.setCommand(Events["Internal"].REQUEST_INVITE);
         request.setSource(self.pkfp);
         request.setDest(self.topicAuthority.pkfp);
         request.body.nickname = myNickNameEncrypted;
@@ -7805,7 +7819,7 @@ var Topic = /*#__PURE__*/function () {
   }, {
     key: "syncInvites",
     value: function syncInvites() {
-      var request = new _Message__WEBPACK_IMPORTED_MODULE_14__[/* Message */ "a"](self.version);
+      var request = new Message["a" /* Message */](self.version);
       request.headers.command = "sync_invites";
       request.headers.pkfpSource = this.session.publicKeyFingerprint;
       request.headers.pkfpDest = this.session.metadata.topicAuthority.pkfp;
@@ -7828,8 +7842,8 @@ var Topic = /*#__PURE__*/function () {
         console.error("Invite does not exist: ".concat(inviteCode));
       }
 
-      var request = new _Message__WEBPACK_IMPORTED_MODULE_14__[/* Message */ "a"](this.version);
-      request.headers.command = _common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].DELETE_INVITE;
+      var request = new Message["a" /* Message */](this.version);
+      request.headers.command = Events["Internal"].DELETE_INVITE;
       request.headers.pkfpSource = this.pkfp;
       request.headers.pkfpDest = this.topicAuthority.pkfp;
       var body = {
@@ -7891,8 +7905,8 @@ var Topic = /*#__PURE__*/function () {
         return;
       }
 
-      var myNickname = _ChatUtility__WEBPACK_IMPORTED_MODULE_16__[/* ChatUtility */ "a"].symKeyEncrypt(this.participants[this.pkfp].nickname, this.sharedKey);
-      var request = _Message__WEBPACK_IMPORTED_MODULE_14__[/* Message */ "a"].createRequest(this.version, this.pkfp, _common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].NICKNAME_INITAL_EXCHANGE);
+      var myNickname = ChatUtility["a" /* ChatUtility */].symKeyEncrypt(this.participants[this.pkfp].nickname, this.sharedKey);
+      var request = Message["a" /* Message */].createRequest(this.version, this.pkfp, Events["Internal"].NICKNAME_INITAL_EXCHANGE);
       request.body.metadataId = this.metadataId;
       request.body.myNickname = myNickname;
       request.signMessage(this.privateKey);
@@ -7928,7 +7942,7 @@ var Topic = /*#__PURE__*/function () {
         throw new Error("Missing required parameter");
       }
 
-      var request = new _Message__WEBPACK_IMPORTED_MODULE_14__[/* Message */ "a"](self.version);
+      var request = new Message["a" /* Message */](self.version);
       request.setCommand("whats_your_name");
       request.setSource(this.session.publicKeyFingerprint);
       request.setDest(pkfp);
@@ -7940,11 +7954,11 @@ var Topic = /*#__PURE__*/function () {
     key: "broadcastNameChange",
     value: function broadcastNameChange() {
       var self = this;
-      var message = new _Message__WEBPACK_IMPORTED_MODULE_14__[/* Message */ "a"](self.version);
+      var message = new Message["a" /* Message */](self.version);
       message.setCommand("nickname_change_broadcast");
       message.setSource(this.session.publicKeyFingerprint);
       message.addNonce();
-      message.body.nickname = _ChatUtility__WEBPACK_IMPORTED_MODULE_16__[/* ChatUtility */ "a"].symKeyEncrypt(self.session.settings.nickname, self.session.metadata.sharedKey);
+      message.body.nickname = ChatUtility["a" /* ChatUtility */].symKeyEncrypt(self.session.settings.nickname, self.session.metadata.sharedKey);
       message.signMessage(this.session.privateKey);
       this.chatSocket.emit("request", message);
     }
@@ -7965,14 +7979,14 @@ var Topic = /*#__PURE__*/function () {
       console.log("Got nickname response");
       var publicKey = self.session.metadata.participants[request.headers.pkfpSource].publicKey;
 
-      if (!_Message__WEBPACK_IMPORTED_MODULE_14__[/* Message */ "a"].verifyMessage(publicKey, request)) {
+      if (!Message["a" /* Message */].verifyMessage(publicKey, request)) {
         console.trace("Invalid signature");
         return;
       }
 
       var existingNickname = self.getMemberNickname(request.headers.pkfpSource);
       var memberRepr = self.getMemberRepr(request.headers.pkfpSource);
-      var newNickname = broadcast ? _ChatUtility__WEBPACK_IMPORTED_MODULE_16__[/* ChatUtility */ "a"].symKeyDecrypt(request.body.nickname, self.session.metadata.sharedKey) : _ChatUtility__WEBPACK_IMPORTED_MODULE_16__[/* ChatUtility */ "a"].decryptStandardMessage(request.body.nickname, self.session.privateKey);
+      var newNickname = broadcast ? ChatUtility["a" /* ChatUtility */].symKeyDecrypt(request.body.nickname, self.session.metadata.sharedKey) : ChatUtility["a" /* ChatUtility */].decryptStandardMessage(request.body.nickname, self.session.privateKey);
       newNickname = newNickname.toString("utf8");
 
       if (newNickname !== existingNickname) {
@@ -7998,7 +8012,7 @@ var Topic = /*#__PURE__*/function () {
         privateKey = this.privateKey;
       }
 
-      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_17__[/* iCrypto */ "a"]();
+      var ic = new iCrypto["a" /* iCrypto */]();
       ic.asym.setKey("privk", privateKey, "private").publicFromPrivate("privk", "pub");
       var publicKey = ic.get("pub");
 
@@ -8006,15 +8020,15 @@ var Topic = /*#__PURE__*/function () {
         settingsRaw = JSON.stringify(settingsRaw);
       }
 
-      var settingsEnc = _ClientSettings__WEBPACK_IMPORTED_MODULE_19__[/* ClientSettings */ "a"].encrypt(publicKey, settingsRaw);
+      var settingsEnc = ClientSettings["a" /* ClientSettings */].encrypt(publicKey, settingsRaw);
       ic.addBlob("cipher", settingsEnc).privateKeySign("cipher", "privk", "sign");
       var body = {
         settings: settingsEnc,
         signature: ic.get("sign")
       };
-      var request = new _Message__WEBPACK_IMPORTED_MODULE_14__[/* Message */ "a"](this.version);
+      var request = new Message["a" /* Message */](this.version);
       request.setSource(this.pkfp);
-      request.setCommand(_common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].UPDATE_SETTINGS);
+      request.setCommand(Events["Internal"].UPDATE_SETTINGS);
       request.set("body", body);
       request.signMessage(privateKey);
       console.log("Sending update settings request");
@@ -8030,7 +8044,7 @@ var Topic = /*#__PURE__*/function () {
       var metaIDs = Object.keys(keys);
 
       for (var i = 0; i < metaIDs.length; ++i) {
-        var _ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_17__[/* iCrypto */ "a"]();
+        var _ic = new iCrypto["a" /* iCrypto */]();
 
         _ic.addBlob('k', keys[metaIDs[i]]).hexToBytes("k", "kraw").setRSAKey("priv", self.privateKey, "private").privateKeyDecrypt("kraw", "priv", "kdec");
 
@@ -8041,10 +8055,10 @@ var Topic = /*#__PURE__*/function () {
       var result = [];
 
       for (var _i4 = 0; _i4 < messages.length; ++_i4) {
-        var message = new _ChatMessage__WEBPACK_IMPORTED_MODULE_18__[/* ChatMessage */ "a"](messages[_i4]);
+        var message = new ChatMessage["a" /* ChatMessage */](messages[_i4]);
 
         if (message.header.service) {
-          message.body = _ChatUtility__WEBPACK_IMPORTED_MODULE_16__[/* ChatUtility */ "a"].decryptStandardMessage(message.body, self.privateKey);
+          message.body = ChatUtility["a" /* ChatUtility */].decryptStandardMessage(message.body, self.privateKey);
         } else if (message.header.private) {
           message.decryptPrivateMessage(self.privateKey);
         } else {
@@ -8061,22 +8075,22 @@ var Topic = /*#__PURE__*/function () {
         var glueIndex = self.messages.findIndex(function (msg) {
           return msg.header.id === latestLoadedID;
         });
-        self.messages = glueIndex ? [].concat(_babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0___default()(self.messages.slice(0, glueIndex)), result) : [].concat(_babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0___default()(self.messages), result);
+        self.messages = glueIndex ? [].concat(toConsumableArray_default()(self.messages.slice(0, glueIndex)), result) : [].concat(toConsumableArray_default()(self.messages), result);
       }
 
       self.initLoaded = true;
       self.allMessagesLoaded = data.allLoaded;
-      self.emit(_common_Events__WEBPACK_IMPORTED_MODULE_12__["Events"].MESSAGES_LOADED, self.messages);
+      self.emit(Events["Events"].MESSAGES_LOADED, self.messages);
     }
   }, {
     key: "processSettingsUpdated",
     value: function processSettingsUpdated(msg) {
       var settings = msg.body.settings;
       var signature = msg.body.signature;
-      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_17__[/* iCrypto */ "a"]();
+      var ic = new iCrypto["a" /* iCrypto */]();
       ic.addBlob("settings", settings).addBlob("sign", signature).setRSAKey("pub", this.getPublicKey(), "public").publicKeyVerify("settings", "sign", "pub", "res");
       if (!ic.get("res")) throw new Error("Settings blob signature verification failed");
-      var settingsPlain = JSON.parse(_ChatUtility__WEBPACK_IMPORTED_MODULE_16__[/* ChatUtility */ "a"].decryptStandardMessage(settings, this.privateKey));
+      var settingsPlain = JSON.parse(ChatUtility["a" /* ChatUtility */].decryptStandardMessage(settings, this.privateKey));
       this.settings = settingsPlain;
       console.log("Settings updated successfully!");
     } //TODO Cleanup or implememnt
@@ -8167,7 +8181,7 @@ var Topic = /*#__PURE__*/function () {
       if (!this.privateKey) throw new Error("No private key found");
 
       if (!this.publicKey) {
-        var _ic2 = new _iCrypto__WEBPACK_IMPORTED_MODULE_17__[/* iCrypto */ "a"]();
+        var _ic2 = new iCrypto["a" /* iCrypto */]();
 
         _ic2.setRSAKey("priv", this.privateKey, "private").publicFromPrivate("priv", "pub");
 
@@ -8199,17 +8213,17 @@ var Topic = /*#__PURE__*/function () {
   }, {
     key: "verifyMetadata",
     value: function verifyMetadata() {
-      return _Metadata__WEBPACK_IMPORTED_MODULE_15__[/* Metadata */ "a"].isMetadataValid(this._metadata);
+      return Metadata_Metadata.isMetadataValid(this._metadata);
     }
   }], [{
     key: "prepareNewTopicSettings",
     value: function prepareNewTopicSettings(version, nickname, topicName, publicKey) {
       var encrypt = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : true;
       //Creating and encrypting topic settings:
-      var settings = new _ClientSettings__WEBPACK_IMPORTED_MODULE_19__[/* ClientSettings */ "a"](version);
+      var settings = new ClientSettings["a" /* ClientSettings */](version);
 
       if (nickname) {
-        var _ic3 = new _iCrypto__WEBPACK_IMPORTED_MODULE_17__[/* iCrypto */ "a"]();
+        var _ic3 = new iCrypto["a" /* iCrypto */]();
 
         _ic3.asym.setKey("pubk", publicKey, "public").getPublicKeyFingerprint("pubk", "pkfp");
 
@@ -8217,7 +8231,7 @@ var Topic = /*#__PURE__*/function () {
       }
 
       if (encrypt) {
-        return _ClientSettings__WEBPACK_IMPORTED_MODULE_19__[/* ClientSettings */ "a"].encrypt(publicKey, settings);
+        return ClientSettings["a" /* ClientSettings */].encrypt(publicKey, settings);
       } else {
         return settings;
       }
@@ -8228,12 +8242,12 @@ var Topic = /*#__PURE__*/function () {
 }();
 
 /***/ }),
-/* 20 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var dP = __webpack_require__(21);
-var createDesc = __webpack_require__(52);
-module.exports = __webpack_require__(22) ? function (object, key, value) {
+var dP = __webpack_require__(20);
+var createDesc = __webpack_require__(51);
+module.exports = __webpack_require__(21) ? function (object, key, value) {
   return dP.f(object, key, createDesc(1, value));
 } : function (object, key, value) {
   object[key] = value;
@@ -8242,15 +8256,15 @@ module.exports = __webpack_require__(22) ? function (object, key, value) {
 
 
 /***/ }),
-/* 21 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var anObject = __webpack_require__(15);
 var IE8_DOM_DEFINE = __webpack_require__(125);
-var toPrimitive = __webpack_require__(73);
+var toPrimitive = __webpack_require__(72);
 var dP = Object.defineProperty;
 
-exports.f = __webpack_require__(22) ? Object.defineProperty : function defineProperty(O, P, Attributes) {
+exports.f = __webpack_require__(21) ? Object.defineProperty : function defineProperty(O, P, Attributes) {
   anObject(O);
   P = toPrimitive(P, true);
   anObject(Attributes);
@@ -8264,17 +8278,17 @@ exports.f = __webpack_require__(22) ? Object.defineProperty : function definePro
 
 
 /***/ }),
-/* 22 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Thank's IE8 for his funny defineProperty
-module.exports = !__webpack_require__(23)(function () {
+module.exports = !__webpack_require__(22)(function () {
   return Object.defineProperty({}, 'a', { get: function () { return 7; } }).a != 7;
 });
 
 
 /***/ }),
-/* 23 */
+/* 22 */
 /***/ (function(module, exports) {
 
 module.exports = function (exec) {
@@ -8287,7 +8301,7 @@ module.exports = function (exec) {
 
 
 /***/ }),
-/* 24 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.1.15 ToLength
@@ -8296,6 +8310,70 @@ var min = Math.min;
 module.exports = function (it) {
   return it > 0 ? min(toInteger(it), 0x1fffffffffffff) : 0; // pow(2, 53) - 1 == 9007199254740991
 };
+
+
+/***/ }),
+/* 24 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var $iterators = __webpack_require__(133);
+var getKeys = __webpack_require__(76);
+var redefine = __webpack_require__(34);
+var global = __webpack_require__(11);
+var hide = __webpack_require__(19);
+var Iterators = __webpack_require__(53);
+var wks = __webpack_require__(12);
+var ITERATOR = wks('iterator');
+var TO_STRING_TAG = wks('toStringTag');
+var ArrayValues = Iterators.Array;
+
+var DOMIterables = {
+  CSSRuleList: true, // TODO: Not spec compliant, should be false.
+  CSSStyleDeclaration: false,
+  CSSValueList: false,
+  ClientRectList: false,
+  DOMRectList: false,
+  DOMStringList: false,
+  DOMTokenList: true,
+  DataTransferItemList: false,
+  FileList: false,
+  HTMLAllCollection: false,
+  HTMLCollection: false,
+  HTMLFormElement: false,
+  HTMLSelectElement: false,
+  MediaList: true, // TODO: Not spec compliant, should be false.
+  MimeTypeArray: false,
+  NamedNodeMap: false,
+  NodeList: true,
+  PaintRequestList: false,
+  Plugin: false,
+  PluginArray: false,
+  SVGLengthList: false,
+  SVGNumberList: false,
+  SVGPathSegList: false,
+  SVGPointList: false,
+  SVGStringList: false,
+  SVGTransformList: false,
+  SourceBufferList: false,
+  StyleSheetList: true, // TODO: Not spec compliant, should be false.
+  TextTrackCueList: false,
+  TextTrackList: false,
+  TouchList: false
+};
+
+for (var collections = getKeys(DOMIterables), i = 0; i < collections.length; i++) {
+  var NAME = collections[i];
+  var explicit = DOMIterables[NAME];
+  var Collection = global[NAME];
+  var proto = Collection && Collection.prototype;
+  var key;
+  if (proto) {
+    if (!proto[ITERATOR]) hide(proto, ITERATOR, ArrayValues);
+    if (!proto[TO_STRING_TAG]) hide(proto, TO_STRING_TAG, NAME);
+    Iterators[NAME] = ArrayValues;
+    if (explicit) for (key in $iterators) if (!proto[key]) redefine(proto, key, $iterators[key], true);
+  }
+}
 
 
 /***/ }),
@@ -8499,10 +8577,10 @@ module.exports = forge.random;
 /* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var global = __webpack_require__(10);
+var global = __webpack_require__(11);
 var core = __webpack_require__(37);
-var hide = __webpack_require__(20);
-var redefine = __webpack_require__(33);
+var hide = __webpack_require__(19);
+var redefine = __webpack_require__(34);
 var ctx = __webpack_require__(40);
 var PROTOTYPE = 'prototype';
 
@@ -8555,17 +8633,1043 @@ module.exports = function (it) {
 
 /***/ }),
 /* 28 */
+/***/ (function(module, exports) {
+
+/**
+ * Copyright (c) 2014-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+!(function(global) {
+  "use strict";
+
+  var Op = Object.prototype;
+  var hasOwn = Op.hasOwnProperty;
+  var undefined; // More compressible than void 0.
+  var $Symbol = typeof Symbol === "function" ? Symbol : {};
+  var iteratorSymbol = $Symbol.iterator || "@@iterator";
+  var asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator";
+  var toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag";
+
+  var inModule = typeof module === "object";
+  var runtime = global.regeneratorRuntime;
+  if (runtime) {
+    if (inModule) {
+      // If regeneratorRuntime is defined globally and we're in a module,
+      // make the exports object identical to regeneratorRuntime.
+      module.exports = runtime;
+    }
+    // Don't bother evaluating the rest of this file if the runtime was
+    // already defined globally.
+    return;
+  }
+
+  // Define the runtime globally (as expected by generated code) as either
+  // module.exports (if we're in a module) or a new, empty object.
+  runtime = global.regeneratorRuntime = inModule ? module.exports : {};
+
+  function wrap(innerFn, outerFn, self, tryLocsList) {
+    // If outerFn provided and outerFn.prototype is a Generator, then outerFn.prototype instanceof Generator.
+    var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator;
+    var generator = Object.create(protoGenerator.prototype);
+    var context = new Context(tryLocsList || []);
+
+    // The ._invoke method unifies the implementations of the .next,
+    // .throw, and .return methods.
+    generator._invoke = makeInvokeMethod(innerFn, self, context);
+
+    return generator;
+  }
+  runtime.wrap = wrap;
+
+  // Try/catch helper to minimize deoptimizations. Returns a completion
+  // record like context.tryEntries[i].completion. This interface could
+  // have been (and was previously) designed to take a closure to be
+  // invoked without arguments, but in all the cases we care about we
+  // already have an existing method we want to call, so there's no need
+  // to create a new function object. We can even get away with assuming
+  // the method takes exactly one argument, since that happens to be true
+  // in every case, so we don't have to touch the arguments object. The
+  // only additional allocation required is the completion record, which
+  // has a stable shape and so hopefully should be cheap to allocate.
+  function tryCatch(fn, obj, arg) {
+    try {
+      return { type: "normal", arg: fn.call(obj, arg) };
+    } catch (err) {
+      return { type: "throw", arg: err };
+    }
+  }
+
+  var GenStateSuspendedStart = "suspendedStart";
+  var GenStateSuspendedYield = "suspendedYield";
+  var GenStateExecuting = "executing";
+  var GenStateCompleted = "completed";
+
+  // Returning this object from the innerFn has the same effect as
+  // breaking out of the dispatch switch statement.
+  var ContinueSentinel = {};
+
+  // Dummy constructor functions that we use as the .constructor and
+  // .constructor.prototype properties for functions that return Generator
+  // objects. For full spec compliance, you may wish to configure your
+  // minifier not to mangle the names of these two functions.
+  function Generator() {}
+  function GeneratorFunction() {}
+  function GeneratorFunctionPrototype() {}
+
+  // This is a polyfill for %IteratorPrototype% for environments that
+  // don't natively support it.
+  var IteratorPrototype = {};
+  IteratorPrototype[iteratorSymbol] = function () {
+    return this;
+  };
+
+  var getProto = Object.getPrototypeOf;
+  var NativeIteratorPrototype = getProto && getProto(getProto(values([])));
+  if (NativeIteratorPrototype &&
+      NativeIteratorPrototype !== Op &&
+      hasOwn.call(NativeIteratorPrototype, iteratorSymbol)) {
+    // This environment has a native %IteratorPrototype%; use it instead
+    // of the polyfill.
+    IteratorPrototype = NativeIteratorPrototype;
+  }
+
+  var Gp = GeneratorFunctionPrototype.prototype =
+    Generator.prototype = Object.create(IteratorPrototype);
+  GeneratorFunction.prototype = Gp.constructor = GeneratorFunctionPrototype;
+  GeneratorFunctionPrototype.constructor = GeneratorFunction;
+  GeneratorFunctionPrototype[toStringTagSymbol] =
+    GeneratorFunction.displayName = "GeneratorFunction";
+
+  // Helper for defining the .next, .throw, and .return methods of the
+  // Iterator interface in terms of a single ._invoke method.
+  function defineIteratorMethods(prototype) {
+    ["next", "throw", "return"].forEach(function(method) {
+      prototype[method] = function(arg) {
+        return this._invoke(method, arg);
+      };
+    });
+  }
+
+  runtime.isGeneratorFunction = function(genFun) {
+    var ctor = typeof genFun === "function" && genFun.constructor;
+    return ctor
+      ? ctor === GeneratorFunction ||
+        // For the native GeneratorFunction constructor, the best we can
+        // do is to check its .name property.
+        (ctor.displayName || ctor.name) === "GeneratorFunction"
+      : false;
+  };
+
+  runtime.mark = function(genFun) {
+    if (Object.setPrototypeOf) {
+      Object.setPrototypeOf(genFun, GeneratorFunctionPrototype);
+    } else {
+      genFun.__proto__ = GeneratorFunctionPrototype;
+      if (!(toStringTagSymbol in genFun)) {
+        genFun[toStringTagSymbol] = "GeneratorFunction";
+      }
+    }
+    genFun.prototype = Object.create(Gp);
+    return genFun;
+  };
+
+  // Within the body of any async function, `await x` is transformed to
+  // `yield regeneratorRuntime.awrap(x)`, so that the runtime can test
+  // `hasOwn.call(value, "__await")` to determine if the yielded value is
+  // meant to be awaited.
+  runtime.awrap = function(arg) {
+    return { __await: arg };
+  };
+
+  function AsyncIterator(generator) {
+    function invoke(method, arg, resolve, reject) {
+      var record = tryCatch(generator[method], generator, arg);
+      if (record.type === "throw") {
+        reject(record.arg);
+      } else {
+        var result = record.arg;
+        var value = result.value;
+        if (value &&
+            typeof value === "object" &&
+            hasOwn.call(value, "__await")) {
+          return Promise.resolve(value.__await).then(function(value) {
+            invoke("next", value, resolve, reject);
+          }, function(err) {
+            invoke("throw", err, resolve, reject);
+          });
+        }
+
+        return Promise.resolve(value).then(function(unwrapped) {
+          // When a yielded Promise is resolved, its final value becomes
+          // the .value of the Promise<{value,done}> result for the
+          // current iteration. If the Promise is rejected, however, the
+          // result for this iteration will be rejected with the same
+          // reason. Note that rejections of yielded Promises are not
+          // thrown back into the generator function, as is the case
+          // when an awaited Promise is rejected. This difference in
+          // behavior between yield and await is important, because it
+          // allows the consumer to decide what to do with the yielded
+          // rejection (swallow it and continue, manually .throw it back
+          // into the generator, abandon iteration, whatever). With
+          // await, by contrast, there is no opportunity to examine the
+          // rejection reason outside the generator function, so the
+          // only option is to throw it from the await expression, and
+          // let the generator function handle the exception.
+          result.value = unwrapped;
+          resolve(result);
+        }, reject);
+      }
+    }
+
+    var previousPromise;
+
+    function enqueue(method, arg) {
+      function callInvokeWithMethodAndArg() {
+        return new Promise(function(resolve, reject) {
+          invoke(method, arg, resolve, reject);
+        });
+      }
+
+      return previousPromise =
+        // If enqueue has been called before, then we want to wait until
+        // all previous Promises have been resolved before calling invoke,
+        // so that results are always delivered in the correct order. If
+        // enqueue has not been called before, then it is important to
+        // call invoke immediately, without waiting on a callback to fire,
+        // so that the async generator function has the opportunity to do
+        // any necessary setup in a predictable way. This predictability
+        // is why the Promise constructor synchronously invokes its
+        // executor callback, and why async functions synchronously
+        // execute code before the first await. Since we implement simple
+        // async functions in terms of async generators, it is especially
+        // important to get this right, even though it requires care.
+        previousPromise ? previousPromise.then(
+          callInvokeWithMethodAndArg,
+          // Avoid propagating failures to Promises returned by later
+          // invocations of the iterator.
+          callInvokeWithMethodAndArg
+        ) : callInvokeWithMethodAndArg();
+    }
+
+    // Define the unified helper method that is used to implement .next,
+    // .throw, and .return (see defineIteratorMethods).
+    this._invoke = enqueue;
+  }
+
+  defineIteratorMethods(AsyncIterator.prototype);
+  AsyncIterator.prototype[asyncIteratorSymbol] = function () {
+    return this;
+  };
+  runtime.AsyncIterator = AsyncIterator;
+
+  // Note that simple async functions are implemented on top of
+  // AsyncIterator objects; they just return a Promise for the value of
+  // the final result produced by the iterator.
+  runtime.async = function(innerFn, outerFn, self, tryLocsList) {
+    var iter = new AsyncIterator(
+      wrap(innerFn, outerFn, self, tryLocsList)
+    );
+
+    return runtime.isGeneratorFunction(outerFn)
+      ? iter // If outerFn is a generator, return the full iterator.
+      : iter.next().then(function(result) {
+          return result.done ? result.value : iter.next();
+        });
+  };
+
+  function makeInvokeMethod(innerFn, self, context) {
+    var state = GenStateSuspendedStart;
+
+    return function invoke(method, arg) {
+      if (state === GenStateExecuting) {
+        throw new Error("Generator is already running");
+      }
+
+      if (state === GenStateCompleted) {
+        if (method === "throw") {
+          throw arg;
+        }
+
+        // Be forgiving, per 25.3.3.3.3 of the spec:
+        // https://people.mozilla.org/~jorendorff/es6-draft.html#sec-generatorresume
+        return doneResult();
+      }
+
+      context.method = method;
+      context.arg = arg;
+
+      while (true) {
+        var delegate = context.delegate;
+        if (delegate) {
+          var delegateResult = maybeInvokeDelegate(delegate, context);
+          if (delegateResult) {
+            if (delegateResult === ContinueSentinel) continue;
+            return delegateResult;
+          }
+        }
+
+        if (context.method === "next") {
+          // Setting context._sent for legacy support of Babel's
+          // function.sent implementation.
+          context.sent = context._sent = context.arg;
+
+        } else if (context.method === "throw") {
+          if (state === GenStateSuspendedStart) {
+            state = GenStateCompleted;
+            throw context.arg;
+          }
+
+          context.dispatchException(context.arg);
+
+        } else if (context.method === "return") {
+          context.abrupt("return", context.arg);
+        }
+
+        state = GenStateExecuting;
+
+        var record = tryCatch(innerFn, self, context);
+        if (record.type === "normal") {
+          // If an exception is thrown from innerFn, we leave state ===
+          // GenStateExecuting and loop back for another invocation.
+          state = context.done
+            ? GenStateCompleted
+            : GenStateSuspendedYield;
+
+          if (record.arg === ContinueSentinel) {
+            continue;
+          }
+
+          return {
+            value: record.arg,
+            done: context.done
+          };
+
+        } else if (record.type === "throw") {
+          state = GenStateCompleted;
+          // Dispatch the exception by looping back around to the
+          // context.dispatchException(context.arg) call above.
+          context.method = "throw";
+          context.arg = record.arg;
+        }
+      }
+    };
+  }
+
+  // Call delegate.iterator[context.method](context.arg) and handle the
+  // result, either by returning a { value, done } result from the
+  // delegate iterator, or by modifying context.method and context.arg,
+  // setting context.delegate to null, and returning the ContinueSentinel.
+  function maybeInvokeDelegate(delegate, context) {
+    var method = delegate.iterator[context.method];
+    if (method === undefined) {
+      // A .throw or .return when the delegate iterator has no .throw
+      // method always terminates the yield* loop.
+      context.delegate = null;
+
+      if (context.method === "throw") {
+        if (delegate.iterator.return) {
+          // If the delegate iterator has a return method, give it a
+          // chance to clean up.
+          context.method = "return";
+          context.arg = undefined;
+          maybeInvokeDelegate(delegate, context);
+
+          if (context.method === "throw") {
+            // If maybeInvokeDelegate(context) changed context.method from
+            // "return" to "throw", let that override the TypeError below.
+            return ContinueSentinel;
+          }
+        }
+
+        context.method = "throw";
+        context.arg = new TypeError(
+          "The iterator does not provide a 'throw' method");
+      }
+
+      return ContinueSentinel;
+    }
+
+    var record = tryCatch(method, delegate.iterator, context.arg);
+
+    if (record.type === "throw") {
+      context.method = "throw";
+      context.arg = record.arg;
+      context.delegate = null;
+      return ContinueSentinel;
+    }
+
+    var info = record.arg;
+
+    if (! info) {
+      context.method = "throw";
+      context.arg = new TypeError("iterator result is not an object");
+      context.delegate = null;
+      return ContinueSentinel;
+    }
+
+    if (info.done) {
+      // Assign the result of the finished delegate to the temporary
+      // variable specified by delegate.resultName (see delegateYield).
+      context[delegate.resultName] = info.value;
+
+      // Resume execution at the desired location (see delegateYield).
+      context.next = delegate.nextLoc;
+
+      // If context.method was "throw" but the delegate handled the
+      // exception, let the outer generator proceed normally. If
+      // context.method was "next", forget context.arg since it has been
+      // "consumed" by the delegate iterator. If context.method was
+      // "return", allow the original .return call to continue in the
+      // outer generator.
+      if (context.method !== "return") {
+        context.method = "next";
+        context.arg = undefined;
+      }
+
+    } else {
+      // Re-yield the result returned by the delegate method.
+      return info;
+    }
+
+    // The delegate iterator is finished, so forget it and continue with
+    // the outer generator.
+    context.delegate = null;
+    return ContinueSentinel;
+  }
+
+  // Define Generator.prototype.{next,throw,return} in terms of the
+  // unified ._invoke helper method.
+  defineIteratorMethods(Gp);
+
+  Gp[toStringTagSymbol] = "Generator";
+
+  // A Generator should always return itself as the iterator object when the
+  // @@iterator function is called on it. Some browsers' implementations of the
+  // iterator prototype chain incorrectly implement this, causing the Generator
+  // object to not be returned from this call. This ensures that doesn't happen.
+  // See https://github.com/facebook/regenerator/issues/274 for more details.
+  Gp[iteratorSymbol] = function() {
+    return this;
+  };
+
+  Gp.toString = function() {
+    return "[object Generator]";
+  };
+
+  function pushTryEntry(locs) {
+    var entry = { tryLoc: locs[0] };
+
+    if (1 in locs) {
+      entry.catchLoc = locs[1];
+    }
+
+    if (2 in locs) {
+      entry.finallyLoc = locs[2];
+      entry.afterLoc = locs[3];
+    }
+
+    this.tryEntries.push(entry);
+  }
+
+  function resetTryEntry(entry) {
+    var record = entry.completion || {};
+    record.type = "normal";
+    delete record.arg;
+    entry.completion = record;
+  }
+
+  function Context(tryLocsList) {
+    // The root entry object (effectively a try statement without a catch
+    // or a finally block) gives us a place to store values thrown from
+    // locations where there is no enclosing try statement.
+    this.tryEntries = [{ tryLoc: "root" }];
+    tryLocsList.forEach(pushTryEntry, this);
+    this.reset(true);
+  }
+
+  runtime.keys = function(object) {
+    var keys = [];
+    for (var key in object) {
+      keys.push(key);
+    }
+    keys.reverse();
+
+    // Rather than returning an object with a next method, we keep
+    // things simple and return the next function itself.
+    return function next() {
+      while (keys.length) {
+        var key = keys.pop();
+        if (key in object) {
+          next.value = key;
+          next.done = false;
+          return next;
+        }
+      }
+
+      // To avoid creating an additional object, we just hang the .value
+      // and .done properties off the next function object itself. This
+      // also ensures that the minifier will not anonymize the function.
+      next.done = true;
+      return next;
+    };
+  };
+
+  function values(iterable) {
+    if (iterable) {
+      var iteratorMethod = iterable[iteratorSymbol];
+      if (iteratorMethod) {
+        return iteratorMethod.call(iterable);
+      }
+
+      if (typeof iterable.next === "function") {
+        return iterable;
+      }
+
+      if (!isNaN(iterable.length)) {
+        var i = -1, next = function next() {
+          while (++i < iterable.length) {
+            if (hasOwn.call(iterable, i)) {
+              next.value = iterable[i];
+              next.done = false;
+              return next;
+            }
+          }
+
+          next.value = undefined;
+          next.done = true;
+
+          return next;
+        };
+
+        return next.next = next;
+      }
+    }
+
+    // Return an iterator with no values.
+    return { next: doneResult };
+  }
+  runtime.values = values;
+
+  function doneResult() {
+    return { value: undefined, done: true };
+  }
+
+  Context.prototype = {
+    constructor: Context,
+
+    reset: function(skipTempReset) {
+      this.prev = 0;
+      this.next = 0;
+      // Resetting context._sent for legacy support of Babel's
+      // function.sent implementation.
+      this.sent = this._sent = undefined;
+      this.done = false;
+      this.delegate = null;
+
+      this.method = "next";
+      this.arg = undefined;
+
+      this.tryEntries.forEach(resetTryEntry);
+
+      if (!skipTempReset) {
+        for (var name in this) {
+          // Not sure about the optimal order of these conditions:
+          if (name.charAt(0) === "t" &&
+              hasOwn.call(this, name) &&
+              !isNaN(+name.slice(1))) {
+            this[name] = undefined;
+          }
+        }
+      }
+    },
+
+    stop: function() {
+      this.done = true;
+
+      var rootEntry = this.tryEntries[0];
+      var rootRecord = rootEntry.completion;
+      if (rootRecord.type === "throw") {
+        throw rootRecord.arg;
+      }
+
+      return this.rval;
+    },
+
+    dispatchException: function(exception) {
+      if (this.done) {
+        throw exception;
+      }
+
+      var context = this;
+      function handle(loc, caught) {
+        record.type = "throw";
+        record.arg = exception;
+        context.next = loc;
+
+        if (caught) {
+          // If the dispatched exception was caught by a catch block,
+          // then let that catch block handle the exception normally.
+          context.method = "next";
+          context.arg = undefined;
+        }
+
+        return !! caught;
+      }
+
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        var record = entry.completion;
+
+        if (entry.tryLoc === "root") {
+          // Exception thrown outside of any try block that could handle
+          // it, so set the completion value of the entire function to
+          // throw the exception.
+          return handle("end");
+        }
+
+        if (entry.tryLoc <= this.prev) {
+          var hasCatch = hasOwn.call(entry, "catchLoc");
+          var hasFinally = hasOwn.call(entry, "finallyLoc");
+
+          if (hasCatch && hasFinally) {
+            if (this.prev < entry.catchLoc) {
+              return handle(entry.catchLoc, true);
+            } else if (this.prev < entry.finallyLoc) {
+              return handle(entry.finallyLoc);
+            }
+
+          } else if (hasCatch) {
+            if (this.prev < entry.catchLoc) {
+              return handle(entry.catchLoc, true);
+            }
+
+          } else if (hasFinally) {
+            if (this.prev < entry.finallyLoc) {
+              return handle(entry.finallyLoc);
+            }
+
+          } else {
+            throw new Error("try statement without catch or finally");
+          }
+        }
+      }
+    },
+
+    abrupt: function(type, arg) {
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        if (entry.tryLoc <= this.prev &&
+            hasOwn.call(entry, "finallyLoc") &&
+            this.prev < entry.finallyLoc) {
+          var finallyEntry = entry;
+          break;
+        }
+      }
+
+      if (finallyEntry &&
+          (type === "break" ||
+           type === "continue") &&
+          finallyEntry.tryLoc <= arg &&
+          arg <= finallyEntry.finallyLoc) {
+        // Ignore the finally entry if control is not jumping to a
+        // location outside the try/catch block.
+        finallyEntry = null;
+      }
+
+      var record = finallyEntry ? finallyEntry.completion : {};
+      record.type = type;
+      record.arg = arg;
+
+      if (finallyEntry) {
+        this.method = "next";
+        this.next = finallyEntry.finallyLoc;
+        return ContinueSentinel;
+      }
+
+      return this.complete(record);
+    },
+
+    complete: function(record, afterLoc) {
+      if (record.type === "throw") {
+        throw record.arg;
+      }
+
+      if (record.type === "break" ||
+          record.type === "continue") {
+        this.next = record.arg;
+      } else if (record.type === "return") {
+        this.rval = this.arg = record.arg;
+        this.method = "return";
+        this.next = "end";
+      } else if (record.type === "normal" && afterLoc) {
+        this.next = afterLoc;
+      }
+
+      return ContinueSentinel;
+    },
+
+    finish: function(finallyLoc) {
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        if (entry.finallyLoc === finallyLoc) {
+          this.complete(entry.completion, entry.afterLoc);
+          resetTryEntry(entry);
+          return ContinueSentinel;
+        }
+      }
+    },
+
+    "catch": function(tryLoc) {
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        if (entry.tryLoc === tryLoc) {
+          var record = entry.completion;
+          if (record.type === "throw") {
+            var thrown = record.arg;
+            resetTryEntry(entry);
+          }
+          return thrown;
+        }
+      }
+
+      // The context.catch method must only be called with a location
+      // argument that corresponds to a known catch block.
+      throw new Error("illegal catch attempt");
+    },
+
+    delegateYield: function(iterable, resultName, nextLoc) {
+      this.delegate = {
+        iterator: values(iterable),
+        resultName: resultName,
+        nextLoc: nextLoc
+      };
+
+      if (this.method === "next") {
+        // Deliberately forget the last sent value so that we don't
+        // accidentally pass it on to the delegate.
+        this.arg = undefined;
+      }
+
+      return ContinueSentinel;
+    }
+  };
+})(
+  // In sloppy mode, unbound `this` refers to the global object, fallback to
+  // Function constructor if we're in global strict mode. That is sadly a form
+  // of indirect eval which violates Content Security Policy.
+  (function() { return this })() || Function("return this")()
+);
+
+
+/***/ }),
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.1.13 ToObject(argument)
-var defined = __webpack_require__(75);
+var defined = __webpack_require__(74);
 module.exports = function (it) {
   return Object(defined(it));
 };
 
 
 /***/ }),
-/* 29 */
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var LIBRARY = __webpack_require__(39);
+var global = __webpack_require__(11);
+var ctx = __webpack_require__(40);
+var classof = __webpack_require__(59);
+var $export = __webpack_require__(26);
+var isObject = __webpack_require__(27);
+var aFunction = __webpack_require__(58);
+var anInstance = __webpack_require__(104);
+var forOf = __webpack_require__(211);
+var speciesConstructor = __webpack_require__(75);
+var task = __webpack_require__(137).set;
+var microtask = __webpack_require__(213)();
+var newPromiseCapabilityModule = __webpack_require__(138);
+var perform = __webpack_require__(214);
+var userAgent = __webpack_require__(215);
+var promiseResolve = __webpack_require__(139);
+var PROMISE = 'Promise';
+var TypeError = global.TypeError;
+var process = global.process;
+var versions = process && process.versions;
+var v8 = versions && versions.v8 || '';
+var $Promise = global[PROMISE];
+var isNode = classof(process) == 'process';
+var empty = function () { /* empty */ };
+var Internal, newGenericPromiseCapability, OwnPromiseCapability, Wrapper;
+var newPromiseCapability = newGenericPromiseCapability = newPromiseCapabilityModule.f;
+
+var USE_NATIVE = !!function () {
+  try {
+    // correct subclassing with @@species support
+    var promise = $Promise.resolve(1);
+    var FakePromise = (promise.constructor = {})[__webpack_require__(12)('species')] = function (exec) {
+      exec(empty, empty);
+    };
+    // unhandled rejections tracking support, NodeJS Promise without it fails @@species test
+    return (isNode || typeof PromiseRejectionEvent == 'function')
+      && promise.then(empty) instanceof FakePromise
+      // v8 6.6 (Node 10 and Chrome 66) have a bug with resolving custom thenables
+      // https://bugs.chromium.org/p/chromium/issues/detail?id=830565
+      // we can't detect it synchronously, so just check versions
+      && v8.indexOf('6.6') !== 0
+      && userAgent.indexOf('Chrome/66') === -1;
+  } catch (e) { /* empty */ }
+}();
+
+// helpers
+var isThenable = function (it) {
+  var then;
+  return isObject(it) && typeof (then = it.then) == 'function' ? then : false;
+};
+var notify = function (promise, isReject) {
+  if (promise._n) return;
+  promise._n = true;
+  var chain = promise._c;
+  microtask(function () {
+    var value = promise._v;
+    var ok = promise._s == 1;
+    var i = 0;
+    var run = function (reaction) {
+      var handler = ok ? reaction.ok : reaction.fail;
+      var resolve = reaction.resolve;
+      var reject = reaction.reject;
+      var domain = reaction.domain;
+      var result, then, exited;
+      try {
+        if (handler) {
+          if (!ok) {
+            if (promise._h == 2) onHandleUnhandled(promise);
+            promise._h = 1;
+          }
+          if (handler === true) result = value;
+          else {
+            if (domain) domain.enter();
+            result = handler(value); // may throw
+            if (domain) {
+              domain.exit();
+              exited = true;
+            }
+          }
+          if (result === reaction.promise) {
+            reject(TypeError('Promise-chain cycle'));
+          } else if (then = isThenable(result)) {
+            then.call(result, resolve, reject);
+          } else resolve(result);
+        } else reject(value);
+      } catch (e) {
+        if (domain && !exited) domain.exit();
+        reject(e);
+      }
+    };
+    while (chain.length > i) run(chain[i++]); // variable length - can't use forEach
+    promise._c = [];
+    promise._n = false;
+    if (isReject && !promise._h) onUnhandled(promise);
+  });
+};
+var onUnhandled = function (promise) {
+  task.call(global, function () {
+    var value = promise._v;
+    var unhandled = isUnhandled(promise);
+    var result, handler, console;
+    if (unhandled) {
+      result = perform(function () {
+        if (isNode) {
+          process.emit('unhandledRejection', value, promise);
+        } else if (handler = global.onunhandledrejection) {
+          handler({ promise: promise, reason: value });
+        } else if ((console = global.console) && console.error) {
+          console.error('Unhandled promise rejection', value);
+        }
+      });
+      // Browsers should not trigger `rejectionHandled` event if it was handled here, NodeJS - should
+      promise._h = isNode || isUnhandled(promise) ? 2 : 1;
+    } promise._a = undefined;
+    if (unhandled && result.e) throw result.v;
+  });
+};
+var isUnhandled = function (promise) {
+  return promise._h !== 1 && (promise._a || promise._c).length === 0;
+};
+var onHandleUnhandled = function (promise) {
+  task.call(global, function () {
+    var handler;
+    if (isNode) {
+      process.emit('rejectionHandled', promise);
+    } else if (handler = global.onrejectionhandled) {
+      handler({ promise: promise, reason: promise._v });
+    }
+  });
+};
+var $reject = function (value) {
+  var promise = this;
+  if (promise._d) return;
+  promise._d = true;
+  promise = promise._w || promise; // unwrap
+  promise._v = value;
+  promise._s = 2;
+  if (!promise._a) promise._a = promise._c.slice();
+  notify(promise, true);
+};
+var $resolve = function (value) {
+  var promise = this;
+  var then;
+  if (promise._d) return;
+  promise._d = true;
+  promise = promise._w || promise; // unwrap
+  try {
+    if (promise === value) throw TypeError("Promise can't be resolved itself");
+    if (then = isThenable(value)) {
+      microtask(function () {
+        var wrapper = { _w: promise, _d: false }; // wrap
+        try {
+          then.call(value, ctx($resolve, wrapper, 1), ctx($reject, wrapper, 1));
+        } catch (e) {
+          $reject.call(wrapper, e);
+        }
+      });
+    } else {
+      promise._v = value;
+      promise._s = 1;
+      notify(promise, false);
+    }
+  } catch (e) {
+    $reject.call({ _w: promise, _d: false }, e); // wrap
+  }
+};
+
+// constructor polyfill
+if (!USE_NATIVE) {
+  // 25.4.3.1 Promise(executor)
+  $Promise = function Promise(executor) {
+    anInstance(this, $Promise, PROMISE, '_h');
+    aFunction(executor);
+    Internal.call(this);
+    try {
+      executor(ctx($resolve, this, 1), ctx($reject, this, 1));
+    } catch (err) {
+      $reject.call(this, err);
+    }
+  };
+  // eslint-disable-next-line no-unused-vars
+  Internal = function Promise(executor) {
+    this._c = [];             // <- awaiting reactions
+    this._a = undefined;      // <- checked in isUnhandled reactions
+    this._s = 0;              // <- state
+    this._d = false;          // <- done
+    this._v = undefined;      // <- value
+    this._h = 0;              // <- rejection state, 0 - default, 1 - handled, 2 - unhandled
+    this._n = false;          // <- notify
+  };
+  Internal.prototype = __webpack_require__(107)($Promise.prototype, {
+    // 25.4.5.3 Promise.prototype.then(onFulfilled, onRejected)
+    then: function then(onFulfilled, onRejected) {
+      var reaction = newPromiseCapability(speciesConstructor(this, $Promise));
+      reaction.ok = typeof onFulfilled == 'function' ? onFulfilled : true;
+      reaction.fail = typeof onRejected == 'function' && onRejected;
+      reaction.domain = isNode ? process.domain : undefined;
+      this._c.push(reaction);
+      if (this._a) this._a.push(reaction);
+      if (this._s) notify(this, false);
+      return reaction.promise;
+    },
+    // 25.4.5.1 Promise.prototype.catch(onRejected)
+    'catch': function (onRejected) {
+      return this.then(undefined, onRejected);
+    }
+  });
+  OwnPromiseCapability = function () {
+    var promise = new Internal();
+    this.promise = promise;
+    this.resolve = ctx($resolve, promise, 1);
+    this.reject = ctx($reject, promise, 1);
+  };
+  newPromiseCapabilityModule.f = newPromiseCapability = function (C) {
+    return C === $Promise || C === Wrapper
+      ? new OwnPromiseCapability(C)
+      : newGenericPromiseCapability(C);
+  };
+}
+
+$export($export.G + $export.W + $export.F * !USE_NATIVE, { Promise: $Promise });
+__webpack_require__(60)($Promise, PROMISE);
+__webpack_require__(140)(PROMISE);
+Wrapper = __webpack_require__(37)[PROMISE];
+
+// statics
+$export($export.S + $export.F * !USE_NATIVE, PROMISE, {
+  // 25.4.4.5 Promise.reject(r)
+  reject: function reject(r) {
+    var capability = newPromiseCapability(this);
+    var $$reject = capability.reject;
+    $$reject(r);
+    return capability.promise;
+  }
+});
+$export($export.S + $export.F * (LIBRARY || !USE_NATIVE), PROMISE, {
+  // 25.4.4.6 Promise.resolve(x)
+  resolve: function resolve(x) {
+    return promiseResolve(LIBRARY && this === Wrapper ? $Promise : this, x);
+  }
+});
+$export($export.S + $export.F * !(USE_NATIVE && __webpack_require__(108)(function (iter) {
+  $Promise.all(iter)['catch'](empty);
+})), PROMISE, {
+  // 25.4.4.1 Promise.all(iterable)
+  all: function all(iterable) {
+    var C = this;
+    var capability = newPromiseCapability(C);
+    var resolve = capability.resolve;
+    var reject = capability.reject;
+    var result = perform(function () {
+      var values = [];
+      var index = 0;
+      var remaining = 1;
+      forOf(iterable, false, function (promise) {
+        var $index = index++;
+        var alreadyCalled = false;
+        values.push(undefined);
+        remaining++;
+        C.resolve(promise).then(function (value) {
+          if (alreadyCalled) return;
+          alreadyCalled = true;
+          values[$index] = value;
+          --remaining || resolve(values);
+        }, reject);
+      });
+      --remaining || resolve(values);
+    });
+    if (result.e) reject(result.v);
+    return capability.promise;
+  },
+  // 25.4.4.4 Promise.race(iterable)
+  race: function race(iterable) {
+    var C = this;
+    var capability = newPromiseCapability(C);
+    var reject = capability.reject;
+    var result = perform(function () {
+      forOf(iterable, false, function (promise) {
+        C.resolve(promise).then(capability.resolve, reject);
+      });
+    });
+    if (result.e) reject(result.v);
+    return capability.promise;
+  }
+});
+
+
+/***/ }),
+/* 31 */
 /***/ (function(module, exports) {
 
 var g;
@@ -8591,7 +9695,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 30 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -10005,7 +11109,7 @@ asn1.prettyPrint = function(obj, level, indentation) {
 
 
 /***/ }),
-/* 31 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -10022,747 +11126,14 @@ forge.md.algorithms = forge.md.algorithms || {};
 
 
 /***/ }),
-/* 32 */
-/***/ (function(module, exports) {
-
-/**
- * Copyright (c) 2014-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-!(function(global) {
-  "use strict";
-
-  var Op = Object.prototype;
-  var hasOwn = Op.hasOwnProperty;
-  var undefined; // More compressible than void 0.
-  var $Symbol = typeof Symbol === "function" ? Symbol : {};
-  var iteratorSymbol = $Symbol.iterator || "@@iterator";
-  var asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator";
-  var toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag";
-
-  var inModule = typeof module === "object";
-  var runtime = global.regeneratorRuntime;
-  if (runtime) {
-    if (inModule) {
-      // If regeneratorRuntime is defined globally and we're in a module,
-      // make the exports object identical to regeneratorRuntime.
-      module.exports = runtime;
-    }
-    // Don't bother evaluating the rest of this file if the runtime was
-    // already defined globally.
-    return;
-  }
-
-  // Define the runtime globally (as expected by generated code) as either
-  // module.exports (if we're in a module) or a new, empty object.
-  runtime = global.regeneratorRuntime = inModule ? module.exports : {};
-
-  function wrap(innerFn, outerFn, self, tryLocsList) {
-    // If outerFn provided and outerFn.prototype is a Generator, then outerFn.prototype instanceof Generator.
-    var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator;
-    var generator = Object.create(protoGenerator.prototype);
-    var context = new Context(tryLocsList || []);
-
-    // The ._invoke method unifies the implementations of the .next,
-    // .throw, and .return methods.
-    generator._invoke = makeInvokeMethod(innerFn, self, context);
-
-    return generator;
-  }
-  runtime.wrap = wrap;
-
-  // Try/catch helper to minimize deoptimizations. Returns a completion
-  // record like context.tryEntries[i].completion. This interface could
-  // have been (and was previously) designed to take a closure to be
-  // invoked without arguments, but in all the cases we care about we
-  // already have an existing method we want to call, so there's no need
-  // to create a new function object. We can even get away with assuming
-  // the method takes exactly one argument, since that happens to be true
-  // in every case, so we don't have to touch the arguments object. The
-  // only additional allocation required is the completion record, which
-  // has a stable shape and so hopefully should be cheap to allocate.
-  function tryCatch(fn, obj, arg) {
-    try {
-      return { type: "normal", arg: fn.call(obj, arg) };
-    } catch (err) {
-      return { type: "throw", arg: err };
-    }
-  }
-
-  var GenStateSuspendedStart = "suspendedStart";
-  var GenStateSuspendedYield = "suspendedYield";
-  var GenStateExecuting = "executing";
-  var GenStateCompleted = "completed";
-
-  // Returning this object from the innerFn has the same effect as
-  // breaking out of the dispatch switch statement.
-  var ContinueSentinel = {};
-
-  // Dummy constructor functions that we use as the .constructor and
-  // .constructor.prototype properties for functions that return Generator
-  // objects. For full spec compliance, you may wish to configure your
-  // minifier not to mangle the names of these two functions.
-  function Generator() {}
-  function GeneratorFunction() {}
-  function GeneratorFunctionPrototype() {}
-
-  // This is a polyfill for %IteratorPrototype% for environments that
-  // don't natively support it.
-  var IteratorPrototype = {};
-  IteratorPrototype[iteratorSymbol] = function () {
-    return this;
-  };
-
-  var getProto = Object.getPrototypeOf;
-  var NativeIteratorPrototype = getProto && getProto(getProto(values([])));
-  if (NativeIteratorPrototype &&
-      NativeIteratorPrototype !== Op &&
-      hasOwn.call(NativeIteratorPrototype, iteratorSymbol)) {
-    // This environment has a native %IteratorPrototype%; use it instead
-    // of the polyfill.
-    IteratorPrototype = NativeIteratorPrototype;
-  }
-
-  var Gp = GeneratorFunctionPrototype.prototype =
-    Generator.prototype = Object.create(IteratorPrototype);
-  GeneratorFunction.prototype = Gp.constructor = GeneratorFunctionPrototype;
-  GeneratorFunctionPrototype.constructor = GeneratorFunction;
-  GeneratorFunctionPrototype[toStringTagSymbol] =
-    GeneratorFunction.displayName = "GeneratorFunction";
-
-  // Helper for defining the .next, .throw, and .return methods of the
-  // Iterator interface in terms of a single ._invoke method.
-  function defineIteratorMethods(prototype) {
-    ["next", "throw", "return"].forEach(function(method) {
-      prototype[method] = function(arg) {
-        return this._invoke(method, arg);
-      };
-    });
-  }
-
-  runtime.isGeneratorFunction = function(genFun) {
-    var ctor = typeof genFun === "function" && genFun.constructor;
-    return ctor
-      ? ctor === GeneratorFunction ||
-        // For the native GeneratorFunction constructor, the best we can
-        // do is to check its .name property.
-        (ctor.displayName || ctor.name) === "GeneratorFunction"
-      : false;
-  };
-
-  runtime.mark = function(genFun) {
-    if (Object.setPrototypeOf) {
-      Object.setPrototypeOf(genFun, GeneratorFunctionPrototype);
-    } else {
-      genFun.__proto__ = GeneratorFunctionPrototype;
-      if (!(toStringTagSymbol in genFun)) {
-        genFun[toStringTagSymbol] = "GeneratorFunction";
-      }
-    }
-    genFun.prototype = Object.create(Gp);
-    return genFun;
-  };
-
-  // Within the body of any async function, `await x` is transformed to
-  // `yield regeneratorRuntime.awrap(x)`, so that the runtime can test
-  // `hasOwn.call(value, "__await")` to determine if the yielded value is
-  // meant to be awaited.
-  runtime.awrap = function(arg) {
-    return { __await: arg };
-  };
-
-  function AsyncIterator(generator) {
-    function invoke(method, arg, resolve, reject) {
-      var record = tryCatch(generator[method], generator, arg);
-      if (record.type === "throw") {
-        reject(record.arg);
-      } else {
-        var result = record.arg;
-        var value = result.value;
-        if (value &&
-            typeof value === "object" &&
-            hasOwn.call(value, "__await")) {
-          return Promise.resolve(value.__await).then(function(value) {
-            invoke("next", value, resolve, reject);
-          }, function(err) {
-            invoke("throw", err, resolve, reject);
-          });
-        }
-
-        return Promise.resolve(value).then(function(unwrapped) {
-          // When a yielded Promise is resolved, its final value becomes
-          // the .value of the Promise<{value,done}> result for the
-          // current iteration. If the Promise is rejected, however, the
-          // result for this iteration will be rejected with the same
-          // reason. Note that rejections of yielded Promises are not
-          // thrown back into the generator function, as is the case
-          // when an awaited Promise is rejected. This difference in
-          // behavior between yield and await is important, because it
-          // allows the consumer to decide what to do with the yielded
-          // rejection (swallow it and continue, manually .throw it back
-          // into the generator, abandon iteration, whatever). With
-          // await, by contrast, there is no opportunity to examine the
-          // rejection reason outside the generator function, so the
-          // only option is to throw it from the await expression, and
-          // let the generator function handle the exception.
-          result.value = unwrapped;
-          resolve(result);
-        }, reject);
-      }
-    }
-
-    var previousPromise;
-
-    function enqueue(method, arg) {
-      function callInvokeWithMethodAndArg() {
-        return new Promise(function(resolve, reject) {
-          invoke(method, arg, resolve, reject);
-        });
-      }
-
-      return previousPromise =
-        // If enqueue has been called before, then we want to wait until
-        // all previous Promises have been resolved before calling invoke,
-        // so that results are always delivered in the correct order. If
-        // enqueue has not been called before, then it is important to
-        // call invoke immediately, without waiting on a callback to fire,
-        // so that the async generator function has the opportunity to do
-        // any necessary setup in a predictable way. This predictability
-        // is why the Promise constructor synchronously invokes its
-        // executor callback, and why async functions synchronously
-        // execute code before the first await. Since we implement simple
-        // async functions in terms of async generators, it is especially
-        // important to get this right, even though it requires care.
-        previousPromise ? previousPromise.then(
-          callInvokeWithMethodAndArg,
-          // Avoid propagating failures to Promises returned by later
-          // invocations of the iterator.
-          callInvokeWithMethodAndArg
-        ) : callInvokeWithMethodAndArg();
-    }
-
-    // Define the unified helper method that is used to implement .next,
-    // .throw, and .return (see defineIteratorMethods).
-    this._invoke = enqueue;
-  }
-
-  defineIteratorMethods(AsyncIterator.prototype);
-  AsyncIterator.prototype[asyncIteratorSymbol] = function () {
-    return this;
-  };
-  runtime.AsyncIterator = AsyncIterator;
-
-  // Note that simple async functions are implemented on top of
-  // AsyncIterator objects; they just return a Promise for the value of
-  // the final result produced by the iterator.
-  runtime.async = function(innerFn, outerFn, self, tryLocsList) {
-    var iter = new AsyncIterator(
-      wrap(innerFn, outerFn, self, tryLocsList)
-    );
-
-    return runtime.isGeneratorFunction(outerFn)
-      ? iter // If outerFn is a generator, return the full iterator.
-      : iter.next().then(function(result) {
-          return result.done ? result.value : iter.next();
-        });
-  };
-
-  function makeInvokeMethod(innerFn, self, context) {
-    var state = GenStateSuspendedStart;
-
-    return function invoke(method, arg) {
-      if (state === GenStateExecuting) {
-        throw new Error("Generator is already running");
-      }
-
-      if (state === GenStateCompleted) {
-        if (method === "throw") {
-          throw arg;
-        }
-
-        // Be forgiving, per 25.3.3.3.3 of the spec:
-        // https://people.mozilla.org/~jorendorff/es6-draft.html#sec-generatorresume
-        return doneResult();
-      }
-
-      context.method = method;
-      context.arg = arg;
-
-      while (true) {
-        var delegate = context.delegate;
-        if (delegate) {
-          var delegateResult = maybeInvokeDelegate(delegate, context);
-          if (delegateResult) {
-            if (delegateResult === ContinueSentinel) continue;
-            return delegateResult;
-          }
-        }
-
-        if (context.method === "next") {
-          // Setting context._sent for legacy support of Babel's
-          // function.sent implementation.
-          context.sent = context._sent = context.arg;
-
-        } else if (context.method === "throw") {
-          if (state === GenStateSuspendedStart) {
-            state = GenStateCompleted;
-            throw context.arg;
-          }
-
-          context.dispatchException(context.arg);
-
-        } else if (context.method === "return") {
-          context.abrupt("return", context.arg);
-        }
-
-        state = GenStateExecuting;
-
-        var record = tryCatch(innerFn, self, context);
-        if (record.type === "normal") {
-          // If an exception is thrown from innerFn, we leave state ===
-          // GenStateExecuting and loop back for another invocation.
-          state = context.done
-            ? GenStateCompleted
-            : GenStateSuspendedYield;
-
-          if (record.arg === ContinueSentinel) {
-            continue;
-          }
-
-          return {
-            value: record.arg,
-            done: context.done
-          };
-
-        } else if (record.type === "throw") {
-          state = GenStateCompleted;
-          // Dispatch the exception by looping back around to the
-          // context.dispatchException(context.arg) call above.
-          context.method = "throw";
-          context.arg = record.arg;
-        }
-      }
-    };
-  }
-
-  // Call delegate.iterator[context.method](context.arg) and handle the
-  // result, either by returning a { value, done } result from the
-  // delegate iterator, or by modifying context.method and context.arg,
-  // setting context.delegate to null, and returning the ContinueSentinel.
-  function maybeInvokeDelegate(delegate, context) {
-    var method = delegate.iterator[context.method];
-    if (method === undefined) {
-      // A .throw or .return when the delegate iterator has no .throw
-      // method always terminates the yield* loop.
-      context.delegate = null;
-
-      if (context.method === "throw") {
-        if (delegate.iterator.return) {
-          // If the delegate iterator has a return method, give it a
-          // chance to clean up.
-          context.method = "return";
-          context.arg = undefined;
-          maybeInvokeDelegate(delegate, context);
-
-          if (context.method === "throw") {
-            // If maybeInvokeDelegate(context) changed context.method from
-            // "return" to "throw", let that override the TypeError below.
-            return ContinueSentinel;
-          }
-        }
-
-        context.method = "throw";
-        context.arg = new TypeError(
-          "The iterator does not provide a 'throw' method");
-      }
-
-      return ContinueSentinel;
-    }
-
-    var record = tryCatch(method, delegate.iterator, context.arg);
-
-    if (record.type === "throw") {
-      context.method = "throw";
-      context.arg = record.arg;
-      context.delegate = null;
-      return ContinueSentinel;
-    }
-
-    var info = record.arg;
-
-    if (! info) {
-      context.method = "throw";
-      context.arg = new TypeError("iterator result is not an object");
-      context.delegate = null;
-      return ContinueSentinel;
-    }
-
-    if (info.done) {
-      // Assign the result of the finished delegate to the temporary
-      // variable specified by delegate.resultName (see delegateYield).
-      context[delegate.resultName] = info.value;
-
-      // Resume execution at the desired location (see delegateYield).
-      context.next = delegate.nextLoc;
-
-      // If context.method was "throw" but the delegate handled the
-      // exception, let the outer generator proceed normally. If
-      // context.method was "next", forget context.arg since it has been
-      // "consumed" by the delegate iterator. If context.method was
-      // "return", allow the original .return call to continue in the
-      // outer generator.
-      if (context.method !== "return") {
-        context.method = "next";
-        context.arg = undefined;
-      }
-
-    } else {
-      // Re-yield the result returned by the delegate method.
-      return info;
-    }
-
-    // The delegate iterator is finished, so forget it and continue with
-    // the outer generator.
-    context.delegate = null;
-    return ContinueSentinel;
-  }
-
-  // Define Generator.prototype.{next,throw,return} in terms of the
-  // unified ._invoke helper method.
-  defineIteratorMethods(Gp);
-
-  Gp[toStringTagSymbol] = "Generator";
-
-  // A Generator should always return itself as the iterator object when the
-  // @@iterator function is called on it. Some browsers' implementations of the
-  // iterator prototype chain incorrectly implement this, causing the Generator
-  // object to not be returned from this call. This ensures that doesn't happen.
-  // See https://github.com/facebook/regenerator/issues/274 for more details.
-  Gp[iteratorSymbol] = function() {
-    return this;
-  };
-
-  Gp.toString = function() {
-    return "[object Generator]";
-  };
-
-  function pushTryEntry(locs) {
-    var entry = { tryLoc: locs[0] };
-
-    if (1 in locs) {
-      entry.catchLoc = locs[1];
-    }
-
-    if (2 in locs) {
-      entry.finallyLoc = locs[2];
-      entry.afterLoc = locs[3];
-    }
-
-    this.tryEntries.push(entry);
-  }
-
-  function resetTryEntry(entry) {
-    var record = entry.completion || {};
-    record.type = "normal";
-    delete record.arg;
-    entry.completion = record;
-  }
-
-  function Context(tryLocsList) {
-    // The root entry object (effectively a try statement without a catch
-    // or a finally block) gives us a place to store values thrown from
-    // locations where there is no enclosing try statement.
-    this.tryEntries = [{ tryLoc: "root" }];
-    tryLocsList.forEach(pushTryEntry, this);
-    this.reset(true);
-  }
-
-  runtime.keys = function(object) {
-    var keys = [];
-    for (var key in object) {
-      keys.push(key);
-    }
-    keys.reverse();
-
-    // Rather than returning an object with a next method, we keep
-    // things simple and return the next function itself.
-    return function next() {
-      while (keys.length) {
-        var key = keys.pop();
-        if (key in object) {
-          next.value = key;
-          next.done = false;
-          return next;
-        }
-      }
-
-      // To avoid creating an additional object, we just hang the .value
-      // and .done properties off the next function object itself. This
-      // also ensures that the minifier will not anonymize the function.
-      next.done = true;
-      return next;
-    };
-  };
-
-  function values(iterable) {
-    if (iterable) {
-      var iteratorMethod = iterable[iteratorSymbol];
-      if (iteratorMethod) {
-        return iteratorMethod.call(iterable);
-      }
-
-      if (typeof iterable.next === "function") {
-        return iterable;
-      }
-
-      if (!isNaN(iterable.length)) {
-        var i = -1, next = function next() {
-          while (++i < iterable.length) {
-            if (hasOwn.call(iterable, i)) {
-              next.value = iterable[i];
-              next.done = false;
-              return next;
-            }
-          }
-
-          next.value = undefined;
-          next.done = true;
-
-          return next;
-        };
-
-        return next.next = next;
-      }
-    }
-
-    // Return an iterator with no values.
-    return { next: doneResult };
-  }
-  runtime.values = values;
-
-  function doneResult() {
-    return { value: undefined, done: true };
-  }
-
-  Context.prototype = {
-    constructor: Context,
-
-    reset: function(skipTempReset) {
-      this.prev = 0;
-      this.next = 0;
-      // Resetting context._sent for legacy support of Babel's
-      // function.sent implementation.
-      this.sent = this._sent = undefined;
-      this.done = false;
-      this.delegate = null;
-
-      this.method = "next";
-      this.arg = undefined;
-
-      this.tryEntries.forEach(resetTryEntry);
-
-      if (!skipTempReset) {
-        for (var name in this) {
-          // Not sure about the optimal order of these conditions:
-          if (name.charAt(0) === "t" &&
-              hasOwn.call(this, name) &&
-              !isNaN(+name.slice(1))) {
-            this[name] = undefined;
-          }
-        }
-      }
-    },
-
-    stop: function() {
-      this.done = true;
-
-      var rootEntry = this.tryEntries[0];
-      var rootRecord = rootEntry.completion;
-      if (rootRecord.type === "throw") {
-        throw rootRecord.arg;
-      }
-
-      return this.rval;
-    },
-
-    dispatchException: function(exception) {
-      if (this.done) {
-        throw exception;
-      }
-
-      var context = this;
-      function handle(loc, caught) {
-        record.type = "throw";
-        record.arg = exception;
-        context.next = loc;
-
-        if (caught) {
-          // If the dispatched exception was caught by a catch block,
-          // then let that catch block handle the exception normally.
-          context.method = "next";
-          context.arg = undefined;
-        }
-
-        return !! caught;
-      }
-
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        var record = entry.completion;
-
-        if (entry.tryLoc === "root") {
-          // Exception thrown outside of any try block that could handle
-          // it, so set the completion value of the entire function to
-          // throw the exception.
-          return handle("end");
-        }
-
-        if (entry.tryLoc <= this.prev) {
-          var hasCatch = hasOwn.call(entry, "catchLoc");
-          var hasFinally = hasOwn.call(entry, "finallyLoc");
-
-          if (hasCatch && hasFinally) {
-            if (this.prev < entry.catchLoc) {
-              return handle(entry.catchLoc, true);
-            } else if (this.prev < entry.finallyLoc) {
-              return handle(entry.finallyLoc);
-            }
-
-          } else if (hasCatch) {
-            if (this.prev < entry.catchLoc) {
-              return handle(entry.catchLoc, true);
-            }
-
-          } else if (hasFinally) {
-            if (this.prev < entry.finallyLoc) {
-              return handle(entry.finallyLoc);
-            }
-
-          } else {
-            throw new Error("try statement without catch or finally");
-          }
-        }
-      }
-    },
-
-    abrupt: function(type, arg) {
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        if (entry.tryLoc <= this.prev &&
-            hasOwn.call(entry, "finallyLoc") &&
-            this.prev < entry.finallyLoc) {
-          var finallyEntry = entry;
-          break;
-        }
-      }
-
-      if (finallyEntry &&
-          (type === "break" ||
-           type === "continue") &&
-          finallyEntry.tryLoc <= arg &&
-          arg <= finallyEntry.finallyLoc) {
-        // Ignore the finally entry if control is not jumping to a
-        // location outside the try/catch block.
-        finallyEntry = null;
-      }
-
-      var record = finallyEntry ? finallyEntry.completion : {};
-      record.type = type;
-      record.arg = arg;
-
-      if (finallyEntry) {
-        this.method = "next";
-        this.next = finallyEntry.finallyLoc;
-        return ContinueSentinel;
-      }
-
-      return this.complete(record);
-    },
-
-    complete: function(record, afterLoc) {
-      if (record.type === "throw") {
-        throw record.arg;
-      }
-
-      if (record.type === "break" ||
-          record.type === "continue") {
-        this.next = record.arg;
-      } else if (record.type === "return") {
-        this.rval = this.arg = record.arg;
-        this.method = "return";
-        this.next = "end";
-      } else if (record.type === "normal" && afterLoc) {
-        this.next = afterLoc;
-      }
-
-      return ContinueSentinel;
-    },
-
-    finish: function(finallyLoc) {
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        if (entry.finallyLoc === finallyLoc) {
-          this.complete(entry.completion, entry.afterLoc);
-          resetTryEntry(entry);
-          return ContinueSentinel;
-        }
-      }
-    },
-
-    "catch": function(tryLoc) {
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        if (entry.tryLoc === tryLoc) {
-          var record = entry.completion;
-          if (record.type === "throw") {
-            var thrown = record.arg;
-            resetTryEntry(entry);
-          }
-          return thrown;
-        }
-      }
-
-      // The context.catch method must only be called with a location
-      // argument that corresponds to a known catch block.
-      throw new Error("illegal catch attempt");
-    },
-
-    delegateYield: function(iterable, resultName, nextLoc) {
-      this.delegate = {
-        iterator: values(iterable),
-        resultName: resultName,
-        nextLoc: nextLoc
-      };
-
-      if (this.method === "next") {
-        // Deliberately forget the last sent value so that we don't
-        // accidentally pass it on to the delegate.
-        this.arg = undefined;
-      }
-
-      return ContinueSentinel;
-    }
-  };
-})(
-  // In sloppy mode, unbound `this` refers to the global object, fallback to
-  // Function constructor if we're in global strict mode. That is sadly a form
-  // of indirect eval which violates Content Security Policy.
-  (function() { return this })() || Function("return this")()
-);
-
-
-/***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var global = __webpack_require__(10);
-var hide = __webpack_require__(20);
-var has = __webpack_require__(34);
+var global = __webpack_require__(11);
+var hide = __webpack_require__(19);
+var has = __webpack_require__(35);
 var SRC = __webpack_require__(38)('src');
-var $toString = __webpack_require__(192);
+var $toString = __webpack_require__(196);
 var TO_STRING = 'toString';
 var TPL = ('' + $toString).split(TO_STRING);
 
@@ -10792,7 +11163,7 @@ __webpack_require__(37).inspectSource = function (it) {
 
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports) {
 
 var hasOwnProperty = {}.hasOwnProperty;
@@ -10802,20 +11173,20 @@ module.exports = function (it, key) {
 
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var isRegExp = __webpack_require__(194);
+var isRegExp = __webpack_require__(198);
 var anObject = __webpack_require__(15);
-var speciesConstructor = __webpack_require__(76);
+var speciesConstructor = __webpack_require__(75);
 var advanceStringIndex = __webpack_require__(126);
-var toLength = __webpack_require__(24);
-var callRegExpExec = __webpack_require__(93);
-var regexpExec = __webpack_require__(94);
-var fails = __webpack_require__(23);
+var toLength = __webpack_require__(23);
+var callRegExpExec = __webpack_require__(92);
+var regexpExec = __webpack_require__(93);
+var fails = __webpack_require__(22);
 var $min = Math.min;
 var $push = [].push;
 var $SPLIT = 'split';
@@ -10827,7 +11198,7 @@ var MAX_UINT32 = 0xffffffff;
 var SUPPORTS_Y = !fails(function () { RegExp(MAX_UINT32, 'y'); });
 
 // @@split logic
-__webpack_require__(96)('split', 2, function (defined, SPLIT, $split, maybeCallNative) {
+__webpack_require__(95)('split', 2, function (defined, SPLIT, $split, maybeCallNative) {
   var internalSplit;
   if (
     'abbc'[$SPLIT](/(b)*/)[1] == 'c' ||
@@ -10943,299 +11314,6 @@ __webpack_require__(96)('split', 2, function (defined, SPLIT, $split, maybeCallN
 
 
 /***/ }),
-/* 36 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var LIBRARY = __webpack_require__(39);
-var global = __webpack_require__(10);
-var ctx = __webpack_require__(40);
-var classof = __webpack_require__(59);
-var $export = __webpack_require__(26);
-var isObject = __webpack_require__(27);
-var aFunction = __webpack_require__(58);
-var anInstance = __webpack_require__(104);
-var forOf = __webpack_require__(207);
-var speciesConstructor = __webpack_require__(76);
-var task = __webpack_require__(137).set;
-var microtask = __webpack_require__(209)();
-var newPromiseCapabilityModule = __webpack_require__(138);
-var perform = __webpack_require__(210);
-var userAgent = __webpack_require__(211);
-var promiseResolve = __webpack_require__(139);
-var PROMISE = 'Promise';
-var TypeError = global.TypeError;
-var process = global.process;
-var versions = process && process.versions;
-var v8 = versions && versions.v8 || '';
-var $Promise = global[PROMISE];
-var isNode = classof(process) == 'process';
-var empty = function () { /* empty */ };
-var Internal, newGenericPromiseCapability, OwnPromiseCapability, Wrapper;
-var newPromiseCapability = newGenericPromiseCapability = newPromiseCapabilityModule.f;
-
-var USE_NATIVE = !!function () {
-  try {
-    // correct subclassing with @@species support
-    var promise = $Promise.resolve(1);
-    var FakePromise = (promise.constructor = {})[__webpack_require__(11)('species')] = function (exec) {
-      exec(empty, empty);
-    };
-    // unhandled rejections tracking support, NodeJS Promise without it fails @@species test
-    return (isNode || typeof PromiseRejectionEvent == 'function')
-      && promise.then(empty) instanceof FakePromise
-      // v8 6.6 (Node 10 and Chrome 66) have a bug with resolving custom thenables
-      // https://bugs.chromium.org/p/chromium/issues/detail?id=830565
-      // we can't detect it synchronously, so just check versions
-      && v8.indexOf('6.6') !== 0
-      && userAgent.indexOf('Chrome/66') === -1;
-  } catch (e) { /* empty */ }
-}();
-
-// helpers
-var isThenable = function (it) {
-  var then;
-  return isObject(it) && typeof (then = it.then) == 'function' ? then : false;
-};
-var notify = function (promise, isReject) {
-  if (promise._n) return;
-  promise._n = true;
-  var chain = promise._c;
-  microtask(function () {
-    var value = promise._v;
-    var ok = promise._s == 1;
-    var i = 0;
-    var run = function (reaction) {
-      var handler = ok ? reaction.ok : reaction.fail;
-      var resolve = reaction.resolve;
-      var reject = reaction.reject;
-      var domain = reaction.domain;
-      var result, then, exited;
-      try {
-        if (handler) {
-          if (!ok) {
-            if (promise._h == 2) onHandleUnhandled(promise);
-            promise._h = 1;
-          }
-          if (handler === true) result = value;
-          else {
-            if (domain) domain.enter();
-            result = handler(value); // may throw
-            if (domain) {
-              domain.exit();
-              exited = true;
-            }
-          }
-          if (result === reaction.promise) {
-            reject(TypeError('Promise-chain cycle'));
-          } else if (then = isThenable(result)) {
-            then.call(result, resolve, reject);
-          } else resolve(result);
-        } else reject(value);
-      } catch (e) {
-        if (domain && !exited) domain.exit();
-        reject(e);
-      }
-    };
-    while (chain.length > i) run(chain[i++]); // variable length - can't use forEach
-    promise._c = [];
-    promise._n = false;
-    if (isReject && !promise._h) onUnhandled(promise);
-  });
-};
-var onUnhandled = function (promise) {
-  task.call(global, function () {
-    var value = promise._v;
-    var unhandled = isUnhandled(promise);
-    var result, handler, console;
-    if (unhandled) {
-      result = perform(function () {
-        if (isNode) {
-          process.emit('unhandledRejection', value, promise);
-        } else if (handler = global.onunhandledrejection) {
-          handler({ promise: promise, reason: value });
-        } else if ((console = global.console) && console.error) {
-          console.error('Unhandled promise rejection', value);
-        }
-      });
-      // Browsers should not trigger `rejectionHandled` event if it was handled here, NodeJS - should
-      promise._h = isNode || isUnhandled(promise) ? 2 : 1;
-    } promise._a = undefined;
-    if (unhandled && result.e) throw result.v;
-  });
-};
-var isUnhandled = function (promise) {
-  return promise._h !== 1 && (promise._a || promise._c).length === 0;
-};
-var onHandleUnhandled = function (promise) {
-  task.call(global, function () {
-    var handler;
-    if (isNode) {
-      process.emit('rejectionHandled', promise);
-    } else if (handler = global.onrejectionhandled) {
-      handler({ promise: promise, reason: promise._v });
-    }
-  });
-};
-var $reject = function (value) {
-  var promise = this;
-  if (promise._d) return;
-  promise._d = true;
-  promise = promise._w || promise; // unwrap
-  promise._v = value;
-  promise._s = 2;
-  if (!promise._a) promise._a = promise._c.slice();
-  notify(promise, true);
-};
-var $resolve = function (value) {
-  var promise = this;
-  var then;
-  if (promise._d) return;
-  promise._d = true;
-  promise = promise._w || promise; // unwrap
-  try {
-    if (promise === value) throw TypeError("Promise can't be resolved itself");
-    if (then = isThenable(value)) {
-      microtask(function () {
-        var wrapper = { _w: promise, _d: false }; // wrap
-        try {
-          then.call(value, ctx($resolve, wrapper, 1), ctx($reject, wrapper, 1));
-        } catch (e) {
-          $reject.call(wrapper, e);
-        }
-      });
-    } else {
-      promise._v = value;
-      promise._s = 1;
-      notify(promise, false);
-    }
-  } catch (e) {
-    $reject.call({ _w: promise, _d: false }, e); // wrap
-  }
-};
-
-// constructor polyfill
-if (!USE_NATIVE) {
-  // 25.4.3.1 Promise(executor)
-  $Promise = function Promise(executor) {
-    anInstance(this, $Promise, PROMISE, '_h');
-    aFunction(executor);
-    Internal.call(this);
-    try {
-      executor(ctx($resolve, this, 1), ctx($reject, this, 1));
-    } catch (err) {
-      $reject.call(this, err);
-    }
-  };
-  // eslint-disable-next-line no-unused-vars
-  Internal = function Promise(executor) {
-    this._c = [];             // <- awaiting reactions
-    this._a = undefined;      // <- checked in isUnhandled reactions
-    this._s = 0;              // <- state
-    this._d = false;          // <- done
-    this._v = undefined;      // <- value
-    this._h = 0;              // <- rejection state, 0 - default, 1 - handled, 2 - unhandled
-    this._n = false;          // <- notify
-  };
-  Internal.prototype = __webpack_require__(107)($Promise.prototype, {
-    // 25.4.5.3 Promise.prototype.then(onFulfilled, onRejected)
-    then: function then(onFulfilled, onRejected) {
-      var reaction = newPromiseCapability(speciesConstructor(this, $Promise));
-      reaction.ok = typeof onFulfilled == 'function' ? onFulfilled : true;
-      reaction.fail = typeof onRejected == 'function' && onRejected;
-      reaction.domain = isNode ? process.domain : undefined;
-      this._c.push(reaction);
-      if (this._a) this._a.push(reaction);
-      if (this._s) notify(this, false);
-      return reaction.promise;
-    },
-    // 25.4.5.1 Promise.prototype.catch(onRejected)
-    'catch': function (onRejected) {
-      return this.then(undefined, onRejected);
-    }
-  });
-  OwnPromiseCapability = function () {
-    var promise = new Internal();
-    this.promise = promise;
-    this.resolve = ctx($resolve, promise, 1);
-    this.reject = ctx($reject, promise, 1);
-  };
-  newPromiseCapabilityModule.f = newPromiseCapability = function (C) {
-    return C === $Promise || C === Wrapper
-      ? new OwnPromiseCapability(C)
-      : newGenericPromiseCapability(C);
-  };
-}
-
-$export($export.G + $export.W + $export.F * !USE_NATIVE, { Promise: $Promise });
-__webpack_require__(60)($Promise, PROMISE);
-__webpack_require__(140)(PROMISE);
-Wrapper = __webpack_require__(37)[PROMISE];
-
-// statics
-$export($export.S + $export.F * !USE_NATIVE, PROMISE, {
-  // 25.4.4.5 Promise.reject(r)
-  reject: function reject(r) {
-    var capability = newPromiseCapability(this);
-    var $$reject = capability.reject;
-    $$reject(r);
-    return capability.promise;
-  }
-});
-$export($export.S + $export.F * (LIBRARY || !USE_NATIVE), PROMISE, {
-  // 25.4.4.6 Promise.resolve(x)
-  resolve: function resolve(x) {
-    return promiseResolve(LIBRARY && this === Wrapper ? $Promise : this, x);
-  }
-});
-$export($export.S + $export.F * !(USE_NATIVE && __webpack_require__(108)(function (iter) {
-  $Promise.all(iter)['catch'](empty);
-})), PROMISE, {
-  // 25.4.4.1 Promise.all(iterable)
-  all: function all(iterable) {
-    var C = this;
-    var capability = newPromiseCapability(C);
-    var resolve = capability.resolve;
-    var reject = capability.reject;
-    var result = perform(function () {
-      var values = [];
-      var index = 0;
-      var remaining = 1;
-      forOf(iterable, false, function (promise) {
-        var $index = index++;
-        var alreadyCalled = false;
-        values.push(undefined);
-        remaining++;
-        C.resolve(promise).then(function (value) {
-          if (alreadyCalled) return;
-          alreadyCalled = true;
-          values[$index] = value;
-          --remaining || resolve(values);
-        }, reject);
-      });
-      --remaining || resolve(values);
-    });
-    if (result.e) reject(result.v);
-    return capability.promise;
-  },
-  // 25.4.4.4 Promise.race(iterable)
-  race: function race(iterable) {
-    var C = this;
-    var capability = newPromiseCapability(C);
-    var reject = capability.reject;
-    var result = perform(function () {
-      forOf(iterable, false, function (promise) {
-        C.resolve(promise).then(capability.resolve, reject);
-      });
-    });
-    if (result.e) reject(result.v);
-    return capability.promise;
-  }
-});
-
-
-/***/ }),
 /* 37 */
 /***/ (function(module, exports) {
 
@@ -11313,33 +11391,33 @@ __webpack_require__(127)('asyncIterator');
 "use strict";
 
 // ECMAScript 6 symbols shim
-var global = __webpack_require__(10);
-var has = __webpack_require__(34);
-var DESCRIPTORS = __webpack_require__(22);
+var global = __webpack_require__(11);
+var has = __webpack_require__(35);
+var DESCRIPTORS = __webpack_require__(21);
 var $export = __webpack_require__(26);
-var redefine = __webpack_require__(33);
-var META = __webpack_require__(200).KEY;
-var $fails = __webpack_require__(23);
-var shared = __webpack_require__(74);
+var redefine = __webpack_require__(34);
+var META = __webpack_require__(204).KEY;
+var $fails = __webpack_require__(22);
+var shared = __webpack_require__(73);
 var setToStringTag = __webpack_require__(60);
 var uid = __webpack_require__(38);
-var wks = __webpack_require__(11);
+var wks = __webpack_require__(12);
 var wksExt = __webpack_require__(128);
 var wksDefine = __webpack_require__(127);
-var enumKeys = __webpack_require__(201);
+var enumKeys = __webpack_require__(205);
 var isArray = __webpack_require__(131);
 var anObject = __webpack_require__(15);
 var isObject = __webpack_require__(27);
-var toObject = __webpack_require__(28);
+var toObject = __webpack_require__(29);
 var toIObject = __webpack_require__(44);
-var toPrimitive = __webpack_require__(73);
-var createDesc = __webpack_require__(52);
+var toPrimitive = __webpack_require__(72);
+var createDesc = __webpack_require__(51);
 var _create = __webpack_require__(102);
-var gOPNExt = __webpack_require__(203);
+var gOPNExt = __webpack_require__(207);
 var $GOPD = __webpack_require__(103);
 var $GOPS = __webpack_require__(100);
-var $DP = __webpack_require__(21);
-var $keys = __webpack_require__(78);
+var $DP = __webpack_require__(20);
+var $keys = __webpack_require__(76);
 var gOPD = $GOPD.f;
 var dP = $DP.f;
 var gOPN = gOPNExt.f;
@@ -11550,7 +11628,7 @@ $JSON && $export($export.S + $export.F * (!USE_NATIVE || $fails(function () {
 });
 
 // 19.4.3.4 Symbol.prototype[@@toPrimitive](hint)
-$Symbol[PROTOTYPE][TO_PRIMITIVE] || __webpack_require__(20)($Symbol[PROTOTYPE], TO_PRIMITIVE, $Symbol[PROTOTYPE].valueOf);
+$Symbol[PROTOTYPE][TO_PRIMITIVE] || __webpack_require__(19)($Symbol[PROTOTYPE], TO_PRIMITIVE, $Symbol[PROTOTYPE].valueOf);
 // 19.4.3.5 Symbol.prototype[@@toStringTag]
 setToStringTag($Symbol, 'Symbol');
 // 20.2.1.9 Math[@@toStringTag]
@@ -11565,7 +11643,7 @@ setToStringTag(global.JSON, 'JSON', true);
 
 // to indexed object, toObject with fallback for non-array-like ES3 strings
 var IObject = __webpack_require__(130);
-var defined = __webpack_require__(75);
+var defined = __webpack_require__(74);
 module.exports = function (it) {
   return IObject(defined(it));
 };
@@ -11593,7 +11671,7 @@ module.exports = function (it) {
  * Copyright (c) 2010-2014 Digital Bazaar, Inc.
  */
 var forge = __webpack_require__(4);
-__webpack_require__(110);
+__webpack_require__(111);
 __webpack_require__(147);
 __webpack_require__(7);
 
@@ -12899,7 +12977,7 @@ if (typeof Object.create === 'function') {
 
 /*<replacement>*/
 
-var pna = __webpack_require__(88);
+var pna = __webpack_require__(85);
 /*</replacement>*/
 
 /*<replacement>*/
@@ -12919,7 +12997,7 @@ util.inherits = __webpack_require__(47);
 /*</replacement>*/
 
 var Readable = __webpack_require__(175);
-var Writable = __webpack_require__(121);
+var Writable = __webpack_require__(122);
 
 util.inherits(Duplex, Readable);
 
@@ -13006,81 +13084,12 @@ Duplex.prototype._destroy = function (err, cb) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ClientSettings; });
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5);
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _common_IError__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
-/* harmony import */ var _ChatUtility__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(12);
-
-
-
-
-var ClientSettings = /*#__PURE__*/function () {
-  function ClientSettings() {
-    var version = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _common_IError__WEBPACK_IMPORTED_MODULE_2__[/* IError */ "a"].required();
-    var nickname = arguments.length > 1 ? arguments[1] : undefined;
-    var pkfp = arguments.length > 2 ? arguments[2] : undefined;
-
-    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0___default()(this, ClientSettings);
-
-    this.version = version;
-    this.membersData = {};
-    this.invites = {};
-
-    if (nickname) {
-      console.log("Setting nickname for new settings: ".concat(nickname));
-      this.nickname = nickname;
-      this.membersData[pkfp] = {
-        nickname: nickname
-      };
-    }
-  }
-
-  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1___default()(ClientSettings, [{
-    key: "setOwnerNickname",
-    value: function setOwnerNickname(pkfp, nickname) {
-      this.setNickname(pkfp, nickname);
-      this.nickname = nickname;
-    }
-  }, {
-    key: "setNickname",
-    value: function setNickname(pkfp, nickname) {
-      if (!this.membersData.hasOwnProperty(pkfp)) {
-        this.membersData[pkfp] = {};
-      }
-
-      this.membersData[pkfp].nickname = nickname;
-    }
-  }], [{
-    key: "encrypt",
-    value: function encrypt() {
-      var publicKey = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _common_IError__WEBPACK_IMPORTED_MODULE_2__[/* IError */ "a"].required;
-      var settings = arguments.length > 1 ? arguments[1] : undefined;
-
-      if (typeof settings === "object") {
-        settings = JSON.stringify(settings);
-      }
-
-      return _ChatUtility__WEBPACK_IMPORTED_MODULE_3__[/* ChatUtility */ "a"].encryptStandardMessage(settings, publicKey);
-    }
-  }]);
-
-  return ClientSettings;
-}();
-
-/***/ }),
-/* 50 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ChatMessage; });
 /* harmony import */ var core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(42);
 /* harmony import */ var core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(43);
 /* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(17);
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(24);
 /* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(14);
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3__);
@@ -13088,7 +13097,7 @@ var ClientSettings = /*#__PURE__*/function () {
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(6);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _AttachmentInfo__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(71);
+/* harmony import */ var _AttachmentInfo__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(86);
 /* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(1);
 
 
@@ -13302,13 +13311,13 @@ var ChatMessage = /*#__PURE__*/function () {
 }();
 
 /***/ }),
-/* 51 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(252);
+module.exports = __webpack_require__(256);
 
 /***/ }),
-/* 52 */
+/* 51 */
 /***/ (function(module, exports) {
 
 module.exports = function (bitmap, value) {
@@ -13322,7 +13331,7 @@ module.exports = function (bitmap, value) {
 
 
 /***/ }),
-/* 53 */
+/* 52 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -13333,14 +13342,14 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 54 */
+/* 53 */
 /***/ (function(module, exports) {
 
 module.exports = {};
 
 
 /***/ }),
-/* 55 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -13576,7 +13585,7 @@ function ltrim(str) {
 
 
 /***/ }),
-/* 56 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -13745,22 +13754,22 @@ Emitter.prototype.hasListeners = function(event){
 
 
 /***/ }),
-/* 57 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
  * Module dependencies.
  */
 
-var keys = __webpack_require__(266);
+var keys = __webpack_require__(270);
 var hasBinary = __webpack_require__(169);
-var sliceBuffer = __webpack_require__(268);
-var after = __webpack_require__(269);
-var utf8 = __webpack_require__(270);
+var sliceBuffer = __webpack_require__(272);
+var after = __webpack_require__(273);
+var utf8 = __webpack_require__(274);
 
 var base64encoder;
 if (typeof ArrayBuffer !== 'undefined') {
-  base64encoder = __webpack_require__(271);
+  base64encoder = __webpack_require__(275);
 }
 
 /**
@@ -13818,7 +13827,7 @@ var err = { type: 'error', data: 'parser error' };
  * Create a blob api even for blob builder when vendor prefixes exist
  */
 
-var Blob = __webpack_require__(272);
+var Blob = __webpack_require__(276);
 
 /**
  * Encodes a packet.
@@ -14356,6 +14365,75 @@ exports.decodePayloadAsBinary = function (data, binaryType, callback) {
 
 
 /***/ }),
+/* 57 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ClientSettings; });
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _common_IError__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
+/* harmony import */ var _ChatUtility__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(13);
+
+
+
+
+var ClientSettings = /*#__PURE__*/function () {
+  function ClientSettings() {
+    var version = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _common_IError__WEBPACK_IMPORTED_MODULE_2__[/* IError */ "a"].required();
+    var nickname = arguments.length > 1 ? arguments[1] : undefined;
+    var pkfp = arguments.length > 2 ? arguments[2] : undefined;
+
+    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0___default()(this, ClientSettings);
+
+    this.version = version;
+    this.membersData = {};
+    this.invites = {};
+
+    if (nickname) {
+      console.log("Setting nickname for new settings: ".concat(nickname));
+      this.nickname = nickname;
+      this.membersData[pkfp] = {
+        nickname: nickname
+      };
+    }
+  }
+
+  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1___default()(ClientSettings, [{
+    key: "setOwnerNickname",
+    value: function setOwnerNickname(pkfp, nickname) {
+      this.setNickname(pkfp, nickname);
+      this.nickname = nickname;
+    }
+  }, {
+    key: "setNickname",
+    value: function setNickname(pkfp, nickname) {
+      if (!this.membersData.hasOwnProperty(pkfp)) {
+        this.membersData[pkfp] = {};
+      }
+
+      this.membersData[pkfp].nickname = nickname;
+    }
+  }], [{
+    key: "encrypt",
+    value: function encrypt() {
+      var publicKey = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _common_IError__WEBPACK_IMPORTED_MODULE_2__[/* IError */ "a"].required;
+      var settings = arguments.length > 1 ? arguments[1] : undefined;
+
+      if (typeof settings === "object") {
+        settings = JSON.stringify(settings);
+      }
+
+      return _ChatUtility__WEBPACK_IMPORTED_MODULE_3__[/* ChatUtility */ "a"].encryptStandardMessage(settings, publicKey);
+    }
+  }]);
+
+  return ClientSettings;
+}();
+
+/***/ }),
 /* 58 */
 /***/ (function(module, exports) {
 
@@ -14370,8 +14448,8 @@ module.exports = function (it) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // getting tag from 19.1.3.6 Object.prototype.toString()
-var cof = __webpack_require__(53);
-var TAG = __webpack_require__(11)('toStringTag');
+var cof = __webpack_require__(52);
+var TAG = __webpack_require__(12)('toStringTag');
 // ES3 wrong here
 var ARG = cof(function () { return arguments; }()) == 'Arguments';
 
@@ -14398,9 +14476,9 @@ module.exports = function (it) {
 /* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var def = __webpack_require__(21).f;
-var has = __webpack_require__(34);
-var TAG = __webpack_require__(11)('toStringTag');
+var def = __webpack_require__(20).f;
+var has = __webpack_require__(35);
+var TAG = __webpack_require__(12)('toStringTag');
 
 module.exports = function (it, tag, stat) {
   if (it && !has(it = stat ? it : it.prototype, TAG)) def(it, TAG, { configurable: true, value: tag });
@@ -14581,7 +14659,7 @@ var singleton = null;
 var	singletonCounter = 0;
 var	stylesInsertedAtTop = [];
 
-var	fixUrls = __webpack_require__(215);
+var	fixUrls = __webpack_require__(219);
 
 module.exports = function(list, options) {
 	if (typeof DEBUG !== "undefined" && DEBUG) {
@@ -14972,7 +15050,7 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(223);
+__webpack_require__(227);
 // On some exotic environments, it's not clear which object `setimmediate` was
 // able to install onto.  Search each possibility in the same order as the
 // `setimmediate` library.
@@ -14983,7 +15061,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
                          (typeof global !== "undefined" && global.clearImmediate) ||
                          (this && this.clearImmediate);
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(29)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(31)))
 
 /***/ }),
 /* 65 */
@@ -14999,7 +15077,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
  * Copyright (c) 2010-2012 Digital Bazaar, Inc. All rights reserved.
  */
 var forge = __webpack_require__(4);
-__webpack_require__(31);
+__webpack_require__(33);
 __webpack_require__(7);
 
 /* HMAC API */
@@ -15149,7 +15227,7 @@ hmac.create = function() {
  * Copyright (c) 2010-2015 Digital Bazaar, Inc.
  */
 var forge = __webpack_require__(4);
-__webpack_require__(31);
+__webpack_require__(33);
 __webpack_require__(7);
 
 var sha1 = module.exports = forge.sha1 = forge.sha1 || {};
@@ -16001,7 +16079,7 @@ function isPrimitive(arg) {
 }
 exports.isPrimitive = isPrimitive;
 
-exports.isBuffer = __webpack_require__(254);
+exports.isBuffer = __webpack_require__(258);
 
 function objectToString(o) {
   return Object.prototype.toString.call(o);
@@ -16170,7 +16248,7 @@ function callbackify(original) {
 }
 exports.callbackify = callbackify;
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(18)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(17)))
 
 /***/ }),
 /* 68 */
@@ -16770,139 +16848,15 @@ function objectToString(o) {
 
 /***/ }),
 /* 71 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AttachmentInfo; });
-/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(35);
-/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5);
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(6);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(1);
-
-
-
-
-/**
- * Implements files attachments functionality
- * Constructor accepts a file element
- */
-
-var AttachmentInfo = /*#__PURE__*/function () {
-  function AttachmentInfo(file, onion, pkfp, metaID, privKey, messageID, hashEncrypted, hashUnencrypted) {
-    var hashAlgo = arguments.length > 8 && arguments[8] !== undefined ? arguments[8] : "sha256";
-
-    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1___default()(this, AttachmentInfo);
-
-    var self = this;
-    self.name = file.name;
-    self.size = file.size;
-    self.type = file.type;
-    self.lastModified = file.lastModified;
-    self.pkfp = pkfp;
-    self.metaID = metaID;
-    self.hashAlgorithm = hashAlgo;
-    self.messageID = messageID;
-    self.hashEncrypted = hashEncrypted;
-    self.hashUnencrypted = hashUnencrypted;
-    self.link = self.buildLink(onion, pkfp, self.hashUnencrypted);
-    self.signHashes(privKey);
-  }
-
-  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2___default()(AttachmentInfo, [{
-    key: "get",
-    value: function get() {
-      var self = this;
-      return {
-        name: self.name,
-        size: self.size,
-        type: self.type,
-        lastModified: self.lastModified,
-        pkfp: self.pkfp,
-        hashEncrypted: self.hashEncrypted,
-        hashUnencrypted: self.hashUnencrypted,
-        signEncrypted: self.signEncrypted,
-        signUnencrypted: self.signUnencrypted,
-        metaID: self.metaID,
-        messageID: self.messageID,
-        link: self.link,
-        hashAlgorithm: self.hashAlgorithm
-      };
-    }
-  }, {
-    key: "getLink",
-    value: function getLink() {
-      return this.link;
-    }
-  }, {
-    key: "buildLink",
-    value: function buildLink(onion, pkfp, hash) {
-      if (!onion || !pkfp || !hash) {
-        throw new Error("Attachment buildLink: missing required parameters");
-      }
-
-      var rawLink = onion + "/" + pkfp + "/" + hash;
-      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_3__[/* iCrypto */ "a"]();
-      ic.addBlob("l", rawLink).base64Encode("l", "l64");
-      return ic.get("l64");
-    }
-  }, {
-    key: "signHashes",
-    value: function signHashes(privKey) {
-      if (!privKey) {
-        throw new Error("Attachment signAttachmentHash: privKey is undefined");
-      }
-
-      var self = this;
-      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_3__[/* iCrypto */ "a"]();
-      ic.addBlob("hu", self.hashUnencrypted).addBlob("he", self.hashEncrypted).asym.setKey("pk", privKey, "private").asym.sign("hu", "pk", "sign_u").asym.sign("he", "pk", "sign_e");
-      self.signUnencrypted = ic.get("sign_u");
-      self.signEncrypted = ic.get("sign_e");
-    }
-  }], [{
-    key: "verifyFileInfo",
-    value: function verifyFileInfo(info) {
-      var required = ["name", "size", "pkfp", "hashUnencrypted", "hashEncrypted", "signUnencrypted", "signEncrypted", "link", "metaID", "messageID", "hashAlgorithm"];
-
-      for (var _i = 0, _required = required; _i < _required.length; _i++) {
-        var i = _required[_i];
-
-        if (!info.hasOwnProperty(i)) {
-          throw new Error("Attachment verifyFileInfo: Missing required property: " + i);
-        }
-      }
-    }
-  }, {
-    key: "parseLink",
-    value: function parseLink(link) {
-      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_3__[/* iCrypto */ "a"]();
-      ic.addBlob("l", link).base64Decode("l", "lres");
-      var elements = ic.get("lres").split("/");
-      return {
-        residence: elements[0],
-        pkfp: elements[1],
-        name: elements[2]
-      };
-    }
-  }]);
-
-  return AttachmentInfo;
-}();
-AttachmentInfo.properties = ["name", "size", "type", "lastModified", "hashUnencrypted", "signUnencrypted", "hashEncrytped", "signEncrypted", "link", "metaID", "messageID", "hashAlgorithm"];
-
-/***/ }),
-/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-module.exports = __webpack_require__(281);
+module.exports = __webpack_require__(287);
 
 
 
 /***/ }),
-/* 73 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.1.1 ToPrimitive(input [, PreferredType])
@@ -16920,11 +16874,11 @@ module.exports = function (it, S) {
 
 
 /***/ }),
-/* 74 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var core = __webpack_require__(37);
-var global = __webpack_require__(10);
+var global = __webpack_require__(11);
 var SHARED = '__core-js_shared__';
 var store = global[SHARED] || (global[SHARED] = {});
 
@@ -16938,7 +16892,7 @@ var store = global[SHARED] || (global[SHARED] = {});
 
 
 /***/ }),
-/* 75 */
+/* 74 */
 /***/ (function(module, exports) {
 
 // 7.2.1 RequireObjectCoercible(argument)
@@ -16949,13 +16903,13 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 76 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.3.20 SpeciesConstructor(O, defaultConstructor)
 var anObject = __webpack_require__(15);
 var aFunction = __webpack_require__(58);
-var SPECIES = __webpack_require__(11)('species');
+var SPECIES = __webpack_require__(12)('species');
 module.exports = function (O, D) {
   var C = anObject(O).constructor;
   var S;
@@ -16964,39 +16918,7 @@ module.exports = function (O, D) {
 
 
 /***/ }),
-/* 77 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-__webpack_require__(199);
-var anObject = __webpack_require__(15);
-var $flags = __webpack_require__(95);
-var DESCRIPTORS = __webpack_require__(22);
-var TO_STRING = 'toString';
-var $toString = /./[TO_STRING];
-
-var define = function (fn) {
-  __webpack_require__(33)(RegExp.prototype, TO_STRING, fn, true);
-};
-
-// 21.2.5.14 RegExp.prototype.toString()
-if (__webpack_require__(23)(function () { return $toString.call({ source: 'a', flags: 'b' }) != '/a/b'; })) {
-  define(function toString() {
-    var R = anObject(this);
-    return '/'.concat(R.source, '/',
-      'flags' in R ? R.flags : !DESCRIPTORS && R instanceof RegExp ? $flags.call(R) : undefined);
-  });
-// FF44- RegExp#toString has a wrong name
-} else if ($toString.name != TO_STRING) {
-  define(function toString() {
-    return $toString.call(this);
-  });
-}
-
-
-/***/ }),
-/* 78 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.14 / 15.2.3.14 Object.keys(O)
@@ -17009,7 +16931,7 @@ module.exports = Object.keys || function keys(O) {
 
 
 /***/ }),
-/* 79 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var toInteger = __webpack_require__(41);
@@ -17022,26 +16944,7 @@ module.exports = function (index, length) {
 
 
 /***/ }),
-/* 80 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-// https://github.com/tc39/Array.prototype.includes
-var $export = __webpack_require__(26);
-var $includes = __webpack_require__(97)(true);
-
-$export($export.P, 'Array', {
-  includes: function includes(el /* , fromIndex = 0 */) {
-    return $includes(this, el, arguments.length > 1 ? arguments[1] : undefined);
-  }
-});
-
-__webpack_require__(134)('includes');
-
-
-/***/ }),
-/* 81 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -17075,7 +16978,7 @@ __webpack_require__(134)('includes');
  * Copyright (c) 2012-2014 Digital Bazaar, Inc.
  */
 var forge = __webpack_require__(4);
-__webpack_require__(110);
+__webpack_require__(111);
 __webpack_require__(147);
 __webpack_require__(7);
 
@@ -17542,7 +17445,7 @@ function _createCipher(options) {
 
 
 /***/ }),
-/* 82 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -17609,8 +17512,8 @@ function _createCipher(options) {
  * The OID for the RSA key algorithm is: 1.2.840.113549.1.1.1
  */
 var forge = __webpack_require__(4);
-__webpack_require__(30);
-__webpack_require__(83);
+__webpack_require__(32);
+__webpack_require__(80);
 __webpack_require__(46);
 __webpack_require__(155);
 __webpack_require__(156);
@@ -19344,7 +19247,7 @@ function _base64ToBigInt(b64) {
 
 
 /***/ }),
-/* 83 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Copyright (c) 2005  Tom Wu
@@ -20614,6 +20517,332 @@ BigInteger.prototype.isProbablePrime = bnIsProbablePrime;
 
 
 /***/ }),
+/* 81 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(process) {/* eslint-env browser */
+
+/**
+ * This is the web browser implementation of `debug()`.
+ */
+
+exports.log = log;
+exports.formatArgs = formatArgs;
+exports.save = save;
+exports.load = load;
+exports.useColors = useColors;
+exports.storage = localstorage();
+
+/**
+ * Colors.
+ */
+
+exports.colors = [
+	'#0000CC',
+	'#0000FF',
+	'#0033CC',
+	'#0033FF',
+	'#0066CC',
+	'#0066FF',
+	'#0099CC',
+	'#0099FF',
+	'#00CC00',
+	'#00CC33',
+	'#00CC66',
+	'#00CC99',
+	'#00CCCC',
+	'#00CCFF',
+	'#3300CC',
+	'#3300FF',
+	'#3333CC',
+	'#3333FF',
+	'#3366CC',
+	'#3366FF',
+	'#3399CC',
+	'#3399FF',
+	'#33CC00',
+	'#33CC33',
+	'#33CC66',
+	'#33CC99',
+	'#33CCCC',
+	'#33CCFF',
+	'#6600CC',
+	'#6600FF',
+	'#6633CC',
+	'#6633FF',
+	'#66CC00',
+	'#66CC33',
+	'#9900CC',
+	'#9900FF',
+	'#9933CC',
+	'#9933FF',
+	'#99CC00',
+	'#99CC33',
+	'#CC0000',
+	'#CC0033',
+	'#CC0066',
+	'#CC0099',
+	'#CC00CC',
+	'#CC00FF',
+	'#CC3300',
+	'#CC3333',
+	'#CC3366',
+	'#CC3399',
+	'#CC33CC',
+	'#CC33FF',
+	'#CC6600',
+	'#CC6633',
+	'#CC9900',
+	'#CC9933',
+	'#CCCC00',
+	'#CCCC33',
+	'#FF0000',
+	'#FF0033',
+	'#FF0066',
+	'#FF0099',
+	'#FF00CC',
+	'#FF00FF',
+	'#FF3300',
+	'#FF3333',
+	'#FF3366',
+	'#FF3399',
+	'#FF33CC',
+	'#FF33FF',
+	'#FF6600',
+	'#FF6633',
+	'#FF9900',
+	'#FF9933',
+	'#FFCC00',
+	'#FFCC33'
+];
+
+/**
+ * Currently only WebKit-based Web Inspectors, Firefox >= v31,
+ * and the Firebug extension (any Firefox version) are known
+ * to support "%c" CSS customizations.
+ *
+ * TODO: add a `localStorage` variable to explicitly enable/disable colors
+ */
+
+// eslint-disable-next-line complexity
+function useColors() {
+	// NB: In an Electron preload script, document will be defined but not fully
+	// initialized. Since we know we're in Chrome, we'll just detect this case
+	// explicitly
+	if (typeof window !== 'undefined' && window.process && (window.process.type === 'renderer' || window.process.__nwjs)) {
+		return true;
+	}
+
+	// Internet Explorer and Edge do not support colors.
+	if (typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/(edge|trident)\/(\d+)/)) {
+		return false;
+	}
+
+	// Is webkit? http://stackoverflow.com/a/16459606/376773
+	// document is undefined in react-native: https://github.com/facebook/react-native/pull/1632
+	return (typeof document !== 'undefined' && document.documentElement && document.documentElement.style && document.documentElement.style.WebkitAppearance) ||
+		// Is firebug? http://stackoverflow.com/a/398120/376773
+		(typeof window !== 'undefined' && window.console && (window.console.firebug || (window.console.exception && window.console.table))) ||
+		// Is firefox >= v31?
+		// https://developer.mozilla.org/en-US/docs/Tools/Web_Console#Styling_messages
+		(typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/) && parseInt(RegExp.$1, 10) >= 31) ||
+		// Double check webkit in userAgent just in case we are in a worker
+		(typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/applewebkit\/(\d+)/));
+}
+
+/**
+ * Colorize log arguments if enabled.
+ *
+ * @api public
+ */
+
+function formatArgs(args) {
+	args[0] = (this.useColors ? '%c' : '') +
+		this.namespace +
+		(this.useColors ? ' %c' : ' ') +
+		args[0] +
+		(this.useColors ? '%c ' : ' ') +
+		'+' + module.exports.humanize(this.diff);
+
+	if (!this.useColors) {
+		return;
+	}
+
+	const c = 'color: ' + this.color;
+	args.splice(1, 0, c, 'color: inherit');
+
+	// The final "%c" is somewhat tricky, because there could be other
+	// arguments passed either before or after the %c, so we need to
+	// figure out the correct index to insert the CSS into
+	let index = 0;
+	let lastC = 0;
+	args[0].replace(/%[a-zA-Z%]/g, match => {
+		if (match === '%%') {
+			return;
+		}
+		index++;
+		if (match === '%c') {
+			// We only are interested in the *last* %c
+			// (the user may have provided their own)
+			lastC = index;
+		}
+	});
+
+	args.splice(lastC, 0, c);
+}
+
+/**
+ * Invokes `console.log()` when available.
+ * No-op when `console.log` is not a "function".
+ *
+ * @api public
+ */
+function log(...args) {
+	// This hackery is required for IE8/9, where
+	// the `console.log` function doesn't have 'apply'
+	return typeof console === 'object' &&
+		console.log &&
+		console.log(...args);
+}
+
+/**
+ * Save `namespaces`.
+ *
+ * @param {String} namespaces
+ * @api private
+ */
+function save(namespaces) {
+	try {
+		if (namespaces) {
+			exports.storage.setItem('debug', namespaces);
+		} else {
+			exports.storage.removeItem('debug');
+		}
+	} catch (error) {
+		// Swallow
+		// XXX (@Qix-) should we be logging these?
+	}
+}
+
+/**
+ * Load `namespaces`.
+ *
+ * @return {String} returns the previously persisted debug modes
+ * @api private
+ */
+function load() {
+	let r;
+	try {
+		r = exports.storage.getItem('debug');
+	} catch (error) {
+		// Swallow
+		// XXX (@Qix-) should we be logging these?
+	}
+
+	// If debug isn't set in LS, and we're in Electron, try to load $DEBUG
+	if (!r && typeof process !== 'undefined' && 'env' in process) {
+		r = process.env.DEBUG;
+	}
+
+	return r;
+}
+
+/**
+ * Localstorage attempts to return the localstorage.
+ *
+ * This is necessary because safari throws
+ * when a user disables cookies/localstorage
+ * and you attempt to access it.
+ *
+ * @return {LocalStorage}
+ * @api private
+ */
+
+function localstorage() {
+	try {
+		// TVMLKit (Apple TV JS Runtime) does not have a window object, just localStorage in the global context
+		// The Browser also has localStorage in the global context.
+		return localStorage;
+	} catch (error) {
+		// Swallow
+		// XXX (@Qix-) should we be logging these?
+	}
+}
+
+module.exports = __webpack_require__(260)(exports);
+
+const {formatters} = module.exports;
+
+/**
+ * Map %j to `JSON.stringify()`, since no Web Inspectors do that by default.
+ */
+
+formatters.j = function (v) {
+	try {
+		return JSON.stringify(v);
+	} catch (error) {
+		return '[UnexpectedJSONParseError]: ' + error.message;
+	}
+};
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(17)))
+
+/***/ }),
+/* 82 */
+/***/ (function(module, exports) {
+
+/**
+ * Compiles a querystring
+ * Returns string representation of the object
+ *
+ * @param {Object}
+ * @api private
+ */
+
+exports.encode = function (obj) {
+  var str = '';
+
+  for (var i in obj) {
+    if (obj.hasOwnProperty(i)) {
+      if (str.length) str += '&';
+      str += encodeURIComponent(i) + '=' + encodeURIComponent(obj[i]);
+    }
+  }
+
+  return str;
+};
+
+/**
+ * Parses a simple querystring into an object
+ *
+ * @param {String} qs
+ * @api private
+ */
+
+exports.decode = function(qs){
+  var qry = {};
+  var pairs = qs.split('&');
+  for (var i = 0, l = pairs.length; i < l; i++) {
+    var pair = pairs[i].split('=');
+    qry[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
+  }
+  return qry;
+};
+
+
+/***/ }),
+/* 83 */
+/***/ (function(module, exports) {
+
+
+module.exports = function(a, b){
+  var fn = function(){};
+  fn.prototype = b.prototype;
+  a.prototype = new fn;
+  a.prototype.constructor = a;
+};
+
+/***/ }),
 /* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -20866,7 +21095,7 @@ function localstorage() {
 	}
 }
 
-module.exports = __webpack_require__(256)(exports);
+module.exports = __webpack_require__(277)(exports);
 
 const {formatters} = module.exports;
 
@@ -20882,336 +21111,10 @@ formatters.j = function (v) {
 	}
 };
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(18)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(17)))
 
 /***/ }),
 /* 85 */
-/***/ (function(module, exports) {
-
-/**
- * Compiles a querystring
- * Returns string representation of the object
- *
- * @param {Object}
- * @api private
- */
-
-exports.encode = function (obj) {
-  var str = '';
-
-  for (var i in obj) {
-    if (obj.hasOwnProperty(i)) {
-      if (str.length) str += '&';
-      str += encodeURIComponent(i) + '=' + encodeURIComponent(obj[i]);
-    }
-  }
-
-  return str;
-};
-
-/**
- * Parses a simple querystring into an object
- *
- * @param {String} qs
- * @api private
- */
-
-exports.decode = function(qs){
-  var qry = {};
-  var pairs = qs.split('&');
-  for (var i = 0, l = pairs.length; i < l; i++) {
-    var pair = pairs[i].split('=');
-    qry[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
-  }
-  return qry;
-};
-
-
-/***/ }),
-/* 86 */
-/***/ (function(module, exports) {
-
-
-module.exports = function(a, b){
-  var fn = function(){};
-  fn.prototype = b.prototype;
-  a.prototype = new fn;
-  a.prototype.constructor = a;
-};
-
-/***/ }),
-/* 87 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(process) {/* eslint-env browser */
-
-/**
- * This is the web browser implementation of `debug()`.
- */
-
-exports.log = log;
-exports.formatArgs = formatArgs;
-exports.save = save;
-exports.load = load;
-exports.useColors = useColors;
-exports.storage = localstorage();
-
-/**
- * Colors.
- */
-
-exports.colors = [
-	'#0000CC',
-	'#0000FF',
-	'#0033CC',
-	'#0033FF',
-	'#0066CC',
-	'#0066FF',
-	'#0099CC',
-	'#0099FF',
-	'#00CC00',
-	'#00CC33',
-	'#00CC66',
-	'#00CC99',
-	'#00CCCC',
-	'#00CCFF',
-	'#3300CC',
-	'#3300FF',
-	'#3333CC',
-	'#3333FF',
-	'#3366CC',
-	'#3366FF',
-	'#3399CC',
-	'#3399FF',
-	'#33CC00',
-	'#33CC33',
-	'#33CC66',
-	'#33CC99',
-	'#33CCCC',
-	'#33CCFF',
-	'#6600CC',
-	'#6600FF',
-	'#6633CC',
-	'#6633FF',
-	'#66CC00',
-	'#66CC33',
-	'#9900CC',
-	'#9900FF',
-	'#9933CC',
-	'#9933FF',
-	'#99CC00',
-	'#99CC33',
-	'#CC0000',
-	'#CC0033',
-	'#CC0066',
-	'#CC0099',
-	'#CC00CC',
-	'#CC00FF',
-	'#CC3300',
-	'#CC3333',
-	'#CC3366',
-	'#CC3399',
-	'#CC33CC',
-	'#CC33FF',
-	'#CC6600',
-	'#CC6633',
-	'#CC9900',
-	'#CC9933',
-	'#CCCC00',
-	'#CCCC33',
-	'#FF0000',
-	'#FF0033',
-	'#FF0066',
-	'#FF0099',
-	'#FF00CC',
-	'#FF00FF',
-	'#FF3300',
-	'#FF3333',
-	'#FF3366',
-	'#FF3399',
-	'#FF33CC',
-	'#FF33FF',
-	'#FF6600',
-	'#FF6633',
-	'#FF9900',
-	'#FF9933',
-	'#FFCC00',
-	'#FFCC33'
-];
-
-/**
- * Currently only WebKit-based Web Inspectors, Firefox >= v31,
- * and the Firebug extension (any Firefox version) are known
- * to support "%c" CSS customizations.
- *
- * TODO: add a `localStorage` variable to explicitly enable/disable colors
- */
-
-// eslint-disable-next-line complexity
-function useColors() {
-	// NB: In an Electron preload script, document will be defined but not fully
-	// initialized. Since we know we're in Chrome, we'll just detect this case
-	// explicitly
-	if (typeof window !== 'undefined' && window.process && (window.process.type === 'renderer' || window.process.__nwjs)) {
-		return true;
-	}
-
-	// Internet Explorer and Edge do not support colors.
-	if (typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/(edge|trident)\/(\d+)/)) {
-		return false;
-	}
-
-	// Is webkit? http://stackoverflow.com/a/16459606/376773
-	// document is undefined in react-native: https://github.com/facebook/react-native/pull/1632
-	return (typeof document !== 'undefined' && document.documentElement && document.documentElement.style && document.documentElement.style.WebkitAppearance) ||
-		// Is firebug? http://stackoverflow.com/a/398120/376773
-		(typeof window !== 'undefined' && window.console && (window.console.firebug || (window.console.exception && window.console.table))) ||
-		// Is firefox >= v31?
-		// https://developer.mozilla.org/en-US/docs/Tools/Web_Console#Styling_messages
-		(typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/) && parseInt(RegExp.$1, 10) >= 31) ||
-		// Double check webkit in userAgent just in case we are in a worker
-		(typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/applewebkit\/(\d+)/));
-}
-
-/**
- * Colorize log arguments if enabled.
- *
- * @api public
- */
-
-function formatArgs(args) {
-	args[0] = (this.useColors ? '%c' : '') +
-		this.namespace +
-		(this.useColors ? ' %c' : ' ') +
-		args[0] +
-		(this.useColors ? '%c ' : ' ') +
-		'+' + module.exports.humanize(this.diff);
-
-	if (!this.useColors) {
-		return;
-	}
-
-	const c = 'color: ' + this.color;
-	args.splice(1, 0, c, 'color: inherit');
-
-	// The final "%c" is somewhat tricky, because there could be other
-	// arguments passed either before or after the %c, so we need to
-	// figure out the correct index to insert the CSS into
-	let index = 0;
-	let lastC = 0;
-	args[0].replace(/%[a-zA-Z%]/g, match => {
-		if (match === '%%') {
-			return;
-		}
-		index++;
-		if (match === '%c') {
-			// We only are interested in the *last* %c
-			// (the user may have provided their own)
-			lastC = index;
-		}
-	});
-
-	args.splice(lastC, 0, c);
-}
-
-/**
- * Invokes `console.log()` when available.
- * No-op when `console.log` is not a "function".
- *
- * @api public
- */
-function log(...args) {
-	// This hackery is required for IE8/9, where
-	// the `console.log` function doesn't have 'apply'
-	return typeof console === 'object' &&
-		console.log &&
-		console.log(...args);
-}
-
-/**
- * Save `namespaces`.
- *
- * @param {String} namespaces
- * @api private
- */
-function save(namespaces) {
-	try {
-		if (namespaces) {
-			exports.storage.setItem('debug', namespaces);
-		} else {
-			exports.storage.removeItem('debug');
-		}
-	} catch (error) {
-		// Swallow
-		// XXX (@Qix-) should we be logging these?
-	}
-}
-
-/**
- * Load `namespaces`.
- *
- * @return {String} returns the previously persisted debug modes
- * @api private
- */
-function load() {
-	let r;
-	try {
-		r = exports.storage.getItem('debug');
-	} catch (error) {
-		// Swallow
-		// XXX (@Qix-) should we be logging these?
-	}
-
-	// If debug isn't set in LS, and we're in Electron, try to load $DEBUG
-	if (!r && typeof process !== 'undefined' && 'env' in process) {
-		r = process.env.DEBUG;
-	}
-
-	return r;
-}
-
-/**
- * Localstorage attempts to return the localstorage.
- *
- * This is necessary because safari throws
- * when a user disables cookies/localstorage
- * and you attempt to access it.
- *
- * @return {LocalStorage}
- * @api private
- */
-
-function localstorage() {
-	try {
-		// TVMLKit (Apple TV JS Runtime) does not have a window object, just localStorage in the global context
-		// The Browser also has localStorage in the global context.
-		return localStorage;
-	} catch (error) {
-		// Swallow
-		// XXX (@Qix-) should we be logging these?
-	}
-}
-
-module.exports = __webpack_require__(273)(exports);
-
-const {formatters} = module.exports;
-
-/**
- * Map %j to `JSON.stringify()`, since no Web Inspectors do that by default.
- */
-
-formatters.j = function (v) {
-	try {
-		return JSON.stringify(v);
-	} catch (error) {
-		return '[UnexpectedJSONParseError]: ' + error.message;
-	}
-};
-
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(18)))
-
-/***/ }),
-/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21261,25 +21164,149 @@ function nextTick(fn, arg1, arg2, arg3) {
 }
 
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(18)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(17)))
 
 /***/ }),
-/* 89 */
+/* 86 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AttachmentInfo; });
+/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(36);
+/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(6);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(1);
+
+
+
+
+/**
+ * Implements files attachments functionality
+ * Constructor accepts a file element
+ */
+
+var AttachmentInfo = /*#__PURE__*/function () {
+  function AttachmentInfo(file, onion, pkfp, metaID, privKey, messageID, hashEncrypted, hashUnencrypted) {
+    var hashAlgo = arguments.length > 8 && arguments[8] !== undefined ? arguments[8] : "sha256";
+
+    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1___default()(this, AttachmentInfo);
+
+    var self = this;
+    self.name = file.name;
+    self.size = file.size;
+    self.type = file.type;
+    self.lastModified = file.lastModified;
+    self.pkfp = pkfp;
+    self.metaID = metaID;
+    self.hashAlgorithm = hashAlgo;
+    self.messageID = messageID;
+    self.hashEncrypted = hashEncrypted;
+    self.hashUnencrypted = hashUnencrypted;
+    self.link = self.buildLink(onion, pkfp, self.hashUnencrypted);
+    self.signHashes(privKey);
+  }
+
+  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2___default()(AttachmentInfo, [{
+    key: "get",
+    value: function get() {
+      var self = this;
+      return {
+        name: self.name,
+        size: self.size,
+        type: self.type,
+        lastModified: self.lastModified,
+        pkfp: self.pkfp,
+        hashEncrypted: self.hashEncrypted,
+        hashUnencrypted: self.hashUnencrypted,
+        signEncrypted: self.signEncrypted,
+        signUnencrypted: self.signUnencrypted,
+        metaID: self.metaID,
+        messageID: self.messageID,
+        link: self.link,
+        hashAlgorithm: self.hashAlgorithm
+      };
+    }
+  }, {
+    key: "getLink",
+    value: function getLink() {
+      return this.link;
+    }
+  }, {
+    key: "buildLink",
+    value: function buildLink(onion, pkfp, hash) {
+      if (!onion || !pkfp || !hash) {
+        throw new Error("Attachment buildLink: missing required parameters");
+      }
+
+      var rawLink = onion + "/" + pkfp + "/" + hash;
+      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_3__[/* iCrypto */ "a"]();
+      ic.addBlob("l", rawLink).base64Encode("l", "l64");
+      return ic.get("l64");
+    }
+  }, {
+    key: "signHashes",
+    value: function signHashes(privKey) {
+      if (!privKey) {
+        throw new Error("Attachment signAttachmentHash: privKey is undefined");
+      }
+
+      var self = this;
+      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_3__[/* iCrypto */ "a"]();
+      ic.addBlob("hu", self.hashUnencrypted).addBlob("he", self.hashEncrypted).asym.setKey("pk", privKey, "private").asym.sign("hu", "pk", "sign_u").asym.sign("he", "pk", "sign_e");
+      self.signUnencrypted = ic.get("sign_u");
+      self.signEncrypted = ic.get("sign_e");
+    }
+  }], [{
+    key: "verifyFileInfo",
+    value: function verifyFileInfo(info) {
+      var required = ["name", "size", "pkfp", "hashUnencrypted", "hashEncrypted", "signUnencrypted", "signEncrypted", "link", "metaID", "messageID", "hashAlgorithm"];
+
+      for (var _i = 0, _required = required; _i < _required.length; _i++) {
+        var i = _required[_i];
+
+        if (!info.hasOwnProperty(i)) {
+          throw new Error("Attachment verifyFileInfo: Missing required property: " + i);
+        }
+      }
+    }
+  }, {
+    key: "parseLink",
+    value: function parseLink(link) {
+      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_3__[/* iCrypto */ "a"]();
+      ic.addBlob("l", link).base64Decode("l", "lres");
+      var elements = ic.get("lres").split("/");
+      return {
+        residence: elements[0],
+        pkfp: elements[1],
+        name: elements[2]
+      };
+    }
+  }]);
+
+  return AttachmentInfo;
+}();
+AttachmentInfo.properties = ["name", "size", "type", "lastModified", "hashUnencrypted", "signUnencrypted", "hashEncrytped", "signEncrypted", "link", "metaID", "messageID", "hashAlgorithm"];
+
+/***/ }),
+/* 87 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return XHR; });
-/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(35);
+/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(36);
 /* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(42);
 /* harmony import */ var core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(43);
 /* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(17);
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(24);
 /* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(14);
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var cute_set__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(51);
+/* harmony import */ var cute_set__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(50);
 /* harmony import */ var cute_set__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(cute_set__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var util__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(67);
 /* harmony import */ var util__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(util__WEBPACK_IMPORTED_MODULE_6__);
@@ -21547,7 +21574,7 @@ function parseHeaders(headers) {
 }
 
 /***/ }),
-/* 90 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -21555,10 +21582,10 @@ function parseHeaders(headers) {
  * Module dependencies.
  */
 
-var url = __webpack_require__(255);
-var parser = __webpack_require__(115);
+var url = __webpack_require__(259);
+var parser = __webpack_require__(116);
 var Manager = __webpack_require__(166);
-var debug = __webpack_require__(84)('socket.io-client');
+var debug = __webpack_require__(81)('socket.io-client');
 
 /**
  * Module exports.
@@ -21647,7 +21674,498 @@ exports.Socket = __webpack_require__(172);
 
 
 /***/ }),
-/* 91 */
+/* 89 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return FileWorker; });
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(28);
+/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(8);
+/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(30);
+/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(14);
+/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(110);
+/* harmony import */ var core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(36);
+/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(5);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(6);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(1);
+/* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(88);
+/* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(socket_io_client__WEBPACK_IMPORTED_MODULE_10__);
+/* harmony import */ var _WildEmitter__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(10);
+/* harmony import */ var socket_io_stream__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(71);
+/* harmony import */ var socket_io_stream__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(socket_io_stream__WEBPACK_IMPORTED_MODULE_12__);
+
+
+
+
+
+
+
+
+
+
+
+
+
+var FileWorker = /*#__PURE__*/function () {
+  function FileWorker(transport) {
+    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_7___default()(this, FileWorker);
+
+    console.log("Downloader initialized non-worker"); // can be 1 - websocket or 0 - xhr
+
+    this.transport = transport;
+    _WildEmitter__WEBPACK_IMPORTED_MODULE_11__[/* WildEmitter */ "a"].mixin(this);
+  }
+
+  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_8___default()(FileWorker, [{
+    key: "processMessage",
+    value: function processMessage(msg) {
+      console.log("Processing message from main thread..");
+      commandHandlers[msg.command](msg.data);
+    }
+  }, {
+    key: "parseFileLink",
+    value: function parseFileLink(link) {
+      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_9__[/* iCrypto */ "a"]();
+      ic.addBlob('l', link).base64Decode("l", "ls");
+      var parsed = ic.get("ls");
+      var splitted = parsed.split("/");
+      return {
+        onion: splitted[0],
+        pkfp: splitted[1],
+        name: splitted[2]
+      };
+    }
+  }, {
+    key: "postMessage",
+    value: function postMessage(data) {
+      this.emit("message", {
+        data: data
+      });
+    }
+    /**
+    * Concatenates 2 buffers
+    * @param buffer1
+    * @param buffer2
+    * @returns {ArrayBufferLike}
+    */
+
+  }, {
+    key: "appendBuffer",
+    value: function appendBuffer(buffer1, buffer2) {
+      var tmp = new Uint8Array(buffer1.byteLength + buffer2.byteLength);
+      tmp.set(new Uint8Array(buffer1), 0);
+      tmp.set(new Uint8Array(buffer2), buffer1.byteLength);
+      return tmp.buffer;
+    }
+  }, {
+    key: "uploadFile",
+    value: function uploadFile(data) {
+      var self = this;
+      var attachment = data.attachment;
+      var pkfp = data.pkfp;
+      var privK = data.privk;
+      var symk = data.symk;
+      this.processUpload(attachment, pkfp, privK, symk).then(function (data) {
+        console.log("Upload resolved successfully!");
+        self.postMessage(data);
+      }).catch(function (err) {
+        console.log("File upload error: ".concat(err));
+        self.postMessage({
+          message: "upload_error",
+          data: err
+        });
+      });
+    }
+    /**
+    * Uploads and encrypts a file to the Island and
+    * calculates encrypted and unencrypted hashes
+    * @param attachment
+    * @param pkfp
+    * @param privK
+    * @param symk
+    * @param fileSocket
+    * @returns {Promise<any>}
+    */
+
+  }, {
+    key: "processUpload",
+    value: function processUpload(file, pkfp, privK, symk) {
+      var _this = this;
+
+      var self = this;
+      return new Promise( /*#__PURE__*/function () {
+        var _ref = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee(resolve, reject) {
+          var fileSocket, stream, offset, bufferSize, fileSize, ic, errorEventHandler, readEventHandler, chunkReaderBlock, handleBlock;
+          return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+            while (1) {
+              switch (_context.prev = _context.next) {
+                case 0:
+                  self.postMessage({
+                    message: "log",
+                    data: "Processing upload"
+                  });
+                  _context.prev = 1;
+                  _context.next = 4;
+                  return _this.establishConnection();
+
+                case 4:
+                  fileSocket = _context.sent;
+                  _context.next = 10;
+                  break;
+
+                case 7:
+                  _context.prev = 7;
+                  _context.t0 = _context["catch"](1);
+                  reject("Connection error: " + _context.t0);
+
+                case 10:
+                  stream = socket_io_stream__WEBPACK_IMPORTED_MODULE_12__["createStream"]();
+                  self.postMessage({
+                    message: "log",
+                    data: "Uploading and encrypting chunk by chunk"
+                  });
+                  offset = 0;
+                  bufferSize = 1024 * 64;
+                  fileSize = file.size;
+                  ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_9__[/* iCrypto */ "a"]();
+                  ic.ssym.init("cha", symk).createHash("unenc") //hash of unencrypted
+                  .createHash("enc") //has of encrypted
+                  .createNonce("nonce", 8).asym.setKey("privk", privK, "private").privateKeySign("nonce", "privk", "sign").bytesToHex("nonce", "noncehex");
+                  console.log("NONCE: " + ic.get('noncehex'));
+                  fileSocket.on("invalid_request", function () {
+                    reject("Upload request is invalid");
+                  });
+                  /**
+                  * Emited by Island after file has been successfully written,
+                  * renamed and saved.
+                  * Closing connection, notifying main thread.
+                  */
+
+                  fileSocket.on("upload_success", function () {
+                    self.postMessage({
+                      message: "log",
+                      data: "Upload successful"
+                    });
+                    fileSocket.disconnect();
+                    resolve({
+                      message: "upload_complete",
+                      data: {
+                        hashEncrypted: ic.get("encres"),
+                        hashUnencrypted: ic.get("unencres")
+                      }
+                    });
+                  });
+                  fileSocket.on("upload_ready", function () {
+                    console.log("received upload_ready. Pumping data");
+                    chunkReaderBlock(offset, bufferSize, file);
+                  });
+                  fileSocket.on("upload_error", function (err) {
+                    reject(err);
+                  });
+                  /**
+                  * Event emited by Island after hash received
+                  * and file is ready to be renamed
+                  */
+
+                  fileSocket.on("end_stream", function () {
+                    stream.end();
+                  });
+
+                  errorEventHandler = function errorEventHandler(ev) {
+                    console.error("Error processing upload: " + ev.target.error);
+                    reject(ev.target.error);
+                  };
+
+                  readEventHandler = function readEventHandler(ev) {
+                    if (ev.target.error === null) {
+                      offset = Math.min(offset + bufferSize, fileSize);
+                      handleBlock(ev.target.result);
+                    } else {
+                      reject("Read error: " + ev.target.error);
+                      return;
+                    }
+
+                    if (offset >= fileSize) {
+                      ic.digestHash("unenc", "unencres");
+                      ic.digestHash("enc", "encres");
+                      ic.asym.sign("unencres", "privk", "unencressign");
+                      fileSocket.emit("finalize_upload", {
+                        hashUnencrypted: ic.get("unencres")
+                      });
+                      return;
+                    }
+
+                    chunkReaderBlock(offset, bufferSize, file);
+                  };
+
+                  chunkReaderBlock = function chunkReaderBlock(_offset, bufferSize, _file) {
+                    var reader = new FileReader();
+                    var upperBound = Math.min(_offset + bufferSize, fileSize);
+
+                    var blob = _file.slice(_offset, upperBound);
+
+                    reader.onload = readEventHandler;
+                    reader.onerror = errorEventHandler;
+                    reader.readAsArrayBuffer(blob);
+                  };
+
+                  handleBlock = function handleBlock(chunk) {
+                    ic.updateHash("unenc", chunk);
+                    var encrypted = ic.ssym.encrypt("cha", chunk);
+                    ic.updateHash("enc", encrypted);
+                    var b = new socket_io_stream__WEBPACK_IMPORTED_MODULE_12__["Buffer"](encrypted);
+                    stream.write(b);
+                  };
+                  /**
+                  * Initializing file upload
+                  */
+
+
+                  socket_io_stream__WEBPACK_IMPORTED_MODULE_12__(fileSocket).emit('upload_attachment', stream, {
+                    pkfp: pkfp,
+                    nonce: ic.get("noncehex"),
+                    sign: ic.get("sign")
+                  });
+
+                case 28:
+                case "end":
+                  return _context.stop();
+              }
+            }
+          }, _callee, null, [[1, 7]]);
+        }));
+
+        return function (_x, _x2) {
+          return _ref.apply(this, arguments);
+        };
+      }());
+    }
+  }, {
+    key: "downloadFile",
+    value: function downloadFile(data) {
+      var _this2 = this;
+
+      this.processDownload(data).then(function (dataBuffer) {
+        _this2.postMessage({
+          message: "download_complete",
+          data: dataBuffer
+        });
+
+        console.log("Stream finished");
+      }).catch(function (err) {
+        console.log("Error downloading file: " + err);
+
+        _this2.postMessage({
+          message: "download_failed",
+          data: err
+        });
+      });
+    }
+  }, {
+    key: "processDownload",
+    value: function processDownload(data) {
+      var _this3 = this;
+
+      var self = this;
+      return new Promise( /*#__PURE__*/function () {
+        var _ref2 = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2(resolve, reject) {
+          var fileInfo, link, myPkfp, privk, ownerPubk, metaID, fileSocket;
+          return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
+            while (1) {
+              switch (_context2.prev = _context2.next) {
+                case 0:
+                  console.log("Initializing file download");
+                  fileInfo = JSON.parse(data.fileInfo);
+                  link = self.parseFileLink(fileInfo.link);
+                  myPkfp = data.myPkfp;
+                  privk = data.privk;
+                  ownerPubk = data.pubk;
+                  metaID = fileInfo.metaID;
+                  _context2.prev = 7;
+                  _context2.next = 10;
+                  return _this3.establishConnection();
+
+                case 10:
+                  fileSocket = _context2.sent;
+                  _context2.next = 16;
+                  break;
+
+                case 13:
+                  _context2.prev = 13;
+                  _context2.t0 = _context2["catch"](7);
+                  reject("Connection error: " + _context2.t0);
+
+                case 16:
+                  /**
+                  * event triggered by Island when file is ready to be transferred to the client
+                  * key is encrypted shared SYM key to decrypt file
+                  */
+                  fileSocket.on("download_ready", function (key) {
+                    //prepare file
+                    self.postMessage({
+                      message: "file_available_locally"
+                    });
+                    var symk = key[metaID];
+                    var dataBuffer = new ArrayBuffer(0);
+                    socket_io_stream__WEBPACK_IMPORTED_MODULE_12__(fileSocket).on("file", function (stream) {
+                      console.log("File download in progress!");
+                      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_9__[/* iCrypto */ "a"]();
+                      ic.addBlob("k", symk).asym.setKey("privk", privk, "private").asym.decrypt("k", "privk", "symk", "hex");
+                      ic.createHash("h");
+                      ic.ssym.init("stc", ic.get("symk"), false);
+                      stream.on('data', function (data) {
+                        self.postMessage({
+                          message: "log",
+                          data: "Received data chunk"
+                        });
+                        var chunk = ic.ssym.decrypt("stc", data.buffer);
+                        ic.updateHash("h", new Uint8Array(chunk));
+                        dataBuffer = _iCrypto__WEBPACK_IMPORTED_MODULE_9__[/* iCrypto */ "a"].concatArrayBuffers(dataBuffer, chunk);
+                      });
+                      stream.on('end', function () {
+                        self.postMessage({
+                          message: "log",
+                          data: "Received end of data message"
+                        });
+                        ic.digestHash("h", "hres").addBlob("sign", fileInfo.signUnencrypted).asym.setKey("pubk", ownerPubk, "public").asym.verify("hres", "sign", "pubk", "vres");
+
+                        if (!ic.get("vres")) {
+                          reject("File validation error!");
+                        } else {
+                          self.postMessage({
+                            message: "log",
+                            data: "Resolving data..."
+                          });
+                          resolve(dataBuffer);
+                        }
+                      });
+                    }); //create stream
+                    //emit
+
+                    console.log("About to emit process_download");
+                    fileSocket.emit("proceed_download", {
+                      link: link,
+                      pkfp: myPkfp
+                    });
+                  });
+                  fileSocket.on("requesting_peer", function () {
+                    console.log("File not found locally, requesting hidden peer");
+                    self.postMessage({
+                      message: "requesting_peer"
+                    });
+                  });
+                  fileSocket.on("download_failed", function (err) {
+                    console.log("File download fail: " + err);
+                    self.postMessage({
+                      message: "download_failed",
+                      data: err
+                    });
+                  });
+                  fileSocket.emit("download_attachment", {
+                    link: link,
+                    myPkfp: myPkfp,
+                    metaID: fileInfo.metaID,
+                    hashEncrypted: fileInfo.hashEncrypted,
+                    signEncrypted: fileInfo.signEncrypted
+                  });
+
+                case 20:
+                case "end":
+                  return _context2.stop();
+              }
+            }
+          }, _callee2, null, [[7, 13]]);
+        }));
+
+        return function (_x3, _x4) {
+          return _ref2.apply(this, arguments);
+        };
+      }());
+    }
+  }, {
+    key: "establishConnection",
+    value: function establishConnection() {
+      var self = this;
+      return new Promise(function (resolve, reject) {
+        console.log("Connecting to file socket...");
+        var maxAttempts = 5;
+        var reconnectionDelay = 5000; //ms
+
+        var attempted = 0;
+        self.postMessage({
+          message: "log",
+          data: "Connecting to file socket..."
+        });
+        var socketConfig = {
+          autoConnect: false,
+          reconnection: false,
+          pingInterval: 10000,
+          pingTimeout: 5000
+        };
+        socketConfig.upgrade = self.transport > 0;
+        var fileSocket = socket_io_client__WEBPACK_IMPORTED_MODULE_10__('/file', socketConfig);
+
+        var attemptConnection = function attemptConnection() {
+          self.postMessage({
+            message: "log",
+            data: "Attempting connection: " + attempted
+          });
+          fileSocket.open();
+        };
+
+        var connectionFailHandler = function connectionFailHandler(err) {
+          if (attempted < maxAttempts) {
+            var msg = "Connection error on attempt ".concat(attempted, ": ").concat(err);
+            self.postMessage({
+              message: "log",
+              data: msg
+            });
+            attempted++;
+            setTimeout(attemptConnection, reconnectionDelay);
+          } else {
+            var _msg = "Connection error on attempt ".concat(attempted, ": ").concat(err, "\nRejecting!");
+
+            self.postMessage({
+              message: "log",
+              data: _msg
+            });
+            reject(err);
+          }
+        };
+
+        fileSocket.on("connect", function () {
+          self.postMessage({
+            message: "log",
+            data: "File transfer connection established"
+          });
+          resolve(fileSocket);
+        });
+        fileSocket.on("connect_error", function (err) {
+          connectionFailHandler(err);
+        });
+        fileSocket.on("connect_timeout", function () {
+          connectionFailHandler("Connection timeout.");
+        });
+        attemptConnection();
+      });
+    }
+  }]);
+
+  return FileWorker;
+}();
+
+/***/ }),
+/* 90 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -21656,20 +22174,20 @@ exports.Socket = __webpack_require__(172);
 __webpack_require__.d(__webpack_exports__, "a", function() { return /* binding */ Vault_Vault; });
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.promise.js
-var es6_promise = __webpack_require__(36);
+var es6_promise = __webpack_require__(30);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/regenerator/index.js
 var regenerator = __webpack_require__(2);
 var regenerator_default = /*#__PURE__*/__webpack_require__.n(regenerator);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/web.dom.iterable.js
-var web_dom_iterable = __webpack_require__(17);
+var web_dom_iterable = __webpack_require__(24);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.object.to-string.js
 var es6_object_to_string = __webpack_require__(14);
 
 // EXTERNAL MODULE: ./node_modules/regenerator-runtime/runtime.js
-var runtime = __webpack_require__(32);
+var runtime = __webpack_require__(28);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/asyncToGenerator.js
 var asyncToGenerator = __webpack_require__(8);
@@ -21696,17 +22214,17 @@ function verifyPassword(password, confirm) {
     return "Password and confirmation do not match.";
   }
 }
-// EXTERNAL MODULE: ./client/src/js/lib/Topic.js
-var Topic = __webpack_require__(19);
+// EXTERNAL MODULE: ./client/src/js/lib/Topic.js + 1 modules
+var Topic = __webpack_require__(18);
 
 // EXTERNAL MODULE: ./client/src/js/lib/ClientSettings.js
-var ClientSettings = __webpack_require__(49);
+var ClientSettings = __webpack_require__(57);
 
 // EXTERNAL MODULE: ./client/src/js/lib/iCrypto.js
 var iCrypto = __webpack_require__(1);
 
 // EXTERNAL MODULE: ./client/src/js/lib/WildEmitter.js
-var WildEmitter = __webpack_require__(13);
+var WildEmitter = __webpack_require__(10);
 
 // EXTERNAL MODULE: ./client/src/js/lib/Message.js
 var Message = __webpack_require__(9);
@@ -21715,10 +22233,10 @@ var Message = __webpack_require__(9);
 var Events = __webpack_require__(0);
 
 // EXTERNAL MODULE: ./client/src/js/lib/ChatUtility.js
-var ChatUtility = __webpack_require__(12);
+var ChatUtility = __webpack_require__(13);
 
 // EXTERNAL MODULE: ./client/src/js/lib/xhr.js
-var xhr = __webpack_require__(89);
+var xhr = __webpack_require__(87);
 
 // EXTERNAL MODULE: ./node_modules/semver/semver.js
 var semver = __webpack_require__(184);
@@ -22316,11 +22834,11 @@ var Vault_Vault = /*#__PURE__*/function () {
 // };
 
 /***/ }),
-/* 92 */
+/* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var isObject = __webpack_require__(27);
-var document = __webpack_require__(10).document;
+var document = __webpack_require__(11).document;
 // typeof document.createElement is 'object' in old IE
 var is = isObject(document) && isObject(document.createElement);
 module.exports = function (it) {
@@ -22329,7 +22847,7 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 93 */
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22357,13 +22875,13 @@ module.exports = function (R, S) {
 
 
 /***/ }),
-/* 94 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var regexpFlags = __webpack_require__(95);
+var regexpFlags = __webpack_require__(94);
 
 var nativeExec = RegExp.prototype.exec;
 // This always refers to the native implementation, because the
@@ -22422,7 +22940,7 @@ module.exports = patchedExec;
 
 
 /***/ }),
-/* 95 */
+/* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22442,18 +22960,18 @@ module.exports = function () {
 
 
 /***/ }),
-/* 96 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-__webpack_require__(196);
-var redefine = __webpack_require__(33);
-var hide = __webpack_require__(20);
-var fails = __webpack_require__(23);
-var defined = __webpack_require__(75);
-var wks = __webpack_require__(11);
-var regexpExec = __webpack_require__(94);
+__webpack_require__(200);
+var redefine = __webpack_require__(34);
+var hide = __webpack_require__(19);
+var fails = __webpack_require__(22);
+var defined = __webpack_require__(74);
+var wks = __webpack_require__(12);
+var regexpExec = __webpack_require__(93);
 
 var SPECIES = wks('species');
 
@@ -22545,14 +23063,46 @@ module.exports = function (KEY, length, exec) {
 
 
 /***/ }),
+/* 96 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+__webpack_require__(203);
+var anObject = __webpack_require__(15);
+var $flags = __webpack_require__(94);
+var DESCRIPTORS = __webpack_require__(21);
+var TO_STRING = 'toString';
+var $toString = /./[TO_STRING];
+
+var define = function (fn) {
+  __webpack_require__(34)(RegExp.prototype, TO_STRING, fn, true);
+};
+
+// 21.2.5.14 RegExp.prototype.toString()
+if (__webpack_require__(22)(function () { return $toString.call({ source: 'a', flags: 'b' }) != '/a/b'; })) {
+  define(function toString() {
+    var R = anObject(this);
+    return '/'.concat(R.source, '/',
+      'flags' in R ? R.flags : !DESCRIPTORS && R instanceof RegExp ? $flags.call(R) : undefined);
+  });
+// FF44- RegExp#toString has a wrong name
+} else if ($toString.name != TO_STRING) {
+  define(function toString() {
+    return $toString.call(this);
+  });
+}
+
+
+/***/ }),
 /* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // false -> Array#indexOf
 // true  -> Array#includes
 var toIObject = __webpack_require__(44);
-var toLength = __webpack_require__(24);
-var toAbsoluteIndex = __webpack_require__(79);
+var toLength = __webpack_require__(23);
+var toAbsoluteIndex = __webpack_require__(77);
 module.exports = function (IS_INCLUDES) {
   return function ($this, el, fromIndex) {
     var O = toIObject($this);
@@ -22577,7 +23127,7 @@ module.exports = function (IS_INCLUDES) {
 /* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var shared = __webpack_require__(74)('keys');
+var shared = __webpack_require__(73)('keys');
 var uid = __webpack_require__(38);
 module.exports = function (key) {
   return shared[key] || (shared[key] = uid(key));
@@ -22614,7 +23164,7 @@ exports.f = {}.propertyIsEnumerable;
 
 // 19.1.2.2 / 15.2.3.5 Object.create(O [, Properties])
 var anObject = __webpack_require__(15);
-var dPs = __webpack_require__(202);
+var dPs = __webpack_require__(206);
 var enumBugKeys = __webpack_require__(99);
 var IE_PROTO = __webpack_require__(98)('IE_PROTO');
 var Empty = function () { /* empty */ };
@@ -22623,7 +23173,7 @@ var PROTOTYPE = 'prototype';
 // Create object with fake `null` prototype: use iframe Object with cleared prototype
 var createDict = function () {
   // Thrash, waste and sodomy: IE GC bug
-  var iframe = __webpack_require__(92)('iframe');
+  var iframe = __webpack_require__(91)('iframe');
   var i = enumBugKeys.length;
   var lt = '<';
   var gt = '>';
@@ -22660,14 +23210,14 @@ module.exports = Object.create || function create(O, Properties) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var pIE = __webpack_require__(101);
-var createDesc = __webpack_require__(52);
+var createDesc = __webpack_require__(51);
 var toIObject = __webpack_require__(44);
-var toPrimitive = __webpack_require__(73);
-var has = __webpack_require__(34);
+var toPrimitive = __webpack_require__(72);
+var has = __webpack_require__(35);
 var IE8_DOM_DEFINE = __webpack_require__(125);
 var gOPD = Object.getOwnPropertyDescriptor;
 
-exports.f = __webpack_require__(22) ? gOPD : function getOwnPropertyDescriptor(O, P) {
+exports.f = __webpack_require__(21) ? gOPD : function getOwnPropertyDescriptor(O, P) {
   O = toIObject(O);
   P = toPrimitive(P, true);
   if (IE8_DOM_DEFINE) try {
@@ -22693,8 +23243,8 @@ module.exports = function (it, Constructor, name, forbiddenField) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // check on default Array iterator
-var Iterators = __webpack_require__(54);
-var ITERATOR = __webpack_require__(11)('iterator');
+var Iterators = __webpack_require__(53);
+var ITERATOR = __webpack_require__(12)('iterator');
 var ArrayProto = Array.prototype;
 
 module.exports = function (it) {
@@ -22707,8 +23257,8 @@ module.exports = function (it) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var classof = __webpack_require__(59);
-var ITERATOR = __webpack_require__(11)('iterator');
-var Iterators = __webpack_require__(54);
+var ITERATOR = __webpack_require__(12)('iterator');
+var Iterators = __webpack_require__(53);
 module.exports = __webpack_require__(37).getIteratorMethod = function (it) {
   if (it != undefined) return it[ITERATOR]
     || it['@@iterator']
@@ -22720,7 +23270,7 @@ module.exports = __webpack_require__(37).getIteratorMethod = function (it) {
 /* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var redefine = __webpack_require__(33);
+var redefine = __webpack_require__(34);
 module.exports = function (target, src, safe) {
   for (var key in src) redefine(target, key, src[key], safe);
   return target;
@@ -22731,7 +23281,7 @@ module.exports = function (target, src, safe) {
 /* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var ITERATOR = __webpack_require__(11)('iterator');
+var ITERATOR = __webpack_require__(12)('iterator');
 var SAFE_CLOSING = false;
 
 try {
@@ -22759,6 +23309,25 @@ module.exports = function (exec, skipClosing) {
 /* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
+
+// https://github.com/tc39/Array.prototype.includes
+var $export = __webpack_require__(26);
+var $includes = __webpack_require__(97)(true);
+
+$export($export.P, 'Array', {
+  includes: function includes(el /* , fromIndex = 0 */) {
+    return $includes(this, el, arguments.length > 1 ? arguments[1] : undefined);
+  }
+});
+
+__webpack_require__(134)('includes');
+
+
+/***/ }),
+/* 110 */
+/***/ (function(module, exports, __webpack_require__) {
+
 __webpack_require__(142)('Uint8', 1, function (init) {
   return function Uint8Array(data, byteOffset, length) {
     return init(this, data, byteOffset, length);
@@ -22767,7 +23336,7 @@ __webpack_require__(142)('Uint8', 1, function (init) {
 
 
 /***/ }),
-/* 110 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -23003,7 +23572,7 @@ BlockCipher.prototype.finish = function(pad) {
 
 
 /***/ }),
-/* 111 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -23014,7 +23583,7 @@ BlockCipher.prototype.finish = function(pad) {
  * Copyright (c) 2010-2014 Digital Bazaar, Inc.
  */
 var forge = __webpack_require__(4);
-__webpack_require__(31);
+__webpack_require__(33);
 __webpack_require__(7);
 
 var md5 = module.exports = forge.md5 = forge.md5 || {};
@@ -23298,7 +23867,7 @@ function _update(s, w, bytes) {
 
 
 /***/ }),
-/* 112 */
+/* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {/**
@@ -23312,7 +23881,7 @@ function _update(s, w, bytes) {
  */
 var forge = __webpack_require__(4);
 __webpack_require__(65);
-__webpack_require__(31);
+__webpack_require__(33);
 __webpack_require__(7);
 
 var pkcs5 = forge.pkcs5 = forge.pkcs5 || {};
@@ -23516,7 +24085,7 @@ module.exports = forge.pbkdf2 = pkcs5.pbkdf2 = function(
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(16).Buffer))
 
 /***/ }),
-/* 113 */
+/* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -23630,14 +24199,14 @@ module.exports = forge.pbkdf2 = pkcs5.pbkdf2 = function(
  */
 var forge = __webpack_require__(4);
 __webpack_require__(45);
-__webpack_require__(30);
-__webpack_require__(81);
-__webpack_require__(31);
-__webpack_require__(239);
+__webpack_require__(32);
+__webpack_require__(78);
+__webpack_require__(33);
+__webpack_require__(243);
 __webpack_require__(46);
-__webpack_require__(55);
-__webpack_require__(114);
-__webpack_require__(82);
+__webpack_require__(54);
+__webpack_require__(115);
+__webpack_require__(79);
 __webpack_require__(7);
 
 // shortcut for asn.1 API
@@ -26793,7 +27362,7 @@ pki.verifyCertificateChain = function(caStore, chain, verify) {
 
 
 /***/ }),
-/* 114 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -27040,7 +27609,7 @@ pss.create = function(options) {
 
 
 /***/ }),
-/* 115 */
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -27048,9 +27617,9 @@ pss.create = function(options) {
  * Module dependencies.
  */
 
-var debug = __webpack_require__(258)('socket.io-parser');
-var Emitter = __webpack_require__(56);
-var binary = __webpack_require__(261);
+var debug = __webpack_require__(262)('socket.io-parser');
+var Emitter = __webpack_require__(55);
+var binary = __webpack_require__(265);
 var isArray = __webpack_require__(164);
 var isBuf = __webpack_require__(165);
 
@@ -27461,12 +28030,12 @@ function error(msg) {
 
 
 /***/ }),
-/* 116 */
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // browser shim for xmlhttprequest module
 
-var hasCORS = __webpack_require__(264);
+var hasCORS = __webpack_require__(268);
 
 module.exports = function (opts) {
   var xdomain = opts.xdomain;
@@ -27504,15 +28073,15 @@ module.exports = function (opts) {
 
 
 /***/ }),
-/* 117 */
+/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
  * Module dependencies.
  */
 
-var parser = __webpack_require__(57);
-var Emitter = __webpack_require__(56);
+var parser = __webpack_require__(56);
+var Emitter = __webpack_require__(55);
 
 /**
  * Module exports.
@@ -27671,13 +28240,13 @@ Transport.prototype.onClose = function () {
 
 
 /***/ }),
-/* 118 */
+/* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var util = __webpack_require__(67);
 var Duplex = __webpack_require__(174).Duplex;
 var bind = __webpack_require__(68);
-var uuid = __webpack_require__(294);
+var uuid = __webpack_require__(300);
 var debug = __webpack_require__(180)('socket.io-stream:iostream');
 
 
@@ -27942,20 +28511,20 @@ IOStream.prototype._onerror = function(err) {
 
 
 /***/ }),
-/* 119 */
+/* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(175);
 exports.Stream = exports;
 exports.Readable = exports;
-exports.Writable = __webpack_require__(121);
+exports.Writable = __webpack_require__(122);
 exports.Duplex = __webpack_require__(48);
 exports.Transform = __webpack_require__(179);
-exports.PassThrough = __webpack_require__(289);
+exports.PassThrough = __webpack_require__(295);
 
 
 /***/ }),
-/* 120 */
+/* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* eslint-disable node/no-deprecated-api */
@@ -28023,7 +28592,7 @@ SafeBuffer.allocUnsafeSlow = function (size) {
 
 
 /***/ }),
-/* 121 */
+/* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28056,7 +28625,7 @@ SafeBuffer.allocUnsafeSlow = function (size) {
 
 /*<replacement>*/
 
-var pna = __webpack_require__(88);
+var pna = __webpack_require__(85);
 /*</replacement>*/
 
 module.exports = Writable;
@@ -28099,7 +28668,7 @@ util.inherits = __webpack_require__(47);
 
 /*<replacement>*/
 var internalUtil = {
-  deprecate: __webpack_require__(287)
+  deprecate: __webpack_require__(293)
 };
 /*</replacement>*/
 
@@ -28109,7 +28678,7 @@ var Stream = __webpack_require__(176);
 
 /*<replacement>*/
 
-var Buffer = __webpack_require__(120).Buffer;
+var Buffer = __webpack_require__(121).Buffer;
 var OurUint8Array = global.Uint8Array || function () {};
 function _uint8ArrayToBuffer(chunk) {
   return Buffer.from(chunk);
@@ -28714,69 +29283,17 @@ Writable.prototype._destroy = function (err, cb) {
   this.end();
   cb(err);
 };
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(18), __webpack_require__(64).setImmediate, __webpack_require__(29)))
-
-/***/ }),
-/* 122 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Metadata; });
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5);
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1);
-
-
-
-var Metadata = /*#__PURE__*/function () {
-  function Metadata() {
-    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0___default()(this, Metadata);
-  }
-
-  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1___default()(Metadata, null, [{
-    key: "parseMetadata",
-    value: function parseMetadata(blob) {
-      if (typeof blob === "string") {
-        return JSON.parse(blob);
-      } else {
-        return blob;
-      }
-    }
-  }, {
-    key: "extractSharedKey",
-    value: function extractSharedKey(pkfp, privateKey, metadata) {
-      var keyCipher = metadata.body.participants[pkfp].key;
-      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_2__[/* iCrypto */ "a"]();
-      ic.addBlob("symcip", keyCipher).asym.setKey("priv", privateKey, "private").asym.decrypt("symcip", "priv", "sym", "hex");
-      return ic.get("sym");
-    }
-  }, {
-    key: "isMetadataValid",
-    value: function isMetadataValid(metadata) {
-      if (typeof metadata === "string") {
-        metadata = JSON.parse(metadata);
-      }
-
-      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_2__[/* iCrypto */ "a"]();
-      ic.setRSAKey("pub", metadata.body.topicAuthority.publicKey, "public").addBlob("body", JSON.stringify(metadata.body)).addBlob("sign", metadata.signature).publicKeyVerify("body", "sign", "pub", "res");
-      return ic.get("res");
-    }
-  }]);
-
-  return Metadata;
-}();
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(17), __webpack_require__(64).setImmediate, __webpack_require__(31)))
 
 /***/ }),
 /* 123 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var arrayWithoutHoles = __webpack_require__(224);
+var arrayWithoutHoles = __webpack_require__(228);
 
-var iterableToArray = __webpack_require__(225);
+var iterableToArray = __webpack_require__(229);
 
-var nonIterableSpread = __webpack_require__(226);
+var nonIterableSpread = __webpack_require__(230);
 
 function _toConsumableArray(arr) {
   return arrayWithoutHoles(arr) || iterableToArray(arr) || nonIterableSpread();
@@ -28792,7 +29309,7 @@ module.exports = _toConsumableArray;
 /* WEBPACK VAR INJECTION */(function(setImmediate) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return MessageQueue; });
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(32);
+/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(28);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(8);
 /* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2__);
@@ -28800,7 +29317,7 @@ module.exports = _toConsumableArray;
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(6);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _WildEmitter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(13);
+/* harmony import */ var _WildEmitter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(10);
 /* harmony import */ var _Lock__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(186);
 
 
@@ -28984,8 +29501,8 @@ var MessageQueue = /*#__PURE__*/function () {
 /* 125 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = !__webpack_require__(22) && !__webpack_require__(23)(function () {
-  return Object.defineProperty(__webpack_require__(92)('div'), 'a', { get: function () { return 7; } }).a != 7;
+module.exports = !__webpack_require__(21) && !__webpack_require__(22)(function () {
+  return Object.defineProperty(__webpack_require__(91)('div'), 'a', { get: function () { return 7; } }).a != 7;
 });
 
 
@@ -28995,7 +29512,7 @@ module.exports = !__webpack_require__(22) && !__webpack_require__(23)(function (
 
 "use strict";
 
-var at = __webpack_require__(195)(true);
+var at = __webpack_require__(199)(true);
 
  // `AdvanceStringIndex` abstract operation
 // https://tc39.github.io/ecma262/#sec-advancestringindex
@@ -29008,11 +29525,11 @@ module.exports = function (S, index, unicode) {
 /* 127 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var global = __webpack_require__(10);
+var global = __webpack_require__(11);
 var core = __webpack_require__(37);
 var LIBRARY = __webpack_require__(39);
 var wksExt = __webpack_require__(128);
-var defineProperty = __webpack_require__(21).f;
+var defineProperty = __webpack_require__(20).f;
 module.exports = function (name) {
   var $Symbol = core.Symbol || (core.Symbol = LIBRARY ? {} : global.Symbol || {});
   if (name.charAt(0) != '_' && !(name in $Symbol)) defineProperty($Symbol, name, { value: wksExt.f(name) });
@@ -29023,14 +29540,14 @@ module.exports = function (name) {
 /* 128 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports.f = __webpack_require__(11);
+exports.f = __webpack_require__(12);
 
 
 /***/ }),
 /* 129 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var has = __webpack_require__(34);
+var has = __webpack_require__(35);
 var toIObject = __webpack_require__(44);
 var arrayIndexOf = __webpack_require__(97)(false);
 var IE_PROTO = __webpack_require__(98)('IE_PROTO');
@@ -29054,7 +29571,7 @@ module.exports = function (object, names) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // fallback for non-array-like ES3 and non-enumerable old V8 strings
-var cof = __webpack_require__(53);
+var cof = __webpack_require__(52);
 // eslint-disable-next-line no-prototype-builtins
 module.exports = Object('z').propertyIsEnumerable(0) ? Object : function (it) {
   return cof(it) == 'String' ? it.split('') : Object(it);
@@ -29066,7 +29583,7 @@ module.exports = Object('z').propertyIsEnumerable(0) ? Object : function (it) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.2.2 IsArray(argument)
-var cof = __webpack_require__(53);
+var cof = __webpack_require__(52);
 module.exports = Array.isArray || function isArray(arg) {
   return cof(arg) == 'Array';
 };
@@ -29076,7 +29593,7 @@ module.exports = Array.isArray || function isArray(arg) {
 /* 132 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var document = __webpack_require__(10).document;
+var document = __webpack_require__(11).document;
 module.exports = document && document.documentElement;
 
 
@@ -29087,15 +29604,15 @@ module.exports = document && document.documentElement;
 "use strict";
 
 var addToUnscopables = __webpack_require__(134);
-var step = __webpack_require__(204);
-var Iterators = __webpack_require__(54);
+var step = __webpack_require__(208);
+var Iterators = __webpack_require__(53);
 var toIObject = __webpack_require__(44);
 
 // 22.1.3.4 Array.prototype.entries()
 // 22.1.3.13 Array.prototype.keys()
 // 22.1.3.29 Array.prototype.values()
 // 22.1.3.30 Array.prototype[@@iterator]()
-module.exports = __webpack_require__(205)(Array, 'Array', function (iterated, kind) {
+module.exports = __webpack_require__(209)(Array, 'Array', function (iterated, kind) {
   this._t = toIObject(iterated); // target
   this._i = 0;                   // next index
   this._k = kind;                // kind
@@ -29126,9 +29643,9 @@ addToUnscopables('entries');
 /***/ (function(module, exports, __webpack_require__) {
 
 // 22.1.3.31 Array.prototype[@@unscopables]
-var UNSCOPABLES = __webpack_require__(11)('unscopables');
+var UNSCOPABLES = __webpack_require__(12)('unscopables');
 var ArrayProto = Array.prototype;
-if (ArrayProto[UNSCOPABLES] == undefined) __webpack_require__(20)(ArrayProto, UNSCOPABLES, {});
+if (ArrayProto[UNSCOPABLES] == undefined) __webpack_require__(19)(ArrayProto, UNSCOPABLES, {});
 module.exports = function (key) {
   ArrayProto[UNSCOPABLES][key] = true;
 };
@@ -29139,8 +29656,8 @@ module.exports = function (key) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.9 / 15.2.3.2 Object.getPrototypeOf(O)
-var has = __webpack_require__(34);
-var toObject = __webpack_require__(28);
+var has = __webpack_require__(35);
+var toObject = __webpack_require__(29);
 var IE_PROTO = __webpack_require__(98)('IE_PROTO');
 var ObjectProto = Object.prototype;
 
@@ -29176,10 +29693,10 @@ module.exports = function (iterator, fn, value, entries) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var ctx = __webpack_require__(40);
-var invoke = __webpack_require__(208);
+var invoke = __webpack_require__(212);
 var html = __webpack_require__(132);
-var cel = __webpack_require__(92);
-var global = __webpack_require__(10);
+var cel = __webpack_require__(91);
+var global = __webpack_require__(11);
 var process = global.process;
 var setTask = global.setImmediate;
 var clearTask = global.clearImmediate;
@@ -29218,7 +29735,7 @@ if (!setTask || !clearTask) {
     delete queue[id];
   };
   // Node.js 0.8-
-  if (__webpack_require__(53)(process) == 'process') {
+  if (__webpack_require__(52)(process) == 'process') {
     defer = function (id) {
       process.nextTick(ctx(run, id, 1));
     };
@@ -29310,10 +29827,10 @@ module.exports = function (C, x) {
 
 "use strict";
 
-var global = __webpack_require__(10);
-var dP = __webpack_require__(21);
-var DESCRIPTORS = __webpack_require__(22);
-var SPECIES = __webpack_require__(11)('species');
+var global = __webpack_require__(11);
+var dP = __webpack_require__(20);
+var DESCRIPTORS = __webpack_require__(21);
+var SPECIES = __webpack_require__(12)('species');
 
 module.exports = function (KEY) {
   var C = global[KEY];
@@ -29330,8 +29847,8 @@ module.exports = function (KEY) {
 
 "use strict";
 
-var $defineProperty = __webpack_require__(21);
-var createDesc = __webpack_require__(52);
+var $defineProperty = __webpack_require__(20);
+var createDesc = __webpack_require__(51);
 
 module.exports = function (object, index, value) {
   if (index in object) $defineProperty.f(object, index, createDesc(0, value));
@@ -29345,44 +29862,44 @@ module.exports = function (object, index, value) {
 
 "use strict";
 
-if (__webpack_require__(22)) {
+if (__webpack_require__(21)) {
   var LIBRARY = __webpack_require__(39);
-  var global = __webpack_require__(10);
-  var fails = __webpack_require__(23);
+  var global = __webpack_require__(11);
+  var fails = __webpack_require__(22);
   var $export = __webpack_require__(26);
   var $typed = __webpack_require__(143);
-  var $buffer = __webpack_require__(228);
+  var $buffer = __webpack_require__(232);
   var ctx = __webpack_require__(40);
   var anInstance = __webpack_require__(104);
-  var propertyDesc = __webpack_require__(52);
-  var hide = __webpack_require__(20);
+  var propertyDesc = __webpack_require__(51);
+  var hide = __webpack_require__(19);
   var redefineAll = __webpack_require__(107);
   var toInteger = __webpack_require__(41);
-  var toLength = __webpack_require__(24);
+  var toLength = __webpack_require__(23);
   var toIndex = __webpack_require__(144);
-  var toAbsoluteIndex = __webpack_require__(79);
-  var toPrimitive = __webpack_require__(73);
-  var has = __webpack_require__(34);
+  var toAbsoluteIndex = __webpack_require__(77);
+  var toPrimitive = __webpack_require__(72);
+  var has = __webpack_require__(35);
   var classof = __webpack_require__(59);
   var isObject = __webpack_require__(27);
-  var toObject = __webpack_require__(28);
+  var toObject = __webpack_require__(29);
   var isArrayIter = __webpack_require__(105);
   var create = __webpack_require__(102);
   var getPrototypeOf = __webpack_require__(135);
   var gOPN = __webpack_require__(61).f;
   var getIterFn = __webpack_require__(106);
   var uid = __webpack_require__(38);
-  var wks = __webpack_require__(11);
-  var createArrayMethod = __webpack_require__(229);
+  var wks = __webpack_require__(12);
+  var createArrayMethod = __webpack_require__(233);
   var createArrayIncludes = __webpack_require__(97);
-  var speciesConstructor = __webpack_require__(76);
+  var speciesConstructor = __webpack_require__(75);
   var ArrayIterators = __webpack_require__(133);
-  var Iterators = __webpack_require__(54);
+  var Iterators = __webpack_require__(53);
   var $iterDetect = __webpack_require__(108);
   var setSpecies = __webpack_require__(140);
   var arrayFill = __webpack_require__(145);
-  var arrayCopyWithin = __webpack_require__(232);
-  var $DP = __webpack_require__(21);
+  var arrayCopyWithin = __webpack_require__(236);
+  var $DP = __webpack_require__(20);
   var $GOPD = __webpack_require__(103);
   var dP = $DP.f;
   var gOPD = $GOPD.f;
@@ -29830,8 +30347,8 @@ if (__webpack_require__(22)) {
 /* 143 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var global = __webpack_require__(10);
-var hide = __webpack_require__(20);
+var global = __webpack_require__(11);
+var hide = __webpack_require__(19);
 var uid = __webpack_require__(38);
 var TYPED = uid('typed_array');
 var VIEW = uid('view');
@@ -29866,7 +30383,7 @@ module.exports = {
 
 // https://tc39.github.io/ecma262/#sec-toindex
 var toInteger = __webpack_require__(41);
-var toLength = __webpack_require__(24);
+var toLength = __webpack_require__(23);
 module.exports = function (it) {
   if (it === undefined) return 0;
   var number = toInteger(it);
@@ -29883,9 +30400,9 @@ module.exports = function (it) {
 "use strict";
 // 22.1.3.6 Array.prototype.fill(value, start = 0, end = this.length)
 
-var toObject = __webpack_require__(28);
-var toAbsoluteIndex = __webpack_require__(79);
-var toLength = __webpack_require__(24);
+var toObject = __webpack_require__(29);
+var toAbsoluteIndex = __webpack_require__(77);
+var toLength = __webpack_require__(23);
 module.exports = function fill(value /* , start = 0, end = @length */) {
   var O = toObject(this);
   var length = toLength(O.length);
@@ -29906,11 +30423,11 @@ module.exports = function fill(value /* , start = 0, end = @length */) {
 
 
 var anObject = __webpack_require__(15);
-var toObject = __webpack_require__(28);
-var toLength = __webpack_require__(24);
+var toObject = __webpack_require__(29);
+var toLength = __webpack_require__(23);
 var toInteger = __webpack_require__(41);
 var advanceStringIndex = __webpack_require__(126);
-var regExpExec = __webpack_require__(93);
+var regExpExec = __webpack_require__(92);
 var max = Math.max;
 var min = Math.min;
 var floor = Math.floor;
@@ -29922,7 +30439,7 @@ var maybeToString = function (it) {
 };
 
 // @@replace logic
-__webpack_require__(96)('replace', 2, function (defined, REPLACE, $replace, maybeCallNative) {
+__webpack_require__(95)('replace', 2, function (defined, REPLACE, $replace, maybeCallNative) {
   return [
     // `String.prototype.replace` method
     // https://tc39.github.io/ecma262/#sec-string.prototype.replace
@@ -31253,10 +31770,10 @@ function from64To32(num) {
  * timing signal.
  */
 var forge = __webpack_require__(4);
-__webpack_require__(30);
+__webpack_require__(32);
 __webpack_require__(65);
-__webpack_require__(111);
-__webpack_require__(55);
+__webpack_require__(112);
+__webpack_require__(54);
 __webpack_require__(149);
 __webpack_require__(25);
 __webpack_require__(66);
@@ -35304,16 +35821,16 @@ forge.tls.createConnection = tls.createConnection;
  * Copyright (c) 2010-2013 Digital Bazaar, Inc.
  */
 var forge = __webpack_require__(4);
-__webpack_require__(30);
+__webpack_require__(32);
 __webpack_require__(46);
 __webpack_require__(150);
-__webpack_require__(55);
-__webpack_require__(112);
-__webpack_require__(157);
-__webpack_require__(114);
-__webpack_require__(82);
-__webpack_require__(7);
+__webpack_require__(54);
 __webpack_require__(113);
+__webpack_require__(157);
+__webpack_require__(115);
+__webpack_require__(79);
+__webpack_require__(7);
+__webpack_require__(114);
 
 // shortcut for asn.1 API
 var asn1 = forge.asn1;
@@ -35424,15 +35941,15 @@ pki.privateKeyInfoToPem = function(pki, maxline) {
  */
 var forge = __webpack_require__(4);
 __webpack_require__(45);
-__webpack_require__(30);
-__webpack_require__(81);
-__webpack_require__(31);
+__webpack_require__(32);
+__webpack_require__(78);
+__webpack_require__(33);
 __webpack_require__(46);
-__webpack_require__(112);
-__webpack_require__(55);
+__webpack_require__(113);
+__webpack_require__(54);
 __webpack_require__(25);
 __webpack_require__(154);
-__webpack_require__(82);
+__webpack_require__(79);
 __webpack_require__(7);
 
 if(typeof BigInteger === 'undefined') {
@@ -36448,7 +36965,7 @@ function createPbkdf2Params(salt, countBytes, dkLen, prfAlgorithm) {
  * Copyright (c) 2010-2015 Digital Bazaar, Inc.
  */
 var forge = __webpack_require__(4);
-__webpack_require__(31);
+__webpack_require__(33);
 __webpack_require__(7);
 
 var sha256 = module.exports = forge.sha256 = forge.sha256 || {};
@@ -37192,7 +37709,7 @@ prng.create = function(plugin) {
   return ctx;
 };
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(18)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(17)))
 
 /***/ }),
 /* 154 */
@@ -37905,7 +38422,7 @@ function rsa_mgf1(seed, maskLength, hash) {
  */
 var forge = __webpack_require__(4);
 __webpack_require__(7);
-__webpack_require__(83);
+__webpack_require__(80);
 __webpack_require__(25);
 
 (function() {
@@ -38295,16 +38812,16 @@ function getMillerRabinTests(bits) {
  * }
  */
 var forge = __webpack_require__(4);
-__webpack_require__(30);
+__webpack_require__(32);
 __webpack_require__(65);
 __webpack_require__(46);
 __webpack_require__(158);
 __webpack_require__(150);
 __webpack_require__(25);
-__webpack_require__(82);
+__webpack_require__(79);
 __webpack_require__(66);
 __webpack_require__(7);
-__webpack_require__(113);
+__webpack_require__(114);
 
 // shortcut for asn.1 & PKI API
 var asn1 = forge.asn1;
@@ -39389,7 +39906,7 @@ p12.generateKey = forge.pbe.generatePkcs12Key;
  * EncryptedKey ::= OCTET STRING
  */
 var forge = __webpack_require__(4);
-__webpack_require__(30);
+__webpack_require__(32);
 __webpack_require__(7);
 
 // shortcut for ASN.1 API
@@ -39854,7 +40371,7 @@ forge.debug.clear = function(cat, name) {
  * Copyright (c) 2014-2015 Digital Bazaar, Inc.
  */
 var forge = __webpack_require__(4);
-__webpack_require__(31);
+__webpack_require__(33);
 __webpack_require__(7);
 
 var sha512 = module.exports = forge.sha512 = forge.sha512 || {};
@@ -40819,15 +41336,15 @@ function isBuf(obj) {
  * Module dependencies.
  */
 
-var eio = __webpack_require__(262);
+var eio = __webpack_require__(266);
 var Socket = __webpack_require__(172);
-var Emitter = __webpack_require__(56);
-var parser = __webpack_require__(115);
+var Emitter = __webpack_require__(55);
+var parser = __webpack_require__(116);
 var on = __webpack_require__(173);
 var bind = __webpack_require__(68);
-var debug = __webpack_require__(84)('socket.io-client:manager');
+var debug = __webpack_require__(81)('socket.io-client:manager');
 var indexOf = __webpack_require__(171);
-var Backoff = __webpack_require__(279);
+var Backoff = __webpack_require__(283);
 
 /**
  * IE6+ hasOwnProperty
@@ -41397,10 +41914,10 @@ Manager.prototype.onreconnect = function () {
  * Module dependencies
  */
 
-var XMLHttpRequest = __webpack_require__(116);
-var XHR = __webpack_require__(265);
-var JSONP = __webpack_require__(275);
-var websocket = __webpack_require__(276);
+var XMLHttpRequest = __webpack_require__(117);
+var XHR = __webpack_require__(269);
+var JSONP = __webpack_require__(279);
+var websocket = __webpack_require__(280);
 
 /**
  * Export transports.
@@ -41456,12 +41973,12 @@ function polling (opts) {
  * Module dependencies.
  */
 
-var Transport = __webpack_require__(117);
-var parseqs = __webpack_require__(85);
-var parser = __webpack_require__(57);
-var inherit = __webpack_require__(86);
+var Transport = __webpack_require__(118);
+var parseqs = __webpack_require__(82);
+var parser = __webpack_require__(56);
+var inherit = __webpack_require__(83);
 var yeast = __webpack_require__(170);
-var debug = __webpack_require__(87)('engine.io-client:polling');
+var debug = __webpack_require__(84)('engine.io-client:polling');
 
 /**
  * Module exports.
@@ -41474,7 +41991,7 @@ module.exports = Polling;
  */
 
 var hasXHR2 = (function () {
-  var XMLHttpRequest = __webpack_require__(116);
+  var XMLHttpRequest = __webpack_require__(117);
   var xhr = new XMLHttpRequest({ xdomain: false });
   return null != xhr.responseType;
 })();
@@ -41709,7 +42226,7 @@ Polling.prototype.uri = function () {
  * Module requirements.
  */
 
-var isArray = __webpack_require__(267);
+var isArray = __webpack_require__(271);
 
 var toString = Object.prototype.toString;
 var withNativeBlob = typeof Blob === 'function' ||
@@ -41869,13 +42386,13 @@ module.exports = function(arr, obj){
  * Module dependencies.
  */
 
-var parser = __webpack_require__(115);
-var Emitter = __webpack_require__(56);
-var toArray = __webpack_require__(278);
+var parser = __webpack_require__(116);
+var Emitter = __webpack_require__(55);
+var toArray = __webpack_require__(282);
 var on = __webpack_require__(173);
 var bind = __webpack_require__(68);
-var debug = __webpack_require__(84)('socket.io-client:socket');
-var parseqs = __webpack_require__(85);
+var debug = __webpack_require__(81)('socket.io-client:socket');
+var parseqs = __webpack_require__(82);
 var hasBin = __webpack_require__(169);
 
 /**
@@ -42365,11 +42882,11 @@ var EE = __webpack_require__(69).EventEmitter;
 var inherits = __webpack_require__(47);
 
 inherits(Stream, EE);
-Stream.Readable = __webpack_require__(119);
-Stream.Writable = __webpack_require__(290);
-Stream.Duplex = __webpack_require__(291);
-Stream.Transform = __webpack_require__(292);
-Stream.PassThrough = __webpack_require__(293);
+Stream.Readable = __webpack_require__(120);
+Stream.Writable = __webpack_require__(296);
+Stream.Duplex = __webpack_require__(297);
+Stream.Transform = __webpack_require__(298);
+Stream.PassThrough = __webpack_require__(299);
 
 // Backwards-compat with node 0.4.x
 Stream.Stream = Stream;
@@ -42497,13 +43014,13 @@ Stream.prototype.pipe = function(dest, options) {
 
 /*<replacement>*/
 
-var pna = __webpack_require__(88);
+var pna = __webpack_require__(85);
 /*</replacement>*/
 
 module.exports = Readable;
 
 /*<replacement>*/
-var isArray = __webpack_require__(283);
+var isArray = __webpack_require__(289);
 /*</replacement>*/
 
 /*<replacement>*/
@@ -42526,7 +43043,7 @@ var Stream = __webpack_require__(176);
 
 /*<replacement>*/
 
-var Buffer = __webpack_require__(120).Buffer;
+var Buffer = __webpack_require__(121).Buffer;
 var OurUint8Array = global.Uint8Array || function () {};
 function _uint8ArrayToBuffer(chunk) {
   return Buffer.from(chunk);
@@ -42543,7 +43060,7 @@ util.inherits = __webpack_require__(47);
 /*</replacement>*/
 
 /*<replacement>*/
-var debugUtil = __webpack_require__(284);
+var debugUtil = __webpack_require__(290);
 var debug = void 0;
 if (debugUtil && debugUtil.debuglog) {
   debug = debugUtil.debuglog('stream');
@@ -42552,7 +43069,7 @@ if (debugUtil && debugUtil.debuglog) {
 }
 /*</replacement>*/
 
-var BufferList = __webpack_require__(285);
+var BufferList = __webpack_require__(291);
 var destroyImpl = __webpack_require__(177);
 var StringDecoder;
 
@@ -43491,7 +44008,7 @@ function indexOf(xs, x) {
   }
   return -1;
 }
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(29), __webpack_require__(18)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(31), __webpack_require__(17)))
 
 /***/ }),
 /* 176 */
@@ -43509,7 +44026,7 @@ module.exports = __webpack_require__(69).EventEmitter;
 
 /*<replacement>*/
 
-var pna = __webpack_require__(88);
+var pna = __webpack_require__(85);
 /*</replacement>*/
 
 // undocumented cb() API, needed for core, not for public API
@@ -43610,7 +44127,7 @@ module.exports = {
 
 /*<replacement>*/
 
-var Buffer = __webpack_require__(288).Buffer;
+var Buffer = __webpack_require__(294).Buffer;
 /*</replacement>*/
 
 var isEncoding = Buffer.isEncoding || function (encoding) {
@@ -44113,7 +44630,7 @@ function done(stream, er, data) {
  * Expose `debug()` as the module.
  */
 
-exports = module.exports = __webpack_require__(295);
+exports = module.exports = __webpack_require__(301);
 exports.log = log;
 exports.formatArgs = formatArgs;
 exports.save = save;
@@ -44313,15 +44830,15 @@ module.exports = _defineProperty;
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(setImmediate) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ChatClient; });
-/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(36);
+/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(30);
 /* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(17);
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(24);
 /* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(14);
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(32);
+/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(28);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(8);
 /* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_5__);
@@ -44329,27 +44846,21 @@ module.exports = _defineProperty;
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_6__);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(6);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var _WildEmitter__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(13);
+/* harmony import */ var _WildEmitter__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(10);
 /* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(0);
 /* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(_common_Events__WEBPACK_IMPORTED_MODULE_9__);
-/* harmony import */ var _Vault__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(91);
-/* harmony import */ var _xhr__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(89);
+/* harmony import */ var _Vault__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(90);
+/* harmony import */ var _xhr__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(87);
 /* harmony import */ var _Connector__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(185);
 /* harmony import */ var _MessageQueue__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(124);
 /* harmony import */ var _ArrivalHub__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(187);
-/* harmony import */ var _ChatUtility__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(12);
+/* harmony import */ var _ChatUtility__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(13);
 /* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(9);
-/* harmony import */ var _Topic__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(19);
-/* harmony import */ var _Metadata__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(122);
-/* harmony import */ var _Participant__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(280);
-/* harmony import */ var _AttachmentInfo__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(71);
-/* harmony import */ var _ClientSettings__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(49);
-/* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(1);
-/* harmony import */ var _TopicJoinAgent__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(188);
-/* harmony import */ var _SendMessageAgent__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(189);
-
-
-
+/* harmony import */ var _Topic__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(18);
+/* harmony import */ var _DownloadAttachmentAgent__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(188);
+/* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(1);
+/* harmony import */ var _TopicJoinAgent__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(192);
+/* harmony import */ var _SendMessageAgent__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(193);
 
 
 
@@ -44541,7 +45052,7 @@ var ChatClient = /*#__PURE__*/function () {
 
       var decryptBlob = function decryptBlob(privateKey, blob) {
         var lengthChars = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 4;
-        var icn = new _iCrypto__WEBPACK_IMPORTED_MODULE_22__[/* iCrypto */ "a"]();
+        var icn = new _iCrypto__WEBPACK_IMPORTED_MODULE_19__[/* iCrypto */ "a"]();
         var symLength = parseInt(blob.substr(-lengthChars));
         var blobLength = blob.length;
         var symk = blob.substring(blobLength - symLength - lengthChars, blobLength - lengthChars);
@@ -44552,7 +45063,7 @@ var ChatClient = /*#__PURE__*/function () {
 
       var encryptBlob = function encryptBlob(publicKey, blob) {
         var lengthChars = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 4;
-        var icn = new _iCrypto__WEBPACK_IMPORTED_MODULE_22__[/* iCrypto */ "a"]();
+        var icn = new _iCrypto__WEBPACK_IMPORTED_MODULE_19__[/* iCrypto */ "a"]();
         icn.createSYMKey("sym").asym.setKey("pub", publicKey, "public").addBlob("blob-raw", blob).sym.encrypt("blob-raw", "sym", "blob-cip", true).asym.encrypt("sym", "pub", "symcip", "hex").encodeBlobLength("symcip", 4, "0", "symcipl").merge(["blob-cip", "symcip", "symcipl"], "res");
         return icn.get("res");
       };
@@ -44696,7 +45207,7 @@ var ChatClient = /*#__PURE__*/function () {
               case 8:
                 console.log("Generating keys"); //CREATE NEW TOPIC PENDING
 
-                ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_22__[/* iCrypto */ "a"](); //Generate keypairs one for user, other for topic
+                ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_19__[/* iCrypto */ "a"](); //Generate keypairs one for user, other for topic
 
                 _context2.next = 12;
                 return ic.asym.asyncCreateKeyPair('owner-keys');
@@ -44757,7 +45268,7 @@ var ChatClient = /*#__PURE__*/function () {
 
       var topic = this.vault.topics[pkfp];
       if (!topic) throw new Error("Topic ".concat(pkfp, " not found"));
-      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_22__[/* iCrypto */ "a"]();
+      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_19__[/* iCrypto */ "a"]();
       ic.createNonce("n").bytesToHex("n", "nhex").setRSAKey("priv", self.vault.privateKey, "private").privateKeySign("nhex", "priv", "sign");
       var request = new _Message__WEBPACK_IMPORTED_MODULE_16__[/* Message */ "a"](self.version);
       request.setCommand(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Internal"].DELETE_TOPIC);
@@ -44791,7 +45302,7 @@ var ChatClient = /*#__PURE__*/function () {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
-                topicJoinAgent = new _TopicJoinAgent__WEBPACK_IMPORTED_MODULE_23__[/* TopicJoinAgent */ "a"](nickname, topicName, inviteString, this.arrivalHub, this.messageQueue, this.vault);
+                topicJoinAgent = new _TopicJoinAgent__WEBPACK_IMPORTED_MODULE_20__[/* TopicJoinAgent */ "a"](nickname, topicName, inviteString, this.arrivalHub, this.messageQueue, this.vault);
                 topicJoinAgent.on(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Internal"].JOIN_TOPIC_SUCCESS, function (data) {
                   _this6.notifyJoinSuccess(_this6, data);
                 });
@@ -44948,7 +45459,7 @@ var ChatClient = /*#__PURE__*/function () {
 
               case 8:
                 //CREATE NEW TOPIC PENDING
-                ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_22__[/* iCrypto */ "a"](); //Generate keypairs one for user, other for topic
+                ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_19__[/* iCrypto */ "a"](); //Generate keypairs one for user, other for topic
 
                 _context4.next = 11;
                 return ic.asym.asyncCreateKeyPair('owner-keys');
@@ -45096,18 +45607,6 @@ var ChatClient = /*#__PURE__*/function () {
       }, 50);
     }
   }, {
-    key: "getParticipants",
-    value: function getParticipants(topicPkfp) {
-      if (this.topics.hasOwnProperty(topicPkfp)) {
-        return this.topics[topicPkfp].participants;
-      }
-    }
-  }, {
-    key: "getTopics",
-    value: function getTopics() {
-      return this.topics;
-    }
-  }, {
     key: "getParticipantAlias",
     value: function getParticipantAlias(topicPkfp, participantPkfp) {
       if (!this.topics[topicPkfp]) {
@@ -45115,15 +45614,6 @@ var ChatClient = /*#__PURE__*/function () {
       }
 
       return this.topics[topicPkfp].getParticipantAlias(participantPkfp);
-    }
-  }, {
-    key: "getParticipantRepr",
-    value: function getParticipantRepr(topicPkfp, participantPkfp) {
-      if (!this.topics[topicPkfp]) {
-        throw new Error("Topic ".concat(topicPkfp, " not found"));
-      }
-
-      return this.topics[topicPkfp].getParticipantRepr(participantPkfp);
     } // Sends message
 
   }, {
@@ -45136,8 +45626,37 @@ var ChatClient = /*#__PURE__*/function () {
         throw new Error("Topic ".concat(topicPkfp, " not found"));
       }
 
-      var sendMessageAgent = new _SendMessageAgent__WEBPACK_IMPORTED_MODULE_24__[/* SendMessageAgent */ "a"](topic, msg, recipient, files);
+      var sendMessageAgent = new _SendMessageAgent__WEBPACK_IMPORTED_MODULE_21__[/* SendMessageAgent */ "a"](topic, msg, recipient, files);
       return sendMessageAgent.send();
+    }
+  }, {
+    key: "downloadAttachment",
+    value: function downloadAttachment(fileInfo) {
+      var downloadAttachmentAgent = new _DownloadAttachmentAgent__WEBPACK_IMPORTED_MODULE_18__[/* DownloadAttachmentAgent */ "a"](fileInfo);
+    } // ---------------------------------------------------------------------------------------------------------------------------
+    // HELPERS
+    //
+
+  }, {
+    key: "getParticipants",
+    value: function getParticipants(topicPkfp) {
+      if (this.topics.hasOwnProperty(topicPkfp)) {
+        return this.topics[topicPkfp].participants;
+      }
+    }
+  }, {
+    key: "getTopics",
+    value: function getTopics() {
+      return this.topics;
+    }
+  }, {
+    key: "getParticipantRepr",
+    value: function getParticipantRepr(topicPkfp, participantPkfp) {
+      if (!this.topics[topicPkfp]) {
+        throw new Error("Topic ".concat(topicPkfp, " not found"));
+      }
+
+      return this.topics[topicPkfp].getParticipantRepr(participantPkfp);
     }
   }, {
     key: "_initMessageQueue",
@@ -45162,9 +45681,7 @@ var ChatClient = /*#__PURE__*/function () {
       }
 
       return _initMessageQueue;
-    }() // ---------------------------------------------------------------------------------------------------------------------------
-    // HELPERS
-    //requests vault and returns it
+    }() //requests vault and returns it
 
   }, {
     key: "getVault",
@@ -46801,7 +47318,7 @@ function coerce (version, options) {
     '.' + (match[4] || '0'), options)
 }
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(18)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(17)))
 
 /***/ }),
 /* 185 */
@@ -46811,11 +47328,11 @@ function coerce (version, options) {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Connector; });
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(36);
+/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(30);
 /* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(14);
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(32);
+/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(28);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(8);
 /* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_4__);
@@ -46823,9 +47340,9 @@ function coerce (version, options) {
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(6);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(90);
+/* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(88);
 /* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(socket_io_client__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var _WildEmitter__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(13);
+/* harmony import */ var _WildEmitter__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(10);
 /* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(0);
 /* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(_common_Events__WEBPACK_IMPORTED_MODULE_9__);
 
@@ -47016,7 +47533,7 @@ var Connector = /*#__PURE__*/function () {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(setImmediate) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Lock; });
-/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(36);
+/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(30);
 /* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(14);
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_1__);
@@ -47024,7 +47541,7 @@ var Connector = /*#__PURE__*/function () {
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(6);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _WildEmitter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(13);
+/* harmony import */ var _WildEmitter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(10);
 
 
 
@@ -47092,7 +47609,7 @@ var Lock = /*#__PURE__*/function () {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ArrivalHub; });
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _WildEmitter__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(13);
+/* harmony import */ var _WildEmitter__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(10);
 
 
 var ArrivalHub = function ArrivalHub(connector) {
@@ -47128,8 +47645,282 @@ var ArrivalHub = function ArrivalHub(connector) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return DownloadAttachmentAgent; });
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(28);
+/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(8);
+/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(30);
+/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(14);
+/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(5);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(6);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(189);
+/* harmony import */ var _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(190);
+/* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(191);
+/* harmony import */ var _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var _WildEmitter__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(10);
+/* harmony import */ var _FileWorker__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(89);
+/* harmony import */ var _common_IError__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(3);
+
+
+
+
+
+
+
+
+
+
+
+
+
+var DownloadAttachmentAgent = /*#__PURE__*/function (_WildEmitter) {
+  _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_9___default()(DownloadAttachmentAgent, _WildEmitter);
+
+  function DownloadAttachmentAgent() {
+    var _this;
+
+    var fileInfo = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _common_IError__WEBPACK_IMPORTED_MODULE_12__[/* IError */ "a"].required("File info");
+
+    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_5___default()(this, DownloadAttachmentAgent);
+
+    _this = _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_7___default()(this, _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_8___default()(DownloadAttachmentAgent).call(this));
+    _this.fileInfo = fileInfo;
+    return _this;
+  }
+  /**
+       * Downloads requested attachment
+       *
+       * @param {string} fileInfo - Stringified JSON of type AttachmentInfo.
+       *          Must contain all required info including hashes, signatures, and link
+       */
+
+
+  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_6___default()(DownloadAttachmentAgent, [{
+    key: "downloadAttachment",
+    value: function downloadAttachment() {
+      var _this2 = this;
+
+      return new Promise( /*#__PURE__*/function () {
+        var _ref = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee(resolve, reject) {
+          var self, privk, parsedFileInfo, fileOwnerPublicKey, myPkfp, fileData;
+          return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+            while (1) {
+              switch (_context.prev = _context.next) {
+                case 0:
+                  console.log("About to download the attachment");
+                  _context.prev = 1;
+                  self = _this2;
+                  privk = self.session.privateKey; //To decrypt SYM key
+                  //Getting public key of
+
+                  parsedFileInfo = JSON.parse(fileInfo);
+                  fileOwnerPublicKey = self.session.metadata.participants[parsedFileInfo.pkfp].publicKey;
+                  console.log("Downloading with worker or sync");
+                  myPkfp = self.session.publicKeyFingerprint;
+                  _context.next = 10;
+                  return self.downloadAttachmentDefault(fileInfo, myPkfp, privk, fileOwnerPublicKey, parsedFileInfo.name);
+
+                case 10:
+                  fileData = _context.sent;
+                  self.emit("download_complete", {
+                    fileInfo: fileInfo,
+                    fileData: fileData
+                  });
+                  resolve();
+                  _context.next = 18;
+                  break;
+
+                case 15:
+                  _context.prev = 15;
+                  _context.t0 = _context["catch"](1);
+                  reject(_context.t0);
+
+                case 18:
+                case "end":
+                  return _context.stop();
+              }
+            }
+          }, _callee, null, [[1, 15]]);
+        }));
+
+        return function (_x, _x2) {
+          return _ref.apply(this, arguments);
+        };
+      }());
+    } // ---------------------------------------------------------------------------------------------------------------------------
+    // This is for test purposes only!
+
+  }, {
+    key: "downloadAttachmentDefault",
+    value: function downloadAttachmentDefault(fileInfo, myPkfp, privk, ownerPubk, fileName) {
+      console.log("Downloading attachment by default");
+      var self = this;
+      return new Promise( /*#__PURE__*/function () {
+        var _ref2 = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2(resolve, reject) {
+          var downloader, downloadComplete, downloadFailed, processLog, messageHandlers, notify, processMessage;
+          return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
+            while (1) {
+              switch (_context2.prev = _context2.next) {
+                case 0:
+                  _context2.prev = 0;
+                  downloader = new _FileWorker__WEBPACK_IMPORTED_MODULE_11__[/* FileWorker */ "a"]();
+
+                  downloadComplete = function downloadComplete(fileBuffer) {
+                    console.log("RECEIVED FILE BUFFER FROM THE WORKER: length: " + fileBuffer.length);
+                    resolve(fileBuffer);
+                  };
+
+                  downloadFailed = function downloadFailed(err) {
+                    console.log("Download failed with error: " + err);
+                    reject(err);
+                  };
+
+                  processLog = function processLog(msg) {
+                    console.log("WORKER LOG: " + msg);
+                  };
+
+                  messageHandlers = {
+                    "download_complete": downloadComplete,
+                    "download_failed": downloadFailed,
+                    "log": processLog,
+                    "file_available_locally": function file_available_locally() {
+                      self.emit("file_available_locally", fileName);
+                      notify("File found locally.");
+                    },
+                    "requesting_peer": function requesting_peer() {
+                      self.emit("requesting_peer", fileName);
+                      notify("Requesting peer to hand the file...");
+                    }
+                  };
+
+                  notify = function notify(msg) {
+                    console.log("FILE TRANSFER EVENT NOTIFICATION: " + msg);
+                  };
+
+                  processMessage = function processMessage(msg) {
+                    messageHandlers[msg.message](msg.data);
+                  };
+
+                  downloader.on("message", function (ev) {
+                    processMessage(ev.data);
+                  });
+                  downloader.on("error", function (ev) {
+                    console.log(ev);
+                    reject("Downloader worker error");
+                  });
+                  _context2.prev = 10;
+                  downloader.downloadFile({
+                    fileInfo: fileInfo,
+                    myPkfp: myPkfp,
+                    privk: privk,
+                    pubk: ownerPubk
+                  });
+                  _context2.next = 18;
+                  break;
+
+                case 14:
+                  _context2.prev = 14;
+                  _context2.t0 = _context2["catch"](10);
+                  console.log("Error downloading file: ".concat(_context2.t0));
+                  throw _context2.t0;
+
+                case 18:
+                  _context2.next = 23;
+                  break;
+
+                case 20:
+                  _context2.prev = 20;
+                  _context2.t1 = _context2["catch"](0);
+                  reject(_context2.t1);
+
+                case 23:
+                case "end":
+                  return _context2.stop();
+              }
+            }
+          }, _callee2, null, [[0, 20], [10, 14]]);
+        }));
+
+        return function (_x3, _x4) {
+          return _ref2.apply(this, arguments);
+        };
+      }());
+    }
+  }]);
+
+  return DownloadAttachmentAgent;
+}(_WildEmitter__WEBPACK_IMPORTED_MODULE_10__[/* WildEmitter */ "a"]);
+
+/***/ }),
+/* 189 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var _typeof = __webpack_require__(284);
+
+var assertThisInitialized = __webpack_require__(285);
+
+function _possibleConstructorReturn(self, call) {
+  if (call && (_typeof(call) === "object" || typeof call === "function")) {
+    return call;
+  }
+
+  return assertThisInitialized(self);
+}
+
+module.exports = _possibleConstructorReturn;
+
+/***/ }),
+/* 190 */
+/***/ (function(module, exports) {
+
+function _getPrototypeOf(o) {
+  module.exports = _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
+    return o.__proto__ || Object.getPrototypeOf(o);
+  };
+  return _getPrototypeOf(o);
+}
+
+module.exports = _getPrototypeOf;
+
+/***/ }),
+/* 191 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var setPrototypeOf = __webpack_require__(286);
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function");
+  }
+
+  subClass.prototype = Object.create(superClass && superClass.prototype, {
+    constructor: {
+      value: subClass,
+      writable: true,
+      configurable: true
+    }
+  });
+  if (superClass) setPrototypeOf(subClass, superClass);
+}
+
+module.exports = _inherits;
+
+/***/ }),
+/* 192 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return TopicJoinAgent; });
-/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(35);
+/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(36);
 /* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1__);
@@ -47137,11 +47928,11 @@ var ArrivalHub = function ArrivalHub(connector) {
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(1);
 /* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(9);
-/* harmony import */ var _WildEmitter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(13);
-/* harmony import */ var _Topic__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(19);
+/* harmony import */ var _WildEmitter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(10);
+/* harmony import */ var _Topic__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(18);
 /* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(0);
 /* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_common_Events__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var _ChatUtility__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(12);
+/* harmony import */ var _ChatUtility__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(13);
 
 
 
@@ -47310,569 +48101,62 @@ var TopicJoinAgent = /*#__PURE__*/function () {
 }();
 
 /***/ }),
-/* 189 */
+/* 193 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return SendMessageAgent; });
+/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(30);
+/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(14);
+/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2);
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(42);
+/* harmony import */ var core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(43);
+/* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(24);
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(28);
+/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(8);
+/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(5);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(6);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var _ChatMessage__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(49);
+/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(9);
+/* harmony import */ var _common_IError__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(3);
+/* harmony import */ var _Topic__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(18);
+/* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(0);
+/* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_14___default = /*#__PURE__*/__webpack_require__.n(_common_Events__WEBPACK_IMPORTED_MODULE_14__);
+/* harmony import */ var _FileWorker__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(89);
+/* harmony import */ var _AttachmentInfo__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(86);
 
-// EXPORTS
-__webpack_require__.d(__webpack_exports__, "a", function() { return /* binding */ SendMessageAgent_SendMessageAgent; });
 
-// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.promise.js
-var es6_promise = __webpack_require__(36);
 
-// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.object.to-string.js
-var es6_object_to_string = __webpack_require__(14);
 
-// EXTERNAL MODULE: ./node_modules/@babel/runtime/regenerator/index.js
-var regenerator = __webpack_require__(2);
-var regenerator_default = /*#__PURE__*/__webpack_require__.n(regenerator);
 
-// EXTERNAL MODULE: ./node_modules/core-js/modules/es7.symbol.async-iterator.js
-var es7_symbol_async_iterator = __webpack_require__(42);
 
-// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.symbol.js
-var es6_symbol = __webpack_require__(43);
 
-// EXTERNAL MODULE: ./node_modules/core-js/modules/web.dom.iterable.js
-var web_dom_iterable = __webpack_require__(17);
 
-// EXTERNAL MODULE: ./node_modules/regenerator-runtime/runtime.js
-var runtime = __webpack_require__(32);
 
-// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/asyncToGenerator.js
-var asyncToGenerator = __webpack_require__(8);
-var asyncToGenerator_default = /*#__PURE__*/__webpack_require__.n(asyncToGenerator);
 
-// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/classCallCheck.js
-var classCallCheck = __webpack_require__(5);
-var classCallCheck_default = /*#__PURE__*/__webpack_require__.n(classCallCheck);
 
-// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/createClass.js
-var createClass = __webpack_require__(6);
-var createClass_default = /*#__PURE__*/__webpack_require__.n(createClass);
 
-// EXTERNAL MODULE: ./client/src/js/lib/ChatMessage.js
-var ChatMessage = __webpack_require__(50);
 
-// EXTERNAL MODULE: ./client/src/js/lib/Message.js
-var Message = __webpack_require__(9);
 
-// EXTERNAL MODULE: ./common/IError.js
-var IError = __webpack_require__(3);
 
-// EXTERNAL MODULE: ./client/src/js/lib/Topic.js
-var Topic = __webpack_require__(19);
 
-// EXTERNAL MODULE: ./common/Events.js
-var Events = __webpack_require__(0);
 
-// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.typed.uint8-array.js
-var es6_typed_uint8_array = __webpack_require__(109);
-
-// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.split.js
-var es6_regexp_split = __webpack_require__(35);
-
-// EXTERNAL MODULE: ./client/src/js/lib/iCrypto.js
-var iCrypto = __webpack_require__(1);
-
-// EXTERNAL MODULE: ./node_modules/socket.io-client/lib/index.js
-var lib = __webpack_require__(90);
-
-// EXTERNAL MODULE: ./client/src/js/lib/WildEmitter.js
-var WildEmitter = __webpack_require__(13);
-
-// EXTERNAL MODULE: ./node_modules/socket.io-stream/index.js
-var socket_io_stream = __webpack_require__(72);
-
-// CONCATENATED MODULE: ./client/src/js/lib/FileWorker.js
-
-
-
-
-
-
-
-
-
-
-
-
-
-var FileWorker_FileWorker = /*#__PURE__*/function () {
-  function FileWorker(transport) {
-    classCallCheck_default()(this, FileWorker);
-
-    console.log("Downloader initialized non-worker"); // can be 1 - websocket or 0 - xhr
-
-    this.transport = transport;
-    WildEmitter["a" /* WildEmitter */].mixin(this);
-  }
-
-  createClass_default()(FileWorker, [{
-    key: "processMessage",
-    value: function processMessage(msg) {
-      console.log("Processing message from main thread..");
-      commandHandlers[msg.command](msg.data);
-    }
-  }, {
-    key: "parseFileLink",
-    value: function parseFileLink(link) {
-      var ic = new iCrypto["a" /* iCrypto */]();
-      ic.addBlob('l', link).base64Decode("l", "ls");
-      var parsed = ic.get("ls");
-      var splitted = parsed.split("/");
-      return {
-        onion: splitted[0],
-        pkfp: splitted[1],
-        name: splitted[2]
-      };
-    }
-  }, {
-    key: "postMessage",
-    value: function postMessage(data) {
-      this.emit("message", {
-        data: data
-      });
-    }
-    /**
-    * Concatenates 2 buffers
-    * @param buffer1
-    * @param buffer2
-    * @returns {ArrayBufferLike}
-    */
-
-  }, {
-    key: "appendBuffer",
-    value: function appendBuffer(buffer1, buffer2) {
-      var tmp = new Uint8Array(buffer1.byteLength + buffer2.byteLength);
-      tmp.set(new Uint8Array(buffer1), 0);
-      tmp.set(new Uint8Array(buffer2), buffer1.byteLength);
-      return tmp.buffer;
-    }
-  }, {
-    key: "uploadFile",
-    value: function uploadFile(data) {
-      var self = this;
-      var attachment = data.attachment;
-      var pkfp = data.pkfp;
-      var privK = data.privk;
-      var symk = data.symk;
-      this.processUpload(attachment, pkfp, privK, symk).then(function (data) {
-        console.log("Upload resolved successfully!");
-        self.postMessage(data);
-      }).catch(function (err) {
-        console.log("File upload error: ".concat(err));
-        self.postMessage({
-          message: "upload_error",
-          data: err
-        });
-      });
-    }
-    /**
-    * Uploads and encrypts a file to the Island and
-    * calculates encrypted and unencrypted hashes
-    * @param attachment
-    * @param pkfp
-    * @param privK
-    * @param symk
-    * @param fileSocket
-    * @returns {Promise<any>}
-    */
-
-  }, {
-    key: "processUpload",
-    value: function processUpload(file, pkfp, privK, symk) {
-      var _this = this;
-
-      var self = this;
-      return new Promise( /*#__PURE__*/function () {
-        var _ref = asyncToGenerator_default()( /*#__PURE__*/regenerator_default.a.mark(function _callee(resolve, reject) {
-          var fileSocket, stream, offset, bufferSize, fileSize, ic, errorEventHandler, readEventHandler, chunkReaderBlock, handleBlock;
-          return regenerator_default.a.wrap(function _callee$(_context) {
-            while (1) {
-              switch (_context.prev = _context.next) {
-                case 0:
-                  self.postMessage({
-                    message: "log",
-                    data: "Processing upload"
-                  });
-                  _context.prev = 1;
-                  _context.next = 4;
-                  return _this.establishConnection();
-
-                case 4:
-                  fileSocket = _context.sent;
-                  _context.next = 10;
-                  break;
-
-                case 7:
-                  _context.prev = 7;
-                  _context.t0 = _context["catch"](1);
-                  reject("Connection error: " + _context.t0);
-
-                case 10:
-                  stream = socket_io_stream["createStream"]();
-                  self.postMessage({
-                    message: "log",
-                    data: "Uploading and encrypting chunk by chunk"
-                  });
-                  offset = 0;
-                  bufferSize = 1024 * 64;
-                  fileSize = file.size;
-                  ic = new iCrypto["a" /* iCrypto */]();
-                  ic.ssym.init("cha", symk).createHash("unenc") //hash of unencrypted
-                  .createHash("enc") //has of encrypted
-                  .createNonce("nonce", 8).asym.setKey("privk", privK, "private").privateKeySign("nonce", "privk", "sign").bytesToHex("nonce", "noncehex");
-                  console.log("NONCE: " + ic.get('noncehex'));
-                  fileSocket.on("invalid_request", function () {
-                    reject("Upload request is invalid");
-                  });
-                  /**
-                  * Emited by Island after file has been successfully written,
-                  * renamed and saved.
-                  * Closing connection, notifying main thread.
-                  */
-
-                  fileSocket.on("upload_success", function () {
-                    self.postMessage({
-                      message: "log",
-                      data: "Upload successful"
-                    });
-                    fileSocket.disconnect();
-                    resolve({
-                      message: "upload_complete",
-                      data: {
-                        hashEncrypted: ic.get("encres"),
-                        hashUnencrypted: ic.get("unencres")
-                      }
-                    });
-                  });
-                  fileSocket.on("upload_ready", function () {
-                    console.log("received upload_ready. Pumping data");
-                    chunkReaderBlock(offset, bufferSize, file);
-                  });
-                  fileSocket.on("upload_error", function (err) {
-                    reject(err);
-                  });
-                  /**
-                  * Event emited by Island after hash received
-                  * and file is ready to be renamed
-                  */
-
-                  fileSocket.on("end_stream", function () {
-                    stream.end();
-                  });
-
-                  errorEventHandler = function errorEventHandler(ev) {
-                    console.error("Error processing upload: " + ev.target.error);
-                    reject(ev.target.error);
-                  };
-
-                  readEventHandler = function readEventHandler(ev) {
-                    if (ev.target.error === null) {
-                      offset = Math.min(offset + bufferSize, fileSize);
-                      handleBlock(ev.target.result);
-                    } else {
-                      reject("Read error: " + ev.target.error);
-                      return;
-                    }
-
-                    if (offset >= fileSize) {
-                      ic.digestHash("unenc", "unencres");
-                      ic.digestHash("enc", "encres");
-                      ic.asym.sign("unencres", "privk", "unencressign");
-                      fileSocket.emit("finalize_upload", {
-                        hashUnencrypted: ic.get("unencres")
-                      });
-                      return;
-                    }
-
-                    chunkReaderBlock(offset, bufferSize, file);
-                  };
-
-                  chunkReaderBlock = function chunkReaderBlock(_offset, bufferSize, _file) {
-                    var reader = new FileReader();
-                    var upperBound = Math.min(_offset + bufferSize, fileSize);
-
-                    var blob = _file.slice(_offset, upperBound);
-
-                    reader.onload = readEventHandler;
-                    reader.onerror = errorEventHandler;
-                    reader.readAsArrayBuffer(blob);
-                  };
-
-                  handleBlock = function handleBlock(chunk) {
-                    ic.updateHash("unenc", chunk);
-                    var encrypted = ic.ssym.encrypt("cha", chunk);
-                    ic.updateHash("enc", encrypted);
-                    var b = new socket_io_stream["Buffer"](encrypted);
-                    stream.write(b);
-                  };
-                  /**
-                  * Initializing file upload
-                  */
-
-
-                  socket_io_stream(fileSocket).emit('upload_attachment', stream, {
-                    pkfp: pkfp,
-                    nonce: ic.get("noncehex"),
-                    sign: ic.get("sign")
-                  });
-
-                case 28:
-                case "end":
-                  return _context.stop();
-              }
-            }
-          }, _callee, null, [[1, 7]]);
-        }));
-
-        return function (_x, _x2) {
-          return _ref.apply(this, arguments);
-        };
-      }());
-    }
-  }, {
-    key: "downloadFile",
-    value: function downloadFile(data) {
-      var _this2 = this;
-
-      this.processDownload(data).then(function (dataBuffer) {
-        _this2.postMessage({
-          message: "download_complete",
-          data: dataBuffer
-        });
-
-        console.log("Stream finished");
-      }).catch(function (err) {
-        console.log("Error downloading file: " + err);
-
-        _this2.postMessage({
-          message: "download_failed",
-          data: err
-        });
-      });
-    }
-  }, {
-    key: "processDownload",
-    value: function processDownload(data) {
-      var _this3 = this;
-
-      var self = this;
-      return new Promise( /*#__PURE__*/function () {
-        var _ref2 = asyncToGenerator_default()( /*#__PURE__*/regenerator_default.a.mark(function _callee2(resolve, reject) {
-          var fileInfo, link, myPkfp, privk, ownerPubk, metaID, fileSocket;
-          return regenerator_default.a.wrap(function _callee2$(_context2) {
-            while (1) {
-              switch (_context2.prev = _context2.next) {
-                case 0:
-                  console.log("Initializing file download");
-                  fileInfo = JSON.parse(data.fileInfo);
-                  link = self.parseFileLink(fileInfo.link);
-                  myPkfp = data.myPkfp;
-                  privk = data.privk;
-                  ownerPubk = data.pubk;
-                  metaID = fileInfo.metaID;
-                  _context2.prev = 7;
-                  _context2.next = 10;
-                  return _this3.establishConnection();
-
-                case 10:
-                  fileSocket = _context2.sent;
-                  _context2.next = 16;
-                  break;
-
-                case 13:
-                  _context2.prev = 13;
-                  _context2.t0 = _context2["catch"](7);
-                  reject("Connection error: " + _context2.t0);
-
-                case 16:
-                  /**
-                  * event triggered by Island when file is ready to be transferred to the client
-                  * key is encrypted shared SYM key to decrypt file
-                  */
-                  fileSocket.on("download_ready", function (key) {
-                    //prepare file
-                    self.postMessage({
-                      message: "file_available_locally"
-                    });
-                    var symk = key[metaID];
-                    var dataBuffer = new ArrayBuffer(0);
-                    socket_io_stream(fileSocket).on("file", function (stream) {
-                      console.log("File download in progress!");
-                      var ic = new iCrypto["a" /* iCrypto */]();
-                      ic.addBlob("k", symk).asym.setKey("privk", privk, "private").asym.decrypt("k", "privk", "symk", "hex");
-                      ic.createHash("h");
-                      ic.ssym.init("stc", ic.get("symk"), false);
-                      stream.on('data', function (data) {
-                        self.postMessage({
-                          message: "log",
-                          data: "Received data chunk"
-                        });
-                        var chunk = ic.ssym.decrypt("stc", data.buffer);
-                        ic.updateHash("h", new Uint8Array(chunk));
-                        dataBuffer = iCrypto["a" /* iCrypto */].concatArrayBuffers(dataBuffer, chunk);
-                      });
-                      stream.on('end', function () {
-                        self.postMessage({
-                          message: "log",
-                          data: "Received end of data message"
-                        });
-                        ic.digestHash("h", "hres").addBlob("sign", fileInfo.signUnencrypted).asym.setKey("pubk", ownerPubk, "public").asym.verify("hres", "sign", "pubk", "vres");
-
-                        if (!ic.get("vres")) {
-                          reject("File validation error!");
-                        } else {
-                          self.postMessage({
-                            message: "log",
-                            data: "Resolving data..."
-                          });
-                          resolve(dataBuffer);
-                        }
-                      });
-                    }); //create stream
-                    //emit
-
-                    console.log("About to emit process_download");
-                    fileSocket.emit("proceed_download", {
-                      link: link,
-                      pkfp: myPkfp
-                    });
-                  });
-                  fileSocket.on("requesting_peer", function () {
-                    console.log("File not found locally, requesting hidden peer");
-                    self.postMessage({
-                      message: "requesting_peer"
-                    });
-                  });
-                  fileSocket.on("download_failed", function (err) {
-                    console.log("File download fail: " + err);
-                    self.postMessage({
-                      message: "download_failed",
-                      data: err
-                    });
-                  });
-                  fileSocket.emit("download_attachment", {
-                    link: link,
-                    myPkfp: myPkfp,
-                    metaID: fileInfo.metaID,
-                    hashEncrypted: fileInfo.hashEncrypted,
-                    signEncrypted: fileInfo.signEncrypted
-                  });
-
-                case 20:
-                case "end":
-                  return _context2.stop();
-              }
-            }
-          }, _callee2, null, [[7, 13]]);
-        }));
-
-        return function (_x3, _x4) {
-          return _ref2.apply(this, arguments);
-        };
-      }());
-    }
-  }, {
-    key: "establishConnection",
-    value: function establishConnection() {
-      var self = this;
-      return new Promise(function (resolve, reject) {
-        console.log("Connecting to file socket...");
-        var maxAttempts = 5;
-        var reconnectionDelay = 5000; //ms
-
-        var attempted = 0;
-        self.postMessage({
-          message: "log",
-          data: "Connecting to file socket..."
-        });
-        var socketConfig = {
-          autoConnect: false,
-          reconnection: false,
-          pingInterval: 10000,
-          pingTimeout: 5000
-        };
-        socketConfig.upgrade = self.transport > 0;
-        var fileSocket = lib('/file', socketConfig);
-
-        var attemptConnection = function attemptConnection() {
-          self.postMessage({
-            message: "log",
-            data: "Attempting connection: " + attempted
-          });
-          fileSocket.open();
-        };
-
-        var connectionFailHandler = function connectionFailHandler(err) {
-          if (attempted < maxAttempts) {
-            var msg = "Connection error on attempt ".concat(attempted, ": ").concat(err);
-            self.postMessage({
-              message: "log",
-              data: msg
-            });
-            attempted++;
-            setTimeout(attemptConnection, reconnectionDelay);
-          } else {
-            var _msg = "Connection error on attempt ".concat(attempted, ": ").concat(err, "\nRejecting!");
-
-            self.postMessage({
-              message: "log",
-              data: _msg
-            });
-            reject(err);
-          }
-        };
-
-        fileSocket.on("connect", function () {
-          self.postMessage({
-            message: "log",
-            data: "File transfer connection established"
-          });
-          resolve(fileSocket);
-        });
-        fileSocket.on("connect_error", function (err) {
-          connectionFailHandler(err);
-        });
-        fileSocket.on("connect_timeout", function () {
-          connectionFailHandler("Connection timeout.");
-        });
-        attemptConnection();
-      });
-    }
-  }]);
-
-  return FileWorker;
-}();
-// EXTERNAL MODULE: ./client/src/js/lib/AttachmentInfo.js
-var AttachmentInfo = __webpack_require__(71);
-
-// CONCATENATED MODULE: ./client/src/js/lib/SendMessageAgent.js
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-var SendMessageAgent_SendMessageAgent = /*#__PURE__*/function () {
+var SendMessageAgent = /*#__PURE__*/function () {
   function SendMessageAgent(topic, msg, recipient, files) {
-    classCallCheck_default()(this, SendMessageAgent);
+    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_8___default()(this, SendMessageAgent);
 
-    Object(IError["b" /* assert */])(topic instanceof Topic["a" /* Topic */]);
-    Object(IError["b" /* assert */])(msg);
+    Object(_common_IError__WEBPACK_IMPORTED_MODULE_12__[/* assert */ "b"])(topic instanceof _Topic__WEBPACK_IMPORTED_MODULE_13__[/* Topic */ "a"]);
+    Object(_common_IError__WEBPACK_IMPORTED_MODULE_12__[/* assert */ "b"])(msg);
     this.private = recipient && recipient !== "ALL";
     this.recipient = recipient;
     this.topic = topic;
@@ -47881,14 +48165,14 @@ var SendMessageAgent_SendMessageAgent = /*#__PURE__*/function () {
     this.chatMessage = this.prepareMessage(this.version, msg, recipient);
   }
 
-  createClass_default()(SendMessageAgent, [{
+  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_9___default()(SendMessageAgent, [{
     key: "send",
     value: function send() {
       var self = this;
-      setTimeout( /*#__PURE__*/asyncToGenerator_default()( /*#__PURE__*/regenerator_default.a.mark(function _callee() {
+      setTimeout( /*#__PURE__*/_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_7___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default.a.mark(function _callee() {
         var attachmentsInfo, metaID, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, att, message, currentTime;
 
-        return regenerator_default.a.wrap(function _callee$(_context) {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default.a.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
@@ -47951,9 +48235,9 @@ var SendMessageAgent_SendMessageAgent = /*#__PURE__*/function () {
                 self.chatMessage.encryptMessage(self.topic.sharedKey);
                 self.chatMessage.sign(self.topic.privateKey); //Preparing request
 
-                message = new Message["a" /* Message */](self.version);
+                message = new _Message__WEBPACK_IMPORTED_MODULE_11__[/* Message */ "a"](self.version);
                 message.headers.pkfpSource = self.topic.pkfp;
-                message.headers.command = self.private ? Events["Internal"].SEND_MESSAGE : Events["Internal"].BROADCAST_MESSAGE;
+                message.headers.command = self.private ? _common_Events__WEBPACK_IMPORTED_MODULE_14__["Internal"].SEND_MESSAGE : _common_Events__WEBPACK_IMPORTED_MODULE_14__["Internal"].BROADCAST_MESSAGE;
                 message.body.message = self.chatMessage.toBlob();
                 currentTime = new Date().getTime();
                 message.travelLog = {};
@@ -47974,9 +48258,9 @@ var SendMessageAgent_SendMessageAgent = /*#__PURE__*/function () {
   }, {
     key: "prepareMessage",
     value: function prepareMessage(version, messageContent, recipient) {
-      Object(IError["b" /* assert */])(version !== undefined && version !== "", "Chat message initialization error: Version is required");
+      Object(_common_IError__WEBPACK_IMPORTED_MODULE_12__[/* assert */ "b"])(version !== undefined && version !== "", "Chat message initialization error: Version is required");
       console.log("Preparing message: ".concat(version, ", ").concat(messageContent, ", ").concat(recipient));
-      var chatMessage = new ChatMessage["a" /* ChatMessage */]();
+      var chatMessage = new _ChatMessage__WEBPACK_IMPORTED_MODULE_10__[/* ChatMessage */ "a"]();
       chatMessage.version = version;
       chatMessage.header.metadataID = this.topic.metadataId;
       console.log("Metadata id is set to ".concat(chatMessage.header.metadataID));
@@ -48002,10 +48286,10 @@ var SendMessageAgent_SendMessageAgent = /*#__PURE__*/function () {
       var _this = this;
 
       return new Promise( /*#__PURE__*/function () {
-        var _ref2 = asyncToGenerator_default()( /*#__PURE__*/regenerator_default.a.mark(function _callee2(resolve, reject) {
+        var _ref2 = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_7___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default.a.mark(function _callee2(resolve, reject) {
           var self, filesProcessed, pkfp, privk, symk, residence, _iteratorNormalCompletion2, _didIteratorError2, _iteratorError2, _iterator2, _step2, file;
 
-          return regenerator_default.a.wrap(function _callee2$(_context2) {
+          return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default.a.wrap(function _callee2$(_context2) {
             while (1) {
               switch (_context2.prev = _context2.next) {
                 case 0:
@@ -48091,10 +48375,10 @@ var SendMessageAgent_SendMessageAgent = /*#__PURE__*/function () {
       var self = this;
       return new Promise(function (resolve, reject) {
         console.log("Initializing worker...");
-        var uploader = new FileWorker_FileWorker(0);
+        var uploader = new _FileWorker__WEBPACK_IMPORTED_MODULE_15__[/* FileWorker */ "a"](0);
 
         var uploadComplete = function uploadComplete(msg) {
-          var fileInfo = new AttachmentInfo["a" /* AttachmentInfo */](file, residence, pkfp, metaID, privk, messageID, msg.hashEncrypted, msg.hashUnencrypted);
+          var fileInfo = new _AttachmentInfo__WEBPACK_IMPORTED_MODULE_16__[/* AttachmentInfo */ "a"](file, residence, pkfp, metaID, privk, messageID, msg.hashEncrypted, msg.hashUnencrypted);
           resolve(fileInfo);
         };
 
@@ -48136,7 +48420,7 @@ var SendMessageAgent_SendMessageAgent = /*#__PURE__*/function () {
 }();
 
 /***/ }),
-/* 190 */
+/* 194 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -48871,15 +49155,15 @@ try {
 
 
 /***/ }),
-/* 191 */
+/* 195 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var $export = __webpack_require__(26);
 var aFunction = __webpack_require__(58);
-var toObject = __webpack_require__(28);
-var fails = __webpack_require__(23);
+var toObject = __webpack_require__(29);
+var fails = __webpack_require__(22);
 var $sort = [].sort;
 var test = [1, 2, 3];
 
@@ -48890,7 +49174,7 @@ $export($export.P + $export.F * (fails(function () {
   // V8 bug
   test.sort(null);
   // Old WebKit
-}) || !__webpack_require__(193)($sort)), 'Array', {
+}) || !__webpack_require__(197)($sort)), 'Array', {
   // 22.1.3.25 Array.prototype.sort(comparefn)
   sort: function sort(comparefn) {
     return comparefn === undefined
@@ -48901,19 +49185,19 @@ $export($export.P + $export.F * (fails(function () {
 
 
 /***/ }),
-/* 192 */
+/* 196 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(74)('native-function-to-string', Function.toString);
+module.exports = __webpack_require__(73)('native-function-to-string', Function.toString);
 
 
 /***/ }),
-/* 193 */
+/* 197 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var fails = __webpack_require__(23);
+var fails = __webpack_require__(22);
 
 module.exports = function (method, arg) {
   return !!method && fails(function () {
@@ -48924,13 +49208,13 @@ module.exports = function (method, arg) {
 
 
 /***/ }),
-/* 194 */
+/* 198 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.2.8 IsRegExp(argument)
 var isObject = __webpack_require__(27);
-var cof = __webpack_require__(53);
-var MATCH = __webpack_require__(11)('match');
+var cof = __webpack_require__(52);
+var MATCH = __webpack_require__(12)('match');
 module.exports = function (it) {
   var isRegExp;
   return isObject(it) && ((isRegExp = it[MATCH]) !== undefined ? !!isRegExp : cof(it) == 'RegExp');
@@ -48938,11 +49222,11 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 195 */
+/* 199 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var toInteger = __webpack_require__(41);
-var defined = __webpack_require__(75);
+var defined = __webpack_require__(74);
 // true  -> String#at
 // false -> String#codePointAt
 module.exports = function (TO_STRING) {
@@ -48961,12 +49245,12 @@ module.exports = function (TO_STRING) {
 
 
 /***/ }),
-/* 196 */
+/* 200 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var regexpExec = __webpack_require__(94);
+var regexpExec = __webpack_require__(93);
 __webpack_require__(26)({
   target: 'RegExp',
   proto: true,
@@ -48977,18 +49261,18 @@ __webpack_require__(26)({
 
 
 /***/ }),
-/* 197 */
+/* 201 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var anObject = __webpack_require__(15);
-var sameValue = __webpack_require__(198);
-var regExpExec = __webpack_require__(93);
+var sameValue = __webpack_require__(202);
+var regExpExec = __webpack_require__(92);
 
 // @@search logic
-__webpack_require__(96)('search', 1, function (defined, SEARCH, $search, maybeCallNative) {
+__webpack_require__(95)('search', 1, function (defined, SEARCH, $search, maybeCallNative) {
   return [
     // `String.prototype.search` method
     // https://tc39.github.io/ecma262/#sec-string.prototype.search
@@ -49015,7 +49299,7 @@ __webpack_require__(96)('search', 1, function (defined, SEARCH, $search, maybeCa
 
 
 /***/ }),
-/* 198 */
+/* 202 */
 /***/ (function(module, exports) {
 
 // 7.2.9 SameValue(x, y)
@@ -49026,29 +49310,29 @@ module.exports = Object.is || function is(x, y) {
 
 
 /***/ }),
-/* 199 */
+/* 203 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 21.2.5.3 get RegExp.prototype.flags()
-if (__webpack_require__(22) && /./g.flags != 'g') __webpack_require__(21).f(RegExp.prototype, 'flags', {
+if (__webpack_require__(21) && /./g.flags != 'g') __webpack_require__(20).f(RegExp.prototype, 'flags', {
   configurable: true,
-  get: __webpack_require__(95)
+  get: __webpack_require__(94)
 });
 
 
 /***/ }),
-/* 200 */
+/* 204 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var META = __webpack_require__(38)('meta');
 var isObject = __webpack_require__(27);
-var has = __webpack_require__(34);
-var setDesc = __webpack_require__(21).f;
+var has = __webpack_require__(35);
+var setDesc = __webpack_require__(20).f;
 var id = 0;
 var isExtensible = Object.isExtensible || function () {
   return true;
 };
-var FREEZE = !__webpack_require__(23)(function () {
+var FREEZE = !__webpack_require__(22)(function () {
   return isExtensible(Object.preventExtensions({}));
 });
 var setMeta = function (it) {
@@ -49096,11 +49380,11 @@ var meta = module.exports = {
 
 
 /***/ }),
-/* 201 */
+/* 205 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // all enumerable object keys, includes symbols
-var getKeys = __webpack_require__(78);
+var getKeys = __webpack_require__(76);
 var gOPS = __webpack_require__(100);
 var pIE = __webpack_require__(101);
 module.exports = function (it) {
@@ -49117,14 +49401,14 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 202 */
+/* 206 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var dP = __webpack_require__(21);
+var dP = __webpack_require__(20);
 var anObject = __webpack_require__(15);
-var getKeys = __webpack_require__(78);
+var getKeys = __webpack_require__(76);
 
-module.exports = __webpack_require__(22) ? Object.defineProperties : function defineProperties(O, Properties) {
+module.exports = __webpack_require__(21) ? Object.defineProperties : function defineProperties(O, Properties) {
   anObject(O);
   var keys = getKeys(Properties);
   var length = keys.length;
@@ -49136,7 +49420,7 @@ module.exports = __webpack_require__(22) ? Object.defineProperties : function de
 
 
 /***/ }),
-/* 203 */
+/* 207 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // fallback for IE11 buggy Object.getOwnPropertyNames with iframe and window
@@ -49161,7 +49445,7 @@ module.exports.f = function getOwnPropertyNames(it) {
 
 
 /***/ }),
-/* 204 */
+/* 208 */
 /***/ (function(module, exports) {
 
 module.exports = function (done, value) {
@@ -49170,20 +49454,20 @@ module.exports = function (done, value) {
 
 
 /***/ }),
-/* 205 */
+/* 209 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var LIBRARY = __webpack_require__(39);
 var $export = __webpack_require__(26);
-var redefine = __webpack_require__(33);
-var hide = __webpack_require__(20);
-var Iterators = __webpack_require__(54);
-var $iterCreate = __webpack_require__(206);
+var redefine = __webpack_require__(34);
+var hide = __webpack_require__(19);
+var Iterators = __webpack_require__(53);
+var $iterCreate = __webpack_require__(210);
 var setToStringTag = __webpack_require__(60);
 var getPrototypeOf = __webpack_require__(135);
-var ITERATOR = __webpack_require__(11)('iterator');
+var ITERATOR = __webpack_require__(12)('iterator');
 var BUGGY = !([].keys && 'next' in [].keys()); // Safari has buggy iterators w/o `next`
 var FF_ITERATOR = '@@iterator';
 var KEYS = 'keys';
@@ -49246,18 +49530,18 @@ module.exports = function (Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCE
 
 
 /***/ }),
-/* 206 */
+/* 210 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var create = __webpack_require__(102);
-var descriptor = __webpack_require__(52);
+var descriptor = __webpack_require__(51);
 var setToStringTag = __webpack_require__(60);
 var IteratorPrototype = {};
 
 // 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
-__webpack_require__(20)(IteratorPrototype, __webpack_require__(11)('iterator'), function () { return this; });
+__webpack_require__(19)(IteratorPrototype, __webpack_require__(12)('iterator'), function () { return this; });
 
 module.exports = function (Constructor, NAME, next) {
   Constructor.prototype = create(IteratorPrototype, { next: descriptor(1, next) });
@@ -49266,14 +49550,14 @@ module.exports = function (Constructor, NAME, next) {
 
 
 /***/ }),
-/* 207 */
+/* 211 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var ctx = __webpack_require__(40);
 var call = __webpack_require__(136);
 var isArrayIter = __webpack_require__(105);
 var anObject = __webpack_require__(15);
-var toLength = __webpack_require__(24);
+var toLength = __webpack_require__(23);
 var getIterFn = __webpack_require__(106);
 var BREAK = {};
 var RETURN = {};
@@ -49297,7 +49581,7 @@ exports.RETURN = RETURN;
 
 
 /***/ }),
-/* 208 */
+/* 212 */
 /***/ (function(module, exports) {
 
 // fast apply, http://jsperf.lnkit.com/fast-apply/5
@@ -49319,15 +49603,15 @@ module.exports = function (fn, args, that) {
 
 
 /***/ }),
-/* 209 */
+/* 213 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var global = __webpack_require__(10);
+var global = __webpack_require__(11);
 var macrotask = __webpack_require__(137).set;
 var Observer = global.MutationObserver || global.WebKitMutationObserver;
 var process = global.process;
 var Promise = global.Promise;
-var isNode = __webpack_require__(53)(process) == 'process';
+var isNode = __webpack_require__(52)(process) == 'process';
 
 module.exports = function () {
   var head, last, notify;
@@ -49394,7 +49678,7 @@ module.exports = function () {
 
 
 /***/ }),
-/* 210 */
+/* 214 */
 /***/ (function(module, exports) {
 
 module.exports = function (exec) {
@@ -49407,17 +49691,17 @@ module.exports = function (exec) {
 
 
 /***/ }),
-/* 211 */
+/* 215 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var global = __webpack_require__(10);
+var global = __webpack_require__(11);
 var navigator = global.navigator;
 
 module.exports = navigator && navigator.userAgent || '';
 
 
 /***/ }),
-/* 212 */
+/* 216 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49425,8 +49709,8 @@ module.exports = navigator && navigator.userAgent || '';
 
 var $export = __webpack_require__(26);
 var core = __webpack_require__(37);
-var global = __webpack_require__(10);
-var speciesConstructor = __webpack_require__(76);
+var global = __webpack_require__(11);
+var speciesConstructor = __webpack_require__(75);
 var promiseResolve = __webpack_require__(139);
 
 $export($export.P + $export.R, 'Promise', { 'finally': function (onFinally) {
@@ -49444,11 +49728,11 @@ $export($export.P + $export.R, 'Promise', { 'finally': function (onFinally) {
 
 
 /***/ }),
-/* 213 */
+/* 217 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-var content = __webpack_require__(214);
+var content = __webpack_require__(218);
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -49469,7 +49753,7 @@ if(content.locals) module.exports = content.locals;
 if(false) {}
 
 /***/ }),
-/* 214 */
+/* 218 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(62)(false);
@@ -49479,7 +49763,7 @@ exports.push([module.i, ".tingle-modal *{box-sizing:border-box}.tingle-modal{pos
 
 
 /***/ }),
-/* 215 */
+/* 219 */
 /***/ (function(module, exports) {
 
 
@@ -49574,11 +49858,11 @@ module.exports = function (css) {
 
 
 /***/ }),
-/* 216 */
+/* 220 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-var content = __webpack_require__(217);
+var content = __webpack_require__(221);
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -49599,7 +49883,7 @@ if(content.locals) module.exports = content.locals;
 if(false) {}
 
 /***/ }),
-/* 217 */
+/* 221 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(62)(false);
@@ -49609,12 +49893,12 @@ exports.push([module.i, "@keyframes spin{0%{transform:translateZ(0) rotate(0)}10
 
 
 /***/ }),
-/* 218 */
+/* 222 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://github.com/tc39/proposal-object-getownpropertydescriptors
 var $export = __webpack_require__(26);
-var ownKeys = __webpack_require__(219);
+var ownKeys = __webpack_require__(223);
 var toIObject = __webpack_require__(44);
 var gOPD = __webpack_require__(103);
 var createProperty = __webpack_require__(141);
@@ -49637,14 +49921,14 @@ $export($export.S, 'Object', {
 
 
 /***/ }),
-/* 219 */
+/* 223 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // all object keys, includes non-enumerable and symbols
 var gOPN = __webpack_require__(61);
 var gOPS = __webpack_require__(100);
 var anObject = __webpack_require__(15);
-var Reflect = __webpack_require__(10).Reflect;
+var Reflect = __webpack_require__(11).Reflect;
 module.exports = Reflect && Reflect.ownKeys || function ownKeys(it) {
   var keys = gOPN.f(anObject(it));
   var getSymbols = gOPS.f;
@@ -49653,17 +49937,17 @@ module.exports = Reflect && Reflect.ownKeys || function ownKeys(it) {
 
 
 /***/ }),
-/* 220 */
+/* 224 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var ctx = __webpack_require__(40);
 var $export = __webpack_require__(26);
-var toObject = __webpack_require__(28);
+var toObject = __webpack_require__(29);
 var call = __webpack_require__(136);
 var isArrayIter = __webpack_require__(105);
-var toLength = __webpack_require__(24);
+var toLength = __webpack_require__(23);
 var createProperty = __webpack_require__(141);
 var getIterFn = __webpack_require__(106);
 
@@ -49697,11 +49981,11 @@ $export($export.S + $export.F * !__webpack_require__(108)(function (iter) { Arra
 
 
 /***/ }),
-/* 221 */
+/* 225 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-var content = __webpack_require__(222);
+var content = __webpack_require__(226);
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -49722,7 +50006,7 @@ if(content.locals) module.exports = content.locals;
 if(false) {}
 
 /***/ }),
-/* 222 */
+/* 226 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(62)(false);
@@ -49732,7 +50016,7 @@ exports.push([module.i, ".siiimpleToast{position:absolute;padding:14px 18px;min-
 
 
 /***/ }),
-/* 223 */
+/* 227 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -49922,10 +50206,10 @@ exports.push([module.i, ".siiimpleToast{position:absolute;padding:14px 18px;min-
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(29), __webpack_require__(18)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(31), __webpack_require__(17)))
 
 /***/ }),
-/* 224 */
+/* 228 */
 /***/ (function(module, exports) {
 
 function _arrayWithoutHoles(arr) {
@@ -49941,7 +50225,7 @@ function _arrayWithoutHoles(arr) {
 module.exports = _arrayWithoutHoles;
 
 /***/ }),
-/* 225 */
+/* 229 */
 /***/ (function(module, exports) {
 
 function _iterableToArray(iter) {
@@ -49951,7 +50235,7 @@ function _iterableToArray(iter) {
 module.exports = _iterableToArray;
 
 /***/ }),
-/* 226 */
+/* 230 */
 /***/ (function(module, exports) {
 
 function _nonIterableSpread() {
@@ -49961,7 +50245,7 @@ function _nonIterableSpread() {
 module.exports = _nonIterableSpread;
 
 /***/ }),
-/* 227 */
+/* 231 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(142)('Uint16', 2, function (init) {
@@ -49972,24 +50256,24 @@ __webpack_require__(142)('Uint16', 2, function (init) {
 
 
 /***/ }),
-/* 228 */
+/* 232 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var global = __webpack_require__(10);
-var DESCRIPTORS = __webpack_require__(22);
+var global = __webpack_require__(11);
+var DESCRIPTORS = __webpack_require__(21);
 var LIBRARY = __webpack_require__(39);
 var $typed = __webpack_require__(143);
-var hide = __webpack_require__(20);
+var hide = __webpack_require__(19);
 var redefineAll = __webpack_require__(107);
-var fails = __webpack_require__(23);
+var fails = __webpack_require__(22);
 var anInstance = __webpack_require__(104);
 var toInteger = __webpack_require__(41);
-var toLength = __webpack_require__(24);
+var toLength = __webpack_require__(23);
 var toIndex = __webpack_require__(144);
 var gOPN = __webpack_require__(61).f;
-var dP = __webpack_require__(21).f;
+var dP = __webpack_require__(20).f;
 var arrayFill = __webpack_require__(145);
 var setToStringTag = __webpack_require__(60);
 var ARRAY_BUFFER = 'ArrayBuffer';
@@ -50255,7 +50539,7 @@ exports[DATA_VIEW] = $DataView;
 
 
 /***/ }),
-/* 229 */
+/* 233 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 0 -> Array#forEach
@@ -50267,9 +50551,9 @@ exports[DATA_VIEW] = $DataView;
 // 6 -> Array#findIndex
 var ctx = __webpack_require__(40);
 var IObject = __webpack_require__(130);
-var toObject = __webpack_require__(28);
-var toLength = __webpack_require__(24);
-var asc = __webpack_require__(230);
+var toObject = __webpack_require__(29);
+var toLength = __webpack_require__(23);
+var asc = __webpack_require__(234);
 module.exports = function (TYPE, $create) {
   var IS_MAP = TYPE == 1;
   var IS_FILTER = TYPE == 2;
@@ -50305,11 +50589,11 @@ module.exports = function (TYPE, $create) {
 
 
 /***/ }),
-/* 230 */
+/* 234 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 9.4.2.3 ArraySpeciesCreate(originalArray, length)
-var speciesConstructor = __webpack_require__(231);
+var speciesConstructor = __webpack_require__(235);
 
 module.exports = function (original, length) {
   return new (speciesConstructor(original))(length);
@@ -50317,12 +50601,12 @@ module.exports = function (original, length) {
 
 
 /***/ }),
-/* 231 */
+/* 235 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var isObject = __webpack_require__(27);
 var isArray = __webpack_require__(131);
-var SPECIES = __webpack_require__(11)('species');
+var SPECIES = __webpack_require__(12)('species');
 
 module.exports = function (original) {
   var C;
@@ -50339,15 +50623,15 @@ module.exports = function (original) {
 
 
 /***/ }),
-/* 232 */
+/* 236 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 // 22.1.3.3 Array.prototype.copyWithin(target, start, end = this.length)
 
-var toObject = __webpack_require__(28);
-var toAbsoluteIndex = __webpack_require__(79);
-var toLength = __webpack_require__(24);
+var toObject = __webpack_require__(29);
+var toAbsoluteIndex = __webpack_require__(77);
+var toLength = __webpack_require__(23);
 
 module.exports = [].copyWithin || function copyWithin(target /* = 0 */, start /* = 0, end = @length */) {
   var O = toObject(this);
@@ -50372,7 +50656,7 @@ module.exports = [].copyWithin || function copyWithin(target /* = 0 */, start /*
 
 
 /***/ }),
-/* 233 */
+/* 237 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -50384,36 +50668,36 @@ module.exports = [].copyWithin || function copyWithin(target /* = 0 */, start /*
  */
 module.exports = __webpack_require__(4);
 __webpack_require__(45);
-__webpack_require__(238);
-__webpack_require__(30);
-__webpack_require__(110);
-__webpack_require__(160);
-__webpack_require__(81);
-__webpack_require__(240);
-__webpack_require__(65);
-__webpack_require__(241);
-__webpack_require__(162);
 __webpack_require__(242);
+__webpack_require__(32);
+__webpack_require__(111);
+__webpack_require__(160);
+__webpack_require__(78);
+__webpack_require__(244);
+__webpack_require__(65);
+__webpack_require__(245);
+__webpack_require__(162);
+__webpack_require__(246);
 __webpack_require__(159);
-__webpack_require__(112);
-__webpack_require__(55);
+__webpack_require__(113);
+__webpack_require__(54);
 __webpack_require__(155);
 __webpack_require__(157);
-__webpack_require__(243);
+__webpack_require__(247);
 __webpack_require__(149);
 __webpack_require__(156);
 __webpack_require__(153);
-__webpack_require__(114);
+__webpack_require__(115);
 __webpack_require__(25);
 __webpack_require__(154);
-__webpack_require__(244);
-__webpack_require__(245);
+__webpack_require__(248);
+__webpack_require__(249);
 __webpack_require__(148);
 __webpack_require__(7);
 
 
 /***/ }),
-/* 234 */
+/* 238 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50572,7 +50856,7 @@ function fromByteArray (uint8) {
 
 
 /***/ }),
-/* 235 */
+/* 239 */
 /***/ (function(module, exports) {
 
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -50662,7 +50946,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
 
 /***/ }),
-/* 236 */
+/* 240 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -50673,7 +50957,7 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ }),
-/* 237 */
+/* 241 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {/**
@@ -50866,7 +51150,7 @@ function _encodeWithByteBuffer(input, alphabet) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(16).Buffer))
 
 /***/ }),
-/* 238 */
+/* 242 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -51156,7 +51440,7 @@ function compareMacs(key, mac1, mac2) {
 
 
 /***/ }),
-/* 239 */
+/* 243 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -51174,7 +51458,7 @@ forge.mgf.mgf1 = forge.mgf1;
 
 
 /***/ }),
-/* 240 */
+/* 244 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {/**
@@ -51188,7 +51472,7 @@ forge.mgf.mgf1 = forge.mgf1;
  * https://github.com/dchest/tweetnacl-js
  */
 var forge = __webpack_require__(4);
-__webpack_require__(83);
+__webpack_require__(80);
 __webpack_require__(25);
 __webpack_require__(161);
 __webpack_require__(7);
@@ -52177,7 +52461,7 @@ function M(o, a, b) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(16).Buffer))
 
 /***/ }),
-/* 241 */
+/* 245 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -52192,7 +52476,7 @@ function M(o, a, b) {
 var forge = __webpack_require__(4);
 __webpack_require__(7);
 __webpack_require__(25);
-__webpack_require__(83);
+__webpack_require__(80);
 
 module.exports = forge.kem = forge.kem || {};
 
@@ -52351,7 +52635,7 @@ function _createKDF(kdf, md, counterStart, digestLength) {
 
 
 /***/ }),
-/* 242 */
+/* 246 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -52361,16 +52645,16 @@ function _createKDF(kdf, md, counterStart, digestLength) {
  *
  * Copyright 2011-2017 Digital Bazaar, Inc.
  */
-module.exports = __webpack_require__(31);
+module.exports = __webpack_require__(33);
 
-__webpack_require__(111);
+__webpack_require__(112);
 __webpack_require__(66);
 __webpack_require__(152);
 __webpack_require__(161);
 
 
 /***/ }),
-/* 243 */
+/* 247 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -52393,14 +52677,14 @@ __webpack_require__(161);
  */
 var forge = __webpack_require__(4);
 __webpack_require__(45);
-__webpack_require__(30);
-__webpack_require__(81);
+__webpack_require__(32);
+__webpack_require__(78);
 __webpack_require__(46);
-__webpack_require__(55);
+__webpack_require__(54);
 __webpack_require__(158);
 __webpack_require__(25);
 __webpack_require__(7);
-__webpack_require__(113);
+__webpack_require__(114);
 
 // shortcut for ASN.1 API
 var asn1 = forge.asn1;
@@ -53633,7 +53917,7 @@ function _decryptContent(msg) {
 
 
 /***/ }),
-/* 244 */
+/* 248 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -53649,7 +53933,7 @@ function _decryptContent(msg) {
 var forge = __webpack_require__(4);
 __webpack_require__(45);
 __webpack_require__(65);
-__webpack_require__(111);
+__webpack_require__(112);
 __webpack_require__(66);
 __webpack_require__(7);
 
@@ -53875,7 +54159,7 @@ function _sha1() {
 
 
 /***/ }),
-/* 245 */
+/* 249 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -54606,7 +54890,7 @@ forge.task.createCondition = function() {
 
 
 /***/ }),
-/* 246 */
+/* 250 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54687,7 +54971,7 @@ this.j.mouseCollector),document.detachEvent("keypress",this.j.keyboardCollector)
 a.touches[0]||a.changedTouches[0];this.addEntropy([a.pageX||a.clientX,a.pageY||a.clientY],1,"touch");R(this,0)},Ia:function(){R(this,2)},xa:function(a){a=a.accelerationIncludingGravity.x||a.accelerationIncludingGravity.y||a.accelerationIncludingGravity.z;if(window.orientation){var b=window.orientation;"number"===typeof b&&this.addEntropy(b,1,"accelerometer")}a&&this.addEntropy(a,2,"accelerometer");R(this,0)}};
 function ea(a,b){var d,c=sjcl.random.$[a],e=[];for(d in c)c.hasOwnProperty(d)&&e.push(c[d]);for(d=0;d<e.length;d++)e[d](b)}function R(a,b){"undefined"!==typeof window&&window.performance&&"function"===typeof window.performance.now?a.addEntropy(window.performance.now(),b,"loadtime"):a.addEntropy((new Date).valueOf(),b,"loadtime")}function ca(a){a.i=da(a).concat(da(a));a.aa=new sjcl.cipher.aes(a.i)}function da(a){for(var b=0;4>b&&(a.F[b]=a.F[b]+1|0,!a.F[b]);b++);return a.aa.encrypt(a.F)}
 function H(a,b){return function(){b.apply(a,arguments)}}sjcl.random=new sjcl.prng(6);
-a:try{var S,fa,V,ia;if(ia= true&&module.exports){var ja;try{ja=__webpack_require__(247)}catch(a){ja=null}ia=fa=ja}if(ia&&fa.randomBytes)S=fa.randomBytes(128),S=new Uint32Array((new Uint8Array(S)).buffer),sjcl.random.addEntropy(S,1024,"crypto['randomBytes']");else if("undefined"!==typeof window&&"undefined"!==typeof Uint32Array){V=new Uint32Array(32);if(window.crypto&&window.crypto.getRandomValues)window.crypto.getRandomValues(V);else if(window.msCrypto&&window.msCrypto.getRandomValues)window.msCrypto.getRandomValues(V);
+a:try{var S,fa,V,ia;if(ia= true&&module.exports){var ja;try{ja=__webpack_require__(251)}catch(a){ja=null}ia=fa=ja}if(ia&&fa.randomBytes)S=fa.randomBytes(128),S=new Uint32Array((new Uint8Array(S)).buffer),sjcl.random.addEntropy(S,1024,"crypto['randomBytes']");else if("undefined"!==typeof window&&"undefined"!==typeof Uint32Array){V=new Uint32Array(32);if(window.crypto&&window.crypto.getRandomValues)window.crypto.getRandomValues(V);else if(window.msCrypto&&window.msCrypto.getRandomValues)window.msCrypto.getRandomValues(V);
 else break a;sjcl.random.addEntropy(V,1024,"crypto['getRandomValues']")}}catch(a){"undefined"!==typeof window&&window.console&&(console.log("There was an error collecting entropy from the browser:"),console.log(a))}
 sjcl.json={defaults:{v:1,iter:1E4,ks:128,ts:64,mode:"ccm",adata:"",cipher:"aes"},Ca:function(a,b,d,c){d=d||{};c=c||{};var e=sjcl.json,f=e.C({iv:sjcl.random.randomWords(4,0)},e.defaults),g;e.C(f,d);d=f.adata;"string"===typeof f.salt&&(f.salt=sjcl.codec.base64.toBits(f.salt));"string"===typeof f.iv&&(f.iv=sjcl.codec.base64.toBits(f.iv));if(!sjcl.mode[f.mode]||!sjcl.cipher[f.cipher]||"string"===typeof a&&100>=f.iter||64!==f.ts&&96!==f.ts&&128!==f.ts||128!==f.ks&&192!==f.ks&&0x100!==f.ks||2>f.iv.length||
 4<f.iv.length)throw new sjcl.exception.invalid("json encrypt: invalid parameters");"string"===typeof a?(g=sjcl.misc.cachedPbkdf2(a,f),a=g.key.slice(0,f.ks/32),f.salt=g.salt):sjcl.ecc&&a instanceof sjcl.ecc.elGamal.publicKey&&(g=a.kem(),f.kemtag=g.tag,a=g.key.slice(0,f.ks/32));"string"===typeof b&&(b=sjcl.codec.utf8String.toBits(b));"string"===typeof d&&(f.adata=d=sjcl.codec.utf8String.toBits(d));g=new sjcl.cipher[f.cipher](a);e.C(c,f);c.key=a;f.ct="ccm"===f.mode&&sjcl.arrayBuffer&&sjcl.arrayBuffer.ccm&&
@@ -54769,22 +55053,22 @@ a);c=this.f;a=this.f=c+sjcl.bitArray.bitLength(a);if(0x1fffffffffffff<a)throw ne
 
 
 /***/ }),
-/* 247 */
+/* 251 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
-/* 248 */
+/* 252 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* WEBPACK VAR INJECTION */(function(process, global, module) {/* harmony import */ var core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(109);
+/* WEBPACK VAR INJECTION */(function(process, global, module) {/* harmony import */ var core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(110);
 /* harmony import */ var core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(146);
 /* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(35);
+/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(36);
 /* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_2__);
 
 
@@ -54811,7 +55095,7 @@ __webpack_require__.r(__webpack_exports__);
   }
 
   var COMMON_JS = !root.HI_BASE32_NO_COMMON_JS && typeof module === 'object' && module.exports;
-  var AMD = typeof define === 'function' && __webpack_require__(250);
+  var AMD = typeof define === 'function' && __webpack_require__(254);
   var BASE32_ENCODE_CHAR = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'.split('');
   var BASE32_DECODE_CHAR = {
     'A': 0,
@@ -55246,10 +55530,10 @@ __webpack_require__.r(__webpack_exports__);
     }
   }
 })();
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(18), __webpack_require__(29), __webpack_require__(249)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(17), __webpack_require__(31), __webpack_require__(253)(module)))
 
 /***/ }),
-/* 249 */
+/* 253 */
 /***/ (function(module, exports) {
 
 module.exports = function(originalModule) {
@@ -55279,7 +55563,7 @@ module.exports = function(originalModule) {
 
 
 /***/ }),
-/* 250 */
+/* 254 */
 /***/ (function(module, exports) {
 
 /* WEBPACK VAR INJECTION */(function(__webpack_amd_options__) {/* globals __webpack_amd_options__ */
@@ -55288,7 +55572,7 @@ module.exports = __webpack_amd_options__;
 /* WEBPACK VAR INJECTION */}.call(this, {}))
 
 /***/ }),
-/* 251 */
+/* 255 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55552,7 +55836,7 @@ if ( true && module.exports) {
 
 
 /***/ }),
-/* 252 */
+/* 256 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {// MIT License
@@ -55776,10 +56060,10 @@ if( true && module.hasOwnProperty('exports')){
 
 
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(253)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(257)(module)))
 
 /***/ }),
-/* 253 */
+/* 257 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -55807,7 +56091,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 254 */
+/* 258 */
 /***/ (function(module, exports) {
 
 module.exports = function isBuffer(arg) {
@@ -55818,7 +56102,7 @@ module.exports = function isBuffer(arg) {
 }
 
 /***/ }),
-/* 255 */
+/* 259 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -55827,7 +56111,7 @@ module.exports = function isBuffer(arg) {
  */
 
 var parseuri = __webpack_require__(163);
-var debug = __webpack_require__(84)('socket.io-client:url');
+var debug = __webpack_require__(81)('socket.io-client:url');
 
 /**
  * Module exports.
@@ -55899,7 +56183,7 @@ function url (uri, loc) {
 
 
 /***/ }),
-/* 256 */
+/* 260 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -55915,7 +56199,7 @@ function setup(env) {
 	createDebug.disable = disable;
 	createDebug.enable = enable;
 	createDebug.enabled = enabled;
-	createDebug.humanize = __webpack_require__(257);
+	createDebug.humanize = __webpack_require__(261);
 
 	Object.keys(env).forEach(key => {
 		createDebug[key] = env[key];
@@ -56171,7 +56455,7 @@ module.exports = setup;
 
 
 /***/ }),
-/* 257 */
+/* 261 */
 /***/ (function(module, exports) {
 
 /**
@@ -56339,7 +56623,7 @@ function plural(ms, msAbs, n, name) {
 
 
 /***/ }),
-/* 258 */
+/* 262 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {/**
@@ -56348,7 +56632,7 @@ function plural(ms, msAbs, n, name) {
  * Expose `debug()` as the module.
  */
 
-exports = module.exports = __webpack_require__(259);
+exports = module.exports = __webpack_require__(263);
 exports.log = log;
 exports.formatArgs = formatArgs;
 exports.save = save;
@@ -56538,10 +56822,10 @@ function localstorage() {
   } catch (e) {}
 }
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(18)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(17)))
 
 /***/ }),
-/* 259 */
+/* 263 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -56557,7 +56841,7 @@ exports.coerce = coerce;
 exports.disable = disable;
 exports.enable = enable;
 exports.enabled = enabled;
-exports.humanize = __webpack_require__(260);
+exports.humanize = __webpack_require__(264);
 
 /**
  * Active `debug` instances.
@@ -56772,7 +57056,7 @@ function coerce(val) {
 
 
 /***/ }),
-/* 260 */
+/* 264 */
 /***/ (function(module, exports) {
 
 /**
@@ -56930,7 +57214,7 @@ function plural(ms, n, name) {
 
 
 /***/ }),
-/* 261 */
+/* 265 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*global Blob,File*/
@@ -57077,11 +57361,11 @@ exports.removeBlobs = function(data, callback) {
 
 
 /***/ }),
-/* 262 */
+/* 266 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-module.exports = __webpack_require__(263);
+module.exports = __webpack_require__(267);
 
 /**
  * Exports parser
@@ -57089,11 +57373,11 @@ module.exports = __webpack_require__(263);
  * @api public
  *
  */
-module.exports.parser = __webpack_require__(57);
+module.exports.parser = __webpack_require__(56);
 
 
 /***/ }),
-/* 263 */
+/* 267 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -57101,12 +57385,12 @@ module.exports.parser = __webpack_require__(57);
  */
 
 var transports = __webpack_require__(167);
-var Emitter = __webpack_require__(56);
-var debug = __webpack_require__(87)('engine.io-client:socket');
+var Emitter = __webpack_require__(55);
+var debug = __webpack_require__(84)('engine.io-client:socket');
 var index = __webpack_require__(171);
-var parser = __webpack_require__(57);
+var parser = __webpack_require__(56);
 var parseuri = __webpack_require__(163);
-var parseqs = __webpack_require__(85);
+var parseqs = __webpack_require__(82);
 
 /**
  * Module exports.
@@ -57242,9 +57526,9 @@ Socket.protocol = parser.protocol; // this is an int
  */
 
 Socket.Socket = Socket;
-Socket.Transport = __webpack_require__(117);
+Socket.Transport = __webpack_require__(118);
 Socket.transports = __webpack_require__(167);
-Socket.parser = __webpack_require__(57);
+Socket.parser = __webpack_require__(56);
 
 /**
  * Creates transport of the given type.
@@ -57847,7 +58131,7 @@ Socket.prototype.filterUpgrades = function (upgrades) {
 
 
 /***/ }),
-/* 264 */
+/* 268 */
 /***/ (function(module, exports) {
 
 
@@ -57870,7 +58154,7 @@ try {
 
 
 /***/ }),
-/* 265 */
+/* 269 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* global attachEvent */
@@ -57879,11 +58163,11 @@ try {
  * Module requirements.
  */
 
-var XMLHttpRequest = __webpack_require__(116);
+var XMLHttpRequest = __webpack_require__(117);
 var Polling = __webpack_require__(168);
-var Emitter = __webpack_require__(56);
-var inherit = __webpack_require__(86);
-var debug = __webpack_require__(87)('engine.io-client:polling-xhr');
+var Emitter = __webpack_require__(55);
+var inherit = __webpack_require__(83);
+var debug = __webpack_require__(84)('engine.io-client:polling-xhr');
 
 /**
  * Module exports.
@@ -58293,7 +58577,7 @@ function unloadHandler () {
 
 
 /***/ }),
-/* 266 */
+/* 270 */
 /***/ (function(module, exports) {
 
 
@@ -58318,7 +58602,7 @@ module.exports = Object.keys || function keys (obj){
 
 
 /***/ }),
-/* 267 */
+/* 271 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -58329,7 +58613,7 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ }),
-/* 268 */
+/* 272 */
 /***/ (function(module, exports) {
 
 /**
@@ -58364,7 +58648,7 @@ module.exports = function(arraybuffer, start, end) {
 
 
 /***/ }),
-/* 269 */
+/* 273 */
 /***/ (function(module, exports) {
 
 module.exports = after
@@ -58398,7 +58682,7 @@ function noop() {}
 
 
 /***/ }),
-/* 270 */
+/* 274 */
 /***/ (function(module, exports) {
 
 /*! https://mths.be/utf8js v2.1.2 by @mathias */
@@ -58614,7 +58898,7 @@ module.exports = {
 
 
 /***/ }),
-/* 271 */
+/* 275 */
 /***/ (function(module, exports) {
 
 /*
@@ -58687,7 +58971,7 @@ module.exports = {
 
 
 /***/ }),
-/* 272 */
+/* 276 */
 /***/ (function(module, exports) {
 
 /**
@@ -58793,7 +59077,7 @@ module.exports = (function() {
 
 
 /***/ }),
-/* 273 */
+/* 277 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -58809,7 +59093,7 @@ function setup(env) {
 	createDebug.disable = disable;
 	createDebug.enable = enable;
 	createDebug.enabled = enabled;
-	createDebug.humanize = __webpack_require__(274);
+	createDebug.humanize = __webpack_require__(278);
 
 	Object.keys(env).forEach(key => {
 		createDebug[key] = env[key];
@@ -59065,7 +59349,7 @@ module.exports = setup;
 
 
 /***/ }),
-/* 274 */
+/* 278 */
 /***/ (function(module, exports) {
 
 /**
@@ -59233,7 +59517,7 @@ function plural(ms, msAbs, n, name) {
 
 
 /***/ }),
-/* 275 */
+/* 279 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -59241,7 +59525,7 @@ function plural(ms, msAbs, n, name) {
  */
 
 var Polling = __webpack_require__(168);
-var inherit = __webpack_require__(86);
+var inherit = __webpack_require__(83);
 
 /**
  * Module exports.
@@ -59476,22 +59760,22 @@ JSONPPolling.prototype.doWrite = function (data, fn) {
   }
 };
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(29)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(31)))
 
 /***/ }),
-/* 276 */
+/* 280 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {/**
  * Module dependencies.
  */
 
-var Transport = __webpack_require__(117);
-var parser = __webpack_require__(57);
-var parseqs = __webpack_require__(85);
-var inherit = __webpack_require__(86);
+var Transport = __webpack_require__(118);
+var parser = __webpack_require__(56);
+var parseqs = __webpack_require__(82);
+var inherit = __webpack_require__(83);
 var yeast = __webpack_require__(170);
-var debug = __webpack_require__(87)('engine.io-client:websocket');
+var debug = __webpack_require__(84)('engine.io-client:websocket');
 
 var BrowserWebSocket, NodeWebSocket;
 
@@ -59503,7 +59787,7 @@ if (typeof WebSocket !== 'undefined') {
 
 if (typeof window === 'undefined') {
   try {
-    NodeWebSocket = __webpack_require__(277);
+    NodeWebSocket = __webpack_require__(281);
   } catch (e) { }
 }
 
@@ -59781,13 +60065,13 @@ WS.prototype.check = function () {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(16).Buffer))
 
 /***/ }),
-/* 277 */
+/* 281 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
-/* 278 */
+/* 282 */
 /***/ (function(module, exports) {
 
 module.exports = toArray
@@ -59806,7 +60090,7 @@ function toArray(list, index) {
 
 
 /***/ }),
-/* 279 */
+/* 283 */
 /***/ (function(module, exports) {
 
 
@@ -59897,139 +60181,63 @@ Backoff.prototype.setJitter = function(jitter){
 
 
 /***/ }),
-/* 280 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 284 */
+/***/ (function(module, exports) {
 
-"use strict";
-/* unused harmony export Participant */
-/* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(77);
-/* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(80);
-/* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(17);
-/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(14);
-/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(5);
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(6);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_5__);
+function _typeof(obj) {
+  "@babel/helpers - typeof";
 
-
-
-
-
-
-var Participant = /*#__PURE__*/function () {
-  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_5___default()(Participant, null, [{
-    key: "objectValid",
-    value: function objectValid(obj) {
-      if (typeof obj === "string") {
-        return false;
-      }
-
-      for (var i = 0; i < Participant.properties.length; ++i) {
-        if (!obj.hasOwnProperty(Participant.properties[i])) {
-          return false;
-        }
-      }
-
-      return Object.keys(obj).length === Participant.properties.length;
-    }
-  }]);
-
-  function Participant(blob) {
-    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_4___default()(this, Participant);
-
-    if (blob) {
-      this.parseBlob(blob);
-    }
+  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+    module.exports = _typeof = function _typeof(obj) {
+      return typeof obj;
+    };
+  } else {
+    module.exports = _typeof = function _typeof(obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+    };
   }
 
-  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_5___default()(Participant, [{
-    key: "toBlob",
-    value: function toBlob() {
-      var stringify = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+  return _typeof(obj);
+}
 
-      if (!this.readyForExport()) {
-        throw new Error("Object participant has some properties uninitialized");
-      }
-
-      var result = {};
-
-      for (var i = 0; i < Participant.properties.length; ++i) {
-        var key = Participant.properties[i];
-        var value = this[Participant.properties[i]];
-        console.log("Key: " + key + "; Value: " + value);
-        result[Participant.properties[i]] = this[Participant.properties[i]];
-      }
-
-      return stringify ? JSON.stringify(result) : result;
-    }
-  }, {
-    key: "parseBlob",
-    value: function parseBlob(blob) {
-      if (!blob) {
-        throw new Error("missing required parameter");
-      }
-
-      if (typeof blob === "string") {
-        blob = JSON.parse(blob);
-      }
-
-      if (!this.objectValid(blob)) {
-        throw new Error("Participant blob is invalid");
-      }
-
-      for (var i = 0; i < Participant.properties.length; ++i) {
-        this[Participant.properties[i]] = blob[Participant.properties[i]];
-      }
-    }
-  }, {
-    key: "keyExists",
-    value: function keyExists(key) {
-      if (!key) throw new Error("keyExists: Missing required arguments");
-      return Object.keys(this).includes(key.toString());
-    }
-  }, {
-    key: "readyForExport",
-    value: function readyForExport() {
-      for (var i = 0; i < Participant.properties; ++i) {
-        if (!this[Participant.properties[i]]) {
-          return false;
-        }
-      }
-
-      return true;
-    }
-  }, {
-    key: "get",
-    value: function get(name) {
-      if (this.keyExists(name)) return this[name];
-      throw new Error("Property not found");
-    }
-  }, {
-    key: "set",
-    value: function set(name, value) {
-      if (!Participant.properties.includes(name)) {
-        throw 'Participant: invalid property "' + name + '"';
-      }
-
-      this[name] = value;
-    }
-  }]);
-
-  return Participant;
-}();
-Participant.properties = ["nickname", "publicKey", "publicKeyFingerprint", "residence", "rights"];
+module.exports = _typeof;
 
 /***/ }),
-/* 281 */
+/* 285 */
+/***/ (function(module, exports) {
+
+function _assertThisInitialized(self) {
+  if (self === void 0) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return self;
+}
+
+module.exports = _assertThisInitialized;
+
+/***/ }),
+/* 286 */
+/***/ (function(module, exports) {
+
+function _setPrototypeOf(o, p) {
+  module.exports = _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+
+  return _setPrototypeOf(o, p);
+}
+
+module.exports = _setPrototypeOf;
+
+/***/ }),
+/* 287 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {var Socket = __webpack_require__(282);
-var IOStream = __webpack_require__(118);
-var BlobReadStream = __webpack_require__(298);
+/* WEBPACK VAR INJECTION */(function(Buffer) {var Socket = __webpack_require__(288);
+var IOStream = __webpack_require__(119);
+var BlobReadStream = __webpack_require__(304);
 
 
 exports = module.exports = lookup;
@@ -60108,14 +60316,14 @@ exports.createBlobReadStream = function(blob, options) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(16).Buffer))
 
 /***/ }),
-/* 282 */
+/* 288 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer, global) {var util = __webpack_require__(67);
 var EventEmitter = __webpack_require__(69).EventEmitter;
 var bind = __webpack_require__(68);
-var IOStream = __webpack_require__(118);
-var parser = __webpack_require__(297);
+var IOStream = __webpack_require__(119);
+var parser = __webpack_require__(303);
 var debug = __webpack_require__(180)('socket.io-stream:socket');
 var emit = EventEmitter.prototype.emit;
 var on = EventEmitter.prototype.on;
@@ -60399,10 +60607,10 @@ Socket.prototype.cleanup = function(id) {
 };
 
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(16).Buffer, __webpack_require__(29)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(16).Buffer, __webpack_require__(31)))
 
 /***/ }),
-/* 283 */
+/* 289 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -60413,13 +60621,13 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ }),
-/* 284 */
+/* 290 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
-/* 285 */
+/* 291 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60427,8 +60635,8 @@ module.exports = Array.isArray || function (arr) {
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Buffer = __webpack_require__(120).Buffer;
-var util = __webpack_require__(286);
+var Buffer = __webpack_require__(121).Buffer;
+var util = __webpack_require__(292);
 
 function copyBuffer(src, target, offset) {
   src.copy(target, offset);
@@ -60504,13 +60712,13 @@ if (util && util.inspect && util.inspect.custom) {
 }
 
 /***/ }),
-/* 286 */
+/* 292 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
-/* 287 */
+/* 293 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {
@@ -60581,10 +60789,10 @@ function config (name) {
   return String(val).toLowerCase() === 'true';
 }
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(29)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(31)))
 
 /***/ }),
-/* 288 */
+/* 294 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* eslint-disable node/no-deprecated-api */
@@ -60654,7 +60862,7 @@ SafeBuffer.allocUnsafeSlow = function (size) {
 
 
 /***/ }),
-/* 289 */
+/* 295 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60707,35 +60915,35 @@ PassThrough.prototype._transform = function (chunk, encoding, cb) {
 };
 
 /***/ }),
-/* 290 */
+/* 296 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(121);
+module.exports = __webpack_require__(122);
 
 
 /***/ }),
-/* 291 */
+/* 297 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(48);
 
 
 /***/ }),
-/* 292 */
+/* 298 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(119).Transform
+module.exports = __webpack_require__(120).Transform
 
 
 /***/ }),
-/* 293 */
+/* 299 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(119).PassThrough
+module.exports = __webpack_require__(120).PassThrough
 
 
 /***/ }),
-/* 294 */
+/* 300 */
 /***/ (function(module, exports) {
 
 // UUID function from https://gist.github.com/jed/982883
@@ -60766,7 +60974,7 @@ module.exports = b;
 
 
 /***/ }),
-/* 295 */
+/* 301 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -60782,7 +60990,7 @@ exports.coerce = coerce;
 exports.disable = disable;
 exports.enable = enable;
 exports.enabled = enabled;
-exports.humanize = __webpack_require__(296);
+exports.humanize = __webpack_require__(302);
 
 /**
  * The currently active debug mode names, and names to skip.
@@ -60969,7 +61177,7 @@ function coerce(val) {
 
 
 /***/ }),
-/* 296 */
+/* 302 */
 /***/ (function(module, exports) {
 
 /**
@@ -61100,12 +61308,12 @@ function plural(ms, n, name) {
 
 
 /***/ }),
-/* 297 */
+/* 303 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var util = __webpack_require__(67);
 var EventEmitter = __webpack_require__(69).EventEmitter;
-var IOStream = __webpack_require__(118);
+var IOStream = __webpack_require__(119);
 var slice = Array.prototype.slice;
 
 exports.Encoder = Encoder;
@@ -61211,7 +61419,7 @@ Decoder.prototype.decodeObject = function(obj) {
 
 
 /***/ }),
-/* 298 */
+/* 304 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var util = __webpack_require__(67);
@@ -61285,11 +61493,11 @@ BlobReadStream.prototype._onerror = function(e) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(16).Buffer))
 
 /***/ }),
-/* 299 */
+/* 305 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-var content = __webpack_require__(300);
+var content = __webpack_require__(306);
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -61310,7 +61518,7 @@ if(content.locals) module.exports = content.locals;
 if(false) {}
 
 /***/ }),
-/* 300 */
+/* 306 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(62)(false);
@@ -61320,11 +61528,11 @@ exports.push([module.i, "button{margin:.8rem .8rem .8rem 0;padding:1rem;backgrou
 
 
 /***/ }),
-/* 301 */
+/* 307 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-var content = __webpack_require__(302);
+var content = __webpack_require__(308);
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -61345,7 +61553,7 @@ if(content.locals) module.exports = content.locals;
 if(false) {}
 
 /***/ }),
-/* 302 */
+/* 308 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(62)(false);
@@ -61355,7 +61563,7 @@ exports.push([module.i, ".ld.reverse{-webkit-animation-direction:reverse;animati
 
 
 /***/ }),
-/* 303 */
+/* 309 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -61399,23 +61607,23 @@ var regenerator = __webpack_require__(2);
 var regenerator_default = /*#__PURE__*/__webpack_require__.n(regenerator);
 
 // EXTERNAL MODULE: ./node_modules/regenerator-runtime/runtime.js
-var runtime = __webpack_require__(32);
+var runtime = __webpack_require__(28);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.array.sort.js
-var es6_array_sort = __webpack_require__(191);
+var es6_array_sort = __webpack_require__(195);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/asyncToGenerator.js
 var asyncToGenerator = __webpack_require__(8);
 var asyncToGenerator_default = /*#__PURE__*/__webpack_require__.n(asyncToGenerator);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.split.js
-var es6_regexp_split = __webpack_require__(35);
+var es6_regexp_split = __webpack_require__(36);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.search.js
-var es6_regexp_search = __webpack_require__(197);
+var es6_regexp_search = __webpack_require__(201);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.to-string.js
-var es6_regexp_to_string = __webpack_require__(77);
+var es6_regexp_to_string = __webpack_require__(96);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es7.symbol.async-iterator.js
 var es7_symbol_async_iterator = __webpack_require__(42);
@@ -61424,16 +61632,16 @@ var es7_symbol_async_iterator = __webpack_require__(42);
 var es6_symbol = __webpack_require__(43);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/web.dom.iterable.js
-var web_dom_iterable = __webpack_require__(17);
+var web_dom_iterable = __webpack_require__(24);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.promise.js
-var es6_promise = __webpack_require__(36);
+var es6_promise = __webpack_require__(30);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.object.to-string.js
 var es6_object_to_string = __webpack_require__(14);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es7.promise.finally.js
-var es7_promise_finally = __webpack_require__(212);
+var es7_promise_finally = __webpack_require__(216);
 
 // CONCATENATED MODULE: ./client/src/js/lib/dom-util.js
 
@@ -61831,7 +62039,7 @@ function isParent(parent, child) {
 var tingle_min = __webpack_require__(181);
 
 // EXTERNAL MODULE: ./client/src/css/vendor/tingle.css
-var tingle = __webpack_require__(213);
+var tingle = __webpack_require__(217);
 
 // CONCATENATED MODULE: ./client/src/js/lib/DynmaicModal.js
 
@@ -62133,6 +62341,25 @@ function bakeFileAttachmentElement() {
     })]
   });
 }
+function bakeEphemeralMessage() {
+  var timeStamp = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : IError["a" /* IError */].required("Timestamp");
+  var msg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : IError["a" /* IError */].required("Message");
+  return bake("div", {
+    class: "ephemeral-msg",
+    children: [bake("div", {
+      class: "msg-heading",
+      children: [bake("b", {
+        text: "Note"
+      }), bake("span", {
+        class: "msg-time-stamp",
+        text: timeStamp
+      })]
+    }), bake("div", {
+      class: "msg-body",
+      html: msg
+    })]
+  });
+}
 function bakeLoginBlock(loginClickHandler) {
   return bake("div", {
     id: "vault-login--wrapper",
@@ -62402,7 +62629,7 @@ var createClass = __webpack_require__(6);
 var createClass_default = /*#__PURE__*/__webpack_require__.n(createClass);
 
 // EXTERNAL MODULE: ./client/src/css/vendor/blocking-spinner.min.css
-var blocking_spinner_min = __webpack_require__(216);
+var blocking_spinner_min = __webpack_require__(220);
 
 // CONCATENATED MODULE: ./client/src/js/lib/BlockingSpinner.js
 
@@ -62468,17 +62695,17 @@ var BlockingSpinner_BlockingSpinner = /*#__PURE__*/function () {
   return BlockingSpinner;
 }();
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es7.object.get-own-property-descriptors.js
-var es7_object_get_own_property_descriptors = __webpack_require__(218);
+var es7_object_get_own_property_descriptors = __webpack_require__(222);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.array.from.js
-var es6_array_from = __webpack_require__(220);
+var es6_array_from = __webpack_require__(224);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/defineProperty.js
 var defineProperty = __webpack_require__(182);
 var defineProperty_default = /*#__PURE__*/__webpack_require__.n(defineProperty);
 
 // EXTERNAL MODULE: ./client/src/css/vendor/toastr.css
-var toastr = __webpack_require__(221);
+var toastr = __webpack_require__(225);
 
 // CONCATENATED MODULE: ./client/src/js/lib/toastr.js
 
@@ -62672,13 +62899,13 @@ var ChatClient = __webpack_require__(183);
 var Events = __webpack_require__(0);
 
 // EXTERNAL MODULE: ./client/src/css/chat.sass
-var chat = __webpack_require__(299);
+var chat = __webpack_require__(305);
 
 // EXTERNAL MODULE: ./client/src/css/vendor/loading.css
-var loading = __webpack_require__(301);
+var loading = __webpack_require__(307);
 
 // EXTERNAL MODULE: ./client/src/js/lib/Vault.js + 1 modules
-var Vault = __webpack_require__(91);
+var Vault = __webpack_require__(90);
 
 // CONCATENATED MODULE: ./client/src/js/chat-ui.js
 
@@ -63623,29 +63850,20 @@ function appendEphemeralMessage(msg) {
   }
 
   try {
-    var msgContainer = bake("div", {
-      classes: "ephemeral-msg"
-    });
-    var headingContainer = bake("div", {
-      classes: "msg-heading"
-    });
-    var text = bake("b", {
-      text: "Ephemeral"
-    });
-    var timestamp = bake("span", {
-      classes: "msg-time-stamp"
-    });
-    timestamp.innerText = getChatFormatedDate(new Date());
-    appendChildren(headingContainer, [text, timestamp]);
-    var msgBodyContainer = bake("div", {
-      classes: "msg-body"
-    });
-    var msgBody = bake("div", {
-      html: msg
-    });
-    msgBodyContainer.appendChild(msgBody);
-    appendChildren(msgContainer, [headingContainer, msgBodyContainer]);
-    $("#chat_window").appendChild(msgContainer);
+    var msgEl = bakeEphemeralMessage(getChatFormatDate(new Date()), msg);
+    $("#message-window-1").appendChild(msgEl); /////////////////////////////////////////////////////////////////////////////
+    // let msgContainer = util.bake("div", {classes: "ephemeral-msg"})         //
+    // let headingContainer = util.bake("div", {classes: "msg-heading"})       //
+    // let text = util.bake("b", {text: "Ephemeral"})                          //
+    // let timestamp = util.bake("span", {classes: "msg-time-stamp"})          //
+    // timestamp.innerText = getChatFormatedDate(new Date());                  //
+    // util.appendChildren(headingContainer, [text, timestamp])                //
+    // let msgBodyContainer = util.bake("div", {classes: "msg-body"})          //
+    // let msgBody = util.bake("div", {html: msg})                             //
+    // msgBodyContainer.appendChild(msgBody)                                   //
+    // util.appendChildren(msgContainer, [headingContainer, msgBodyContainer]) //
+    // util.$("#chat_window").appendChild(msgContainer);                       //
+    /////////////////////////////////////////////////////////////////////////////
   } catch (err) {
     console.log("EPHEMERAL ERROR: " + err);
   }

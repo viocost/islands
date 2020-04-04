@@ -8,10 +8,7 @@ import { ArrivalHub } from "./ArrivalHub";
 import  { ChatUtility }  from "./ChatUtility";
 import { Message } from "./Message";
 import { Topic } from "./Topic";
-import  { Metadata } from "./Metadata";
-import  { Participant}  from "./Participant";
-import  { AttachmentInfo } from "./AttachmentInfo";
-import { ClientSettings } from  "./ClientSettings";
+import { DownloadAttachmentAgent } from "./DownloadAttachmentAgent";
 import { iCrypto } from "./iCrypto"
 import { TopicJoinAgent } from "./TopicJoinAgent";
 import { SendMessageAgent } from "./SendMessageAgent";
@@ -657,15 +654,7 @@ export class ChatClient{
         }, 50)
     }
 
-    getParticipants(topicPkfp){
-        if(this.topics.hasOwnProperty(topicPkfp)){
-            return this.topics[topicPkfp].participants;
-        }
-    }
 
-    getTopics(){
-        return this.topics;
-    }
 
     getParticipantAlias(topicPkfp, participantPkfp){
         if (!this.topics[topicPkfp]){
@@ -674,12 +663,6 @@ export class ChatClient{
         return this.topics[topicPkfp].getParticipantAlias(participantPkfp);
     }
 
-    getParticipantRepr(topicPkfp, participantPkfp){
-        if (!this.topics[topicPkfp]){
-            throw new Error(`Topic ${topicPkfp} not found`)
-        }
-        return this.topics[topicPkfp].getParticipantRepr(participantPkfp);
-    }
 
     // Sends message
     sendMessage(msg, topicPkfp, recipient, files){
@@ -693,12 +676,35 @@ export class ChatClient{
         return sendMessageAgent.send();
     }
 
-    async _initMessageQueue(){
-        this.messageQueue = new MessageQueue();
+    downloadAttachment(fileInfo){
+        let downloadAttachmentAgent = new DownloadAttachmentAgent(fileInfo);
+
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------
     // HELPERS
+    //
+
+    getParticipants(topicPkfp){
+        if(this.topics.hasOwnProperty(topicPkfp)){
+            return this.topics[topicPkfp].participants;
+        }
+    }
+
+    getTopics(){
+        return this.topics;
+    }
+
+    getParticipantRepr(topicPkfp, participantPkfp){
+        if (!this.topics[topicPkfp]){
+            throw new Error(`Topic ${topicPkfp} not found`)
+        }
+        return this.topics[topicPkfp].getParticipantRepr(participantPkfp);
+    }
+
+    async _initMessageQueue(){
+        this.messageQueue = new MessageQueue();
+    }
 
     //requests vault and returns it
     getVault(){
