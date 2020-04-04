@@ -248,13 +248,14 @@ function renderLayout(){
 function sendMessage(){
     console.log("Sending message...");
     let msg = util.$("#new-msg").value;
-    if (msg.length === 0){
+    let files = document.querySelector('#attach-file').files;
+    if (msg.length === 0 && files.length === 0){
         console.log("Empty message");
         return;
     }
     let recipient = util.$("#select-member").value;
-    let files = null;
-    //pass files later
+
+    // pass files later
     if (!topicInFocus){
         console.error("No topic selected to write to.")
         return;
@@ -824,6 +825,30 @@ function showCodeView(event) {
     let div = document.createElement("div");
     div.appendChild(pre);
     showModalNotification("Code:", div.innerHTML);
+}
+
+
+
+function appendEphemeralMessage(msg){
+    if (!msg){
+        console.log("Message is empty.")
+        return
+    }
+    try{
+        let msgContainer = util.bake("div", {classes: "ephemeral-msg"})
+        let headingContainer = util.bake("div", {classes: "msg-heading"})
+        let text = util.bake("b", {text: "Ephemeral"})
+        let timestamp = util.bake("span", {classes: "msg-time-stamp"})
+        timestamp.innerText = getChatFormatedDate(new Date());
+        util.appendChildren(headingContainer, [text, timestamp])
+        let msgBodyContainer = util.bake("div", {classes: "msg-body"})
+        let msgBody = util.bake("div", {html: msg})
+        msgBodyContainer.appendChild(msgBody)
+        util.appendChildren(msgContainer, [headingContainer, msgBodyContainer])
+        util.$("#chat_window").appendChild(msgContainer);
+    }catch(err){
+        console.log("EPHEMERAL ERROR: " + err)
+    }
 }
 //~END MESSAGES RENDERING///////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////

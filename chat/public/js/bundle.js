@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 267);
+/******/ 	return __webpack_require__(__webpack_require__.s = 303);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -195,27 +195,27 @@ module.exports.Internal = Object.freeze({
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return iCrypto; });
-/* harmony import */ var core_js_modules_es6_typed_uint16_array__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(209);
+/* harmony import */ var core_js_modules_es6_typed_uint16_array__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(227);
 /* harmony import */ var core_js_modules_es6_typed_uint16_array__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_typed_uint16_array__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(132);
+/* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(146);
 /* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(38);
+/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(35);
 /* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(16);
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(17);
 /* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(133);
+/* harmony import */ var core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(109);
 /* harmony import */ var core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(68);
+/* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(77);
 /* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(51);
+/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(36);
 /* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(15);
+/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(14);
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(72);
+/* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(80);
 /* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_8__);
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(4);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(5);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_9__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(5);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(6);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_10__);
 
 
@@ -231,11 +231,13 @@ module.exports.Internal = Object.freeze({
 
 
 
-var forge = __webpack_require__(215);
+var forge = __webpack_require__(233);
 
-var sjcl = __webpack_require__(228);
+var sjcl = __webpack_require__(246);
 
-var Base32 = __webpack_require__(229);
+var Base32 = __webpack_require__(248);
+
+var JSChaCha20 = __webpack_require__(251);
 
 var iCrypto = /*#__PURE__*/function () {
   function iCrypto(settings) {
@@ -1749,14 +1751,21 @@ var iCrypto = /*#__PURE__*/function () {
 
 /***/ }),
 /* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(190);
+
+
+/***/ }),
+/* 3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return IError; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return assert; });
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__);
 
 
@@ -1786,7 +1795,7 @@ function assert(cond, errMsg) {
 }
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports) {
 
 /**
@@ -1805,7 +1814,7 @@ module.exports = {
 
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports) {
 
 function _classCallCheck(instance, Constructor) {
@@ -1817,7 +1826,7 @@ function _classCallCheck(instance, Constructor) {
 module.exports = _classCallCheck;
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports) {
 
 function _defineProperties(target, props) {
@@ -1839,13 +1848,6 @@ function _createClass(Constructor, protoProps, staticProps) {
 module.exports = _createClass;
 
 /***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(172);
-
-
-/***/ }),
 /* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1856,8 +1858,8 @@ module.exports = __webpack_require__(172);
  *
  * Copyright (c) 2010-2018 Digital Bazaar, Inc.
  */
-var forge = __webpack_require__(3);
-var baseN = __webpack_require__(219);
+var forge = __webpack_require__(4);
+var baseN = __webpack_require__(237);
 
 /* Utilities API */
 var util = module.exports = forge.util = forge.util || {};
@@ -4830,26 +4832,68 @@ util.estimateCores = function(options, callback) {
   }
 };
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(27), __webpack_require__(71).setImmediate, __webpack_require__(32).Buffer))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(18), __webpack_require__(64).setImmediate, __webpack_require__(16).Buffer))
 
 /***/ }),
 /* 8 */
+/***/ (function(module, exports) {
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
+  try {
+    var info = gen[key](arg);
+    var value = info.value;
+  } catch (error) {
+    reject(error);
+    return;
+  }
+
+  if (info.done) {
+    resolve(value);
+  } else {
+    Promise.resolve(value).then(_next, _throw);
+  }
+}
+
+function _asyncToGenerator(fn) {
+  return function () {
+    var self = this,
+        args = arguments;
+    return new Promise(function (resolve, reject) {
+      var gen = fn.apply(self, args);
+
+      function _next(value) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
+      }
+
+      function _throw(err) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
+      }
+
+      _next(undefined);
+    });
+  };
+}
+
+module.exports = _asyncToGenerator;
+
+/***/ }),
+/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Message; });
-/* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(72);
+/* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(80);
 /* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(16);
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(17);
 /* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(15);
+/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(14);
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(5);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(5);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(6);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(1);
-/* harmony import */ var _common_IError__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(2);
+/* harmony import */ var _common_IError__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(3);
 
 
 
@@ -5014,48 +5058,6 @@ var Message = /*#__PURE__*/function () {
 Message.properties = ["headers", "body", "signature"];
 
 /***/ }),
-/* 9 */
-/***/ (function(module, exports) {
-
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
-  try {
-    var info = gen[key](arg);
-    var value = info.value;
-  } catch (error) {
-    reject(error);
-    return;
-  }
-
-  if (info.done) {
-    resolve(value);
-  } else {
-    Promise.resolve(value).then(_next, _throw);
-  }
-}
-
-function _asyncToGenerator(fn) {
-  return function () {
-    var self = this,
-        args = arguments;
-    return new Promise(function (resolve, reject) {
-      var gen = fn.apply(self, args);
-
-      function _next(value) {
-        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
-      }
-
-      function _throw(err) {
-        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
-      }
-
-      _next(undefined);
-    });
-  };
-}
-
-module.exports = _asyncToGenerator;
-
-/***/ }),
 /* 10 */
 /***/ (function(module, exports) {
 
@@ -5071,8 +5073,8 @@ if (typeof __g == 'number') __g = global; // eslint-disable-line no-undef
 /* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var store = __webpack_require__(65)('wks');
-var uid = __webpack_require__(35);
+var store = __webpack_require__(74)('wks');
+var uid = __webpack_require__(38);
 var Symbol = __webpack_require__(10).Symbol;
 var USE_SYMBOL = typeof Symbol == 'function';
 
@@ -5090,12 +5092,12 @@ $exports.store = store;
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ChatUtility; });
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1);
-/* harmony import */ var _common_IError__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(2);
+/* harmony import */ var _common_IError__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(3);
 
 
 
@@ -5201,7 +5203,7 @@ var ChatUtility = /*#__PURE__*/function () {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return WildEmitter; });
-/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(38);
+/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(35);
 /* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__);
 
 function WildEmitter() {}
@@ -5348,7 +5350,24 @@ WildEmitter.mixin(WildEmitter);
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isObject = __webpack_require__(25);
+"use strict";
+
+// 19.1.3.6 Object.prototype.toString()
+var classof = __webpack_require__(59);
+var test = {};
+test[__webpack_require__(11)('toStringTag')] = 'z';
+if (test + '' != '[object z]') {
+  __webpack_require__(33)(Object.prototype, 'toString', function toString() {
+    return '[object ' + classof(this) + ']';
+  }, true);
+}
+
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var isObject = __webpack_require__(27);
 module.exports = function (it) {
   if (!isObject(it)) throw TypeError(it + ' is not an object!');
   return it;
@@ -5356,2895 +5375,7 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 15 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-// 19.1.3.6 Object.prototype.toString()
-var classof = __webpack_require__(56);
-var test = {};
-test[__webpack_require__(11)('toStringTag')] = 'z';
-if (test + '' != '[object z]') {
-  __webpack_require__(30)(Object.prototype, 'toString', function toString() {
-    return '[object ' + classof(this) + ']';
-  }, true);
-}
-
-
-/***/ }),
 /* 16 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var $iterators = __webpack_require__(119);
-var getKeys = __webpack_require__(69);
-var redefine = __webpack_require__(30);
-var global = __webpack_require__(10);
-var hide = __webpack_require__(18);
-var Iterators = __webpack_require__(50);
-var wks = __webpack_require__(11);
-var ITERATOR = wks('iterator');
-var TO_STRING_TAG = wks('toStringTag');
-var ArrayValues = Iterators.Array;
-
-var DOMIterables = {
-  CSSRuleList: true, // TODO: Not spec compliant, should be false.
-  CSSStyleDeclaration: false,
-  CSSValueList: false,
-  ClientRectList: false,
-  DOMRectList: false,
-  DOMStringList: false,
-  DOMTokenList: true,
-  DataTransferItemList: false,
-  FileList: false,
-  HTMLAllCollection: false,
-  HTMLCollection: false,
-  HTMLFormElement: false,
-  HTMLSelectElement: false,
-  MediaList: true, // TODO: Not spec compliant, should be false.
-  MimeTypeArray: false,
-  NamedNodeMap: false,
-  NodeList: true,
-  PaintRequestList: false,
-  Plugin: false,
-  PluginArray: false,
-  SVGLengthList: false,
-  SVGNumberList: false,
-  SVGPathSegList: false,
-  SVGPointList: false,
-  SVGStringList: false,
-  SVGTransformList: false,
-  SourceBufferList: false,
-  StyleSheetList: true, // TODO: Not spec compliant, should be false.
-  TextTrackCueList: false,
-  TextTrackList: false,
-  TouchList: false
-};
-
-for (var collections = getKeys(DOMIterables), i = 0; i < collections.length; i++) {
-  var NAME = collections[i];
-  var explicit = DOMIterables[NAME];
-  var Collection = global[NAME];
-  var proto = Collection && Collection.prototype;
-  var key;
-  if (proto) {
-    if (!proto[ITERATOR]) hide(proto, ITERATOR, ArrayValues);
-    if (!proto[TO_STRING_TAG]) hide(proto, TO_STRING_TAG, NAME);
-    Iterators[NAME] = ArrayValues;
-    if (explicit) for (key in $iterators) if (!proto[key]) redefine(proto, key, $iterators[key], true);
-  }
-}
-
-
-/***/ }),
-/* 17 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Topic; });
-/* harmony import */ var _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(109);
-/* harmony import */ var _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(68);
-/* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(72);
-/* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(40);
-/* harmony import */ var core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(41);
-/* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(6);
-/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(33);
-/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(9);
-/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(16);
-/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_8__);
-/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(15);
-/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_9__);
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(4);
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_10__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(5);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_11__);
-/* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(0);
-/* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(_common_Events__WEBPACK_IMPORTED_MODULE_12__);
-/* harmony import */ var _WildEmitter__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(13);
-/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(8);
-/* harmony import */ var _Metadata__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(107);
-/* harmony import */ var _ChatUtility__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(12);
-/* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(1);
-/* harmony import */ var _ChatMessage__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(46);
-/* harmony import */ var _ClientSettings__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(45);
-/* harmony import */ var cute_set__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(47);
-/* harmony import */ var cute_set__WEBPACK_IMPORTED_MODULE_20___default = /*#__PURE__*/__webpack_require__.n(cute_set__WEBPACK_IMPORTED_MODULE_20__);
-/* harmony import */ var buffer__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(32);
-/* harmony import */ var buffer__WEBPACK_IMPORTED_MODULE_21___default = /*#__PURE__*/__webpack_require__.n(buffer__WEBPACK_IMPORTED_MODULE_21__);
-/* harmony import */ var _common_IError__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(2);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-var INITIAL_NUM_MESSAGES = 25;
-var Topic = /*#__PURE__*/function () {
-  function Topic(version, pkfp, name, key, comment) {
-    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_10___default()(this, Topic);
-
-    _WildEmitter__WEBPACK_IMPORTED_MODULE_13__[/* WildEmitter */ "a"].mixin(this);
-    this.pkfp = pkfp;
-    this.name = name; // Topic alias. Not shared.
-
-    this.privateKey = key;
-    this.comment = comment;
-    this.handlers = {};
-    this.messageQueue;
-    this.arrivalHub;
-    this.currentMetadata;
-    this.sharedKey;
-    this.metadataId;
-    this.participants = {};
-    this.messages = [];
-    this.settings = {};
-    this.invites = {};
-    this.version = version;
-
-    this.getPrivateKey = function () {
-      return key;
-    }; // Meaning event listeners are set for arrivalHub
-
-
-    this.isBootstrapped = false; // Whether topic's metadata loaded
-
-    this.metadataLoaded = false; // Initial messages load has been completed
-
-    this.isInitLoaded = false; // All messages on this toipcs has been loaded
-
-    this.allMessagesLoaded = false; // When topic has sent load n messages from the server and awaiting result
-
-    this.awaitingMessages = false;
-  }
-
-  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_11___default()(Topic, [{
-    key: "bootstrap",
-    // ---------------------------------------------------------------------------------------------------------------------------
-    // INITIALIZING
-    value: function bootstrap(self, messageQueue, arrivalHub, version) {
-      self.messageQueue = messageQueue;
-      self.arrivalHub = arrivalHub;
-      self.arrivalHub.on(self.pkfp, function (msg) {
-        self.preprocessIncomingMessage(msg, self);
-      });
-      self.version = version;
-      self.setHandlers();
-      self.bootstrapped = true;
-    }
-  }, {
-    key: "loadMetadata",
-    value: function loadMetadata(metadata) {
-      if (typeof metadata === "string") {
-        metadata = JSON.parse(metadata);
-      }
-
-      var settingsCipher = metadata.body.settings;
-      var settings;
-
-      if (!settingsCipher) {
-        settings = Topic.prepareNewTopicSettings(this.version, undefined, undefined, this.getPublicKey, false);
-      } else {
-        settings = JSON.parse(_ChatUtility__WEBPACK_IMPORTED_MODULE_16__[/* ChatUtility */ "a"].decryptStandardMessage(settingsCipher, this.privateKey));
-      }
-
-      this._metadata = metadata;
-      this._metadata.body.settings = settings;
-      this.settings = settings;
-      this.participants = {};
-
-      for (var _i = 0, _Object$keys = Object.keys(metadata.body.participants); _i < _Object$keys.length; _i++) {
-        var pkfp = _Object$keys[_i];
-        this.participants[pkfp] = {};
-        this.participants[pkfp].key = metadata.body.participants[pkfp].key;
-        this.participants[pkfp].pkfp = metadata.body.participants[pkfp].pkfp;
-        this.participants[pkfp].publicKey = metadata.body.participants[pkfp].publicKey;
-        this.participants[pkfp].residence = metadata.body.participants[pkfp].residence;
-        this.participants[pkfp].rights = metadata.body.participants[pkfp].rights;
-
-        if (metadata.body.settings.membersData) {
-          this.participants[pkfp].nickname = metadata.body.settings.membersData[pkfp] ? metadata.body.settings.membersData[pkfp].nickname : "";
-          this.participants[pkfp].joined = metadata.body.settings.membersData[pkfp] ? metadata.body.settings.membersData[pkfp].joined : "";
-        }
-      }
-
-      this.sharedKey = _ChatUtility__WEBPACK_IMPORTED_MODULE_16__[/* ChatUtility */ "a"].privateKeyDecrypt(this.participants[this.pkfp].key, this.privateKey);
-      this.metadataId = metadata.body.id;
-      this.topicAuthority = metadata.body.topicAuthority;
-
-      if (!metadata.body.settings.invites) {
-        metadata.body.settings.invites = {};
-      }
-
-      this.invites = metadata.body.settings.invites;
-      this.metadataLoaded = true;
-    }
-    /**
-     * Loads topic's last n messsages
-     * If wait for completion function will return only after load is completed
-     */
-
-  }, {
-    key: "initLoad",
-    value: function () {
-      var _initLoad = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_7___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_5___default.a.mark(function _callee() {
-        var messagesToLoad,
-            waitCompletion,
-            self,
-            _args = arguments;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_5___default.a.wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                messagesToLoad = _args.length > 0 && _args[0] !== undefined ? _args[0] : INITIAL_NUM_MESSAGES;
-                waitCompletion = _args.length > 1 && _args[1] !== undefined ? _args[1] : false;
-                self = this;
-                self.ensureBootstrapped(self);
-                setTimeout(function () {
-                  self._loadMessages(self, messagesToLoad);
-
-                  self.awaitingMessages = true;
-                });
-
-              case 5:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee, this);
-      }));
-
-      function initLoad() {
-        return _initLoad.apply(this, arguments);
-      }
-
-      return initLoad;
-    }() //Called when init_load event is received
-
-  }, {
-    key: "processInitLoad",
-    value: function processInitLoad(data) {}
-  }, {
-    key: "setHandlers",
-    value: function setHandlers() {
-      var _this = this;
-
-      var self = this;
-      this.handlers[_common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].LOAD_MESSAGES_SUCCESS] = this.processMessagesLoaded;
-
-      this.handlers[_common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].INVITE_REQUEST_TIMEOUT] = function () {
-        console.log("Invite request timeout");
-      };
-
-      this.handlers[_common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].INVITE_REQUEST_FAIL] = function (msg) {
-        console.log("Invite request failed: ".concat(msg.body.errorMsg));
-      };
-
-      this.handlers[_common_Events__WEBPACK_IMPORTED_MODULE_12__["Events"].INVITE_CREATED] = function (msg) {
-        console.log("Invite created event");
-        self.processInviteCreated(self, msg);
-        self.emit(_common_Events__WEBPACK_IMPORTED_MODULE_12__["Events"].INVITE_CREATED);
-      };
-
-      this.handlers[_common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].SETTINGS_UPDATED] = function (msg) {
-        console.log("Settings updated");
-        self.processSettingsUpdated(msg);
-      };
-
-      this.handlers[_common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].BROADCAST_MESSAGE] = function (msg) {
-        var msgCopy = JSON.parse(JSON.stringify(msg)); // pkfpDest is added by server when message is broadcasted, so to verify it
-        // must be deleted
-
-        delete msgCopy.pkfpDest;
-        Object(_common_IError__WEBPACK_IMPORTED_MODULE_22__[/* assert */ "b"])(self.participants[msg.headers.pkfpSource], "The participant ".concat(msgCopy.pkfpDest, " not found"));
-        var publicKey = self.participants[msg.headers.pkfpSource].publicKey; //assert(Message.verifyMessage(publicKey, msgCopy), "Message was not verified")
-
-        var message = new _ChatMessage__WEBPACK_IMPORTED_MODULE_18__[/* ChatMessage */ "a"](msg.body.message);
-        message.decryptMessage(self.sharedKey);
-        self.addNewMessage(self, message);
-      };
-
-      this.handlers[_common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].SEND_MESSAGE] = function (msg) {
-        Object(_common_IError__WEBPACK_IMPORTED_MODULE_22__[/* assert */ "b"])(self.participants[msg.headers.pkfpSource]);
-        var publicKey = self.participants[msg.headers.pkfpSource].publicKey;
-        Object(_common_IError__WEBPACK_IMPORTED_MODULE_22__[/* assert */ "b"])(_Message__WEBPACK_IMPORTED_MODULE_14__[/* Message */ "a"].verifyMessage(msg, self.publicKey));
-        var message = new _ChatMessage__WEBPACK_IMPORTED_MODULE_18__[/* ChatMessage */ "a"](msg.body.message);
-        message.decryptMessage(self.sharedKey);
-        self.addNewMessage(self, message);
-      };
-
-      this.handlers[_common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].MESSAGE_SENT] = function (msg) {
-        console.log("Message sent received. Message: ".concat(msg.body.message));
-
-        _this.processMessageSent(_this, msg);
-      };
-    } //End//////////////////////////////////////////////////////////////////////
-    // ---------------------------------------------------------------------------------------------------------------------------
-    // MESSAGE HANDLING
-
-  }, {
-    key: "processMessageSent",
-    value: function processMessageSent(self, msg) {
-      var sentMessage = new _ChatMessage__WEBPACK_IMPORTED_MODULE_18__[/* ChatMessage */ "a"](msg.body.message);
-      console.log("Setting existing message from pending to delivered");
-      var existingMessages = self.messages.filter(function (m) {
-        return m.header.id === sentMessage.header.id;
-      });
-      Object(_common_IError__WEBPACK_IMPORTED_MODULE_22__[/* assert */ "b"])(existingMessages.length < 2, "Message doubling error: ".concat(existingMessages.length));
-      var existingMessage = existingMessages[0];
-
-      if (existingMessage) {
-        existingMessage.pending = false;
-        self.emit(_common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].MESSAGE_SENT, existingMessage);
-      } else {
-        console.log("Decrypting and adding sent message.");
-        sentMessage.header.private ? sentMessage.decryptPrivateMessage(self.privateKey) : sentMessage.decryptMessage(self.sharedKey);
-        self.addNewMessage(self, sentMessage);
-      }
-    }
-  }, {
-    key: "addNewMessage",
-    value: function addNewMessage(self, chatMessage) {
-      console.log("Adding new chat message");
-      self.messages.push[chatMessage];
-      console.log("Message added");
-      self.emit(_common_Events__WEBPACK_IMPORTED_MODULE_12__["Events"].NEW_CHAT_MESSAGE, chatMessage, self.pkfp);
-    }
-  }, {
-    key: "getMessages",
-    value: function getMessages() {
-      var messagesToLoad = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : INITIAL_NUM_MESSAGES;
-      var lastMessageId = arguments.length > 1 ? arguments[1] : undefined;
-
-      if (this.initLoaded) {
-        this.emit(_common_Events__WEBPACK_IMPORTED_MODULE_12__["Events"].MESSAGES_LOADED, this.messages);
-      } else {
-        console.log("Messages has not been loaded. Loading...."); //init load and then emit
-
-        this.initLoad();
-      }
-    } //Incoming message
-
-  }, {
-    key: "preprocessIncomingMessage",
-    value: function preprocessIncomingMessage(msg, self) {
-      console.log("Incoming message on ".concat(this.pkfp, " received!"));
-
-      if (self.handlers.hasOwnProperty(msg.headers.command)) {
-        self.handlers[msg.headers.command](msg, self);
-      } else {
-        var errMsg = "No handler found for command: ".concat(msg.headers.command);
-        throw new Error(errMsg);
-      }
-    }
-  }, {
-    key: "getCurrentNickname",
-    value: function getCurrentNickname() {
-      if (!this.metadataLoaded) {
-        throw new Error("Cannot get current nickname: metadata is not loaded.");
-      }
-
-      return this.participants[this.pkfp].nickname;
-    }
-  }, {
-    key: "_loadMessages",
-    value: function _loadMessages(self) {
-      var quantity = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 25;
-      var lastMessageId = arguments.length > 2 ? arguments[2] : undefined;
-      var request = new _Message__WEBPACK_IMPORTED_MODULE_14__[/* Message */ "a"](self.version);
-      request.headers.command = _common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].LOAD_MESSAGES;
-      request.headers.pkfpSource = self.pkfp;
-      request.body.quantity = quantity;
-
-      if (lastMessageId) {
-        request.body.lastMessageId = lastMessageId;
-      }
-
-      request.addNonce();
-      request.signMessage(self.privateKey);
-      self.messageQueue.enqueue(request);
-    } // ---------------------------------------------------------------------------------------------------------------------------
-    // INVITES HANDLING
-
-  }, {
-    key: "requestInvite",
-    value: function requestInvite() {
-      var self = this;
-
-      if (!self.metadataLoaded) {
-        throw new Error("Metadata has not been loaded yet.");
-      }
-
-      setTimeout(function () {
-        var request = new _Message__WEBPACK_IMPORTED_MODULE_14__[/* Message */ "a"](self.version);
-        var taPublicKey = self.topicAuthority.publicKey;
-        var myNickNameEncrypted = _ChatUtility__WEBPACK_IMPORTED_MODULE_16__[/* ChatUtility */ "a"].encryptStandardMessage(self.participants[self.pkfp].nickname, taPublicKey);
-        var topicNameEncrypted = _ChatUtility__WEBPACK_IMPORTED_MODULE_16__[/* ChatUtility */ "a"].encryptStandardMessage(self.name, taPublicKey);
-        request.setCommand(_common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].REQUEST_INVITE);
-        request.setSource(self.pkfp);
-        request.setDest(self.topicAuthority.pkfp);
-        request.body.nickname = myNickNameEncrypted;
-        request.body.topicName = topicNameEncrypted;
-        request.signMessage(self.privateKey);
-        self.messageQueue.enqueue(request);
-      }, 100);
-    }
-  }, {
-    key: "syncInvites",
-    value: function syncInvites() {
-      var request = new _Message__WEBPACK_IMPORTED_MODULE_14__[/* Message */ "a"](self.version);
-      request.headers.command = "sync_invites";
-      request.headers.pkfpSource = this.session.publicKeyFingerprint;
-      request.headers.pkfpDest = this.session.metadata.topicAuthority.pkfp;
-      request.headers.nonce = ic.get("nhex");
-      request.signMessage(this.session.privateKey);
-      this.chatSocket.emit("request", request);
-    }
-  }, {
-    key: "updateInvite",
-    value: function updateInvite() {
-      this.session.settings.invites[inviteID].name = name;
-      this.saveClientSettings(this.session.settings, this.session.privateKey);
-    }
-  }, {
-    key: "deleteInvite",
-    value: function deleteInvite(inviteCode) {
-      console.log("About to delete invite: " + inviteCode);
-
-      if (!this.invites.hasOwnProperty(inviteCode)) {
-        console.error("Invite does not exist: ".concat(inviteCode));
-      }
-
-      var request = new _Message__WEBPACK_IMPORTED_MODULE_14__[/* Message */ "a"](this.version);
-      request.headers.command = _common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].DELETE_INVITE;
-      request.headers.pkfpSource = this.pkfp;
-      request.headers.pkfpDest = this.topicAuthority.pkfp;
-      var body = {
-        invite: inviteCode
-      };
-      request.set("body", body);
-      request.signMessage(this.privateKey);
-      this.messageQueue.enqueue(request);
-    }
-  }, {
-    key: "updatePendingInvites",
-    value: function updatePendingInvites(userInvites) {
-      var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
-
-      try {
-        for (var _iterator = userInvites[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          var i = _step.value;
-
-          if (!this.session.settings.invites.hasOwnProperty(i)) {
-            this.session.settings.invites[i] = {};
-          }
-        }
-      } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion && _iterator.return != null) {
-            _iterator.return();
-          }
-        } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
-          }
-        }
-      }
-
-      for (var _i2 = 0, _Object$keys2 = Object.keys(this.session.settings.invites); _i2 < _Object$keys2.length; _i2++) {
-        var _i3 = _Object$keys2[_i2];
-
-        if (!userInvites.includes(_i3)) {
-          delete this.session.settings.invites[_i3];
-        }
-      }
-
-      this.saveClientSettings(this.session.settings, this.session.privateKey);
-    } //END//////////////////////////////////////////////////////////////////////
-    // ---------------------------------------------------------------------------------------------------------------------------
-    // Nickname handling
-    //TODO
-
-  }, {
-    key: "exchangeNicknames",
-    value: function exchangeNicknames() {
-      if (!this.isBootstrapped) {
-        console.log("Cannot exchange nicknames: topic not bootstrapped.");
-        return;
-      }
-
-      var myNickname = _ChatUtility__WEBPACK_IMPORTED_MODULE_16__[/* ChatUtility */ "a"].symKeyEncrypt(this.participants[this.pkfp].nickname, this.sharedKey);
-      var request = _Message__WEBPACK_IMPORTED_MODULE_14__[/* Message */ "a"].createRequest(this.version, this.pkfp, _common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].NICKNAME_INITAL_EXCHANGE);
-      request.body.metadataId = this.metadataId;
-      request.body.myNickname = myNickname;
-      request.signMessage(this.privateKey);
-      this.messageQueue.enqueue(request);
-    }
-  }, {
-    key: "setMemberAlias",
-    value: function setMemberAlias(pkfp, alias) {
-      if (!pkfp) {
-        throw new Error("Missing required parameter");
-      }
-
-      if (!this.session) {
-        return;
-      }
-
-      var membersData = this.session.settings.membersData;
-
-      if (!membersData[pkfp]) {
-        membersData[pkfp] = {};
-      }
-
-      if (!alias) {
-        delete membersData[pkfp].alias;
-      } else {
-        membersData[pkfp].alias = alias;
-      }
-    }
-  }, {
-    key: "requestNickname",
-    value: function requestNickname(pkfp) {
-      if (!pkfp) {
-        throw new Error("Missing required parameter");
-      }
-
-      var request = new _Message__WEBPACK_IMPORTED_MODULE_14__[/* Message */ "a"](self.version);
-      request.setCommand("whats_your_name");
-      request.setSource(this.session.publicKeyFingerprint);
-      request.setDest(pkfp);
-      request.addNonce();
-      request.signMessage(this.session.privateKey);
-      this.chatSocket.emit("request", request);
-    }
-  }, {
-    key: "broadcastNameChange",
-    value: function broadcastNameChange() {
-      var self = this;
-      var message = new _Message__WEBPACK_IMPORTED_MODULE_14__[/* Message */ "a"](self.version);
-      message.setCommand("nickname_change_broadcast");
-      message.setSource(this.session.publicKeyFingerprint);
-      message.addNonce();
-      message.body.nickname = _ChatUtility__WEBPACK_IMPORTED_MODULE_16__[/* ChatUtility */ "a"].symKeyEncrypt(self.session.settings.nickname, self.session.metadata.sharedKey);
-      message.signMessage(this.session.privateKey);
-      this.chatSocket.emit("request", message);
-    }
-  }, {
-    key: "processNicknameResponse",
-    value: function processNicknameResponse(request, self) {
-      self._processNicknameResponseHelper(request, self);
-    }
-  }, {
-    key: "processNicknameChangeNote",
-    value: function processNicknameChangeNote(request, self) {
-      self._processNicknameResponseHelper(request, self, true);
-    }
-  }, {
-    key: "_processNicknameResponseHelper",
-    value: function _processNicknameResponseHelper(request, self) {
-      var broadcast = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-      console.log("Got nickname response");
-      var publicKey = self.session.metadata.participants[request.headers.pkfpSource].publicKey;
-
-      if (!_Message__WEBPACK_IMPORTED_MODULE_14__[/* Message */ "a"].verifyMessage(publicKey, request)) {
-        console.trace("Invalid signature");
-        return;
-      }
-
-      var existingNickname = self.getMemberNickname(request.headers.pkfpSource);
-      var memberRepr = self.getMemberRepr(request.headers.pkfpSource);
-      var newNickname = broadcast ? _ChatUtility__WEBPACK_IMPORTED_MODULE_16__[/* ChatUtility */ "a"].symKeyDecrypt(request.body.nickname, self.session.metadata.sharedKey) : _ChatUtility__WEBPACK_IMPORTED_MODULE_16__[/* ChatUtility */ "a"].decryptStandardMessage(request.body.nickname, self.session.privateKey);
-      newNickname = newNickname.toString("utf8");
-
-      if (newNickname !== existingNickname) {
-        self.setMemberNickname(request.headers.pkfpSource, newNickname);
-        self.saveClientSettings();
-
-        if (existingNickname && existingNickname !== "") {
-          self.createServiceRecordOnMemberNicknameChange(memberRepr, newNickname, request.headers.pkfpSource);
-        }
-      }
-    } //~END NICKNAME HANDLING///////////////////////////////////////////////////
-    // ---------------------------------------------------------------------------------------------------------------------------
-    // Settings handling
-
-  }, {
-    key: "saveClientSettings",
-    value: function saveClientSettings(settingsRaw, privateKey) {
-      if (!settingsRaw) {
-        settingsRaw = this.settings;
-      }
-
-      if (!privateKey) {
-        privateKey = this.privateKey;
-      }
-
-      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_17__[/* iCrypto */ "a"]();
-      ic.asym.setKey("privk", privateKey, "private").publicFromPrivate("privk", "pub");
-      var publicKey = ic.get("pub");
-
-      if (typeof settingsRaw === "object") {
-        settingsRaw = JSON.stringify(settingsRaw);
-      }
-
-      var settingsEnc = _ClientSettings__WEBPACK_IMPORTED_MODULE_19__[/* ClientSettings */ "a"].encrypt(publicKey, settingsRaw);
-      ic.addBlob("cipher", settingsEnc).privateKeySign("cipher", "privk", "sign");
-      var body = {
-        settings: settingsEnc,
-        signature: ic.get("sign")
-      };
-      var request = new _Message__WEBPACK_IMPORTED_MODULE_14__[/* Message */ "a"](this.version);
-      request.setSource(this.pkfp);
-      request.setCommand(_common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].UPDATE_SETTINGS);
-      request.set("body", body);
-      request.signMessage(privateKey);
-      console.log("Sending update settings request");
-      this.messageQueue.enqueue(request);
-    } //~END SETTINGS ///////////////////////////////////////////////////////////
-
-  }, {
-    key: "processMessagesLoaded",
-    value: function processMessagesLoaded(msg, self) {
-      var data = msg.body.lastMessages;
-      var keys = data.keys;
-      console.log("Messages loaded. Processing.... Keys: ".concat(keys));
-      var metaIDs = Object.keys(keys);
-
-      for (var i = 0; i < metaIDs.length; ++i) {
-        var _ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_17__[/* iCrypto */ "a"]();
-
-        _ic.addBlob('k', keys[metaIDs[i]]).hexToBytes("k", "kraw").setRSAKey("priv", self.privateKey, "private").privateKeyDecrypt("kraw", "priv", "kdec");
-
-        keys[metaIDs[i]] = _ic.get("kdec");
-      }
-
-      var messages = data.messages;
-      var result = [];
-
-      for (var _i4 = 0; _i4 < messages.length; ++_i4) {
-        var message = new _ChatMessage__WEBPACK_IMPORTED_MODULE_18__[/* ChatMessage */ "a"](messages[_i4]);
-
-        if (message.header.service) {
-          message.body = _ChatUtility__WEBPACK_IMPORTED_MODULE_16__[/* ChatUtility */ "a"].decryptStandardMessage(message.body, self.privateKey);
-        } else if (message.header.private) {
-          message.decryptPrivateMessage(self.privateKey);
-        } else {
-          message.decryptMessage(keys[message.header.metadataID]);
-        }
-
-        result.push(message);
-      }
-
-      if (!self.initLoaded || self.messages.length === 0) {
-        self.messages = result;
-      } else {
-        var latestLoadedID = result[0].header.id;
-        var glueIndex = self.messages.findIndex(function (msg) {
-          return msg.header.id === latestLoadedID;
-        });
-        self.messages = glueIndex ? [].concat(_babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0___default()(self.messages.slice(0, glueIndex)), result) : [].concat(_babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0___default()(self.messages), result);
-      }
-
-      self.initLoaded = true;
-      self.allMessagesLoaded = data.allLoaded;
-      self.emit(_common_Events__WEBPACK_IMPORTED_MODULE_12__["Events"].MESSAGES_LOADED, self.messages);
-    }
-  }, {
-    key: "processSettingsUpdated",
-    value: function processSettingsUpdated(msg) {
-      var settings = msg.body.settings;
-      var signature = msg.body.signature;
-      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_17__[/* iCrypto */ "a"]();
-      ic.addBlob("settings", settings).addBlob("sign", signature).setRSAKey("pub", this.getPublicKey(), "public").publicKeyVerify("settings", "sign", "pub", "res");
-      if (!ic.get("res")) throw new Error("Settings blob signature verification failed");
-      var settingsPlain = JSON.parse(_ChatUtility__WEBPACK_IMPORTED_MODULE_16__[/* ChatUtility */ "a"].decryptStandardMessage(settings, this.privateKey));
-      this.settings = settingsPlain;
-      console.log("Settings updated successfully!");
-    } //TODO Cleanup or implememnt
-
-  }, {
-    key: "bootPraticipant",
-    value: function bootPraticipant() {}
-  }, {
-    key: "processMetadataUpdate",
-    value: function processMetadataUpdate() {}
-  }, {
-    key: "processNicknameRequest",
-    value: function processNicknameRequest() {}
-  }, {
-    key: "processNicknameResponse",
-    value: function processNicknameResponse() {}
-  }, {
-    key: "processNicknameChangeNote",
-    value: function processNicknameChangeNote() {}
-  }, {
-    key: "processInviteCreated",
-    value: function processInviteCreated(self, msg) {
-      console.log("New invite: ".concat(msg.body.inviteCode));
-      var userInvites = msg.body.userInvites;
-      if (!self.settings.invites) self.settings.invites = {};
-      var _iteratorNormalCompletion2 = true;
-      var _didIteratorError2 = false;
-      var _iteratorError2 = undefined;
-
-      try {
-        for (var _iterator2 = userInvites[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-          var i = _step2.value;
-
-          if (!self.settings.invites.hasOwnProperty(i)) {
-            self.settings.invites[i] = {};
-          }
-        }
-      } catch (err) {
-        _didIteratorError2 = true;
-        _iteratorError2 = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
-            _iterator2.return();
-          }
-        } finally {
-          if (_didIteratorError2) {
-            throw _iteratorError2;
-          }
-        }
-      }
-
-      for (var _i5 = 0, _Object$keys3 = Object.keys(self.settings.invites); _i5 < _Object$keys3.length; _i5++) {
-        var _i6 = _Object$keys3[_i5];
-
-        if (!userInvites.includes(_i6)) {
-          delete self.settings.invites[_i6];
-        }
-      }
-
-      self.saveClientSettings(self.settings, self.privateKey);
-    }
-  }, {
-    key: "getParticipantAlias",
-    value: function getParticipantAlias(pkfp) {
-      if (!this.isBootstrapped || !pkfp) {
-        return;
-      }
-
-      var participantData = this.participants[pkfp];
-
-      if (participantData && participantData.alias) {
-        return participantData.alias;
-      } else {
-        return pkfp.substring(0, 8);
-      }
-    }
-  }, {
-    key: "getParticipantRepr",
-    value: function getParticipantRepr(pkfp) {
-      if (this.participants[pkfp]) {
-        return this.participants[pkfp].alias || this.participants[pkfp].nickname || "Unknown";
-      }
-    }
-  }, {
-    key: "getPublicKey",
-    value: function getPublicKey() {
-      if (!this.privateKey) throw new Error("No private key found");
-
-      if (!this.publicKey) {
-        var _ic2 = new _iCrypto__WEBPACK_IMPORTED_MODULE_17__[/* iCrypto */ "a"]();
-
-        _ic2.setRSAKey("priv", this.privateKey, "private").publicFromPrivate("priv", "pub");
-
-        this.publicKey = _ic2.get("pub");
-      }
-
-      return this.publicKey;
-    }
-  }, {
-    key: "ensureInitLoaded",
-    value: function ensureInitLoaded() {
-      if (!this.initLoaded || !this.currentMetadata) {
-        throw new Error("Topic has no metadata");
-      }
-    }
-  }, {
-    key: "ensureBootstrapped",
-    value: function ensureBootstrapped(self) {
-      if (!self.bootstrapped || !self.messageQueue || !self.arrivalHub) {
-        throw new Error("Topic is not bootstrapped!");
-      }
-    }
-  }, {
-    key: "setName",
-    value: function setName(name) {
-      this.name = name;
-    } //Verifies current metadata
-
-  }, {
-    key: "verifyMetadata",
-    value: function verifyMetadata() {
-      return _Metadata__WEBPACK_IMPORTED_MODULE_15__[/* Metadata */ "a"].isMetadataValid(this._metadata);
-    }
-  }], [{
-    key: "prepareNewTopicSettings",
-    value: function prepareNewTopicSettings(version, nickname, topicName, publicKey) {
-      var encrypt = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : true;
-      //Creating and encrypting topic settings:
-      var settings = new _ClientSettings__WEBPACK_IMPORTED_MODULE_19__[/* ClientSettings */ "a"](version);
-
-      if (nickname) {
-        var _ic3 = new _iCrypto__WEBPACK_IMPORTED_MODULE_17__[/* iCrypto */ "a"]();
-
-        _ic3.asym.setKey("pubk", publicKey, "public").getPublicKeyFingerprint("pubk", "pkfp");
-
-        settings.setOwnerNickname(_ic3.get("pkfp"), nickname);
-      }
-
-      if (encrypt) {
-        return _ClientSettings__WEBPACK_IMPORTED_MODULE_19__[/* ClientSettings */ "a"].encrypt(publicKey, settings);
-      } else {
-        return settings;
-      }
-    }
-  }]);
-
-  return Topic;
-}();
-
-/***/ }),
-/* 18 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var dP = __webpack_require__(19);
-var createDesc = __webpack_require__(48);
-module.exports = __webpack_require__(20) ? function (object, key, value) {
-  return dP.f(object, key, createDesc(1, value));
-} : function (object, key, value) {
-  object[key] = value;
-  return object;
-};
-
-
-/***/ }),
-/* 19 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var anObject = __webpack_require__(14);
-var IE8_DOM_DEFINE = __webpack_require__(111);
-var toPrimitive = __webpack_require__(64);
-var dP = Object.defineProperty;
-
-exports.f = __webpack_require__(20) ? Object.defineProperty : function defineProperty(O, P, Attributes) {
-  anObject(O);
-  P = toPrimitive(P, true);
-  anObject(Attributes);
-  if (IE8_DOM_DEFINE) try {
-    return dP(O, P, Attributes);
-  } catch (e) { /* empty */ }
-  if ('get' in Attributes || 'set' in Attributes) throw TypeError('Accessors not supported!');
-  if ('value' in Attributes) O[P] = Attributes.value;
-  return O;
-};
-
-
-/***/ }),
-/* 20 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// Thank's IE8 for his funny defineProperty
-module.exports = !__webpack_require__(21)(function () {
-  return Object.defineProperty({}, 'a', { get: function () { return 7; } }).a != 7;
-});
-
-
-/***/ }),
-/* 21 */
-/***/ (function(module, exports) {
-
-module.exports = function (exec) {
-  try {
-    return !!exec();
-  } catch (e) {
-    return true;
-  }
-};
-
-
-/***/ }),
-/* 22 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// 7.1.15 ToLength
-var toInteger = __webpack_require__(39);
-var min = Math.min;
-module.exports = function (it) {
-  return it > 0 ? min(toInteger(it), 0x1fffffffffffff) : 0; // pow(2, 53) - 1 == 9007199254740991
-};
-
-
-/***/ }),
-/* 23 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/**
- * An API for getting cryptographically-secure random bytes. The bytes are
- * generated using the Fortuna algorithm devised by Bruce Schneier and
- * Niels Ferguson.
- *
- * Getting strong random bytes is not yet easy to do in javascript. The only
- * truish random entropy that can be collected is from the mouse, keyboard, or
- * from timing with respect to page loads, etc. This generator makes a poor
- * attempt at providing random bytes when those sources haven't yet provided
- * enough entropy to initially seed or to reseed the PRNG.
- *
- * @author Dave Longley
- *
- * Copyright (c) 2009-2014 Digital Bazaar, Inc.
- */
-var forge = __webpack_require__(3);
-__webpack_require__(43);
-__webpack_require__(139);
-__webpack_require__(140);
-__webpack_require__(7);
-
-(function() {
-
-// forge.random already defined
-if(forge.random && forge.random.getBytes) {
-  module.exports = forge.random;
-  return;
-}
-
-(function(jQuery) {
-
-// the default prng plugin, uses AES-128
-var prng_aes = {};
-var _prng_aes_output = new Array(4);
-var _prng_aes_buffer = forge.util.createBuffer();
-prng_aes.formatKey = function(key) {
-  // convert the key into 32-bit integers
-  var tmp = forge.util.createBuffer(key);
-  key = new Array(4);
-  key[0] = tmp.getInt32();
-  key[1] = tmp.getInt32();
-  key[2] = tmp.getInt32();
-  key[3] = tmp.getInt32();
-
-  // return the expanded key
-  return forge.aes._expandKey(key, false);
-};
-prng_aes.formatSeed = function(seed) {
-  // convert seed into 32-bit integers
-  var tmp = forge.util.createBuffer(seed);
-  seed = new Array(4);
-  seed[0] = tmp.getInt32();
-  seed[1] = tmp.getInt32();
-  seed[2] = tmp.getInt32();
-  seed[3] = tmp.getInt32();
-  return seed;
-};
-prng_aes.cipher = function(key, seed) {
-  forge.aes._updateBlock(key, seed, _prng_aes_output, false);
-  _prng_aes_buffer.putInt32(_prng_aes_output[0]);
-  _prng_aes_buffer.putInt32(_prng_aes_output[1]);
-  _prng_aes_buffer.putInt32(_prng_aes_output[2]);
-  _prng_aes_buffer.putInt32(_prng_aes_output[3]);
-  return _prng_aes_buffer.getBytes();
-};
-prng_aes.increment = function(seed) {
-  // FIXME: do we care about carry or signed issues?
-  ++seed[3];
-  return seed;
-};
-prng_aes.md = forge.md.sha256;
-
-/**
- * Creates a new PRNG.
- */
-function spawnPrng() {
-  var ctx = forge.prng.create(prng_aes);
-
-  /**
-   * Gets random bytes. If a native secure crypto API is unavailable, this
-   * method tries to make the bytes more unpredictable by drawing from data that
-   * can be collected from the user of the browser, eg: mouse movement.
-   *
-   * If a callback is given, this method will be called asynchronously.
-   *
-   * @param count the number of random bytes to get.
-   * @param [callback(err, bytes)] called once the operation completes.
-   *
-   * @return the random bytes in a string.
-   */
-  ctx.getBytes = function(count, callback) {
-    return ctx.generate(count, callback);
-  };
-
-  /**
-   * Gets random bytes asynchronously. If a native secure crypto API is
-   * unavailable, this method tries to make the bytes more unpredictable by
-   * drawing from data that can be collected from the user of the browser,
-   * eg: mouse movement.
-   *
-   * @param count the number of random bytes to get.
-   *
-   * @return the random bytes in a string.
-   */
-  ctx.getBytesSync = function(count) {
-    return ctx.generate(count);
-  };
-
-  return ctx;
-}
-
-// create default prng context
-var _ctx = spawnPrng();
-
-// add other sources of entropy only if window.crypto.getRandomValues is not
-// available -- otherwise this source will be automatically used by the prng
-var getRandomValues = null;
-if(typeof window !== 'undefined') {
-  var _crypto = window.crypto || window.msCrypto;
-  if(_crypto && _crypto.getRandomValues) {
-    getRandomValues = function(arr) {
-      return _crypto.getRandomValues(arr);
-    };
-  }
-}
-if(forge.options.usePureJavaScript ||
-  (!forge.util.isNodejs && !getRandomValues)) {
-  // if this is a web worker, do not use weak entropy, instead register to
-  // receive strong entropy asynchronously from the main thread
-  if(typeof window === 'undefined' || window.document === undefined) {
-    // FIXME:
-  }
-
-  // get load time entropy
-  _ctx.collectInt(+new Date(), 32);
-
-  // add some entropy from navigator object
-  if(typeof(navigator) !== 'undefined') {
-    var _navBytes = '';
-    for(var key in navigator) {
-      try {
-        if(typeof(navigator[key]) == 'string') {
-          _navBytes += navigator[key];
-        }
-      } catch(e) {
-        /* Some navigator keys might not be accessible, e.g. the geolocation
-          attribute throws an exception if touched in Mozilla chrome://
-          context.
-
-          Silently ignore this and just don't use this as a source of
-          entropy. */
-      }
-    }
-    _ctx.collect(_navBytes);
-    _navBytes = null;
-  }
-
-  // add mouse and keyboard collectors if jquery is available
-  if(jQuery) {
-    // set up mouse entropy capture
-    jQuery().mousemove(function(e) {
-      // add mouse coords
-      _ctx.collectInt(e.clientX, 16);
-      _ctx.collectInt(e.clientY, 16);
-    });
-
-    // set up keyboard entropy capture
-    jQuery().keypress(function(e) {
-      _ctx.collectInt(e.charCode, 8);
-    });
-  }
-}
-
-/* Random API */
-if(!forge.random) {
-  forge.random = _ctx;
-} else {
-  // extend forge.random with _ctx
-  for(var key in _ctx) {
-    forge.random[key] = _ctx[key];
-  }
-}
-
-// expose spawn PRNG
-forge.random.createInstance = spawnPrng;
-
-module.exports = forge.random;
-
-})(typeof(jQuery) !== 'undefined' ? jQuery : null);
-
-})();
-
-
-/***/ }),
-/* 24 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var global = __webpack_require__(10);
-var core = __webpack_require__(34);
-var hide = __webpack_require__(18);
-var redefine = __webpack_require__(30);
-var ctx = __webpack_require__(37);
-var PROTOTYPE = 'prototype';
-
-var $export = function (type, name, source) {
-  var IS_FORCED = type & $export.F;
-  var IS_GLOBAL = type & $export.G;
-  var IS_STATIC = type & $export.S;
-  var IS_PROTO = type & $export.P;
-  var IS_BIND = type & $export.B;
-  var target = IS_GLOBAL ? global : IS_STATIC ? global[name] || (global[name] = {}) : (global[name] || {})[PROTOTYPE];
-  var exports = IS_GLOBAL ? core : core[name] || (core[name] = {});
-  var expProto = exports[PROTOTYPE] || (exports[PROTOTYPE] = {});
-  var key, own, out, exp;
-  if (IS_GLOBAL) source = name;
-  for (key in source) {
-    // contains in native
-    own = !IS_FORCED && target && target[key] !== undefined;
-    // export native or passed
-    out = (own ? target : source)[key];
-    // bind timers to global for call from export context
-    exp = IS_BIND && own ? ctx(out, global) : IS_PROTO && typeof out == 'function' ? ctx(Function.call, out) : out;
-    // extend global
-    if (target) redefine(target, key, out, type & $export.U);
-    // export
-    if (exports[key] != out) hide(exports, key, exp);
-    if (IS_PROTO && expProto[key] != out) expProto[key] = out;
-  }
-};
-global.core = core;
-// type bitmap
-$export.F = 1;   // forced
-$export.G = 2;   // global
-$export.S = 4;   // static
-$export.P = 8;   // proto
-$export.B = 16;  // bind
-$export.W = 32;  // wrap
-$export.U = 64;  // safe
-$export.R = 128; // real proto method for `library`
-module.exports = $export;
-
-
-/***/ }),
-/* 25 */
-/***/ (function(module, exports) {
-
-module.exports = function (it) {
-  return typeof it === 'object' ? it !== null : typeof it === 'function';
-};
-
-
-/***/ }),
-/* 26 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// 7.1.13 ToObject(argument)
-var defined = __webpack_require__(66);
-module.exports = function (it) {
-  return Object(defined(it));
-};
-
-
-/***/ }),
-/* 27 */
-/***/ (function(module, exports) {
-
-// shim for using process in browser
-var process = module.exports = {};
-
-// cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
-
-var cachedSetTimeout;
-var cachedClearTimeout;
-
-function defaultSetTimout() {
-    throw new Error('setTimeout has not been defined');
-}
-function defaultClearTimeout () {
-    throw new Error('clearTimeout has not been defined');
-}
-(function () {
-    try {
-        if (typeof setTimeout === 'function') {
-            cachedSetTimeout = setTimeout;
-        } else {
-            cachedSetTimeout = defaultSetTimout;
-        }
-    } catch (e) {
-        cachedSetTimeout = defaultSetTimout;
-    }
-    try {
-        if (typeof clearTimeout === 'function') {
-            cachedClearTimeout = clearTimeout;
-        } else {
-            cachedClearTimeout = defaultClearTimeout;
-        }
-    } catch (e) {
-        cachedClearTimeout = defaultClearTimeout;
-    }
-} ())
-function runTimeout(fun) {
-    if (cachedSetTimeout === setTimeout) {
-        //normal enviroments in sane situations
-        return setTimeout(fun, 0);
-    }
-    // if setTimeout wasn't available but was latter defined
-    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-        cachedSetTimeout = setTimeout;
-        return setTimeout(fun, 0);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedSetTimeout(fun, 0);
-    } catch(e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-            return cachedSetTimeout.call(null, fun, 0);
-        } catch(e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-            return cachedSetTimeout.call(this, fun, 0);
-        }
-    }
-
-
-}
-function runClearTimeout(marker) {
-    if (cachedClearTimeout === clearTimeout) {
-        //normal enviroments in sane situations
-        return clearTimeout(marker);
-    }
-    // if clearTimeout wasn't available but was latter defined
-    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-        cachedClearTimeout = clearTimeout;
-        return clearTimeout(marker);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedClearTimeout(marker);
-    } catch (e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-            return cachedClearTimeout.call(null, marker);
-        } catch (e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-            return cachedClearTimeout.call(this, marker);
-        }
-    }
-
-
-
-}
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    if (!draining || !currentQueue) {
-        return;
-    }
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = runTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    runClearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        runTimeout(drainQueue);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-process.prependListener = noop;
-process.prependOnceListener = noop;
-
-process.listeners = function (name) { return [] }
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-
-/***/ }),
-/* 28 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/**
- * Javascript implementation of Abstract Syntax Notation Number One.
- *
- * @author Dave Longley
- *
- * Copyright (c) 2010-2015 Digital Bazaar, Inc.
- *
- * An API for storing data using the Abstract Syntax Notation Number One
- * format using DER (Distinguished Encoding Rules) encoding. This encoding is
- * commonly used to store data for PKI, i.e. X.509 Certificates, and this
- * implementation exists for that purpose.
- *
- * Abstract Syntax Notation Number One (ASN.1) is used to define the abstract
- * syntax of information without restricting the way the information is encoded
- * for transmission. It provides a standard that allows for open systems
- * communication. ASN.1 defines the syntax of information data and a number of
- * simple data types as well as a notation for describing them and specifying
- * values for them.
- *
- * The RSA algorithm creates public and private keys that are often stored in
- * X.509 or PKCS#X formats -- which use ASN.1 (encoded in DER format). This
- * class provides the most basic functionality required to store and load DSA
- * keys that are encoded according to ASN.1.
- *
- * The most common binary encodings for ASN.1 are BER (Basic Encoding Rules)
- * and DER (Distinguished Encoding Rules). DER is just a subset of BER that
- * has stricter requirements for how data must be encoded.
- *
- * Each ASN.1 structure has a tag (a byte identifying the ASN.1 structure type)
- * and a byte array for the value of this ASN1 structure which may be data or a
- * list of ASN.1 structures.
- *
- * Each ASN.1 structure using BER is (Tag-Length-Value):
- *
- * | byte 0 | bytes X | bytes Y |
- * |--------|---------|----------
- * |  tag   | length  |  value  |
- *
- * ASN.1 allows for tags to be of "High-tag-number form" which allows a tag to
- * be two or more octets, but that is not supported by this class. A tag is
- * only 1 byte. Bits 1-5 give the tag number (ie the data type within a
- * particular 'class'), 6 indicates whether or not the ASN.1 value is
- * constructed from other ASN.1 values, and bits 7 and 8 give the 'class'. If
- * bits 7 and 8 are both zero, the class is UNIVERSAL. If only bit 7 is set,
- * then the class is APPLICATION. If only bit 8 is set, then the class is
- * CONTEXT_SPECIFIC. If both bits 7 and 8 are set, then the class is PRIVATE.
- * The tag numbers for the data types for the class UNIVERSAL are listed below:
- *
- * UNIVERSAL 0 Reserved for use by the encoding rules
- * UNIVERSAL 1 Boolean type
- * UNIVERSAL 2 Integer type
- * UNIVERSAL 3 Bitstring type
- * UNIVERSAL 4 Octetstring type
- * UNIVERSAL 5 Null type
- * UNIVERSAL 6 Object identifier type
- * UNIVERSAL 7 Object descriptor type
- * UNIVERSAL 8 External type and Instance-of type
- * UNIVERSAL 9 Real type
- * UNIVERSAL 10 Enumerated type
- * UNIVERSAL 11 Embedded-pdv type
- * UNIVERSAL 12 UTF8String type
- * UNIVERSAL 13 Relative object identifier type
- * UNIVERSAL 14-15 Reserved for future editions
- * UNIVERSAL 16 Sequence and Sequence-of types
- * UNIVERSAL 17 Set and Set-of types
- * UNIVERSAL 18-22, 25-30 Character string types
- * UNIVERSAL 23-24 Time types
- *
- * The length of an ASN.1 structure is specified after the tag identifier.
- * There is a definite form and an indefinite form. The indefinite form may
- * be used if the encoding is constructed and not all immediately available.
- * The indefinite form is encoded using a length byte with only the 8th bit
- * set. The end of the constructed object is marked using end-of-contents
- * octets (two zero bytes).
- *
- * The definite form looks like this:
- *
- * The length may take up 1 or more bytes, it depends on the length of the
- * value of the ASN.1 structure. DER encoding requires that if the ASN.1
- * structure has a value that has a length greater than 127, more than 1 byte
- * will be used to store its length, otherwise just one byte will be used.
- * This is strict.
- *
- * In the case that the length of the ASN.1 value is less than 127, 1 octet
- * (byte) is used to store the "short form" length. The 8th bit has a value of
- * 0 indicating the length is "short form" and not "long form" and bits 7-1
- * give the length of the data. (The 8th bit is the left-most, most significant
- * bit: also known as big endian or network format).
- *
- * In the case that the length of the ASN.1 value is greater than 127, 2 to
- * 127 octets (bytes) are used to store the "long form" length. The first
- * byte's 8th bit is set to 1 to indicate the length is "long form." Bits 7-1
- * give the number of additional octets. All following octets are in base 256
- * with the most significant digit first (typical big-endian binary unsigned
- * integer storage). So, for instance, if the length of a value was 257, the
- * first byte would be set to:
- *
- * 10000010 = 130 = 0x82.
- *
- * This indicates there are 2 octets (base 256) for the length. The second and
- * third bytes (the octets just mentioned) would store the length in base 256:
- *
- * octet 2: 00000001 = 1 * 256^1 = 256
- * octet 3: 00000001 = 1 * 256^0 = 1
- * total = 257
- *
- * The algorithm for converting a js integer value of 257 to base-256 is:
- *
- * var value = 257;
- * var bytes = [];
- * bytes[0] = (value >>> 8) & 0xFF; // most significant byte first
- * bytes[1] = value & 0xFF;        // least significant byte last
- *
- * On the ASN.1 UNIVERSAL Object Identifier (OID) type:
- *
- * An OID can be written like: "value1.value2.value3...valueN"
- *
- * The DER encoding rules:
- *
- * The first byte has the value 40 * value1 + value2.
- * The following bytes, if any, encode the remaining values. Each value is
- * encoded in base 128, most significant digit first (big endian), with as
- * few digits as possible, and the most significant bit of each byte set
- * to 1 except the last in each value's encoding. For example: Given the
- * OID "1.2.840.113549", its DER encoding is (remember each byte except the
- * last one in each encoding is OR'd with 0x80):
- *
- * byte 1: 40 * 1 + 2 = 42 = 0x2A.
- * bytes 2-3: 128 * 6 + 72 = 840 = 6 72 = 6 72 = 0x0648 = 0x8648
- * bytes 4-6: 16384 * 6 + 128 * 119 + 13 = 6 119 13 = 0x06770D = 0x86F70D
- *
- * The final value is: 0x2A864886F70D.
- * The full OID (including ASN.1 tag and length of 6 bytes) is:
- * 0x06062A864886F70D
- */
-var forge = __webpack_require__(3);
-__webpack_require__(7);
-__webpack_require__(44);
-
-/* ASN.1 API */
-var asn1 = module.exports = forge.asn1 = forge.asn1 || {};
-
-/**
- * ASN.1 classes.
- */
-asn1.Class = {
-  UNIVERSAL:        0x00,
-  APPLICATION:      0x40,
-  CONTEXT_SPECIFIC: 0x80,
-  PRIVATE:          0xC0
-};
-
-/**
- * ASN.1 types. Not all types are supported by this implementation, only
- * those necessary to implement a simple PKI are implemented.
- */
-asn1.Type = {
-  NONE:             0,
-  BOOLEAN:          1,
-  INTEGER:          2,
-  BITSTRING:        3,
-  OCTETSTRING:      4,
-  NULL:             5,
-  OID:              6,
-  ODESC:            7,
-  EXTERNAL:         8,
-  REAL:             9,
-  ENUMERATED:      10,
-  EMBEDDED:        11,
-  UTF8:            12,
-  ROID:            13,
-  SEQUENCE:        16,
-  SET:             17,
-  PRINTABLESTRING: 19,
-  IA5STRING:       22,
-  UTCTIME:         23,
-  GENERALIZEDTIME: 24,
-  BMPSTRING:       30
-};
-
-/**
- * Creates a new asn1 object.
- *
- * @param tagClass the tag class for the object.
- * @param type the data type (tag number) for the object.
- * @param constructed true if the asn1 object is in constructed form.
- * @param value the value for the object, if it is not constructed.
- * @param [options] the options to use:
- *          [bitStringContents] the plain BIT STRING content including padding
- *            byte.
- *
- * @return the asn1 object.
- */
-asn1.create = function(tagClass, type, constructed, value, options) {
-  /* An asn1 object has a tagClass, a type, a constructed flag, and a
-    value. The value's type depends on the constructed flag. If
-    constructed, it will contain a list of other asn1 objects. If not,
-    it will contain the ASN.1 value as an array of bytes formatted
-    according to the ASN.1 data type. */
-
-  // remove undefined values
-  if(forge.util.isArray(value)) {
-    var tmp = [];
-    for(var i = 0; i < value.length; ++i) {
-      if(value[i] !== undefined) {
-        tmp.push(value[i]);
-      }
-    }
-    value = tmp;
-  }
-
-  var obj = {
-    tagClass: tagClass,
-    type: type,
-    constructed: constructed,
-    composed: constructed || forge.util.isArray(value),
-    value: value
-  };
-  if(options && 'bitStringContents' in options) {
-    // TODO: copy byte buffer if it's a buffer not a string
-    obj.bitStringContents = options.bitStringContents;
-    // TODO: add readonly flag to avoid this overhead
-    // save copy to detect changes
-    obj.original = asn1.copy(obj);
-  }
-  return obj;
-};
-
-/**
- * Copies an asn1 object.
- *
- * @param obj the asn1 object.
- * @param [options] copy options:
- *          [excludeBitStringContents] true to not copy bitStringContents
- *
- * @return the a copy of the asn1 object.
- */
-asn1.copy = function(obj, options) {
-  var copy;
-
-  if(forge.util.isArray(obj)) {
-    copy = [];
-    for(var i = 0; i < obj.length; ++i) {
-      copy.push(asn1.copy(obj[i], options));
-    }
-    return copy;
-  }
-
-  if(typeof obj === 'string') {
-    // TODO: copy byte buffer if it's a buffer not a string
-    return obj;
-  }
-
-  copy = {
-    tagClass: obj.tagClass,
-    type: obj.type,
-    constructed: obj.constructed,
-    composed: obj.composed,
-    value: asn1.copy(obj.value, options)
-  };
-  if(options && !options.excludeBitStringContents) {
-    // TODO: copy byte buffer if it's a buffer not a string
-    copy.bitStringContents = obj.bitStringContents;
-  }
-  return copy;
-};
-
-/**
- * Compares asn1 objects for equality.
- *
- * Note this function does not run in constant time.
- *
- * @param obj1 the first asn1 object.
- * @param obj2 the second asn1 object.
- * @param [options] compare options:
- *          [includeBitStringContents] true to compare bitStringContents
- *
- * @return true if the asn1 objects are equal.
- */
-asn1.equals = function(obj1, obj2, options) {
-  if(forge.util.isArray(obj1)) {
-    if(!forge.util.isArray(obj2)) {
-      return false;
-    }
-    if(obj1.length !== obj2.length) {
-      return false;
-    }
-    for(var i = 0; i < obj1.length; ++i) {
-      if(!asn1.equals(obj1[i], obj2[i])) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  if(typeof obj1 !== typeof obj2) {
-    return false;
-  }
-
-  if(typeof obj1 === 'string') {
-    return obj1 === obj2;
-  }
-
-  var equal = obj1.tagClass === obj2.tagClass &&
-    obj1.type === obj2.type &&
-    obj1.constructed === obj2.constructed &&
-    obj1.composed === obj2.composed &&
-    asn1.equals(obj1.value, obj2.value);
-  if(options && options.includeBitStringContents) {
-    equal = equal && (obj1.bitStringContents === obj2.bitStringContents);
-  }
-
-  return equal;
-};
-
-/**
- * Gets the length of a BER-encoded ASN.1 value.
- *
- * In case the length is not specified, undefined is returned.
- *
- * @param b the BER-encoded ASN.1 byte buffer, starting with the first
- *          length byte.
- *
- * @return the length of the BER-encoded ASN.1 value or undefined.
- */
-asn1.getBerValueLength = function(b) {
-  // TODO: move this function and related DER/BER functions to a der.js
-  // file; better abstract ASN.1 away from der/ber.
-  var b2 = b.getByte();
-  if(b2 === 0x80) {
-    return undefined;
-  }
-
-  // see if the length is "short form" or "long form" (bit 8 set)
-  var length;
-  var longForm = b2 & 0x80;
-  if(!longForm) {
-    // length is just the first byte
-    length = b2;
-  } else {
-    // the number of bytes the length is specified in bits 7 through 1
-    // and each length byte is in big-endian base-256
-    length = b.getInt((b2 & 0x7F) << 3);
-  }
-  return length;
-};
-
-/**
- * Check if the byte buffer has enough bytes. Throws an Error if not.
- *
- * @param bytes the byte buffer to parse from.
- * @param remaining the bytes remaining in the current parsing state.
- * @param n the number of bytes the buffer must have.
- */
-function _checkBufferLength(bytes, remaining, n) {
-  if(n > remaining) {
-    var error = new Error('Too few bytes to parse DER.');
-    error.available = bytes.length();
-    error.remaining = remaining;
-    error.requested = n;
-    throw error;
-  }
-}
-
-/**
- * Gets the length of a BER-encoded ASN.1 value.
- *
- * In case the length is not specified, undefined is returned.
- *
- * @param bytes the byte buffer to parse from.
- * @param remaining the bytes remaining in the current parsing state.
- *
- * @return the length of the BER-encoded ASN.1 value or undefined.
- */
-var _getValueLength = function(bytes, remaining) {
-  // TODO: move this function and related DER/BER functions to a der.js
-  // file; better abstract ASN.1 away from der/ber.
-  // fromDer already checked that this byte exists
-  var b2 = bytes.getByte();
-  remaining--;
-  if(b2 === 0x80) {
-    return undefined;
-  }
-
-  // see if the length is "short form" or "long form" (bit 8 set)
-  var length;
-  var longForm = b2 & 0x80;
-  if(!longForm) {
-    // length is just the first byte
-    length = b2;
-  } else {
-    // the number of bytes the length is specified in bits 7 through 1
-    // and each length byte is in big-endian base-256
-    var longFormBytes = b2 & 0x7F;
-    _checkBufferLength(bytes, remaining, longFormBytes);
-    length = bytes.getInt(longFormBytes << 3);
-  }
-  // FIXME: this will only happen for 32 bit getInt with high bit set
-  if(length < 0) {
-    throw new Error('Negative length: ' + length);
-  }
-  return length;
-};
-
-/**
- * Parses an asn1 object from a byte buffer in DER format.
- *
- * @param bytes the byte buffer to parse from.
- * @param [strict] true to be strict when checking value lengths, false to
- *          allow truncated values (default: true).
- * @param [options] object with options or boolean strict flag
- *          [strict] true to be strict when checking value lengths, false to
- *            allow truncated values (default: true).
- *          [decodeBitStrings] true to attempt to decode the content of
- *            BIT STRINGs (not OCTET STRINGs) using strict mode. Note that
- *            without schema support to understand the data context this can
- *            erroneously decode values that happen to be valid ASN.1. This
- *            flag will be deprecated or removed as soon as schema support is
- *            available. (default: true)
- *
- * @return the parsed asn1 object.
- */
-asn1.fromDer = function(bytes, options) {
-  if(options === undefined) {
-    options = {
-      strict: true,
-      decodeBitStrings: true
-    };
-  }
-  if(typeof options === 'boolean') {
-    options = {
-      strict: options,
-      decodeBitStrings: true
-    };
-  }
-  if(!('strict' in options)) {
-    options.strict = true;
-  }
-  if(!('decodeBitStrings' in options)) {
-    options.decodeBitStrings = true;
-  }
-
-  // wrap in buffer if needed
-  if(typeof bytes === 'string') {
-    bytes = forge.util.createBuffer(bytes);
-  }
-
-  return _fromDer(bytes, bytes.length(), 0, options);
-};
-
-/**
- * Internal function to parse an asn1 object from a byte buffer in DER format.
- *
- * @param bytes the byte buffer to parse from.
- * @param remaining the number of bytes remaining for this chunk.
- * @param depth the current parsing depth.
- * @param options object with same options as fromDer().
- *
- * @return the parsed asn1 object.
- */
-function _fromDer(bytes, remaining, depth, options) {
-  // temporary storage for consumption calculations
-  var start;
-
-  // minimum length for ASN.1 DER structure is 2
-  _checkBufferLength(bytes, remaining, 2);
-
-  // get the first byte
-  var b1 = bytes.getByte();
-  // consumed one byte
-  remaining--;
-
-  // get the tag class
-  var tagClass = (b1 & 0xC0);
-
-  // get the type (bits 1-5)
-  var type = b1 & 0x1F;
-
-  // get the variable value length and adjust remaining bytes
-  start = bytes.length();
-  var length = _getValueLength(bytes, remaining);
-  remaining -= start - bytes.length();
-
-  // ensure there are enough bytes to get the value
-  if(length !== undefined && length > remaining) {
-    if(options.strict) {
-      var error = new Error('Too few bytes to read ASN.1 value.');
-      error.available = bytes.length();
-      error.remaining = remaining;
-      error.requested = length;
-      throw error;
-    }
-    // Note: be lenient with truncated values and use remaining state bytes
-    length = remaining;
-  }
-
-  // value storage
-  var value;
-  // possible BIT STRING contents storage
-  var bitStringContents;
-
-  // constructed flag is bit 6 (32 = 0x20) of the first byte
-  var constructed = ((b1 & 0x20) === 0x20);
-  if(constructed) {
-    // parse child asn1 objects from the value
-    value = [];
-    if(length === undefined) {
-      // asn1 object of indefinite length, read until end tag
-      for(;;) {
-        _checkBufferLength(bytes, remaining, 2);
-        if(bytes.bytes(2) === String.fromCharCode(0, 0)) {
-          bytes.getBytes(2);
-          remaining -= 2;
-          break;
-        }
-        start = bytes.length();
-        value.push(_fromDer(bytes, remaining, depth + 1, options));
-        remaining -= start - bytes.length();
-      }
-    } else {
-      // parsing asn1 object of definite length
-      while(length > 0) {
-        start = bytes.length();
-        value.push(_fromDer(bytes, length, depth + 1, options));
-        remaining -= start - bytes.length();
-        length -= start - bytes.length();
-      }
-    }
-  }
-
-  // if a BIT STRING, save the contents including padding
-  if(value === undefined && tagClass === asn1.Class.UNIVERSAL &&
-    type === asn1.Type.BITSTRING) {
-    bitStringContents = bytes.bytes(length);
-  }
-
-  // determine if a non-constructed value should be decoded as a composed
-  // value that contains other ASN.1 objects. BIT STRINGs (and OCTET STRINGs)
-  // can be used this way.
-  if(value === undefined && options.decodeBitStrings &&
-    tagClass === asn1.Class.UNIVERSAL &&
-    // FIXME: OCTET STRINGs not yet supported here
-    // .. other parts of forge expect to decode OCTET STRINGs manually
-    (type === asn1.Type.BITSTRING /*|| type === asn1.Type.OCTETSTRING*/) &&
-    length > 1) {
-    // save read position
-    var savedRead = bytes.read;
-    var savedRemaining = remaining;
-    var unused = 0;
-    if(type === asn1.Type.BITSTRING) {
-      /* The first octet gives the number of bits by which the length of the
-        bit string is less than the next multiple of eight (this is called
-        the "number of unused bits").
-
-        The second and following octets give the value of the bit string
-        converted to an octet string. */
-      _checkBufferLength(bytes, remaining, 1);
-      unused = bytes.getByte();
-      remaining--;
-    }
-    // if all bits are used, maybe the BIT/OCTET STRING holds ASN.1 objs
-    if(unused === 0) {
-      try {
-        // attempt to parse child asn1 object from the value
-        // (stored in array to signal composed value)
-        start = bytes.length();
-        var subOptions = {
-          // enforce strict mode to avoid parsing ASN.1 from plain data
-          verbose: options.verbose,
-          strict: true,
-          decodeBitStrings: true
-        };
-        var composed = _fromDer(bytes, remaining, depth + 1, subOptions);
-        var used = start - bytes.length();
-        remaining -= used;
-        if(type == asn1.Type.BITSTRING) {
-          used++;
-        }
-
-        // if the data all decoded and the class indicates UNIVERSAL or
-        // CONTEXT_SPECIFIC then assume we've got an encapsulated ASN.1 object
-        var tc = composed.tagClass;
-        if(used === length &&
-          (tc === asn1.Class.UNIVERSAL || tc === asn1.Class.CONTEXT_SPECIFIC)) {
-          value = [composed];
-        }
-      } catch(ex) {
-      }
-    }
-    if(value === undefined) {
-      // restore read position
-      bytes.read = savedRead;
-      remaining = savedRemaining;
-    }
-  }
-
-  if(value === undefined) {
-    // asn1 not constructed or composed, get raw value
-    // TODO: do DER to OID conversion and vice-versa in .toDer?
-
-    if(length === undefined) {
-      if(options.strict) {
-        throw new Error('Non-constructed ASN.1 object of indefinite length.');
-      }
-      // be lenient and use remaining state bytes
-      length = remaining;
-    }
-
-    if(type === asn1.Type.BMPSTRING) {
-      value = '';
-      for(; length > 0; length -= 2) {
-        _checkBufferLength(bytes, remaining, 2);
-        value += String.fromCharCode(bytes.getInt16());
-        remaining -= 2;
-      }
-    } else {
-      value = bytes.getBytes(length);
-    }
-  }
-
-  // add BIT STRING contents if available
-  var asn1Options = bitStringContents === undefined ?  null : {
-    bitStringContents: bitStringContents
-  };
-
-  // create and return asn1 object
-  return asn1.create(tagClass, type, constructed, value, asn1Options);
-}
-
-/**
- * Converts the given asn1 object to a buffer of bytes in DER format.
- *
- * @param asn1 the asn1 object to convert to bytes.
- *
- * @return the buffer of bytes.
- */
-asn1.toDer = function(obj) {
-  var bytes = forge.util.createBuffer();
-
-  // build the first byte
-  var b1 = obj.tagClass | obj.type;
-
-  // for storing the ASN.1 value
-  var value = forge.util.createBuffer();
-
-  // use BIT STRING contents if available and data not changed
-  var useBitStringContents = false;
-  if('bitStringContents' in obj) {
-    useBitStringContents = true;
-    if(obj.original) {
-      useBitStringContents = asn1.equals(obj, obj.original);
-    }
-  }
-
-  if(useBitStringContents) {
-    value.putBytes(obj.bitStringContents);
-  } else if(obj.composed) {
-    // if composed, use each child asn1 object's DER bytes as value
-    // turn on 6th bit (0x20 = 32) to indicate asn1 is constructed
-    // from other asn1 objects
-    if(obj.constructed) {
-      b1 |= 0x20;
-    } else {
-      // type is a bit string, add unused bits of 0x00
-      value.putByte(0x00);
-    }
-
-    // add all of the child DER bytes together
-    for(var i = 0; i < obj.value.length; ++i) {
-      if(obj.value[i] !== undefined) {
-        value.putBuffer(asn1.toDer(obj.value[i]));
-      }
-    }
-  } else {
-    // use asn1.value directly
-    if(obj.type === asn1.Type.BMPSTRING) {
-      for(var i = 0; i < obj.value.length; ++i) {
-        value.putInt16(obj.value.charCodeAt(i));
-      }
-    } else {
-      // ensure integer is minimally-encoded
-      // TODO: should all leading bytes be stripped vs just one?
-      // .. ex '00 00 01' => '01'?
-      if(obj.type === asn1.Type.INTEGER &&
-        obj.value.length > 1 &&
-        // leading 0x00 for positive integer
-        ((obj.value.charCodeAt(0) === 0 &&
-        (obj.value.charCodeAt(1) & 0x80) === 0) ||
-        // leading 0xFF for negative integer
-        (obj.value.charCodeAt(0) === 0xFF &&
-        (obj.value.charCodeAt(1) & 0x80) === 0x80))) {
-        value.putBytes(obj.value.substr(1));
-      } else {
-        value.putBytes(obj.value);
-      }
-    }
-  }
-
-  // add tag byte
-  bytes.putByte(b1);
-
-  // use "short form" encoding
-  if(value.length() <= 127) {
-    // one byte describes the length
-    // bit 8 = 0 and bits 7-1 = length
-    bytes.putByte(value.length() & 0x7F);
-  } else {
-    // use "long form" encoding
-    // 2 to 127 bytes describe the length
-    // first byte: bit 8 = 1 and bits 7-1 = # of additional bytes
-    // other bytes: length in base 256, big-endian
-    var len = value.length();
-    var lenBytes = '';
-    do {
-      lenBytes += String.fromCharCode(len & 0xFF);
-      len = len >>> 8;
-    } while(len > 0);
-
-    // set first byte to # bytes used to store the length and turn on
-    // bit 8 to indicate long-form length is used
-    bytes.putByte(lenBytes.length | 0x80);
-
-    // concatenate length bytes in reverse since they were generated
-    // little endian and we need big endian
-    for(var i = lenBytes.length - 1; i >= 0; --i) {
-      bytes.putByte(lenBytes.charCodeAt(i));
-    }
-  }
-
-  // concatenate value bytes
-  bytes.putBuffer(value);
-  return bytes;
-};
-
-/**
- * Converts an OID dot-separated string to a byte buffer. The byte buffer
- * contains only the DER-encoded value, not any tag or length bytes.
- *
- * @param oid the OID dot-separated string.
- *
- * @return the byte buffer.
- */
-asn1.oidToDer = function(oid) {
-  // split OID into individual values
-  var values = oid.split('.');
-  var bytes = forge.util.createBuffer();
-
-  // first byte is 40 * value1 + value2
-  bytes.putByte(40 * parseInt(values[0], 10) + parseInt(values[1], 10));
-  // other bytes are each value in base 128 with 8th bit set except for
-  // the last byte for each value
-  var last, valueBytes, value, b;
-  for(var i = 2; i < values.length; ++i) {
-    // produce value bytes in reverse because we don't know how many
-    // bytes it will take to store the value
-    last = true;
-    valueBytes = [];
-    value = parseInt(values[i], 10);
-    do {
-      b = value & 0x7F;
-      value = value >>> 7;
-      // if value is not last, then turn on 8th bit
-      if(!last) {
-        b |= 0x80;
-      }
-      valueBytes.push(b);
-      last = false;
-    } while(value > 0);
-
-    // add value bytes in reverse (needs to be in big endian)
-    for(var n = valueBytes.length - 1; n >= 0; --n) {
-      bytes.putByte(valueBytes[n]);
-    }
-  }
-
-  return bytes;
-};
-
-/**
- * Converts a DER-encoded byte buffer to an OID dot-separated string. The
- * byte buffer should contain only the DER-encoded value, not any tag or
- * length bytes.
- *
- * @param bytes the byte buffer.
- *
- * @return the OID dot-separated string.
- */
-asn1.derToOid = function(bytes) {
-  var oid;
-
-  // wrap in buffer if needed
-  if(typeof bytes === 'string') {
-    bytes = forge.util.createBuffer(bytes);
-  }
-
-  // first byte is 40 * value1 + value2
-  var b = bytes.getByte();
-  oid = Math.floor(b / 40) + '.' + (b % 40);
-
-  // other bytes are each value in base 128 with 8th bit set except for
-  // the last byte for each value
-  var value = 0;
-  while(bytes.length() > 0) {
-    b = bytes.getByte();
-    value = value << 7;
-    // not the last byte for the value
-    if(b & 0x80) {
-      value += b & 0x7F;
-    } else {
-      // last byte
-      oid += '.' + (value + b);
-      value = 0;
-    }
-  }
-
-  return oid;
-};
-
-/**
- * Converts a UTCTime value to a date.
- *
- * Note: GeneralizedTime has 4 digits for the year and is used for X.509
- * dates past 2049. Parsing that structure hasn't been implemented yet.
- *
- * @param utc the UTCTime value to convert.
- *
- * @return the date.
- */
-asn1.utcTimeToDate = function(utc) {
-  /* The following formats can be used:
-
-    YYMMDDhhmmZ
-    YYMMDDhhmm+hh'mm'
-    YYMMDDhhmm-hh'mm'
-    YYMMDDhhmmssZ
-    YYMMDDhhmmss+hh'mm'
-    YYMMDDhhmmss-hh'mm'
-
-    Where:
-
-    YY is the least significant two digits of the year
-    MM is the month (01 to 12)
-    DD is the day (01 to 31)
-    hh is the hour (00 to 23)
-    mm are the minutes (00 to 59)
-    ss are the seconds (00 to 59)
-    Z indicates that local time is GMT, + indicates that local time is
-    later than GMT, and - indicates that local time is earlier than GMT
-    hh' is the absolute value of the offset from GMT in hours
-    mm' is the absolute value of the offset from GMT in minutes */
-  var date = new Date();
-
-  // if YY >= 50 use 19xx, if YY < 50 use 20xx
-  var year = parseInt(utc.substr(0, 2), 10);
-  year = (year >= 50) ? 1900 + year : 2000 + year;
-  var MM = parseInt(utc.substr(2, 2), 10) - 1; // use 0-11 for month
-  var DD = parseInt(utc.substr(4, 2), 10);
-  var hh = parseInt(utc.substr(6, 2), 10);
-  var mm = parseInt(utc.substr(8, 2), 10);
-  var ss = 0;
-
-  // not just YYMMDDhhmmZ
-  if(utc.length > 11) {
-    // get character after minutes
-    var c = utc.charAt(10);
-    var end = 10;
-
-    // see if seconds are present
-    if(c !== '+' && c !== '-') {
-      // get seconds
-      ss = parseInt(utc.substr(10, 2), 10);
-      end += 2;
-    }
-  }
-
-  // update date
-  date.setUTCFullYear(year, MM, DD);
-  date.setUTCHours(hh, mm, ss, 0);
-
-  if(end) {
-    // get +/- after end of time
-    c = utc.charAt(end);
-    if(c === '+' || c === '-') {
-      // get hours+minutes offset
-      var hhoffset = parseInt(utc.substr(end + 1, 2), 10);
-      var mmoffset = parseInt(utc.substr(end + 4, 2), 10);
-
-      // calculate offset in milliseconds
-      var offset = hhoffset * 60 + mmoffset;
-      offset *= 60000;
-
-      // apply offset
-      if(c === '+') {
-        date.setTime(+date - offset);
-      } else {
-        date.setTime(+date + offset);
-      }
-    }
-  }
-
-  return date;
-};
-
-/**
- * Converts a GeneralizedTime value to a date.
- *
- * @param gentime the GeneralizedTime value to convert.
- *
- * @return the date.
- */
-asn1.generalizedTimeToDate = function(gentime) {
-  /* The following formats can be used:
-
-    YYYYMMDDHHMMSS
-    YYYYMMDDHHMMSS.fff
-    YYYYMMDDHHMMSSZ
-    YYYYMMDDHHMMSS.fffZ
-    YYYYMMDDHHMMSS+hh'mm'
-    YYYYMMDDHHMMSS.fff+hh'mm'
-    YYYYMMDDHHMMSS-hh'mm'
-    YYYYMMDDHHMMSS.fff-hh'mm'
-
-    Where:
-
-    YYYY is the year
-    MM is the month (01 to 12)
-    DD is the day (01 to 31)
-    hh is the hour (00 to 23)
-    mm are the minutes (00 to 59)
-    ss are the seconds (00 to 59)
-    .fff is the second fraction, accurate to three decimal places
-    Z indicates that local time is GMT, + indicates that local time is
-    later than GMT, and - indicates that local time is earlier than GMT
-    hh' is the absolute value of the offset from GMT in hours
-    mm' is the absolute value of the offset from GMT in minutes */
-  var date = new Date();
-
-  var YYYY = parseInt(gentime.substr(0, 4), 10);
-  var MM = parseInt(gentime.substr(4, 2), 10) - 1; // use 0-11 for month
-  var DD = parseInt(gentime.substr(6, 2), 10);
-  var hh = parseInt(gentime.substr(8, 2), 10);
-  var mm = parseInt(gentime.substr(10, 2), 10);
-  var ss = parseInt(gentime.substr(12, 2), 10);
-  var fff = 0;
-  var offset = 0;
-  var isUTC = false;
-
-  if(gentime.charAt(gentime.length - 1) === 'Z') {
-    isUTC = true;
-  }
-
-  var end = gentime.length - 5, c = gentime.charAt(end);
-  if(c === '+' || c === '-') {
-    // get hours+minutes offset
-    var hhoffset = parseInt(gentime.substr(end + 1, 2), 10);
-    var mmoffset = parseInt(gentime.substr(end + 4, 2), 10);
-
-    // calculate offset in milliseconds
-    offset = hhoffset * 60 + mmoffset;
-    offset *= 60000;
-
-    // apply offset
-    if(c === '+') {
-      offset *= -1;
-    }
-
-    isUTC = true;
-  }
-
-  // check for second fraction
-  if(gentime.charAt(14) === '.') {
-    fff = parseFloat(gentime.substr(14), 10) * 1000;
-  }
-
-  if(isUTC) {
-    date.setUTCFullYear(YYYY, MM, DD);
-    date.setUTCHours(hh, mm, ss, fff);
-
-    // apply offset
-    date.setTime(+date + offset);
-  } else {
-    date.setFullYear(YYYY, MM, DD);
-    date.setHours(hh, mm, ss, fff);
-  }
-
-  return date;
-};
-
-/**
- * Converts a date to a UTCTime value.
- *
- * Note: GeneralizedTime has 4 digits for the year and is used for X.509
- * dates past 2049. Converting to a GeneralizedTime hasn't been
- * implemented yet.
- *
- * @param date the date to convert.
- *
- * @return the UTCTime value.
- */
-asn1.dateToUtcTime = function(date) {
-  // TODO: validate; currently assumes proper format
-  if(typeof date === 'string') {
-    return date;
-  }
-
-  var rval = '';
-
-  // create format YYMMDDhhmmssZ
-  var format = [];
-  format.push(('' + date.getUTCFullYear()).substr(2));
-  format.push('' + (date.getUTCMonth() + 1));
-  format.push('' + date.getUTCDate());
-  format.push('' + date.getUTCHours());
-  format.push('' + date.getUTCMinutes());
-  format.push('' + date.getUTCSeconds());
-
-  // ensure 2 digits are used for each format entry
-  for(var i = 0; i < format.length; ++i) {
-    if(format[i].length < 2) {
-      rval += '0';
-    }
-    rval += format[i];
-  }
-  rval += 'Z';
-
-  return rval;
-};
-
-/**
- * Converts a date to a GeneralizedTime value.
- *
- * @param date the date to convert.
- *
- * @return the GeneralizedTime value as a string.
- */
-asn1.dateToGeneralizedTime = function(date) {
-  // TODO: validate; currently assumes proper format
-  if(typeof date === 'string') {
-    return date;
-  }
-
-  var rval = '';
-
-  // create format YYYYMMDDHHMMSSZ
-  var format = [];
-  format.push('' + date.getUTCFullYear());
-  format.push('' + (date.getUTCMonth() + 1));
-  format.push('' + date.getUTCDate());
-  format.push('' + date.getUTCHours());
-  format.push('' + date.getUTCMinutes());
-  format.push('' + date.getUTCSeconds());
-
-  // ensure 2 digits are used for each format entry
-  for(var i = 0; i < format.length; ++i) {
-    if(format[i].length < 2) {
-      rval += '0';
-    }
-    rval += format[i];
-  }
-  rval += 'Z';
-
-  return rval;
-};
-
-/**
- * Converts a javascript integer to a DER-encoded byte buffer to be used
- * as the value for an INTEGER type.
- *
- * @param x the integer.
- *
- * @return the byte buffer.
- */
-asn1.integerToDer = function(x) {
-  var rval = forge.util.createBuffer();
-  if(x >= -0x80 && x < 0x80) {
-    return rval.putSignedInt(x, 8);
-  }
-  if(x >= -0x8000 && x < 0x8000) {
-    return rval.putSignedInt(x, 16);
-  }
-  if(x >= -0x800000 && x < 0x800000) {
-    return rval.putSignedInt(x, 24);
-  }
-  if(x >= -0x80000000 && x < 0x80000000) {
-    return rval.putSignedInt(x, 32);
-  }
-  var error = new Error('Integer too large; max is 32-bits.');
-  error.integer = x;
-  throw error;
-};
-
-/**
- * Converts a DER-encoded byte buffer to a javascript integer. This is
- * typically used to decode the value of an INTEGER type.
- *
- * @param bytes the byte buffer.
- *
- * @return the integer.
- */
-asn1.derToInteger = function(bytes) {
-  // wrap in buffer if needed
-  if(typeof bytes === 'string') {
-    bytes = forge.util.createBuffer(bytes);
-  }
-
-  var n = bytes.length() * 8;
-  if(n > 32) {
-    throw new Error('Integer too large; max is 32-bits.');
-  }
-  return bytes.getSignedInt(n);
-};
-
-/**
- * Validates that the given ASN.1 object is at least a super set of the
- * given ASN.1 structure. Only tag classes and types are checked. An
- * optional map may also be provided to capture ASN.1 values while the
- * structure is checked.
- *
- * To capture an ASN.1 value, set an object in the validator's 'capture'
- * parameter to the key to use in the capture map. To capture the full
- * ASN.1 object, specify 'captureAsn1'. To capture BIT STRING bytes, including
- * the leading unused bits counter byte, specify 'captureBitStringContents'.
- * To capture BIT STRING bytes, without the leading unused bits counter byte,
- * specify 'captureBitStringValue'.
- *
- * Objects in the validator may set a field 'optional' to true to indicate
- * that it isn't necessary to pass validation.
- *
- * @param obj the ASN.1 object to validate.
- * @param v the ASN.1 structure validator.
- * @param capture an optional map to capture values in.
- * @param errors an optional array for storing validation errors.
- *
- * @return true on success, false on failure.
- */
-asn1.validate = function(obj, v, capture, errors) {
-  var rval = false;
-
-  // ensure tag class and type are the same if specified
-  if((obj.tagClass === v.tagClass || typeof(v.tagClass) === 'undefined') &&
-    (obj.type === v.type || typeof(v.type) === 'undefined')) {
-    // ensure constructed flag is the same if specified
-    if(obj.constructed === v.constructed ||
-      typeof(v.constructed) === 'undefined') {
-      rval = true;
-
-      // handle sub values
-      if(v.value && forge.util.isArray(v.value)) {
-        var j = 0;
-        for(var i = 0; rval && i < v.value.length; ++i) {
-          rval = v.value[i].optional || false;
-          if(obj.value[j]) {
-            rval = asn1.validate(obj.value[j], v.value[i], capture, errors);
-            if(rval) {
-              ++j;
-            } else if(v.value[i].optional) {
-              rval = true;
-            }
-          }
-          if(!rval && errors) {
-            errors.push(
-              '[' + v.name + '] ' +
-              'Tag class "' + v.tagClass + '", type "' +
-              v.type + '" expected value length "' +
-              v.value.length + '", got "' +
-              obj.value.length + '"');
-          }
-        }
-      }
-
-      if(rval && capture) {
-        if(v.capture) {
-          capture[v.capture] = obj.value;
-        }
-        if(v.captureAsn1) {
-          capture[v.captureAsn1] = obj;
-        }
-        if(v.captureBitStringContents && 'bitStringContents' in obj) {
-          capture[v.captureBitStringContents] = obj.bitStringContents;
-        }
-        if(v.captureBitStringValue && 'bitStringContents' in obj) {
-          var value;
-          if(obj.bitStringContents.length < 2) {
-            capture[v.captureBitStringValue] = '';
-          } else {
-            // FIXME: support unused bits with data shifting
-            var unused = obj.bitStringContents.charCodeAt(0);
-            if(unused !== 0) {
-              throw new Error(
-                'captureBitStringValue only supported for zero unused bits');
-            }
-            capture[v.captureBitStringValue] = obj.bitStringContents.slice(1);
-          }
-        }
-      }
-    } else if(errors) {
-      errors.push(
-        '[' + v.name + '] ' +
-        'Expected constructed "' + v.constructed + '", got "' +
-        obj.constructed + '"');
-    }
-  } else if(errors) {
-    if(obj.tagClass !== v.tagClass) {
-      errors.push(
-        '[' + v.name + '] ' +
-        'Expected tag class "' + v.tagClass + '", got "' +
-        obj.tagClass + '"');
-    }
-    if(obj.type !== v.type) {
-      errors.push(
-        '[' + v.name + '] ' +
-        'Expected type "' + v.type + '", got "' + obj.type + '"');
-    }
-  }
-  return rval;
-};
-
-// regex for testing for non-latin characters
-var _nonLatinRegex = /[^\\u0000-\\u00ff]/;
-
-/**
- * Pretty prints an ASN.1 object to a string.
- *
- * @param obj the object to write out.
- * @param level the level in the tree.
- * @param indentation the indentation to use.
- *
- * @return the string.
- */
-asn1.prettyPrint = function(obj, level, indentation) {
-  var rval = '';
-
-  // set default level and indentation
-  level = level || 0;
-  indentation = indentation || 2;
-
-  // start new line for deep levels
-  if(level > 0) {
-    rval += '\n';
-  }
-
-  // create indent
-  var indent = '';
-  for(var i = 0; i < level * indentation; ++i) {
-    indent += ' ';
-  }
-
-  // print class:type
-  rval += indent + 'Tag: ';
-  switch(obj.tagClass) {
-  case asn1.Class.UNIVERSAL:
-    rval += 'Universal:';
-    break;
-  case asn1.Class.APPLICATION:
-    rval += 'Application:';
-    break;
-  case asn1.Class.CONTEXT_SPECIFIC:
-    rval += 'Context-Specific:';
-    break;
-  case asn1.Class.PRIVATE:
-    rval += 'Private:';
-    break;
-  }
-
-  if(obj.tagClass === asn1.Class.UNIVERSAL) {
-    rval += obj.type;
-
-    // known types
-    switch(obj.type) {
-    case asn1.Type.NONE:
-      rval += ' (None)';
-      break;
-    case asn1.Type.BOOLEAN:
-      rval += ' (Boolean)';
-      break;
-    case asn1.Type.INTEGER:
-      rval += ' (Integer)';
-      break;
-    case asn1.Type.BITSTRING:
-      rval += ' (Bit string)';
-      break;
-    case asn1.Type.OCTETSTRING:
-      rval += ' (Octet string)';
-      break;
-    case asn1.Type.NULL:
-      rval += ' (Null)';
-      break;
-    case asn1.Type.OID:
-      rval += ' (Object Identifier)';
-      break;
-    case asn1.Type.ODESC:
-      rval += ' (Object Descriptor)';
-      break;
-    case asn1.Type.EXTERNAL:
-      rval += ' (External or Instance of)';
-      break;
-    case asn1.Type.REAL:
-      rval += ' (Real)';
-      break;
-    case asn1.Type.ENUMERATED:
-      rval += ' (Enumerated)';
-      break;
-    case asn1.Type.EMBEDDED:
-      rval += ' (Embedded PDV)';
-      break;
-    case asn1.Type.UTF8:
-      rval += ' (UTF8)';
-      break;
-    case asn1.Type.ROID:
-      rval += ' (Relative Object Identifier)';
-      break;
-    case asn1.Type.SEQUENCE:
-      rval += ' (Sequence)';
-      break;
-    case asn1.Type.SET:
-      rval += ' (Set)';
-      break;
-    case asn1.Type.PRINTABLESTRING:
-      rval += ' (Printable String)';
-      break;
-    case asn1.Type.IA5String:
-      rval += ' (IA5String (ASCII))';
-      break;
-    case asn1.Type.UTCTIME:
-      rval += ' (UTC time)';
-      break;
-    case asn1.Type.GENERALIZEDTIME:
-      rval += ' (Generalized time)';
-      break;
-    case asn1.Type.BMPSTRING:
-      rval += ' (BMP String)';
-      break;
-    }
-  } else {
-    rval += obj.type;
-  }
-
-  rval += '\n';
-  rval += indent + 'Constructed: ' + obj.constructed + '\n';
-
-  if(obj.composed) {
-    var subvalues = 0;
-    var sub = '';
-    for(var i = 0; i < obj.value.length; ++i) {
-      if(obj.value[i] !== undefined) {
-        subvalues += 1;
-        sub += asn1.prettyPrint(obj.value[i], level + 1, indentation);
-        if((i + 1) < obj.value.length) {
-          sub += ',';
-        }
-      }
-    }
-    rval += indent + 'Sub values: ' + subvalues + sub;
-  } else {
-    rval += indent + 'Value: ';
-    if(obj.type === asn1.Type.OID) {
-      var oid = asn1.derToOid(obj.value);
-      rval += oid;
-      if(forge.pki && forge.pki.oids) {
-        if(oid in forge.pki.oids) {
-          rval += ' (' + forge.pki.oids[oid] + ') ';
-        }
-      }
-    }
-    if(obj.type === asn1.Type.INTEGER) {
-      try {
-        rval += asn1.derToInteger(obj.value);
-      } catch(ex) {
-        rval += '0x' + forge.util.bytesToHex(obj.value);
-      }
-    } else if(obj.type === asn1.Type.BITSTRING) {
-      // TODO: shift bits as needed to display without padding
-      if(obj.value.length > 1) {
-        // remove unused bits field
-        rval += '0x' + forge.util.bytesToHex(obj.value.slice(1));
-      } else {
-        rval += '(none)';
-      }
-      // show unused bit count
-      if(obj.value.length > 0) {
-        var unused = obj.value.charCodeAt(0);
-        if(unused == 1) {
-          rval += ' (1 unused bit shown)';
-        } else if(unused > 1) {
-          rval += ' (' + unused + ' unused bits shown)';
-        }
-      }
-    } else if(obj.type === asn1.Type.OCTETSTRING) {
-      if(!_nonLatinRegex.test(obj.value)) {
-        rval += '(' + obj.value + ') ';
-      }
-      rval += '0x' + forge.util.bytesToHex(obj.value);
-    } else if(obj.type === asn1.Type.UTF8) {
-      rval += forge.util.decodeUtf8(obj.value);
-    } else if(obj.type === asn1.Type.PRINTABLESTRING ||
-      obj.type === asn1.Type.IA5String) {
-      rval += obj.value;
-    } else if(_nonLatinRegex.test(obj.value)) {
-      rval += '0x' + forge.util.bytesToHex(obj.value);
-    } else if(obj.value.length === 0) {
-      rval += '[null]';
-    } else {
-      rval += obj.value;
-    }
-  }
-
-  return rval;
-};
-
-
-/***/ }),
-/* 29 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/**
- * Node.js module for Forge message digests.
- *
- * @author Dave Longley
- *
- * Copyright 2011-2017 Digital Bazaar, Inc.
- */
-var forge = __webpack_require__(3);
-
-module.exports = forge.md = forge.md || {};
-forge.md.algorithms = forge.md.algorithms || {};
-
-
-/***/ }),
-/* 30 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var global = __webpack_require__(10);
-var hide = __webpack_require__(18);
-var has = __webpack_require__(31);
-var SRC = __webpack_require__(35)('src');
-var $toString = __webpack_require__(174);
-var TO_STRING = 'toString';
-var TPL = ('' + $toString).split(TO_STRING);
-
-__webpack_require__(34).inspectSource = function (it) {
-  return $toString.call(it);
-};
-
-(module.exports = function (O, key, val, safe) {
-  var isFunction = typeof val == 'function';
-  if (isFunction) has(val, 'name') || hide(val, 'name', key);
-  if (O[key] === val) return;
-  if (isFunction) has(val, SRC) || hide(val, SRC, O[key] ? '' + O[key] : TPL.join(String(key)));
-  if (O === global) {
-    O[key] = val;
-  } else if (!safe) {
-    delete O[key];
-    hide(O, key, val);
-  } else if (O[key]) {
-    O[key] = val;
-  } else {
-    hide(O, key, val);
-  }
-// add fake Function#toString for correct work wrapped methods / constructors with methods like LoDash isNative
-})(Function.prototype, TO_STRING, function toString() {
-  return typeof this == 'function' && this[SRC] || $toString.call(this);
-});
-
-
-/***/ }),
-/* 31 */
-/***/ (function(module, exports) {
-
-var hasOwnProperty = {}.hasOwnProperty;
-module.exports = function (it, key) {
-  return hasOwnProperty.call(it, key);
-};
-
-
-/***/ }),
-/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8258,9 +5389,9 @@ module.exports = function (it, key) {
 
 
 
-var base64 = __webpack_require__(216)
-var ieee754 = __webpack_require__(217)
-var isArray = __webpack_require__(218)
+var base64 = __webpack_require__(234)
+var ieee754 = __webpack_require__(235)
+var isArray = __webpack_require__(236)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = SlowBuffer
@@ -10038,10 +7169,2860 @@ function isnan (val) {
   return val !== val // eslint-disable-line no-self-compare
 }
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(61)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(29)))
 
 /***/ }),
-/* 33 */
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var $iterators = __webpack_require__(133);
+var getKeys = __webpack_require__(78);
+var redefine = __webpack_require__(33);
+var global = __webpack_require__(10);
+var hide = __webpack_require__(20);
+var Iterators = __webpack_require__(54);
+var wks = __webpack_require__(11);
+var ITERATOR = wks('iterator');
+var TO_STRING_TAG = wks('toStringTag');
+var ArrayValues = Iterators.Array;
+
+var DOMIterables = {
+  CSSRuleList: true, // TODO: Not spec compliant, should be false.
+  CSSStyleDeclaration: false,
+  CSSValueList: false,
+  ClientRectList: false,
+  DOMRectList: false,
+  DOMStringList: false,
+  DOMTokenList: true,
+  DataTransferItemList: false,
+  FileList: false,
+  HTMLAllCollection: false,
+  HTMLCollection: false,
+  HTMLFormElement: false,
+  HTMLSelectElement: false,
+  MediaList: true, // TODO: Not spec compliant, should be false.
+  MimeTypeArray: false,
+  NamedNodeMap: false,
+  NodeList: true,
+  PaintRequestList: false,
+  Plugin: false,
+  PluginArray: false,
+  SVGLengthList: false,
+  SVGNumberList: false,
+  SVGPathSegList: false,
+  SVGPointList: false,
+  SVGStringList: false,
+  SVGTransformList: false,
+  SourceBufferList: false,
+  StyleSheetList: true, // TODO: Not spec compliant, should be false.
+  TextTrackCueList: false,
+  TextTrackList: false,
+  TouchList: false
+};
+
+for (var collections = getKeys(DOMIterables), i = 0; i < collections.length; i++) {
+  var NAME = collections[i];
+  var explicit = DOMIterables[NAME];
+  var Collection = global[NAME];
+  var proto = Collection && Collection.prototype;
+  var key;
+  if (proto) {
+    if (!proto[ITERATOR]) hide(proto, ITERATOR, ArrayValues);
+    if (!proto[TO_STRING_TAG]) hide(proto, TO_STRING_TAG, NAME);
+    Iterators[NAME] = ArrayValues;
+    if (explicit) for (key in $iterators) if (!proto[key]) redefine(proto, key, $iterators[key], true);
+  }
+}
+
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports) {
+
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+
+/***/ }),
+/* 19 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Topic; });
+/* harmony import */ var _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(123);
+/* harmony import */ var _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(77);
+/* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(80);
+/* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(42);
+/* harmony import */ var core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(43);
+/* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(2);
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(32);
+/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(8);
+/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(17);
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(14);
+/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(5);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_10__);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(6);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_11__);
+/* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(0);
+/* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(_common_Events__WEBPACK_IMPORTED_MODULE_12__);
+/* harmony import */ var _WildEmitter__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(13);
+/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(9);
+/* harmony import */ var _Metadata__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(122);
+/* harmony import */ var _ChatUtility__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(12);
+/* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(1);
+/* harmony import */ var _ChatMessage__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(50);
+/* harmony import */ var _ClientSettings__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(49);
+/* harmony import */ var cute_set__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(51);
+/* harmony import */ var cute_set__WEBPACK_IMPORTED_MODULE_20___default = /*#__PURE__*/__webpack_require__.n(cute_set__WEBPACK_IMPORTED_MODULE_20__);
+/* harmony import */ var buffer__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(16);
+/* harmony import */ var buffer__WEBPACK_IMPORTED_MODULE_21___default = /*#__PURE__*/__webpack_require__.n(buffer__WEBPACK_IMPORTED_MODULE_21__);
+/* harmony import */ var _common_IError__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(3);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var INITIAL_NUM_MESSAGES = 25;
+var Topic = /*#__PURE__*/function () {
+  function Topic(version, pkfp, name, key, comment) {
+    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_10___default()(this, Topic);
+
+    _WildEmitter__WEBPACK_IMPORTED_MODULE_13__[/* WildEmitter */ "a"].mixin(this);
+    this.pkfp = pkfp;
+    this.name = name; // Topic alias. Not shared.
+
+    this.privateKey = key;
+    this.comment = comment;
+    this.handlers = {};
+    this.messageQueue;
+    this.arrivalHub;
+    this.currentMetadata;
+    this.sharedKey;
+    this.metadataId;
+    this.participants = {};
+    this.messages = [];
+    this.settings = {};
+    this.invites = {};
+    this.version = version;
+
+    this.getPrivateKey = function () {
+      return key;
+    }; // Meaning event listeners are set for arrivalHub
+
+
+    this.isBootstrapped = false; // Whether topic's metadata loaded
+
+    this.metadataLoaded = false; // Initial messages load has been completed
+
+    this.isInitLoaded = false; // All messages on this toipcs has been loaded
+
+    this.allMessagesLoaded = false; // When topic has sent load n messages from the server and awaiting result
+
+    this.awaitingMessages = false;
+  }
+
+  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_11___default()(Topic, [{
+    key: "bootstrap",
+    // ---------------------------------------------------------------------------------------------------------------------------
+    // INITIALIZING
+    value: function bootstrap(self, messageQueue, arrivalHub, version) {
+      self.messageQueue = messageQueue;
+      self.arrivalHub = arrivalHub;
+      self.arrivalHub.on(self.pkfp, function (msg) {
+        self.preprocessIncomingMessage(msg, self);
+      });
+      self.version = version;
+      self.setHandlers();
+      self.bootstrapped = true;
+    }
+  }, {
+    key: "loadMetadata",
+    value: function loadMetadata(metadata) {
+      if (typeof metadata === "string") {
+        metadata = JSON.parse(metadata);
+      }
+
+      var settingsCipher = metadata.body.settings;
+      var settings;
+
+      if (!settingsCipher) {
+        settings = Topic.prepareNewTopicSettings(this.version, undefined, undefined, this.getPublicKey, false);
+      } else {
+        settings = JSON.parse(_ChatUtility__WEBPACK_IMPORTED_MODULE_16__[/* ChatUtility */ "a"].decryptStandardMessage(settingsCipher, this.privateKey));
+      }
+
+      this._metadata = metadata;
+      this._metadata.body.settings = settings;
+      this.settings = settings;
+      this.participants = {};
+
+      for (var _i = 0, _Object$keys = Object.keys(metadata.body.participants); _i < _Object$keys.length; _i++) {
+        var pkfp = _Object$keys[_i];
+        this.participants[pkfp] = {};
+        this.participants[pkfp].key = metadata.body.participants[pkfp].key;
+        this.participants[pkfp].pkfp = metadata.body.participants[pkfp].pkfp;
+        this.participants[pkfp].publicKey = metadata.body.participants[pkfp].publicKey;
+        this.participants[pkfp].residence = metadata.body.participants[pkfp].residence;
+        this.participants[pkfp].rights = metadata.body.participants[pkfp].rights;
+
+        if (metadata.body.settings.membersData) {
+          this.participants[pkfp].nickname = metadata.body.settings.membersData[pkfp] ? metadata.body.settings.membersData[pkfp].nickname : "";
+          this.participants[pkfp].joined = metadata.body.settings.membersData[pkfp] ? metadata.body.settings.membersData[pkfp].joined : "";
+        }
+      }
+
+      this.sharedKey = _ChatUtility__WEBPACK_IMPORTED_MODULE_16__[/* ChatUtility */ "a"].privateKeyDecrypt(this.participants[this.pkfp].key, this.privateKey);
+      this.metadataId = metadata.body.id;
+      this.topicAuthority = metadata.body.topicAuthority;
+
+      if (!metadata.body.settings.invites) {
+        metadata.body.settings.invites = {};
+      }
+
+      this.invites = metadata.body.settings.invites;
+      this.metadataLoaded = true;
+    }
+    /**
+     * Loads topic's last n messsages
+     * If wait for completion function will return only after load is completed
+     */
+
+  }, {
+    key: "initLoad",
+    value: function () {
+      var _initLoad = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_7___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_5___default.a.mark(function _callee() {
+        var messagesToLoad,
+            waitCompletion,
+            self,
+            _args = arguments;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_5___default.a.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                messagesToLoad = _args.length > 0 && _args[0] !== undefined ? _args[0] : INITIAL_NUM_MESSAGES;
+                waitCompletion = _args.length > 1 && _args[1] !== undefined ? _args[1] : false;
+                self = this;
+                self.ensureBootstrapped(self);
+                setTimeout(function () {
+                  self._loadMessages(self, messagesToLoad);
+
+                  self.awaitingMessages = true;
+                });
+
+              case 5:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, this);
+      }));
+
+      function initLoad() {
+        return _initLoad.apply(this, arguments);
+      }
+
+      return initLoad;
+    }() //Called when init_load event is received
+
+  }, {
+    key: "processInitLoad",
+    value: function processInitLoad(data) {}
+  }, {
+    key: "setHandlers",
+    value: function setHandlers() {
+      var _this = this;
+
+      var self = this;
+      this.handlers[_common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].LOAD_MESSAGES_SUCCESS] = this.processMessagesLoaded;
+
+      this.handlers[_common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].INVITE_REQUEST_TIMEOUT] = function () {
+        console.log("Invite request timeout");
+      };
+
+      this.handlers[_common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].INVITE_REQUEST_FAIL] = function (msg) {
+        console.log("Invite request failed: ".concat(msg.body.errorMsg));
+      };
+
+      this.handlers[_common_Events__WEBPACK_IMPORTED_MODULE_12__["Events"].INVITE_CREATED] = function (msg) {
+        console.log("Invite created event");
+        self.processInviteCreated(self, msg);
+        self.emit(_common_Events__WEBPACK_IMPORTED_MODULE_12__["Events"].INVITE_CREATED);
+      };
+
+      this.handlers[_common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].SETTINGS_UPDATED] = function (msg) {
+        console.log("Settings updated");
+        self.processSettingsUpdated(msg);
+      };
+
+      this.handlers[_common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].BROADCAST_MESSAGE] = function (msg) {
+        var msgCopy = JSON.parse(JSON.stringify(msg)); // pkfpDest is added by server when message is broadcasted, so to verify it
+        // must be deleted
+
+        delete msgCopy.pkfpDest;
+        Object(_common_IError__WEBPACK_IMPORTED_MODULE_22__[/* assert */ "b"])(self.participants[msg.headers.pkfpSource], "The participant ".concat(msgCopy.pkfpDest, " not found"));
+        var publicKey = self.participants[msg.headers.pkfpSource].publicKey; //assert(Message.verifyMessage(publicKey, msgCopy), "Message was not verified")
+
+        var message = new _ChatMessage__WEBPACK_IMPORTED_MODULE_18__[/* ChatMessage */ "a"](msg.body.message);
+        message.decryptMessage(self.sharedKey);
+        self.addNewMessage(self, message);
+      };
+
+      this.handlers[_common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].SEND_MESSAGE] = function (msg) {
+        Object(_common_IError__WEBPACK_IMPORTED_MODULE_22__[/* assert */ "b"])(self.participants[msg.headers.pkfpSource]);
+        var publicKey = self.participants[msg.headers.pkfpSource].publicKey;
+        Object(_common_IError__WEBPACK_IMPORTED_MODULE_22__[/* assert */ "b"])(_Message__WEBPACK_IMPORTED_MODULE_14__[/* Message */ "a"].verifyMessage(msg, self.publicKey));
+        var message = new _ChatMessage__WEBPACK_IMPORTED_MODULE_18__[/* ChatMessage */ "a"](msg.body.message);
+        message.decryptMessage(self.sharedKey);
+        self.addNewMessage(self, message);
+      };
+
+      this.handlers[_common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].MESSAGE_SENT] = function (msg) {
+        console.log("Message sent received. Message: ".concat(msg.body.message));
+
+        _this.processMessageSent(_this, msg);
+      };
+    } //End//////////////////////////////////////////////////////////////////////
+    // ---------------------------------------------------------------------------------------------------------------------------
+    // MESSAGE HANDLING
+
+  }, {
+    key: "processMessageSent",
+    value: function processMessageSent(self, msg) {
+      var sentMessage = new _ChatMessage__WEBPACK_IMPORTED_MODULE_18__[/* ChatMessage */ "a"](msg.body.message);
+      console.log("Setting existing message from pending to delivered");
+      var existingMessages = self.messages.filter(function (m) {
+        return m.header.id === sentMessage.header.id;
+      });
+      Object(_common_IError__WEBPACK_IMPORTED_MODULE_22__[/* assert */ "b"])(existingMessages.length < 2, "Message doubling error: ".concat(existingMessages.length));
+      var existingMessage = existingMessages[0];
+
+      if (existingMessage) {
+        existingMessage.pending = false;
+        self.emit(_common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].MESSAGE_SENT, existingMessage);
+      } else {
+        console.log("Decrypting and adding sent message.");
+        sentMessage.header.private ? sentMessage.decryptPrivateMessage(self.privateKey) : sentMessage.decryptMessage(self.sharedKey);
+        self.addNewMessage(self, sentMessage);
+      }
+    }
+  }, {
+    key: "addNewMessage",
+    value: function addNewMessage(self, chatMessage) {
+      console.log("Adding new chat message");
+      self.messages.push[chatMessage];
+      console.log("Message added");
+      self.emit(_common_Events__WEBPACK_IMPORTED_MODULE_12__["Events"].NEW_CHAT_MESSAGE, chatMessage, self.pkfp);
+    }
+  }, {
+    key: "getMessages",
+    value: function getMessages() {
+      var messagesToLoad = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : INITIAL_NUM_MESSAGES;
+      var lastMessageId = arguments.length > 1 ? arguments[1] : undefined;
+
+      if (this.initLoaded) {
+        this.emit(_common_Events__WEBPACK_IMPORTED_MODULE_12__["Events"].MESSAGES_LOADED, this.messages);
+      } else {
+        console.log("Messages has not been loaded. Loading...."); //init load and then emit
+
+        this.initLoad();
+      }
+    } //Incoming message
+
+  }, {
+    key: "preprocessIncomingMessage",
+    value: function preprocessIncomingMessage(msg, self) {
+      console.log("Incoming message on ".concat(this.pkfp, " received!"));
+
+      if (self.handlers.hasOwnProperty(msg.headers.command)) {
+        self.handlers[msg.headers.command](msg, self);
+      } else {
+        var errMsg = "No handler found for command: ".concat(msg.headers.command);
+        throw new Error(errMsg);
+      }
+    }
+  }, {
+    key: "getCurrentNickname",
+    value: function getCurrentNickname() {
+      if (!this.metadataLoaded) {
+        throw new Error("Cannot get current nickname: metadata is not loaded.");
+      }
+
+      return this.participants[this.pkfp].nickname;
+    }
+  }, {
+    key: "_loadMessages",
+    value: function _loadMessages(self) {
+      var quantity = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 25;
+      var lastMessageId = arguments.length > 2 ? arguments[2] : undefined;
+      var request = new _Message__WEBPACK_IMPORTED_MODULE_14__[/* Message */ "a"](self.version);
+      request.headers.command = _common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].LOAD_MESSAGES;
+      request.headers.pkfpSource = self.pkfp;
+      request.body.quantity = quantity;
+
+      if (lastMessageId) {
+        request.body.lastMessageId = lastMessageId;
+      }
+
+      request.addNonce();
+      request.signMessage(self.privateKey);
+      self.messageQueue.enqueue(request);
+    } // ---------------------------------------------------------------------------------------------------------------------------
+    // INVITES HANDLING
+
+  }, {
+    key: "requestInvite",
+    value: function requestInvite() {
+      var self = this;
+
+      if (!self.metadataLoaded) {
+        throw new Error("Metadata has not been loaded yet.");
+      }
+
+      setTimeout(function () {
+        var request = new _Message__WEBPACK_IMPORTED_MODULE_14__[/* Message */ "a"](self.version);
+        var taPublicKey = self.topicAuthority.publicKey;
+        var myNickNameEncrypted = _ChatUtility__WEBPACK_IMPORTED_MODULE_16__[/* ChatUtility */ "a"].encryptStandardMessage(self.participants[self.pkfp].nickname, taPublicKey);
+        var topicNameEncrypted = _ChatUtility__WEBPACK_IMPORTED_MODULE_16__[/* ChatUtility */ "a"].encryptStandardMessage(self.name, taPublicKey);
+        request.setCommand(_common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].REQUEST_INVITE);
+        request.setSource(self.pkfp);
+        request.setDest(self.topicAuthority.pkfp);
+        request.body.nickname = myNickNameEncrypted;
+        request.body.topicName = topicNameEncrypted;
+        request.signMessage(self.privateKey);
+        self.messageQueue.enqueue(request);
+      }, 100);
+    }
+  }, {
+    key: "syncInvites",
+    value: function syncInvites() {
+      var request = new _Message__WEBPACK_IMPORTED_MODULE_14__[/* Message */ "a"](self.version);
+      request.headers.command = "sync_invites";
+      request.headers.pkfpSource = this.session.publicKeyFingerprint;
+      request.headers.pkfpDest = this.session.metadata.topicAuthority.pkfp;
+      request.headers.nonce = ic.get("nhex");
+      request.signMessage(this.session.privateKey);
+      this.chatSocket.emit("request", request);
+    }
+  }, {
+    key: "updateInvite",
+    value: function updateInvite() {
+      this.session.settings.invites[inviteID].name = name;
+      this.saveClientSettings(this.session.settings, this.session.privateKey);
+    }
+  }, {
+    key: "deleteInvite",
+    value: function deleteInvite(inviteCode) {
+      console.log("About to delete invite: " + inviteCode);
+
+      if (!this.invites.hasOwnProperty(inviteCode)) {
+        console.error("Invite does not exist: ".concat(inviteCode));
+      }
+
+      var request = new _Message__WEBPACK_IMPORTED_MODULE_14__[/* Message */ "a"](this.version);
+      request.headers.command = _common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].DELETE_INVITE;
+      request.headers.pkfpSource = this.pkfp;
+      request.headers.pkfpDest = this.topicAuthority.pkfp;
+      var body = {
+        invite: inviteCode
+      };
+      request.set("body", body);
+      request.signMessage(this.privateKey);
+      this.messageQueue.enqueue(request);
+    }
+  }, {
+    key: "updatePendingInvites",
+    value: function updatePendingInvites(userInvites) {
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = userInvites[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var i = _step.value;
+
+          if (!this.session.settings.invites.hasOwnProperty(i)) {
+            this.session.settings.invites[i] = {};
+          }
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return != null) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
+
+      for (var _i2 = 0, _Object$keys2 = Object.keys(this.session.settings.invites); _i2 < _Object$keys2.length; _i2++) {
+        var _i3 = _Object$keys2[_i2];
+
+        if (!userInvites.includes(_i3)) {
+          delete this.session.settings.invites[_i3];
+        }
+      }
+
+      this.saveClientSettings(this.session.settings, this.session.privateKey);
+    } //END//////////////////////////////////////////////////////////////////////
+    // ---------------------------------------------------------------------------------------------------------------------------
+    // Nickname handling
+    //TODO
+
+  }, {
+    key: "exchangeNicknames",
+    value: function exchangeNicknames() {
+      if (!this.isBootstrapped) {
+        console.log("Cannot exchange nicknames: topic not bootstrapped.");
+        return;
+      }
+
+      var myNickname = _ChatUtility__WEBPACK_IMPORTED_MODULE_16__[/* ChatUtility */ "a"].symKeyEncrypt(this.participants[this.pkfp].nickname, this.sharedKey);
+      var request = _Message__WEBPACK_IMPORTED_MODULE_14__[/* Message */ "a"].createRequest(this.version, this.pkfp, _common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].NICKNAME_INITAL_EXCHANGE);
+      request.body.metadataId = this.metadataId;
+      request.body.myNickname = myNickname;
+      request.signMessage(this.privateKey);
+      this.messageQueue.enqueue(request);
+    }
+  }, {
+    key: "setMemberAlias",
+    value: function setMemberAlias(pkfp, alias) {
+      if (!pkfp) {
+        throw new Error("Missing required parameter");
+      }
+
+      if (!this.session) {
+        return;
+      }
+
+      var membersData = this.session.settings.membersData;
+
+      if (!membersData[pkfp]) {
+        membersData[pkfp] = {};
+      }
+
+      if (!alias) {
+        delete membersData[pkfp].alias;
+      } else {
+        membersData[pkfp].alias = alias;
+      }
+    }
+  }, {
+    key: "requestNickname",
+    value: function requestNickname(pkfp) {
+      if (!pkfp) {
+        throw new Error("Missing required parameter");
+      }
+
+      var request = new _Message__WEBPACK_IMPORTED_MODULE_14__[/* Message */ "a"](self.version);
+      request.setCommand("whats_your_name");
+      request.setSource(this.session.publicKeyFingerprint);
+      request.setDest(pkfp);
+      request.addNonce();
+      request.signMessage(this.session.privateKey);
+      this.chatSocket.emit("request", request);
+    }
+  }, {
+    key: "broadcastNameChange",
+    value: function broadcastNameChange() {
+      var self = this;
+      var message = new _Message__WEBPACK_IMPORTED_MODULE_14__[/* Message */ "a"](self.version);
+      message.setCommand("nickname_change_broadcast");
+      message.setSource(this.session.publicKeyFingerprint);
+      message.addNonce();
+      message.body.nickname = _ChatUtility__WEBPACK_IMPORTED_MODULE_16__[/* ChatUtility */ "a"].symKeyEncrypt(self.session.settings.nickname, self.session.metadata.sharedKey);
+      message.signMessage(this.session.privateKey);
+      this.chatSocket.emit("request", message);
+    }
+  }, {
+    key: "processNicknameResponse",
+    value: function processNicknameResponse(request, self) {
+      self._processNicknameResponseHelper(request, self);
+    }
+  }, {
+    key: "processNicknameChangeNote",
+    value: function processNicknameChangeNote(request, self) {
+      self._processNicknameResponseHelper(request, self, true);
+    }
+  }, {
+    key: "_processNicknameResponseHelper",
+    value: function _processNicknameResponseHelper(request, self) {
+      var broadcast = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+      console.log("Got nickname response");
+      var publicKey = self.session.metadata.participants[request.headers.pkfpSource].publicKey;
+
+      if (!_Message__WEBPACK_IMPORTED_MODULE_14__[/* Message */ "a"].verifyMessage(publicKey, request)) {
+        console.trace("Invalid signature");
+        return;
+      }
+
+      var existingNickname = self.getMemberNickname(request.headers.pkfpSource);
+      var memberRepr = self.getMemberRepr(request.headers.pkfpSource);
+      var newNickname = broadcast ? _ChatUtility__WEBPACK_IMPORTED_MODULE_16__[/* ChatUtility */ "a"].symKeyDecrypt(request.body.nickname, self.session.metadata.sharedKey) : _ChatUtility__WEBPACK_IMPORTED_MODULE_16__[/* ChatUtility */ "a"].decryptStandardMessage(request.body.nickname, self.session.privateKey);
+      newNickname = newNickname.toString("utf8");
+
+      if (newNickname !== existingNickname) {
+        self.setMemberNickname(request.headers.pkfpSource, newNickname);
+        self.saveClientSettings();
+
+        if (existingNickname && existingNickname !== "") {
+          self.createServiceRecordOnMemberNicknameChange(memberRepr, newNickname, request.headers.pkfpSource);
+        }
+      }
+    } //~END NICKNAME HANDLING///////////////////////////////////////////////////
+    // ---------------------------------------------------------------------------------------------------------------------------
+    // Settings handling
+
+  }, {
+    key: "saveClientSettings",
+    value: function saveClientSettings(settingsRaw, privateKey) {
+      if (!settingsRaw) {
+        settingsRaw = this.settings;
+      }
+
+      if (!privateKey) {
+        privateKey = this.privateKey;
+      }
+
+      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_17__[/* iCrypto */ "a"]();
+      ic.asym.setKey("privk", privateKey, "private").publicFromPrivate("privk", "pub");
+      var publicKey = ic.get("pub");
+
+      if (typeof settingsRaw === "object") {
+        settingsRaw = JSON.stringify(settingsRaw);
+      }
+
+      var settingsEnc = _ClientSettings__WEBPACK_IMPORTED_MODULE_19__[/* ClientSettings */ "a"].encrypt(publicKey, settingsRaw);
+      ic.addBlob("cipher", settingsEnc).privateKeySign("cipher", "privk", "sign");
+      var body = {
+        settings: settingsEnc,
+        signature: ic.get("sign")
+      };
+      var request = new _Message__WEBPACK_IMPORTED_MODULE_14__[/* Message */ "a"](this.version);
+      request.setSource(this.pkfp);
+      request.setCommand(_common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].UPDATE_SETTINGS);
+      request.set("body", body);
+      request.signMessage(privateKey);
+      console.log("Sending update settings request");
+      this.messageQueue.enqueue(request);
+    } //~END SETTINGS ///////////////////////////////////////////////////////////
+
+  }, {
+    key: "processMessagesLoaded",
+    value: function processMessagesLoaded(msg, self) {
+      var data = msg.body.lastMessages;
+      var keys = data.keys;
+      console.log("Messages loaded. Processing.... Keys: ".concat(keys));
+      var metaIDs = Object.keys(keys);
+
+      for (var i = 0; i < metaIDs.length; ++i) {
+        var _ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_17__[/* iCrypto */ "a"]();
+
+        _ic.addBlob('k', keys[metaIDs[i]]).hexToBytes("k", "kraw").setRSAKey("priv", self.privateKey, "private").privateKeyDecrypt("kraw", "priv", "kdec");
+
+        keys[metaIDs[i]] = _ic.get("kdec");
+      }
+
+      var messages = data.messages;
+      var result = [];
+
+      for (var _i4 = 0; _i4 < messages.length; ++_i4) {
+        var message = new _ChatMessage__WEBPACK_IMPORTED_MODULE_18__[/* ChatMessage */ "a"](messages[_i4]);
+
+        if (message.header.service) {
+          message.body = _ChatUtility__WEBPACK_IMPORTED_MODULE_16__[/* ChatUtility */ "a"].decryptStandardMessage(message.body, self.privateKey);
+        } else if (message.header.private) {
+          message.decryptPrivateMessage(self.privateKey);
+        } else {
+          message.decryptMessage(keys[message.header.metadataID]);
+        }
+
+        result.push(message);
+      }
+
+      if (!self.initLoaded || self.messages.length === 0) {
+        self.messages = result;
+      } else {
+        var latestLoadedID = result[0].header.id;
+        var glueIndex = self.messages.findIndex(function (msg) {
+          return msg.header.id === latestLoadedID;
+        });
+        self.messages = glueIndex ? [].concat(_babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0___default()(self.messages.slice(0, glueIndex)), result) : [].concat(_babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0___default()(self.messages), result);
+      }
+
+      self.initLoaded = true;
+      self.allMessagesLoaded = data.allLoaded;
+      self.emit(_common_Events__WEBPACK_IMPORTED_MODULE_12__["Events"].MESSAGES_LOADED, self.messages);
+    }
+  }, {
+    key: "processSettingsUpdated",
+    value: function processSettingsUpdated(msg) {
+      var settings = msg.body.settings;
+      var signature = msg.body.signature;
+      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_17__[/* iCrypto */ "a"]();
+      ic.addBlob("settings", settings).addBlob("sign", signature).setRSAKey("pub", this.getPublicKey(), "public").publicKeyVerify("settings", "sign", "pub", "res");
+      if (!ic.get("res")) throw new Error("Settings blob signature verification failed");
+      var settingsPlain = JSON.parse(_ChatUtility__WEBPACK_IMPORTED_MODULE_16__[/* ChatUtility */ "a"].decryptStandardMessage(settings, this.privateKey));
+      this.settings = settingsPlain;
+      console.log("Settings updated successfully!");
+    } //TODO Cleanup or implememnt
+
+  }, {
+    key: "bootPraticipant",
+    value: function bootPraticipant() {}
+  }, {
+    key: "processMetadataUpdate",
+    value: function processMetadataUpdate() {}
+  }, {
+    key: "processNicknameRequest",
+    value: function processNicknameRequest() {}
+  }, {
+    key: "processNicknameResponse",
+    value: function processNicknameResponse() {}
+  }, {
+    key: "processNicknameChangeNote",
+    value: function processNicknameChangeNote() {}
+  }, {
+    key: "processInviteCreated",
+    value: function processInviteCreated(self, msg) {
+      console.log("New invite: ".concat(msg.body.inviteCode));
+      var userInvites = msg.body.userInvites;
+      if (!self.settings.invites) self.settings.invites = {};
+      var _iteratorNormalCompletion2 = true;
+      var _didIteratorError2 = false;
+      var _iteratorError2 = undefined;
+
+      try {
+        for (var _iterator2 = userInvites[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+          var i = _step2.value;
+
+          if (!self.settings.invites.hasOwnProperty(i)) {
+            self.settings.invites[i] = {};
+          }
+        }
+      } catch (err) {
+        _didIteratorError2 = true;
+        _iteratorError2 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
+            _iterator2.return();
+          }
+        } finally {
+          if (_didIteratorError2) {
+            throw _iteratorError2;
+          }
+        }
+      }
+
+      for (var _i5 = 0, _Object$keys3 = Object.keys(self.settings.invites); _i5 < _Object$keys3.length; _i5++) {
+        var _i6 = _Object$keys3[_i5];
+
+        if (!userInvites.includes(_i6)) {
+          delete self.settings.invites[_i6];
+        }
+      }
+
+      self.saveClientSettings(self.settings, self.privateKey);
+    }
+  }, {
+    key: "getParticipantAlias",
+    value: function getParticipantAlias(pkfp) {
+      if (!this.isBootstrapped || !pkfp) {
+        return;
+      }
+
+      var participantData = this.participants[pkfp];
+
+      if (participantData && participantData.alias) {
+        return participantData.alias;
+      } else {
+        return pkfp.substring(0, 8);
+      }
+    }
+  }, {
+    key: "getParticipantRepr",
+    value: function getParticipantRepr(pkfp) {
+      if (this.participants[pkfp]) {
+        return this.participants[pkfp].alias || this.participants[pkfp].nickname || "Unknown";
+      }
+    }
+  }, {
+    key: "getPublicKey",
+    value: function getPublicKey() {
+      if (!this.privateKey) throw new Error("No private key found");
+
+      if (!this.publicKey) {
+        var _ic2 = new _iCrypto__WEBPACK_IMPORTED_MODULE_17__[/* iCrypto */ "a"]();
+
+        _ic2.setRSAKey("priv", this.privateKey, "private").publicFromPrivate("priv", "pub");
+
+        this.publicKey = _ic2.get("pub");
+      }
+
+      return this.publicKey;
+    }
+  }, {
+    key: "ensureInitLoaded",
+    value: function ensureInitLoaded() {
+      if (!this.initLoaded || !this.currentMetadata) {
+        throw new Error("Topic has no metadata");
+      }
+    }
+  }, {
+    key: "ensureBootstrapped",
+    value: function ensureBootstrapped(self) {
+      if (!self.bootstrapped || !self.messageQueue || !self.arrivalHub) {
+        throw new Error("Topic is not bootstrapped!");
+      }
+    }
+  }, {
+    key: "setName",
+    value: function setName(name) {
+      this.name = name;
+    } //Verifies current metadata
+
+  }, {
+    key: "verifyMetadata",
+    value: function verifyMetadata() {
+      return _Metadata__WEBPACK_IMPORTED_MODULE_15__[/* Metadata */ "a"].isMetadataValid(this._metadata);
+    }
+  }], [{
+    key: "prepareNewTopicSettings",
+    value: function prepareNewTopicSettings(version, nickname, topicName, publicKey) {
+      var encrypt = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : true;
+      //Creating and encrypting topic settings:
+      var settings = new _ClientSettings__WEBPACK_IMPORTED_MODULE_19__[/* ClientSettings */ "a"](version);
+
+      if (nickname) {
+        var _ic3 = new _iCrypto__WEBPACK_IMPORTED_MODULE_17__[/* iCrypto */ "a"]();
+
+        _ic3.asym.setKey("pubk", publicKey, "public").getPublicKeyFingerprint("pubk", "pkfp");
+
+        settings.setOwnerNickname(_ic3.get("pkfp"), nickname);
+      }
+
+      if (encrypt) {
+        return _ClientSettings__WEBPACK_IMPORTED_MODULE_19__[/* ClientSettings */ "a"].encrypt(publicKey, settings);
+      } else {
+        return settings;
+      }
+    }
+  }]);
+
+  return Topic;
+}();
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var dP = __webpack_require__(21);
+var createDesc = __webpack_require__(52);
+module.exports = __webpack_require__(22) ? function (object, key, value) {
+  return dP.f(object, key, createDesc(1, value));
+} : function (object, key, value) {
+  object[key] = value;
+  return object;
+};
+
+
+/***/ }),
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var anObject = __webpack_require__(15);
+var IE8_DOM_DEFINE = __webpack_require__(125);
+var toPrimitive = __webpack_require__(73);
+var dP = Object.defineProperty;
+
+exports.f = __webpack_require__(22) ? Object.defineProperty : function defineProperty(O, P, Attributes) {
+  anObject(O);
+  P = toPrimitive(P, true);
+  anObject(Attributes);
+  if (IE8_DOM_DEFINE) try {
+    return dP(O, P, Attributes);
+  } catch (e) { /* empty */ }
+  if ('get' in Attributes || 'set' in Attributes) throw TypeError('Accessors not supported!');
+  if ('value' in Attributes) O[P] = Attributes.value;
+  return O;
+};
+
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Thank's IE8 for his funny defineProperty
+module.exports = !__webpack_require__(23)(function () {
+  return Object.defineProperty({}, 'a', { get: function () { return 7; } }).a != 7;
+});
+
+
+/***/ }),
+/* 23 */
+/***/ (function(module, exports) {
+
+module.exports = function (exec) {
+  try {
+    return !!exec();
+  } catch (e) {
+    return true;
+  }
+};
+
+
+/***/ }),
+/* 24 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// 7.1.15 ToLength
+var toInteger = __webpack_require__(41);
+var min = Math.min;
+module.exports = function (it) {
+  return it > 0 ? min(toInteger(it), 0x1fffffffffffff) : 0; // pow(2, 53) - 1 == 9007199254740991
+};
+
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/**
+ * An API for getting cryptographically-secure random bytes. The bytes are
+ * generated using the Fortuna algorithm devised by Bruce Schneier and
+ * Niels Ferguson.
+ *
+ * Getting strong random bytes is not yet easy to do in javascript. The only
+ * truish random entropy that can be collected is from the mouse, keyboard, or
+ * from timing with respect to page loads, etc. This generator makes a poor
+ * attempt at providing random bytes when those sources haven't yet provided
+ * enough entropy to initially seed or to reseed the PRNG.
+ *
+ * @author Dave Longley
+ *
+ * Copyright (c) 2009-2014 Digital Bazaar, Inc.
+ */
+var forge = __webpack_require__(4);
+__webpack_require__(45);
+__webpack_require__(152);
+__webpack_require__(153);
+__webpack_require__(7);
+
+(function() {
+
+// forge.random already defined
+if(forge.random && forge.random.getBytes) {
+  module.exports = forge.random;
+  return;
+}
+
+(function(jQuery) {
+
+// the default prng plugin, uses AES-128
+var prng_aes = {};
+var _prng_aes_output = new Array(4);
+var _prng_aes_buffer = forge.util.createBuffer();
+prng_aes.formatKey = function(key) {
+  // convert the key into 32-bit integers
+  var tmp = forge.util.createBuffer(key);
+  key = new Array(4);
+  key[0] = tmp.getInt32();
+  key[1] = tmp.getInt32();
+  key[2] = tmp.getInt32();
+  key[3] = tmp.getInt32();
+
+  // return the expanded key
+  return forge.aes._expandKey(key, false);
+};
+prng_aes.formatSeed = function(seed) {
+  // convert seed into 32-bit integers
+  var tmp = forge.util.createBuffer(seed);
+  seed = new Array(4);
+  seed[0] = tmp.getInt32();
+  seed[1] = tmp.getInt32();
+  seed[2] = tmp.getInt32();
+  seed[3] = tmp.getInt32();
+  return seed;
+};
+prng_aes.cipher = function(key, seed) {
+  forge.aes._updateBlock(key, seed, _prng_aes_output, false);
+  _prng_aes_buffer.putInt32(_prng_aes_output[0]);
+  _prng_aes_buffer.putInt32(_prng_aes_output[1]);
+  _prng_aes_buffer.putInt32(_prng_aes_output[2]);
+  _prng_aes_buffer.putInt32(_prng_aes_output[3]);
+  return _prng_aes_buffer.getBytes();
+};
+prng_aes.increment = function(seed) {
+  // FIXME: do we care about carry or signed issues?
+  ++seed[3];
+  return seed;
+};
+prng_aes.md = forge.md.sha256;
+
+/**
+ * Creates a new PRNG.
+ */
+function spawnPrng() {
+  var ctx = forge.prng.create(prng_aes);
+
+  /**
+   * Gets random bytes. If a native secure crypto API is unavailable, this
+   * method tries to make the bytes more unpredictable by drawing from data that
+   * can be collected from the user of the browser, eg: mouse movement.
+   *
+   * If a callback is given, this method will be called asynchronously.
+   *
+   * @param count the number of random bytes to get.
+   * @param [callback(err, bytes)] called once the operation completes.
+   *
+   * @return the random bytes in a string.
+   */
+  ctx.getBytes = function(count, callback) {
+    return ctx.generate(count, callback);
+  };
+
+  /**
+   * Gets random bytes asynchronously. If a native secure crypto API is
+   * unavailable, this method tries to make the bytes more unpredictable by
+   * drawing from data that can be collected from the user of the browser,
+   * eg: mouse movement.
+   *
+   * @param count the number of random bytes to get.
+   *
+   * @return the random bytes in a string.
+   */
+  ctx.getBytesSync = function(count) {
+    return ctx.generate(count);
+  };
+
+  return ctx;
+}
+
+// create default prng context
+var _ctx = spawnPrng();
+
+// add other sources of entropy only if window.crypto.getRandomValues is not
+// available -- otherwise this source will be automatically used by the prng
+var getRandomValues = null;
+if(typeof window !== 'undefined') {
+  var _crypto = window.crypto || window.msCrypto;
+  if(_crypto && _crypto.getRandomValues) {
+    getRandomValues = function(arr) {
+      return _crypto.getRandomValues(arr);
+    };
+  }
+}
+if(forge.options.usePureJavaScript ||
+  (!forge.util.isNodejs && !getRandomValues)) {
+  // if this is a web worker, do not use weak entropy, instead register to
+  // receive strong entropy asynchronously from the main thread
+  if(typeof window === 'undefined' || window.document === undefined) {
+    // FIXME:
+  }
+
+  // get load time entropy
+  _ctx.collectInt(+new Date(), 32);
+
+  // add some entropy from navigator object
+  if(typeof(navigator) !== 'undefined') {
+    var _navBytes = '';
+    for(var key in navigator) {
+      try {
+        if(typeof(navigator[key]) == 'string') {
+          _navBytes += navigator[key];
+        }
+      } catch(e) {
+        /* Some navigator keys might not be accessible, e.g. the geolocation
+          attribute throws an exception if touched in Mozilla chrome://
+          context.
+
+          Silently ignore this and just don't use this as a source of
+          entropy. */
+      }
+    }
+    _ctx.collect(_navBytes);
+    _navBytes = null;
+  }
+
+  // add mouse and keyboard collectors if jquery is available
+  if(jQuery) {
+    // set up mouse entropy capture
+    jQuery().mousemove(function(e) {
+      // add mouse coords
+      _ctx.collectInt(e.clientX, 16);
+      _ctx.collectInt(e.clientY, 16);
+    });
+
+    // set up keyboard entropy capture
+    jQuery().keypress(function(e) {
+      _ctx.collectInt(e.charCode, 8);
+    });
+  }
+}
+
+/* Random API */
+if(!forge.random) {
+  forge.random = _ctx;
+} else {
+  // extend forge.random with _ctx
+  for(var key in _ctx) {
+    forge.random[key] = _ctx[key];
+  }
+}
+
+// expose spawn PRNG
+forge.random.createInstance = spawnPrng;
+
+module.exports = forge.random;
+
+})(typeof(jQuery) !== 'undefined' ? jQuery : null);
+
+})();
+
+
+/***/ }),
+/* 26 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var global = __webpack_require__(10);
+var core = __webpack_require__(37);
+var hide = __webpack_require__(20);
+var redefine = __webpack_require__(33);
+var ctx = __webpack_require__(40);
+var PROTOTYPE = 'prototype';
+
+var $export = function (type, name, source) {
+  var IS_FORCED = type & $export.F;
+  var IS_GLOBAL = type & $export.G;
+  var IS_STATIC = type & $export.S;
+  var IS_PROTO = type & $export.P;
+  var IS_BIND = type & $export.B;
+  var target = IS_GLOBAL ? global : IS_STATIC ? global[name] || (global[name] = {}) : (global[name] || {})[PROTOTYPE];
+  var exports = IS_GLOBAL ? core : core[name] || (core[name] = {});
+  var expProto = exports[PROTOTYPE] || (exports[PROTOTYPE] = {});
+  var key, own, out, exp;
+  if (IS_GLOBAL) source = name;
+  for (key in source) {
+    // contains in native
+    own = !IS_FORCED && target && target[key] !== undefined;
+    // export native or passed
+    out = (own ? target : source)[key];
+    // bind timers to global for call from export context
+    exp = IS_BIND && own ? ctx(out, global) : IS_PROTO && typeof out == 'function' ? ctx(Function.call, out) : out;
+    // extend global
+    if (target) redefine(target, key, out, type & $export.U);
+    // export
+    if (exports[key] != out) hide(exports, key, exp);
+    if (IS_PROTO && expProto[key] != out) expProto[key] = out;
+  }
+};
+global.core = core;
+// type bitmap
+$export.F = 1;   // forced
+$export.G = 2;   // global
+$export.S = 4;   // static
+$export.P = 8;   // proto
+$export.B = 16;  // bind
+$export.W = 32;  // wrap
+$export.U = 64;  // safe
+$export.R = 128; // real proto method for `library`
+module.exports = $export;
+
+
+/***/ }),
+/* 27 */
+/***/ (function(module, exports) {
+
+module.exports = function (it) {
+  return typeof it === 'object' ? it !== null : typeof it === 'function';
+};
+
+
+/***/ }),
+/* 28 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// 7.1.13 ToObject(argument)
+var defined = __webpack_require__(75);
+module.exports = function (it) {
+  return Object(defined(it));
+};
+
+
+/***/ }),
+/* 29 */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || new Function("return this")();
+} catch (e) {
+	// This works if the window reference is available
+	if (typeof window === "object") g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+
+/***/ }),
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/**
+ * Javascript implementation of Abstract Syntax Notation Number One.
+ *
+ * @author Dave Longley
+ *
+ * Copyright (c) 2010-2015 Digital Bazaar, Inc.
+ *
+ * An API for storing data using the Abstract Syntax Notation Number One
+ * format using DER (Distinguished Encoding Rules) encoding. This encoding is
+ * commonly used to store data for PKI, i.e. X.509 Certificates, and this
+ * implementation exists for that purpose.
+ *
+ * Abstract Syntax Notation Number One (ASN.1) is used to define the abstract
+ * syntax of information without restricting the way the information is encoded
+ * for transmission. It provides a standard that allows for open systems
+ * communication. ASN.1 defines the syntax of information data and a number of
+ * simple data types as well as a notation for describing them and specifying
+ * values for them.
+ *
+ * The RSA algorithm creates public and private keys that are often stored in
+ * X.509 or PKCS#X formats -- which use ASN.1 (encoded in DER format). This
+ * class provides the most basic functionality required to store and load DSA
+ * keys that are encoded according to ASN.1.
+ *
+ * The most common binary encodings for ASN.1 are BER (Basic Encoding Rules)
+ * and DER (Distinguished Encoding Rules). DER is just a subset of BER that
+ * has stricter requirements for how data must be encoded.
+ *
+ * Each ASN.1 structure has a tag (a byte identifying the ASN.1 structure type)
+ * and a byte array for the value of this ASN1 structure which may be data or a
+ * list of ASN.1 structures.
+ *
+ * Each ASN.1 structure using BER is (Tag-Length-Value):
+ *
+ * | byte 0 | bytes X | bytes Y |
+ * |--------|---------|----------
+ * |  tag   | length  |  value  |
+ *
+ * ASN.1 allows for tags to be of "High-tag-number form" which allows a tag to
+ * be two or more octets, but that is not supported by this class. A tag is
+ * only 1 byte. Bits 1-5 give the tag number (ie the data type within a
+ * particular 'class'), 6 indicates whether or not the ASN.1 value is
+ * constructed from other ASN.1 values, and bits 7 and 8 give the 'class'. If
+ * bits 7 and 8 are both zero, the class is UNIVERSAL. If only bit 7 is set,
+ * then the class is APPLICATION. If only bit 8 is set, then the class is
+ * CONTEXT_SPECIFIC. If both bits 7 and 8 are set, then the class is PRIVATE.
+ * The tag numbers for the data types for the class UNIVERSAL are listed below:
+ *
+ * UNIVERSAL 0 Reserved for use by the encoding rules
+ * UNIVERSAL 1 Boolean type
+ * UNIVERSAL 2 Integer type
+ * UNIVERSAL 3 Bitstring type
+ * UNIVERSAL 4 Octetstring type
+ * UNIVERSAL 5 Null type
+ * UNIVERSAL 6 Object identifier type
+ * UNIVERSAL 7 Object descriptor type
+ * UNIVERSAL 8 External type and Instance-of type
+ * UNIVERSAL 9 Real type
+ * UNIVERSAL 10 Enumerated type
+ * UNIVERSAL 11 Embedded-pdv type
+ * UNIVERSAL 12 UTF8String type
+ * UNIVERSAL 13 Relative object identifier type
+ * UNIVERSAL 14-15 Reserved for future editions
+ * UNIVERSAL 16 Sequence and Sequence-of types
+ * UNIVERSAL 17 Set and Set-of types
+ * UNIVERSAL 18-22, 25-30 Character string types
+ * UNIVERSAL 23-24 Time types
+ *
+ * The length of an ASN.1 structure is specified after the tag identifier.
+ * There is a definite form and an indefinite form. The indefinite form may
+ * be used if the encoding is constructed and not all immediately available.
+ * The indefinite form is encoded using a length byte with only the 8th bit
+ * set. The end of the constructed object is marked using end-of-contents
+ * octets (two zero bytes).
+ *
+ * The definite form looks like this:
+ *
+ * The length may take up 1 or more bytes, it depends on the length of the
+ * value of the ASN.1 structure. DER encoding requires that if the ASN.1
+ * structure has a value that has a length greater than 127, more than 1 byte
+ * will be used to store its length, otherwise just one byte will be used.
+ * This is strict.
+ *
+ * In the case that the length of the ASN.1 value is less than 127, 1 octet
+ * (byte) is used to store the "short form" length. The 8th bit has a value of
+ * 0 indicating the length is "short form" and not "long form" and bits 7-1
+ * give the length of the data. (The 8th bit is the left-most, most significant
+ * bit: also known as big endian or network format).
+ *
+ * In the case that the length of the ASN.1 value is greater than 127, 2 to
+ * 127 octets (bytes) are used to store the "long form" length. The first
+ * byte's 8th bit is set to 1 to indicate the length is "long form." Bits 7-1
+ * give the number of additional octets. All following octets are in base 256
+ * with the most significant digit first (typical big-endian binary unsigned
+ * integer storage). So, for instance, if the length of a value was 257, the
+ * first byte would be set to:
+ *
+ * 10000010 = 130 = 0x82.
+ *
+ * This indicates there are 2 octets (base 256) for the length. The second and
+ * third bytes (the octets just mentioned) would store the length in base 256:
+ *
+ * octet 2: 00000001 = 1 * 256^1 = 256
+ * octet 3: 00000001 = 1 * 256^0 = 1
+ * total = 257
+ *
+ * The algorithm for converting a js integer value of 257 to base-256 is:
+ *
+ * var value = 257;
+ * var bytes = [];
+ * bytes[0] = (value >>> 8) & 0xFF; // most significant byte first
+ * bytes[1] = value & 0xFF;        // least significant byte last
+ *
+ * On the ASN.1 UNIVERSAL Object Identifier (OID) type:
+ *
+ * An OID can be written like: "value1.value2.value3...valueN"
+ *
+ * The DER encoding rules:
+ *
+ * The first byte has the value 40 * value1 + value2.
+ * The following bytes, if any, encode the remaining values. Each value is
+ * encoded in base 128, most significant digit first (big endian), with as
+ * few digits as possible, and the most significant bit of each byte set
+ * to 1 except the last in each value's encoding. For example: Given the
+ * OID "1.2.840.113549", its DER encoding is (remember each byte except the
+ * last one in each encoding is OR'd with 0x80):
+ *
+ * byte 1: 40 * 1 + 2 = 42 = 0x2A.
+ * bytes 2-3: 128 * 6 + 72 = 840 = 6 72 = 6 72 = 0x0648 = 0x8648
+ * bytes 4-6: 16384 * 6 + 128 * 119 + 13 = 6 119 13 = 0x06770D = 0x86F70D
+ *
+ * The final value is: 0x2A864886F70D.
+ * The full OID (including ASN.1 tag and length of 6 bytes) is:
+ * 0x06062A864886F70D
+ */
+var forge = __webpack_require__(4);
+__webpack_require__(7);
+__webpack_require__(46);
+
+/* ASN.1 API */
+var asn1 = module.exports = forge.asn1 = forge.asn1 || {};
+
+/**
+ * ASN.1 classes.
+ */
+asn1.Class = {
+  UNIVERSAL:        0x00,
+  APPLICATION:      0x40,
+  CONTEXT_SPECIFIC: 0x80,
+  PRIVATE:          0xC0
+};
+
+/**
+ * ASN.1 types. Not all types are supported by this implementation, only
+ * those necessary to implement a simple PKI are implemented.
+ */
+asn1.Type = {
+  NONE:             0,
+  BOOLEAN:          1,
+  INTEGER:          2,
+  BITSTRING:        3,
+  OCTETSTRING:      4,
+  NULL:             5,
+  OID:              6,
+  ODESC:            7,
+  EXTERNAL:         8,
+  REAL:             9,
+  ENUMERATED:      10,
+  EMBEDDED:        11,
+  UTF8:            12,
+  ROID:            13,
+  SEQUENCE:        16,
+  SET:             17,
+  PRINTABLESTRING: 19,
+  IA5STRING:       22,
+  UTCTIME:         23,
+  GENERALIZEDTIME: 24,
+  BMPSTRING:       30
+};
+
+/**
+ * Creates a new asn1 object.
+ *
+ * @param tagClass the tag class for the object.
+ * @param type the data type (tag number) for the object.
+ * @param constructed true if the asn1 object is in constructed form.
+ * @param value the value for the object, if it is not constructed.
+ * @param [options] the options to use:
+ *          [bitStringContents] the plain BIT STRING content including padding
+ *            byte.
+ *
+ * @return the asn1 object.
+ */
+asn1.create = function(tagClass, type, constructed, value, options) {
+  /* An asn1 object has a tagClass, a type, a constructed flag, and a
+    value. The value's type depends on the constructed flag. If
+    constructed, it will contain a list of other asn1 objects. If not,
+    it will contain the ASN.1 value as an array of bytes formatted
+    according to the ASN.1 data type. */
+
+  // remove undefined values
+  if(forge.util.isArray(value)) {
+    var tmp = [];
+    for(var i = 0; i < value.length; ++i) {
+      if(value[i] !== undefined) {
+        tmp.push(value[i]);
+      }
+    }
+    value = tmp;
+  }
+
+  var obj = {
+    tagClass: tagClass,
+    type: type,
+    constructed: constructed,
+    composed: constructed || forge.util.isArray(value),
+    value: value
+  };
+  if(options && 'bitStringContents' in options) {
+    // TODO: copy byte buffer if it's a buffer not a string
+    obj.bitStringContents = options.bitStringContents;
+    // TODO: add readonly flag to avoid this overhead
+    // save copy to detect changes
+    obj.original = asn1.copy(obj);
+  }
+  return obj;
+};
+
+/**
+ * Copies an asn1 object.
+ *
+ * @param obj the asn1 object.
+ * @param [options] copy options:
+ *          [excludeBitStringContents] true to not copy bitStringContents
+ *
+ * @return the a copy of the asn1 object.
+ */
+asn1.copy = function(obj, options) {
+  var copy;
+
+  if(forge.util.isArray(obj)) {
+    copy = [];
+    for(var i = 0; i < obj.length; ++i) {
+      copy.push(asn1.copy(obj[i], options));
+    }
+    return copy;
+  }
+
+  if(typeof obj === 'string') {
+    // TODO: copy byte buffer if it's a buffer not a string
+    return obj;
+  }
+
+  copy = {
+    tagClass: obj.tagClass,
+    type: obj.type,
+    constructed: obj.constructed,
+    composed: obj.composed,
+    value: asn1.copy(obj.value, options)
+  };
+  if(options && !options.excludeBitStringContents) {
+    // TODO: copy byte buffer if it's a buffer not a string
+    copy.bitStringContents = obj.bitStringContents;
+  }
+  return copy;
+};
+
+/**
+ * Compares asn1 objects for equality.
+ *
+ * Note this function does not run in constant time.
+ *
+ * @param obj1 the first asn1 object.
+ * @param obj2 the second asn1 object.
+ * @param [options] compare options:
+ *          [includeBitStringContents] true to compare bitStringContents
+ *
+ * @return true if the asn1 objects are equal.
+ */
+asn1.equals = function(obj1, obj2, options) {
+  if(forge.util.isArray(obj1)) {
+    if(!forge.util.isArray(obj2)) {
+      return false;
+    }
+    if(obj1.length !== obj2.length) {
+      return false;
+    }
+    for(var i = 0; i < obj1.length; ++i) {
+      if(!asn1.equals(obj1[i], obj2[i])) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  if(typeof obj1 !== typeof obj2) {
+    return false;
+  }
+
+  if(typeof obj1 === 'string') {
+    return obj1 === obj2;
+  }
+
+  var equal = obj1.tagClass === obj2.tagClass &&
+    obj1.type === obj2.type &&
+    obj1.constructed === obj2.constructed &&
+    obj1.composed === obj2.composed &&
+    asn1.equals(obj1.value, obj2.value);
+  if(options && options.includeBitStringContents) {
+    equal = equal && (obj1.bitStringContents === obj2.bitStringContents);
+  }
+
+  return equal;
+};
+
+/**
+ * Gets the length of a BER-encoded ASN.1 value.
+ *
+ * In case the length is not specified, undefined is returned.
+ *
+ * @param b the BER-encoded ASN.1 byte buffer, starting with the first
+ *          length byte.
+ *
+ * @return the length of the BER-encoded ASN.1 value or undefined.
+ */
+asn1.getBerValueLength = function(b) {
+  // TODO: move this function and related DER/BER functions to a der.js
+  // file; better abstract ASN.1 away from der/ber.
+  var b2 = b.getByte();
+  if(b2 === 0x80) {
+    return undefined;
+  }
+
+  // see if the length is "short form" or "long form" (bit 8 set)
+  var length;
+  var longForm = b2 & 0x80;
+  if(!longForm) {
+    // length is just the first byte
+    length = b2;
+  } else {
+    // the number of bytes the length is specified in bits 7 through 1
+    // and each length byte is in big-endian base-256
+    length = b.getInt((b2 & 0x7F) << 3);
+  }
+  return length;
+};
+
+/**
+ * Check if the byte buffer has enough bytes. Throws an Error if not.
+ *
+ * @param bytes the byte buffer to parse from.
+ * @param remaining the bytes remaining in the current parsing state.
+ * @param n the number of bytes the buffer must have.
+ */
+function _checkBufferLength(bytes, remaining, n) {
+  if(n > remaining) {
+    var error = new Error('Too few bytes to parse DER.');
+    error.available = bytes.length();
+    error.remaining = remaining;
+    error.requested = n;
+    throw error;
+  }
+}
+
+/**
+ * Gets the length of a BER-encoded ASN.1 value.
+ *
+ * In case the length is not specified, undefined is returned.
+ *
+ * @param bytes the byte buffer to parse from.
+ * @param remaining the bytes remaining in the current parsing state.
+ *
+ * @return the length of the BER-encoded ASN.1 value or undefined.
+ */
+var _getValueLength = function(bytes, remaining) {
+  // TODO: move this function and related DER/BER functions to a der.js
+  // file; better abstract ASN.1 away from der/ber.
+  // fromDer already checked that this byte exists
+  var b2 = bytes.getByte();
+  remaining--;
+  if(b2 === 0x80) {
+    return undefined;
+  }
+
+  // see if the length is "short form" or "long form" (bit 8 set)
+  var length;
+  var longForm = b2 & 0x80;
+  if(!longForm) {
+    // length is just the first byte
+    length = b2;
+  } else {
+    // the number of bytes the length is specified in bits 7 through 1
+    // and each length byte is in big-endian base-256
+    var longFormBytes = b2 & 0x7F;
+    _checkBufferLength(bytes, remaining, longFormBytes);
+    length = bytes.getInt(longFormBytes << 3);
+  }
+  // FIXME: this will only happen for 32 bit getInt with high bit set
+  if(length < 0) {
+    throw new Error('Negative length: ' + length);
+  }
+  return length;
+};
+
+/**
+ * Parses an asn1 object from a byte buffer in DER format.
+ *
+ * @param bytes the byte buffer to parse from.
+ * @param [strict] true to be strict when checking value lengths, false to
+ *          allow truncated values (default: true).
+ * @param [options] object with options or boolean strict flag
+ *          [strict] true to be strict when checking value lengths, false to
+ *            allow truncated values (default: true).
+ *          [decodeBitStrings] true to attempt to decode the content of
+ *            BIT STRINGs (not OCTET STRINGs) using strict mode. Note that
+ *            without schema support to understand the data context this can
+ *            erroneously decode values that happen to be valid ASN.1. This
+ *            flag will be deprecated or removed as soon as schema support is
+ *            available. (default: true)
+ *
+ * @return the parsed asn1 object.
+ */
+asn1.fromDer = function(bytes, options) {
+  if(options === undefined) {
+    options = {
+      strict: true,
+      decodeBitStrings: true
+    };
+  }
+  if(typeof options === 'boolean') {
+    options = {
+      strict: options,
+      decodeBitStrings: true
+    };
+  }
+  if(!('strict' in options)) {
+    options.strict = true;
+  }
+  if(!('decodeBitStrings' in options)) {
+    options.decodeBitStrings = true;
+  }
+
+  // wrap in buffer if needed
+  if(typeof bytes === 'string') {
+    bytes = forge.util.createBuffer(bytes);
+  }
+
+  return _fromDer(bytes, bytes.length(), 0, options);
+};
+
+/**
+ * Internal function to parse an asn1 object from a byte buffer in DER format.
+ *
+ * @param bytes the byte buffer to parse from.
+ * @param remaining the number of bytes remaining for this chunk.
+ * @param depth the current parsing depth.
+ * @param options object with same options as fromDer().
+ *
+ * @return the parsed asn1 object.
+ */
+function _fromDer(bytes, remaining, depth, options) {
+  // temporary storage for consumption calculations
+  var start;
+
+  // minimum length for ASN.1 DER structure is 2
+  _checkBufferLength(bytes, remaining, 2);
+
+  // get the first byte
+  var b1 = bytes.getByte();
+  // consumed one byte
+  remaining--;
+
+  // get the tag class
+  var tagClass = (b1 & 0xC0);
+
+  // get the type (bits 1-5)
+  var type = b1 & 0x1F;
+
+  // get the variable value length and adjust remaining bytes
+  start = bytes.length();
+  var length = _getValueLength(bytes, remaining);
+  remaining -= start - bytes.length();
+
+  // ensure there are enough bytes to get the value
+  if(length !== undefined && length > remaining) {
+    if(options.strict) {
+      var error = new Error('Too few bytes to read ASN.1 value.');
+      error.available = bytes.length();
+      error.remaining = remaining;
+      error.requested = length;
+      throw error;
+    }
+    // Note: be lenient with truncated values and use remaining state bytes
+    length = remaining;
+  }
+
+  // value storage
+  var value;
+  // possible BIT STRING contents storage
+  var bitStringContents;
+
+  // constructed flag is bit 6 (32 = 0x20) of the first byte
+  var constructed = ((b1 & 0x20) === 0x20);
+  if(constructed) {
+    // parse child asn1 objects from the value
+    value = [];
+    if(length === undefined) {
+      // asn1 object of indefinite length, read until end tag
+      for(;;) {
+        _checkBufferLength(bytes, remaining, 2);
+        if(bytes.bytes(2) === String.fromCharCode(0, 0)) {
+          bytes.getBytes(2);
+          remaining -= 2;
+          break;
+        }
+        start = bytes.length();
+        value.push(_fromDer(bytes, remaining, depth + 1, options));
+        remaining -= start - bytes.length();
+      }
+    } else {
+      // parsing asn1 object of definite length
+      while(length > 0) {
+        start = bytes.length();
+        value.push(_fromDer(bytes, length, depth + 1, options));
+        remaining -= start - bytes.length();
+        length -= start - bytes.length();
+      }
+    }
+  }
+
+  // if a BIT STRING, save the contents including padding
+  if(value === undefined && tagClass === asn1.Class.UNIVERSAL &&
+    type === asn1.Type.BITSTRING) {
+    bitStringContents = bytes.bytes(length);
+  }
+
+  // determine if a non-constructed value should be decoded as a composed
+  // value that contains other ASN.1 objects. BIT STRINGs (and OCTET STRINGs)
+  // can be used this way.
+  if(value === undefined && options.decodeBitStrings &&
+    tagClass === asn1.Class.UNIVERSAL &&
+    // FIXME: OCTET STRINGs not yet supported here
+    // .. other parts of forge expect to decode OCTET STRINGs manually
+    (type === asn1.Type.BITSTRING /*|| type === asn1.Type.OCTETSTRING*/) &&
+    length > 1) {
+    // save read position
+    var savedRead = bytes.read;
+    var savedRemaining = remaining;
+    var unused = 0;
+    if(type === asn1.Type.BITSTRING) {
+      /* The first octet gives the number of bits by which the length of the
+        bit string is less than the next multiple of eight (this is called
+        the "number of unused bits").
+
+        The second and following octets give the value of the bit string
+        converted to an octet string. */
+      _checkBufferLength(bytes, remaining, 1);
+      unused = bytes.getByte();
+      remaining--;
+    }
+    // if all bits are used, maybe the BIT/OCTET STRING holds ASN.1 objs
+    if(unused === 0) {
+      try {
+        // attempt to parse child asn1 object from the value
+        // (stored in array to signal composed value)
+        start = bytes.length();
+        var subOptions = {
+          // enforce strict mode to avoid parsing ASN.1 from plain data
+          verbose: options.verbose,
+          strict: true,
+          decodeBitStrings: true
+        };
+        var composed = _fromDer(bytes, remaining, depth + 1, subOptions);
+        var used = start - bytes.length();
+        remaining -= used;
+        if(type == asn1.Type.BITSTRING) {
+          used++;
+        }
+
+        // if the data all decoded and the class indicates UNIVERSAL or
+        // CONTEXT_SPECIFIC then assume we've got an encapsulated ASN.1 object
+        var tc = composed.tagClass;
+        if(used === length &&
+          (tc === asn1.Class.UNIVERSAL || tc === asn1.Class.CONTEXT_SPECIFIC)) {
+          value = [composed];
+        }
+      } catch(ex) {
+      }
+    }
+    if(value === undefined) {
+      // restore read position
+      bytes.read = savedRead;
+      remaining = savedRemaining;
+    }
+  }
+
+  if(value === undefined) {
+    // asn1 not constructed or composed, get raw value
+    // TODO: do DER to OID conversion and vice-versa in .toDer?
+
+    if(length === undefined) {
+      if(options.strict) {
+        throw new Error('Non-constructed ASN.1 object of indefinite length.');
+      }
+      // be lenient and use remaining state bytes
+      length = remaining;
+    }
+
+    if(type === asn1.Type.BMPSTRING) {
+      value = '';
+      for(; length > 0; length -= 2) {
+        _checkBufferLength(bytes, remaining, 2);
+        value += String.fromCharCode(bytes.getInt16());
+        remaining -= 2;
+      }
+    } else {
+      value = bytes.getBytes(length);
+    }
+  }
+
+  // add BIT STRING contents if available
+  var asn1Options = bitStringContents === undefined ?  null : {
+    bitStringContents: bitStringContents
+  };
+
+  // create and return asn1 object
+  return asn1.create(tagClass, type, constructed, value, asn1Options);
+}
+
+/**
+ * Converts the given asn1 object to a buffer of bytes in DER format.
+ *
+ * @param asn1 the asn1 object to convert to bytes.
+ *
+ * @return the buffer of bytes.
+ */
+asn1.toDer = function(obj) {
+  var bytes = forge.util.createBuffer();
+
+  // build the first byte
+  var b1 = obj.tagClass | obj.type;
+
+  // for storing the ASN.1 value
+  var value = forge.util.createBuffer();
+
+  // use BIT STRING contents if available and data not changed
+  var useBitStringContents = false;
+  if('bitStringContents' in obj) {
+    useBitStringContents = true;
+    if(obj.original) {
+      useBitStringContents = asn1.equals(obj, obj.original);
+    }
+  }
+
+  if(useBitStringContents) {
+    value.putBytes(obj.bitStringContents);
+  } else if(obj.composed) {
+    // if composed, use each child asn1 object's DER bytes as value
+    // turn on 6th bit (0x20 = 32) to indicate asn1 is constructed
+    // from other asn1 objects
+    if(obj.constructed) {
+      b1 |= 0x20;
+    } else {
+      // type is a bit string, add unused bits of 0x00
+      value.putByte(0x00);
+    }
+
+    // add all of the child DER bytes together
+    for(var i = 0; i < obj.value.length; ++i) {
+      if(obj.value[i] !== undefined) {
+        value.putBuffer(asn1.toDer(obj.value[i]));
+      }
+    }
+  } else {
+    // use asn1.value directly
+    if(obj.type === asn1.Type.BMPSTRING) {
+      for(var i = 0; i < obj.value.length; ++i) {
+        value.putInt16(obj.value.charCodeAt(i));
+      }
+    } else {
+      // ensure integer is minimally-encoded
+      // TODO: should all leading bytes be stripped vs just one?
+      // .. ex '00 00 01' => '01'?
+      if(obj.type === asn1.Type.INTEGER &&
+        obj.value.length > 1 &&
+        // leading 0x00 for positive integer
+        ((obj.value.charCodeAt(0) === 0 &&
+        (obj.value.charCodeAt(1) & 0x80) === 0) ||
+        // leading 0xFF for negative integer
+        (obj.value.charCodeAt(0) === 0xFF &&
+        (obj.value.charCodeAt(1) & 0x80) === 0x80))) {
+        value.putBytes(obj.value.substr(1));
+      } else {
+        value.putBytes(obj.value);
+      }
+    }
+  }
+
+  // add tag byte
+  bytes.putByte(b1);
+
+  // use "short form" encoding
+  if(value.length() <= 127) {
+    // one byte describes the length
+    // bit 8 = 0 and bits 7-1 = length
+    bytes.putByte(value.length() & 0x7F);
+  } else {
+    // use "long form" encoding
+    // 2 to 127 bytes describe the length
+    // first byte: bit 8 = 1 and bits 7-1 = # of additional bytes
+    // other bytes: length in base 256, big-endian
+    var len = value.length();
+    var lenBytes = '';
+    do {
+      lenBytes += String.fromCharCode(len & 0xFF);
+      len = len >>> 8;
+    } while(len > 0);
+
+    // set first byte to # bytes used to store the length and turn on
+    // bit 8 to indicate long-form length is used
+    bytes.putByte(lenBytes.length | 0x80);
+
+    // concatenate length bytes in reverse since they were generated
+    // little endian and we need big endian
+    for(var i = lenBytes.length - 1; i >= 0; --i) {
+      bytes.putByte(lenBytes.charCodeAt(i));
+    }
+  }
+
+  // concatenate value bytes
+  bytes.putBuffer(value);
+  return bytes;
+};
+
+/**
+ * Converts an OID dot-separated string to a byte buffer. The byte buffer
+ * contains only the DER-encoded value, not any tag or length bytes.
+ *
+ * @param oid the OID dot-separated string.
+ *
+ * @return the byte buffer.
+ */
+asn1.oidToDer = function(oid) {
+  // split OID into individual values
+  var values = oid.split('.');
+  var bytes = forge.util.createBuffer();
+
+  // first byte is 40 * value1 + value2
+  bytes.putByte(40 * parseInt(values[0], 10) + parseInt(values[1], 10));
+  // other bytes are each value in base 128 with 8th bit set except for
+  // the last byte for each value
+  var last, valueBytes, value, b;
+  for(var i = 2; i < values.length; ++i) {
+    // produce value bytes in reverse because we don't know how many
+    // bytes it will take to store the value
+    last = true;
+    valueBytes = [];
+    value = parseInt(values[i], 10);
+    do {
+      b = value & 0x7F;
+      value = value >>> 7;
+      // if value is not last, then turn on 8th bit
+      if(!last) {
+        b |= 0x80;
+      }
+      valueBytes.push(b);
+      last = false;
+    } while(value > 0);
+
+    // add value bytes in reverse (needs to be in big endian)
+    for(var n = valueBytes.length - 1; n >= 0; --n) {
+      bytes.putByte(valueBytes[n]);
+    }
+  }
+
+  return bytes;
+};
+
+/**
+ * Converts a DER-encoded byte buffer to an OID dot-separated string. The
+ * byte buffer should contain only the DER-encoded value, not any tag or
+ * length bytes.
+ *
+ * @param bytes the byte buffer.
+ *
+ * @return the OID dot-separated string.
+ */
+asn1.derToOid = function(bytes) {
+  var oid;
+
+  // wrap in buffer if needed
+  if(typeof bytes === 'string') {
+    bytes = forge.util.createBuffer(bytes);
+  }
+
+  // first byte is 40 * value1 + value2
+  var b = bytes.getByte();
+  oid = Math.floor(b / 40) + '.' + (b % 40);
+
+  // other bytes are each value in base 128 with 8th bit set except for
+  // the last byte for each value
+  var value = 0;
+  while(bytes.length() > 0) {
+    b = bytes.getByte();
+    value = value << 7;
+    // not the last byte for the value
+    if(b & 0x80) {
+      value += b & 0x7F;
+    } else {
+      // last byte
+      oid += '.' + (value + b);
+      value = 0;
+    }
+  }
+
+  return oid;
+};
+
+/**
+ * Converts a UTCTime value to a date.
+ *
+ * Note: GeneralizedTime has 4 digits for the year and is used for X.509
+ * dates past 2049. Parsing that structure hasn't been implemented yet.
+ *
+ * @param utc the UTCTime value to convert.
+ *
+ * @return the date.
+ */
+asn1.utcTimeToDate = function(utc) {
+  /* The following formats can be used:
+
+    YYMMDDhhmmZ
+    YYMMDDhhmm+hh'mm'
+    YYMMDDhhmm-hh'mm'
+    YYMMDDhhmmssZ
+    YYMMDDhhmmss+hh'mm'
+    YYMMDDhhmmss-hh'mm'
+
+    Where:
+
+    YY is the least significant two digits of the year
+    MM is the month (01 to 12)
+    DD is the day (01 to 31)
+    hh is the hour (00 to 23)
+    mm are the minutes (00 to 59)
+    ss are the seconds (00 to 59)
+    Z indicates that local time is GMT, + indicates that local time is
+    later than GMT, and - indicates that local time is earlier than GMT
+    hh' is the absolute value of the offset from GMT in hours
+    mm' is the absolute value of the offset from GMT in minutes */
+  var date = new Date();
+
+  // if YY >= 50 use 19xx, if YY < 50 use 20xx
+  var year = parseInt(utc.substr(0, 2), 10);
+  year = (year >= 50) ? 1900 + year : 2000 + year;
+  var MM = parseInt(utc.substr(2, 2), 10) - 1; // use 0-11 for month
+  var DD = parseInt(utc.substr(4, 2), 10);
+  var hh = parseInt(utc.substr(6, 2), 10);
+  var mm = parseInt(utc.substr(8, 2), 10);
+  var ss = 0;
+
+  // not just YYMMDDhhmmZ
+  if(utc.length > 11) {
+    // get character after minutes
+    var c = utc.charAt(10);
+    var end = 10;
+
+    // see if seconds are present
+    if(c !== '+' && c !== '-') {
+      // get seconds
+      ss = parseInt(utc.substr(10, 2), 10);
+      end += 2;
+    }
+  }
+
+  // update date
+  date.setUTCFullYear(year, MM, DD);
+  date.setUTCHours(hh, mm, ss, 0);
+
+  if(end) {
+    // get +/- after end of time
+    c = utc.charAt(end);
+    if(c === '+' || c === '-') {
+      // get hours+minutes offset
+      var hhoffset = parseInt(utc.substr(end + 1, 2), 10);
+      var mmoffset = parseInt(utc.substr(end + 4, 2), 10);
+
+      // calculate offset in milliseconds
+      var offset = hhoffset * 60 + mmoffset;
+      offset *= 60000;
+
+      // apply offset
+      if(c === '+') {
+        date.setTime(+date - offset);
+      } else {
+        date.setTime(+date + offset);
+      }
+    }
+  }
+
+  return date;
+};
+
+/**
+ * Converts a GeneralizedTime value to a date.
+ *
+ * @param gentime the GeneralizedTime value to convert.
+ *
+ * @return the date.
+ */
+asn1.generalizedTimeToDate = function(gentime) {
+  /* The following formats can be used:
+
+    YYYYMMDDHHMMSS
+    YYYYMMDDHHMMSS.fff
+    YYYYMMDDHHMMSSZ
+    YYYYMMDDHHMMSS.fffZ
+    YYYYMMDDHHMMSS+hh'mm'
+    YYYYMMDDHHMMSS.fff+hh'mm'
+    YYYYMMDDHHMMSS-hh'mm'
+    YYYYMMDDHHMMSS.fff-hh'mm'
+
+    Where:
+
+    YYYY is the year
+    MM is the month (01 to 12)
+    DD is the day (01 to 31)
+    hh is the hour (00 to 23)
+    mm are the minutes (00 to 59)
+    ss are the seconds (00 to 59)
+    .fff is the second fraction, accurate to three decimal places
+    Z indicates that local time is GMT, + indicates that local time is
+    later than GMT, and - indicates that local time is earlier than GMT
+    hh' is the absolute value of the offset from GMT in hours
+    mm' is the absolute value of the offset from GMT in minutes */
+  var date = new Date();
+
+  var YYYY = parseInt(gentime.substr(0, 4), 10);
+  var MM = parseInt(gentime.substr(4, 2), 10) - 1; // use 0-11 for month
+  var DD = parseInt(gentime.substr(6, 2), 10);
+  var hh = parseInt(gentime.substr(8, 2), 10);
+  var mm = parseInt(gentime.substr(10, 2), 10);
+  var ss = parseInt(gentime.substr(12, 2), 10);
+  var fff = 0;
+  var offset = 0;
+  var isUTC = false;
+
+  if(gentime.charAt(gentime.length - 1) === 'Z') {
+    isUTC = true;
+  }
+
+  var end = gentime.length - 5, c = gentime.charAt(end);
+  if(c === '+' || c === '-') {
+    // get hours+minutes offset
+    var hhoffset = parseInt(gentime.substr(end + 1, 2), 10);
+    var mmoffset = parseInt(gentime.substr(end + 4, 2), 10);
+
+    // calculate offset in milliseconds
+    offset = hhoffset * 60 + mmoffset;
+    offset *= 60000;
+
+    // apply offset
+    if(c === '+') {
+      offset *= -1;
+    }
+
+    isUTC = true;
+  }
+
+  // check for second fraction
+  if(gentime.charAt(14) === '.') {
+    fff = parseFloat(gentime.substr(14), 10) * 1000;
+  }
+
+  if(isUTC) {
+    date.setUTCFullYear(YYYY, MM, DD);
+    date.setUTCHours(hh, mm, ss, fff);
+
+    // apply offset
+    date.setTime(+date + offset);
+  } else {
+    date.setFullYear(YYYY, MM, DD);
+    date.setHours(hh, mm, ss, fff);
+  }
+
+  return date;
+};
+
+/**
+ * Converts a date to a UTCTime value.
+ *
+ * Note: GeneralizedTime has 4 digits for the year and is used for X.509
+ * dates past 2049. Converting to a GeneralizedTime hasn't been
+ * implemented yet.
+ *
+ * @param date the date to convert.
+ *
+ * @return the UTCTime value.
+ */
+asn1.dateToUtcTime = function(date) {
+  // TODO: validate; currently assumes proper format
+  if(typeof date === 'string') {
+    return date;
+  }
+
+  var rval = '';
+
+  // create format YYMMDDhhmmssZ
+  var format = [];
+  format.push(('' + date.getUTCFullYear()).substr(2));
+  format.push('' + (date.getUTCMonth() + 1));
+  format.push('' + date.getUTCDate());
+  format.push('' + date.getUTCHours());
+  format.push('' + date.getUTCMinutes());
+  format.push('' + date.getUTCSeconds());
+
+  // ensure 2 digits are used for each format entry
+  for(var i = 0; i < format.length; ++i) {
+    if(format[i].length < 2) {
+      rval += '0';
+    }
+    rval += format[i];
+  }
+  rval += 'Z';
+
+  return rval;
+};
+
+/**
+ * Converts a date to a GeneralizedTime value.
+ *
+ * @param date the date to convert.
+ *
+ * @return the GeneralizedTime value as a string.
+ */
+asn1.dateToGeneralizedTime = function(date) {
+  // TODO: validate; currently assumes proper format
+  if(typeof date === 'string') {
+    return date;
+  }
+
+  var rval = '';
+
+  // create format YYYYMMDDHHMMSSZ
+  var format = [];
+  format.push('' + date.getUTCFullYear());
+  format.push('' + (date.getUTCMonth() + 1));
+  format.push('' + date.getUTCDate());
+  format.push('' + date.getUTCHours());
+  format.push('' + date.getUTCMinutes());
+  format.push('' + date.getUTCSeconds());
+
+  // ensure 2 digits are used for each format entry
+  for(var i = 0; i < format.length; ++i) {
+    if(format[i].length < 2) {
+      rval += '0';
+    }
+    rval += format[i];
+  }
+  rval += 'Z';
+
+  return rval;
+};
+
+/**
+ * Converts a javascript integer to a DER-encoded byte buffer to be used
+ * as the value for an INTEGER type.
+ *
+ * @param x the integer.
+ *
+ * @return the byte buffer.
+ */
+asn1.integerToDer = function(x) {
+  var rval = forge.util.createBuffer();
+  if(x >= -0x80 && x < 0x80) {
+    return rval.putSignedInt(x, 8);
+  }
+  if(x >= -0x8000 && x < 0x8000) {
+    return rval.putSignedInt(x, 16);
+  }
+  if(x >= -0x800000 && x < 0x800000) {
+    return rval.putSignedInt(x, 24);
+  }
+  if(x >= -0x80000000 && x < 0x80000000) {
+    return rval.putSignedInt(x, 32);
+  }
+  var error = new Error('Integer too large; max is 32-bits.');
+  error.integer = x;
+  throw error;
+};
+
+/**
+ * Converts a DER-encoded byte buffer to a javascript integer. This is
+ * typically used to decode the value of an INTEGER type.
+ *
+ * @param bytes the byte buffer.
+ *
+ * @return the integer.
+ */
+asn1.derToInteger = function(bytes) {
+  // wrap in buffer if needed
+  if(typeof bytes === 'string') {
+    bytes = forge.util.createBuffer(bytes);
+  }
+
+  var n = bytes.length() * 8;
+  if(n > 32) {
+    throw new Error('Integer too large; max is 32-bits.');
+  }
+  return bytes.getSignedInt(n);
+};
+
+/**
+ * Validates that the given ASN.1 object is at least a super set of the
+ * given ASN.1 structure. Only tag classes and types are checked. An
+ * optional map may also be provided to capture ASN.1 values while the
+ * structure is checked.
+ *
+ * To capture an ASN.1 value, set an object in the validator's 'capture'
+ * parameter to the key to use in the capture map. To capture the full
+ * ASN.1 object, specify 'captureAsn1'. To capture BIT STRING bytes, including
+ * the leading unused bits counter byte, specify 'captureBitStringContents'.
+ * To capture BIT STRING bytes, without the leading unused bits counter byte,
+ * specify 'captureBitStringValue'.
+ *
+ * Objects in the validator may set a field 'optional' to true to indicate
+ * that it isn't necessary to pass validation.
+ *
+ * @param obj the ASN.1 object to validate.
+ * @param v the ASN.1 structure validator.
+ * @param capture an optional map to capture values in.
+ * @param errors an optional array for storing validation errors.
+ *
+ * @return true on success, false on failure.
+ */
+asn1.validate = function(obj, v, capture, errors) {
+  var rval = false;
+
+  // ensure tag class and type are the same if specified
+  if((obj.tagClass === v.tagClass || typeof(v.tagClass) === 'undefined') &&
+    (obj.type === v.type || typeof(v.type) === 'undefined')) {
+    // ensure constructed flag is the same if specified
+    if(obj.constructed === v.constructed ||
+      typeof(v.constructed) === 'undefined') {
+      rval = true;
+
+      // handle sub values
+      if(v.value && forge.util.isArray(v.value)) {
+        var j = 0;
+        for(var i = 0; rval && i < v.value.length; ++i) {
+          rval = v.value[i].optional || false;
+          if(obj.value[j]) {
+            rval = asn1.validate(obj.value[j], v.value[i], capture, errors);
+            if(rval) {
+              ++j;
+            } else if(v.value[i].optional) {
+              rval = true;
+            }
+          }
+          if(!rval && errors) {
+            errors.push(
+              '[' + v.name + '] ' +
+              'Tag class "' + v.tagClass + '", type "' +
+              v.type + '" expected value length "' +
+              v.value.length + '", got "' +
+              obj.value.length + '"');
+          }
+        }
+      }
+
+      if(rval && capture) {
+        if(v.capture) {
+          capture[v.capture] = obj.value;
+        }
+        if(v.captureAsn1) {
+          capture[v.captureAsn1] = obj;
+        }
+        if(v.captureBitStringContents && 'bitStringContents' in obj) {
+          capture[v.captureBitStringContents] = obj.bitStringContents;
+        }
+        if(v.captureBitStringValue && 'bitStringContents' in obj) {
+          var value;
+          if(obj.bitStringContents.length < 2) {
+            capture[v.captureBitStringValue] = '';
+          } else {
+            // FIXME: support unused bits with data shifting
+            var unused = obj.bitStringContents.charCodeAt(0);
+            if(unused !== 0) {
+              throw new Error(
+                'captureBitStringValue only supported for zero unused bits');
+            }
+            capture[v.captureBitStringValue] = obj.bitStringContents.slice(1);
+          }
+        }
+      }
+    } else if(errors) {
+      errors.push(
+        '[' + v.name + '] ' +
+        'Expected constructed "' + v.constructed + '", got "' +
+        obj.constructed + '"');
+    }
+  } else if(errors) {
+    if(obj.tagClass !== v.tagClass) {
+      errors.push(
+        '[' + v.name + '] ' +
+        'Expected tag class "' + v.tagClass + '", got "' +
+        obj.tagClass + '"');
+    }
+    if(obj.type !== v.type) {
+      errors.push(
+        '[' + v.name + '] ' +
+        'Expected type "' + v.type + '", got "' + obj.type + '"');
+    }
+  }
+  return rval;
+};
+
+// regex for testing for non-latin characters
+var _nonLatinRegex = /[^\\u0000-\\u00ff]/;
+
+/**
+ * Pretty prints an ASN.1 object to a string.
+ *
+ * @param obj the object to write out.
+ * @param level the level in the tree.
+ * @param indentation the indentation to use.
+ *
+ * @return the string.
+ */
+asn1.prettyPrint = function(obj, level, indentation) {
+  var rval = '';
+
+  // set default level and indentation
+  level = level || 0;
+  indentation = indentation || 2;
+
+  // start new line for deep levels
+  if(level > 0) {
+    rval += '\n';
+  }
+
+  // create indent
+  var indent = '';
+  for(var i = 0; i < level * indentation; ++i) {
+    indent += ' ';
+  }
+
+  // print class:type
+  rval += indent + 'Tag: ';
+  switch(obj.tagClass) {
+  case asn1.Class.UNIVERSAL:
+    rval += 'Universal:';
+    break;
+  case asn1.Class.APPLICATION:
+    rval += 'Application:';
+    break;
+  case asn1.Class.CONTEXT_SPECIFIC:
+    rval += 'Context-Specific:';
+    break;
+  case asn1.Class.PRIVATE:
+    rval += 'Private:';
+    break;
+  }
+
+  if(obj.tagClass === asn1.Class.UNIVERSAL) {
+    rval += obj.type;
+
+    // known types
+    switch(obj.type) {
+    case asn1.Type.NONE:
+      rval += ' (None)';
+      break;
+    case asn1.Type.BOOLEAN:
+      rval += ' (Boolean)';
+      break;
+    case asn1.Type.INTEGER:
+      rval += ' (Integer)';
+      break;
+    case asn1.Type.BITSTRING:
+      rval += ' (Bit string)';
+      break;
+    case asn1.Type.OCTETSTRING:
+      rval += ' (Octet string)';
+      break;
+    case asn1.Type.NULL:
+      rval += ' (Null)';
+      break;
+    case asn1.Type.OID:
+      rval += ' (Object Identifier)';
+      break;
+    case asn1.Type.ODESC:
+      rval += ' (Object Descriptor)';
+      break;
+    case asn1.Type.EXTERNAL:
+      rval += ' (External or Instance of)';
+      break;
+    case asn1.Type.REAL:
+      rval += ' (Real)';
+      break;
+    case asn1.Type.ENUMERATED:
+      rval += ' (Enumerated)';
+      break;
+    case asn1.Type.EMBEDDED:
+      rval += ' (Embedded PDV)';
+      break;
+    case asn1.Type.UTF8:
+      rval += ' (UTF8)';
+      break;
+    case asn1.Type.ROID:
+      rval += ' (Relative Object Identifier)';
+      break;
+    case asn1.Type.SEQUENCE:
+      rval += ' (Sequence)';
+      break;
+    case asn1.Type.SET:
+      rval += ' (Set)';
+      break;
+    case asn1.Type.PRINTABLESTRING:
+      rval += ' (Printable String)';
+      break;
+    case asn1.Type.IA5String:
+      rval += ' (IA5String (ASCII))';
+      break;
+    case asn1.Type.UTCTIME:
+      rval += ' (UTC time)';
+      break;
+    case asn1.Type.GENERALIZEDTIME:
+      rval += ' (Generalized time)';
+      break;
+    case asn1.Type.BMPSTRING:
+      rval += ' (BMP String)';
+      break;
+    }
+  } else {
+    rval += obj.type;
+  }
+
+  rval += '\n';
+  rval += indent + 'Constructed: ' + obj.constructed + '\n';
+
+  if(obj.composed) {
+    var subvalues = 0;
+    var sub = '';
+    for(var i = 0; i < obj.value.length; ++i) {
+      if(obj.value[i] !== undefined) {
+        subvalues += 1;
+        sub += asn1.prettyPrint(obj.value[i], level + 1, indentation);
+        if((i + 1) < obj.value.length) {
+          sub += ',';
+        }
+      }
+    }
+    rval += indent + 'Sub values: ' + subvalues + sub;
+  } else {
+    rval += indent + 'Value: ';
+    if(obj.type === asn1.Type.OID) {
+      var oid = asn1.derToOid(obj.value);
+      rval += oid;
+      if(forge.pki && forge.pki.oids) {
+        if(oid in forge.pki.oids) {
+          rval += ' (' + forge.pki.oids[oid] + ') ';
+        }
+      }
+    }
+    if(obj.type === asn1.Type.INTEGER) {
+      try {
+        rval += asn1.derToInteger(obj.value);
+      } catch(ex) {
+        rval += '0x' + forge.util.bytesToHex(obj.value);
+      }
+    } else if(obj.type === asn1.Type.BITSTRING) {
+      // TODO: shift bits as needed to display without padding
+      if(obj.value.length > 1) {
+        // remove unused bits field
+        rval += '0x' + forge.util.bytesToHex(obj.value.slice(1));
+      } else {
+        rval += '(none)';
+      }
+      // show unused bit count
+      if(obj.value.length > 0) {
+        var unused = obj.value.charCodeAt(0);
+        if(unused == 1) {
+          rval += ' (1 unused bit shown)';
+        } else if(unused > 1) {
+          rval += ' (' + unused + ' unused bits shown)';
+        }
+      }
+    } else if(obj.type === asn1.Type.OCTETSTRING) {
+      if(!_nonLatinRegex.test(obj.value)) {
+        rval += '(' + obj.value + ') ';
+      }
+      rval += '0x' + forge.util.bytesToHex(obj.value);
+    } else if(obj.type === asn1.Type.UTF8) {
+      rval += forge.util.decodeUtf8(obj.value);
+    } else if(obj.type === asn1.Type.PRINTABLESTRING ||
+      obj.type === asn1.Type.IA5String) {
+      rval += obj.value;
+    } else if(_nonLatinRegex.test(obj.value)) {
+      rval += '0x' + forge.util.bytesToHex(obj.value);
+    } else if(obj.value.length === 0) {
+      rval += '[null]';
+    } else {
+      rval += obj.value;
+    }
+  }
+
+  return rval;
+};
+
+
+/***/ }),
+/* 31 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/**
+ * Node.js module for Forge message digests.
+ *
+ * @author Dave Longley
+ *
+ * Copyright 2011-2017 Digital Bazaar, Inc.
+ */
+var forge = __webpack_require__(4);
+
+module.exports = forge.md = forge.md || {};
+forge.md.algorithms = forge.md.algorithms || {};
+
+
+/***/ }),
+/* 32 */
 /***/ (function(module, exports) {
 
 /**
@@ -10774,72 +10755,67 @@ function isnan (val) {
 
 
 /***/ }),
+/* 33 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var global = __webpack_require__(10);
+var hide = __webpack_require__(20);
+var has = __webpack_require__(34);
+var SRC = __webpack_require__(38)('src');
+var $toString = __webpack_require__(192);
+var TO_STRING = 'toString';
+var TPL = ('' + $toString).split(TO_STRING);
+
+__webpack_require__(37).inspectSource = function (it) {
+  return $toString.call(it);
+};
+
+(module.exports = function (O, key, val, safe) {
+  var isFunction = typeof val == 'function';
+  if (isFunction) has(val, 'name') || hide(val, 'name', key);
+  if (O[key] === val) return;
+  if (isFunction) has(val, SRC) || hide(val, SRC, O[key] ? '' + O[key] : TPL.join(String(key)));
+  if (O === global) {
+    O[key] = val;
+  } else if (!safe) {
+    delete O[key];
+    hide(O, key, val);
+  } else if (O[key]) {
+    O[key] = val;
+  } else {
+    hide(O, key, val);
+  }
+// add fake Function#toString for correct work wrapped methods / constructors with methods like LoDash isNative
+})(Function.prototype, TO_STRING, function toString() {
+  return typeof this == 'function' && this[SRC] || $toString.call(this);
+});
+
+
+/***/ }),
 /* 34 */
 /***/ (function(module, exports) {
 
-var core = module.exports = { version: '2.6.11' };
-if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
+var hasOwnProperty = {}.hasOwnProperty;
+module.exports = function (it, key) {
+  return hasOwnProperty.call(it, key);
+};
 
 
 /***/ }),
 /* 35 */
-/***/ (function(module, exports) {
-
-var id = 0;
-var px = Math.random();
-module.exports = function (key) {
-  return 'Symbol('.concat(key === undefined ? '' : key, ')_', (++id + px).toString(36));
-};
-
-
-/***/ }),
-/* 36 */
-/***/ (function(module, exports) {
-
-module.exports = false;
-
-
-/***/ }),
-/* 37 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// optional / simple context binding
-var aFunction = __webpack_require__(55);
-module.exports = function (fn, that, length) {
-  aFunction(fn);
-  if (that === undefined) return fn;
-  switch (length) {
-    case 1: return function (a) {
-      return fn.call(that, a);
-    };
-    case 2: return function (a, b) {
-      return fn.call(that, a, b);
-    };
-    case 3: return function (a, b, c) {
-      return fn.call(that, a, b, c);
-    };
-  }
-  return function (/* ...args */) {
-    return fn.apply(that, arguments);
-  };
-};
-
-
-/***/ }),
-/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var isRegExp = __webpack_require__(176);
-var anObject = __webpack_require__(14);
-var speciesConstructor = __webpack_require__(67);
-var advanceStringIndex = __webpack_require__(112);
-var toLength = __webpack_require__(22);
-var callRegExpExec = __webpack_require__(83);
-var regexpExec = __webpack_require__(84);
-var fails = __webpack_require__(21);
+var isRegExp = __webpack_require__(194);
+var anObject = __webpack_require__(15);
+var speciesConstructor = __webpack_require__(76);
+var advanceStringIndex = __webpack_require__(126);
+var toLength = __webpack_require__(24);
+var callRegExpExec = __webpack_require__(93);
+var regexpExec = __webpack_require__(94);
+var fails = __webpack_require__(23);
 var $min = Math.min;
 var $push = [].push;
 var $SPLIT = 'split';
@@ -10851,7 +10827,7 @@ var MAX_UINT32 = 0xffffffff;
 var SUPPORTS_Y = !fails(function () { RegExp(MAX_UINT32, 'y'); });
 
 // @@split logic
-__webpack_require__(86)('split', 2, function (defined, SPLIT, $split, maybeCallNative) {
+__webpack_require__(96)('split', 2, function (defined, SPLIT, $split, maybeCallNative) {
   var internalSplit;
   if (
     'abbc'[$SPLIT](/(b)*/)[1] == 'c' ||
@@ -10967,7 +10943,352 @@ __webpack_require__(86)('split', 2, function (defined, SPLIT, $split, maybeCallN
 
 
 /***/ }),
+/* 36 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var LIBRARY = __webpack_require__(39);
+var global = __webpack_require__(10);
+var ctx = __webpack_require__(40);
+var classof = __webpack_require__(59);
+var $export = __webpack_require__(26);
+var isObject = __webpack_require__(27);
+var aFunction = __webpack_require__(58);
+var anInstance = __webpack_require__(104);
+var forOf = __webpack_require__(207);
+var speciesConstructor = __webpack_require__(76);
+var task = __webpack_require__(137).set;
+var microtask = __webpack_require__(209)();
+var newPromiseCapabilityModule = __webpack_require__(138);
+var perform = __webpack_require__(210);
+var userAgent = __webpack_require__(211);
+var promiseResolve = __webpack_require__(139);
+var PROMISE = 'Promise';
+var TypeError = global.TypeError;
+var process = global.process;
+var versions = process && process.versions;
+var v8 = versions && versions.v8 || '';
+var $Promise = global[PROMISE];
+var isNode = classof(process) == 'process';
+var empty = function () { /* empty */ };
+var Internal, newGenericPromiseCapability, OwnPromiseCapability, Wrapper;
+var newPromiseCapability = newGenericPromiseCapability = newPromiseCapabilityModule.f;
+
+var USE_NATIVE = !!function () {
+  try {
+    // correct subclassing with @@species support
+    var promise = $Promise.resolve(1);
+    var FakePromise = (promise.constructor = {})[__webpack_require__(11)('species')] = function (exec) {
+      exec(empty, empty);
+    };
+    // unhandled rejections tracking support, NodeJS Promise without it fails @@species test
+    return (isNode || typeof PromiseRejectionEvent == 'function')
+      && promise.then(empty) instanceof FakePromise
+      // v8 6.6 (Node 10 and Chrome 66) have a bug with resolving custom thenables
+      // https://bugs.chromium.org/p/chromium/issues/detail?id=830565
+      // we can't detect it synchronously, so just check versions
+      && v8.indexOf('6.6') !== 0
+      && userAgent.indexOf('Chrome/66') === -1;
+  } catch (e) { /* empty */ }
+}();
+
+// helpers
+var isThenable = function (it) {
+  var then;
+  return isObject(it) && typeof (then = it.then) == 'function' ? then : false;
+};
+var notify = function (promise, isReject) {
+  if (promise._n) return;
+  promise._n = true;
+  var chain = promise._c;
+  microtask(function () {
+    var value = promise._v;
+    var ok = promise._s == 1;
+    var i = 0;
+    var run = function (reaction) {
+      var handler = ok ? reaction.ok : reaction.fail;
+      var resolve = reaction.resolve;
+      var reject = reaction.reject;
+      var domain = reaction.domain;
+      var result, then, exited;
+      try {
+        if (handler) {
+          if (!ok) {
+            if (promise._h == 2) onHandleUnhandled(promise);
+            promise._h = 1;
+          }
+          if (handler === true) result = value;
+          else {
+            if (domain) domain.enter();
+            result = handler(value); // may throw
+            if (domain) {
+              domain.exit();
+              exited = true;
+            }
+          }
+          if (result === reaction.promise) {
+            reject(TypeError('Promise-chain cycle'));
+          } else if (then = isThenable(result)) {
+            then.call(result, resolve, reject);
+          } else resolve(result);
+        } else reject(value);
+      } catch (e) {
+        if (domain && !exited) domain.exit();
+        reject(e);
+      }
+    };
+    while (chain.length > i) run(chain[i++]); // variable length - can't use forEach
+    promise._c = [];
+    promise._n = false;
+    if (isReject && !promise._h) onUnhandled(promise);
+  });
+};
+var onUnhandled = function (promise) {
+  task.call(global, function () {
+    var value = promise._v;
+    var unhandled = isUnhandled(promise);
+    var result, handler, console;
+    if (unhandled) {
+      result = perform(function () {
+        if (isNode) {
+          process.emit('unhandledRejection', value, promise);
+        } else if (handler = global.onunhandledrejection) {
+          handler({ promise: promise, reason: value });
+        } else if ((console = global.console) && console.error) {
+          console.error('Unhandled promise rejection', value);
+        }
+      });
+      // Browsers should not trigger `rejectionHandled` event if it was handled here, NodeJS - should
+      promise._h = isNode || isUnhandled(promise) ? 2 : 1;
+    } promise._a = undefined;
+    if (unhandled && result.e) throw result.v;
+  });
+};
+var isUnhandled = function (promise) {
+  return promise._h !== 1 && (promise._a || promise._c).length === 0;
+};
+var onHandleUnhandled = function (promise) {
+  task.call(global, function () {
+    var handler;
+    if (isNode) {
+      process.emit('rejectionHandled', promise);
+    } else if (handler = global.onrejectionhandled) {
+      handler({ promise: promise, reason: promise._v });
+    }
+  });
+};
+var $reject = function (value) {
+  var promise = this;
+  if (promise._d) return;
+  promise._d = true;
+  promise = promise._w || promise; // unwrap
+  promise._v = value;
+  promise._s = 2;
+  if (!promise._a) promise._a = promise._c.slice();
+  notify(promise, true);
+};
+var $resolve = function (value) {
+  var promise = this;
+  var then;
+  if (promise._d) return;
+  promise._d = true;
+  promise = promise._w || promise; // unwrap
+  try {
+    if (promise === value) throw TypeError("Promise can't be resolved itself");
+    if (then = isThenable(value)) {
+      microtask(function () {
+        var wrapper = { _w: promise, _d: false }; // wrap
+        try {
+          then.call(value, ctx($resolve, wrapper, 1), ctx($reject, wrapper, 1));
+        } catch (e) {
+          $reject.call(wrapper, e);
+        }
+      });
+    } else {
+      promise._v = value;
+      promise._s = 1;
+      notify(promise, false);
+    }
+  } catch (e) {
+    $reject.call({ _w: promise, _d: false }, e); // wrap
+  }
+};
+
+// constructor polyfill
+if (!USE_NATIVE) {
+  // 25.4.3.1 Promise(executor)
+  $Promise = function Promise(executor) {
+    anInstance(this, $Promise, PROMISE, '_h');
+    aFunction(executor);
+    Internal.call(this);
+    try {
+      executor(ctx($resolve, this, 1), ctx($reject, this, 1));
+    } catch (err) {
+      $reject.call(this, err);
+    }
+  };
+  // eslint-disable-next-line no-unused-vars
+  Internal = function Promise(executor) {
+    this._c = [];             // <- awaiting reactions
+    this._a = undefined;      // <- checked in isUnhandled reactions
+    this._s = 0;              // <- state
+    this._d = false;          // <- done
+    this._v = undefined;      // <- value
+    this._h = 0;              // <- rejection state, 0 - default, 1 - handled, 2 - unhandled
+    this._n = false;          // <- notify
+  };
+  Internal.prototype = __webpack_require__(107)($Promise.prototype, {
+    // 25.4.5.3 Promise.prototype.then(onFulfilled, onRejected)
+    then: function then(onFulfilled, onRejected) {
+      var reaction = newPromiseCapability(speciesConstructor(this, $Promise));
+      reaction.ok = typeof onFulfilled == 'function' ? onFulfilled : true;
+      reaction.fail = typeof onRejected == 'function' && onRejected;
+      reaction.domain = isNode ? process.domain : undefined;
+      this._c.push(reaction);
+      if (this._a) this._a.push(reaction);
+      if (this._s) notify(this, false);
+      return reaction.promise;
+    },
+    // 25.4.5.1 Promise.prototype.catch(onRejected)
+    'catch': function (onRejected) {
+      return this.then(undefined, onRejected);
+    }
+  });
+  OwnPromiseCapability = function () {
+    var promise = new Internal();
+    this.promise = promise;
+    this.resolve = ctx($resolve, promise, 1);
+    this.reject = ctx($reject, promise, 1);
+  };
+  newPromiseCapabilityModule.f = newPromiseCapability = function (C) {
+    return C === $Promise || C === Wrapper
+      ? new OwnPromiseCapability(C)
+      : newGenericPromiseCapability(C);
+  };
+}
+
+$export($export.G + $export.W + $export.F * !USE_NATIVE, { Promise: $Promise });
+__webpack_require__(60)($Promise, PROMISE);
+__webpack_require__(140)(PROMISE);
+Wrapper = __webpack_require__(37)[PROMISE];
+
+// statics
+$export($export.S + $export.F * !USE_NATIVE, PROMISE, {
+  // 25.4.4.5 Promise.reject(r)
+  reject: function reject(r) {
+    var capability = newPromiseCapability(this);
+    var $$reject = capability.reject;
+    $$reject(r);
+    return capability.promise;
+  }
+});
+$export($export.S + $export.F * (LIBRARY || !USE_NATIVE), PROMISE, {
+  // 25.4.4.6 Promise.resolve(x)
+  resolve: function resolve(x) {
+    return promiseResolve(LIBRARY && this === Wrapper ? $Promise : this, x);
+  }
+});
+$export($export.S + $export.F * !(USE_NATIVE && __webpack_require__(108)(function (iter) {
+  $Promise.all(iter)['catch'](empty);
+})), PROMISE, {
+  // 25.4.4.1 Promise.all(iterable)
+  all: function all(iterable) {
+    var C = this;
+    var capability = newPromiseCapability(C);
+    var resolve = capability.resolve;
+    var reject = capability.reject;
+    var result = perform(function () {
+      var values = [];
+      var index = 0;
+      var remaining = 1;
+      forOf(iterable, false, function (promise) {
+        var $index = index++;
+        var alreadyCalled = false;
+        values.push(undefined);
+        remaining++;
+        C.resolve(promise).then(function (value) {
+          if (alreadyCalled) return;
+          alreadyCalled = true;
+          values[$index] = value;
+          --remaining || resolve(values);
+        }, reject);
+      });
+      --remaining || resolve(values);
+    });
+    if (result.e) reject(result.v);
+    return capability.promise;
+  },
+  // 25.4.4.4 Promise.race(iterable)
+  race: function race(iterable) {
+    var C = this;
+    var capability = newPromiseCapability(C);
+    var reject = capability.reject;
+    var result = perform(function () {
+      forOf(iterable, false, function (promise) {
+        C.resolve(promise).then(capability.resolve, reject);
+      });
+    });
+    if (result.e) reject(result.v);
+    return capability.promise;
+  }
+});
+
+
+/***/ }),
+/* 37 */
+/***/ (function(module, exports) {
+
+var core = module.exports = { version: '2.6.11' };
+if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
+
+
+/***/ }),
+/* 38 */
+/***/ (function(module, exports) {
+
+var id = 0;
+var px = Math.random();
+module.exports = function (key) {
+  return 'Symbol('.concat(key === undefined ? '' : key, ')_', (++id + px).toString(36));
+};
+
+
+/***/ }),
 /* 39 */
+/***/ (function(module, exports) {
+
+module.exports = false;
+
+
+/***/ }),
+/* 40 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// optional / simple context binding
+var aFunction = __webpack_require__(58);
+module.exports = function (fn, that, length) {
+  aFunction(fn);
+  if (that === undefined) return fn;
+  switch (length) {
+    case 1: return function (a) {
+      return fn.call(that, a);
+    };
+    case 2: return function (a, b) {
+      return fn.call(that, a, b);
+    };
+    case 3: return function (a, b, c) {
+      return fn.call(that, a, b, c);
+    };
+  }
+  return function (/* ...args */) {
+    return fn.apply(that, arguments);
+  };
+};
+
+
+/***/ }),
+/* 41 */
 /***/ (function(module, exports) {
 
 // 7.1.4 ToInteger
@@ -10979,46 +11300,46 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 40 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(113)('asyncIterator');
+__webpack_require__(127)('asyncIterator');
 
 
 /***/ }),
-/* 41 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 // ECMAScript 6 symbols shim
 var global = __webpack_require__(10);
-var has = __webpack_require__(31);
-var DESCRIPTORS = __webpack_require__(20);
-var $export = __webpack_require__(24);
-var redefine = __webpack_require__(30);
-var META = __webpack_require__(182).KEY;
-var $fails = __webpack_require__(21);
-var shared = __webpack_require__(65);
-var setToStringTag = __webpack_require__(57);
-var uid = __webpack_require__(35);
+var has = __webpack_require__(34);
+var DESCRIPTORS = __webpack_require__(22);
+var $export = __webpack_require__(26);
+var redefine = __webpack_require__(33);
+var META = __webpack_require__(200).KEY;
+var $fails = __webpack_require__(23);
+var shared = __webpack_require__(74);
+var setToStringTag = __webpack_require__(60);
+var uid = __webpack_require__(38);
 var wks = __webpack_require__(11);
-var wksExt = __webpack_require__(114);
-var wksDefine = __webpack_require__(113);
-var enumKeys = __webpack_require__(183);
-var isArray = __webpack_require__(117);
-var anObject = __webpack_require__(14);
-var isObject = __webpack_require__(25);
-var toObject = __webpack_require__(26);
-var toIObject = __webpack_require__(42);
-var toPrimitive = __webpack_require__(64);
-var createDesc = __webpack_require__(48);
-var _create = __webpack_require__(92);
-var gOPNExt = __webpack_require__(185);
-var $GOPD = __webpack_require__(93);
-var $GOPS = __webpack_require__(90);
-var $DP = __webpack_require__(19);
-var $keys = __webpack_require__(69);
+var wksExt = __webpack_require__(128);
+var wksDefine = __webpack_require__(127);
+var enumKeys = __webpack_require__(201);
+var isArray = __webpack_require__(131);
+var anObject = __webpack_require__(15);
+var isObject = __webpack_require__(27);
+var toObject = __webpack_require__(28);
+var toIObject = __webpack_require__(44);
+var toPrimitive = __webpack_require__(73);
+var createDesc = __webpack_require__(52);
+var _create = __webpack_require__(102);
+var gOPNExt = __webpack_require__(203);
+var $GOPD = __webpack_require__(103);
+var $GOPS = __webpack_require__(100);
+var $DP = __webpack_require__(21);
+var $keys = __webpack_require__(78);
 var gOPD = $GOPD.f;
 var dP = $DP.f;
 var gOPN = gOPNExt.f;
@@ -11141,11 +11462,11 @@ if (!USE_NATIVE) {
 
   $GOPD.f = $getOwnPropertyDescriptor;
   $DP.f = $defineProperty;
-  __webpack_require__(58).f = gOPNExt.f = $getOwnPropertyNames;
-  __webpack_require__(91).f = $propertyIsEnumerable;
+  __webpack_require__(61).f = gOPNExt.f = $getOwnPropertyNames;
+  __webpack_require__(101).f = $propertyIsEnumerable;
   $GOPS.f = $getOwnPropertySymbols;
 
-  if (DESCRIPTORS && !__webpack_require__(36)) {
+  if (DESCRIPTORS && !__webpack_require__(39)) {
     redefine(ObjectProto, 'propertyIsEnumerable', $propertyIsEnumerable, true);
   }
 
@@ -11229,7 +11550,7 @@ $JSON && $export($export.S + $export.F * (!USE_NATIVE || $fails(function () {
 });
 
 // 19.4.3.4 Symbol.prototype[@@toPrimitive](hint)
-$Symbol[PROTOTYPE][TO_PRIMITIVE] || __webpack_require__(18)($Symbol[PROTOTYPE], TO_PRIMITIVE, $Symbol[PROTOTYPE].valueOf);
+$Symbol[PROTOTYPE][TO_PRIMITIVE] || __webpack_require__(20)($Symbol[PROTOTYPE], TO_PRIMITIVE, $Symbol[PROTOTYPE].valueOf);
 // 19.4.3.5 Symbol.prototype[@@toStringTag]
 setToStringTag($Symbol, 'Symbol');
 // 20.2.1.9 Math[@@toStringTag]
@@ -11239,19 +11560,19 @@ setToStringTag(global.JSON, 'JSON', true);
 
 
 /***/ }),
-/* 42 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // to indexed object, toObject with fallback for non-array-like ES3 strings
-var IObject = __webpack_require__(116);
-var defined = __webpack_require__(66);
+var IObject = __webpack_require__(130);
+var defined = __webpack_require__(75);
 module.exports = function (it) {
   return IObject(defined(it));
 };
 
 
 /***/ }),
-/* 43 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -11271,9 +11592,9 @@ module.exports = function (it) {
  *
  * Copyright (c) 2010-2014 Digital Bazaar, Inc.
  */
-var forge = __webpack_require__(3);
-__webpack_require__(99);
-__webpack_require__(134);
+var forge = __webpack_require__(4);
+__webpack_require__(110);
+__webpack_require__(147);
 __webpack_require__(7);
 
 /* AES API */
@@ -12348,7 +12669,7 @@ function _createCipher(options) {
 
 
 /***/ }),
-/* 44 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -12358,7 +12679,7 @@ function _createCipher(options) {
  *
  * Copyright (c) 2010-2013 Digital Bazaar, Inc.
  */
-var forge = __webpack_require__(3);
+var forge = __webpack_require__(4);
 
 forge.pki = forge.pki || {};
 var oids = module.exports = forge.pki.oids = forge.oids = forge.oids || {};
@@ -12515,16 +12836,182 @@ _IN('1.3.6.1.5.5.7.3.8', 'timeStamping');
 
 
 /***/ }),
-/* 45 */
+/* 47 */
+/***/ (function(module, exports) {
+
+if (typeof Object.create === 'function') {
+  // implementation from standard node.js 'util' module
+  module.exports = function inherits(ctor, superCtor) {
+    ctor.super_ = superCtor
+    ctor.prototype = Object.create(superCtor.prototype, {
+      constructor: {
+        value: ctor,
+        enumerable: false,
+        writable: true,
+        configurable: true
+      }
+    });
+  };
+} else {
+  // old school shim for old browsers
+  module.exports = function inherits(ctor, superCtor) {
+    ctor.super_ = superCtor
+    var TempCtor = function () {}
+    TempCtor.prototype = superCtor.prototype
+    ctor.prototype = new TempCtor()
+    ctor.prototype.constructor = ctor
+  }
+}
+
+
+/***/ }),
+/* 48 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+// a duplex stream is just a stream that is both readable and writable.
+// Since JS doesn't have multiple prototypal inheritance, this class
+// prototypally inherits from Readable, and then parasitically from
+// Writable.
+
+
+
+/*<replacement>*/
+
+var pna = __webpack_require__(88);
+/*</replacement>*/
+
+/*<replacement>*/
+var objectKeys = Object.keys || function (obj) {
+  var keys = [];
+  for (var key in obj) {
+    keys.push(key);
+  }return keys;
+};
+/*</replacement>*/
+
+module.exports = Duplex;
+
+/*<replacement>*/
+var util = Object.create(__webpack_require__(70));
+util.inherits = __webpack_require__(47);
+/*</replacement>*/
+
+var Readable = __webpack_require__(175);
+var Writable = __webpack_require__(121);
+
+util.inherits(Duplex, Readable);
+
+{
+  // avoid scope creep, the keys array can then be collected
+  var keys = objectKeys(Writable.prototype);
+  for (var v = 0; v < keys.length; v++) {
+    var method = keys[v];
+    if (!Duplex.prototype[method]) Duplex.prototype[method] = Writable.prototype[method];
+  }
+}
+
+function Duplex(options) {
+  if (!(this instanceof Duplex)) return new Duplex(options);
+
+  Readable.call(this, options);
+  Writable.call(this, options);
+
+  if (options && options.readable === false) this.readable = false;
+
+  if (options && options.writable === false) this.writable = false;
+
+  this.allowHalfOpen = true;
+  if (options && options.allowHalfOpen === false) this.allowHalfOpen = false;
+
+  this.once('end', onend);
+}
+
+Object.defineProperty(Duplex.prototype, 'writableHighWaterMark', {
+  // making it explicit this property is not enumerable
+  // because otherwise some prototype manipulation in
+  // userland will fail
+  enumerable: false,
+  get: function () {
+    return this._writableState.highWaterMark;
+  }
+});
+
+// the no-half-open enforcer
+function onend() {
+  // if we allow half-open state, or if the writable side ended,
+  // then we're ok.
+  if (this.allowHalfOpen || this._writableState.ended) return;
+
+  // no more data can be written.
+  // But allow more writes to happen in this tick.
+  pna.nextTick(onEndNT, this);
+}
+
+function onEndNT(self) {
+  self.end();
+}
+
+Object.defineProperty(Duplex.prototype, 'destroyed', {
+  get: function () {
+    if (this._readableState === undefined || this._writableState === undefined) {
+      return false;
+    }
+    return this._readableState.destroyed && this._writableState.destroyed;
+  },
+  set: function (value) {
+    // we ignore the value if the stream
+    // has not been initialized yet
+    if (this._readableState === undefined || this._writableState === undefined) {
+      return;
+    }
+
+    // backward compatibility, the user is explicitly
+    // managing destroyed
+    this._readableState.destroyed = value;
+    this._writableState.destroyed = value;
+  }
+});
+
+Duplex.prototype._destroy = function (err, cb) {
+  this.push(null);
+  this.end();
+
+  pna.nextTick(cb, err);
+};
+
+/***/ }),
+/* 49 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ClientSettings; });
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _common_IError__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2);
+/* harmony import */ var _common_IError__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
 /* harmony import */ var _ChatUtility__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(12);
 
 
@@ -12584,24 +13071,24 @@ var ClientSettings = /*#__PURE__*/function () {
 }();
 
 /***/ }),
-/* 46 */
+/* 50 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ChatMessage; });
-/* harmony import */ var core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(40);
+/* harmony import */ var core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(42);
 /* harmony import */ var core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(41);
+/* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(43);
 /* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(16);
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(17);
 /* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(15);
+/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(14);
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(4);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(5);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(5);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(6);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _AttachmentInfo__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(108);
+/* harmony import */ var _AttachmentInfo__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(71);
 /* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(1);
 
 
@@ -12815,13 +13302,13 @@ var ChatMessage = /*#__PURE__*/function () {
 }();
 
 /***/ }),
-/* 47 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(232);
+module.exports = __webpack_require__(252);
 
 /***/ }),
-/* 48 */
+/* 52 */
 /***/ (function(module, exports) {
 
 module.exports = function (bitmap, value) {
@@ -12835,7 +13322,7 @@ module.exports = function (bitmap, value) {
 
 
 /***/ }),
-/* 49 */
+/* 53 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -12846,307 +13333,14 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 50 */
+/* 54 */
 /***/ (function(module, exports) {
 
 module.exports = {};
 
 
 /***/ }),
-/* 51 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var LIBRARY = __webpack_require__(36);
-var global = __webpack_require__(10);
-var ctx = __webpack_require__(37);
-var classof = __webpack_require__(56);
-var $export = __webpack_require__(24);
-var isObject = __webpack_require__(25);
-var aFunction = __webpack_require__(55);
-var anInstance = __webpack_require__(94);
-var forOf = __webpack_require__(189);
-var speciesConstructor = __webpack_require__(67);
-var task = __webpack_require__(123).set;
-var microtask = __webpack_require__(191)();
-var newPromiseCapabilityModule = __webpack_require__(124);
-var perform = __webpack_require__(192);
-var userAgent = __webpack_require__(193);
-var promiseResolve = __webpack_require__(125);
-var PROMISE = 'Promise';
-var TypeError = global.TypeError;
-var process = global.process;
-var versions = process && process.versions;
-var v8 = versions && versions.v8 || '';
-var $Promise = global[PROMISE];
-var isNode = classof(process) == 'process';
-var empty = function () { /* empty */ };
-var Internal, newGenericPromiseCapability, OwnPromiseCapability, Wrapper;
-var newPromiseCapability = newGenericPromiseCapability = newPromiseCapabilityModule.f;
-
-var USE_NATIVE = !!function () {
-  try {
-    // correct subclassing with @@species support
-    var promise = $Promise.resolve(1);
-    var FakePromise = (promise.constructor = {})[__webpack_require__(11)('species')] = function (exec) {
-      exec(empty, empty);
-    };
-    // unhandled rejections tracking support, NodeJS Promise without it fails @@species test
-    return (isNode || typeof PromiseRejectionEvent == 'function')
-      && promise.then(empty) instanceof FakePromise
-      // v8 6.6 (Node 10 and Chrome 66) have a bug with resolving custom thenables
-      // https://bugs.chromium.org/p/chromium/issues/detail?id=830565
-      // we can't detect it synchronously, so just check versions
-      && v8.indexOf('6.6') !== 0
-      && userAgent.indexOf('Chrome/66') === -1;
-  } catch (e) { /* empty */ }
-}();
-
-// helpers
-var isThenable = function (it) {
-  var then;
-  return isObject(it) && typeof (then = it.then) == 'function' ? then : false;
-};
-var notify = function (promise, isReject) {
-  if (promise._n) return;
-  promise._n = true;
-  var chain = promise._c;
-  microtask(function () {
-    var value = promise._v;
-    var ok = promise._s == 1;
-    var i = 0;
-    var run = function (reaction) {
-      var handler = ok ? reaction.ok : reaction.fail;
-      var resolve = reaction.resolve;
-      var reject = reaction.reject;
-      var domain = reaction.domain;
-      var result, then, exited;
-      try {
-        if (handler) {
-          if (!ok) {
-            if (promise._h == 2) onHandleUnhandled(promise);
-            promise._h = 1;
-          }
-          if (handler === true) result = value;
-          else {
-            if (domain) domain.enter();
-            result = handler(value); // may throw
-            if (domain) {
-              domain.exit();
-              exited = true;
-            }
-          }
-          if (result === reaction.promise) {
-            reject(TypeError('Promise-chain cycle'));
-          } else if (then = isThenable(result)) {
-            then.call(result, resolve, reject);
-          } else resolve(result);
-        } else reject(value);
-      } catch (e) {
-        if (domain && !exited) domain.exit();
-        reject(e);
-      }
-    };
-    while (chain.length > i) run(chain[i++]); // variable length - can't use forEach
-    promise._c = [];
-    promise._n = false;
-    if (isReject && !promise._h) onUnhandled(promise);
-  });
-};
-var onUnhandled = function (promise) {
-  task.call(global, function () {
-    var value = promise._v;
-    var unhandled = isUnhandled(promise);
-    var result, handler, console;
-    if (unhandled) {
-      result = perform(function () {
-        if (isNode) {
-          process.emit('unhandledRejection', value, promise);
-        } else if (handler = global.onunhandledrejection) {
-          handler({ promise: promise, reason: value });
-        } else if ((console = global.console) && console.error) {
-          console.error('Unhandled promise rejection', value);
-        }
-      });
-      // Browsers should not trigger `rejectionHandled` event if it was handled here, NodeJS - should
-      promise._h = isNode || isUnhandled(promise) ? 2 : 1;
-    } promise._a = undefined;
-    if (unhandled && result.e) throw result.v;
-  });
-};
-var isUnhandled = function (promise) {
-  return promise._h !== 1 && (promise._a || promise._c).length === 0;
-};
-var onHandleUnhandled = function (promise) {
-  task.call(global, function () {
-    var handler;
-    if (isNode) {
-      process.emit('rejectionHandled', promise);
-    } else if (handler = global.onrejectionhandled) {
-      handler({ promise: promise, reason: promise._v });
-    }
-  });
-};
-var $reject = function (value) {
-  var promise = this;
-  if (promise._d) return;
-  promise._d = true;
-  promise = promise._w || promise; // unwrap
-  promise._v = value;
-  promise._s = 2;
-  if (!promise._a) promise._a = promise._c.slice();
-  notify(promise, true);
-};
-var $resolve = function (value) {
-  var promise = this;
-  var then;
-  if (promise._d) return;
-  promise._d = true;
-  promise = promise._w || promise; // unwrap
-  try {
-    if (promise === value) throw TypeError("Promise can't be resolved itself");
-    if (then = isThenable(value)) {
-      microtask(function () {
-        var wrapper = { _w: promise, _d: false }; // wrap
-        try {
-          then.call(value, ctx($resolve, wrapper, 1), ctx($reject, wrapper, 1));
-        } catch (e) {
-          $reject.call(wrapper, e);
-        }
-      });
-    } else {
-      promise._v = value;
-      promise._s = 1;
-      notify(promise, false);
-    }
-  } catch (e) {
-    $reject.call({ _w: promise, _d: false }, e); // wrap
-  }
-};
-
-// constructor polyfill
-if (!USE_NATIVE) {
-  // 25.4.3.1 Promise(executor)
-  $Promise = function Promise(executor) {
-    anInstance(this, $Promise, PROMISE, '_h');
-    aFunction(executor);
-    Internal.call(this);
-    try {
-      executor(ctx($resolve, this, 1), ctx($reject, this, 1));
-    } catch (err) {
-      $reject.call(this, err);
-    }
-  };
-  // eslint-disable-next-line no-unused-vars
-  Internal = function Promise(executor) {
-    this._c = [];             // <- awaiting reactions
-    this._a = undefined;      // <- checked in isUnhandled reactions
-    this._s = 0;              // <- state
-    this._d = false;          // <- done
-    this._v = undefined;      // <- value
-    this._h = 0;              // <- rejection state, 0 - default, 1 - handled, 2 - unhandled
-    this._n = false;          // <- notify
-  };
-  Internal.prototype = __webpack_require__(97)($Promise.prototype, {
-    // 25.4.5.3 Promise.prototype.then(onFulfilled, onRejected)
-    then: function then(onFulfilled, onRejected) {
-      var reaction = newPromiseCapability(speciesConstructor(this, $Promise));
-      reaction.ok = typeof onFulfilled == 'function' ? onFulfilled : true;
-      reaction.fail = typeof onRejected == 'function' && onRejected;
-      reaction.domain = isNode ? process.domain : undefined;
-      this._c.push(reaction);
-      if (this._a) this._a.push(reaction);
-      if (this._s) notify(this, false);
-      return reaction.promise;
-    },
-    // 25.4.5.1 Promise.prototype.catch(onRejected)
-    'catch': function (onRejected) {
-      return this.then(undefined, onRejected);
-    }
-  });
-  OwnPromiseCapability = function () {
-    var promise = new Internal();
-    this.promise = promise;
-    this.resolve = ctx($resolve, promise, 1);
-    this.reject = ctx($reject, promise, 1);
-  };
-  newPromiseCapabilityModule.f = newPromiseCapability = function (C) {
-    return C === $Promise || C === Wrapper
-      ? new OwnPromiseCapability(C)
-      : newGenericPromiseCapability(C);
-  };
-}
-
-$export($export.G + $export.W + $export.F * !USE_NATIVE, { Promise: $Promise });
-__webpack_require__(57)($Promise, PROMISE);
-__webpack_require__(126)(PROMISE);
-Wrapper = __webpack_require__(34)[PROMISE];
-
-// statics
-$export($export.S + $export.F * !USE_NATIVE, PROMISE, {
-  // 25.4.4.5 Promise.reject(r)
-  reject: function reject(r) {
-    var capability = newPromiseCapability(this);
-    var $$reject = capability.reject;
-    $$reject(r);
-    return capability.promise;
-  }
-});
-$export($export.S + $export.F * (LIBRARY || !USE_NATIVE), PROMISE, {
-  // 25.4.4.6 Promise.resolve(x)
-  resolve: function resolve(x) {
-    return promiseResolve(LIBRARY && this === Wrapper ? $Promise : this, x);
-  }
-});
-$export($export.S + $export.F * !(USE_NATIVE && __webpack_require__(98)(function (iter) {
-  $Promise.all(iter)['catch'](empty);
-})), PROMISE, {
-  // 25.4.4.1 Promise.all(iterable)
-  all: function all(iterable) {
-    var C = this;
-    var capability = newPromiseCapability(C);
-    var resolve = capability.resolve;
-    var reject = capability.reject;
-    var result = perform(function () {
-      var values = [];
-      var index = 0;
-      var remaining = 1;
-      forOf(iterable, false, function (promise) {
-        var $index = index++;
-        var alreadyCalled = false;
-        values.push(undefined);
-        remaining++;
-        C.resolve(promise).then(function (value) {
-          if (alreadyCalled) return;
-          alreadyCalled = true;
-          values[$index] = value;
-          --remaining || resolve(values);
-        }, reject);
-      });
-      --remaining || resolve(values);
-    });
-    if (result.e) reject(result.v);
-    return capability.promise;
-  },
-  // 25.4.4.4 Promise.race(iterable)
-  race: function race(iterable) {
-    var C = this;
-    var capability = newPromiseCapability(C);
-    var reject = capability.reject;
-    var result = perform(function () {
-      forOf(iterable, false, function (promise) {
-        C.resolve(promise).then(capability.resolve, reject);
-      });
-    });
-    if (result.e) reject(result.v);
-    return capability.promise;
-  }
-});
-
-
-/***/ }),
-/* 52 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -13177,7 +13371,7 @@ $export($export.S + $export.F * !(USE_NATIVE && __webpack_require__(98)(function
  *
  * body: the binary-encoded body.
  */
-var forge = __webpack_require__(3);
+var forge = __webpack_require__(4);
 __webpack_require__(7);
 
 // shortcut for pem API
@@ -13382,7 +13576,7 @@ function ltrim(str) {
 
 
 /***/ }),
-/* 53 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -13551,22 +13745,22 @@ Emitter.prototype.hasListeners = function(event){
 
 
 /***/ }),
-/* 54 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
  * Module dependencies.
  */
 
-var keys = __webpack_require__(248);
-var hasBinary = __webpack_require__(156);
-var sliceBuffer = __webpack_require__(250);
-var after = __webpack_require__(251);
-var utf8 = __webpack_require__(252);
+var keys = __webpack_require__(266);
+var hasBinary = __webpack_require__(169);
+var sliceBuffer = __webpack_require__(268);
+var after = __webpack_require__(269);
+var utf8 = __webpack_require__(270);
 
 var base64encoder;
 if (typeof ArrayBuffer !== 'undefined') {
-  base64encoder = __webpack_require__(253);
+  base64encoder = __webpack_require__(271);
 }
 
 /**
@@ -13624,7 +13818,7 @@ var err = { type: 'error', data: 'parser error' };
  * Create a blob api even for blob builder when vendor prefixes exist
  */
 
-var Blob = __webpack_require__(254);
+var Blob = __webpack_require__(272);
 
 /**
  * Encodes a packet.
@@ -14162,7 +14356,7 @@ exports.decodePayloadAsBinary = function (data, binaryType, callback) {
 
 
 /***/ }),
-/* 55 */
+/* 58 */
 /***/ (function(module, exports) {
 
 module.exports = function (it) {
@@ -14172,11 +14366,11 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 56 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // getting tag from 19.1.3.6 Object.prototype.toString()
-var cof = __webpack_require__(49);
+var cof = __webpack_require__(53);
 var TAG = __webpack_require__(11)('toStringTag');
 // ES3 wrong here
 var ARG = cof(function () { return arguments; }()) == 'Arguments';
@@ -14201,11 +14395,11 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 57 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var def = __webpack_require__(19).f;
-var has = __webpack_require__(31);
+var def = __webpack_require__(21).f;
+var has = __webpack_require__(34);
 var TAG = __webpack_require__(11)('toStringTag');
 
 module.exports = function (it, tag, stat) {
@@ -14214,12 +14408,12 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 58 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.7 / 15.2.3.4 Object.getOwnPropertyNames(O)
-var $keys = __webpack_require__(115);
-var hiddenKeys = __webpack_require__(89).concat('length', 'prototype');
+var $keys = __webpack_require__(129);
+var hiddenKeys = __webpack_require__(99).concat('length', 'prototype');
 
 exports.f = Object.getOwnPropertyNames || function getOwnPropertyNames(O) {
   return $keys(O, hiddenKeys);
@@ -14227,7 +14421,7 @@ exports.f = Object.getOwnPropertyNames || function getOwnPropertyNames(O) {
 
 
 /***/ }),
-/* 59 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14318,7 +14512,7 @@ function toComment(sourceMap) {
 }
 
 /***/ }),
-/* 60 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -14387,7 +14581,7 @@ var singleton = null;
 var	singletonCounter = 0;
 var	stylesInsertedAtTop = [];
 
-var	fixUrls = __webpack_require__(197);
+var	fixUrls = __webpack_require__(215);
 
 module.exports = function(list, options) {
 	if (typeof DEBUG !== "undefined" && DEBUG) {
@@ -14722,33 +14916,77 @@ function updateLink (link, options, obj) {
 
 
 /***/ }),
-/* 61 */
-/***/ (function(module, exports) {
+/* 64 */
+/***/ (function(module, exports, __webpack_require__) {
 
-var g;
+/* WEBPACK VAR INJECTION */(function(global) {var scope = (typeof global !== "undefined" && global) ||
+            (typeof self !== "undefined" && self) ||
+            window;
+var apply = Function.prototype.apply;
 
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
+// DOM APIs, for completeness
 
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || new Function("return this")();
-} catch (e) {
-	// This works if the window reference is available
-	if (typeof window === "object") g = window;
+exports.setTimeout = function() {
+  return new Timeout(apply.call(setTimeout, scope, arguments), clearTimeout);
+};
+exports.setInterval = function() {
+  return new Timeout(apply.call(setInterval, scope, arguments), clearInterval);
+};
+exports.clearTimeout =
+exports.clearInterval = function(timeout) {
+  if (timeout) {
+    timeout.close();
+  }
+};
+
+function Timeout(id, clearFn) {
+  this._id = id;
+  this._clearFn = clearFn;
 }
+Timeout.prototype.unref = Timeout.prototype.ref = function() {};
+Timeout.prototype.close = function() {
+  this._clearFn.call(scope, this._id);
+};
 
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
+// Does not start the time, just sets up the members needed.
+exports.enroll = function(item, msecs) {
+  clearTimeout(item._idleTimeoutId);
+  item._idleTimeout = msecs;
+};
 
-module.exports = g;
+exports.unenroll = function(item) {
+  clearTimeout(item._idleTimeoutId);
+  item._idleTimeout = -1;
+};
 
+exports._unrefActive = exports.active = function(item) {
+  clearTimeout(item._idleTimeoutId);
+
+  var msecs = item._idleTimeout;
+  if (msecs >= 0) {
+    item._idleTimeoutId = setTimeout(function onTimeout() {
+      if (item._onTimeout)
+        item._onTimeout();
+    }, msecs);
+  }
+};
+
+// setimmediate attaches itself to the global object
+__webpack_require__(223);
+// On some exotic environments, it's not clear which object `setimmediate` was
+// able to install onto.  Search each possibility in the same order as the
+// `setimmediate` library.
+exports.setImmediate = (typeof self !== "undefined" && self.setImmediate) ||
+                       (typeof global !== "undefined" && global.setImmediate) ||
+                       (this && this.setImmediate);
+exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
+                         (typeof global !== "undefined" && global.clearImmediate) ||
+                         (this && this.clearImmediate);
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(29)))
 
 /***/ }),
-/* 62 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -14760,8 +14998,8 @@ module.exports = g;
  *
  * Copyright (c) 2010-2012 Digital Bazaar, Inc. All rights reserved.
  */
-var forge = __webpack_require__(3);
-__webpack_require__(29);
+var forge = __webpack_require__(4);
+__webpack_require__(31);
 __webpack_require__(7);
 
 /* HMAC API */
@@ -14900,7 +15138,7 @@ hmac.create = function() {
 
 
 /***/ }),
-/* 63 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -14910,8 +15148,8 @@ hmac.create = function() {
  *
  * Copyright (c) 2010-2015 Digital Bazaar, Inc.
  */
-var forge = __webpack_require__(3);
-__webpack_require__(29);
+var forge = __webpack_require__(4);
+__webpack_require__(31);
 __webpack_require__(7);
 
 var sha1 = module.exports = forge.sha1 = forge.sha1 || {};
@@ -15225,11 +15463,1450 @@ function _update(s, w, bytes) {
 
 
 /***/ }),
-/* 64 */
+/* 67 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(process) {// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+var getOwnPropertyDescriptors = Object.getOwnPropertyDescriptors ||
+  function getOwnPropertyDescriptors(obj) {
+    var keys = Object.keys(obj);
+    var descriptors = {};
+    for (var i = 0; i < keys.length; i++) {
+      descriptors[keys[i]] = Object.getOwnPropertyDescriptor(obj, keys[i]);
+    }
+    return descriptors;
+  };
+
+var formatRegExp = /%[sdj%]/g;
+exports.format = function(f) {
+  if (!isString(f)) {
+    var objects = [];
+    for (var i = 0; i < arguments.length; i++) {
+      objects.push(inspect(arguments[i]));
+    }
+    return objects.join(' ');
+  }
+
+  var i = 1;
+  var args = arguments;
+  var len = args.length;
+  var str = String(f).replace(formatRegExp, function(x) {
+    if (x === '%%') return '%';
+    if (i >= len) return x;
+    switch (x) {
+      case '%s': return String(args[i++]);
+      case '%d': return Number(args[i++]);
+      case '%j':
+        try {
+          return JSON.stringify(args[i++]);
+        } catch (_) {
+          return '[Circular]';
+        }
+      default:
+        return x;
+    }
+  });
+  for (var x = args[i]; i < len; x = args[++i]) {
+    if (isNull(x) || !isObject(x)) {
+      str += ' ' + x;
+    } else {
+      str += ' ' + inspect(x);
+    }
+  }
+  return str;
+};
+
+
+// Mark that a method should not be used.
+// Returns a modified function which warns once by default.
+// If --no-deprecation is set, then it is a no-op.
+exports.deprecate = function(fn, msg) {
+  if (typeof process !== 'undefined' && process.noDeprecation === true) {
+    return fn;
+  }
+
+  // Allow for deprecating things in the process of starting up.
+  if (typeof process === 'undefined') {
+    return function() {
+      return exports.deprecate(fn, msg).apply(this, arguments);
+    };
+  }
+
+  var warned = false;
+  function deprecated() {
+    if (!warned) {
+      if (process.throwDeprecation) {
+        throw new Error(msg);
+      } else if (process.traceDeprecation) {
+        console.trace(msg);
+      } else {
+        console.error(msg);
+      }
+      warned = true;
+    }
+    return fn.apply(this, arguments);
+  }
+
+  return deprecated;
+};
+
+
+var debugs = {};
+var debugEnviron;
+exports.debuglog = function(set) {
+  if (isUndefined(debugEnviron))
+    debugEnviron = process.env.NODE_DEBUG || '';
+  set = set.toUpperCase();
+  if (!debugs[set]) {
+    if (new RegExp('\\b' + set + '\\b', 'i').test(debugEnviron)) {
+      var pid = process.pid;
+      debugs[set] = function() {
+        var msg = exports.format.apply(exports, arguments);
+        console.error('%s %d: %s', set, pid, msg);
+      };
+    } else {
+      debugs[set] = function() {};
+    }
+  }
+  return debugs[set];
+};
+
+
+/**
+ * Echos the value of a value. Trys to print the value out
+ * in the best way possible given the different types.
+ *
+ * @param {Object} obj The object to print out.
+ * @param {Object} opts Optional options object that alters the output.
+ */
+/* legacy: obj, showHidden, depth, colors*/
+function inspect(obj, opts) {
+  // default options
+  var ctx = {
+    seen: [],
+    stylize: stylizeNoColor
+  };
+  // legacy...
+  if (arguments.length >= 3) ctx.depth = arguments[2];
+  if (arguments.length >= 4) ctx.colors = arguments[3];
+  if (isBoolean(opts)) {
+    // legacy...
+    ctx.showHidden = opts;
+  } else if (opts) {
+    // got an "options" object
+    exports._extend(ctx, opts);
+  }
+  // set default options
+  if (isUndefined(ctx.showHidden)) ctx.showHidden = false;
+  if (isUndefined(ctx.depth)) ctx.depth = 2;
+  if (isUndefined(ctx.colors)) ctx.colors = false;
+  if (isUndefined(ctx.customInspect)) ctx.customInspect = true;
+  if (ctx.colors) ctx.stylize = stylizeWithColor;
+  return formatValue(ctx, obj, ctx.depth);
+}
+exports.inspect = inspect;
+
+
+// http://en.wikipedia.org/wiki/ANSI_escape_code#graphics
+inspect.colors = {
+  'bold' : [1, 22],
+  'italic' : [3, 23],
+  'underline' : [4, 24],
+  'inverse' : [7, 27],
+  'white' : [37, 39],
+  'grey' : [90, 39],
+  'black' : [30, 39],
+  'blue' : [34, 39],
+  'cyan' : [36, 39],
+  'green' : [32, 39],
+  'magenta' : [35, 39],
+  'red' : [31, 39],
+  'yellow' : [33, 39]
+};
+
+// Don't use 'blue' not visible on cmd.exe
+inspect.styles = {
+  'special': 'cyan',
+  'number': 'yellow',
+  'boolean': 'yellow',
+  'undefined': 'grey',
+  'null': 'bold',
+  'string': 'green',
+  'date': 'magenta',
+  // "name": intentionally not styling
+  'regexp': 'red'
+};
+
+
+function stylizeWithColor(str, styleType) {
+  var style = inspect.styles[styleType];
+
+  if (style) {
+    return '\u001b[' + inspect.colors[style][0] + 'm' + str +
+           '\u001b[' + inspect.colors[style][1] + 'm';
+  } else {
+    return str;
+  }
+}
+
+
+function stylizeNoColor(str, styleType) {
+  return str;
+}
+
+
+function arrayToHash(array) {
+  var hash = {};
+
+  array.forEach(function(val, idx) {
+    hash[val] = true;
+  });
+
+  return hash;
+}
+
+
+function formatValue(ctx, value, recurseTimes) {
+  // Provide a hook for user-specified inspect functions.
+  // Check that value is an object with an inspect function on it
+  if (ctx.customInspect &&
+      value &&
+      isFunction(value.inspect) &&
+      // Filter out the util module, it's inspect function is special
+      value.inspect !== exports.inspect &&
+      // Also filter out any prototype objects using the circular check.
+      !(value.constructor && value.constructor.prototype === value)) {
+    var ret = value.inspect(recurseTimes, ctx);
+    if (!isString(ret)) {
+      ret = formatValue(ctx, ret, recurseTimes);
+    }
+    return ret;
+  }
+
+  // Primitive types cannot have properties
+  var primitive = formatPrimitive(ctx, value);
+  if (primitive) {
+    return primitive;
+  }
+
+  // Look up the keys of the object.
+  var keys = Object.keys(value);
+  var visibleKeys = arrayToHash(keys);
+
+  if (ctx.showHidden) {
+    keys = Object.getOwnPropertyNames(value);
+  }
+
+  // IE doesn't make error fields non-enumerable
+  // http://msdn.microsoft.com/en-us/library/ie/dww52sbt(v=vs.94).aspx
+  if (isError(value)
+      && (keys.indexOf('message') >= 0 || keys.indexOf('description') >= 0)) {
+    return formatError(value);
+  }
+
+  // Some type of object without properties can be shortcutted.
+  if (keys.length === 0) {
+    if (isFunction(value)) {
+      var name = value.name ? ': ' + value.name : '';
+      return ctx.stylize('[Function' + name + ']', 'special');
+    }
+    if (isRegExp(value)) {
+      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
+    }
+    if (isDate(value)) {
+      return ctx.stylize(Date.prototype.toString.call(value), 'date');
+    }
+    if (isError(value)) {
+      return formatError(value);
+    }
+  }
+
+  var base = '', array = false, braces = ['{', '}'];
+
+  // Make Array say that they are Array
+  if (isArray(value)) {
+    array = true;
+    braces = ['[', ']'];
+  }
+
+  // Make functions say that they are functions
+  if (isFunction(value)) {
+    var n = value.name ? ': ' + value.name : '';
+    base = ' [Function' + n + ']';
+  }
+
+  // Make RegExps say that they are RegExps
+  if (isRegExp(value)) {
+    base = ' ' + RegExp.prototype.toString.call(value);
+  }
+
+  // Make dates with properties first say the date
+  if (isDate(value)) {
+    base = ' ' + Date.prototype.toUTCString.call(value);
+  }
+
+  // Make error with message first say the error
+  if (isError(value)) {
+    base = ' ' + formatError(value);
+  }
+
+  if (keys.length === 0 && (!array || value.length == 0)) {
+    return braces[0] + base + braces[1];
+  }
+
+  if (recurseTimes < 0) {
+    if (isRegExp(value)) {
+      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
+    } else {
+      return ctx.stylize('[Object]', 'special');
+    }
+  }
+
+  ctx.seen.push(value);
+
+  var output;
+  if (array) {
+    output = formatArray(ctx, value, recurseTimes, visibleKeys, keys);
+  } else {
+    output = keys.map(function(key) {
+      return formatProperty(ctx, value, recurseTimes, visibleKeys, key, array);
+    });
+  }
+
+  ctx.seen.pop();
+
+  return reduceToSingleString(output, base, braces);
+}
+
+
+function formatPrimitive(ctx, value) {
+  if (isUndefined(value))
+    return ctx.stylize('undefined', 'undefined');
+  if (isString(value)) {
+    var simple = '\'' + JSON.stringify(value).replace(/^"|"$/g, '')
+                                             .replace(/'/g, "\\'")
+                                             .replace(/\\"/g, '"') + '\'';
+    return ctx.stylize(simple, 'string');
+  }
+  if (isNumber(value))
+    return ctx.stylize('' + value, 'number');
+  if (isBoolean(value))
+    return ctx.stylize('' + value, 'boolean');
+  // For some reason typeof null is "object", so special case here.
+  if (isNull(value))
+    return ctx.stylize('null', 'null');
+}
+
+
+function formatError(value) {
+  return '[' + Error.prototype.toString.call(value) + ']';
+}
+
+
+function formatArray(ctx, value, recurseTimes, visibleKeys, keys) {
+  var output = [];
+  for (var i = 0, l = value.length; i < l; ++i) {
+    if (hasOwnProperty(value, String(i))) {
+      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
+          String(i), true));
+    } else {
+      output.push('');
+    }
+  }
+  keys.forEach(function(key) {
+    if (!key.match(/^\d+$/)) {
+      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
+          key, true));
+    }
+  });
+  return output;
+}
+
+
+function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
+  var name, str, desc;
+  desc = Object.getOwnPropertyDescriptor(value, key) || { value: value[key] };
+  if (desc.get) {
+    if (desc.set) {
+      str = ctx.stylize('[Getter/Setter]', 'special');
+    } else {
+      str = ctx.stylize('[Getter]', 'special');
+    }
+  } else {
+    if (desc.set) {
+      str = ctx.stylize('[Setter]', 'special');
+    }
+  }
+  if (!hasOwnProperty(visibleKeys, key)) {
+    name = '[' + key + ']';
+  }
+  if (!str) {
+    if (ctx.seen.indexOf(desc.value) < 0) {
+      if (isNull(recurseTimes)) {
+        str = formatValue(ctx, desc.value, null);
+      } else {
+        str = formatValue(ctx, desc.value, recurseTimes - 1);
+      }
+      if (str.indexOf('\n') > -1) {
+        if (array) {
+          str = str.split('\n').map(function(line) {
+            return '  ' + line;
+          }).join('\n').substr(2);
+        } else {
+          str = '\n' + str.split('\n').map(function(line) {
+            return '   ' + line;
+          }).join('\n');
+        }
+      }
+    } else {
+      str = ctx.stylize('[Circular]', 'special');
+    }
+  }
+  if (isUndefined(name)) {
+    if (array && key.match(/^\d+$/)) {
+      return str;
+    }
+    name = JSON.stringify('' + key);
+    if (name.match(/^"([a-zA-Z_][a-zA-Z_0-9]*)"$/)) {
+      name = name.substr(1, name.length - 2);
+      name = ctx.stylize(name, 'name');
+    } else {
+      name = name.replace(/'/g, "\\'")
+                 .replace(/\\"/g, '"')
+                 .replace(/(^"|"$)/g, "'");
+      name = ctx.stylize(name, 'string');
+    }
+  }
+
+  return name + ': ' + str;
+}
+
+
+function reduceToSingleString(output, base, braces) {
+  var numLinesEst = 0;
+  var length = output.reduce(function(prev, cur) {
+    numLinesEst++;
+    if (cur.indexOf('\n') >= 0) numLinesEst++;
+    return prev + cur.replace(/\u001b\[\d\d?m/g, '').length + 1;
+  }, 0);
+
+  if (length > 60) {
+    return braces[0] +
+           (base === '' ? '' : base + '\n ') +
+           ' ' +
+           output.join(',\n  ') +
+           ' ' +
+           braces[1];
+  }
+
+  return braces[0] + base + ' ' + output.join(', ') + ' ' + braces[1];
+}
+
+
+// NOTE: These type checking functions intentionally don't use `instanceof`
+// because it is fragile and can be easily faked with `Object.create()`.
+function isArray(ar) {
+  return Array.isArray(ar);
+}
+exports.isArray = isArray;
+
+function isBoolean(arg) {
+  return typeof arg === 'boolean';
+}
+exports.isBoolean = isBoolean;
+
+function isNull(arg) {
+  return arg === null;
+}
+exports.isNull = isNull;
+
+function isNullOrUndefined(arg) {
+  return arg == null;
+}
+exports.isNullOrUndefined = isNullOrUndefined;
+
+function isNumber(arg) {
+  return typeof arg === 'number';
+}
+exports.isNumber = isNumber;
+
+function isString(arg) {
+  return typeof arg === 'string';
+}
+exports.isString = isString;
+
+function isSymbol(arg) {
+  return typeof arg === 'symbol';
+}
+exports.isSymbol = isSymbol;
+
+function isUndefined(arg) {
+  return arg === void 0;
+}
+exports.isUndefined = isUndefined;
+
+function isRegExp(re) {
+  return isObject(re) && objectToString(re) === '[object RegExp]';
+}
+exports.isRegExp = isRegExp;
+
+function isObject(arg) {
+  return typeof arg === 'object' && arg !== null;
+}
+exports.isObject = isObject;
+
+function isDate(d) {
+  return isObject(d) && objectToString(d) === '[object Date]';
+}
+exports.isDate = isDate;
+
+function isError(e) {
+  return isObject(e) &&
+      (objectToString(e) === '[object Error]' || e instanceof Error);
+}
+exports.isError = isError;
+
+function isFunction(arg) {
+  return typeof arg === 'function';
+}
+exports.isFunction = isFunction;
+
+function isPrimitive(arg) {
+  return arg === null ||
+         typeof arg === 'boolean' ||
+         typeof arg === 'number' ||
+         typeof arg === 'string' ||
+         typeof arg === 'symbol' ||  // ES6 symbol
+         typeof arg === 'undefined';
+}
+exports.isPrimitive = isPrimitive;
+
+exports.isBuffer = __webpack_require__(254);
+
+function objectToString(o) {
+  return Object.prototype.toString.call(o);
+}
+
+
+function pad(n) {
+  return n < 10 ? '0' + n.toString(10) : n.toString(10);
+}
+
+
+var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
+              'Oct', 'Nov', 'Dec'];
+
+// 26 Feb 16:19:34
+function timestamp() {
+  var d = new Date();
+  var time = [pad(d.getHours()),
+              pad(d.getMinutes()),
+              pad(d.getSeconds())].join(':');
+  return [d.getDate(), months[d.getMonth()], time].join(' ');
+}
+
+
+// log is just a thin wrapper to console.log that prepends a timestamp
+exports.log = function() {
+  console.log('%s - %s', timestamp(), exports.format.apply(exports, arguments));
+};
+
+
+/**
+ * Inherit the prototype methods from one constructor into another.
+ *
+ * The Function.prototype.inherits from lang.js rewritten as a standalone
+ * function (not on Function.prototype). NOTE: If this file is to be loaded
+ * during bootstrapping this function needs to be rewritten using some native
+ * functions as prototype setup using normal JavaScript does not work as
+ * expected during bootstrapping (see mirror.js in r114903).
+ *
+ * @param {function} ctor Constructor function which needs to inherit the
+ *     prototype.
+ * @param {function} superCtor Constructor function to inherit prototype from.
+ */
+exports.inherits = __webpack_require__(47);
+
+exports._extend = function(origin, add) {
+  // Don't do anything if add isn't an object
+  if (!add || !isObject(add)) return origin;
+
+  var keys = Object.keys(add);
+  var i = keys.length;
+  while (i--) {
+    origin[keys[i]] = add[keys[i]];
+  }
+  return origin;
+};
+
+function hasOwnProperty(obj, prop) {
+  return Object.prototype.hasOwnProperty.call(obj, prop);
+}
+
+var kCustomPromisifiedSymbol = typeof Symbol !== 'undefined' ? Symbol('util.promisify.custom') : undefined;
+
+exports.promisify = function promisify(original) {
+  if (typeof original !== 'function')
+    throw new TypeError('The "original" argument must be of type Function');
+
+  if (kCustomPromisifiedSymbol && original[kCustomPromisifiedSymbol]) {
+    var fn = original[kCustomPromisifiedSymbol];
+    if (typeof fn !== 'function') {
+      throw new TypeError('The "util.promisify.custom" argument must be of type Function');
+    }
+    Object.defineProperty(fn, kCustomPromisifiedSymbol, {
+      value: fn, enumerable: false, writable: false, configurable: true
+    });
+    return fn;
+  }
+
+  function fn() {
+    var promiseResolve, promiseReject;
+    var promise = new Promise(function (resolve, reject) {
+      promiseResolve = resolve;
+      promiseReject = reject;
+    });
+
+    var args = [];
+    for (var i = 0; i < arguments.length; i++) {
+      args.push(arguments[i]);
+    }
+    args.push(function (err, value) {
+      if (err) {
+        promiseReject(err);
+      } else {
+        promiseResolve(value);
+      }
+    });
+
+    try {
+      original.apply(this, args);
+    } catch (err) {
+      promiseReject(err);
+    }
+
+    return promise;
+  }
+
+  Object.setPrototypeOf(fn, Object.getPrototypeOf(original));
+
+  if (kCustomPromisifiedSymbol) Object.defineProperty(fn, kCustomPromisifiedSymbol, {
+    value: fn, enumerable: false, writable: false, configurable: true
+  });
+  return Object.defineProperties(
+    fn,
+    getOwnPropertyDescriptors(original)
+  );
+}
+
+exports.promisify.custom = kCustomPromisifiedSymbol
+
+function callbackifyOnRejected(reason, cb) {
+  // `!reason` guard inspired by bluebird (Ref: https://goo.gl/t5IS6M).
+  // Because `null` is a special error value in callbacks which means "no error
+  // occurred", we error-wrap so the callback consumer can distinguish between
+  // "the promise rejected with null" or "the promise fulfilled with undefined".
+  if (!reason) {
+    var newReason = new Error('Promise was rejected with a falsy value');
+    newReason.reason = reason;
+    reason = newReason;
+  }
+  return cb(reason);
+}
+
+function callbackify(original) {
+  if (typeof original !== 'function') {
+    throw new TypeError('The "original" argument must be of type Function');
+  }
+
+  // We DO NOT return the promise as it gives the user a false sense that
+  // the promise is actually somehow related to the callback's execution
+  // and that the callback throwing will reject the promise.
+  function callbackified() {
+    var args = [];
+    for (var i = 0; i < arguments.length; i++) {
+      args.push(arguments[i]);
+    }
+
+    var maybeCb = args.pop();
+    if (typeof maybeCb !== 'function') {
+      throw new TypeError('The last argument must be of type Function');
+    }
+    var self = this;
+    var cb = function() {
+      return maybeCb.apply(self, arguments);
+    };
+    // In true node style we process the callback on `nextTick` with all the
+    // implications (stack, `uncaughtException`, `async_hooks`)
+    original.apply(this, args)
+      .then(function(ret) { process.nextTick(cb, null, ret) },
+            function(rej) { process.nextTick(callbackifyOnRejected, rej, cb) });
+  }
+
+  Object.setPrototypeOf(callbackified, Object.getPrototypeOf(original));
+  Object.defineProperties(callbackified,
+                          getOwnPropertyDescriptors(original));
+  return callbackified;
+}
+exports.callbackify = callbackify;
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(18)))
+
+/***/ }),
+/* 68 */
+/***/ (function(module, exports) {
+
+/**
+ * Slice reference.
+ */
+
+var slice = [].slice;
+
+/**
+ * Bind `obj` to `fn`.
+ *
+ * @param {Object} obj
+ * @param {Function|String} fn or string
+ * @return {Function}
+ * @api public
+ */
+
+module.exports = function(obj, fn){
+  if ('string' == typeof fn) fn = obj[fn];
+  if ('function' != typeof fn) throw new Error('bind() requires a function');
+  var args = slice.call(arguments, 2);
+  return function(){
+    return fn.apply(obj, args.concat(slice.call(arguments)));
+  }
+};
+
+
+/***/ }),
+/* 69 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+
+var R = typeof Reflect === 'object' ? Reflect : null
+var ReflectApply = R && typeof R.apply === 'function'
+  ? R.apply
+  : function ReflectApply(target, receiver, args) {
+    return Function.prototype.apply.call(target, receiver, args);
+  }
+
+var ReflectOwnKeys
+if (R && typeof R.ownKeys === 'function') {
+  ReflectOwnKeys = R.ownKeys
+} else if (Object.getOwnPropertySymbols) {
+  ReflectOwnKeys = function ReflectOwnKeys(target) {
+    return Object.getOwnPropertyNames(target)
+      .concat(Object.getOwnPropertySymbols(target));
+  };
+} else {
+  ReflectOwnKeys = function ReflectOwnKeys(target) {
+    return Object.getOwnPropertyNames(target);
+  };
+}
+
+function ProcessEmitWarning(warning) {
+  if (console && console.warn) console.warn(warning);
+}
+
+var NumberIsNaN = Number.isNaN || function NumberIsNaN(value) {
+  return value !== value;
+}
+
+function EventEmitter() {
+  EventEmitter.init.call(this);
+}
+module.exports = EventEmitter;
+
+// Backwards-compat with node 0.10.x
+EventEmitter.EventEmitter = EventEmitter;
+
+EventEmitter.prototype._events = undefined;
+EventEmitter.prototype._eventsCount = 0;
+EventEmitter.prototype._maxListeners = undefined;
+
+// By default EventEmitters will print a warning if more than 10 listeners are
+// added to it. This is a useful default which helps finding memory leaks.
+var defaultMaxListeners = 10;
+
+function checkListener(listener) {
+  if (typeof listener !== 'function') {
+    throw new TypeError('The "listener" argument must be of type Function. Received type ' + typeof listener);
+  }
+}
+
+Object.defineProperty(EventEmitter, 'defaultMaxListeners', {
+  enumerable: true,
+  get: function() {
+    return defaultMaxListeners;
+  },
+  set: function(arg) {
+    if (typeof arg !== 'number' || arg < 0 || NumberIsNaN(arg)) {
+      throw new RangeError('The value of "defaultMaxListeners" is out of range. It must be a non-negative number. Received ' + arg + '.');
+    }
+    defaultMaxListeners = arg;
+  }
+});
+
+EventEmitter.init = function() {
+
+  if (this._events === undefined ||
+      this._events === Object.getPrototypeOf(this)._events) {
+    this._events = Object.create(null);
+    this._eventsCount = 0;
+  }
+
+  this._maxListeners = this._maxListeners || undefined;
+};
+
+// Obviously not all Emitters should be limited to 10. This function allows
+// that to be increased. Set to zero for unlimited.
+EventEmitter.prototype.setMaxListeners = function setMaxListeners(n) {
+  if (typeof n !== 'number' || n < 0 || NumberIsNaN(n)) {
+    throw new RangeError('The value of "n" is out of range. It must be a non-negative number. Received ' + n + '.');
+  }
+  this._maxListeners = n;
+  return this;
+};
+
+function _getMaxListeners(that) {
+  if (that._maxListeners === undefined)
+    return EventEmitter.defaultMaxListeners;
+  return that._maxListeners;
+}
+
+EventEmitter.prototype.getMaxListeners = function getMaxListeners() {
+  return _getMaxListeners(this);
+};
+
+EventEmitter.prototype.emit = function emit(type) {
+  var args = [];
+  for (var i = 1; i < arguments.length; i++) args.push(arguments[i]);
+  var doError = (type === 'error');
+
+  var events = this._events;
+  if (events !== undefined)
+    doError = (doError && events.error === undefined);
+  else if (!doError)
+    return false;
+
+  // If there is no 'error' event listener then throw.
+  if (doError) {
+    var er;
+    if (args.length > 0)
+      er = args[0];
+    if (er instanceof Error) {
+      // Note: The comments on the `throw` lines are intentional, they show
+      // up in Node's output if this results in an unhandled exception.
+      throw er; // Unhandled 'error' event
+    }
+    // At least give some kind of context to the user
+    var err = new Error('Unhandled error.' + (er ? ' (' + er.message + ')' : ''));
+    err.context = er;
+    throw err; // Unhandled 'error' event
+  }
+
+  var handler = events[type];
+
+  if (handler === undefined)
+    return false;
+
+  if (typeof handler === 'function') {
+    ReflectApply(handler, this, args);
+  } else {
+    var len = handler.length;
+    var listeners = arrayClone(handler, len);
+    for (var i = 0; i < len; ++i)
+      ReflectApply(listeners[i], this, args);
+  }
+
+  return true;
+};
+
+function _addListener(target, type, listener, prepend) {
+  var m;
+  var events;
+  var existing;
+
+  checkListener(listener);
+
+  events = target._events;
+  if (events === undefined) {
+    events = target._events = Object.create(null);
+    target._eventsCount = 0;
+  } else {
+    // To avoid recursion in the case that type === "newListener"! Before
+    // adding it to the listeners, first emit "newListener".
+    if (events.newListener !== undefined) {
+      target.emit('newListener', type,
+                  listener.listener ? listener.listener : listener);
+
+      // Re-assign `events` because a newListener handler could have caused the
+      // this._events to be assigned to a new object
+      events = target._events;
+    }
+    existing = events[type];
+  }
+
+  if (existing === undefined) {
+    // Optimize the case of one listener. Don't need the extra array object.
+    existing = events[type] = listener;
+    ++target._eventsCount;
+  } else {
+    if (typeof existing === 'function') {
+      // Adding the second element, need to change to array.
+      existing = events[type] =
+        prepend ? [listener, existing] : [existing, listener];
+      // If we've already got an array, just append.
+    } else if (prepend) {
+      existing.unshift(listener);
+    } else {
+      existing.push(listener);
+    }
+
+    // Check for listener leak
+    m = _getMaxListeners(target);
+    if (m > 0 && existing.length > m && !existing.warned) {
+      existing.warned = true;
+      // No error code for this since it is a Warning
+      // eslint-disable-next-line no-restricted-syntax
+      var w = new Error('Possible EventEmitter memory leak detected. ' +
+                          existing.length + ' ' + String(type) + ' listeners ' +
+                          'added. Use emitter.setMaxListeners() to ' +
+                          'increase limit');
+      w.name = 'MaxListenersExceededWarning';
+      w.emitter = target;
+      w.type = type;
+      w.count = existing.length;
+      ProcessEmitWarning(w);
+    }
+  }
+
+  return target;
+}
+
+EventEmitter.prototype.addListener = function addListener(type, listener) {
+  return _addListener(this, type, listener, false);
+};
+
+EventEmitter.prototype.on = EventEmitter.prototype.addListener;
+
+EventEmitter.prototype.prependListener =
+    function prependListener(type, listener) {
+      return _addListener(this, type, listener, true);
+    };
+
+function onceWrapper() {
+  if (!this.fired) {
+    this.target.removeListener(this.type, this.wrapFn);
+    this.fired = true;
+    if (arguments.length === 0)
+      return this.listener.call(this.target);
+    return this.listener.apply(this.target, arguments);
+  }
+}
+
+function _onceWrap(target, type, listener) {
+  var state = { fired: false, wrapFn: undefined, target: target, type: type, listener: listener };
+  var wrapped = onceWrapper.bind(state);
+  wrapped.listener = listener;
+  state.wrapFn = wrapped;
+  return wrapped;
+}
+
+EventEmitter.prototype.once = function once(type, listener) {
+  checkListener(listener);
+  this.on(type, _onceWrap(this, type, listener));
+  return this;
+};
+
+EventEmitter.prototype.prependOnceListener =
+    function prependOnceListener(type, listener) {
+      checkListener(listener);
+      this.prependListener(type, _onceWrap(this, type, listener));
+      return this;
+    };
+
+// Emits a 'removeListener' event if and only if the listener was removed.
+EventEmitter.prototype.removeListener =
+    function removeListener(type, listener) {
+      var list, events, position, i, originalListener;
+
+      checkListener(listener);
+
+      events = this._events;
+      if (events === undefined)
+        return this;
+
+      list = events[type];
+      if (list === undefined)
+        return this;
+
+      if (list === listener || list.listener === listener) {
+        if (--this._eventsCount === 0)
+          this._events = Object.create(null);
+        else {
+          delete events[type];
+          if (events.removeListener)
+            this.emit('removeListener', type, list.listener || listener);
+        }
+      } else if (typeof list !== 'function') {
+        position = -1;
+
+        for (i = list.length - 1; i >= 0; i--) {
+          if (list[i] === listener || list[i].listener === listener) {
+            originalListener = list[i].listener;
+            position = i;
+            break;
+          }
+        }
+
+        if (position < 0)
+          return this;
+
+        if (position === 0)
+          list.shift();
+        else {
+          spliceOne(list, position);
+        }
+
+        if (list.length === 1)
+          events[type] = list[0];
+
+        if (events.removeListener !== undefined)
+          this.emit('removeListener', type, originalListener || listener);
+      }
+
+      return this;
+    };
+
+EventEmitter.prototype.off = EventEmitter.prototype.removeListener;
+
+EventEmitter.prototype.removeAllListeners =
+    function removeAllListeners(type) {
+      var listeners, events, i;
+
+      events = this._events;
+      if (events === undefined)
+        return this;
+
+      // not listening for removeListener, no need to emit
+      if (events.removeListener === undefined) {
+        if (arguments.length === 0) {
+          this._events = Object.create(null);
+          this._eventsCount = 0;
+        } else if (events[type] !== undefined) {
+          if (--this._eventsCount === 0)
+            this._events = Object.create(null);
+          else
+            delete events[type];
+        }
+        return this;
+      }
+
+      // emit removeListener for all listeners on all events
+      if (arguments.length === 0) {
+        var keys = Object.keys(events);
+        var key;
+        for (i = 0; i < keys.length; ++i) {
+          key = keys[i];
+          if (key === 'removeListener') continue;
+          this.removeAllListeners(key);
+        }
+        this.removeAllListeners('removeListener');
+        this._events = Object.create(null);
+        this._eventsCount = 0;
+        return this;
+      }
+
+      listeners = events[type];
+
+      if (typeof listeners === 'function') {
+        this.removeListener(type, listeners);
+      } else if (listeners !== undefined) {
+        // LIFO order
+        for (i = listeners.length - 1; i >= 0; i--) {
+          this.removeListener(type, listeners[i]);
+        }
+      }
+
+      return this;
+    };
+
+function _listeners(target, type, unwrap) {
+  var events = target._events;
+
+  if (events === undefined)
+    return [];
+
+  var evlistener = events[type];
+  if (evlistener === undefined)
+    return [];
+
+  if (typeof evlistener === 'function')
+    return unwrap ? [evlistener.listener || evlistener] : [evlistener];
+
+  return unwrap ?
+    unwrapListeners(evlistener) : arrayClone(evlistener, evlistener.length);
+}
+
+EventEmitter.prototype.listeners = function listeners(type) {
+  return _listeners(this, type, true);
+};
+
+EventEmitter.prototype.rawListeners = function rawListeners(type) {
+  return _listeners(this, type, false);
+};
+
+EventEmitter.listenerCount = function(emitter, type) {
+  if (typeof emitter.listenerCount === 'function') {
+    return emitter.listenerCount(type);
+  } else {
+    return listenerCount.call(emitter, type);
+  }
+};
+
+EventEmitter.prototype.listenerCount = listenerCount;
+function listenerCount(type) {
+  var events = this._events;
+
+  if (events !== undefined) {
+    var evlistener = events[type];
+
+    if (typeof evlistener === 'function') {
+      return 1;
+    } else if (evlistener !== undefined) {
+      return evlistener.length;
+    }
+  }
+
+  return 0;
+}
+
+EventEmitter.prototype.eventNames = function eventNames() {
+  return this._eventsCount > 0 ? ReflectOwnKeys(this._events) : [];
+};
+
+function arrayClone(arr, n) {
+  var copy = new Array(n);
+  for (var i = 0; i < n; ++i)
+    copy[i] = arr[i];
+  return copy;
+}
+
+function spliceOne(list, index) {
+  for (; index + 1 < list.length; index++)
+    list[index] = list[index + 1];
+  list.pop();
+}
+
+function unwrapListeners(arr) {
+  var ret = new Array(arr.length);
+  for (var i = 0; i < ret.length; ++i) {
+    ret[i] = arr[i].listener || arr[i];
+  }
+  return ret;
+}
+
+
+/***/ }),
+/* 70 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(Buffer) {// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+// NOTE: These type checking functions intentionally don't use `instanceof`
+// because it is fragile and can be easily faked with `Object.create()`.
+
+function isArray(arg) {
+  if (Array.isArray) {
+    return Array.isArray(arg);
+  }
+  return objectToString(arg) === '[object Array]';
+}
+exports.isArray = isArray;
+
+function isBoolean(arg) {
+  return typeof arg === 'boolean';
+}
+exports.isBoolean = isBoolean;
+
+function isNull(arg) {
+  return arg === null;
+}
+exports.isNull = isNull;
+
+function isNullOrUndefined(arg) {
+  return arg == null;
+}
+exports.isNullOrUndefined = isNullOrUndefined;
+
+function isNumber(arg) {
+  return typeof arg === 'number';
+}
+exports.isNumber = isNumber;
+
+function isString(arg) {
+  return typeof arg === 'string';
+}
+exports.isString = isString;
+
+function isSymbol(arg) {
+  return typeof arg === 'symbol';
+}
+exports.isSymbol = isSymbol;
+
+function isUndefined(arg) {
+  return arg === void 0;
+}
+exports.isUndefined = isUndefined;
+
+function isRegExp(re) {
+  return objectToString(re) === '[object RegExp]';
+}
+exports.isRegExp = isRegExp;
+
+function isObject(arg) {
+  return typeof arg === 'object' && arg !== null;
+}
+exports.isObject = isObject;
+
+function isDate(d) {
+  return objectToString(d) === '[object Date]';
+}
+exports.isDate = isDate;
+
+function isError(e) {
+  return (objectToString(e) === '[object Error]' || e instanceof Error);
+}
+exports.isError = isError;
+
+function isFunction(arg) {
+  return typeof arg === 'function';
+}
+exports.isFunction = isFunction;
+
+function isPrimitive(arg) {
+  return arg === null ||
+         typeof arg === 'boolean' ||
+         typeof arg === 'number' ||
+         typeof arg === 'string' ||
+         typeof arg === 'symbol' ||  // ES6 symbol
+         typeof arg === 'undefined';
+}
+exports.isPrimitive = isPrimitive;
+
+exports.isBuffer = Buffer.isBuffer;
+
+function objectToString(o) {
+  return Object.prototype.toString.call(o);
+}
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(16).Buffer))
+
+/***/ }),
+/* 71 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AttachmentInfo; });
+/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(35);
+/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(6);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(1);
+
+
+
+
+/**
+ * Implements files attachments functionality
+ * Constructor accepts a file element
+ */
+
+var AttachmentInfo = /*#__PURE__*/function () {
+  function AttachmentInfo(file, onion, pkfp, metaID, privKey, messageID, hashEncrypted, hashUnencrypted) {
+    var hashAlgo = arguments.length > 8 && arguments[8] !== undefined ? arguments[8] : "sha256";
+
+    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1___default()(this, AttachmentInfo);
+
+    var self = this;
+    self.name = file.name;
+    self.size = file.size;
+    self.type = file.type;
+    self.lastModified = file.lastModified;
+    self.pkfp = pkfp;
+    self.metaID = metaID;
+    self.hashAlgorithm = hashAlgo;
+    self.messageID = messageID;
+    self.hashEncrypted = hashEncrypted;
+    self.hashUnencrypted = hashUnencrypted;
+    self.link = self.buildLink(onion, pkfp, self.hashUnencrypted);
+    self.signHashes(privKey);
+  }
+
+  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2___default()(AttachmentInfo, [{
+    key: "get",
+    value: function get() {
+      var self = this;
+      return {
+        name: self.name,
+        size: self.size,
+        type: self.type,
+        lastModified: self.lastModified,
+        pkfp: self.pkfp,
+        hashEncrypted: self.hashEncrypted,
+        hashUnencrypted: self.hashUnencrypted,
+        signEncrypted: self.signEncrypted,
+        signUnencrypted: self.signUnencrypted,
+        metaID: self.metaID,
+        messageID: self.messageID,
+        link: self.link,
+        hashAlgorithm: self.hashAlgorithm
+      };
+    }
+  }, {
+    key: "getLink",
+    value: function getLink() {
+      return this.link;
+    }
+  }, {
+    key: "buildLink",
+    value: function buildLink(onion, pkfp, hash) {
+      if (!onion || !pkfp || !hash) {
+        throw new Error("Attachment buildLink: missing required parameters");
+      }
+
+      var rawLink = onion + "/" + pkfp + "/" + hash;
+      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_3__[/* iCrypto */ "a"]();
+      ic.addBlob("l", rawLink).base64Encode("l", "l64");
+      return ic.get("l64");
+    }
+  }, {
+    key: "signHashes",
+    value: function signHashes(privKey) {
+      if (!privKey) {
+        throw new Error("Attachment signAttachmentHash: privKey is undefined");
+      }
+
+      var self = this;
+      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_3__[/* iCrypto */ "a"]();
+      ic.addBlob("hu", self.hashUnencrypted).addBlob("he", self.hashEncrypted).asym.setKey("pk", privKey, "private").asym.sign("hu", "pk", "sign_u").asym.sign("he", "pk", "sign_e");
+      self.signUnencrypted = ic.get("sign_u");
+      self.signEncrypted = ic.get("sign_e");
+    }
+  }], [{
+    key: "verifyFileInfo",
+    value: function verifyFileInfo(info) {
+      var required = ["name", "size", "pkfp", "hashUnencrypted", "hashEncrypted", "signUnencrypted", "signEncrypted", "link", "metaID", "messageID", "hashAlgorithm"];
+
+      for (var _i = 0, _required = required; _i < _required.length; _i++) {
+        var i = _required[_i];
+
+        if (!info.hasOwnProperty(i)) {
+          throw new Error("Attachment verifyFileInfo: Missing required property: " + i);
+        }
+      }
+    }
+  }, {
+    key: "parseLink",
+    value: function parseLink(link) {
+      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_3__[/* iCrypto */ "a"]();
+      ic.addBlob("l", link).base64Decode("l", "lres");
+      var elements = ic.get("lres").split("/");
+      return {
+        residence: elements[0],
+        pkfp: elements[1],
+        name: elements[2]
+      };
+    }
+  }]);
+
+  return AttachmentInfo;
+}();
+AttachmentInfo.properties = ["name", "size", "type", "lastModified", "hashUnencrypted", "signUnencrypted", "hashEncrytped", "signEncrypted", "link", "metaID", "messageID", "hashAlgorithm"];
+
+/***/ }),
+/* 72 */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+module.exports = __webpack_require__(281);
+
+
+
+/***/ }),
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.1.1 ToPrimitive(input [, PreferredType])
-var isObject = __webpack_require__(25);
+var isObject = __webpack_require__(27);
 // instead of the ES6 spec version, we didn't implement @@toPrimitive case
 // and the second argument - flag - preferred type is a string
 module.exports = function (it, S) {
@@ -15243,10 +16920,10 @@ module.exports = function (it, S) {
 
 
 /***/ }),
-/* 65 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var core = __webpack_require__(34);
+var core = __webpack_require__(37);
 var global = __webpack_require__(10);
 var SHARED = '__core-js_shared__';
 var store = global[SHARED] || (global[SHARED] = {});
@@ -15255,13 +16932,13 @@ var store = global[SHARED] || (global[SHARED] = {});
   return store[key] || (store[key] = value !== undefined ? value : {});
 })('versions', []).push({
   version: core.version,
-  mode: __webpack_require__(36) ? 'pure' : 'global',
+  mode: __webpack_require__(39) ? 'pure' : 'global',
   copyright: '© 2019 Denis Pushkarev (zloirock.ru)'
 });
 
 
 /***/ }),
-/* 66 */
+/* 75 */
 /***/ (function(module, exports) {
 
 // 7.2.1 RequireObjectCoercible(argument)
@@ -15272,12 +16949,12 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 67 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.3.20 SpeciesConstructor(O, defaultConstructor)
-var anObject = __webpack_require__(14);
-var aFunction = __webpack_require__(55);
+var anObject = __webpack_require__(15);
+var aFunction = __webpack_require__(58);
 var SPECIES = __webpack_require__(11)('species');
 module.exports = function (O, D) {
   var C = anObject(O).constructor;
@@ -15287,24 +16964,24 @@ module.exports = function (O, D) {
 
 
 /***/ }),
-/* 68 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-__webpack_require__(181);
-var anObject = __webpack_require__(14);
-var $flags = __webpack_require__(85);
-var DESCRIPTORS = __webpack_require__(20);
+__webpack_require__(199);
+var anObject = __webpack_require__(15);
+var $flags = __webpack_require__(95);
+var DESCRIPTORS = __webpack_require__(22);
 var TO_STRING = 'toString';
 var $toString = /./[TO_STRING];
 
 var define = function (fn) {
-  __webpack_require__(30)(RegExp.prototype, TO_STRING, fn, true);
+  __webpack_require__(33)(RegExp.prototype, TO_STRING, fn, true);
 };
 
 // 21.2.5.14 RegExp.prototype.toString()
-if (__webpack_require__(21)(function () { return $toString.call({ source: 'a', flags: 'b' }) != '/a/b'; })) {
+if (__webpack_require__(23)(function () { return $toString.call({ source: 'a', flags: 'b' }) != '/a/b'; })) {
   define(function toString() {
     var R = anObject(this);
     return '/'.concat(R.source, '/',
@@ -15319,12 +16996,12 @@ if (__webpack_require__(21)(function () { return $toString.call({ source: 'a', f
 
 
 /***/ }),
-/* 69 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.14 / 15.2.3.14 Object.keys(O)
-var $keys = __webpack_require__(115);
-var enumBugKeys = __webpack_require__(89);
+var $keys = __webpack_require__(129);
+var enumBugKeys = __webpack_require__(99);
 
 module.exports = Object.keys || function keys(O) {
   return $keys(O, enumBugKeys);
@@ -15332,10 +17009,10 @@ module.exports = Object.keys || function keys(O) {
 
 
 /***/ }),
-/* 70 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var toInteger = __webpack_require__(39);
+var toInteger = __webpack_require__(41);
 var max = Math.max;
 var min = Math.min;
 module.exports = function (index, length) {
@@ -15345,84 +17022,14 @@ module.exports = function (index, length) {
 
 
 /***/ }),
-/* 71 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(global) {var scope = (typeof global !== "undefined" && global) ||
-            (typeof self !== "undefined" && self) ||
-            window;
-var apply = Function.prototype.apply;
-
-// DOM APIs, for completeness
-
-exports.setTimeout = function() {
-  return new Timeout(apply.call(setTimeout, scope, arguments), clearTimeout);
-};
-exports.setInterval = function() {
-  return new Timeout(apply.call(setInterval, scope, arguments), clearInterval);
-};
-exports.clearTimeout =
-exports.clearInterval = function(timeout) {
-  if (timeout) {
-    timeout.close();
-  }
-};
-
-function Timeout(id, clearFn) {
-  this._id = id;
-  this._clearFn = clearFn;
-}
-Timeout.prototype.unref = Timeout.prototype.ref = function() {};
-Timeout.prototype.close = function() {
-  this._clearFn.call(scope, this._id);
-};
-
-// Does not start the time, just sets up the members needed.
-exports.enroll = function(item, msecs) {
-  clearTimeout(item._idleTimeoutId);
-  item._idleTimeout = msecs;
-};
-
-exports.unenroll = function(item) {
-  clearTimeout(item._idleTimeoutId);
-  item._idleTimeout = -1;
-};
-
-exports._unrefActive = exports.active = function(item) {
-  clearTimeout(item._idleTimeoutId);
-
-  var msecs = item._idleTimeout;
-  if (msecs >= 0) {
-    item._idleTimeoutId = setTimeout(function onTimeout() {
-      if (item._onTimeout)
-        item._onTimeout();
-    }, msecs);
-  }
-};
-
-// setimmediate attaches itself to the global object
-__webpack_require__(205);
-// On some exotic environments, it's not clear which object `setimmediate` was
-// able to install onto.  Search each possibility in the same order as the
-// `setimmediate` library.
-exports.setImmediate = (typeof self !== "undefined" && self.setImmediate) ||
-                       (typeof global !== "undefined" && global.setImmediate) ||
-                       (this && this.setImmediate);
-exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
-                         (typeof global !== "undefined" && global.clearImmediate) ||
-                         (this && this.clearImmediate);
-
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(61)))
-
-/***/ }),
-/* 72 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 // https://github.com/tc39/Array.prototype.includes
-var $export = __webpack_require__(24);
-var $includes = __webpack_require__(87)(true);
+var $export = __webpack_require__(26);
+var $includes = __webpack_require__(97)(true);
 
 $export($export.P, 'Array', {
   includes: function includes(el /* , fromIndex = 0 */) {
@@ -15430,11 +17037,11 @@ $export($export.P, 'Array', {
   }
 });
 
-__webpack_require__(120)('includes');
+__webpack_require__(134)('includes');
 
 
 /***/ }),
-/* 73 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -15467,9 +17074,9 @@ __webpack_require__(120)('includes');
  * Copyright (c) 2012 Stefan Siegl <stesie@brokenpipe.de>
  * Copyright (c) 2012-2014 Digital Bazaar, Inc.
  */
-var forge = __webpack_require__(3);
-__webpack_require__(99);
-__webpack_require__(134);
+var forge = __webpack_require__(4);
+__webpack_require__(110);
+__webpack_require__(147);
 __webpack_require__(7);
 
 /* DES API */
@@ -15935,7 +17542,7 @@ function _createCipher(options) {
 
 
 /***/ }),
-/* 74 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -16001,13 +17608,13 @@ function _createCipher(options) {
  *
  * The OID for the RSA key algorithm is: 1.2.840.113549.1.1.1
  */
-var forge = __webpack_require__(3);
-__webpack_require__(28);
-__webpack_require__(75);
-__webpack_require__(44);
-__webpack_require__(142);
-__webpack_require__(143);
-__webpack_require__(23);
+var forge = __webpack_require__(4);
+__webpack_require__(30);
+__webpack_require__(83);
+__webpack_require__(46);
+__webpack_require__(155);
+__webpack_require__(156);
+__webpack_require__(25);
 __webpack_require__(7);
 
 if(typeof BigInteger === 'undefined') {
@@ -17737,7 +19344,7 @@ function _base64ToBigInt(b64) {
 
 
 /***/ }),
-/* 75 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Copyright (c) 2005  Tom Wu
@@ -17788,7 +19395,7 @@ Address all questions regarding this license to:
   Tom Wu
   tjw@cs.Stanford.EDU
 */
-var forge = __webpack_require__(3);
+var forge = __webpack_require__(4);
 
 module.exports = forge.jsbn = forge.jsbn || {};
 
@@ -19007,7 +20614,7 @@ BigInteger.prototype.isProbablePrime = bnIsProbablePrime;
 
 
 /***/ }),
-/* 76 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {/* eslint-env browser */
@@ -19259,7 +20866,7 @@ function localstorage() {
 	}
 }
 
-module.exports = __webpack_require__(238)(exports);
+module.exports = __webpack_require__(256)(exports);
 
 const {formatters} = module.exports;
 
@@ -19275,10 +20882,10 @@ formatters.j = function (v) {
 	}
 };
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(27)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(18)))
 
 /***/ }),
-/* 77 */
+/* 85 */
 /***/ (function(module, exports) {
 
 /**
@@ -19321,7 +20928,7 @@ exports.decode = function(qs){
 
 
 /***/ }),
-/* 78 */
+/* 86 */
 /***/ (function(module, exports) {
 
 
@@ -19333,7 +20940,7 @@ module.exports = function(a, b){
 };
 
 /***/ }),
-/* 79 */
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {/* eslint-env browser */
@@ -19585,7 +21192,7 @@ function localstorage() {
 	}
 }
 
-module.exports = __webpack_require__(255)(exports);
+module.exports = __webpack_require__(273)(exports);
 
 const {formatters} = module.exports;
 
@@ -19601,27 +21208,80 @@ formatters.j = function (v) {
 	}
 };
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(27)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(18)))
 
 /***/ }),
-/* 80 */
+/* 88 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+
+if (typeof process === 'undefined' ||
+    !process.version ||
+    process.version.indexOf('v0.') === 0 ||
+    process.version.indexOf('v1.') === 0 && process.version.indexOf('v1.8.') !== 0) {
+  module.exports = { nextTick: nextTick };
+} else {
+  module.exports = process
+}
+
+function nextTick(fn, arg1, arg2, arg3) {
+  if (typeof fn !== 'function') {
+    throw new TypeError('"callback" argument must be a function');
+  }
+  var len = arguments.length;
+  var args, i;
+  switch (len) {
+  case 0:
+  case 1:
+    return process.nextTick(fn);
+  case 2:
+    return process.nextTick(function afterTickOne() {
+      fn.call(null, arg1);
+    });
+  case 3:
+    return process.nextTick(function afterTickTwo() {
+      fn.call(null, arg1, arg2);
+    });
+  case 4:
+    return process.nextTick(function afterTickThree() {
+      fn.call(null, arg1, arg2, arg3);
+    });
+  default:
+    args = new Array(len - 1);
+    i = 0;
+    while (i < args.length) {
+      args[i++] = arguments[i];
+    }
+    return process.nextTick(function afterTick() {
+      fn.apply(null, args);
+    });
+  }
+}
+
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(18)))
+
+/***/ }),
+/* 89 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return XHR; });
-/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(38);
+/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(35);
 /* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(40);
+/* harmony import */ var core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(42);
 /* harmony import */ var core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(41);
+/* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(43);
 /* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(16);
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(17);
 /* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(15);
+/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(14);
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var cute_set__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(47);
+/* harmony import */ var cute_set__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(51);
 /* harmony import */ var cute_set__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(cute_set__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var util__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(234);
+/* harmony import */ var util__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(67);
 /* harmony import */ var util__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(util__WEBPACK_IMPORTED_MODULE_6__);
 
 
@@ -19887,7 +21547,107 @@ function parseHeaders(headers) {
 }
 
 /***/ }),
-/* 81 */
+/* 90 */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+/**
+ * Module dependencies.
+ */
+
+var url = __webpack_require__(255);
+var parser = __webpack_require__(115);
+var Manager = __webpack_require__(166);
+var debug = __webpack_require__(84)('socket.io-client');
+
+/**
+ * Module exports.
+ */
+
+module.exports = exports = lookup;
+
+/**
+ * Managers cache.
+ */
+
+var cache = exports.managers = {};
+
+/**
+ * Looks up an existing `Manager` for multiplexing.
+ * If the user summons:
+ *
+ *   `io('http://localhost/a');`
+ *   `io('http://localhost/b');`
+ *
+ * We reuse the existing instance based on same scheme/port/host,
+ * and we initialize sockets for each namespace.
+ *
+ * @api public
+ */
+
+function lookup (uri, opts) {
+  if (typeof uri === 'object') {
+    opts = uri;
+    uri = undefined;
+  }
+
+  opts = opts || {};
+
+  var parsed = url(uri);
+  var source = parsed.source;
+  var id = parsed.id;
+  var path = parsed.path;
+  var sameNamespace = cache[id] && path in cache[id].nsps;
+  var newConnection = opts.forceNew || opts['force new connection'] ||
+                      false === opts.multiplex || sameNamespace;
+
+  var io;
+
+  if (newConnection) {
+    debug('ignoring socket cache for %s', source);
+    io = Manager(source, opts);
+  } else {
+    if (!cache[id]) {
+      debug('new io instance for %s', source);
+      cache[id] = Manager(source, opts);
+    }
+    io = cache[id];
+  }
+  if (parsed.query && !opts.query) {
+    opts.query = parsed.query;
+  }
+  return io.socket(parsed.path, opts);
+}
+
+/**
+ * Protocol version.
+ *
+ * @api public
+ */
+
+exports.protocol = parser.protocol;
+
+/**
+ * `connect`.
+ *
+ * @param {String} uri
+ * @api public
+ */
+
+exports.connect = lookup;
+
+/**
+ * Expose constructors for standalone build.
+ *
+ * @api public
+ */
+
+exports.Manager = __webpack_require__(166);
+exports.Socket = __webpack_require__(172);
+
+
+/***/ }),
+/* 91 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -19896,35 +21656,35 @@ function parseHeaders(headers) {
 __webpack_require__.d(__webpack_exports__, "a", function() { return /* binding */ Vault_Vault; });
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.promise.js
-var es6_promise = __webpack_require__(51);
+var es6_promise = __webpack_require__(36);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/regenerator/index.js
-var regenerator = __webpack_require__(6);
+var regenerator = __webpack_require__(2);
 var regenerator_default = /*#__PURE__*/__webpack_require__.n(regenerator);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/web.dom.iterable.js
-var web_dom_iterable = __webpack_require__(16);
+var web_dom_iterable = __webpack_require__(17);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.object.to-string.js
-var es6_object_to_string = __webpack_require__(15);
+var es6_object_to_string = __webpack_require__(14);
 
 // EXTERNAL MODULE: ./node_modules/regenerator-runtime/runtime.js
-var runtime = __webpack_require__(33);
+var runtime = __webpack_require__(32);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/asyncToGenerator.js
-var asyncToGenerator = __webpack_require__(9);
+var asyncToGenerator = __webpack_require__(8);
 var asyncToGenerator_default = /*#__PURE__*/__webpack_require__.n(asyncToGenerator);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/classCallCheck.js
-var classCallCheck = __webpack_require__(4);
+var classCallCheck = __webpack_require__(5);
 var classCallCheck_default = /*#__PURE__*/__webpack_require__.n(classCallCheck);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/createClass.js
-var createClass = __webpack_require__(5);
+var createClass = __webpack_require__(6);
 var createClass_default = /*#__PURE__*/__webpack_require__.n(createClass);
 
 // EXTERNAL MODULE: ./common/IError.js
-var IError = __webpack_require__(2);
+var IError = __webpack_require__(3);
 
 // CONCATENATED MODULE: ./client/src/js/lib/PasswordVerify.js
 function verifyPassword(password, confirm) {
@@ -19937,10 +21697,10 @@ function verifyPassword(password, confirm) {
   }
 }
 // EXTERNAL MODULE: ./client/src/js/lib/Topic.js
-var Topic = __webpack_require__(17);
+var Topic = __webpack_require__(19);
 
 // EXTERNAL MODULE: ./client/src/js/lib/ClientSettings.js
-var ClientSettings = __webpack_require__(45);
+var ClientSettings = __webpack_require__(49);
 
 // EXTERNAL MODULE: ./client/src/js/lib/iCrypto.js
 var iCrypto = __webpack_require__(1);
@@ -19949,7 +21709,7 @@ var iCrypto = __webpack_require__(1);
 var WildEmitter = __webpack_require__(13);
 
 // EXTERNAL MODULE: ./client/src/js/lib/Message.js
-var Message = __webpack_require__(8);
+var Message = __webpack_require__(9);
 
 // EXTERNAL MODULE: ./common/Events.js
 var Events = __webpack_require__(0);
@@ -19958,10 +21718,10 @@ var Events = __webpack_require__(0);
 var ChatUtility = __webpack_require__(12);
 
 // EXTERNAL MODULE: ./client/src/js/lib/xhr.js
-var xhr = __webpack_require__(80);
+var xhr = __webpack_require__(89);
 
 // EXTERNAL MODULE: ./node_modules/semver/semver.js
-var semver = __webpack_require__(165);
+var semver = __webpack_require__(184);
 
 // CONCATENATED MODULE: ./client/src/js/lib/Vault.js
 
@@ -20556,10 +22316,10 @@ var Vault_Vault = /*#__PURE__*/function () {
 // };
 
 /***/ }),
-/* 82 */
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isObject = __webpack_require__(25);
+var isObject = __webpack_require__(27);
 var document = __webpack_require__(10).document;
 // typeof document.createElement is 'object' in old IE
 var is = isObject(document) && isObject(document.createElement);
@@ -20569,13 +22329,13 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 83 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var classof = __webpack_require__(56);
+var classof = __webpack_require__(59);
 var builtinExec = RegExp.prototype.exec;
 
  // `RegExpExec` abstract operation
@@ -20597,13 +22357,13 @@ module.exports = function (R, S) {
 
 
 /***/ }),
-/* 84 */
+/* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var regexpFlags = __webpack_require__(85);
+var regexpFlags = __webpack_require__(95);
 
 var nativeExec = RegExp.prototype.exec;
 // This always refers to the native implementation, because the
@@ -20662,13 +22422,13 @@ module.exports = patchedExec;
 
 
 /***/ }),
-/* 85 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 // 21.2.5.3 get RegExp.prototype.flags
-var anObject = __webpack_require__(14);
+var anObject = __webpack_require__(15);
 module.exports = function () {
   var that = anObject(this);
   var result = '';
@@ -20682,18 +22442,18 @@ module.exports = function () {
 
 
 /***/ }),
-/* 86 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-__webpack_require__(178);
-var redefine = __webpack_require__(30);
-var hide = __webpack_require__(18);
-var fails = __webpack_require__(21);
-var defined = __webpack_require__(66);
+__webpack_require__(196);
+var redefine = __webpack_require__(33);
+var hide = __webpack_require__(20);
+var fails = __webpack_require__(23);
+var defined = __webpack_require__(75);
 var wks = __webpack_require__(11);
-var regexpExec = __webpack_require__(84);
+var regexpExec = __webpack_require__(94);
 
 var SPECIES = wks('species');
 
@@ -20785,14 +22545,14 @@ module.exports = function (KEY, length, exec) {
 
 
 /***/ }),
-/* 87 */
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // false -> Array#indexOf
 // true  -> Array#includes
-var toIObject = __webpack_require__(42);
-var toLength = __webpack_require__(22);
-var toAbsoluteIndex = __webpack_require__(70);
+var toIObject = __webpack_require__(44);
+var toLength = __webpack_require__(24);
+var toAbsoluteIndex = __webpack_require__(79);
 module.exports = function (IS_INCLUDES) {
   return function ($this, el, fromIndex) {
     var O = toIObject($this);
@@ -20814,18 +22574,18 @@ module.exports = function (IS_INCLUDES) {
 
 
 /***/ }),
-/* 88 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var shared = __webpack_require__(65)('keys');
-var uid = __webpack_require__(35);
+var shared = __webpack_require__(74)('keys');
+var uid = __webpack_require__(38);
 module.exports = function (key) {
   return shared[key] || (shared[key] = uid(key));
 };
 
 
 /***/ }),
-/* 89 */
+/* 99 */
 /***/ (function(module, exports) {
 
 // IE 8- don't enum bug keys
@@ -20835,41 +22595,41 @@ module.exports = (
 
 
 /***/ }),
-/* 90 */
+/* 100 */
 /***/ (function(module, exports) {
 
 exports.f = Object.getOwnPropertySymbols;
 
 
 /***/ }),
-/* 91 */
+/* 101 */
 /***/ (function(module, exports) {
 
 exports.f = {}.propertyIsEnumerable;
 
 
 /***/ }),
-/* 92 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.2 / 15.2.3.5 Object.create(O [, Properties])
-var anObject = __webpack_require__(14);
-var dPs = __webpack_require__(184);
-var enumBugKeys = __webpack_require__(89);
-var IE_PROTO = __webpack_require__(88)('IE_PROTO');
+var anObject = __webpack_require__(15);
+var dPs = __webpack_require__(202);
+var enumBugKeys = __webpack_require__(99);
+var IE_PROTO = __webpack_require__(98)('IE_PROTO');
 var Empty = function () { /* empty */ };
 var PROTOTYPE = 'prototype';
 
 // Create object with fake `null` prototype: use iframe Object with cleared prototype
 var createDict = function () {
   // Thrash, waste and sodomy: IE GC bug
-  var iframe = __webpack_require__(82)('iframe');
+  var iframe = __webpack_require__(92)('iframe');
   var i = enumBugKeys.length;
   var lt = '<';
   var gt = '>';
   var iframeDocument;
   iframe.style.display = 'none';
-  __webpack_require__(118).appendChild(iframe);
+  __webpack_require__(132).appendChild(iframe);
   iframe.src = 'javascript:'; // eslint-disable-line no-script-url
   // createDict = iframe.contentWindow.Object;
   // html.removeChild(iframe);
@@ -20896,18 +22656,18 @@ module.exports = Object.create || function create(O, Properties) {
 
 
 /***/ }),
-/* 93 */
+/* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var pIE = __webpack_require__(91);
-var createDesc = __webpack_require__(48);
-var toIObject = __webpack_require__(42);
-var toPrimitive = __webpack_require__(64);
-var has = __webpack_require__(31);
-var IE8_DOM_DEFINE = __webpack_require__(111);
+var pIE = __webpack_require__(101);
+var createDesc = __webpack_require__(52);
+var toIObject = __webpack_require__(44);
+var toPrimitive = __webpack_require__(73);
+var has = __webpack_require__(34);
+var IE8_DOM_DEFINE = __webpack_require__(125);
 var gOPD = Object.getOwnPropertyDescriptor;
 
-exports.f = __webpack_require__(20) ? gOPD : function getOwnPropertyDescriptor(O, P) {
+exports.f = __webpack_require__(22) ? gOPD : function getOwnPropertyDescriptor(O, P) {
   O = toIObject(O);
   P = toPrimitive(P, true);
   if (IE8_DOM_DEFINE) try {
@@ -20918,7 +22678,7 @@ exports.f = __webpack_require__(20) ? gOPD : function getOwnPropertyDescriptor(O
 
 
 /***/ }),
-/* 94 */
+/* 104 */
 /***/ (function(module, exports) {
 
 module.exports = function (it, Constructor, name, forbiddenField) {
@@ -20929,11 +22689,11 @@ module.exports = function (it, Constructor, name, forbiddenField) {
 
 
 /***/ }),
-/* 95 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // check on default Array iterator
-var Iterators = __webpack_require__(50);
+var Iterators = __webpack_require__(54);
 var ITERATOR = __webpack_require__(11)('iterator');
 var ArrayProto = Array.prototype;
 
@@ -20943,13 +22703,13 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 96 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var classof = __webpack_require__(56);
+var classof = __webpack_require__(59);
 var ITERATOR = __webpack_require__(11)('iterator');
-var Iterators = __webpack_require__(50);
-module.exports = __webpack_require__(34).getIteratorMethod = function (it) {
+var Iterators = __webpack_require__(54);
+module.exports = __webpack_require__(37).getIteratorMethod = function (it) {
   if (it != undefined) return it[ITERATOR]
     || it['@@iterator']
     || Iterators[classof(it)];
@@ -20957,10 +22717,10 @@ module.exports = __webpack_require__(34).getIteratorMethod = function (it) {
 
 
 /***/ }),
-/* 97 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var redefine = __webpack_require__(30);
+var redefine = __webpack_require__(33);
 module.exports = function (target, src, safe) {
   for (var key in src) redefine(target, key, src[key], safe);
   return target;
@@ -20968,7 +22728,7 @@ module.exports = function (target, src, safe) {
 
 
 /***/ }),
-/* 98 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var ITERATOR = __webpack_require__(11)('iterator');
@@ -20996,7 +22756,18 @@ module.exports = function (exec, skipClosing) {
 
 
 /***/ }),
-/* 99 */
+/* 109 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(142)('Uint8', 1, function (init) {
+  return function Uint8Array(data, byteOffset, length) {
+    return init(this, data, byteOffset, length);
+  };
+});
+
+
+/***/ }),
+/* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -21006,7 +22777,7 @@ module.exports = function (exec, skipClosing) {
  *
  * Copyright (c) 2010-2014 Digital Bazaar, Inc.
  */
-var forge = __webpack_require__(3);
+var forge = __webpack_require__(4);
 __webpack_require__(7);
 
 module.exports = forge.cipher = forge.cipher || {};
@@ -21232,7 +23003,7 @@ BlockCipher.prototype.finish = function(pad) {
 
 
 /***/ }),
-/* 100 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -21242,8 +23013,8 @@ BlockCipher.prototype.finish = function(pad) {
  *
  * Copyright (c) 2010-2014 Digital Bazaar, Inc.
  */
-var forge = __webpack_require__(3);
-__webpack_require__(29);
+var forge = __webpack_require__(4);
+__webpack_require__(31);
 __webpack_require__(7);
 
 var md5 = module.exports = forge.md5 = forge.md5 || {};
@@ -21527,7 +23298,7 @@ function _update(s, w, bytes) {
 
 
 /***/ }),
-/* 101 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {/**
@@ -21539,16 +23310,16 @@ function _update(s, w, bytes) {
  *
  * Copyright (c) 2010-2013 Digital Bazaar, Inc.
  */
-var forge = __webpack_require__(3);
-__webpack_require__(62);
-__webpack_require__(29);
+var forge = __webpack_require__(4);
+__webpack_require__(65);
+__webpack_require__(31);
 __webpack_require__(7);
 
 var pkcs5 = forge.pkcs5 = forge.pkcs5 || {};
 
 var crypto;
 if(forge.util.isNodejs && !forge.options.usePureJavaScript) {
-  crypto = __webpack_require__(138);
+  crypto = __webpack_require__(151);
 }
 
 /**
@@ -21742,10 +23513,10 @@ module.exports = forge.pbkdf2 = pkcs5.pbkdf2 = function(
   outer();
 };
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(32).Buffer))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(16).Buffer))
 
 /***/ }),
-/* 102 */
+/* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -21857,16 +23628,16 @@ module.exports = forge.pbkdf2 = pkcs5.pbkdf2 = function(
  *   signature          BIT STRING
  * }
  */
-var forge = __webpack_require__(3);
-__webpack_require__(43);
-__webpack_require__(28);
-__webpack_require__(73);
-__webpack_require__(29);
-__webpack_require__(221);
-__webpack_require__(44);
-__webpack_require__(52);
-__webpack_require__(103);
-__webpack_require__(74);
+var forge = __webpack_require__(4);
+__webpack_require__(45);
+__webpack_require__(30);
+__webpack_require__(81);
+__webpack_require__(31);
+__webpack_require__(239);
+__webpack_require__(46);
+__webpack_require__(55);
+__webpack_require__(114);
+__webpack_require__(82);
 __webpack_require__(7);
 
 // shortcut for asn.1 API
@@ -25022,7 +26793,7 @@ pki.verifyCertificateChain = function(caStore, chain, verify) {
 
 
 /***/ }),
-/* 103 */
+/* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -25032,8 +26803,8 @@ pki.verifyCertificateChain = function(caStore, chain, verify) {
  *
  * Copyright (c) 2012 Stefan Siegl <stesie@brokenpipe.de>
  */
-var forge = __webpack_require__(3);
-__webpack_require__(23);
+var forge = __webpack_require__(4);
+__webpack_require__(25);
 __webpack_require__(7);
 
 // shortcut for PSS API
@@ -25269,7 +27040,7 @@ pss.create = function(options) {
 
 
 /***/ }),
-/* 104 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -25277,11 +27048,11 @@ pss.create = function(options) {
  * Module dependencies.
  */
 
-var debug = __webpack_require__(240)('socket.io-parser');
-var Emitter = __webpack_require__(53);
-var binary = __webpack_require__(243);
-var isArray = __webpack_require__(151);
-var isBuf = __webpack_require__(152);
+var debug = __webpack_require__(258)('socket.io-parser');
+var Emitter = __webpack_require__(56);
+var binary = __webpack_require__(261);
+var isArray = __webpack_require__(164);
+var isBuf = __webpack_require__(165);
 
 /**
  * Protocol version.
@@ -25690,12 +27461,12 @@ function error(msg) {
 
 
 /***/ }),
-/* 105 */
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // browser shim for xmlhttprequest module
 
-var hasCORS = __webpack_require__(246);
+var hasCORS = __webpack_require__(264);
 
 module.exports = function (opts) {
   var xdomain = opts.xdomain;
@@ -25733,15 +27504,15 @@ module.exports = function (opts) {
 
 
 /***/ }),
-/* 106 */
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
  * Module dependencies.
  */
 
-var parser = __webpack_require__(54);
-var Emitter = __webpack_require__(53);
+var parser = __webpack_require__(57);
+var Emitter = __webpack_require__(56);
 
 /**
  * Module exports.
@@ -25900,14 +27671,1060 @@ Transport.prototype.onClose = function () {
 
 
 /***/ }),
-/* 107 */
+/* 118 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var util = __webpack_require__(67);
+var Duplex = __webpack_require__(174).Duplex;
+var bind = __webpack_require__(68);
+var uuid = __webpack_require__(294);
+var debug = __webpack_require__(180)('socket.io-stream:iostream');
+
+
+module.exports = IOStream;
+
+util.inherits(IOStream, Duplex);
+
+/**
+ * Duplex
+ *
+ * @param {Object} options
+ * @api private
+ */
+function IOStream(options) {
+  if (!(this instanceof IOStream)) {
+    return new IOStream(options);
+  }
+
+  IOStream.super_.call(this, options);
+
+  this.options = options;
+  this.id = uuid();
+  this.socket = null;
+
+  // Buffers
+  this.pushBuffer = [];
+  this.writeBuffer = [];
+
+  // Op states
+  this._readable = false;
+  this._writable = false;
+  this.destroyed = false;
+
+  // default to *not* allowing half open sockets
+  this.allowHalfOpen = options && options.allowHalfOpen || false;
+
+  this.on('finish', this._onfinish);
+  this.on('end', this._onend);
+  this.on('error', this._onerror);
+}
+
+/**
+ * Ensures that no more I/O activity happens on this stream.
+ * Not necessary in the usual case.
+ *
+ * @api public
+ */
+IOStream.prototype.destroy = function() {
+  debug('destroy');
+
+  if (this.destroyed) {
+    debug('already destroyed');
+    return;
+  }
+
+  this.readable = this.writable = false;
+
+  if (this.socket) {
+    debug('clean up');
+    this.socket.cleanup(this.id);
+    this.socket = null;
+  }
+
+  this.destroyed = true;
+};
+
+/**
+ * Local read
+ *
+ * @api private
+ */
+IOStream.prototype._read = function(size) {
+  var push;
+
+  // We can not read from the socket if it's destroyed obviously ...
+  if (this.destroyed) return;
+
+  if (this.pushBuffer.length) {
+    // flush buffer and end if it exists.
+    while (push = this.pushBuffer.shift()) {
+      if (!push()) break;
+    }
+    return;
+  }
+
+  this._readable = true;
+
+  // Go get data from remote stream
+  // Calls
+  // ._onread remotely
+  // then
+  // ._onwrite locally
+  this.socket._read(this.id, size);
+};
+
+
+/**
+ * Read from remote stream
+ *
+ * @api private
+ */
+IOStream.prototype._onread = function(size) {
+  var write = this.writeBuffer.shift();
+  if (write) return write();
+
+  this._writable = true;
+};
+
+/**
+ * Write local data to remote stream
+ * Calls
+ * remtote ._onwrite
+ *
+ * @api private
+ */
+IOStream.prototype._write = function(chunk, encoding, callback) {
+  var self = this;
+
+  function write() {
+    // We can not write to the socket if it's destroyed obviously ...
+    if (self.destroyed) return;
+
+    self._writable = false;
+    self.socket._write(self.id, chunk, encoding, callback);
+  }
+
+  if (this._writable) {
+    write();
+  } else {
+    this.writeBuffer.push(write);
+  }
+};
+
+/**
+ * Write the data fetched remotely
+ * so that we can now read locally
+ *
+ * @api private
+ */
+IOStream.prototype._onwrite = function(chunk, encoding, callback) {
+  var self = this;
+
+  function push() {
+    self._readable = false;
+    var ret = self.push(chunk || '', encoding);
+    callback();
+    return ret;
+  }
+
+  if (this._readable) {
+    push();
+  } else {
+    this.pushBuffer.push(push);
+  }
+};
+
+/**
+ * When ending send 'end' event to remote stream
+ *
+ * @api private
+ */
+IOStream.prototype._end = function() {
+  if (this.pushBuffer.length) {
+    // end after flushing buffer.
+    this.pushBuffer.push(bind(this, '_done'));
+  } else {
+    this._done();
+  }
+};
+
+/**
+ * Remote stream just ended
+ *
+ * @api private
+ */
+IOStream.prototype._done = function() {
+  this._readable = false;
+
+  // signal the end of the data.
+  return this.push(null);
+};
+
+/**
+ * the user has called .end(), and all the bytes have been
+ * sent out to the other side.
+ * If allowHalfOpen is false, or if the readable side has
+ * ended already, then destroy.
+ * If allowHalfOpen is true, then we need to set writable false,
+ * so that only the writable side will be cleaned up.
+ *
+ * @api private
+ */
+IOStream.prototype._onfinish = function() {
+  debug('_onfinish');
+  // Local socket just finished
+  // send 'end' event to remote
+  if (this.socket) {
+    this.socket._end(this.id);
+  }
+
+  this.writable = false;
+  this._writableState.ended = true;
+
+  if (!this.readable || this._readableState.ended) {
+    debug('_onfinish: ended, destroy %s', this._readableState);
+    return this.destroy();
+  }
+
+  debug('_onfinish: not ended');
+
+  if (!this.allowHalfOpen) {
+    this.push(null);
+
+    // just in case we're waiting for an EOF.
+    if (this.readable && !this._readableState.endEmitted) {
+      this.read(0);
+    }
+  }
+};
+
+/**
+ * the EOF has been received, and no more bytes are coming.
+ * if the writable side has ended already, then clean everything
+ * up.
+ *
+ * @api private
+ */
+IOStream.prototype._onend = function() {
+  debug('_onend');
+  this.readable = false;
+  this._readableState.ended = true;
+
+  if (!this.writable || this._writableState.finished) {
+    debug('_onend: %s', this._writableState);
+    return this.destroy();
+  }
+
+  debug('_onend: not finished');
+
+  if (!this.allowHalfOpen) {
+    this.end();
+  }
+};
+
+/**
+ * When error in local stream
+ * notyify remote
+ * if err.remote = true
+ * then error happened on remote stream
+ *
+ * @api private
+ */
+IOStream.prototype._onerror = function(err) {
+  // check if the error came from remote stream.
+  if (!err.remote && this.socket) {
+    // notify the error to the corresponding remote stream.
+    this.socket._error(this.id, err);
+  }
+
+  this.destroy();
+};
+
+
+/***/ }),
+/* 119 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(175);
+exports.Stream = exports;
+exports.Readable = exports;
+exports.Writable = __webpack_require__(121);
+exports.Duplex = __webpack_require__(48);
+exports.Transform = __webpack_require__(179);
+exports.PassThrough = __webpack_require__(289);
+
+
+/***/ }),
+/* 120 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* eslint-disable node/no-deprecated-api */
+var buffer = __webpack_require__(16)
+var Buffer = buffer.Buffer
+
+// alternative to using Object.keys for old browsers
+function copyProps (src, dst) {
+  for (var key in src) {
+    dst[key] = src[key]
+  }
+}
+if (Buffer.from && Buffer.alloc && Buffer.allocUnsafe && Buffer.allocUnsafeSlow) {
+  module.exports = buffer
+} else {
+  // Copy properties from require('buffer')
+  copyProps(buffer, exports)
+  exports.Buffer = SafeBuffer
+}
+
+function SafeBuffer (arg, encodingOrOffset, length) {
+  return Buffer(arg, encodingOrOffset, length)
+}
+
+// Copy static methods from Buffer
+copyProps(Buffer, SafeBuffer)
+
+SafeBuffer.from = function (arg, encodingOrOffset, length) {
+  if (typeof arg === 'number') {
+    throw new TypeError('Argument must not be a number')
+  }
+  return Buffer(arg, encodingOrOffset, length)
+}
+
+SafeBuffer.alloc = function (size, fill, encoding) {
+  if (typeof size !== 'number') {
+    throw new TypeError('Argument must be a number')
+  }
+  var buf = Buffer(size)
+  if (fill !== undefined) {
+    if (typeof encoding === 'string') {
+      buf.fill(fill, encoding)
+    } else {
+      buf.fill(fill)
+    }
+  } else {
+    buf.fill(0)
+  }
+  return buf
+}
+
+SafeBuffer.allocUnsafe = function (size) {
+  if (typeof size !== 'number') {
+    throw new TypeError('Argument must be a number')
+  }
+  return Buffer(size)
+}
+
+SafeBuffer.allocUnsafeSlow = function (size) {
+  if (typeof size !== 'number') {
+    throw new TypeError('Argument must be a number')
+  }
+  return buffer.SlowBuffer(size)
+}
+
+
+/***/ }),
+/* 121 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process, setImmediate, global) {// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+// A bit simpler than readable streams.
+// Implement an async ._write(chunk, encoding, cb), and it'll handle all
+// the drain event emission and buffering.
+
+
+
+/*<replacement>*/
+
+var pna = __webpack_require__(88);
+/*</replacement>*/
+
+module.exports = Writable;
+
+/* <replacement> */
+function WriteReq(chunk, encoding, cb) {
+  this.chunk = chunk;
+  this.encoding = encoding;
+  this.callback = cb;
+  this.next = null;
+}
+
+// It seems a linked list but it is not
+// there will be only 2 of these for each stream
+function CorkedRequest(state) {
+  var _this = this;
+
+  this.next = null;
+  this.entry = null;
+  this.finish = function () {
+    onCorkedFinish(_this, state);
+  };
+}
+/* </replacement> */
+
+/*<replacement>*/
+var asyncWrite = !process.browser && ['v0.10', 'v0.9.'].indexOf(process.version.slice(0, 5)) > -1 ? setImmediate : pna.nextTick;
+/*</replacement>*/
+
+/*<replacement>*/
+var Duplex;
+/*</replacement>*/
+
+Writable.WritableState = WritableState;
+
+/*<replacement>*/
+var util = Object.create(__webpack_require__(70));
+util.inherits = __webpack_require__(47);
+/*</replacement>*/
+
+/*<replacement>*/
+var internalUtil = {
+  deprecate: __webpack_require__(287)
+};
+/*</replacement>*/
+
+/*<replacement>*/
+var Stream = __webpack_require__(176);
+/*</replacement>*/
+
+/*<replacement>*/
+
+var Buffer = __webpack_require__(120).Buffer;
+var OurUint8Array = global.Uint8Array || function () {};
+function _uint8ArrayToBuffer(chunk) {
+  return Buffer.from(chunk);
+}
+function _isUint8Array(obj) {
+  return Buffer.isBuffer(obj) || obj instanceof OurUint8Array;
+}
+
+/*</replacement>*/
+
+var destroyImpl = __webpack_require__(177);
+
+util.inherits(Writable, Stream);
+
+function nop() {}
+
+function WritableState(options, stream) {
+  Duplex = Duplex || __webpack_require__(48);
+
+  options = options || {};
+
+  // Duplex streams are both readable and writable, but share
+  // the same options object.
+  // However, some cases require setting options to different
+  // values for the readable and the writable sides of the duplex stream.
+  // These options can be provided separately as readableXXX and writableXXX.
+  var isDuplex = stream instanceof Duplex;
+
+  // object stream flag to indicate whether or not this stream
+  // contains buffers or objects.
+  this.objectMode = !!options.objectMode;
+
+  if (isDuplex) this.objectMode = this.objectMode || !!options.writableObjectMode;
+
+  // the point at which write() starts returning false
+  // Note: 0 is a valid value, means that we always return false if
+  // the entire buffer is not flushed immediately on write()
+  var hwm = options.highWaterMark;
+  var writableHwm = options.writableHighWaterMark;
+  var defaultHwm = this.objectMode ? 16 : 16 * 1024;
+
+  if (hwm || hwm === 0) this.highWaterMark = hwm;else if (isDuplex && (writableHwm || writableHwm === 0)) this.highWaterMark = writableHwm;else this.highWaterMark = defaultHwm;
+
+  // cast to ints.
+  this.highWaterMark = Math.floor(this.highWaterMark);
+
+  // if _final has been called
+  this.finalCalled = false;
+
+  // drain event flag.
+  this.needDrain = false;
+  // at the start of calling end()
+  this.ending = false;
+  // when end() has been called, and returned
+  this.ended = false;
+  // when 'finish' is emitted
+  this.finished = false;
+
+  // has it been destroyed
+  this.destroyed = false;
+
+  // should we decode strings into buffers before passing to _write?
+  // this is here so that some node-core streams can optimize string
+  // handling at a lower level.
+  var noDecode = options.decodeStrings === false;
+  this.decodeStrings = !noDecode;
+
+  // Crypto is kind of old and crusty.  Historically, its default string
+  // encoding is 'binary' so we have to make this configurable.
+  // Everything else in the universe uses 'utf8', though.
+  this.defaultEncoding = options.defaultEncoding || 'utf8';
+
+  // not an actual buffer we keep track of, but a measurement
+  // of how much we're waiting to get pushed to some underlying
+  // socket or file.
+  this.length = 0;
+
+  // a flag to see when we're in the middle of a write.
+  this.writing = false;
+
+  // when true all writes will be buffered until .uncork() call
+  this.corked = 0;
+
+  // a flag to be able to tell if the onwrite cb is called immediately,
+  // or on a later tick.  We set this to true at first, because any
+  // actions that shouldn't happen until "later" should generally also
+  // not happen before the first write call.
+  this.sync = true;
+
+  // a flag to know if we're processing previously buffered items, which
+  // may call the _write() callback in the same tick, so that we don't
+  // end up in an overlapped onwrite situation.
+  this.bufferProcessing = false;
+
+  // the callback that's passed to _write(chunk,cb)
+  this.onwrite = function (er) {
+    onwrite(stream, er);
+  };
+
+  // the callback that the user supplies to write(chunk,encoding,cb)
+  this.writecb = null;
+
+  // the amount that is being written when _write is called.
+  this.writelen = 0;
+
+  this.bufferedRequest = null;
+  this.lastBufferedRequest = null;
+
+  // number of pending user-supplied write callbacks
+  // this must be 0 before 'finish' can be emitted
+  this.pendingcb = 0;
+
+  // emit prefinish if the only thing we're waiting for is _write cbs
+  // This is relevant for synchronous Transform streams
+  this.prefinished = false;
+
+  // True if the error was already emitted and should not be thrown again
+  this.errorEmitted = false;
+
+  // count buffered requests
+  this.bufferedRequestCount = 0;
+
+  // allocate the first CorkedRequest, there is always
+  // one allocated and free to use, and we maintain at most two
+  this.corkedRequestsFree = new CorkedRequest(this);
+}
+
+WritableState.prototype.getBuffer = function getBuffer() {
+  var current = this.bufferedRequest;
+  var out = [];
+  while (current) {
+    out.push(current);
+    current = current.next;
+  }
+  return out;
+};
+
+(function () {
+  try {
+    Object.defineProperty(WritableState.prototype, 'buffer', {
+      get: internalUtil.deprecate(function () {
+        return this.getBuffer();
+      }, '_writableState.buffer is deprecated. Use _writableState.getBuffer ' + 'instead.', 'DEP0003')
+    });
+  } catch (_) {}
+})();
+
+// Test _writableState for inheritance to account for Duplex streams,
+// whose prototype chain only points to Readable.
+var realHasInstance;
+if (typeof Symbol === 'function' && Symbol.hasInstance && typeof Function.prototype[Symbol.hasInstance] === 'function') {
+  realHasInstance = Function.prototype[Symbol.hasInstance];
+  Object.defineProperty(Writable, Symbol.hasInstance, {
+    value: function (object) {
+      if (realHasInstance.call(this, object)) return true;
+      if (this !== Writable) return false;
+
+      return object && object._writableState instanceof WritableState;
+    }
+  });
+} else {
+  realHasInstance = function (object) {
+    return object instanceof this;
+  };
+}
+
+function Writable(options) {
+  Duplex = Duplex || __webpack_require__(48);
+
+  // Writable ctor is applied to Duplexes, too.
+  // `realHasInstance` is necessary because using plain `instanceof`
+  // would return false, as no `_writableState` property is attached.
+
+  // Trying to use the custom `instanceof` for Writable here will also break the
+  // Node.js LazyTransform implementation, which has a non-trivial getter for
+  // `_writableState` that would lead to infinite recursion.
+  if (!realHasInstance.call(Writable, this) && !(this instanceof Duplex)) {
+    return new Writable(options);
+  }
+
+  this._writableState = new WritableState(options, this);
+
+  // legacy.
+  this.writable = true;
+
+  if (options) {
+    if (typeof options.write === 'function') this._write = options.write;
+
+    if (typeof options.writev === 'function') this._writev = options.writev;
+
+    if (typeof options.destroy === 'function') this._destroy = options.destroy;
+
+    if (typeof options.final === 'function') this._final = options.final;
+  }
+
+  Stream.call(this);
+}
+
+// Otherwise people can pipe Writable streams, which is just wrong.
+Writable.prototype.pipe = function () {
+  this.emit('error', new Error('Cannot pipe, not readable'));
+};
+
+function writeAfterEnd(stream, cb) {
+  var er = new Error('write after end');
+  // TODO: defer error events consistently everywhere, not just the cb
+  stream.emit('error', er);
+  pna.nextTick(cb, er);
+}
+
+// Checks that a user-supplied chunk is valid, especially for the particular
+// mode the stream is in. Currently this means that `null` is never accepted
+// and undefined/non-string values are only allowed in object mode.
+function validChunk(stream, state, chunk, cb) {
+  var valid = true;
+  var er = false;
+
+  if (chunk === null) {
+    er = new TypeError('May not write null values to stream');
+  } else if (typeof chunk !== 'string' && chunk !== undefined && !state.objectMode) {
+    er = new TypeError('Invalid non-string/buffer chunk');
+  }
+  if (er) {
+    stream.emit('error', er);
+    pna.nextTick(cb, er);
+    valid = false;
+  }
+  return valid;
+}
+
+Writable.prototype.write = function (chunk, encoding, cb) {
+  var state = this._writableState;
+  var ret = false;
+  var isBuf = !state.objectMode && _isUint8Array(chunk);
+
+  if (isBuf && !Buffer.isBuffer(chunk)) {
+    chunk = _uint8ArrayToBuffer(chunk);
+  }
+
+  if (typeof encoding === 'function') {
+    cb = encoding;
+    encoding = null;
+  }
+
+  if (isBuf) encoding = 'buffer';else if (!encoding) encoding = state.defaultEncoding;
+
+  if (typeof cb !== 'function') cb = nop;
+
+  if (state.ended) writeAfterEnd(this, cb);else if (isBuf || validChunk(this, state, chunk, cb)) {
+    state.pendingcb++;
+    ret = writeOrBuffer(this, state, isBuf, chunk, encoding, cb);
+  }
+
+  return ret;
+};
+
+Writable.prototype.cork = function () {
+  var state = this._writableState;
+
+  state.corked++;
+};
+
+Writable.prototype.uncork = function () {
+  var state = this._writableState;
+
+  if (state.corked) {
+    state.corked--;
+
+    if (!state.writing && !state.corked && !state.finished && !state.bufferProcessing && state.bufferedRequest) clearBuffer(this, state);
+  }
+};
+
+Writable.prototype.setDefaultEncoding = function setDefaultEncoding(encoding) {
+  // node::ParseEncoding() requires lower case.
+  if (typeof encoding === 'string') encoding = encoding.toLowerCase();
+  if (!(['hex', 'utf8', 'utf-8', 'ascii', 'binary', 'base64', 'ucs2', 'ucs-2', 'utf16le', 'utf-16le', 'raw'].indexOf((encoding + '').toLowerCase()) > -1)) throw new TypeError('Unknown encoding: ' + encoding);
+  this._writableState.defaultEncoding = encoding;
+  return this;
+};
+
+function decodeChunk(state, chunk, encoding) {
+  if (!state.objectMode && state.decodeStrings !== false && typeof chunk === 'string') {
+    chunk = Buffer.from(chunk, encoding);
+  }
+  return chunk;
+}
+
+Object.defineProperty(Writable.prototype, 'writableHighWaterMark', {
+  // making it explicit this property is not enumerable
+  // because otherwise some prototype manipulation in
+  // userland will fail
+  enumerable: false,
+  get: function () {
+    return this._writableState.highWaterMark;
+  }
+});
+
+// if we're already writing something, then just put this
+// in the queue, and wait our turn.  Otherwise, call _write
+// If we return false, then we need a drain event, so set that flag.
+function writeOrBuffer(stream, state, isBuf, chunk, encoding, cb) {
+  if (!isBuf) {
+    var newChunk = decodeChunk(state, chunk, encoding);
+    if (chunk !== newChunk) {
+      isBuf = true;
+      encoding = 'buffer';
+      chunk = newChunk;
+    }
+  }
+  var len = state.objectMode ? 1 : chunk.length;
+
+  state.length += len;
+
+  var ret = state.length < state.highWaterMark;
+  // we must ensure that previous needDrain will not be reset to false.
+  if (!ret) state.needDrain = true;
+
+  if (state.writing || state.corked) {
+    var last = state.lastBufferedRequest;
+    state.lastBufferedRequest = {
+      chunk: chunk,
+      encoding: encoding,
+      isBuf: isBuf,
+      callback: cb,
+      next: null
+    };
+    if (last) {
+      last.next = state.lastBufferedRequest;
+    } else {
+      state.bufferedRequest = state.lastBufferedRequest;
+    }
+    state.bufferedRequestCount += 1;
+  } else {
+    doWrite(stream, state, false, len, chunk, encoding, cb);
+  }
+
+  return ret;
+}
+
+function doWrite(stream, state, writev, len, chunk, encoding, cb) {
+  state.writelen = len;
+  state.writecb = cb;
+  state.writing = true;
+  state.sync = true;
+  if (writev) stream._writev(chunk, state.onwrite);else stream._write(chunk, encoding, state.onwrite);
+  state.sync = false;
+}
+
+function onwriteError(stream, state, sync, er, cb) {
+  --state.pendingcb;
+
+  if (sync) {
+    // defer the callback if we are being called synchronously
+    // to avoid piling up things on the stack
+    pna.nextTick(cb, er);
+    // this can emit finish, and it will always happen
+    // after error
+    pna.nextTick(finishMaybe, stream, state);
+    stream._writableState.errorEmitted = true;
+    stream.emit('error', er);
+  } else {
+    // the caller expect this to happen before if
+    // it is async
+    cb(er);
+    stream._writableState.errorEmitted = true;
+    stream.emit('error', er);
+    // this can emit finish, but finish must
+    // always follow error
+    finishMaybe(stream, state);
+  }
+}
+
+function onwriteStateUpdate(state) {
+  state.writing = false;
+  state.writecb = null;
+  state.length -= state.writelen;
+  state.writelen = 0;
+}
+
+function onwrite(stream, er) {
+  var state = stream._writableState;
+  var sync = state.sync;
+  var cb = state.writecb;
+
+  onwriteStateUpdate(state);
+
+  if (er) onwriteError(stream, state, sync, er, cb);else {
+    // Check if we're actually ready to finish, but don't emit yet
+    var finished = needFinish(state);
+
+    if (!finished && !state.corked && !state.bufferProcessing && state.bufferedRequest) {
+      clearBuffer(stream, state);
+    }
+
+    if (sync) {
+      /*<replacement>*/
+      asyncWrite(afterWrite, stream, state, finished, cb);
+      /*</replacement>*/
+    } else {
+      afterWrite(stream, state, finished, cb);
+    }
+  }
+}
+
+function afterWrite(stream, state, finished, cb) {
+  if (!finished) onwriteDrain(stream, state);
+  state.pendingcb--;
+  cb();
+  finishMaybe(stream, state);
+}
+
+// Must force callback to be called on nextTick, so that we don't
+// emit 'drain' before the write() consumer gets the 'false' return
+// value, and has a chance to attach a 'drain' listener.
+function onwriteDrain(stream, state) {
+  if (state.length === 0 && state.needDrain) {
+    state.needDrain = false;
+    stream.emit('drain');
+  }
+}
+
+// if there's something in the buffer waiting, then process it
+function clearBuffer(stream, state) {
+  state.bufferProcessing = true;
+  var entry = state.bufferedRequest;
+
+  if (stream._writev && entry && entry.next) {
+    // Fast case, write everything using _writev()
+    var l = state.bufferedRequestCount;
+    var buffer = new Array(l);
+    var holder = state.corkedRequestsFree;
+    holder.entry = entry;
+
+    var count = 0;
+    var allBuffers = true;
+    while (entry) {
+      buffer[count] = entry;
+      if (!entry.isBuf) allBuffers = false;
+      entry = entry.next;
+      count += 1;
+    }
+    buffer.allBuffers = allBuffers;
+
+    doWrite(stream, state, true, state.length, buffer, '', holder.finish);
+
+    // doWrite is almost always async, defer these to save a bit of time
+    // as the hot path ends with doWrite
+    state.pendingcb++;
+    state.lastBufferedRequest = null;
+    if (holder.next) {
+      state.corkedRequestsFree = holder.next;
+      holder.next = null;
+    } else {
+      state.corkedRequestsFree = new CorkedRequest(state);
+    }
+    state.bufferedRequestCount = 0;
+  } else {
+    // Slow case, write chunks one-by-one
+    while (entry) {
+      var chunk = entry.chunk;
+      var encoding = entry.encoding;
+      var cb = entry.callback;
+      var len = state.objectMode ? 1 : chunk.length;
+
+      doWrite(stream, state, false, len, chunk, encoding, cb);
+      entry = entry.next;
+      state.bufferedRequestCount--;
+      // if we didn't call the onwrite immediately, then
+      // it means that we need to wait until it does.
+      // also, that means that the chunk and cb are currently
+      // being processed, so move the buffer counter past them.
+      if (state.writing) {
+        break;
+      }
+    }
+
+    if (entry === null) state.lastBufferedRequest = null;
+  }
+
+  state.bufferedRequest = entry;
+  state.bufferProcessing = false;
+}
+
+Writable.prototype._write = function (chunk, encoding, cb) {
+  cb(new Error('_write() is not implemented'));
+};
+
+Writable.prototype._writev = null;
+
+Writable.prototype.end = function (chunk, encoding, cb) {
+  var state = this._writableState;
+
+  if (typeof chunk === 'function') {
+    cb = chunk;
+    chunk = null;
+    encoding = null;
+  } else if (typeof encoding === 'function') {
+    cb = encoding;
+    encoding = null;
+  }
+
+  if (chunk !== null && chunk !== undefined) this.write(chunk, encoding);
+
+  // .end() fully uncorks
+  if (state.corked) {
+    state.corked = 1;
+    this.uncork();
+  }
+
+  // ignore unnecessary end() calls.
+  if (!state.ending && !state.finished) endWritable(this, state, cb);
+};
+
+function needFinish(state) {
+  return state.ending && state.length === 0 && state.bufferedRequest === null && !state.finished && !state.writing;
+}
+function callFinal(stream, state) {
+  stream._final(function (err) {
+    state.pendingcb--;
+    if (err) {
+      stream.emit('error', err);
+    }
+    state.prefinished = true;
+    stream.emit('prefinish');
+    finishMaybe(stream, state);
+  });
+}
+function prefinish(stream, state) {
+  if (!state.prefinished && !state.finalCalled) {
+    if (typeof stream._final === 'function') {
+      state.pendingcb++;
+      state.finalCalled = true;
+      pna.nextTick(callFinal, stream, state);
+    } else {
+      state.prefinished = true;
+      stream.emit('prefinish');
+    }
+  }
+}
+
+function finishMaybe(stream, state) {
+  var need = needFinish(state);
+  if (need) {
+    prefinish(stream, state);
+    if (state.pendingcb === 0) {
+      state.finished = true;
+      stream.emit('finish');
+    }
+  }
+  return need;
+}
+
+function endWritable(stream, state, cb) {
+  state.ending = true;
+  finishMaybe(stream, state);
+  if (cb) {
+    if (state.finished) pna.nextTick(cb);else stream.once('finish', cb);
+  }
+  state.ended = true;
+  stream.writable = false;
+}
+
+function onCorkedFinish(corkReq, state, err) {
+  var entry = corkReq.entry;
+  corkReq.entry = null;
+  while (entry) {
+    var cb = entry.callback;
+    state.pendingcb--;
+    cb(err);
+    entry = entry.next;
+  }
+  if (state.corkedRequestsFree) {
+    state.corkedRequestsFree.next = corkReq;
+  } else {
+    state.corkedRequestsFree = corkReq;
+  }
+}
+
+Object.defineProperty(Writable.prototype, 'destroyed', {
+  get: function () {
+    if (this._writableState === undefined) {
+      return false;
+    }
+    return this._writableState.destroyed;
+  },
+  set: function (value) {
+    // we ignore the value if the stream
+    // has not been initialized yet
+    if (!this._writableState) {
+      return;
+    }
+
+    // backward compatibility, the user is explicitly
+    // managing destroyed
+    this._writableState.destroyed = value;
+  }
+});
+
+Writable.prototype.destroy = destroyImpl.destroy;
+Writable.prototype._undestroy = destroyImpl.undestroy;
+Writable.prototype._destroy = function (err, cb) {
+  this.end();
+  cb(err);
+};
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(18), __webpack_require__(64).setImmediate, __webpack_require__(29)))
+
+/***/ }),
+/* 122 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Metadata; });
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1);
 
@@ -25952,138 +28769,14 @@ var Metadata = /*#__PURE__*/function () {
 }();
 
 /***/ }),
-/* 108 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AttachmentInfo; });
-/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(38);
-/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(4);
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(5);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(1);
-
-
-
-
-/**
- * Implements files attachments functionality
- * Constructor accepts a file element
- */
-
-var AttachmentInfo = /*#__PURE__*/function () {
-  function AttachmentInfo(file, onion, pkfp, metaID, privKey, messageID, hashEncrypted, hashUnencrypted) {
-    var hashAlgo = arguments.length > 8 && arguments[8] !== undefined ? arguments[8] : "sha256";
-
-    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1___default()(this, AttachmentInfo);
-
-    var self = this;
-    self.name = file.name;
-    self.size = file.size;
-    self.type = file.type;
-    self.lastModified = file.lastModified;
-    self.pkfp = pkfp;
-    self.metaID = metaID;
-    self.hashAlgorithm = hashAlgo;
-    self.messageID = messageID;
-    self.hashEncrypted = hashEncrypted;
-    self.hashUnencrypted = hashUnencrypted;
-    self.link = self.buildLink(onion, pkfp, self.hashUnencrypted);
-    self.signHashes(privKey);
-  }
-
-  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2___default()(AttachmentInfo, [{
-    key: "get",
-    value: function get() {
-      var self = this;
-      return {
-        name: self.name,
-        size: self.size,
-        type: self.type,
-        lastModified: self.lastModified,
-        pkfp: self.pkfp,
-        hashEncrypted: self.hashEncrypted,
-        hashUnencrypted: self.hashUnencrypted,
-        signEncrypted: self.signEncrypted,
-        signUnencrypted: self.signUnencrypted,
-        metaID: self.metaID,
-        messageID: self.messageID,
-        link: self.link,
-        hashAlgorithm: self.hashAlgorithm
-      };
-    }
-  }, {
-    key: "getLink",
-    value: function getLink() {
-      return this.link;
-    }
-  }, {
-    key: "buildLink",
-    value: function buildLink(onion, pkfp, hash) {
-      if (!onion || !pkfp || !hash) {
-        throw new Error("Attachment buildLink: missing required parameters");
-      }
-
-      var rawLink = onion + "/" + pkfp + "/" + hash;
-      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_3__[/* iCrypto */ "a"]();
-      ic.addBlob("l", rawLink).base64Encode("l", "l64");
-      return ic.get("l64");
-    }
-  }, {
-    key: "signHashes",
-    value: function signHashes(privKey) {
-      if (!privKey) {
-        throw new Error("Attachment signAttachmentHash: privKey is undefined");
-      }
-
-      var self = this;
-      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_3__[/* iCrypto */ "a"]();
-      ic.addBlob("hu", self.hashUnencrypted).addBlob("he", self.hashEncrypted).asym.setKey("pk", privKey, "private").asym.sign("hu", "pk", "sign_u").asym.sign("he", "pk", "sign_e");
-      self.signUnencrypted = ic.get("sign_u");
-      self.signEncrypted = ic.get("sign_e");
-    }
-  }], [{
-    key: "verifyFileInfo",
-    value: function verifyFileInfo(info) {
-      var required = ["name", "size", "pkfp", "hashUnencrypted", "hashEncrypted", "signUnencrypted", "signEncrypted", "link", "metaID", "messageID", "hashAlgorithm"];
-
-      for (var _i = 0, _required = required; _i < _required.length; _i++) {
-        var i = _required[_i];
-
-        if (!info.hasOwnProperty(i)) {
-          throw new Error("Attachment verifyFileInfo: Missing required property: " + i);
-        }
-      }
-    }
-  }, {
-    key: "parseLink",
-    value: function parseLink(link) {
-      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_3__[/* iCrypto */ "a"]();
-      ic.addBlob("l", link).base64Decode("l", "lres");
-      var elements = ic.get("lres").split("/");
-      return {
-        residence: elements[0],
-        pkfp: elements[1],
-        name: elements[2]
-      };
-    }
-  }]);
-
-  return AttachmentInfo;
-}();
-AttachmentInfo.properties = ["name", "size", "type", "lastModified", "hashUnencrypted", "signUnencrypted", "hashEncrytped", "signEncrypted", "link", "metaID", "messageID", "hashAlgorithm"];
-
-/***/ }),
-/* 109 */
+/* 123 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var arrayWithoutHoles = __webpack_require__(206);
+var arrayWithoutHoles = __webpack_require__(224);
 
-var iterableToArray = __webpack_require__(207);
+var iterableToArray = __webpack_require__(225);
 
-var nonIterableSpread = __webpack_require__(208);
+var nonIterableSpread = __webpack_require__(226);
 
 function _toConsumableArray(arr) {
   return arrayWithoutHoles(arr) || iterableToArray(arr) || nonIterableSpread();
@@ -26092,23 +28785,23 @@ function _toConsumableArray(arr) {
 module.exports = _toConsumableArray;
 
 /***/ }),
-/* 110 */
+/* 124 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(setImmediate) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return MessageQueue; });
-/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6);
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(33);
+/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(32);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(9);
+/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(8);
 /* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(5);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(5);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(6);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _WildEmitter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(13);
-/* harmony import */ var _Lock__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(168);
+/* harmony import */ var _Lock__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(186);
 
 
 
@@ -26285,24 +28978,24 @@ var MessageQueue = /*#__PURE__*/function () {
 
   return MessageQueue;
 }();
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(71).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(64).setImmediate))
 
 /***/ }),
-/* 111 */
+/* 125 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = !__webpack_require__(20) && !__webpack_require__(21)(function () {
-  return Object.defineProperty(__webpack_require__(82)('div'), 'a', { get: function () { return 7; } }).a != 7;
+module.exports = !__webpack_require__(22) && !__webpack_require__(23)(function () {
+  return Object.defineProperty(__webpack_require__(92)('div'), 'a', { get: function () { return 7; } }).a != 7;
 });
 
 
 /***/ }),
-/* 112 */
+/* 126 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var at = __webpack_require__(177)(true);
+var at = __webpack_require__(195)(true);
 
  // `AdvanceStringIndex` abstract operation
 // https://tc39.github.io/ecma262/#sec-advancestringindex
@@ -26312,14 +29005,14 @@ module.exports = function (S, index, unicode) {
 
 
 /***/ }),
-/* 113 */
+/* 127 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var global = __webpack_require__(10);
-var core = __webpack_require__(34);
-var LIBRARY = __webpack_require__(36);
-var wksExt = __webpack_require__(114);
-var defineProperty = __webpack_require__(19).f;
+var core = __webpack_require__(37);
+var LIBRARY = __webpack_require__(39);
+var wksExt = __webpack_require__(128);
+var defineProperty = __webpack_require__(21).f;
 module.exports = function (name) {
   var $Symbol = core.Symbol || (core.Symbol = LIBRARY ? {} : global.Symbol || {});
   if (name.charAt(0) != '_' && !(name in $Symbol)) defineProperty($Symbol, name, { value: wksExt.f(name) });
@@ -26327,20 +29020,20 @@ module.exports = function (name) {
 
 
 /***/ }),
-/* 114 */
+/* 128 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports.f = __webpack_require__(11);
 
 
 /***/ }),
-/* 115 */
+/* 129 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var has = __webpack_require__(31);
-var toIObject = __webpack_require__(42);
-var arrayIndexOf = __webpack_require__(87)(false);
-var IE_PROTO = __webpack_require__(88)('IE_PROTO');
+var has = __webpack_require__(34);
+var toIObject = __webpack_require__(44);
+var arrayIndexOf = __webpack_require__(97)(false);
+var IE_PROTO = __webpack_require__(98)('IE_PROTO');
 
 module.exports = function (object, names) {
   var O = toIObject(object);
@@ -26357,11 +29050,11 @@ module.exports = function (object, names) {
 
 
 /***/ }),
-/* 116 */
+/* 130 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // fallback for non-array-like ES3 and non-enumerable old V8 strings
-var cof = __webpack_require__(49);
+var cof = __webpack_require__(53);
 // eslint-disable-next-line no-prototype-builtins
 module.exports = Object('z').propertyIsEnumerable(0) ? Object : function (it) {
   return cof(it) == 'String' ? it.split('') : Object(it);
@@ -26369,18 +29062,18 @@ module.exports = Object('z').propertyIsEnumerable(0) ? Object : function (it) {
 
 
 /***/ }),
-/* 117 */
+/* 131 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.2.2 IsArray(argument)
-var cof = __webpack_require__(49);
+var cof = __webpack_require__(53);
 module.exports = Array.isArray || function isArray(arg) {
   return cof(arg) == 'Array';
 };
 
 
 /***/ }),
-/* 118 */
+/* 132 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var document = __webpack_require__(10).document;
@@ -26388,21 +29081,21 @@ module.exports = document && document.documentElement;
 
 
 /***/ }),
-/* 119 */
+/* 133 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var addToUnscopables = __webpack_require__(120);
-var step = __webpack_require__(186);
-var Iterators = __webpack_require__(50);
-var toIObject = __webpack_require__(42);
+var addToUnscopables = __webpack_require__(134);
+var step = __webpack_require__(204);
+var Iterators = __webpack_require__(54);
+var toIObject = __webpack_require__(44);
 
 // 22.1.3.4 Array.prototype.entries()
 // 22.1.3.13 Array.prototype.keys()
 // 22.1.3.29 Array.prototype.values()
 // 22.1.3.30 Array.prototype[@@iterator]()
-module.exports = __webpack_require__(187)(Array, 'Array', function (iterated, kind) {
+module.exports = __webpack_require__(205)(Array, 'Array', function (iterated, kind) {
   this._t = toIObject(iterated); // target
   this._i = 0;                   // next index
   this._k = kind;                // kind
@@ -26429,26 +29122,26 @@ addToUnscopables('entries');
 
 
 /***/ }),
-/* 120 */
+/* 134 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 22.1.3.31 Array.prototype[@@unscopables]
 var UNSCOPABLES = __webpack_require__(11)('unscopables');
 var ArrayProto = Array.prototype;
-if (ArrayProto[UNSCOPABLES] == undefined) __webpack_require__(18)(ArrayProto, UNSCOPABLES, {});
+if (ArrayProto[UNSCOPABLES] == undefined) __webpack_require__(20)(ArrayProto, UNSCOPABLES, {});
 module.exports = function (key) {
   ArrayProto[UNSCOPABLES][key] = true;
 };
 
 
 /***/ }),
-/* 121 */
+/* 135 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.9 / 15.2.3.2 Object.getPrototypeOf(O)
-var has = __webpack_require__(31);
-var toObject = __webpack_require__(26);
-var IE_PROTO = __webpack_require__(88)('IE_PROTO');
+var has = __webpack_require__(34);
+var toObject = __webpack_require__(28);
+var IE_PROTO = __webpack_require__(98)('IE_PROTO');
 var ObjectProto = Object.prototype;
 
 module.exports = Object.getPrototypeOf || function (O) {
@@ -26461,11 +29154,11 @@ module.exports = Object.getPrototypeOf || function (O) {
 
 
 /***/ }),
-/* 122 */
+/* 136 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // call something on iterator step with safe closing on error
-var anObject = __webpack_require__(14);
+var anObject = __webpack_require__(15);
 module.exports = function (iterator, fn, value, entries) {
   try {
     return entries ? fn(anObject(value)[0], value[1]) : fn(value);
@@ -26479,13 +29172,13 @@ module.exports = function (iterator, fn, value, entries) {
 
 
 /***/ }),
-/* 123 */
+/* 137 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var ctx = __webpack_require__(37);
-var invoke = __webpack_require__(190);
-var html = __webpack_require__(118);
-var cel = __webpack_require__(82);
+var ctx = __webpack_require__(40);
+var invoke = __webpack_require__(208);
+var html = __webpack_require__(132);
+var cel = __webpack_require__(92);
 var global = __webpack_require__(10);
 var process = global.process;
 var setTask = global.setImmediate;
@@ -26525,7 +29218,7 @@ if (!setTask || !clearTask) {
     delete queue[id];
   };
   // Node.js 0.8-
-  if (__webpack_require__(49)(process) == 'process') {
+  if (__webpack_require__(53)(process) == 'process') {
     defer = function (id) {
       process.nextTick(ctx(run, id, 1));
     };
@@ -26569,13 +29262,13 @@ module.exports = {
 
 
 /***/ }),
-/* 124 */
+/* 138 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 // 25.4.1.5 NewPromiseCapability(C)
-var aFunction = __webpack_require__(55);
+var aFunction = __webpack_require__(58);
 
 function PromiseCapability(C) {
   var resolve, reject;
@@ -26594,12 +29287,12 @@ module.exports.f = function (C) {
 
 
 /***/ }),
-/* 125 */
+/* 139 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var anObject = __webpack_require__(14);
-var isObject = __webpack_require__(25);
-var newPromiseCapability = __webpack_require__(124);
+var anObject = __webpack_require__(15);
+var isObject = __webpack_require__(27);
+var newPromiseCapability = __webpack_require__(138);
 
 module.exports = function (C, x) {
   anObject(C);
@@ -26612,14 +29305,14 @@ module.exports = function (C, x) {
 
 
 /***/ }),
-/* 126 */
+/* 140 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var global = __webpack_require__(10);
-var dP = __webpack_require__(19);
-var DESCRIPTORS = __webpack_require__(20);
+var dP = __webpack_require__(21);
+var DESCRIPTORS = __webpack_require__(22);
 var SPECIES = __webpack_require__(11)('species');
 
 module.exports = function (KEY) {
@@ -26632,13 +29325,13 @@ module.exports = function (KEY) {
 
 
 /***/ }),
-/* 127 */
+/* 141 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var $defineProperty = __webpack_require__(19);
-var createDesc = __webpack_require__(48);
+var $defineProperty = __webpack_require__(21);
+var createDesc = __webpack_require__(52);
 
 module.exports = function (object, index, value) {
   if (index in object) $defineProperty.f(object, index, createDesc(0, value));
@@ -26647,50 +29340,50 @@ module.exports = function (object, index, value) {
 
 
 /***/ }),
-/* 128 */
+/* 142 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-if (__webpack_require__(20)) {
-  var LIBRARY = __webpack_require__(36);
+if (__webpack_require__(22)) {
+  var LIBRARY = __webpack_require__(39);
   var global = __webpack_require__(10);
-  var fails = __webpack_require__(21);
-  var $export = __webpack_require__(24);
-  var $typed = __webpack_require__(129);
-  var $buffer = __webpack_require__(210);
-  var ctx = __webpack_require__(37);
-  var anInstance = __webpack_require__(94);
-  var propertyDesc = __webpack_require__(48);
-  var hide = __webpack_require__(18);
-  var redefineAll = __webpack_require__(97);
-  var toInteger = __webpack_require__(39);
-  var toLength = __webpack_require__(22);
-  var toIndex = __webpack_require__(130);
-  var toAbsoluteIndex = __webpack_require__(70);
-  var toPrimitive = __webpack_require__(64);
-  var has = __webpack_require__(31);
-  var classof = __webpack_require__(56);
-  var isObject = __webpack_require__(25);
-  var toObject = __webpack_require__(26);
-  var isArrayIter = __webpack_require__(95);
-  var create = __webpack_require__(92);
-  var getPrototypeOf = __webpack_require__(121);
-  var gOPN = __webpack_require__(58).f;
-  var getIterFn = __webpack_require__(96);
-  var uid = __webpack_require__(35);
+  var fails = __webpack_require__(23);
+  var $export = __webpack_require__(26);
+  var $typed = __webpack_require__(143);
+  var $buffer = __webpack_require__(228);
+  var ctx = __webpack_require__(40);
+  var anInstance = __webpack_require__(104);
+  var propertyDesc = __webpack_require__(52);
+  var hide = __webpack_require__(20);
+  var redefineAll = __webpack_require__(107);
+  var toInteger = __webpack_require__(41);
+  var toLength = __webpack_require__(24);
+  var toIndex = __webpack_require__(144);
+  var toAbsoluteIndex = __webpack_require__(79);
+  var toPrimitive = __webpack_require__(73);
+  var has = __webpack_require__(34);
+  var classof = __webpack_require__(59);
+  var isObject = __webpack_require__(27);
+  var toObject = __webpack_require__(28);
+  var isArrayIter = __webpack_require__(105);
+  var create = __webpack_require__(102);
+  var getPrototypeOf = __webpack_require__(135);
+  var gOPN = __webpack_require__(61).f;
+  var getIterFn = __webpack_require__(106);
+  var uid = __webpack_require__(38);
   var wks = __webpack_require__(11);
-  var createArrayMethod = __webpack_require__(211);
-  var createArrayIncludes = __webpack_require__(87);
-  var speciesConstructor = __webpack_require__(67);
-  var ArrayIterators = __webpack_require__(119);
-  var Iterators = __webpack_require__(50);
-  var $iterDetect = __webpack_require__(98);
-  var setSpecies = __webpack_require__(126);
-  var arrayFill = __webpack_require__(131);
-  var arrayCopyWithin = __webpack_require__(214);
-  var $DP = __webpack_require__(19);
-  var $GOPD = __webpack_require__(93);
+  var createArrayMethod = __webpack_require__(229);
+  var createArrayIncludes = __webpack_require__(97);
+  var speciesConstructor = __webpack_require__(76);
+  var ArrayIterators = __webpack_require__(133);
+  var Iterators = __webpack_require__(54);
+  var $iterDetect = __webpack_require__(108);
+  var setSpecies = __webpack_require__(140);
+  var arrayFill = __webpack_require__(145);
+  var arrayCopyWithin = __webpack_require__(232);
+  var $DP = __webpack_require__(21);
+  var $GOPD = __webpack_require__(103);
   var dP = $DP.f;
   var gOPD = $GOPD.f;
   var RangeError = global.RangeError;
@@ -27134,12 +29827,12 @@ if (__webpack_require__(20)) {
 
 
 /***/ }),
-/* 129 */
+/* 143 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var global = __webpack_require__(10);
-var hide = __webpack_require__(18);
-var uid = __webpack_require__(35);
+var hide = __webpack_require__(20);
+var uid = __webpack_require__(38);
 var TYPED = uid('typed_array');
 var VIEW = uid('view');
 var ABV = !!(global.ArrayBuffer && global.DataView);
@@ -27168,12 +29861,12 @@ module.exports = {
 
 
 /***/ }),
-/* 130 */
+/* 144 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://tc39.github.io/ecma262/#sec-toindex
-var toInteger = __webpack_require__(39);
-var toLength = __webpack_require__(22);
+var toInteger = __webpack_require__(41);
+var toLength = __webpack_require__(24);
 module.exports = function (it) {
   if (it === undefined) return 0;
   var number = toInteger(it);
@@ -27184,15 +29877,15 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 131 */
+/* 145 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 // 22.1.3.6 Array.prototype.fill(value, start = 0, end = this.length)
 
-var toObject = __webpack_require__(26);
-var toAbsoluteIndex = __webpack_require__(70);
-var toLength = __webpack_require__(22);
+var toObject = __webpack_require__(28);
+var toAbsoluteIndex = __webpack_require__(79);
+var toLength = __webpack_require__(24);
 module.exports = function fill(value /* , start = 0, end = @length */) {
   var O = toObject(this);
   var length = toLength(O.length);
@@ -27206,18 +29899,18 @@ module.exports = function fill(value /* , start = 0, end = @length */) {
 
 
 /***/ }),
-/* 132 */
+/* 146 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var anObject = __webpack_require__(14);
-var toObject = __webpack_require__(26);
-var toLength = __webpack_require__(22);
-var toInteger = __webpack_require__(39);
-var advanceStringIndex = __webpack_require__(112);
-var regExpExec = __webpack_require__(83);
+var anObject = __webpack_require__(15);
+var toObject = __webpack_require__(28);
+var toLength = __webpack_require__(24);
+var toInteger = __webpack_require__(41);
+var advanceStringIndex = __webpack_require__(126);
+var regExpExec = __webpack_require__(93);
 var max = Math.max;
 var min = Math.min;
 var floor = Math.floor;
@@ -27229,7 +29922,7 @@ var maybeToString = function (it) {
 };
 
 // @@replace logic
-__webpack_require__(86)('replace', 2, function (defined, REPLACE, $replace, maybeCallNative) {
+__webpack_require__(96)('replace', 2, function (defined, REPLACE, $replace, maybeCallNative) {
   return [
     // `String.prototype.replace` method
     // https://tc39.github.io/ecma262/#sec-string.prototype.replace
@@ -27331,18 +30024,7 @@ __webpack_require__(86)('replace', 2, function (defined, REPLACE, $replace, mayb
 
 
 /***/ }),
-/* 133 */
-/***/ (function(module, exports, __webpack_require__) {
-
-__webpack_require__(128)('Uint8', 1, function (init) {
-  return function Uint8Array(data, byteOffset, length) {
-    return init(this, data, byteOffset, length);
-  };
-});
-
-
-/***/ }),
-/* 134 */
+/* 147 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -27352,7 +30034,7 @@ __webpack_require__(128)('Uint8', 1, function (init) {
  *
  * Copyright (c) 2010-2014 Digital Bazaar, Inc.
  */
-var forge = __webpack_require__(3);
+var forge = __webpack_require__(4);
 __webpack_require__(7);
 
 forge.cipher = forge.cipher || {};
@@ -28335,7 +31017,7 @@ function from64To32(num) {
 
 
 /***/ }),
-/* 135 */
+/* 148 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -28570,14 +31252,14 @@ function from64To32(num) {
  * due to the large block size of existing MACs and the small size of the
  * timing signal.
  */
-var forge = __webpack_require__(3);
-__webpack_require__(28);
-__webpack_require__(62);
-__webpack_require__(100);
-__webpack_require__(52);
-__webpack_require__(136);
-__webpack_require__(23);
-__webpack_require__(63);
+var forge = __webpack_require__(4);
+__webpack_require__(30);
+__webpack_require__(65);
+__webpack_require__(111);
+__webpack_require__(55);
+__webpack_require__(149);
+__webpack_require__(25);
+__webpack_require__(66);
 __webpack_require__(7);
 
 /**
@@ -32610,7 +35292,7 @@ forge.tls.createConnection = tls.createConnection;
 
 
 /***/ }),
-/* 136 */
+/* 149 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -32621,17 +35303,17 @@ forge.tls.createConnection = tls.createConnection;
  *
  * Copyright (c) 2010-2013 Digital Bazaar, Inc.
  */
-var forge = __webpack_require__(3);
-__webpack_require__(28);
-__webpack_require__(44);
-__webpack_require__(137);
-__webpack_require__(52);
-__webpack_require__(101);
-__webpack_require__(144);
-__webpack_require__(103);
-__webpack_require__(74);
+var forge = __webpack_require__(4);
+__webpack_require__(30);
+__webpack_require__(46);
+__webpack_require__(150);
+__webpack_require__(55);
+__webpack_require__(112);
+__webpack_require__(157);
+__webpack_require__(114);
+__webpack_require__(82);
 __webpack_require__(7);
-__webpack_require__(102);
+__webpack_require__(113);
 
 // shortcut for asn.1 API
 var asn1 = forge.asn1;
@@ -32718,7 +35400,7 @@ pki.privateKeyInfoToPem = function(pki, maxline) {
 
 
 /***/ }),
-/* 137 */
+/* 150 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -32740,17 +35422,17 @@ pki.privateKeyInfoToPem = function(pki, maxline) {
  *
  * EncryptedData ::= OCTET STRING
  */
-var forge = __webpack_require__(3);
-__webpack_require__(43);
-__webpack_require__(28);
-__webpack_require__(73);
-__webpack_require__(29);
-__webpack_require__(44);
-__webpack_require__(101);
-__webpack_require__(52);
-__webpack_require__(23);
-__webpack_require__(141);
-__webpack_require__(74);
+var forge = __webpack_require__(4);
+__webpack_require__(45);
+__webpack_require__(30);
+__webpack_require__(81);
+__webpack_require__(31);
+__webpack_require__(46);
+__webpack_require__(112);
+__webpack_require__(55);
+__webpack_require__(25);
+__webpack_require__(154);
+__webpack_require__(82);
 __webpack_require__(7);
 
 if(typeof BigInteger === 'undefined') {
@@ -33747,13 +36429,13 @@ function createPbkdf2Params(salt, countBytes, dkLen, prfAlgorithm) {
 
 
 /***/ }),
-/* 138 */
+/* 151 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
-/* 139 */
+/* 152 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -33765,8 +36447,8 @@ function createPbkdf2Params(salt, countBytes, dkLen, prfAlgorithm) {
  *
  * Copyright (c) 2010-2015 Digital Bazaar, Inc.
  */
-var forge = __webpack_require__(3);
-__webpack_require__(29);
+var forge = __webpack_require__(4);
+__webpack_require__(31);
 __webpack_require__(7);
 
 var sha256 = module.exports = forge.sha256 = forge.sha256 || {};
@@ -34086,7 +36768,7 @@ function _update(s, w, bytes) {
 
 
 /***/ }),
-/* 140 */
+/* 153 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {/**
@@ -34100,13 +36782,13 @@ function _update(s, w, bytes) {
  *
  * Copyright (c) 2010-2014 Digital Bazaar, Inc.
  */
-var forge = __webpack_require__(3);
+var forge = __webpack_require__(4);
 __webpack_require__(7);
 
 var _crypto = null;
 if(forge.util.isNodejs && !forge.options.usePureJavaScript &&
   !process.versions['node-webkit']) {
-  _crypto = __webpack_require__(138);
+  _crypto = __webpack_require__(151);
 }
 
 /* PRNG API */
@@ -34510,10 +37192,10 @@ prng.create = function(plugin) {
   return ctx;
 };
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(27)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(18)))
 
 /***/ }),
-/* 141 */
+/* 154 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -34526,7 +37208,7 @@ prng.create = function(plugin) {
  * Information on the RC2 cipher is available from RFC #2268,
  * http://www.ietf.org/rfc/rfc2268.txt
  */
-var forge = __webpack_require__(3);
+var forge = __webpack_require__(4);
 __webpack_require__(7);
 
 var piTable = [
@@ -34929,7 +37611,7 @@ forge.rc2.createDecryptionCipher = function(key, bits) {
 
 
 /***/ }),
-/* 142 */
+/* 155 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -34977,10 +37659,10 @@ forge.rc2.createDecryptionCipher = function(key, bits) {
  *
  * Copyright (c) 2013-2014 Digital Bazaar, Inc.
  */
-var forge = __webpack_require__(3);
+var forge = __webpack_require__(4);
 __webpack_require__(7);
-__webpack_require__(23);
-__webpack_require__(63);
+__webpack_require__(25);
+__webpack_require__(66);
 
 // shortcut for PKCS#1 API
 var pkcs1 = module.exports = forge.pkcs1 = forge.pkcs1 || {};
@@ -35211,7 +37893,7 @@ function rsa_mgf1(seed, maskLength, hash) {
 
 
 /***/ }),
-/* 143 */
+/* 156 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -35221,10 +37903,10 @@ function rsa_mgf1(seed, maskLength, hash) {
  *
  * Copyright (c) 2014 Digital Bazaar, Inc.
  */
-var forge = __webpack_require__(3);
+var forge = __webpack_require__(4);
 __webpack_require__(7);
-__webpack_require__(75);
-__webpack_require__(23);
+__webpack_require__(83);
+__webpack_require__(25);
 
 (function() {
 
@@ -35514,7 +38196,7 @@ function getMillerRabinTests(bits) {
 
 
 /***/ }),
-/* 144 */
+/* 157 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -35612,17 +38294,17 @@ function getMillerRabinTests(bits) {
  *   ... -- For future extensions
  * }
  */
-var forge = __webpack_require__(3);
-__webpack_require__(28);
-__webpack_require__(62);
-__webpack_require__(44);
-__webpack_require__(145);
-__webpack_require__(137);
-__webpack_require__(23);
-__webpack_require__(74);
-__webpack_require__(63);
+var forge = __webpack_require__(4);
+__webpack_require__(30);
+__webpack_require__(65);
+__webpack_require__(46);
+__webpack_require__(158);
+__webpack_require__(150);
+__webpack_require__(25);
+__webpack_require__(82);
+__webpack_require__(66);
 __webpack_require__(7);
-__webpack_require__(102);
+__webpack_require__(113);
 
 // shortcut for asn.1 & PKI API
 var asn1 = forge.asn1;
@@ -36594,7 +39276,7 @@ p12.generateKey = forge.pbe.generatePkcs12Key;
 
 
 /***/ }),
-/* 145 */
+/* 158 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -36706,8 +39388,8 @@ p12.generateKey = forge.pbe.generatePkcs12Key;
  *
  * EncryptedKey ::= OCTET STRING
  */
-var forge = __webpack_require__(3);
-__webpack_require__(28);
+var forge = __webpack_require__(4);
+__webpack_require__(30);
 __webpack_require__(7);
 
 // shortcut for ASN.1 API
@@ -37009,7 +39691,7 @@ p7v.recipientInfoValidator = {
 
 
 /***/ }),
-/* 146 */
+/* 159 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -37021,7 +39703,7 @@ p7v.recipientInfoValidator = {
  * Copyright (c) 2012 Stefan Siegl <stesie@brokenpipe.de>
  * Copyright (c) 2014 Digital Bazaar, Inc.
  */
-var forge = __webpack_require__(3);
+var forge = __webpack_require__(4);
 __webpack_require__(7);
 
 forge.mgf = forge.mgf || {};
@@ -37072,7 +39754,7 @@ mgf1.create = function(md) {
 
 
 /***/ }),
-/* 147 */
+/* 160 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -37082,7 +39764,7 @@ mgf1.create = function(md) {
  *
  * Copyright 2008-2013 Digital Bazaar, Inc.
  */
-var forge = __webpack_require__(3);
+var forge = __webpack_require__(4);
 
 /* DEBUG API */
 module.exports = forge.debug = forge.debug || {};
@@ -37156,7 +39838,7 @@ forge.debug.clear = function(cat, name) {
 
 
 /***/ }),
-/* 148 */
+/* 161 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -37171,8 +39853,8 @@ forge.debug.clear = function(cat, name) {
  *
  * Copyright (c) 2014-2015 Digital Bazaar, Inc.
  */
-var forge = __webpack_require__(3);
-__webpack_require__(29);
+var forge = __webpack_require__(4);
+__webpack_require__(31);
 __webpack_require__(7);
 
 var sha512 = module.exports = forge.sha512 = forge.sha512 || {};
@@ -37723,7 +40405,7 @@ function _update(s, w, bytes) {
 
 
 /***/ }),
-/* 149 */
+/* 162 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -37733,7 +40415,7 @@ function _update(s, w, bytes) {
  *
  * Copyright (c) 2008-2013 Digital Bazaar, Inc.
  */
-var forge = __webpack_require__(3);
+var forge = __webpack_require__(4);
 __webpack_require__(7);
 
 /* LOG API */
@@ -38046,7 +40728,7 @@ forge.log.consoleLogger = sConsoleLogger;
 
 
 /***/ }),
-/* 150 */
+/* 163 */
 /***/ (function(module, exports) {
 
 /**
@@ -38091,7 +40773,7 @@ module.exports = function parseuri(str) {
 
 
 /***/ }),
-/* 151 */
+/* 164 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -38102,7 +40784,7 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ }),
-/* 152 */
+/* 165 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {
@@ -38126,10 +40808,10 @@ function isBuf(obj) {
           (withNativeArrayBuffer && (obj instanceof ArrayBuffer || isView(obj)));
 }
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(32).Buffer))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(16).Buffer))
 
 /***/ }),
-/* 153 */
+/* 166 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -38137,15 +40819,15 @@ function isBuf(obj) {
  * Module dependencies.
  */
 
-var eio = __webpack_require__(244);
-var Socket = __webpack_require__(159);
-var Emitter = __webpack_require__(53);
-var parser = __webpack_require__(104);
-var on = __webpack_require__(160);
-var bind = __webpack_require__(161);
-var debug = __webpack_require__(76)('socket.io-client:manager');
-var indexOf = __webpack_require__(158);
-var Backoff = __webpack_require__(261);
+var eio = __webpack_require__(262);
+var Socket = __webpack_require__(172);
+var Emitter = __webpack_require__(56);
+var parser = __webpack_require__(115);
+var on = __webpack_require__(173);
+var bind = __webpack_require__(68);
+var debug = __webpack_require__(84)('socket.io-client:manager');
+var indexOf = __webpack_require__(171);
+var Backoff = __webpack_require__(279);
 
 /**
  * IE6+ hasOwnProperty
@@ -38708,17 +41390,17 @@ Manager.prototype.onreconnect = function () {
 
 
 /***/ }),
-/* 154 */
+/* 167 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
  * Module dependencies
  */
 
-var XMLHttpRequest = __webpack_require__(105);
-var XHR = __webpack_require__(247);
-var JSONP = __webpack_require__(257);
-var websocket = __webpack_require__(258);
+var XMLHttpRequest = __webpack_require__(116);
+var XHR = __webpack_require__(265);
+var JSONP = __webpack_require__(275);
+var websocket = __webpack_require__(276);
 
 /**
  * Export transports.
@@ -38767,19 +41449,19 @@ function polling (opts) {
 
 
 /***/ }),
-/* 155 */
+/* 168 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
  * Module dependencies.
  */
 
-var Transport = __webpack_require__(106);
-var parseqs = __webpack_require__(77);
-var parser = __webpack_require__(54);
-var inherit = __webpack_require__(78);
-var yeast = __webpack_require__(157);
-var debug = __webpack_require__(79)('engine.io-client:polling');
+var Transport = __webpack_require__(117);
+var parseqs = __webpack_require__(85);
+var parser = __webpack_require__(57);
+var inherit = __webpack_require__(86);
+var yeast = __webpack_require__(170);
+var debug = __webpack_require__(87)('engine.io-client:polling');
 
 /**
  * Module exports.
@@ -38792,7 +41474,7 @@ module.exports = Polling;
  */
 
 var hasXHR2 = (function () {
-  var XMLHttpRequest = __webpack_require__(105);
+  var XMLHttpRequest = __webpack_require__(116);
   var xhr = new XMLHttpRequest({ xdomain: false });
   return null != xhr.responseType;
 })();
@@ -39018,7 +41700,7 @@ Polling.prototype.uri = function () {
 
 
 /***/ }),
-/* 156 */
+/* 169 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {/* global Blob File */
@@ -39027,7 +41709,7 @@ Polling.prototype.uri = function () {
  * Module requirements.
  */
 
-var isArray = __webpack_require__(249);
+var isArray = __webpack_require__(267);
 
 var toString = Object.prototype.toString;
 var withNativeBlob = typeof Blob === 'function' ||
@@ -39086,10 +41768,10 @@ function hasBinary (obj) {
   return false;
 }
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(32).Buffer))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(16).Buffer))
 
 /***/ }),
-/* 157 */
+/* 170 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39164,7 +41846,7 @@ module.exports = yeast;
 
 
 /***/ }),
-/* 158 */
+/* 171 */
 /***/ (function(module, exports) {
 
 
@@ -39179,7 +41861,7 @@ module.exports = function(arr, obj){
 };
 
 /***/ }),
-/* 159 */
+/* 172 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -39187,14 +41869,14 @@ module.exports = function(arr, obj){
  * Module dependencies.
  */
 
-var parser = __webpack_require__(104);
-var Emitter = __webpack_require__(53);
-var toArray = __webpack_require__(260);
-var on = __webpack_require__(160);
-var bind = __webpack_require__(161);
-var debug = __webpack_require__(76)('socket.io-client:socket');
-var parseqs = __webpack_require__(77);
-var hasBin = __webpack_require__(156);
+var parser = __webpack_require__(115);
+var Emitter = __webpack_require__(56);
+var toArray = __webpack_require__(278);
+var on = __webpack_require__(173);
+var bind = __webpack_require__(68);
+var debug = __webpack_require__(84)('socket.io-client:socket');
+var parseqs = __webpack_require__(85);
+var hasBin = __webpack_require__(169);
 
 /**
  * Module exports.
@@ -39623,7 +42305,7 @@ Socket.prototype.binary = function (binary) {
 
 
 /***/ }),
-/* 160 */
+/* 173 */
 /***/ (function(module, exports) {
 
 
@@ -39653,36 +42335,1949 @@ function on (obj, ev, fn) {
 
 
 /***/ }),
-/* 161 */
-/***/ (function(module, exports) {
+/* 174 */
+/***/ (function(module, exports, __webpack_require__) {
 
-/**
- * Slice reference.
- */
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-var slice = [].slice;
+module.exports = Stream;
 
-/**
- * Bind `obj` to `fn`.
- *
- * @param {Object} obj
- * @param {Function|String} fn or string
- * @return {Function}
- * @api public
- */
+var EE = __webpack_require__(69).EventEmitter;
+var inherits = __webpack_require__(47);
 
-module.exports = function(obj, fn){
-  if ('string' == typeof fn) fn = obj[fn];
-  if ('function' != typeof fn) throw new Error('bind() requires a function');
-  var args = slice.call(arguments, 2);
-  return function(){
-    return fn.apply(obj, args.concat(slice.call(arguments)));
+inherits(Stream, EE);
+Stream.Readable = __webpack_require__(119);
+Stream.Writable = __webpack_require__(290);
+Stream.Duplex = __webpack_require__(291);
+Stream.Transform = __webpack_require__(292);
+Stream.PassThrough = __webpack_require__(293);
+
+// Backwards-compat with node 0.4.x
+Stream.Stream = Stream;
+
+
+
+// old-style streams.  Note that the pipe method (the only relevant
+// part of this class) is overridden in the Readable class.
+
+function Stream() {
+  EE.call(this);
+}
+
+Stream.prototype.pipe = function(dest, options) {
+  var source = this;
+
+  function ondata(chunk) {
+    if (dest.writable) {
+      if (false === dest.write(chunk) && source.pause) {
+        source.pause();
+      }
+    }
   }
+
+  source.on('data', ondata);
+
+  function ondrain() {
+    if (source.readable && source.resume) {
+      source.resume();
+    }
+  }
+
+  dest.on('drain', ondrain);
+
+  // If the 'end' option is not supplied, dest.end() will be called when
+  // source gets the 'end' or 'close' events.  Only dest.end() once.
+  if (!dest._isStdio && (!options || options.end !== false)) {
+    source.on('end', onend);
+    source.on('close', onclose);
+  }
+
+  var didOnEnd = false;
+  function onend() {
+    if (didOnEnd) return;
+    didOnEnd = true;
+
+    dest.end();
+  }
+
+
+  function onclose() {
+    if (didOnEnd) return;
+    didOnEnd = true;
+
+    if (typeof dest.destroy === 'function') dest.destroy();
+  }
+
+  // don't leave dangling pipes when there are errors.
+  function onerror(er) {
+    cleanup();
+    if (EE.listenerCount(this, 'error') === 0) {
+      throw er; // Unhandled stream error in pipe.
+    }
+  }
+
+  source.on('error', onerror);
+  dest.on('error', onerror);
+
+  // remove all the event listeners that were added.
+  function cleanup() {
+    source.removeListener('data', ondata);
+    dest.removeListener('drain', ondrain);
+
+    source.removeListener('end', onend);
+    source.removeListener('close', onclose);
+
+    source.removeListener('error', onerror);
+    dest.removeListener('error', onerror);
+
+    source.removeListener('end', cleanup);
+    source.removeListener('close', cleanup);
+
+    dest.removeListener('close', cleanup);
+  }
+
+  source.on('end', cleanup);
+  source.on('close', cleanup);
+
+  dest.on('close', cleanup);
+
+  dest.emit('pipe', source);
+
+  // Allow for unix-like usage: A.pipe(B).pipe(C)
+  return dest;
 };
 
 
 /***/ }),
-/* 162 */
+/* 175 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(global, process) {// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+
+/*<replacement>*/
+
+var pna = __webpack_require__(88);
+/*</replacement>*/
+
+module.exports = Readable;
+
+/*<replacement>*/
+var isArray = __webpack_require__(283);
+/*</replacement>*/
+
+/*<replacement>*/
+var Duplex;
+/*</replacement>*/
+
+Readable.ReadableState = ReadableState;
+
+/*<replacement>*/
+var EE = __webpack_require__(69).EventEmitter;
+
+var EElistenerCount = function (emitter, type) {
+  return emitter.listeners(type).length;
+};
+/*</replacement>*/
+
+/*<replacement>*/
+var Stream = __webpack_require__(176);
+/*</replacement>*/
+
+/*<replacement>*/
+
+var Buffer = __webpack_require__(120).Buffer;
+var OurUint8Array = global.Uint8Array || function () {};
+function _uint8ArrayToBuffer(chunk) {
+  return Buffer.from(chunk);
+}
+function _isUint8Array(obj) {
+  return Buffer.isBuffer(obj) || obj instanceof OurUint8Array;
+}
+
+/*</replacement>*/
+
+/*<replacement>*/
+var util = Object.create(__webpack_require__(70));
+util.inherits = __webpack_require__(47);
+/*</replacement>*/
+
+/*<replacement>*/
+var debugUtil = __webpack_require__(284);
+var debug = void 0;
+if (debugUtil && debugUtil.debuglog) {
+  debug = debugUtil.debuglog('stream');
+} else {
+  debug = function () {};
+}
+/*</replacement>*/
+
+var BufferList = __webpack_require__(285);
+var destroyImpl = __webpack_require__(177);
+var StringDecoder;
+
+util.inherits(Readable, Stream);
+
+var kProxyEvents = ['error', 'close', 'destroy', 'pause', 'resume'];
+
+function prependListener(emitter, event, fn) {
+  // Sadly this is not cacheable as some libraries bundle their own
+  // event emitter implementation with them.
+  if (typeof emitter.prependListener === 'function') return emitter.prependListener(event, fn);
+
+  // This is a hack to make sure that our error handler is attached before any
+  // userland ones.  NEVER DO THIS. This is here only because this code needs
+  // to continue to work with older versions of Node.js that do not include
+  // the prependListener() method. The goal is to eventually remove this hack.
+  if (!emitter._events || !emitter._events[event]) emitter.on(event, fn);else if (isArray(emitter._events[event])) emitter._events[event].unshift(fn);else emitter._events[event] = [fn, emitter._events[event]];
+}
+
+function ReadableState(options, stream) {
+  Duplex = Duplex || __webpack_require__(48);
+
+  options = options || {};
+
+  // Duplex streams are both readable and writable, but share
+  // the same options object.
+  // However, some cases require setting options to different
+  // values for the readable and the writable sides of the duplex stream.
+  // These options can be provided separately as readableXXX and writableXXX.
+  var isDuplex = stream instanceof Duplex;
+
+  // object stream flag. Used to make read(n) ignore n and to
+  // make all the buffer merging and length checks go away
+  this.objectMode = !!options.objectMode;
+
+  if (isDuplex) this.objectMode = this.objectMode || !!options.readableObjectMode;
+
+  // the point at which it stops calling _read() to fill the buffer
+  // Note: 0 is a valid value, means "don't call _read preemptively ever"
+  var hwm = options.highWaterMark;
+  var readableHwm = options.readableHighWaterMark;
+  var defaultHwm = this.objectMode ? 16 : 16 * 1024;
+
+  if (hwm || hwm === 0) this.highWaterMark = hwm;else if (isDuplex && (readableHwm || readableHwm === 0)) this.highWaterMark = readableHwm;else this.highWaterMark = defaultHwm;
+
+  // cast to ints.
+  this.highWaterMark = Math.floor(this.highWaterMark);
+
+  // A linked list is used to store data chunks instead of an array because the
+  // linked list can remove elements from the beginning faster than
+  // array.shift()
+  this.buffer = new BufferList();
+  this.length = 0;
+  this.pipes = null;
+  this.pipesCount = 0;
+  this.flowing = null;
+  this.ended = false;
+  this.endEmitted = false;
+  this.reading = false;
+
+  // a flag to be able to tell if the event 'readable'/'data' is emitted
+  // immediately, or on a later tick.  We set this to true at first, because
+  // any actions that shouldn't happen until "later" should generally also
+  // not happen before the first read call.
+  this.sync = true;
+
+  // whenever we return null, then we set a flag to say
+  // that we're awaiting a 'readable' event emission.
+  this.needReadable = false;
+  this.emittedReadable = false;
+  this.readableListening = false;
+  this.resumeScheduled = false;
+
+  // has it been destroyed
+  this.destroyed = false;
+
+  // Crypto is kind of old and crusty.  Historically, its default string
+  // encoding is 'binary' so we have to make this configurable.
+  // Everything else in the universe uses 'utf8', though.
+  this.defaultEncoding = options.defaultEncoding || 'utf8';
+
+  // the number of writers that are awaiting a drain event in .pipe()s
+  this.awaitDrain = 0;
+
+  // if true, a maybeReadMore has been scheduled
+  this.readingMore = false;
+
+  this.decoder = null;
+  this.encoding = null;
+  if (options.encoding) {
+    if (!StringDecoder) StringDecoder = __webpack_require__(178).StringDecoder;
+    this.decoder = new StringDecoder(options.encoding);
+    this.encoding = options.encoding;
+  }
+}
+
+function Readable(options) {
+  Duplex = Duplex || __webpack_require__(48);
+
+  if (!(this instanceof Readable)) return new Readable(options);
+
+  this._readableState = new ReadableState(options, this);
+
+  // legacy
+  this.readable = true;
+
+  if (options) {
+    if (typeof options.read === 'function') this._read = options.read;
+
+    if (typeof options.destroy === 'function') this._destroy = options.destroy;
+  }
+
+  Stream.call(this);
+}
+
+Object.defineProperty(Readable.prototype, 'destroyed', {
+  get: function () {
+    if (this._readableState === undefined) {
+      return false;
+    }
+    return this._readableState.destroyed;
+  },
+  set: function (value) {
+    // we ignore the value if the stream
+    // has not been initialized yet
+    if (!this._readableState) {
+      return;
+    }
+
+    // backward compatibility, the user is explicitly
+    // managing destroyed
+    this._readableState.destroyed = value;
+  }
+});
+
+Readable.prototype.destroy = destroyImpl.destroy;
+Readable.prototype._undestroy = destroyImpl.undestroy;
+Readable.prototype._destroy = function (err, cb) {
+  this.push(null);
+  cb(err);
+};
+
+// Manually shove something into the read() buffer.
+// This returns true if the highWaterMark has not been hit yet,
+// similar to how Writable.write() returns true if you should
+// write() some more.
+Readable.prototype.push = function (chunk, encoding) {
+  var state = this._readableState;
+  var skipChunkCheck;
+
+  if (!state.objectMode) {
+    if (typeof chunk === 'string') {
+      encoding = encoding || state.defaultEncoding;
+      if (encoding !== state.encoding) {
+        chunk = Buffer.from(chunk, encoding);
+        encoding = '';
+      }
+      skipChunkCheck = true;
+    }
+  } else {
+    skipChunkCheck = true;
+  }
+
+  return readableAddChunk(this, chunk, encoding, false, skipChunkCheck);
+};
+
+// Unshift should *always* be something directly out of read()
+Readable.prototype.unshift = function (chunk) {
+  return readableAddChunk(this, chunk, null, true, false);
+};
+
+function readableAddChunk(stream, chunk, encoding, addToFront, skipChunkCheck) {
+  var state = stream._readableState;
+  if (chunk === null) {
+    state.reading = false;
+    onEofChunk(stream, state);
+  } else {
+    var er;
+    if (!skipChunkCheck) er = chunkInvalid(state, chunk);
+    if (er) {
+      stream.emit('error', er);
+    } else if (state.objectMode || chunk && chunk.length > 0) {
+      if (typeof chunk !== 'string' && !state.objectMode && Object.getPrototypeOf(chunk) !== Buffer.prototype) {
+        chunk = _uint8ArrayToBuffer(chunk);
+      }
+
+      if (addToFront) {
+        if (state.endEmitted) stream.emit('error', new Error('stream.unshift() after end event'));else addChunk(stream, state, chunk, true);
+      } else if (state.ended) {
+        stream.emit('error', new Error('stream.push() after EOF'));
+      } else {
+        state.reading = false;
+        if (state.decoder && !encoding) {
+          chunk = state.decoder.write(chunk);
+          if (state.objectMode || chunk.length !== 0) addChunk(stream, state, chunk, false);else maybeReadMore(stream, state);
+        } else {
+          addChunk(stream, state, chunk, false);
+        }
+      }
+    } else if (!addToFront) {
+      state.reading = false;
+    }
+  }
+
+  return needMoreData(state);
+}
+
+function addChunk(stream, state, chunk, addToFront) {
+  if (state.flowing && state.length === 0 && !state.sync) {
+    stream.emit('data', chunk);
+    stream.read(0);
+  } else {
+    // update the buffer info.
+    state.length += state.objectMode ? 1 : chunk.length;
+    if (addToFront) state.buffer.unshift(chunk);else state.buffer.push(chunk);
+
+    if (state.needReadable) emitReadable(stream);
+  }
+  maybeReadMore(stream, state);
+}
+
+function chunkInvalid(state, chunk) {
+  var er;
+  if (!_isUint8Array(chunk) && typeof chunk !== 'string' && chunk !== undefined && !state.objectMode) {
+    er = new TypeError('Invalid non-string/buffer chunk');
+  }
+  return er;
+}
+
+// if it's past the high water mark, we can push in some more.
+// Also, if we have no data yet, we can stand some
+// more bytes.  This is to work around cases where hwm=0,
+// such as the repl.  Also, if the push() triggered a
+// readable event, and the user called read(largeNumber) such that
+// needReadable was set, then we ought to push more, so that another
+// 'readable' event will be triggered.
+function needMoreData(state) {
+  return !state.ended && (state.needReadable || state.length < state.highWaterMark || state.length === 0);
+}
+
+Readable.prototype.isPaused = function () {
+  return this._readableState.flowing === false;
+};
+
+// backwards compatibility.
+Readable.prototype.setEncoding = function (enc) {
+  if (!StringDecoder) StringDecoder = __webpack_require__(178).StringDecoder;
+  this._readableState.decoder = new StringDecoder(enc);
+  this._readableState.encoding = enc;
+  return this;
+};
+
+// Don't raise the hwm > 8MB
+var MAX_HWM = 0x800000;
+function computeNewHighWaterMark(n) {
+  if (n >= MAX_HWM) {
+    n = MAX_HWM;
+  } else {
+    // Get the next highest power of 2 to prevent increasing hwm excessively in
+    // tiny amounts
+    n--;
+    n |= n >>> 1;
+    n |= n >>> 2;
+    n |= n >>> 4;
+    n |= n >>> 8;
+    n |= n >>> 16;
+    n++;
+  }
+  return n;
+}
+
+// This function is designed to be inlinable, so please take care when making
+// changes to the function body.
+function howMuchToRead(n, state) {
+  if (n <= 0 || state.length === 0 && state.ended) return 0;
+  if (state.objectMode) return 1;
+  if (n !== n) {
+    // Only flow one buffer at a time
+    if (state.flowing && state.length) return state.buffer.head.data.length;else return state.length;
+  }
+  // If we're asking for more than the current hwm, then raise the hwm.
+  if (n > state.highWaterMark) state.highWaterMark = computeNewHighWaterMark(n);
+  if (n <= state.length) return n;
+  // Don't have enough
+  if (!state.ended) {
+    state.needReadable = true;
+    return 0;
+  }
+  return state.length;
+}
+
+// you can override either this method, or the async _read(n) below.
+Readable.prototype.read = function (n) {
+  debug('read', n);
+  n = parseInt(n, 10);
+  var state = this._readableState;
+  var nOrig = n;
+
+  if (n !== 0) state.emittedReadable = false;
+
+  // if we're doing read(0) to trigger a readable event, but we
+  // already have a bunch of data in the buffer, then just trigger
+  // the 'readable' event and move on.
+  if (n === 0 && state.needReadable && (state.length >= state.highWaterMark || state.ended)) {
+    debug('read: emitReadable', state.length, state.ended);
+    if (state.length === 0 && state.ended) endReadable(this);else emitReadable(this);
+    return null;
+  }
+
+  n = howMuchToRead(n, state);
+
+  // if we've ended, and we're now clear, then finish it up.
+  if (n === 0 && state.ended) {
+    if (state.length === 0) endReadable(this);
+    return null;
+  }
+
+  // All the actual chunk generation logic needs to be
+  // *below* the call to _read.  The reason is that in certain
+  // synthetic stream cases, such as passthrough streams, _read
+  // may be a completely synchronous operation which may change
+  // the state of the read buffer, providing enough data when
+  // before there was *not* enough.
+  //
+  // So, the steps are:
+  // 1. Figure out what the state of things will be after we do
+  // a read from the buffer.
+  //
+  // 2. If that resulting state will trigger a _read, then call _read.
+  // Note that this may be asynchronous, or synchronous.  Yes, it is
+  // deeply ugly to write APIs this way, but that still doesn't mean
+  // that the Readable class should behave improperly, as streams are
+  // designed to be sync/async agnostic.
+  // Take note if the _read call is sync or async (ie, if the read call
+  // has returned yet), so that we know whether or not it's safe to emit
+  // 'readable' etc.
+  //
+  // 3. Actually pull the requested chunks out of the buffer and return.
+
+  // if we need a readable event, then we need to do some reading.
+  var doRead = state.needReadable;
+  debug('need readable', doRead);
+
+  // if we currently have less than the highWaterMark, then also read some
+  if (state.length === 0 || state.length - n < state.highWaterMark) {
+    doRead = true;
+    debug('length less than watermark', doRead);
+  }
+
+  // however, if we've ended, then there's no point, and if we're already
+  // reading, then it's unnecessary.
+  if (state.ended || state.reading) {
+    doRead = false;
+    debug('reading or ended', doRead);
+  } else if (doRead) {
+    debug('do read');
+    state.reading = true;
+    state.sync = true;
+    // if the length is currently zero, then we *need* a readable event.
+    if (state.length === 0) state.needReadable = true;
+    // call internal read method
+    this._read(state.highWaterMark);
+    state.sync = false;
+    // If _read pushed data synchronously, then `reading` will be false,
+    // and we need to re-evaluate how much data we can return to the user.
+    if (!state.reading) n = howMuchToRead(nOrig, state);
+  }
+
+  var ret;
+  if (n > 0) ret = fromList(n, state);else ret = null;
+
+  if (ret === null) {
+    state.needReadable = true;
+    n = 0;
+  } else {
+    state.length -= n;
+  }
+
+  if (state.length === 0) {
+    // If we have nothing in the buffer, then we want to know
+    // as soon as we *do* get something into the buffer.
+    if (!state.ended) state.needReadable = true;
+
+    // If we tried to read() past the EOF, then emit end on the next tick.
+    if (nOrig !== n && state.ended) endReadable(this);
+  }
+
+  if (ret !== null) this.emit('data', ret);
+
+  return ret;
+};
+
+function onEofChunk(stream, state) {
+  if (state.ended) return;
+  if (state.decoder) {
+    var chunk = state.decoder.end();
+    if (chunk && chunk.length) {
+      state.buffer.push(chunk);
+      state.length += state.objectMode ? 1 : chunk.length;
+    }
+  }
+  state.ended = true;
+
+  // emit 'readable' now to make sure it gets picked up.
+  emitReadable(stream);
+}
+
+// Don't emit readable right away in sync mode, because this can trigger
+// another read() call => stack overflow.  This way, it might trigger
+// a nextTick recursion warning, but that's not so bad.
+function emitReadable(stream) {
+  var state = stream._readableState;
+  state.needReadable = false;
+  if (!state.emittedReadable) {
+    debug('emitReadable', state.flowing);
+    state.emittedReadable = true;
+    if (state.sync) pna.nextTick(emitReadable_, stream);else emitReadable_(stream);
+  }
+}
+
+function emitReadable_(stream) {
+  debug('emit readable');
+  stream.emit('readable');
+  flow(stream);
+}
+
+// at this point, the user has presumably seen the 'readable' event,
+// and called read() to consume some data.  that may have triggered
+// in turn another _read(n) call, in which case reading = true if
+// it's in progress.
+// However, if we're not ended, or reading, and the length < hwm,
+// then go ahead and try to read some more preemptively.
+function maybeReadMore(stream, state) {
+  if (!state.readingMore) {
+    state.readingMore = true;
+    pna.nextTick(maybeReadMore_, stream, state);
+  }
+}
+
+function maybeReadMore_(stream, state) {
+  var len = state.length;
+  while (!state.reading && !state.flowing && !state.ended && state.length < state.highWaterMark) {
+    debug('maybeReadMore read 0');
+    stream.read(0);
+    if (len === state.length)
+      // didn't get any data, stop spinning.
+      break;else len = state.length;
+  }
+  state.readingMore = false;
+}
+
+// abstract method.  to be overridden in specific implementation classes.
+// call cb(er, data) where data is <= n in length.
+// for virtual (non-string, non-buffer) streams, "length" is somewhat
+// arbitrary, and perhaps not very meaningful.
+Readable.prototype._read = function (n) {
+  this.emit('error', new Error('_read() is not implemented'));
+};
+
+Readable.prototype.pipe = function (dest, pipeOpts) {
+  var src = this;
+  var state = this._readableState;
+
+  switch (state.pipesCount) {
+    case 0:
+      state.pipes = dest;
+      break;
+    case 1:
+      state.pipes = [state.pipes, dest];
+      break;
+    default:
+      state.pipes.push(dest);
+      break;
+  }
+  state.pipesCount += 1;
+  debug('pipe count=%d opts=%j', state.pipesCount, pipeOpts);
+
+  var doEnd = (!pipeOpts || pipeOpts.end !== false) && dest !== process.stdout && dest !== process.stderr;
+
+  var endFn = doEnd ? onend : unpipe;
+  if (state.endEmitted) pna.nextTick(endFn);else src.once('end', endFn);
+
+  dest.on('unpipe', onunpipe);
+  function onunpipe(readable, unpipeInfo) {
+    debug('onunpipe');
+    if (readable === src) {
+      if (unpipeInfo && unpipeInfo.hasUnpiped === false) {
+        unpipeInfo.hasUnpiped = true;
+        cleanup();
+      }
+    }
+  }
+
+  function onend() {
+    debug('onend');
+    dest.end();
+  }
+
+  // when the dest drains, it reduces the awaitDrain counter
+  // on the source.  This would be more elegant with a .once()
+  // handler in flow(), but adding and removing repeatedly is
+  // too slow.
+  var ondrain = pipeOnDrain(src);
+  dest.on('drain', ondrain);
+
+  var cleanedUp = false;
+  function cleanup() {
+    debug('cleanup');
+    // cleanup event handlers once the pipe is broken
+    dest.removeListener('close', onclose);
+    dest.removeListener('finish', onfinish);
+    dest.removeListener('drain', ondrain);
+    dest.removeListener('error', onerror);
+    dest.removeListener('unpipe', onunpipe);
+    src.removeListener('end', onend);
+    src.removeListener('end', unpipe);
+    src.removeListener('data', ondata);
+
+    cleanedUp = true;
+
+    // if the reader is waiting for a drain event from this
+    // specific writer, then it would cause it to never start
+    // flowing again.
+    // So, if this is awaiting a drain, then we just call it now.
+    // If we don't know, then assume that we are waiting for one.
+    if (state.awaitDrain && (!dest._writableState || dest._writableState.needDrain)) ondrain();
+  }
+
+  // If the user pushes more data while we're writing to dest then we'll end up
+  // in ondata again. However, we only want to increase awaitDrain once because
+  // dest will only emit one 'drain' event for the multiple writes.
+  // => Introduce a guard on increasing awaitDrain.
+  var increasedAwaitDrain = false;
+  src.on('data', ondata);
+  function ondata(chunk) {
+    debug('ondata');
+    increasedAwaitDrain = false;
+    var ret = dest.write(chunk);
+    if (false === ret && !increasedAwaitDrain) {
+      // If the user unpiped during `dest.write()`, it is possible
+      // to get stuck in a permanently paused state if that write
+      // also returned false.
+      // => Check whether `dest` is still a piping destination.
+      if ((state.pipesCount === 1 && state.pipes === dest || state.pipesCount > 1 && indexOf(state.pipes, dest) !== -1) && !cleanedUp) {
+        debug('false write response, pause', src._readableState.awaitDrain);
+        src._readableState.awaitDrain++;
+        increasedAwaitDrain = true;
+      }
+      src.pause();
+    }
+  }
+
+  // if the dest has an error, then stop piping into it.
+  // however, don't suppress the throwing behavior for this.
+  function onerror(er) {
+    debug('onerror', er);
+    unpipe();
+    dest.removeListener('error', onerror);
+    if (EElistenerCount(dest, 'error') === 0) dest.emit('error', er);
+  }
+
+  // Make sure our error handler is attached before userland ones.
+  prependListener(dest, 'error', onerror);
+
+  // Both close and finish should trigger unpipe, but only once.
+  function onclose() {
+    dest.removeListener('finish', onfinish);
+    unpipe();
+  }
+  dest.once('close', onclose);
+  function onfinish() {
+    debug('onfinish');
+    dest.removeListener('close', onclose);
+    unpipe();
+  }
+  dest.once('finish', onfinish);
+
+  function unpipe() {
+    debug('unpipe');
+    src.unpipe(dest);
+  }
+
+  // tell the dest that it's being piped to
+  dest.emit('pipe', src);
+
+  // start the flow if it hasn't been started already.
+  if (!state.flowing) {
+    debug('pipe resume');
+    src.resume();
+  }
+
+  return dest;
+};
+
+function pipeOnDrain(src) {
+  return function () {
+    var state = src._readableState;
+    debug('pipeOnDrain', state.awaitDrain);
+    if (state.awaitDrain) state.awaitDrain--;
+    if (state.awaitDrain === 0 && EElistenerCount(src, 'data')) {
+      state.flowing = true;
+      flow(src);
+    }
+  };
+}
+
+Readable.prototype.unpipe = function (dest) {
+  var state = this._readableState;
+  var unpipeInfo = { hasUnpiped: false };
+
+  // if we're not piping anywhere, then do nothing.
+  if (state.pipesCount === 0) return this;
+
+  // just one destination.  most common case.
+  if (state.pipesCount === 1) {
+    // passed in one, but it's not the right one.
+    if (dest && dest !== state.pipes) return this;
+
+    if (!dest) dest = state.pipes;
+
+    // got a match.
+    state.pipes = null;
+    state.pipesCount = 0;
+    state.flowing = false;
+    if (dest) dest.emit('unpipe', this, unpipeInfo);
+    return this;
+  }
+
+  // slow case. multiple pipe destinations.
+
+  if (!dest) {
+    // remove all.
+    var dests = state.pipes;
+    var len = state.pipesCount;
+    state.pipes = null;
+    state.pipesCount = 0;
+    state.flowing = false;
+
+    for (var i = 0; i < len; i++) {
+      dests[i].emit('unpipe', this, unpipeInfo);
+    }return this;
+  }
+
+  // try to find the right one.
+  var index = indexOf(state.pipes, dest);
+  if (index === -1) return this;
+
+  state.pipes.splice(index, 1);
+  state.pipesCount -= 1;
+  if (state.pipesCount === 1) state.pipes = state.pipes[0];
+
+  dest.emit('unpipe', this, unpipeInfo);
+
+  return this;
+};
+
+// set up data events if they are asked for
+// Ensure readable listeners eventually get something
+Readable.prototype.on = function (ev, fn) {
+  var res = Stream.prototype.on.call(this, ev, fn);
+
+  if (ev === 'data') {
+    // Start flowing on next tick if stream isn't explicitly paused
+    if (this._readableState.flowing !== false) this.resume();
+  } else if (ev === 'readable') {
+    var state = this._readableState;
+    if (!state.endEmitted && !state.readableListening) {
+      state.readableListening = state.needReadable = true;
+      state.emittedReadable = false;
+      if (!state.reading) {
+        pna.nextTick(nReadingNextTick, this);
+      } else if (state.length) {
+        emitReadable(this);
+      }
+    }
+  }
+
+  return res;
+};
+Readable.prototype.addListener = Readable.prototype.on;
+
+function nReadingNextTick(self) {
+  debug('readable nexttick read 0');
+  self.read(0);
+}
+
+// pause() and resume() are remnants of the legacy readable stream API
+// If the user uses them, then switch into old mode.
+Readable.prototype.resume = function () {
+  var state = this._readableState;
+  if (!state.flowing) {
+    debug('resume');
+    state.flowing = true;
+    resume(this, state);
+  }
+  return this;
+};
+
+function resume(stream, state) {
+  if (!state.resumeScheduled) {
+    state.resumeScheduled = true;
+    pna.nextTick(resume_, stream, state);
+  }
+}
+
+function resume_(stream, state) {
+  if (!state.reading) {
+    debug('resume read 0');
+    stream.read(0);
+  }
+
+  state.resumeScheduled = false;
+  state.awaitDrain = 0;
+  stream.emit('resume');
+  flow(stream);
+  if (state.flowing && !state.reading) stream.read(0);
+}
+
+Readable.prototype.pause = function () {
+  debug('call pause flowing=%j', this._readableState.flowing);
+  if (false !== this._readableState.flowing) {
+    debug('pause');
+    this._readableState.flowing = false;
+    this.emit('pause');
+  }
+  return this;
+};
+
+function flow(stream) {
+  var state = stream._readableState;
+  debug('flow', state.flowing);
+  while (state.flowing && stream.read() !== null) {}
+}
+
+// wrap an old-style stream as the async data source.
+// This is *not* part of the readable stream interface.
+// It is an ugly unfortunate mess of history.
+Readable.prototype.wrap = function (stream) {
+  var _this = this;
+
+  var state = this._readableState;
+  var paused = false;
+
+  stream.on('end', function () {
+    debug('wrapped end');
+    if (state.decoder && !state.ended) {
+      var chunk = state.decoder.end();
+      if (chunk && chunk.length) _this.push(chunk);
+    }
+
+    _this.push(null);
+  });
+
+  stream.on('data', function (chunk) {
+    debug('wrapped data');
+    if (state.decoder) chunk = state.decoder.write(chunk);
+
+    // don't skip over falsy values in objectMode
+    if (state.objectMode && (chunk === null || chunk === undefined)) return;else if (!state.objectMode && (!chunk || !chunk.length)) return;
+
+    var ret = _this.push(chunk);
+    if (!ret) {
+      paused = true;
+      stream.pause();
+    }
+  });
+
+  // proxy all the other methods.
+  // important when wrapping filters and duplexes.
+  for (var i in stream) {
+    if (this[i] === undefined && typeof stream[i] === 'function') {
+      this[i] = function (method) {
+        return function () {
+          return stream[method].apply(stream, arguments);
+        };
+      }(i);
+    }
+  }
+
+  // proxy certain important events.
+  for (var n = 0; n < kProxyEvents.length; n++) {
+    stream.on(kProxyEvents[n], this.emit.bind(this, kProxyEvents[n]));
+  }
+
+  // when we try to consume some more bytes, simply unpause the
+  // underlying stream.
+  this._read = function (n) {
+    debug('wrapped _read', n);
+    if (paused) {
+      paused = false;
+      stream.resume();
+    }
+  };
+
+  return this;
+};
+
+Object.defineProperty(Readable.prototype, 'readableHighWaterMark', {
+  // making it explicit this property is not enumerable
+  // because otherwise some prototype manipulation in
+  // userland will fail
+  enumerable: false,
+  get: function () {
+    return this._readableState.highWaterMark;
+  }
+});
+
+// exposed for testing purposes only.
+Readable._fromList = fromList;
+
+// Pluck off n bytes from an array of buffers.
+// Length is the combined lengths of all the buffers in the list.
+// This function is designed to be inlinable, so please take care when making
+// changes to the function body.
+function fromList(n, state) {
+  // nothing buffered
+  if (state.length === 0) return null;
+
+  var ret;
+  if (state.objectMode) ret = state.buffer.shift();else if (!n || n >= state.length) {
+    // read it all, truncate the list
+    if (state.decoder) ret = state.buffer.join('');else if (state.buffer.length === 1) ret = state.buffer.head.data;else ret = state.buffer.concat(state.length);
+    state.buffer.clear();
+  } else {
+    // read part of list
+    ret = fromListPartial(n, state.buffer, state.decoder);
+  }
+
+  return ret;
+}
+
+// Extracts only enough buffered data to satisfy the amount requested.
+// This function is designed to be inlinable, so please take care when making
+// changes to the function body.
+function fromListPartial(n, list, hasStrings) {
+  var ret;
+  if (n < list.head.data.length) {
+    // slice is the same for buffers and strings
+    ret = list.head.data.slice(0, n);
+    list.head.data = list.head.data.slice(n);
+  } else if (n === list.head.data.length) {
+    // first chunk is a perfect match
+    ret = list.shift();
+  } else {
+    // result spans more than one buffer
+    ret = hasStrings ? copyFromBufferString(n, list) : copyFromBuffer(n, list);
+  }
+  return ret;
+}
+
+// Copies a specified amount of characters from the list of buffered data
+// chunks.
+// This function is designed to be inlinable, so please take care when making
+// changes to the function body.
+function copyFromBufferString(n, list) {
+  var p = list.head;
+  var c = 1;
+  var ret = p.data;
+  n -= ret.length;
+  while (p = p.next) {
+    var str = p.data;
+    var nb = n > str.length ? str.length : n;
+    if (nb === str.length) ret += str;else ret += str.slice(0, n);
+    n -= nb;
+    if (n === 0) {
+      if (nb === str.length) {
+        ++c;
+        if (p.next) list.head = p.next;else list.head = list.tail = null;
+      } else {
+        list.head = p;
+        p.data = str.slice(nb);
+      }
+      break;
+    }
+    ++c;
+  }
+  list.length -= c;
+  return ret;
+}
+
+// Copies a specified amount of bytes from the list of buffered data chunks.
+// This function is designed to be inlinable, so please take care when making
+// changes to the function body.
+function copyFromBuffer(n, list) {
+  var ret = Buffer.allocUnsafe(n);
+  var p = list.head;
+  var c = 1;
+  p.data.copy(ret);
+  n -= p.data.length;
+  while (p = p.next) {
+    var buf = p.data;
+    var nb = n > buf.length ? buf.length : n;
+    buf.copy(ret, ret.length - n, 0, nb);
+    n -= nb;
+    if (n === 0) {
+      if (nb === buf.length) {
+        ++c;
+        if (p.next) list.head = p.next;else list.head = list.tail = null;
+      } else {
+        list.head = p;
+        p.data = buf.slice(nb);
+      }
+      break;
+    }
+    ++c;
+  }
+  list.length -= c;
+  return ret;
+}
+
+function endReadable(stream) {
+  var state = stream._readableState;
+
+  // If we get here before consuming all the bytes, then that is a
+  // bug in node.  Should never happen.
+  if (state.length > 0) throw new Error('"endReadable()" called on non-empty stream');
+
+  if (!state.endEmitted) {
+    state.ended = true;
+    pna.nextTick(endReadableNT, state, stream);
+  }
+}
+
+function endReadableNT(state, stream) {
+  // Check that we didn't get one last unshift.
+  if (!state.endEmitted && state.length === 0) {
+    state.endEmitted = true;
+    stream.readable = false;
+    stream.emit('end');
+  }
+}
+
+function indexOf(xs, x) {
+  for (var i = 0, l = xs.length; i < l; i++) {
+    if (xs[i] === x) return i;
+  }
+  return -1;
+}
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(29), __webpack_require__(18)))
+
+/***/ }),
+/* 176 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(69).EventEmitter;
+
+
+/***/ }),
+/* 177 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/*<replacement>*/
+
+var pna = __webpack_require__(88);
+/*</replacement>*/
+
+// undocumented cb() API, needed for core, not for public API
+function destroy(err, cb) {
+  var _this = this;
+
+  var readableDestroyed = this._readableState && this._readableState.destroyed;
+  var writableDestroyed = this._writableState && this._writableState.destroyed;
+
+  if (readableDestroyed || writableDestroyed) {
+    if (cb) {
+      cb(err);
+    } else if (err && (!this._writableState || !this._writableState.errorEmitted)) {
+      pna.nextTick(emitErrorNT, this, err);
+    }
+    return this;
+  }
+
+  // we set destroyed to true before firing error callbacks in order
+  // to make it re-entrance safe in case destroy() is called within callbacks
+
+  if (this._readableState) {
+    this._readableState.destroyed = true;
+  }
+
+  // if this is a duplex stream mark the writable part as destroyed as well
+  if (this._writableState) {
+    this._writableState.destroyed = true;
+  }
+
+  this._destroy(err || null, function (err) {
+    if (!cb && err) {
+      pna.nextTick(emitErrorNT, _this, err);
+      if (_this._writableState) {
+        _this._writableState.errorEmitted = true;
+      }
+    } else if (cb) {
+      cb(err);
+    }
+  });
+
+  return this;
+}
+
+function undestroy() {
+  if (this._readableState) {
+    this._readableState.destroyed = false;
+    this._readableState.reading = false;
+    this._readableState.ended = false;
+    this._readableState.endEmitted = false;
+  }
+
+  if (this._writableState) {
+    this._writableState.destroyed = false;
+    this._writableState.ended = false;
+    this._writableState.ending = false;
+    this._writableState.finished = false;
+    this._writableState.errorEmitted = false;
+  }
+}
+
+function emitErrorNT(self, err) {
+  self.emit('error', err);
+}
+
+module.exports = {
+  destroy: destroy,
+  undestroy: undestroy
+};
+
+/***/ }),
+/* 178 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+
+/*<replacement>*/
+
+var Buffer = __webpack_require__(288).Buffer;
+/*</replacement>*/
+
+var isEncoding = Buffer.isEncoding || function (encoding) {
+  encoding = '' + encoding;
+  switch (encoding && encoding.toLowerCase()) {
+    case 'hex':case 'utf8':case 'utf-8':case 'ascii':case 'binary':case 'base64':case 'ucs2':case 'ucs-2':case 'utf16le':case 'utf-16le':case 'raw':
+      return true;
+    default:
+      return false;
+  }
+};
+
+function _normalizeEncoding(enc) {
+  if (!enc) return 'utf8';
+  var retried;
+  while (true) {
+    switch (enc) {
+      case 'utf8':
+      case 'utf-8':
+        return 'utf8';
+      case 'ucs2':
+      case 'ucs-2':
+      case 'utf16le':
+      case 'utf-16le':
+        return 'utf16le';
+      case 'latin1':
+      case 'binary':
+        return 'latin1';
+      case 'base64':
+      case 'ascii':
+      case 'hex':
+        return enc;
+      default:
+        if (retried) return; // undefined
+        enc = ('' + enc).toLowerCase();
+        retried = true;
+    }
+  }
+};
+
+// Do not cache `Buffer.isEncoding` when checking encoding names as some
+// modules monkey-patch it to support additional encodings
+function normalizeEncoding(enc) {
+  var nenc = _normalizeEncoding(enc);
+  if (typeof nenc !== 'string' && (Buffer.isEncoding === isEncoding || !isEncoding(enc))) throw new Error('Unknown encoding: ' + enc);
+  return nenc || enc;
+}
+
+// StringDecoder provides an interface for efficiently splitting a series of
+// buffers into a series of JS strings without breaking apart multi-byte
+// characters.
+exports.StringDecoder = StringDecoder;
+function StringDecoder(encoding) {
+  this.encoding = normalizeEncoding(encoding);
+  var nb;
+  switch (this.encoding) {
+    case 'utf16le':
+      this.text = utf16Text;
+      this.end = utf16End;
+      nb = 4;
+      break;
+    case 'utf8':
+      this.fillLast = utf8FillLast;
+      nb = 4;
+      break;
+    case 'base64':
+      this.text = base64Text;
+      this.end = base64End;
+      nb = 3;
+      break;
+    default:
+      this.write = simpleWrite;
+      this.end = simpleEnd;
+      return;
+  }
+  this.lastNeed = 0;
+  this.lastTotal = 0;
+  this.lastChar = Buffer.allocUnsafe(nb);
+}
+
+StringDecoder.prototype.write = function (buf) {
+  if (buf.length === 0) return '';
+  var r;
+  var i;
+  if (this.lastNeed) {
+    r = this.fillLast(buf);
+    if (r === undefined) return '';
+    i = this.lastNeed;
+    this.lastNeed = 0;
+  } else {
+    i = 0;
+  }
+  if (i < buf.length) return r ? r + this.text(buf, i) : this.text(buf, i);
+  return r || '';
+};
+
+StringDecoder.prototype.end = utf8End;
+
+// Returns only complete characters in a Buffer
+StringDecoder.prototype.text = utf8Text;
+
+// Attempts to complete a partial non-UTF-8 character using bytes from a Buffer
+StringDecoder.prototype.fillLast = function (buf) {
+  if (this.lastNeed <= buf.length) {
+    buf.copy(this.lastChar, this.lastTotal - this.lastNeed, 0, this.lastNeed);
+    return this.lastChar.toString(this.encoding, 0, this.lastTotal);
+  }
+  buf.copy(this.lastChar, this.lastTotal - this.lastNeed, 0, buf.length);
+  this.lastNeed -= buf.length;
+};
+
+// Checks the type of a UTF-8 byte, whether it's ASCII, a leading byte, or a
+// continuation byte. If an invalid byte is detected, -2 is returned.
+function utf8CheckByte(byte) {
+  if (byte <= 0x7F) return 0;else if (byte >> 5 === 0x06) return 2;else if (byte >> 4 === 0x0E) return 3;else if (byte >> 3 === 0x1E) return 4;
+  return byte >> 6 === 0x02 ? -1 : -2;
+}
+
+// Checks at most 3 bytes at the end of a Buffer in order to detect an
+// incomplete multi-byte UTF-8 character. The total number of bytes (2, 3, or 4)
+// needed to complete the UTF-8 character (if applicable) are returned.
+function utf8CheckIncomplete(self, buf, i) {
+  var j = buf.length - 1;
+  if (j < i) return 0;
+  var nb = utf8CheckByte(buf[j]);
+  if (nb >= 0) {
+    if (nb > 0) self.lastNeed = nb - 1;
+    return nb;
+  }
+  if (--j < i || nb === -2) return 0;
+  nb = utf8CheckByte(buf[j]);
+  if (nb >= 0) {
+    if (nb > 0) self.lastNeed = nb - 2;
+    return nb;
+  }
+  if (--j < i || nb === -2) return 0;
+  nb = utf8CheckByte(buf[j]);
+  if (nb >= 0) {
+    if (nb > 0) {
+      if (nb === 2) nb = 0;else self.lastNeed = nb - 3;
+    }
+    return nb;
+  }
+  return 0;
+}
+
+// Validates as many continuation bytes for a multi-byte UTF-8 character as
+// needed or are available. If we see a non-continuation byte where we expect
+// one, we "replace" the validated continuation bytes we've seen so far with
+// a single UTF-8 replacement character ('\ufffd'), to match v8's UTF-8 decoding
+// behavior. The continuation byte check is included three times in the case
+// where all of the continuation bytes for a character exist in the same buffer.
+// It is also done this way as a slight performance increase instead of using a
+// loop.
+function utf8CheckExtraBytes(self, buf, p) {
+  if ((buf[0] & 0xC0) !== 0x80) {
+    self.lastNeed = 0;
+    return '\ufffd';
+  }
+  if (self.lastNeed > 1 && buf.length > 1) {
+    if ((buf[1] & 0xC0) !== 0x80) {
+      self.lastNeed = 1;
+      return '\ufffd';
+    }
+    if (self.lastNeed > 2 && buf.length > 2) {
+      if ((buf[2] & 0xC0) !== 0x80) {
+        self.lastNeed = 2;
+        return '\ufffd';
+      }
+    }
+  }
+}
+
+// Attempts to complete a multi-byte UTF-8 character using bytes from a Buffer.
+function utf8FillLast(buf) {
+  var p = this.lastTotal - this.lastNeed;
+  var r = utf8CheckExtraBytes(this, buf, p);
+  if (r !== undefined) return r;
+  if (this.lastNeed <= buf.length) {
+    buf.copy(this.lastChar, p, 0, this.lastNeed);
+    return this.lastChar.toString(this.encoding, 0, this.lastTotal);
+  }
+  buf.copy(this.lastChar, p, 0, buf.length);
+  this.lastNeed -= buf.length;
+}
+
+// Returns all complete UTF-8 characters in a Buffer. If the Buffer ended on a
+// partial character, the character's bytes are buffered until the required
+// number of bytes are available.
+function utf8Text(buf, i) {
+  var total = utf8CheckIncomplete(this, buf, i);
+  if (!this.lastNeed) return buf.toString('utf8', i);
+  this.lastTotal = total;
+  var end = buf.length - (total - this.lastNeed);
+  buf.copy(this.lastChar, 0, end);
+  return buf.toString('utf8', i, end);
+}
+
+// For UTF-8, a replacement character is added when ending on a partial
+// character.
+function utf8End(buf) {
+  var r = buf && buf.length ? this.write(buf) : '';
+  if (this.lastNeed) return r + '\ufffd';
+  return r;
+}
+
+// UTF-16LE typically needs two bytes per character, but even if we have an even
+// number of bytes available, we need to check if we end on a leading/high
+// surrogate. In that case, we need to wait for the next two bytes in order to
+// decode the last character properly.
+function utf16Text(buf, i) {
+  if ((buf.length - i) % 2 === 0) {
+    var r = buf.toString('utf16le', i);
+    if (r) {
+      var c = r.charCodeAt(r.length - 1);
+      if (c >= 0xD800 && c <= 0xDBFF) {
+        this.lastNeed = 2;
+        this.lastTotal = 4;
+        this.lastChar[0] = buf[buf.length - 2];
+        this.lastChar[1] = buf[buf.length - 1];
+        return r.slice(0, -1);
+      }
+    }
+    return r;
+  }
+  this.lastNeed = 1;
+  this.lastTotal = 2;
+  this.lastChar[0] = buf[buf.length - 1];
+  return buf.toString('utf16le', i, buf.length - 1);
+}
+
+// For UTF-16LE we do not explicitly append special replacement characters if we
+// end on a partial character, we simply let v8 handle that.
+function utf16End(buf) {
+  var r = buf && buf.length ? this.write(buf) : '';
+  if (this.lastNeed) {
+    var end = this.lastTotal - this.lastNeed;
+    return r + this.lastChar.toString('utf16le', 0, end);
+  }
+  return r;
+}
+
+function base64Text(buf, i) {
+  var n = (buf.length - i) % 3;
+  if (n === 0) return buf.toString('base64', i);
+  this.lastNeed = 3 - n;
+  this.lastTotal = 3;
+  if (n === 1) {
+    this.lastChar[0] = buf[buf.length - 1];
+  } else {
+    this.lastChar[0] = buf[buf.length - 2];
+    this.lastChar[1] = buf[buf.length - 1];
+  }
+  return buf.toString('base64', i, buf.length - n);
+}
+
+function base64End(buf) {
+  var r = buf && buf.length ? this.write(buf) : '';
+  if (this.lastNeed) return r + this.lastChar.toString('base64', 0, 3 - this.lastNeed);
+  return r;
+}
+
+// Pass bytes on through for single-byte encodings (e.g. ascii, latin1, hex)
+function simpleWrite(buf) {
+  return buf.toString(this.encoding);
+}
+
+function simpleEnd(buf) {
+  return buf && buf.length ? this.write(buf) : '';
+}
+
+/***/ }),
+/* 179 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+// a transform stream is a readable/writable stream where you do
+// something with the data.  Sometimes it's called a "filter",
+// but that's not a great name for it, since that implies a thing where
+// some bits pass through, and others are simply ignored.  (That would
+// be a valid example of a transform, of course.)
+//
+// While the output is causally related to the input, it's not a
+// necessarily symmetric or synchronous transformation.  For example,
+// a zlib stream might take multiple plain-text writes(), and then
+// emit a single compressed chunk some time in the future.
+//
+// Here's how this works:
+//
+// The Transform stream has all the aspects of the readable and writable
+// stream classes.  When you write(chunk), that calls _write(chunk,cb)
+// internally, and returns false if there's a lot of pending writes
+// buffered up.  When you call read(), that calls _read(n) until
+// there's enough pending readable data buffered up.
+//
+// In a transform stream, the written data is placed in a buffer.  When
+// _read(n) is called, it transforms the queued up data, calling the
+// buffered _write cb's as it consumes chunks.  If consuming a single
+// written chunk would result in multiple output chunks, then the first
+// outputted bit calls the readcb, and subsequent chunks just go into
+// the read buffer, and will cause it to emit 'readable' if necessary.
+//
+// This way, back-pressure is actually determined by the reading side,
+// since _read has to be called to start processing a new chunk.  However,
+// a pathological inflate type of transform can cause excessive buffering
+// here.  For example, imagine a stream where every byte of input is
+// interpreted as an integer from 0-255, and then results in that many
+// bytes of output.  Writing the 4 bytes {ff,ff,ff,ff} would result in
+// 1kb of data being output.  In this case, you could write a very small
+// amount of input, and end up with a very large amount of output.  In
+// such a pathological inflating mechanism, there'd be no way to tell
+// the system to stop doing the transform.  A single 4MB write could
+// cause the system to run out of memory.
+//
+// However, even in such a pathological case, only a single written chunk
+// would be consumed, and then the rest would wait (un-transformed) until
+// the results of the previous transformed chunk were consumed.
+
+
+
+module.exports = Transform;
+
+var Duplex = __webpack_require__(48);
+
+/*<replacement>*/
+var util = Object.create(__webpack_require__(70));
+util.inherits = __webpack_require__(47);
+/*</replacement>*/
+
+util.inherits(Transform, Duplex);
+
+function afterTransform(er, data) {
+  var ts = this._transformState;
+  ts.transforming = false;
+
+  var cb = ts.writecb;
+
+  if (!cb) {
+    return this.emit('error', new Error('write callback called multiple times'));
+  }
+
+  ts.writechunk = null;
+  ts.writecb = null;
+
+  if (data != null) // single equals check for both `null` and `undefined`
+    this.push(data);
+
+  cb(er);
+
+  var rs = this._readableState;
+  rs.reading = false;
+  if (rs.needReadable || rs.length < rs.highWaterMark) {
+    this._read(rs.highWaterMark);
+  }
+}
+
+function Transform(options) {
+  if (!(this instanceof Transform)) return new Transform(options);
+
+  Duplex.call(this, options);
+
+  this._transformState = {
+    afterTransform: afterTransform.bind(this),
+    needTransform: false,
+    transforming: false,
+    writecb: null,
+    writechunk: null,
+    writeencoding: null
+  };
+
+  // start out asking for a readable event once data is transformed.
+  this._readableState.needReadable = true;
+
+  // we have implemented the _read method, and done the other things
+  // that Readable wants before the first _read call, so unset the
+  // sync guard flag.
+  this._readableState.sync = false;
+
+  if (options) {
+    if (typeof options.transform === 'function') this._transform = options.transform;
+
+    if (typeof options.flush === 'function') this._flush = options.flush;
+  }
+
+  // When the writable side finishes, then flush out anything remaining.
+  this.on('prefinish', prefinish);
+}
+
+function prefinish() {
+  var _this = this;
+
+  if (typeof this._flush === 'function') {
+    this._flush(function (er, data) {
+      done(_this, er, data);
+    });
+  } else {
+    done(this, null, null);
+  }
+}
+
+Transform.prototype.push = function (chunk, encoding) {
+  this._transformState.needTransform = false;
+  return Duplex.prototype.push.call(this, chunk, encoding);
+};
+
+// This is the part where you do stuff!
+// override this function in implementation classes.
+// 'chunk' is an input chunk.
+//
+// Call `push(newChunk)` to pass along transformed output
+// to the readable side.  You may call 'push' zero or more times.
+//
+// Call `cb(err)` when you are done with this chunk.  If you pass
+// an error, then that'll put the hurt on the whole operation.  If you
+// never call cb(), then you'll never get another chunk.
+Transform.prototype._transform = function (chunk, encoding, cb) {
+  throw new Error('_transform() is not implemented');
+};
+
+Transform.prototype._write = function (chunk, encoding, cb) {
+  var ts = this._transformState;
+  ts.writecb = cb;
+  ts.writechunk = chunk;
+  ts.writeencoding = encoding;
+  if (!ts.transforming) {
+    var rs = this._readableState;
+    if (ts.needTransform || rs.needReadable || rs.length < rs.highWaterMark) this._read(rs.highWaterMark);
+  }
+};
+
+// Doesn't matter what the args are here.
+// _transform does all the work.
+// That we got here means that the readable side wants more data.
+Transform.prototype._read = function (n) {
+  var ts = this._transformState;
+
+  if (ts.writechunk !== null && ts.writecb && !ts.transforming) {
+    ts.transforming = true;
+    this._transform(ts.writechunk, ts.writeencoding, ts.afterTransform);
+  } else {
+    // mark that we need a transform, so that any data that comes in
+    // will get processed, now that we've asked for it.
+    ts.needTransform = true;
+  }
+};
+
+Transform.prototype._destroy = function (err, cb) {
+  var _this2 = this;
+
+  Duplex.prototype._destroy.call(this, err, function (err2) {
+    cb(err2);
+    _this2.emit('close');
+  });
+};
+
+function done(stream, er, data) {
+  if (er) return stream.emit('error', er);
+
+  if (data != null) // single equals check for both `null` and `undefined`
+    stream.push(data);
+
+  // if there's nothing in the write buffer, then that means
+  // that nothing more will ever be provided
+  if (stream._writableState.length) throw new Error('Calling transform done when ws.length != 0');
+
+  if (stream._transformState.transforming) throw new Error('Calling transform done when still transforming');
+
+  return stream.push(null);
+}
+
+/***/ }),
+/* 180 */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+/**
+ * This is the web browser implementation of `debug()`.
+ *
+ * Expose `debug()` as the module.
+ */
+
+exports = module.exports = __webpack_require__(295);
+exports.log = log;
+exports.formatArgs = formatArgs;
+exports.save = save;
+exports.load = load;
+exports.useColors = useColors;
+exports.storage = 'undefined' != typeof chrome
+               && 'undefined' != typeof chrome.storage
+                  ? chrome.storage.local
+                  : localstorage();
+
+/**
+ * Colors.
+ */
+
+exports.colors = [
+  'lightseagreen',
+  'forestgreen',
+  'goldenrod',
+  'dodgerblue',
+  'darkorchid',
+  'crimson'
+];
+
+/**
+ * Currently only WebKit-based Web Inspectors, Firefox >= v31,
+ * and the Firebug extension (any Firefox version) are known
+ * to support "%c" CSS customizations.
+ *
+ * TODO: add a `localStorage` variable to explicitly enable/disable colors
+ */
+
+function useColors() {
+  // is webkit? http://stackoverflow.com/a/16459606/376773
+  return ('WebkitAppearance' in document.documentElement.style) ||
+    // is firebug? http://stackoverflow.com/a/398120/376773
+    (window.console && (console.firebug || (console.exception && console.table))) ||
+    // is firefox >= v31?
+    // https://developer.mozilla.org/en-US/docs/Tools/Web_Console#Styling_messages
+    (navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/) && parseInt(RegExp.$1, 10) >= 31);
+}
+
+/**
+ * Map %j to `JSON.stringify()`, since no Web Inspectors do that by default.
+ */
+
+exports.formatters.j = function(v) {
+  return JSON.stringify(v);
+};
+
+
+/**
+ * Colorize log arguments if enabled.
+ *
+ * @api public
+ */
+
+function formatArgs() {
+  var args = arguments;
+  var useColors = this.useColors;
+
+  args[0] = (useColors ? '%c' : '')
+    + this.namespace
+    + (useColors ? ' %c' : ' ')
+    + args[0]
+    + (useColors ? '%c ' : ' ')
+    + '+' + exports.humanize(this.diff);
+
+  if (!useColors) return args;
+
+  var c = 'color: ' + this.color;
+  args = [args[0], c, 'color: inherit'].concat(Array.prototype.slice.call(args, 1));
+
+  // the final "%c" is somewhat tricky, because there could be other
+  // arguments passed either before or after the %c, so we need to
+  // figure out the correct index to insert the CSS into
+  var index = 0;
+  var lastC = 0;
+  args[0].replace(/%[a-z%]/g, function(match) {
+    if ('%%' === match) return;
+    index++;
+    if ('%c' === match) {
+      // we only are interested in the *last* %c
+      // (the user may have provided their own)
+      lastC = index;
+    }
+  });
+
+  args.splice(lastC, 0, c);
+  return args;
+}
+
+/**
+ * Invokes `console.log()` when available.
+ * No-op when `console.log` is not a "function".
+ *
+ * @api public
+ */
+
+function log() {
+  // this hackery is required for IE8/9, where
+  // the `console.log` function doesn't have 'apply'
+  return 'object' === typeof console
+    && console.log
+    && Function.prototype.apply.call(console.log, console, arguments);
+}
+
+/**
+ * Save `namespaces`.
+ *
+ * @param {String} namespaces
+ * @api private
+ */
+
+function save(namespaces) {
+  try {
+    if (null == namespaces) {
+      exports.storage.removeItem('debug');
+    } else {
+      exports.storage.debug = namespaces;
+    }
+  } catch(e) {}
+}
+
+/**
+ * Load `namespaces`.
+ *
+ * @return {String} returns the previously persisted debug modes
+ * @api private
+ */
+
+function load() {
+  var r;
+  try {
+    r = exports.storage.debug;
+  } catch(e) {}
+  return r;
+}
+
+/**
+ * Enable namespaces listed in `localStorage.debug` initially.
+ */
+
+exports.enable(load());
+
+/**
+ * Localstorage attempts to return the localstorage.
+ *
+ * This is necessary because safari throws
+ * when a user disables cookies/localstorage
+ * and you attempt to access it.
+ *
+ * @return {LocalStorage}
+ * @api private
+ */
+
+function localstorage(){
+  try {
+    return window.localStorage;
+  } catch (e) {}
+}
+
+
+/***/ }),
+/* 181 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;!function(t,o){ true?!(__WEBPACK_AMD_DEFINE_FACTORY__ = (o),
@@ -39692,7 +44287,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;!function(t,o)
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)):undefined}(this,function(){function t(t){var o={onClose:null,onOpen:null,beforeOpen:null,beforeClose:null,stickyFooter:!1,footer:!1,cssClass:[],closeLabel:"Close",closeMethods:["overlay","button","escape"]};this.opts=r({},o,t),this.init()}function o(){this.modalBoxFooter&&(this.modalBoxFooter.style.width=this.modalBox.clientWidth+"px",this.modalBoxFooter.style.left=this.modalBox.offsetLeft+"px")}function e(){this.modal=document.createElement("div"),this.modal.classList.add("tingle-modal"),0!==this.opts.closeMethods.length&&-1!==this.opts.closeMethods.indexOf("overlay")||this.modal.classList.add("tingle-modal--noOverlayClose"),this.modal.style.display="none",this.opts.cssClass.forEach(function(t){"string"==typeof t&&this.modal.classList.add(t)},this),-1!==this.opts.closeMethods.indexOf("button")&&(this.modalCloseBtn=document.createElement("button"),this.modalCloseBtn.type="button",this.modalCloseBtn.classList.add("tingle-modal__close"),this.modalCloseBtnIcon=document.createElement("span"),this.modalCloseBtnIcon.classList.add("tingle-modal__closeIcon"),this.modalCloseBtnIcon.innerHTML="×",this.modalCloseBtnLabel=document.createElement("span"),this.modalCloseBtnLabel.classList.add("tingle-modal__closeLabel"),this.modalCloseBtnLabel.innerHTML=this.opts.closeLabel,this.modalCloseBtn.appendChild(this.modalCloseBtnIcon),this.modalCloseBtn.appendChild(this.modalCloseBtnLabel)),this.modalBox=document.createElement("div"),this.modalBox.classList.add("tingle-modal-box"),this.modalBoxContent=document.createElement("div"),this.modalBoxContent.classList.add("tingle-modal-box__content"),this.modalBox.appendChild(this.modalBoxContent),-1!==this.opts.closeMethods.indexOf("button")&&this.modal.appendChild(this.modalCloseBtn),this.modal.appendChild(this.modalBox)}function s(){this.modalBoxFooter=document.createElement("div"),this.modalBoxFooter.classList.add("tingle-modal-box__footer"),this.modalBox.appendChild(this.modalBoxFooter)}function i(){this._events={clickCloseBtn:this.close.bind(this),clickOverlay:l.bind(this),resize:this.checkOverflow.bind(this),keyboardNav:n.bind(this)},-1!==this.opts.closeMethods.indexOf("button")&&this.modalCloseBtn.addEventListener("click",this._events.clickCloseBtn),this.modal.addEventListener("mousedown",this._events.clickOverlay),window.addEventListener("resize",this._events.resize),document.addEventListener("keydown",this._events.keyboardNav)}function n(t){-1!==this.opts.closeMethods.indexOf("escape")&&27===t.which&&this.isOpen()&&this.close()}function l(t){-1!==this.opts.closeMethods.indexOf("overlay")&&!d(t.target,"tingle-modal")&&t.clientX<this.modal.clientWidth&&this.close()}function d(t,o){for(;(t=t.parentElement)&&!t.classList.contains(o););return t}function a(){-1!==this.opts.closeMethods.indexOf("button")&&this.modalCloseBtn.removeEventListener("click",this._events.clickCloseBtn),this.modal.removeEventListener("mousedown",this._events.clickOverlay),window.removeEventListener("resize",this._events.resize),document.removeEventListener("keydown",this._events.keyboardNav)}function r(){for(var t=1;t<arguments.length;t++)for(var o in arguments[t])arguments[t].hasOwnProperty(o)&&(arguments[0][o]=arguments[t][o]);return arguments[0]}var h=function(){var t,o=document.createElement("tingle-test-transition"),e={transition:"transitionend",OTransition:"oTransitionEnd",MozTransition:"transitionend",WebkitTransition:"webkitTransitionEnd"};for(t in e)if(void 0!==o.style[t])return e[t]}(),c=!1;return t.prototype.init=function(){if(!this.modal)return e.call(this),i.call(this),document.body.insertBefore(this.modal,document.body.firstChild),this.opts.footer&&this.addFooter(),this},t.prototype._busy=function(t){c=t},t.prototype._isBusy=function(){return c},t.prototype.destroy=function(){null!==this.modal&&(this.isOpen()&&this.close(!0),a.call(this),this.modal.parentNode.removeChild(this.modal),this.modal=null)},t.prototype.isOpen=function(){return!!this.modal.classList.contains("tingle-modal--visible")},t.prototype.open=function(){if(!this._isBusy()){this._busy(!0);var t=this;return"function"==typeof t.opts.beforeOpen&&t.opts.beforeOpen(),this.modal.style.removeProperty?this.modal.style.removeProperty("display"):this.modal.style.removeAttribute("display"),this._scrollPosition=window.pageYOffset,document.body.classList.add("tingle-enabled"),document.body.style.top=-this._scrollPosition+"px",this.setStickyFooter(this.opts.stickyFooter),this.modal.classList.add("tingle-modal--visible"),h?this.modal.addEventListener(h,function o(){"function"==typeof t.opts.onOpen&&t.opts.onOpen.call(t),t.modal.removeEventListener(h,o,!1),t._busy(!1)},!1):("function"==typeof t.opts.onOpen&&t.opts.onOpen.call(t),t._busy(!1)),this.checkOverflow(),this}},t.prototype.close=function(t){if(!this._isBusy()){if(this._busy(!0),t=t||!1,"function"==typeof this.opts.beforeClose){if(!this.opts.beforeClose.call(this))return}document.body.classList.remove("tingle-enabled"),window.scrollTo(0,this._scrollPosition),document.body.style.top=null,this.modal.classList.remove("tingle-modal--visible");var o=this;t?(o.modal.style.display="none","function"==typeof o.opts.onClose&&o.opts.onClose.call(this),o._busy(!1)):h?this.modal.addEventListener(h,function t(){o.modal.removeEventListener(h,t,!1),o.modal.style.display="none","function"==typeof o.opts.onClose&&o.opts.onClose.call(this),o._busy(!1)},!1):(o.modal.style.display="none","function"==typeof o.opts.onClose&&o.opts.onClose.call(this),o._busy(!1))}},t.prototype.setContent=function(t){return"string"==typeof t?this.modalBoxContent.innerHTML=t:(this.modalBoxContent.innerHTML="",this.modalBoxContent.appendChild(t)),this.isOpen()&&this.checkOverflow(),this},t.prototype.getContent=function(){return this.modalBoxContent},t.prototype.addFooter=function(){return s.call(this),this},t.prototype.setFooterContent=function(t){return this.modalBoxFooter.innerHTML=t,this},t.prototype.getFooterContent=function(){return this.modalBoxFooter},t.prototype.setStickyFooter=function(t){return this.isOverflow()||(t=!1),t?this.modalBox.contains(this.modalBoxFooter)&&(this.modalBox.removeChild(this.modalBoxFooter),this.modal.appendChild(this.modalBoxFooter),this.modalBoxFooter.classList.add("tingle-modal-box__footer--sticky"),o.call(this),this.modalBoxContent.style["padding-bottom"]=this.modalBoxFooter.clientHeight+20+"px"):this.modalBoxFooter&&(this.modalBox.contains(this.modalBoxFooter)||(this.modal.removeChild(this.modalBoxFooter),this.modalBox.appendChild(this.modalBoxFooter),this.modalBoxFooter.style.width="auto",this.modalBoxFooter.style.left="",this.modalBoxContent.style["padding-bottom"]="",this.modalBoxFooter.classList.remove("tingle-modal-box__footer--sticky"))),this},t.prototype.addFooterBtn=function(t,o,e){var s=document.createElement("button");return s.innerHTML=t,s.addEventListener("click",e),"string"==typeof o&&o.length&&o.split(" ").forEach(function(t){s.classList.add(t)}),this.modalBoxFooter.appendChild(s),s},t.prototype.resize=function(){console.warn("Resize is deprecated and will be removed in version 1.0")},t.prototype.isOverflow=function(){var t=window.innerHeight;return this.modalBox.clientHeight>=t},t.prototype.checkOverflow=function(){this.modal.classList.contains("tingle-modal--visible")&&(this.isOverflow()?this.modal.classList.add("tingle-modal--overflow"):this.modal.classList.remove("tingle-modal--overflow"),!this.isOverflow()&&this.opts.stickyFooter?this.setStickyFooter(!1):this.isOverflow()&&this.opts.stickyFooter&&(o.call(this),this.setStickyFooter(!0)))},{modal:t}});
 
 /***/ }),
-/* 163 */
+/* 182 */
 /***/ (function(module, exports) {
 
 function _defineProperty(obj, key, value) {
@@ -39713,45 +44308,45 @@ function _defineProperty(obj, key, value) {
 module.exports = _defineProperty;
 
 /***/ }),
-/* 164 */
+/* 183 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(setImmediate) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ChatClient; });
-/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(51);
+/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(36);
 /* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6);
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(16);
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(17);
 /* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(15);
+/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(14);
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(33);
+/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(32);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(9);
+/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(8);
 /* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(4);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(5);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(5);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(6);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_7__);
 /* harmony import */ var _WildEmitter__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(13);
 /* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(0);
 /* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(_common_Events__WEBPACK_IMPORTED_MODULE_9__);
-/* harmony import */ var _Vault__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(81);
-/* harmony import */ var _xhr__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(80);
-/* harmony import */ var _Connector__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(166);
-/* harmony import */ var _MessageQueue__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(110);
-/* harmony import */ var _ArrivalHub__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(169);
+/* harmony import */ var _Vault__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(91);
+/* harmony import */ var _xhr__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(89);
+/* harmony import */ var _Connector__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(185);
+/* harmony import */ var _MessageQueue__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(124);
+/* harmony import */ var _ArrivalHub__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(187);
 /* harmony import */ var _ChatUtility__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(12);
-/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(8);
-/* harmony import */ var _Topic__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(17);
-/* harmony import */ var _Metadata__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(107);
-/* harmony import */ var _Participant__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(262);
-/* harmony import */ var _AttachmentInfo__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(108);
-/* harmony import */ var _ClientSettings__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(45);
+/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(9);
+/* harmony import */ var _Topic__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(19);
+/* harmony import */ var _Metadata__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(122);
+/* harmony import */ var _Participant__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(280);
+/* harmony import */ var _AttachmentInfo__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(71);
+/* harmony import */ var _ClientSettings__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(49);
 /* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(1);
-/* harmony import */ var _TopicJoinAgent__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(170);
-/* harmony import */ var _SendMessageAgent__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(171);
+/* harmony import */ var _TopicJoinAgent__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(188);
+/* harmony import */ var _SendMessageAgent__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(189);
 
 
 
@@ -40603,10 +45198,10 @@ var ChatClient = /*#__PURE__*/function () {
 
   return ChatClient;
 }();
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(71).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(64).setImmediate))
 
 /***/ }),
-/* 165 */
+/* 184 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {exports = module.exports = SemVer
@@ -42206,29 +46801,29 @@ function coerce (version, options) {
     '.' + (match[4] || '0'), options)
 }
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(27)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(18)))
 
 /***/ }),
-/* 166 */
+/* 185 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Connector; });
-/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6);
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(51);
+/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(36);
 /* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(15);
+/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(14);
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(33);
+/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(32);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(9);
+/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(8);
 /* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(4);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(5);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(5);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(6);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(167);
+/* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(90);
 /* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(socket_io_client__WEBPACK_IMPORTED_MODULE_7__);
 /* harmony import */ var _WildEmitter__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(13);
 /* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(0);
@@ -42416,118 +47011,18 @@ var Connector = /*#__PURE__*/function () {
 }();
 
 /***/ }),
-/* 167 */
-/***/ (function(module, exports, __webpack_require__) {
-
-
-/**
- * Module dependencies.
- */
-
-var url = __webpack_require__(237);
-var parser = __webpack_require__(104);
-var Manager = __webpack_require__(153);
-var debug = __webpack_require__(76)('socket.io-client');
-
-/**
- * Module exports.
- */
-
-module.exports = exports = lookup;
-
-/**
- * Managers cache.
- */
-
-var cache = exports.managers = {};
-
-/**
- * Looks up an existing `Manager` for multiplexing.
- * If the user summons:
- *
- *   `io('http://localhost/a');`
- *   `io('http://localhost/b');`
- *
- * We reuse the existing instance based on same scheme/port/host,
- * and we initialize sockets for each namespace.
- *
- * @api public
- */
-
-function lookup (uri, opts) {
-  if (typeof uri === 'object') {
-    opts = uri;
-    uri = undefined;
-  }
-
-  opts = opts || {};
-
-  var parsed = url(uri);
-  var source = parsed.source;
-  var id = parsed.id;
-  var path = parsed.path;
-  var sameNamespace = cache[id] && path in cache[id].nsps;
-  var newConnection = opts.forceNew || opts['force new connection'] ||
-                      false === opts.multiplex || sameNamespace;
-
-  var io;
-
-  if (newConnection) {
-    debug('ignoring socket cache for %s', source);
-    io = Manager(source, opts);
-  } else {
-    if (!cache[id]) {
-      debug('new io instance for %s', source);
-      cache[id] = Manager(source, opts);
-    }
-    io = cache[id];
-  }
-  if (parsed.query && !opts.query) {
-    opts.query = parsed.query;
-  }
-  return io.socket(parsed.path, opts);
-}
-
-/**
- * Protocol version.
- *
- * @api public
- */
-
-exports.protocol = parser.protocol;
-
-/**
- * `connect`.
- *
- * @param {String} uri
- * @api public
- */
-
-exports.connect = lookup;
-
-/**
- * Expose constructors for standalone build.
- *
- * @api public
- */
-
-exports.Manager = __webpack_require__(153);
-exports.Socket = __webpack_require__(159);
-
-
-/***/ }),
-/* 168 */
+/* 186 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(setImmediate) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Lock; });
-/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(51);
+/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(36);
 /* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(15);
+/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(14);
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(4);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(5);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(5);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(6);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _WildEmitter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(13);
 
@@ -42587,15 +47082,15 @@ var Lock = /*#__PURE__*/function () {
 
   return Lock;
 }();
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(71).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(64).setImmediate))
 
 /***/ }),
-/* 169 */
+/* 187 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ArrivalHub; });
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _WildEmitter__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(13);
 
@@ -42629,21 +47124,21 @@ var ArrivalHub = function ArrivalHub(connector) {
 };
 
 /***/ }),
-/* 170 */
+/* 188 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return TopicJoinAgent; });
-/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(38);
+/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(35);
 /* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(4);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(5);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(6);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(1);
-/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(8);
+/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(9);
 /* harmony import */ var _WildEmitter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(13);
-/* harmony import */ var _Topic__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(17);
+/* harmony import */ var _Topic__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(19);
 /* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(0);
 /* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_common_Events__WEBPACK_IMPORTED_MODULE_7__);
 /* harmony import */ var _ChatUtility__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(12);
@@ -42815,33 +47310,82 @@ var TopicJoinAgent = /*#__PURE__*/function () {
 }();
 
 /***/ }),
-/* 171 */
+/* 189 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return SendMessageAgent; });
-/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6);
-/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(40);
-/* harmony import */ var core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(41);
-/* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(16);
-/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(33);
-/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(9);
-/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(4);
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(5);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var _ChatMessage__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(46);
-/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(8);
-/* harmony import */ var _common_IError__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(2);
-/* harmony import */ var _Topic__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(17);
-/* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(0);
-/* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(_common_Events__WEBPACK_IMPORTED_MODULE_12__);
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, "a", function() { return /* binding */ SendMessageAgent_SendMessageAgent; });
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.promise.js
+var es6_promise = __webpack_require__(36);
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.object.to-string.js
+var es6_object_to_string = __webpack_require__(14);
+
+// EXTERNAL MODULE: ./node_modules/@babel/runtime/regenerator/index.js
+var regenerator = __webpack_require__(2);
+var regenerator_default = /*#__PURE__*/__webpack_require__.n(regenerator);
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es7.symbol.async-iterator.js
+var es7_symbol_async_iterator = __webpack_require__(42);
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.symbol.js
+var es6_symbol = __webpack_require__(43);
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/web.dom.iterable.js
+var web_dom_iterable = __webpack_require__(17);
+
+// EXTERNAL MODULE: ./node_modules/regenerator-runtime/runtime.js
+var runtime = __webpack_require__(32);
+
+// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/asyncToGenerator.js
+var asyncToGenerator = __webpack_require__(8);
+var asyncToGenerator_default = /*#__PURE__*/__webpack_require__.n(asyncToGenerator);
+
+// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/classCallCheck.js
+var classCallCheck = __webpack_require__(5);
+var classCallCheck_default = /*#__PURE__*/__webpack_require__.n(classCallCheck);
+
+// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/createClass.js
+var createClass = __webpack_require__(6);
+var createClass_default = /*#__PURE__*/__webpack_require__.n(createClass);
+
+// EXTERNAL MODULE: ./client/src/js/lib/ChatMessage.js
+var ChatMessage = __webpack_require__(50);
+
+// EXTERNAL MODULE: ./client/src/js/lib/Message.js
+var Message = __webpack_require__(9);
+
+// EXTERNAL MODULE: ./common/IError.js
+var IError = __webpack_require__(3);
+
+// EXTERNAL MODULE: ./client/src/js/lib/Topic.js
+var Topic = __webpack_require__(19);
+
+// EXTERNAL MODULE: ./common/Events.js
+var Events = __webpack_require__(0);
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.typed.uint8-array.js
+var es6_typed_uint8_array = __webpack_require__(109);
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.split.js
+var es6_regexp_split = __webpack_require__(35);
+
+// EXTERNAL MODULE: ./client/src/js/lib/iCrypto.js
+var iCrypto = __webpack_require__(1);
+
+// EXTERNAL MODULE: ./node_modules/socket.io-client/lib/index.js
+var lib = __webpack_require__(90);
+
+// EXTERNAL MODULE: ./client/src/js/lib/WildEmitter.js
+var WildEmitter = __webpack_require__(13);
+
+// EXTERNAL MODULE: ./node_modules/socket.io-stream/index.js
+var socket_io_stream = __webpack_require__(72);
+
+// CONCATENATED MODULE: ./client/src/js/lib/FileWorker.js
 
 
 
@@ -42855,12 +47399,480 @@ var TopicJoinAgent = /*#__PURE__*/function () {
 
 
 
-var SendMessageAgent = /*#__PURE__*/function () {
+var FileWorker_FileWorker = /*#__PURE__*/function () {
+  function FileWorker(transport) {
+    classCallCheck_default()(this, FileWorker);
+
+    console.log("Downloader initialized non-worker"); // can be 1 - websocket or 0 - xhr
+
+    this.transport = transport;
+    WildEmitter["a" /* WildEmitter */].mixin(this);
+  }
+
+  createClass_default()(FileWorker, [{
+    key: "processMessage",
+    value: function processMessage(msg) {
+      console.log("Processing message from main thread..");
+      commandHandlers[msg.command](msg.data);
+    }
+  }, {
+    key: "parseFileLink",
+    value: function parseFileLink(link) {
+      var ic = new iCrypto["a" /* iCrypto */]();
+      ic.addBlob('l', link).base64Decode("l", "ls");
+      var parsed = ic.get("ls");
+      var splitted = parsed.split("/");
+      return {
+        onion: splitted[0],
+        pkfp: splitted[1],
+        name: splitted[2]
+      };
+    }
+  }, {
+    key: "postMessage",
+    value: function postMessage(data) {
+      this.emit("message", {
+        data: data
+      });
+    }
+    /**
+    * Concatenates 2 buffers
+    * @param buffer1
+    * @param buffer2
+    * @returns {ArrayBufferLike}
+    */
+
+  }, {
+    key: "appendBuffer",
+    value: function appendBuffer(buffer1, buffer2) {
+      var tmp = new Uint8Array(buffer1.byteLength + buffer2.byteLength);
+      tmp.set(new Uint8Array(buffer1), 0);
+      tmp.set(new Uint8Array(buffer2), buffer1.byteLength);
+      return tmp.buffer;
+    }
+  }, {
+    key: "uploadFile",
+    value: function uploadFile(data) {
+      var self = this;
+      var attachment = data.attachment;
+      var pkfp = data.pkfp;
+      var privK = data.privk;
+      var symk = data.symk;
+      this.processUpload(attachment, pkfp, privK, symk).then(function (data) {
+        console.log("Upload resolved successfully!");
+        self.postMessage(data);
+      }).catch(function (err) {
+        console.log("File upload error: ".concat(err));
+        self.postMessage({
+          message: "upload_error",
+          data: err
+        });
+      });
+    }
+    /**
+    * Uploads and encrypts a file to the Island and
+    * calculates encrypted and unencrypted hashes
+    * @param attachment
+    * @param pkfp
+    * @param privK
+    * @param symk
+    * @param fileSocket
+    * @returns {Promise<any>}
+    */
+
+  }, {
+    key: "processUpload",
+    value: function processUpload(file, pkfp, privK, symk) {
+      var _this = this;
+
+      var self = this;
+      return new Promise( /*#__PURE__*/function () {
+        var _ref = asyncToGenerator_default()( /*#__PURE__*/regenerator_default.a.mark(function _callee(resolve, reject) {
+          var fileSocket, stream, offset, bufferSize, fileSize, ic, errorEventHandler, readEventHandler, chunkReaderBlock, handleBlock;
+          return regenerator_default.a.wrap(function _callee$(_context) {
+            while (1) {
+              switch (_context.prev = _context.next) {
+                case 0:
+                  self.postMessage({
+                    message: "log",
+                    data: "Processing upload"
+                  });
+                  _context.prev = 1;
+                  _context.next = 4;
+                  return _this.establishConnection();
+
+                case 4:
+                  fileSocket = _context.sent;
+                  _context.next = 10;
+                  break;
+
+                case 7:
+                  _context.prev = 7;
+                  _context.t0 = _context["catch"](1);
+                  reject("Connection error: " + _context.t0);
+
+                case 10:
+                  stream = socket_io_stream["createStream"]();
+                  self.postMessage({
+                    message: "log",
+                    data: "Uploading and encrypting chunk by chunk"
+                  });
+                  offset = 0;
+                  bufferSize = 1024 * 64;
+                  fileSize = file.size;
+                  ic = new iCrypto["a" /* iCrypto */]();
+                  ic.ssym.init("cha", symk).createHash("unenc") //hash of unencrypted
+                  .createHash("enc") //has of encrypted
+                  .createNonce("nonce", 8).asym.setKey("privk", privK, "private").privateKeySign("nonce", "privk", "sign").bytesToHex("nonce", "noncehex");
+                  console.log("NONCE: " + ic.get('noncehex'));
+                  fileSocket.on("invalid_request", function () {
+                    reject("Upload request is invalid");
+                  });
+                  /**
+                  * Emited by Island after file has been successfully written,
+                  * renamed and saved.
+                  * Closing connection, notifying main thread.
+                  */
+
+                  fileSocket.on("upload_success", function () {
+                    self.postMessage({
+                      message: "log",
+                      data: "Upload successful"
+                    });
+                    fileSocket.disconnect();
+                    resolve({
+                      message: "upload_complete",
+                      data: {
+                        hashEncrypted: ic.get("encres"),
+                        hashUnencrypted: ic.get("unencres")
+                      }
+                    });
+                  });
+                  fileSocket.on("upload_ready", function () {
+                    console.log("received upload_ready. Pumping data");
+                    chunkReaderBlock(offset, bufferSize, file);
+                  });
+                  fileSocket.on("upload_error", function (err) {
+                    reject(err);
+                  });
+                  /**
+                  * Event emited by Island after hash received
+                  * and file is ready to be renamed
+                  */
+
+                  fileSocket.on("end_stream", function () {
+                    stream.end();
+                  });
+
+                  errorEventHandler = function errorEventHandler(ev) {
+                    console.error("Error processing upload: " + ev.target.error);
+                    reject(ev.target.error);
+                  };
+
+                  readEventHandler = function readEventHandler(ev) {
+                    if (ev.target.error === null) {
+                      offset = Math.min(offset + bufferSize, fileSize);
+                      handleBlock(ev.target.result);
+                    } else {
+                      reject("Read error: " + ev.target.error);
+                      return;
+                    }
+
+                    if (offset >= fileSize) {
+                      ic.digestHash("unenc", "unencres");
+                      ic.digestHash("enc", "encres");
+                      ic.asym.sign("unencres", "privk", "unencressign");
+                      fileSocket.emit("finalize_upload", {
+                        hashUnencrypted: ic.get("unencres")
+                      });
+                      return;
+                    }
+
+                    chunkReaderBlock(offset, bufferSize, file);
+                  };
+
+                  chunkReaderBlock = function chunkReaderBlock(_offset, bufferSize, _file) {
+                    var reader = new FileReader();
+                    var upperBound = Math.min(_offset + bufferSize, fileSize);
+
+                    var blob = _file.slice(_offset, upperBound);
+
+                    reader.onload = readEventHandler;
+                    reader.onerror = errorEventHandler;
+                    reader.readAsArrayBuffer(blob);
+                  };
+
+                  handleBlock = function handleBlock(chunk) {
+                    ic.updateHash("unenc", chunk);
+                    var encrypted = ic.ssym.encrypt("cha", chunk);
+                    ic.updateHash("enc", encrypted);
+                    var b = new socket_io_stream["Buffer"](encrypted);
+                    stream.write(b);
+                  };
+                  /**
+                  * Initializing file upload
+                  */
+
+
+                  socket_io_stream(fileSocket).emit('upload_attachment', stream, {
+                    pkfp: pkfp,
+                    nonce: ic.get("noncehex"),
+                    sign: ic.get("sign")
+                  });
+
+                case 28:
+                case "end":
+                  return _context.stop();
+              }
+            }
+          }, _callee, null, [[1, 7]]);
+        }));
+
+        return function (_x, _x2) {
+          return _ref.apply(this, arguments);
+        };
+      }());
+    }
+  }, {
+    key: "downloadFile",
+    value: function downloadFile(data) {
+      var _this2 = this;
+
+      this.processDownload(data).then(function (dataBuffer) {
+        _this2.postMessage({
+          message: "download_complete",
+          data: dataBuffer
+        });
+
+        console.log("Stream finished");
+      }).catch(function (err) {
+        console.log("Error downloading file: " + err);
+
+        _this2.postMessage({
+          message: "download_failed",
+          data: err
+        });
+      });
+    }
+  }, {
+    key: "processDownload",
+    value: function processDownload(data) {
+      var _this3 = this;
+
+      var self = this;
+      return new Promise( /*#__PURE__*/function () {
+        var _ref2 = asyncToGenerator_default()( /*#__PURE__*/regenerator_default.a.mark(function _callee2(resolve, reject) {
+          var fileInfo, link, myPkfp, privk, ownerPubk, metaID, fileSocket;
+          return regenerator_default.a.wrap(function _callee2$(_context2) {
+            while (1) {
+              switch (_context2.prev = _context2.next) {
+                case 0:
+                  console.log("Initializing file download");
+                  fileInfo = JSON.parse(data.fileInfo);
+                  link = self.parseFileLink(fileInfo.link);
+                  myPkfp = data.myPkfp;
+                  privk = data.privk;
+                  ownerPubk = data.pubk;
+                  metaID = fileInfo.metaID;
+                  _context2.prev = 7;
+                  _context2.next = 10;
+                  return _this3.establishConnection();
+
+                case 10:
+                  fileSocket = _context2.sent;
+                  _context2.next = 16;
+                  break;
+
+                case 13:
+                  _context2.prev = 13;
+                  _context2.t0 = _context2["catch"](7);
+                  reject("Connection error: " + _context2.t0);
+
+                case 16:
+                  /**
+                  * event triggered by Island when file is ready to be transferred to the client
+                  * key is encrypted shared SYM key to decrypt file
+                  */
+                  fileSocket.on("download_ready", function (key) {
+                    //prepare file
+                    self.postMessage({
+                      message: "file_available_locally"
+                    });
+                    var symk = key[metaID];
+                    var dataBuffer = new ArrayBuffer(0);
+                    socket_io_stream(fileSocket).on("file", function (stream) {
+                      console.log("File download in progress!");
+                      var ic = new iCrypto["a" /* iCrypto */]();
+                      ic.addBlob("k", symk).asym.setKey("privk", privk, "private").asym.decrypt("k", "privk", "symk", "hex");
+                      ic.createHash("h");
+                      ic.ssym.init("stc", ic.get("symk"), false);
+                      stream.on('data', function (data) {
+                        self.postMessage({
+                          message: "log",
+                          data: "Received data chunk"
+                        });
+                        var chunk = ic.ssym.decrypt("stc", data.buffer);
+                        ic.updateHash("h", new Uint8Array(chunk));
+                        dataBuffer = iCrypto["a" /* iCrypto */].concatArrayBuffers(dataBuffer, chunk);
+                      });
+                      stream.on('end', function () {
+                        self.postMessage({
+                          message: "log",
+                          data: "Received end of data message"
+                        });
+                        ic.digestHash("h", "hres").addBlob("sign", fileInfo.signUnencrypted).asym.setKey("pubk", ownerPubk, "public").asym.verify("hres", "sign", "pubk", "vres");
+
+                        if (!ic.get("vres")) {
+                          reject("File validation error!");
+                        } else {
+                          self.postMessage({
+                            message: "log",
+                            data: "Resolving data..."
+                          });
+                          resolve(dataBuffer);
+                        }
+                      });
+                    }); //create stream
+                    //emit
+
+                    console.log("About to emit process_download");
+                    fileSocket.emit("proceed_download", {
+                      link: link,
+                      pkfp: myPkfp
+                    });
+                  });
+                  fileSocket.on("requesting_peer", function () {
+                    console.log("File not found locally, requesting hidden peer");
+                    self.postMessage({
+                      message: "requesting_peer"
+                    });
+                  });
+                  fileSocket.on("download_failed", function (err) {
+                    console.log("File download fail: " + err);
+                    self.postMessage({
+                      message: "download_failed",
+                      data: err
+                    });
+                  });
+                  fileSocket.emit("download_attachment", {
+                    link: link,
+                    myPkfp: myPkfp,
+                    metaID: fileInfo.metaID,
+                    hashEncrypted: fileInfo.hashEncrypted,
+                    signEncrypted: fileInfo.signEncrypted
+                  });
+
+                case 20:
+                case "end":
+                  return _context2.stop();
+              }
+            }
+          }, _callee2, null, [[7, 13]]);
+        }));
+
+        return function (_x3, _x4) {
+          return _ref2.apply(this, arguments);
+        };
+      }());
+    }
+  }, {
+    key: "establishConnection",
+    value: function establishConnection() {
+      var self = this;
+      return new Promise(function (resolve, reject) {
+        console.log("Connecting to file socket...");
+        var maxAttempts = 5;
+        var reconnectionDelay = 5000; //ms
+
+        var attempted = 0;
+        self.postMessage({
+          message: "log",
+          data: "Connecting to file socket..."
+        });
+        var socketConfig = {
+          autoConnect: false,
+          reconnection: false,
+          pingInterval: 10000,
+          pingTimeout: 5000
+        };
+        socketConfig.upgrade = self.transport > 0;
+        var fileSocket = lib('/file', socketConfig);
+
+        var attemptConnection = function attemptConnection() {
+          self.postMessage({
+            message: "log",
+            data: "Attempting connection: " + attempted
+          });
+          fileSocket.open();
+        };
+
+        var connectionFailHandler = function connectionFailHandler(err) {
+          if (attempted < maxAttempts) {
+            var msg = "Connection error on attempt ".concat(attempted, ": ").concat(err);
+            self.postMessage({
+              message: "log",
+              data: msg
+            });
+            attempted++;
+            setTimeout(attemptConnection, reconnectionDelay);
+          } else {
+            var _msg = "Connection error on attempt ".concat(attempted, ": ").concat(err, "\nRejecting!");
+
+            self.postMessage({
+              message: "log",
+              data: _msg
+            });
+            reject(err);
+          }
+        };
+
+        fileSocket.on("connect", function () {
+          self.postMessage({
+            message: "log",
+            data: "File transfer connection established"
+          });
+          resolve(fileSocket);
+        });
+        fileSocket.on("connect_error", function (err) {
+          connectionFailHandler(err);
+        });
+        fileSocket.on("connect_timeout", function () {
+          connectionFailHandler("Connection timeout.");
+        });
+        attemptConnection();
+      });
+    }
+  }]);
+
+  return FileWorker;
+}();
+// EXTERNAL MODULE: ./client/src/js/lib/AttachmentInfo.js
+var AttachmentInfo = __webpack_require__(71);
+
+// CONCATENATED MODULE: ./client/src/js/lib/SendMessageAgent.js
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var SendMessageAgent_SendMessageAgent = /*#__PURE__*/function () {
   function SendMessageAgent(topic, msg, recipient, files) {
-    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_6___default()(this, SendMessageAgent);
+    classCallCheck_default()(this, SendMessageAgent);
 
-    Object(_common_IError__WEBPACK_IMPORTED_MODULE_10__[/* assert */ "b"])(topic instanceof _Topic__WEBPACK_IMPORTED_MODULE_11__[/* Topic */ "a"]);
-    Object(_common_IError__WEBPACK_IMPORTED_MODULE_10__[/* assert */ "b"])(msg);
+    Object(IError["b" /* assert */])(topic instanceof Topic["a" /* Topic */]);
+    Object(IError["b" /* assert */])(msg);
     this.private = recipient && recipient !== "ALL";
     this.recipient = recipient;
     this.topic = topic;
@@ -42869,14 +47881,14 @@ var SendMessageAgent = /*#__PURE__*/function () {
     this.chatMessage = this.prepareMessage(this.version, msg, recipient);
   }
 
-  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_7___default()(SendMessageAgent, [{
+  createClass_default()(SendMessageAgent, [{
     key: "send",
     value: function send() {
       var self = this;
-      setTimeout( /*#__PURE__*/_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_5___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+      setTimeout( /*#__PURE__*/asyncToGenerator_default()( /*#__PURE__*/regenerator_default.a.mark(function _callee() {
         var attachmentsInfo, metaID, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, att, message, currentTime;
 
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+        return regenerator_default.a.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
@@ -42888,7 +47900,7 @@ var SendMessageAgent = /*#__PURE__*/function () {
                 }
 
                 _context.next = 4;
-                return self.uploadAttachments(filesAttached, chatMessage.header.id, metaID);
+                return self.uploadAttachments(self.files, self.chatMessage.header.id, metaID);
 
               case 4:
                 attachmentsInfo = _context.sent;
@@ -42899,7 +47911,7 @@ var SendMessageAgent = /*#__PURE__*/function () {
 
                 for (_iterator = attachmentsInfo[Symbol.iterator](); !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                   att = _step.value;
-                  chatMessage.addAttachmentInfo(att);
+                  self.chatMessage.addAttachmentInfo(att);
                 }
 
                 _context.next = 16;
@@ -42939,9 +47951,9 @@ var SendMessageAgent = /*#__PURE__*/function () {
                 self.chatMessage.encryptMessage(self.topic.sharedKey);
                 self.chatMessage.sign(self.topic.privateKey); //Preparing request
 
-                message = new _Message__WEBPACK_IMPORTED_MODULE_9__[/* Message */ "a"](self.version);
+                message = new Message["a" /* Message */](self.version);
                 message.headers.pkfpSource = self.topic.pkfp;
-                message.headers.command = self.private ? _common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].SEND_MESSAGE : _common_Events__WEBPACK_IMPORTED_MODULE_12__["Internal"].BROADCAST_MESSAGE;
+                message.headers.command = self.private ? Events["Internal"].SEND_MESSAGE : Events["Internal"].BROADCAST_MESSAGE;
                 message.body.message = self.chatMessage.toBlob();
                 currentTime = new Date().getTime();
                 message.travelLog = {};
@@ -42962,9 +47974,9 @@ var SendMessageAgent = /*#__PURE__*/function () {
   }, {
     key: "prepareMessage",
     value: function prepareMessage(version, messageContent, recipient) {
-      Object(_common_IError__WEBPACK_IMPORTED_MODULE_10__[/* assert */ "b"])(version !== undefined && version !== "", "Chat message initialization error: Version is required");
+      Object(IError["b" /* assert */])(version !== undefined && version !== "", "Chat message initialization error: Version is required");
       console.log("Preparing message: ".concat(version, ", ").concat(messageContent, ", ").concat(recipient));
-      var chatMessage = new _ChatMessage__WEBPACK_IMPORTED_MODULE_8__[/* ChatMessage */ "a"]();
+      var chatMessage = new ChatMessage["a" /* ChatMessage */]();
       chatMessage.version = version;
       chatMessage.header.metadataID = this.topic.metadataId;
       console.log("Metadata id is set to ".concat(chatMessage.header.metadataID));
@@ -42975,16 +47987,156 @@ var SendMessageAgent = /*#__PURE__*/function () {
       chatMessage.body = messageContent;
       return chatMessage;
     }
+    /**
+     * Takes list of files and uploads them
+     * to the Island asynchronously.
+     *
+     * Resolves with list of fileInfo JSON objects.
+     * @param filesAttached list of files each type of File
+     * @return Promise
+     */
+
   }, {
     key: "uploadAttachments",
-    value: function uploadAttachments() {}
+    value: function uploadAttachments(filesAttached, messageID, metaID) {
+      var _this = this;
+
+      return new Promise( /*#__PURE__*/function () {
+        var _ref2 = asyncToGenerator_default()( /*#__PURE__*/regenerator_default.a.mark(function _callee2(resolve, reject) {
+          var self, filesProcessed, pkfp, privk, symk, residence, _iteratorNormalCompletion2, _didIteratorError2, _iteratorError2, _iterator2, _step2, file;
+
+          return regenerator_default.a.wrap(function _callee2$(_context2) {
+            while (1) {
+              switch (_context2.prev = _context2.next) {
+                case 0:
+                  self = _this;
+                  filesProcessed = [];
+                  pkfp = self.topic.pkfp;
+                  privk = self.topic.privateKey;
+                  symk = self.topic.sharedKey;
+                  residence = self.topic.participants[pkfp].residence;
+                  _iteratorNormalCompletion2 = true;
+                  _didIteratorError2 = false;
+                  _iteratorError2 = undefined;
+                  _context2.prev = 9;
+
+                  for (_iterator2 = filesAttached[Symbol.iterator](); !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                    file = _step2.value;
+                    console.log("Calling worker function");
+                    filesProcessed.push(self.uploadAttachmentDefault(file, pkfp, privk, symk, messageID, metaID, residence));
+                  }
+
+                  _context2.next = 17;
+                  break;
+
+                case 13:
+                  _context2.prev = 13;
+                  _context2.t0 = _context2["catch"](9);
+                  _didIteratorError2 = true;
+                  _iteratorError2 = _context2.t0;
+
+                case 17:
+                  _context2.prev = 17;
+                  _context2.prev = 18;
+
+                  if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
+                    _iterator2.return();
+                  }
+
+                case 20:
+                  _context2.prev = 20;
+
+                  if (!_didIteratorError2) {
+                    _context2.next = 23;
+                    break;
+                  }
+
+                  throw _iteratorError2;
+
+                case 23:
+                  return _context2.finish(20);
+
+                case 24:
+                  return _context2.finish(17);
+
+                case 25:
+                  Promise.all(filesProcessed).then(function (fileInfo) {
+                    resolve(fileInfo);
+                  }).catch(function () {
+                    console.log("ERROR DURING UPLOAD ATTACHMENTS");
+                    reject();
+                  });
+
+                case 26:
+                case "end":
+                  return _context2.stop();
+              }
+            }
+          }, _callee2, null, [[9, 13, 17, 25], [18,, 20, 24]]);
+        }));
+
+        return function (_x, _x2) {
+          return _ref2.apply(this, arguments);
+        };
+      }());
+    }
+    /**
+     * Uploads single attachment without workers asyncronously
+     *
+     */
+
+  }, {
+    key: "uploadAttachmentDefault",
+    value: function uploadAttachmentDefault(file, pkfp, privk, symk, messageID, metaID, residence) {
+      var self = this;
+      return new Promise(function (resolve, reject) {
+        console.log("Initializing worker...");
+        var uploader = new FileWorker_FileWorker(0);
+
+        var uploadComplete = function uploadComplete(msg) {
+          var fileInfo = new AttachmentInfo["a" /* AttachmentInfo */](file, residence, pkfp, metaID, privk, messageID, msg.hashEncrypted, msg.hashUnencrypted);
+          resolve(fileInfo);
+        };
+
+        var uploadProgress = function uploadProgress(msg) {
+          //TODO implement event handling
+          console.log("Upload progress: " + msg);
+        };
+
+        var logMessage = function logMessage(msg) {
+          console.log("WORKER LOG: " + msg);
+        };
+
+        var uploadError = function uploadError(msg) {
+          console.log("Upload attachment error: ".concat(msg.data));
+          reject(msg.data);
+        };
+
+        var messageHandlers = {
+          "upload_complete": uploadComplete,
+          "upload_progress": uploadProgress,
+          "upload_error": uploadError,
+          "log": logMessage
+        };
+        uploader.on("message", function (data) {
+          var msg = data.data;
+          messageHandlers[msg.message](msg.data);
+        });
+        uploader.uploadFile({
+          attachment: file,
+          pkfp: pkfp,
+          privk: privk,
+          symk: symk
+        });
+      });
+    }
   }]);
 
   return SendMessageAgent;
 }();
 
 /***/ }),
-/* 172 */
+/* 190 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -43719,15 +48871,15 @@ try {
 
 
 /***/ }),
-/* 173 */
+/* 191 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var $export = __webpack_require__(24);
-var aFunction = __webpack_require__(55);
-var toObject = __webpack_require__(26);
-var fails = __webpack_require__(21);
+var $export = __webpack_require__(26);
+var aFunction = __webpack_require__(58);
+var toObject = __webpack_require__(28);
+var fails = __webpack_require__(23);
 var $sort = [].sort;
 var test = [1, 2, 3];
 
@@ -43738,7 +48890,7 @@ $export($export.P + $export.F * (fails(function () {
   // V8 bug
   test.sort(null);
   // Old WebKit
-}) || !__webpack_require__(175)($sort)), 'Array', {
+}) || !__webpack_require__(193)($sort)), 'Array', {
   // 22.1.3.25 Array.prototype.sort(comparefn)
   sort: function sort(comparefn) {
     return comparefn === undefined
@@ -43749,19 +48901,19 @@ $export($export.P + $export.F * (fails(function () {
 
 
 /***/ }),
-/* 174 */
+/* 192 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(65)('native-function-to-string', Function.toString);
+module.exports = __webpack_require__(74)('native-function-to-string', Function.toString);
 
 
 /***/ }),
-/* 175 */
+/* 193 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var fails = __webpack_require__(21);
+var fails = __webpack_require__(23);
 
 module.exports = function (method, arg) {
   return !!method && fails(function () {
@@ -43772,12 +48924,12 @@ module.exports = function (method, arg) {
 
 
 /***/ }),
-/* 176 */
+/* 194 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.2.8 IsRegExp(argument)
-var isObject = __webpack_require__(25);
-var cof = __webpack_require__(49);
+var isObject = __webpack_require__(27);
+var cof = __webpack_require__(53);
 var MATCH = __webpack_require__(11)('match');
 module.exports = function (it) {
   var isRegExp;
@@ -43786,11 +48938,11 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 177 */
+/* 195 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var toInteger = __webpack_require__(39);
-var defined = __webpack_require__(66);
+var toInteger = __webpack_require__(41);
+var defined = __webpack_require__(75);
 // true  -> String#at
 // false -> String#codePointAt
 module.exports = function (TO_STRING) {
@@ -43809,13 +48961,13 @@ module.exports = function (TO_STRING) {
 
 
 /***/ }),
-/* 178 */
+/* 196 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var regexpExec = __webpack_require__(84);
-__webpack_require__(24)({
+var regexpExec = __webpack_require__(94);
+__webpack_require__(26)({
   target: 'RegExp',
   proto: true,
   forced: regexpExec !== /./.exec
@@ -43825,18 +48977,18 @@ __webpack_require__(24)({
 
 
 /***/ }),
-/* 179 */
+/* 197 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var anObject = __webpack_require__(14);
-var sameValue = __webpack_require__(180);
-var regExpExec = __webpack_require__(83);
+var anObject = __webpack_require__(15);
+var sameValue = __webpack_require__(198);
+var regExpExec = __webpack_require__(93);
 
 // @@search logic
-__webpack_require__(86)('search', 1, function (defined, SEARCH, $search, maybeCallNative) {
+__webpack_require__(96)('search', 1, function (defined, SEARCH, $search, maybeCallNative) {
   return [
     // `String.prototype.search` method
     // https://tc39.github.io/ecma262/#sec-string.prototype.search
@@ -43863,7 +49015,7 @@ __webpack_require__(86)('search', 1, function (defined, SEARCH, $search, maybeCa
 
 
 /***/ }),
-/* 180 */
+/* 198 */
 /***/ (function(module, exports) {
 
 // 7.2.9 SameValue(x, y)
@@ -43874,29 +49026,29 @@ module.exports = Object.is || function is(x, y) {
 
 
 /***/ }),
-/* 181 */
+/* 199 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 21.2.5.3 get RegExp.prototype.flags()
-if (__webpack_require__(20) && /./g.flags != 'g') __webpack_require__(19).f(RegExp.prototype, 'flags', {
+if (__webpack_require__(22) && /./g.flags != 'g') __webpack_require__(21).f(RegExp.prototype, 'flags', {
   configurable: true,
-  get: __webpack_require__(85)
+  get: __webpack_require__(95)
 });
 
 
 /***/ }),
-/* 182 */
+/* 200 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var META = __webpack_require__(35)('meta');
-var isObject = __webpack_require__(25);
-var has = __webpack_require__(31);
-var setDesc = __webpack_require__(19).f;
+var META = __webpack_require__(38)('meta');
+var isObject = __webpack_require__(27);
+var has = __webpack_require__(34);
+var setDesc = __webpack_require__(21).f;
 var id = 0;
 var isExtensible = Object.isExtensible || function () {
   return true;
 };
-var FREEZE = !__webpack_require__(21)(function () {
+var FREEZE = !__webpack_require__(23)(function () {
   return isExtensible(Object.preventExtensions({}));
 });
 var setMeta = function (it) {
@@ -43944,13 +49096,13 @@ var meta = module.exports = {
 
 
 /***/ }),
-/* 183 */
+/* 201 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // all enumerable object keys, includes symbols
-var getKeys = __webpack_require__(69);
-var gOPS = __webpack_require__(90);
-var pIE = __webpack_require__(91);
+var getKeys = __webpack_require__(78);
+var gOPS = __webpack_require__(100);
+var pIE = __webpack_require__(101);
 module.exports = function (it) {
   var result = getKeys(it);
   var getSymbols = gOPS.f;
@@ -43965,14 +49117,14 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 184 */
+/* 202 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var dP = __webpack_require__(19);
-var anObject = __webpack_require__(14);
-var getKeys = __webpack_require__(69);
+var dP = __webpack_require__(21);
+var anObject = __webpack_require__(15);
+var getKeys = __webpack_require__(78);
 
-module.exports = __webpack_require__(20) ? Object.defineProperties : function defineProperties(O, Properties) {
+module.exports = __webpack_require__(22) ? Object.defineProperties : function defineProperties(O, Properties) {
   anObject(O);
   var keys = getKeys(Properties);
   var length = keys.length;
@@ -43984,12 +49136,12 @@ module.exports = __webpack_require__(20) ? Object.defineProperties : function de
 
 
 /***/ }),
-/* 185 */
+/* 203 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // fallback for IE11 buggy Object.getOwnPropertyNames with iframe and window
-var toIObject = __webpack_require__(42);
-var gOPN = __webpack_require__(58).f;
+var toIObject = __webpack_require__(44);
+var gOPN = __webpack_require__(61).f;
 var toString = {}.toString;
 
 var windowNames = typeof window == 'object' && window && Object.getOwnPropertyNames
@@ -44009,7 +49161,7 @@ module.exports.f = function getOwnPropertyNames(it) {
 
 
 /***/ }),
-/* 186 */
+/* 204 */
 /***/ (function(module, exports) {
 
 module.exports = function (done, value) {
@@ -44018,19 +49170,19 @@ module.exports = function (done, value) {
 
 
 /***/ }),
-/* 187 */
+/* 205 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var LIBRARY = __webpack_require__(36);
-var $export = __webpack_require__(24);
-var redefine = __webpack_require__(30);
-var hide = __webpack_require__(18);
-var Iterators = __webpack_require__(50);
-var $iterCreate = __webpack_require__(188);
-var setToStringTag = __webpack_require__(57);
-var getPrototypeOf = __webpack_require__(121);
+var LIBRARY = __webpack_require__(39);
+var $export = __webpack_require__(26);
+var redefine = __webpack_require__(33);
+var hide = __webpack_require__(20);
+var Iterators = __webpack_require__(54);
+var $iterCreate = __webpack_require__(206);
+var setToStringTag = __webpack_require__(60);
+var getPrototypeOf = __webpack_require__(135);
 var ITERATOR = __webpack_require__(11)('iterator');
 var BUGGY = !([].keys && 'next' in [].keys()); // Safari has buggy iterators w/o `next`
 var FF_ITERATOR = '@@iterator';
@@ -44094,18 +49246,18 @@ module.exports = function (Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCE
 
 
 /***/ }),
-/* 188 */
+/* 206 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var create = __webpack_require__(92);
-var descriptor = __webpack_require__(48);
-var setToStringTag = __webpack_require__(57);
+var create = __webpack_require__(102);
+var descriptor = __webpack_require__(52);
+var setToStringTag = __webpack_require__(60);
 var IteratorPrototype = {};
 
 // 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
-__webpack_require__(18)(IteratorPrototype, __webpack_require__(11)('iterator'), function () { return this; });
+__webpack_require__(20)(IteratorPrototype, __webpack_require__(11)('iterator'), function () { return this; });
 
 module.exports = function (Constructor, NAME, next) {
   Constructor.prototype = create(IteratorPrototype, { next: descriptor(1, next) });
@@ -44114,15 +49266,15 @@ module.exports = function (Constructor, NAME, next) {
 
 
 /***/ }),
-/* 189 */
+/* 207 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var ctx = __webpack_require__(37);
-var call = __webpack_require__(122);
-var isArrayIter = __webpack_require__(95);
-var anObject = __webpack_require__(14);
-var toLength = __webpack_require__(22);
-var getIterFn = __webpack_require__(96);
+var ctx = __webpack_require__(40);
+var call = __webpack_require__(136);
+var isArrayIter = __webpack_require__(105);
+var anObject = __webpack_require__(15);
+var toLength = __webpack_require__(24);
+var getIterFn = __webpack_require__(106);
 var BREAK = {};
 var RETURN = {};
 var exports = module.exports = function (iterable, entries, fn, that, ITERATOR) {
@@ -44145,7 +49297,7 @@ exports.RETURN = RETURN;
 
 
 /***/ }),
-/* 190 */
+/* 208 */
 /***/ (function(module, exports) {
 
 // fast apply, http://jsperf.lnkit.com/fast-apply/5
@@ -44167,15 +49319,15 @@ module.exports = function (fn, args, that) {
 
 
 /***/ }),
-/* 191 */
+/* 209 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var global = __webpack_require__(10);
-var macrotask = __webpack_require__(123).set;
+var macrotask = __webpack_require__(137).set;
 var Observer = global.MutationObserver || global.WebKitMutationObserver;
 var process = global.process;
 var Promise = global.Promise;
-var isNode = __webpack_require__(49)(process) == 'process';
+var isNode = __webpack_require__(53)(process) == 'process';
 
 module.exports = function () {
   var head, last, notify;
@@ -44242,7 +49394,7 @@ module.exports = function () {
 
 
 /***/ }),
-/* 192 */
+/* 210 */
 /***/ (function(module, exports) {
 
 module.exports = function (exec) {
@@ -44255,7 +49407,7 @@ module.exports = function (exec) {
 
 
 /***/ }),
-/* 193 */
+/* 211 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var global = __webpack_require__(10);
@@ -44265,17 +49417,17 @@ module.exports = navigator && navigator.userAgent || '';
 
 
 /***/ }),
-/* 194 */
+/* 212 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 // https://github.com/tc39/proposal-promise-finally
 
-var $export = __webpack_require__(24);
-var core = __webpack_require__(34);
+var $export = __webpack_require__(26);
+var core = __webpack_require__(37);
 var global = __webpack_require__(10);
-var speciesConstructor = __webpack_require__(67);
-var promiseResolve = __webpack_require__(125);
+var speciesConstructor = __webpack_require__(76);
+var promiseResolve = __webpack_require__(139);
 
 $export($export.P + $export.R, 'Promise', { 'finally': function (onFinally) {
   var C = speciesConstructor(this, core.Promise || global.Promise);
@@ -44292,11 +49444,11 @@ $export($export.P + $export.R, 'Promise', { 'finally': function (onFinally) {
 
 
 /***/ }),
-/* 195 */
+/* 213 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-var content = __webpack_require__(196);
+var content = __webpack_require__(214);
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -44310,24 +49462,24 @@ var options = {"hmr":true}
 options.transform = transform
 options.insertInto = undefined;
 
-var update = __webpack_require__(60)(content, options);
+var update = __webpack_require__(63)(content, options);
 
 if(content.locals) module.exports = content.locals;
 
 if(false) {}
 
 /***/ }),
-/* 196 */
+/* 214 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(59)(false);
+exports = module.exports = __webpack_require__(62)(false);
 // Module
 exports.push([module.i, ".tingle-modal *{box-sizing:border-box}.tingle-modal{position:fixed;top:0;right:0;bottom:0;left:0;z-index:1000;display:-ms-flexbox;display:flex;visibility:hidden;-ms-flex-direction:column;flex-direction:column;-ms-flex-align:center;align-items:center;overflow:hidden;-webkit-overflow-scrolling:touch;background:rgba(0,0,0,0.8);opacity:0;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;cursor:pointer;transition:transform .2s ease}.tingle-modal--confirm .tingle-modal-box{text-align:center}.tingle-modal--noOverlayClose{cursor:default}.tingle-modal--noClose .tingle-modal__close{display:none}.tingle-modal__close{position:fixed;top:10px;right:28px;z-index:1000;padding:0;width:5rem;height:5rem;border:none;background-color:transparent;color:#f0f0f0;font-size:6rem;font-family:monospace;line-height:1;cursor:pointer;transition:color .3s ease}.tingle-modal__closeLabel{display:none}.tingle-modal__close:hover{color:#fff}.tingle-modal-box{position:relative;-ms-flex-negative:0;flex-shrink:0;margin-top:10%;margin-bottom:auto;width:auto;border-radius:4px;background:#fff;opacity:1;cursor:auto;transition:transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);-ms-transform:scale(0.8);transform:scale(0.8)}.tingle-modal-box__content{padding:3rem 3rem}.tingle-modal-box__footer{padding:1.5rem 2rem;width:auto;border-bottom-right-radius:4px;border-bottom-left-radius:4px;background-color:#f5f5f5;cursor:auto}.tingle-modal-box__footer::after{display:table;clear:both;content:\"\"}.tingle-modal-box__footer--sticky{position:fixed;bottom:-200px;z-index:10001;opacity:1;transition:bottom .3s ease-in-out .3s}.tingle-enabled{position:fixed;right:0;left:0;overflow:hidden}.tingle-modal--visible .tingle-modal-box__footer{bottom:0}.tingle-enabled .tingle-content-wrapper{filter:blur(8px)}.tingle-modal--visible{visibility:visible;opacity:1}.tingle-modal--visible .tingle-modal-box{-ms-transform:scale(1);transform:scale(1)}.tingle-modal--overflow{overflow-y:scroll;padding-top:8vh}.tingle-btn{display:inline-block;margin:0 .5rem;padding:1rem 2rem;border:none;background-color:grey;box-shadow:none;color:#fff;vertical-align:middle;text-decoration:none;font-size:inherit;font-family:inherit;line-height:normal;cursor:pointer;transition:background-color .4s ease}.tingle-btn--primary{background-color:#3498db}.tingle-btn--danger{background-color:#e74c3c}.tingle-btn--default{background-color:#34495e}.tingle-btn--pull-left{float:left}.tingle-btn--pull-right{float:right}@media (max-width: 540px){.tingle-modal{top:0px;display:block;padding-top:60px;width:100%}.tingle-modal-box{width:auto;border-radius:0}.tingle-modal-box__content{overflow-y:scroll}.tingle-modal--noClose{top:0}.tingle-modal--noOverlayClose{padding-top:0}.tingle-modal-box__footer .tingle-btn{display:block;float:none;margin-bottom:1rem;width:100%}.tingle-modal__close{top:0;right:0;left:0;display:block;width:100%;height:60px;border:none;background-color:#2c3e50;box-shadow:none;color:#fff;line-height:55px}.tingle-modal__closeLabel{display:inline-block;vertical-align:middle;font-size:1.5rem;font-family:-apple-system, BlinkMacSystemFont, \"Segoe UI\", \"Roboto\", \"Oxygen\", \"Ubuntu\", \"Cantarell\", \"Fira Sans\", \"Droid Sans\", \"Helvetica Neue\", sans-serif}.tingle-modal__closeIcon{display:inline-block;margin-right:.5rem;vertical-align:middle;font-size:4rem}}@supports (-webkit-backdrop-filter: blur(12px)) or (backdrop-filter: blur(12px)){.tingle-modal{-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}@media (max-width: 540px){.tingle-modal{-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}}.tingle-enabled .tingle-content-wrapper{filter:none}}\n", ""]);
 
 
 
 /***/ }),
-/* 197 */
+/* 215 */
 /***/ (function(module, exports) {
 
 
@@ -44422,11 +49574,11 @@ module.exports = function (css) {
 
 
 /***/ }),
-/* 198 */
+/* 216 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-var content = __webpack_require__(199);
+var content = __webpack_require__(217);
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -44440,32 +49592,32 @@ var options = {"hmr":true}
 options.transform = transform
 options.insertInto = undefined;
 
-var update = __webpack_require__(60)(content, options);
+var update = __webpack_require__(63)(content, options);
 
 if(content.locals) module.exports = content.locals;
 
 if(false) {}
 
 /***/ }),
-/* 199 */
+/* 217 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(59)(false);
+exports = module.exports = __webpack_require__(62)(false);
 // Module
 exports.push([module.i, "@keyframes spin{0%{transform:translateZ(0) rotate(0)}100%{transform:translateZ(0) rotate(360deg)}}.freeze-ui{position:fixed;top:0;left:0;width:100%;height:100%;z-index:999999999;background-color:#fff;opacity:.8;transition:opacity .25s}.freeze-ui.is-unfreezing{opacity:0}.freeze-ui:after{content:attr(data-text);display:block;max-width:125px;position:absolute;top:50%;left:50%;transform:translate(-50%, -50%);font-size:20px;font-family:sans-serif;color:#343a40;text-align:center;text-transform:uppercase}.freeze-ui:before{content:\"\";display:block;width:150px;height:150px;border-radius:50%;border-width:2px;border-style:solid;border-color:transparent #228ae6 #228ae6;position:absolute;top:calc(50% - 75px);left:calc(50% - 75px);will-change:transform;animation:spin .75s infinite ease-in-out}\n", ""]);
 
 
 
 /***/ }),
-/* 200 */
+/* 218 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://github.com/tc39/proposal-object-getownpropertydescriptors
-var $export = __webpack_require__(24);
-var ownKeys = __webpack_require__(201);
-var toIObject = __webpack_require__(42);
-var gOPD = __webpack_require__(93);
-var createProperty = __webpack_require__(127);
+var $export = __webpack_require__(26);
+var ownKeys = __webpack_require__(219);
+var toIObject = __webpack_require__(44);
+var gOPD = __webpack_require__(103);
+var createProperty = __webpack_require__(141);
 
 $export($export.S, 'Object', {
   getOwnPropertyDescriptors: function getOwnPropertyDescriptors(object) {
@@ -44485,13 +49637,13 @@ $export($export.S, 'Object', {
 
 
 /***/ }),
-/* 201 */
+/* 219 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // all object keys, includes non-enumerable and symbols
-var gOPN = __webpack_require__(58);
-var gOPS = __webpack_require__(90);
-var anObject = __webpack_require__(14);
+var gOPN = __webpack_require__(61);
+var gOPS = __webpack_require__(100);
+var anObject = __webpack_require__(15);
 var Reflect = __webpack_require__(10).Reflect;
 module.exports = Reflect && Reflect.ownKeys || function ownKeys(it) {
   var keys = gOPN.f(anObject(it));
@@ -44501,21 +49653,21 @@ module.exports = Reflect && Reflect.ownKeys || function ownKeys(it) {
 
 
 /***/ }),
-/* 202 */
+/* 220 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var ctx = __webpack_require__(37);
-var $export = __webpack_require__(24);
-var toObject = __webpack_require__(26);
-var call = __webpack_require__(122);
-var isArrayIter = __webpack_require__(95);
-var toLength = __webpack_require__(22);
-var createProperty = __webpack_require__(127);
-var getIterFn = __webpack_require__(96);
+var ctx = __webpack_require__(40);
+var $export = __webpack_require__(26);
+var toObject = __webpack_require__(28);
+var call = __webpack_require__(136);
+var isArrayIter = __webpack_require__(105);
+var toLength = __webpack_require__(24);
+var createProperty = __webpack_require__(141);
+var getIterFn = __webpack_require__(106);
 
-$export($export.S + $export.F * !__webpack_require__(98)(function (iter) { Array.from(iter); }), 'Array', {
+$export($export.S + $export.F * !__webpack_require__(108)(function (iter) { Array.from(iter); }), 'Array', {
   // 22.1.2.1 Array.from(arrayLike, mapfn = undefined, thisArg = undefined)
   from: function from(arrayLike /* , mapfn = undefined, thisArg = undefined */) {
     var O = toObject(arrayLike);
@@ -44545,11 +49697,11 @@ $export($export.S + $export.F * !__webpack_require__(98)(function (iter) { Array
 
 
 /***/ }),
-/* 203 */
+/* 221 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-var content = __webpack_require__(204);
+var content = __webpack_require__(222);
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -44563,24 +49715,24 @@ var options = {"hmr":true}
 options.transform = transform
 options.insertInto = undefined;
 
-var update = __webpack_require__(60)(content, options);
+var update = __webpack_require__(63)(content, options);
 
 if(content.locals) module.exports = content.locals;
 
 if(false) {}
 
 /***/ }),
-/* 204 */
+/* 222 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(59)(false);
+exports = module.exports = __webpack_require__(62)(false);
 // Module
 exports.push([module.i, ".siiimpleToast{position:absolute;padding:14px 18px;min-width:250px;z-index:999999;border-radius:2px;color:#fff;font-weight:300;white-space:nowrap;user-select:none;opacity:0;box-shadow:0 3px 6px rgba(0,0,0,0.16),0 3px 6px rgba(0,0,0,0.23);box-sizing:border-box;transform:scale(0.5);transition:all 0.4s ease-out}.siiimpleToast[data-state=\"default\"]{background-color:#323232}.siiimpleToast[data-state=\"success\"]{background-color:#008002}.siiimpleToast[data-state=\"alert\"]{background-color:#d93737}.siiimpleToast[data-state=\"warning\"]{background-color:#ff8000}.siiimpleToast[data-state=\"info\"]{background-color:#095399}\n", ""]);
 
 
 
 /***/ }),
-/* 205 */
+/* 223 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -44770,10 +49922,10 @@ exports.push([module.i, ".siiimpleToast{position:absolute;padding:14px 18px;min-
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(61), __webpack_require__(27)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(29), __webpack_require__(18)))
 
 /***/ }),
-/* 206 */
+/* 224 */
 /***/ (function(module, exports) {
 
 function _arrayWithoutHoles(arr) {
@@ -44789,7 +49941,7 @@ function _arrayWithoutHoles(arr) {
 module.exports = _arrayWithoutHoles;
 
 /***/ }),
-/* 207 */
+/* 225 */
 /***/ (function(module, exports) {
 
 function _iterableToArray(iter) {
@@ -44799,7 +49951,7 @@ function _iterableToArray(iter) {
 module.exports = _iterableToArray;
 
 /***/ }),
-/* 208 */
+/* 226 */
 /***/ (function(module, exports) {
 
 function _nonIterableSpread() {
@@ -44809,10 +49961,10 @@ function _nonIterableSpread() {
 module.exports = _nonIterableSpread;
 
 /***/ }),
-/* 209 */
+/* 227 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(128)('Uint16', 2, function (init) {
+__webpack_require__(142)('Uint16', 2, function (init) {
   return function Uint16Array(data, byteOffset, length) {
     return init(this, data, byteOffset, length);
   };
@@ -44820,26 +49972,26 @@ __webpack_require__(128)('Uint16', 2, function (init) {
 
 
 /***/ }),
-/* 210 */
+/* 228 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var global = __webpack_require__(10);
-var DESCRIPTORS = __webpack_require__(20);
-var LIBRARY = __webpack_require__(36);
-var $typed = __webpack_require__(129);
-var hide = __webpack_require__(18);
-var redefineAll = __webpack_require__(97);
-var fails = __webpack_require__(21);
-var anInstance = __webpack_require__(94);
-var toInteger = __webpack_require__(39);
-var toLength = __webpack_require__(22);
-var toIndex = __webpack_require__(130);
-var gOPN = __webpack_require__(58).f;
-var dP = __webpack_require__(19).f;
-var arrayFill = __webpack_require__(131);
-var setToStringTag = __webpack_require__(57);
+var DESCRIPTORS = __webpack_require__(22);
+var LIBRARY = __webpack_require__(39);
+var $typed = __webpack_require__(143);
+var hide = __webpack_require__(20);
+var redefineAll = __webpack_require__(107);
+var fails = __webpack_require__(23);
+var anInstance = __webpack_require__(104);
+var toInteger = __webpack_require__(41);
+var toLength = __webpack_require__(24);
+var toIndex = __webpack_require__(144);
+var gOPN = __webpack_require__(61).f;
+var dP = __webpack_require__(21).f;
+var arrayFill = __webpack_require__(145);
+var setToStringTag = __webpack_require__(60);
 var ARRAY_BUFFER = 'ArrayBuffer';
 var DATA_VIEW = 'DataView';
 var PROTOTYPE = 'prototype';
@@ -45103,7 +50255,7 @@ exports[DATA_VIEW] = $DataView;
 
 
 /***/ }),
-/* 211 */
+/* 229 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 0 -> Array#forEach
@@ -45113,11 +50265,11 @@ exports[DATA_VIEW] = $DataView;
 // 4 -> Array#every
 // 5 -> Array#find
 // 6 -> Array#findIndex
-var ctx = __webpack_require__(37);
-var IObject = __webpack_require__(116);
-var toObject = __webpack_require__(26);
-var toLength = __webpack_require__(22);
-var asc = __webpack_require__(212);
+var ctx = __webpack_require__(40);
+var IObject = __webpack_require__(130);
+var toObject = __webpack_require__(28);
+var toLength = __webpack_require__(24);
+var asc = __webpack_require__(230);
 module.exports = function (TYPE, $create) {
   var IS_MAP = TYPE == 1;
   var IS_FILTER = TYPE == 2;
@@ -45153,11 +50305,11 @@ module.exports = function (TYPE, $create) {
 
 
 /***/ }),
-/* 212 */
+/* 230 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 9.4.2.3 ArraySpeciesCreate(originalArray, length)
-var speciesConstructor = __webpack_require__(213);
+var speciesConstructor = __webpack_require__(231);
 
 module.exports = function (original, length) {
   return new (speciesConstructor(original))(length);
@@ -45165,11 +50317,11 @@ module.exports = function (original, length) {
 
 
 /***/ }),
-/* 213 */
+/* 231 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isObject = __webpack_require__(25);
-var isArray = __webpack_require__(117);
+var isObject = __webpack_require__(27);
+var isArray = __webpack_require__(131);
 var SPECIES = __webpack_require__(11)('species');
 
 module.exports = function (original) {
@@ -45187,15 +50339,15 @@ module.exports = function (original) {
 
 
 /***/ }),
-/* 214 */
+/* 232 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 // 22.1.3.3 Array.prototype.copyWithin(target, start, end = this.length)
 
-var toObject = __webpack_require__(26);
-var toAbsoluteIndex = __webpack_require__(70);
-var toLength = __webpack_require__(22);
+var toObject = __webpack_require__(28);
+var toAbsoluteIndex = __webpack_require__(79);
+var toLength = __webpack_require__(24);
 
 module.exports = [].copyWithin || function copyWithin(target /* = 0 */, start /* = 0, end = @length */) {
   var O = toObject(this);
@@ -45220,7 +50372,7 @@ module.exports = [].copyWithin || function copyWithin(target /* = 0 */, start /*
 
 
 /***/ }),
-/* 215 */
+/* 233 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -45230,38 +50382,38 @@ module.exports = [].copyWithin || function copyWithin(target /* = 0 */, start /*
  *
  * Copyright 2011-2016 Digital Bazaar, Inc.
  */
-module.exports = __webpack_require__(3);
-__webpack_require__(43);
-__webpack_require__(220);
-__webpack_require__(28);
-__webpack_require__(99);
-__webpack_require__(147);
-__webpack_require__(73);
-__webpack_require__(222);
-__webpack_require__(62);
-__webpack_require__(223);
+module.exports = __webpack_require__(4);
+__webpack_require__(45);
+__webpack_require__(238);
+__webpack_require__(30);
+__webpack_require__(110);
+__webpack_require__(160);
+__webpack_require__(81);
+__webpack_require__(240);
+__webpack_require__(65);
+__webpack_require__(241);
+__webpack_require__(162);
+__webpack_require__(242);
+__webpack_require__(159);
+__webpack_require__(112);
+__webpack_require__(55);
+__webpack_require__(155);
+__webpack_require__(157);
+__webpack_require__(243);
 __webpack_require__(149);
-__webpack_require__(224);
-__webpack_require__(146);
-__webpack_require__(101);
-__webpack_require__(52);
-__webpack_require__(142);
-__webpack_require__(144);
-__webpack_require__(225);
-__webpack_require__(136);
-__webpack_require__(143);
-__webpack_require__(140);
-__webpack_require__(103);
-__webpack_require__(23);
-__webpack_require__(141);
-__webpack_require__(226);
-__webpack_require__(227);
-__webpack_require__(135);
+__webpack_require__(156);
+__webpack_require__(153);
+__webpack_require__(114);
+__webpack_require__(25);
+__webpack_require__(154);
+__webpack_require__(244);
+__webpack_require__(245);
+__webpack_require__(148);
 __webpack_require__(7);
 
 
 /***/ }),
-/* 216 */
+/* 234 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -45420,7 +50572,7 @@ function fromByteArray (uint8) {
 
 
 /***/ }),
-/* 217 */
+/* 235 */
 /***/ (function(module, exports) {
 
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -45510,7 +50662,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
 
 /***/ }),
-/* 218 */
+/* 236 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -45521,7 +50673,7 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ }),
-/* 219 */
+/* 237 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {/**
@@ -45711,10 +50863,10 @@ function _encodeWithByteBuffer(input, alphabet) {
   return output;
 }
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(32).Buffer))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(16).Buffer))
 
 /***/ }),
-/* 220 */
+/* 238 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -45725,9 +50877,9 @@ function _encodeWithByteBuffer(input, alphabet) {
  * Copyright (c) 2009-2015 Digital Bazaar, Inc.
  *
  */
-var forge = __webpack_require__(3);
-__webpack_require__(43);
-__webpack_require__(135);
+var forge = __webpack_require__(4);
+__webpack_require__(45);
+__webpack_require__(148);
 
 var tls = module.exports = forge.tls;
 
@@ -46004,7 +51156,7 @@ function compareMacs(key, mac1, mac2) {
 
 
 /***/ }),
-/* 221 */
+/* 239 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -46014,15 +51166,15 @@ function compareMacs(key, mac1, mac2) {
  *
  * Copyright 2012 Stefan Siegl <stesie@brokenpipe.de>
  */
-var forge = __webpack_require__(3);
-__webpack_require__(146);
+var forge = __webpack_require__(4);
+__webpack_require__(159);
 
 module.exports = forge.mgf = forge.mgf || {};
 forge.mgf.mgf1 = forge.mgf1;
 
 
 /***/ }),
-/* 222 */
+/* 240 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {/**
@@ -46035,10 +51187,10 @@ forge.mgf.mgf1 = forge.mgf1;
  *
  * https://github.com/dchest/tweetnacl-js
  */
-var forge = __webpack_require__(3);
-__webpack_require__(75);
-__webpack_require__(23);
-__webpack_require__(148);
+var forge = __webpack_require__(4);
+__webpack_require__(83);
+__webpack_require__(25);
+__webpack_require__(161);
 __webpack_require__(7);
 
 if(typeof BigInteger === 'undefined') {
@@ -47022,10 +52174,10 @@ function M(o, a, b) {
   o[15] = t15;
 }
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(32).Buffer))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(16).Buffer))
 
 /***/ }),
-/* 223 */
+/* 241 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -47037,10 +52189,10 @@ function M(o, a, b) {
  * Copyright (c) 2014 Lautaro Cozzani <lautaro.cozzani@scytl.com>
  * Copyright (c) 2014 Digital Bazaar, Inc.
  */
-var forge = __webpack_require__(3);
+var forge = __webpack_require__(4);
 __webpack_require__(7);
-__webpack_require__(23);
-__webpack_require__(75);
+__webpack_require__(25);
+__webpack_require__(83);
 
 module.exports = forge.kem = forge.kem || {};
 
@@ -47199,7 +52351,7 @@ function _createKDF(kdf, md, counterStart, digestLength) {
 
 
 /***/ }),
-/* 224 */
+/* 242 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -47209,16 +52361,16 @@ function _createKDF(kdf, md, counterStart, digestLength) {
  *
  * Copyright 2011-2017 Digital Bazaar, Inc.
  */
-module.exports = __webpack_require__(29);
+module.exports = __webpack_require__(31);
 
-__webpack_require__(100);
-__webpack_require__(63);
-__webpack_require__(139);
-__webpack_require__(148);
+__webpack_require__(111);
+__webpack_require__(66);
+__webpack_require__(152);
+__webpack_require__(161);
 
 
 /***/ }),
-/* 225 */
+/* 243 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -47239,16 +52391,16 @@ __webpack_require__(148);
  * a separate file pkcs7asn1.js, since those are referenced from other
  * PKCS standards like PKCS #12.
  */
-var forge = __webpack_require__(3);
-__webpack_require__(43);
-__webpack_require__(28);
-__webpack_require__(73);
-__webpack_require__(44);
-__webpack_require__(52);
-__webpack_require__(145);
-__webpack_require__(23);
+var forge = __webpack_require__(4);
+__webpack_require__(45);
+__webpack_require__(30);
+__webpack_require__(81);
+__webpack_require__(46);
+__webpack_require__(55);
+__webpack_require__(158);
+__webpack_require__(25);
 __webpack_require__(7);
-__webpack_require__(102);
+__webpack_require__(113);
 
 // shortcut for ASN.1 API
 var asn1 = forge.asn1;
@@ -48481,7 +53633,7 @@ function _decryptContent(msg) {
 
 
 /***/ }),
-/* 226 */
+/* 244 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -48494,11 +53646,11 @@ function _decryptContent(msg) {
  *
  * @author https://github.com/shellac
  */
-var forge = __webpack_require__(3);
-__webpack_require__(43);
-__webpack_require__(62);
-__webpack_require__(100);
-__webpack_require__(63);
+var forge = __webpack_require__(4);
+__webpack_require__(45);
+__webpack_require__(65);
+__webpack_require__(111);
+__webpack_require__(66);
 __webpack_require__(7);
 
 var ssh = module.exports = forge.ssh = forge.ssh || {};
@@ -48723,7 +53875,7 @@ function _sha1() {
 
 
 /***/ }),
-/* 227 */
+/* 245 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -48735,9 +53887,9 @@ function _sha1() {
  *
  * Copyright (c) 2009-2013 Digital Bazaar, Inc.
  */
-var forge = __webpack_require__(3);
-__webpack_require__(147);
-__webpack_require__(149);
+var forge = __webpack_require__(4);
+__webpack_require__(160);
+__webpack_require__(162);
 __webpack_require__(7);
 
 // logging category
@@ -49454,23 +54606,185 @@ forge.task.createCondition = function() {
 
 
 /***/ }),
-/* 228 */
+/* 246 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var sjcl={cipher:{},hash:{},keyexchange:{},mode:{},misc:{},codec:{},exception:{corrupt:function(a){this.toString=function(){return"CORRUPT: "+this.message};this.message=a},invalid:function(a){this.toString=function(){return"INVALID: "+this.message};this.message=a},bug:function(a){this.toString=function(){return"BUG: "+this.message};this.message=a},notReady:function(a){this.toString=function(){return"NOT READY: "+this.message};this.message=a}}};
+sjcl.cipher.aes=function(a){this.M[0][0][0]||this.T();var b,d,c,e,f=this.M[0][4],g=this.M[1];b=a.length;var h=1;if(4!==b&&6!==b&&8!==b)throw new sjcl.exception.invalid("invalid aes key size");this.i=[c=a.slice(0),e=[]];for(a=b;a<4*b+28;a++){d=c[a-1];if(0===a%b||8===b&&4===a%b)d=f[d>>>24]<<24^f[d>>16&255]<<16^f[d>>8&255]<<8^f[d&255],0===a%b&&(d=d<<8^d>>>24^h<<24,h=h<<1^283*(h>>7));c[a]=c[a-b]^d}for(b=0;a;b++,a--)d=c[b&3?a:a-4],e[b]=4>=a||4>b?d:g[0][f[d>>>24]]^g[1][f[d>>16&255]]^g[2][f[d>>8&255]]^g[3][f[d&
+255]]};
+sjcl.cipher.aes.prototype={encrypt:function(a){return ba(this,a,0)},decrypt:function(a){return ba(this,a,1)},M:[[[],[],[],[],[]],[[],[],[],[],[]]],T:function(){var a=this.M[0],b=this.M[1],d=a[4],c=b[4],e,f,g,h=[],k=[],l,m,n,p;for(e=0;0x100>e;e++)k[(h[e]=e<<1^283*(e>>7))^e]=e;for(f=g=0;!d[f];f^=l||1,g=k[g]||1)for(n=g^g<<1^g<<2^g<<3^g<<4,n=n>>8^n&255^99,d[f]=n,c[n]=f,m=h[e=h[l=h[f]]],p=0x1010101*m^0x10001*e^0x101*l^0x1010100*f,m=0x101*h[n]^0x1010100*n,e=0;4>e;e++)a[e][f]=m=m<<24^m>>>8,b[e][n]=p=p<<24^p>>>8;for(e=
+0;5>e;e++)a[e]=a[e].slice(0),b[e]=b[e].slice(0)}};
+function ba(a,b,d){if(4!==b.length)throw new sjcl.exception.invalid("invalid aes block size");var c=a.i[d],e=b[0]^c[0],f=b[d?3:1]^c[1],g=b[2]^c[2];b=b[d?1:3]^c[3];var h,k,l,m=c.length/4-2,n,p=4,r=[0,0,0,0];h=a.M[d];a=h[0];var t=h[1],D=h[2],I=h[3],x=h[4];for(n=0;n<m;n++)h=a[e>>>24]^t[f>>16&255]^D[g>>8&255]^I[b&255]^c[p],k=a[f>>>24]^t[g>>16&255]^D[b>>8&255]^I[e&255]^c[p+1],l=a[g>>>24]^t[b>>16&255]^D[e>>8&255]^I[f&255]^c[p+2],b=a[b>>>24]^t[e>>16&255]^D[f>>8&255]^I[g&255]^c[p+3],p+=4,e=h,f=k,g=l;for(n=
+0;4>n;n++)r[d?3&-n:n]=x[e>>>24]<<24^x[f>>16&255]<<16^x[g>>8&255]<<8^x[b&255]^c[p++],h=e,e=f,f=g,g=b,b=h;return r}
+sjcl.bitArray={bitSlice:function(a,b,d){a=sjcl.bitArray.ra(a.slice(b/32),32-(b&31)).slice(1);return void 0===d?a:sjcl.bitArray.clamp(a,d-b)},extract:function(a,b,d){var c=Math.floor(-b-d&31);return((b+d-1^b)&-32?a[b/32|0]<<32-c^a[b/32+1|0]>>>c:a[b/32|0]>>>c)&(1<<d)-1},concat:function(a,b){if(0===a.length||0===b.length)return a.concat(b);var d=a[a.length-1],c=sjcl.bitArray.getPartial(d);return 32===c?a.concat(b):sjcl.bitArray.ra(b,c,d|0,a.slice(0,a.length-1))},bitLength:function(a){var b=a.length;
+return 0===b?0:32*(b-1)+sjcl.bitArray.getPartial(a[b-1])},clamp:function(a,b){if(32*a.length<b)return a;a=a.slice(0,Math.ceil(b/32));var d=a.length;b=b&31;0<d&&b&&(a[d-1]=sjcl.bitArray.partial(b,a[d-1]&2147483648>>b-1,1));return a},partial:function(a,b,d){return 32===a?b:(d?b|0:b<<32-a)+0x10000000000*a},getPartial:function(a){return Math.round(a/0x10000000000)||32},equal:function(a,b){if(sjcl.bitArray.bitLength(a)!==sjcl.bitArray.bitLength(b))return!1;var d=0,c;for(c=0;c<a.length;c++)d|=a[c]^b[c];
+return 0===d},ra:function(a,b,d,c){var e;e=0;for(void 0===c&&(c=[]);32<=b;b-=32)c.push(d),d=0;if(0===b)return c.concat(a);for(e=0;e<a.length;e++)c.push(d|a[e]>>>b),d=a[e]<<32-b;e=a.length?a[a.length-1]:0;a=sjcl.bitArray.getPartial(e);c.push(sjcl.bitArray.partial(b+a&31,32<b+a?d:c.pop(),1));return c},l:function(a,b){return[a[0]^b[0],a[1]^b[1],a[2]^b[2],a[3]^b[3]]},byteswapM:function(a){var b,d;for(b=0;b<a.length;++b)d=a[b],a[b]=d>>>24|d>>>8&0xff00|(d&0xff00)<<8|d<<24;return a}};
+sjcl.codec.utf8String={fromBits:function(a){var b="",d=sjcl.bitArray.bitLength(a),c,e;for(c=0;c<d/8;c++)0===(c&3)&&(e=a[c/4]),b+=String.fromCharCode(e>>>8>>>8>>>8),e<<=8;return decodeURIComponent(escape(b))},toBits:function(a){a=unescape(encodeURIComponent(a));var b=[],d,c=0;for(d=0;d<a.length;d++)c=c<<8|a.charCodeAt(d),3===(d&3)&&(b.push(c),c=0);d&3&&b.push(sjcl.bitArray.partial(8*(d&3),c));return b}};
+sjcl.codec.hex={fromBits:function(a){var b="",d;for(d=0;d<a.length;d++)b+=((a[d]|0)+0xf00000000000).toString(16).substr(4);return b.substr(0,sjcl.bitArray.bitLength(a)/4)},toBits:function(a){var b,d=[],c;a=a.replace(/\s|0x/g,"");c=a.length;a=a+"00000000";for(b=0;b<a.length;b+=8)d.push(parseInt(a.substr(b,8),16)^0);return sjcl.bitArray.clamp(d,4*c)}};
+sjcl.codec.base32={D:"ABCDEFGHIJKLMNOPQRSTUVWXYZ234567",la:"0123456789ABCDEFGHIJKLMNOPQRSTUV",BITS:32,BASE:5,REMAINING:27,fromBits:function(a,b,d){var c=sjcl.codec.base32.BASE,e=sjcl.codec.base32.REMAINING,f="",g=0,h=sjcl.codec.base32.D,k=0,l=sjcl.bitArray.bitLength(a);d&&(h=sjcl.codec.base32.la);for(d=0;f.length*c<l;)f+=h.charAt((k^a[d]>>>g)>>>e),g<c?(k=a[d]<<c-g,g+=e,d++):(k<<=c,g-=c);for(;f.length&7&&!b;)f+="=";return f},toBits:function(a,b){a=a.replace(/\s|=/g,"").toUpperCase();var d=sjcl.codec.base32.BITS,
+c=sjcl.codec.base32.BASE,e=sjcl.codec.base32.REMAINING,f=[],g,h=0,k=sjcl.codec.base32.D,l=0,m,n="base32";b&&(k=sjcl.codec.base32.la,n="base32hex");for(g=0;g<a.length;g++){m=k.indexOf(a.charAt(g));if(0>m){if(!b)try{return sjcl.codec.base32hex.toBits(a)}catch(p){}throw new sjcl.exception.invalid("this isn't "+n+"!");}h>e?(h-=e,f.push(l^m>>>h),l=m<<d-h):(h+=c,l^=m<<d-h)}h&56&&f.push(sjcl.bitArray.partial(h&56,l,1));return f}};
+sjcl.codec.base32hex={fromBits:function(a,b){return sjcl.codec.base32.fromBits(a,b,1)},toBits:function(a){return sjcl.codec.base32.toBits(a,1)}};
+sjcl.codec.base64={D:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",fromBits:function(a,b,d){var c="",e=0,f=sjcl.codec.base64.D,g=0,h=sjcl.bitArray.bitLength(a);d&&(f=f.substr(0,62)+"-_");for(d=0;6*c.length<h;)c+=f.charAt((g^a[d]>>>e)>>>26),6>e?(g=a[d]<<6-e,e+=26,d++):(g<<=6,e-=6);for(;c.length&3&&!b;)c+="=";return c},toBits:function(a,b){a=a.replace(/\s|=/g,"");var d=[],c,e=0,f=sjcl.codec.base64.D,g=0,h;b&&(f=f.substr(0,62)+"-_");for(c=0;c<a.length;c++){h=f.indexOf(a.charAt(c));
+if(0>h)throw new sjcl.exception.invalid("this isn't base64!");26<e?(e-=26,d.push(g^h>>>e),g=h<<32-e):(e+=6,g^=h<<32-e)}e&56&&d.push(sjcl.bitArray.partial(e&56,g,1));return d}};sjcl.codec.base64url={fromBits:function(a){return sjcl.codec.base64.fromBits(a,1,1)},toBits:function(a){return sjcl.codec.base64.toBits(a,1)}};
+sjcl.codec.bytes={fromBits:function(a){var b=[],d=sjcl.bitArray.bitLength(a),c,e;for(c=0;c<d/8;c++)0===(c&3)&&(e=a[c/4]),b.push(e>>>24),e<<=8;return b},toBits:function(a){var b=[],d,c=0;for(d=0;d<a.length;d++)c=c<<8|a[d],3===(d&3)&&(b.push(c),c=0);d&3&&b.push(sjcl.bitArray.partial(8*(d&3),c));return b}};
+sjcl.codec.z85={D:"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-:+=^!/*?&<>()[]{}@%$#",ya:[0,68,0,84,83,82,72,0,75,76,70,65,0,63,62,69,0,1,2,3,4,5,6,7,8,9,64,0,73,66,74,71,81,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,77,0,78,67,0,0,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,79,0,80,0,0],fromBits:function(a){if(!a)return null;if(0!==sjcl.bitArray.bitLength(a)%32)throw new sjcl.exception.invalid("Invalid bitArray length!");
+for(var b="",d=sjcl.codec.z85.D,c=0;c<a.length;++c){for(var e=a[c],f=0,g=0;4>g;++g)f=0x100*f+(e>>>8*(4-g-1)&255);for(e=52200625;e;)b+=d.charAt(Math.floor(f/e)%85),e=Math.floor(e/85)}if(b.length!==5*a.length)throw new sjcl.exception.invalid("Bad Z85 conversion!");return b},toBits:function(a){if(!a)return[];if(0!==a.length%5)throw new sjcl.exception.invalid("Invalid Z85 string!");for(var b=[],d=0,c=sjcl.codec.z85.ya,e=0,f=0,g=0;g<a.length;)if(d=85*d+c[a[g++].charCodeAt(0)-32],0===g%5){for(var h=0x1000000;h;)e=
+e*Math.pow(2,8)+Math.floor(d/h)%0x100,++f,4===f&&(b.push(e),f=e=0),h=Math.floor(h/0x100);d=0}return b}};sjcl.hash.sha256=function(a){this.i[0]||this.T();a?(this.c=a.c.slice(0),this.h=a.h.slice(0),this.f=a.f):this.reset()};sjcl.hash.sha256.hash=function(a){return(new sjcl.hash.sha256).update(a).finalize()};
+sjcl.hash.sha256.prototype={blockSize:512,reset:function(){this.c=this.A.slice(0);this.h=[];this.f=0;return this},update:function(a){"string"===typeof a&&(a=sjcl.codec.utf8String.toBits(a));var b,d=this.h=sjcl.bitArray.concat(this.h,a);b=this.f;a=this.f=b+sjcl.bitArray.bitLength(a);if(0x1fffffffffffff<a)throw new sjcl.exception.invalid("Cannot hash more than 2^53 - 1 bits");if("undefined"!==typeof Uint32Array){var c=new Uint32Array(d),e=0;for(b=512+b-(512+b&0x1ff);b<=a;b+=512)this.m(c.subarray(16*e,
+16*(e+1))),e+=1;d.splice(0,16*e)}else for(b=512+b-(512+b&0x1ff);b<=a;b+=512)this.m(d.splice(0,16));return this},finalize:function(){var a,b=this.h,d=this.c,b=sjcl.bitArray.concat(b,[sjcl.bitArray.partial(1,1)]);for(a=b.length+2;a&15;a++)b.push(0);b.push(Math.floor(this.f/0x100000000));for(b.push(this.f|0);b.length;)this.m(b.splice(0,16));this.reset();return d},A:[],i:[],T:function(){function a(a){return 0x100000000*(a-Math.floor(a))|0}for(var b=0,d=2,c,e;64>b;d++){e=!0;for(c=2;c*c<=d;c++)if(0===d%c){e=
+!1;break}e&&(8>b&&(this.A[b]=a(Math.pow(d,.5))),this.i[b]=a(Math.pow(d,1/3)),b++)}},m:function(a){var b,d,c,e=this.c,f=this.i,g=e[0],h=e[1],k=e[2],l=e[3],m=e[4],n=e[5],p=e[6],r=e[7];for(b=0;64>b;b++)16>b?d=a[b]:(d=a[b+1&15],c=a[b+14&15],d=a[b&15]=(d>>>7^d>>>18^d>>>3^d<<25^d<<14)+(c>>>17^c>>>19^c>>>10^c<<15^c<<13)+a[b&15]+a[b+9&15]|0),d=d+r+(m>>>6^m>>>11^m>>>25^m<<26^m<<21^m<<7)+(p^m&(n^p))+f[b],r=p,p=n,n=m,m=l+d|0,l=k,k=h,h=g,g=d+(h&k^l&(h^k))+(h>>>2^h>>>13^h>>>22^h<<30^h<<19^h<<10)|0;e[0]=e[0]+g|
+0;e[1]=e[1]+h|0;e[2]=e[2]+k|0;e[3]=e[3]+l|0;e[4]=e[4]+m|0;e[5]=e[5]+n|0;e[6]=e[6]+p|0;e[7]=e[7]+r|0}};sjcl.hash.sha512=function(a){this.i[0]||this.T();a?(this.c=a.c.slice(0),this.h=a.h.slice(0),this.f=a.f):this.reset()};sjcl.hash.sha512.hash=function(a){return(new sjcl.hash.sha512).update(a).finalize()};
+sjcl.hash.sha512.prototype={blockSize:1024,reset:function(){this.c=this.A.slice(0);this.h=[];this.f=0;return this},update:function(a){"string"===typeof a&&(a=sjcl.codec.utf8String.toBits(a));var b,d=this.h=sjcl.bitArray.concat(this.h,a);b=this.f;a=this.f=b+sjcl.bitArray.bitLength(a);if(0x1fffffffffffff<a)throw new sjcl.exception.invalid("Cannot hash more than 2^53 - 1 bits");if("undefined"!==typeof Uint32Array){var c=new Uint32Array(d),e=0;for(b=1024+b-(1024+b&1023);b<=a;b+=1024)this.m(c.subarray(32*
+e,32*(e+1))),e+=1;d.splice(0,32*e)}else for(b=1024+b-(1024+b&1023);b<=a;b+=1024)this.m(d.splice(0,32));return this},finalize:function(){var a,b=this.h,d=this.c,b=sjcl.bitArray.concat(b,[sjcl.bitArray.partial(1,1)]);for(a=b.length+4;a&31;a++)b.push(0);b.push(0);b.push(0);b.push(Math.floor(this.f/0x100000000));for(b.push(this.f|0);b.length;)this.m(b.splice(0,32));this.reset();return d},A:[],Fa:[12372232,13281083,9762859,1914609,15106769,4090911,4308331,8266105],i:[],Ha:[2666018,15689165,5061423,9034684,
+4764984,380953,1658779,7176472,197186,7368638,14987916,16757986,8096111,1480369,13046325,6891156,15813330,5187043,9229749,11312229,2818677,10937475,4324308,1135541,6741931,11809296,16458047,15666916,11046850,698149,229999,945776,13774844,2541862,12856045,9810911,11494366,7844520,15576806,8533307,15795044,4337665,16291729,5553712,15684120,6662416,7413802,12308920,13816008,4303699,9366425,10176680,13195875,4295371,6546291,11712675,15708924,1519456,15772530,6568428,6495784,8568297,13007125,7492395,2515356,
+12632583,14740254,7262584,1535930,13146278,16321966,1853211,294276,13051027,13221564,1051980,4080310,6651434,14088940,4675607],T:function(){function a(a){return 0x100000000*(a-Math.floor(a))|0}function b(a){return 0x10000000000*(a-Math.floor(a))&255}for(var d=0,c=2,e,f;80>d;c++){f=!0;for(e=2;e*e<=c;e++)if(0===c%e){f=!1;break}f&&(8>d&&(this.A[2*d]=a(Math.pow(c,.5)),this.A[2*d+1]=b(Math.pow(c,.5))<<24|this.Fa[d]),this.i[2*d]=a(Math.pow(c,1/3)),this.i[2*d+1]=b(Math.pow(c,1/3))<<24|this.Ha[d],d++)}},m:function(a){var b,
+d,c=this.c,e=this.i,f=c[0],g=c[1],h=c[2],k=c[3],l=c[4],m=c[5],n=c[6],p=c[7],r=c[8],t=c[9],D=c[10],I=c[11],x=c[12],B=c[13],A=c[14],y=c[15],u;if("undefined"!==typeof Uint32Array){u=Array(160);for(var v=0;32>v;v++)u[v]=a[v]}else u=a;var v=f,q=g,w=h,J=k,L=l,K=m,X=n,M=p,E=r,C=t,T=D,N=I,U=x,O=B,Y=A,P=y;for(a=0;80>a;a++){if(16>a)b=u[2*a],d=u[2*a+1];else{d=u[2*(a-15)];var z=u[2*(a-15)+1];b=(z<<31|d>>>1)^(z<<24|d>>>8)^d>>>7;var F=(d<<31|z>>>1)^(d<<24|z>>>8)^(d<<25|z>>>7);d=u[2*(a-2)];var G=u[2*(a-2)+1],z=
+(G<<13|d>>>19)^(d<<3|G>>>29)^d>>>6,G=(d<<13|G>>>19)^(G<<3|d>>>29)^(d<<26|G>>>6),Z=u[2*(a-7)],aa=u[2*(a-16)],Q=u[2*(a-16)+1];d=F+u[2*(a-7)+1];b=b+Z+(d>>>0<F>>>0?1:0);d+=G;b+=z+(d>>>0<G>>>0?1:0);d+=Q;b+=aa+(d>>>0<Q>>>0?1:0)}u[2*a]=b|=0;u[2*a+1]=d|=0;var Z=E&T^~E&U,ga=C&N^~C&O,G=v&w^v&L^w&L,ka=q&J^q&K^J&K,aa=(q<<4|v>>>28)^(v<<30|q>>>2)^(v<<25|q>>>7),Q=(v<<4|q>>>28)^(q<<30|v>>>2)^(q<<25|v>>>7),la=e[2*a],ha=e[2*a+1],z=P+((E<<18|C>>>14)^(E<<14|C>>>18)^(C<<23|E>>>9)),F=Y+((C<<18|E>>>14)^(C<<14|E>>>18)^(E<<
+23|C>>>9))+(z>>>0<P>>>0?1:0),z=z+ga,F=F+(Z+(z>>>0<ga>>>0?1:0)),z=z+ha,F=F+(la+(z>>>0<ha>>>0?1:0)),z=z+d|0,F=F+(b+(z>>>0<d>>>0?1:0));d=Q+ka;b=aa+G+(d>>>0<Q>>>0?1:0);Y=U;P=O;U=T;O=N;T=E;N=C;C=M+z|0;E=X+F+(C>>>0<M>>>0?1:0)|0;X=L;M=K;L=w;K=J;w=v;J=q;q=z+d|0;v=F+b+(q>>>0<z>>>0?1:0)|0}g=c[1]=g+q|0;c[0]=f+v+(g>>>0<q>>>0?1:0)|0;k=c[3]=k+J|0;c[2]=h+w+(k>>>0<J>>>0?1:0)|0;m=c[5]=m+K|0;c[4]=l+L+(m>>>0<K>>>0?1:0)|0;p=c[7]=p+M|0;c[6]=n+X+(p>>>0<M>>>0?1:0)|0;t=c[9]=t+C|0;c[8]=r+E+(t>>>0<C>>>0?1:0)|0;I=c[11]=I+N|
+0;c[10]=D+T+(I>>>0<N>>>0?1:0)|0;B=c[13]=B+O|0;c[12]=x+U+(B>>>0<O>>>0?1:0)|0;y=c[15]=y+P|0;c[14]=A+Y+(y>>>0<P>>>0?1:0)|0}};sjcl.hash.sha1=function(a){a?(this.c=a.c.slice(0),this.h=a.h.slice(0),this.f=a.f):this.reset()};sjcl.hash.sha1.hash=function(a){return(new sjcl.hash.sha1).update(a).finalize()};
+sjcl.hash.sha1.prototype={blockSize:512,reset:function(){this.c=this.A.slice(0);this.h=[];this.f=0;return this},update:function(a){"string"===typeof a&&(a=sjcl.codec.utf8String.toBits(a));var b,d=this.h=sjcl.bitArray.concat(this.h,a);b=this.f;a=this.f=b+sjcl.bitArray.bitLength(a);if(0x1fffffffffffff<a)throw new sjcl.exception.invalid("Cannot hash more than 2^53 - 1 bits");if("undefined"!==typeof Uint32Array){var c=new Uint32Array(d),e=0;for(b=this.blockSize+b-(this.blockSize+b&this.blockSize-1);b<=
+a;b+=this.blockSize)this.m(c.subarray(16*e,16*(e+1))),e+=1;d.splice(0,16*e)}else for(b=this.blockSize+b-(this.blockSize+b&this.blockSize-1);b<=a;b+=this.blockSize)this.m(d.splice(0,16));return this},finalize:function(){var a,b=this.h,d=this.c,b=sjcl.bitArray.concat(b,[sjcl.bitArray.partial(1,1)]);for(a=b.length+2;a&15;a++)b.push(0);b.push(Math.floor(this.f/0x100000000));for(b.push(this.f|0);b.length;)this.m(b.splice(0,16));this.reset();return d},A:[1732584193,4023233417,2562383102,271733878,3285377520],
+i:[1518500249,1859775393,2400959708,3395469782],m:function(a){var b,d,c,e,f,g,h=this.c,k;if("undefined"!==typeof Uint32Array)for(k=Array(80),d=0;16>d;d++)k[d]=a[d];else k=a;d=h[0];c=h[1];e=h[2];f=h[3];g=h[4];for(a=0;79>=a;a++)16<=a&&(b=k[a-3]^k[a-8]^k[a-14]^k[a-16],k[a]=b<<1|b>>>31),b=19>=a?c&e|~c&f:39>=a?c^e^f:59>=a?c&e|c&f|e&f:79>=a?c^e^f:void 0,b=(d<<5|d>>>27)+b+g+k[a]+this.i[Math.floor(a/20)]|0,g=f,f=e,e=c<<30|c>>>2,c=d,d=b;h[0]=h[0]+d|0;h[1]=h[1]+c|0;h[2]=h[2]+e|0;h[3]=h[3]+f|0;h[4]=h[4]+g|0}};
+sjcl.mode.ccm={name:"ccm",W:[],listenProgress:function(a){sjcl.mode.ccm.W.push(a)},unListenProgress:function(a){a=sjcl.mode.ccm.W.indexOf(a);-1<a&&sjcl.mode.ccm.W.splice(a,1)},ha:function(a){var b=sjcl.mode.ccm.W.slice(),d;for(d=0;d<b.length;d+=1)b[d](a)},encrypt:function(a,b,d,c,e){var f,g=b.slice(0),h=sjcl.bitArray,k=h.bitLength(d)/8,l=h.bitLength(g)/8;e=e||64;c=c||[];if(7>k)throw new sjcl.exception.invalid("ccm: iv must be at least 7 bytes");for(f=2;4>f&&l>>>8*f;f++);f<15-k&&(f=15-k);d=h.clamp(d,
+8*(15-f));b=sjcl.mode.ccm.R(a,b,d,c,e,f);g=sjcl.mode.ccm.u(a,g,d,b,e,f);return h.concat(g.data,g.tag)},decrypt:function(a,b,d,c,e){e=e||64;c=c||[];var f=sjcl.bitArray,g=f.bitLength(d)/8,h=f.bitLength(b),k=f.clamp(b,h-e),l=f.bitSlice(b,h-e),h=(h-e)/8;if(7>g)throw new sjcl.exception.invalid("ccm: iv must be at least 7 bytes");for(b=2;4>b&&h>>>8*b;b++);b<15-g&&(b=15-g);d=f.clamp(d,8*(15-b));k=sjcl.mode.ccm.u(a,k,d,l,e,b);a=sjcl.mode.ccm.R(a,k.data,d,c,e,b);if(!f.equal(k.tag,a))throw new sjcl.exception.corrupt("ccm: tag doesn't match");
+return k.data},oa:function(a,b,d,c,e,f){var g=[],h=sjcl.bitArray,k=h.l;c=[h.partial(8,(b.length?64:0)|c-2<<2|f-1)];c=h.concat(c,d);c[3]|=e;c=a.encrypt(c);if(b.length)for(d=h.bitLength(b)/8,65279>=d?g=[h.partial(16,d)]:0xffffffff>=d&&(g=h.concat([h.partial(16,65534)],[d])),g=h.concat(g,b),b=0;b<g.length;b+=4)c=a.encrypt(k(c,g.slice(b,b+4).concat([0,0,0])));return c},R:function(a,b,d,c,e,f){var g=sjcl.bitArray,h=g.l;e/=8;if(e%2||4>e||16<e)throw new sjcl.exception.invalid("ccm: invalid tag length");
+if(0xffffffff<c.length||0xffffffff<b.length)throw new sjcl.exception.bug("ccm: can't deal with 4GiB or more data");d=sjcl.mode.ccm.oa(a,c,d,e,g.bitLength(b)/8,f);for(c=0;c<b.length;c+=4)d=a.encrypt(h(d,b.slice(c,c+4).concat([0,0,0])));return g.clamp(d,8*e)},u:function(a,b,d,c,e,f){var g,h=sjcl.bitArray;g=h.l;var k=b.length,l=h.bitLength(b),m=k/50,n=m;d=h.concat([h.partial(8,f-1)],d).concat([0,0,0]).slice(0,4);c=h.bitSlice(g(c,a.encrypt(d)),0,e);if(!k)return{tag:c,data:[]};for(g=0;g<k;g+=4)g>m&&(sjcl.mode.ccm.ha(g/
+k),m+=n),d[3]++,e=a.encrypt(d),b[g]^=e[0],b[g+1]^=e[1],b[g+2]^=e[2],b[g+3]^=e[3];return{tag:c,data:h.clamp(b,l)}}};void 0===sjcl.beware&&(sjcl.beware={});
+sjcl.beware["CTR mode is dangerous because it doesn't protect message integrity."]=function(){sjcl.mode.ctr={name:"ctr",encrypt:function(a,b,d,c){return sjcl.mode.ctr.ga(a,b,d,c)},decrypt:function(a,b,d,c){return sjcl.mode.ctr.ga(a,b,d,c)},ga:function(a,b,d,c){var e,f,g;if(c&&c.length)throw new sjcl.exception.invalid("ctr can't authenticate data");if(128!==sjcl.bitArray.bitLength(d))throw new sjcl.exception.invalid("ctr iv must be 128 bits");if(!(c=b.length))return[];d=d.slice(0);e=b.slice(0);b=sjcl.bitArray.bitLength(e);
+for(g=0;g<c;g+=4)for(f=a.encrypt(d),e[g]^=f[0],e[g+1]^=f[1],e[g+2]^=f[2],e[g+3]^=f[3],f=3;0<=f&&!++d[f];f--);return sjcl.bitArray.clamp(e,b)}}};void 0===sjcl.beware&&(sjcl.beware={});
+sjcl.beware["CBC mode is dangerous because it doesn't protect message integrity."]=function(){sjcl.mode.cbc={name:"cbc",encrypt:function(a,b,d,c){if(c&&c.length)throw new sjcl.exception.invalid("cbc can't authenticate data");if(128!==sjcl.bitArray.bitLength(d))throw new sjcl.exception.invalid("cbc iv must be 128 bits");var e=sjcl.bitArray,f=e.l,g=e.bitLength(b),h=0,k=[];if(g&7)throw new sjcl.exception.invalid("pkcs#5 padding only works for multiples of a byte");for(c=0;h+128<=g;c+=4,h+=128)d=a.encrypt(f(d,
+b.slice(c,c+4))),k.splice(c,0,d[0],d[1],d[2],d[3]);g=0x1010101*(16-(g>>3&15));d=a.encrypt(f(d,e.concat(b,[g,g,g,g]).slice(c,c+4)));k.splice(c,0,d[0],d[1],d[2],d[3]);return k},decrypt:function(a,b,d,c){if(c&&c.length)throw new sjcl.exception.invalid("cbc can't authenticate data");if(128!==sjcl.bitArray.bitLength(d))throw new sjcl.exception.invalid("cbc iv must be 128 bits");if(sjcl.bitArray.bitLength(b)&127||!b.length)throw new sjcl.exception.corrupt("cbc ciphertext must be a positive multiple of the block size");
+var e=sjcl.bitArray,f=e.l,g,h=[];for(c=0;c<b.length;c+=4)g=b.slice(c,c+4),d=f(d,a.decrypt(g)),h.splice(c,0,d[0],d[1],d[2],d[3]),d=g;g=h[c-1]&255;if(0===g||16<g)throw new sjcl.exception.corrupt("pkcs#5 padding corrupt");d=0x1010101*g;if(!e.equal(e.bitSlice([d,d,d,d],0,8*g),e.bitSlice(h,32*h.length-8*g,32*h.length)))throw new sjcl.exception.corrupt("pkcs#5 padding corrupt");return e.bitSlice(h,0,32*h.length-8*g)}}};
+sjcl.mode.ocb2={name:"ocb2",encrypt:function(a,b,d,c,e,f){if(128!==sjcl.bitArray.bitLength(d))throw new sjcl.exception.invalid("ocb iv must be 128 bits");var g,h=sjcl.mode.ocb2.U,k=sjcl.bitArray,l=k.l,m=[0,0,0,0];d=h(a.encrypt(d));var n,p=[];c=c||[];e=e||64;for(g=0;g+4<b.length;g+=4)n=b.slice(g,g+4),m=l(m,n),p=p.concat(l(d,a.encrypt(l(d,n)))),d=h(d);n=b.slice(g);b=k.bitLength(n);g=a.encrypt(l(d,[0,0,0,b]));n=k.clamp(l(n.concat([0,0,0]),g),b);m=l(m,l(n.concat([0,0,0]),g));m=a.encrypt(l(m,l(d,h(d))));
+c.length&&(m=l(m,f?c:sjcl.mode.ocb2.pmac(a,c)));return p.concat(k.concat(n,k.clamp(m,e)))},decrypt:function(a,b,d,c,e,f){if(128!==sjcl.bitArray.bitLength(d))throw new sjcl.exception.invalid("ocb iv must be 128 bits");e=e||64;var g=sjcl.mode.ocb2.U,h=sjcl.bitArray,k=h.l,l=[0,0,0,0],m=g(a.encrypt(d)),n,p,r=sjcl.bitArray.bitLength(b)-e,t=[];c=c||[];for(d=0;d+4<r/32;d+=4)n=k(m,a.decrypt(k(m,b.slice(d,d+4)))),l=k(l,n),t=t.concat(n),m=g(m);p=r-32*d;n=a.encrypt(k(m,[0,0,0,p]));n=k(n,h.clamp(b.slice(d),p).concat([0,
+0,0]));l=k(l,n);l=a.encrypt(k(l,k(m,g(m))));c.length&&(l=k(l,f?c:sjcl.mode.ocb2.pmac(a,c)));if(!h.equal(h.clamp(l,e),h.bitSlice(b,r)))throw new sjcl.exception.corrupt("ocb: tag doesn't match");return t.concat(h.clamp(n,p))},pmac:function(a,b){var d,c=sjcl.mode.ocb2.U,e=sjcl.bitArray,f=e.l,g=[0,0,0,0],h=a.encrypt([0,0,0,0]),h=f(h,c(c(h)));for(d=0;d+4<b.length;d+=4)h=c(h),g=f(g,a.encrypt(f(h,b.slice(d,d+4))));d=b.slice(d);128>e.bitLength(d)&&(h=f(h,c(h)),d=e.concat(d,[-2147483648,0,0,0]));g=f(g,d);
+return a.encrypt(f(c(f(h,c(h))),g))},U:function(a){return[a[0]<<1^a[1]>>>31,a[1]<<1^a[2]>>>31,a[2]<<1^a[3]>>>31,a[3]<<1^135*(a[0]>>>31)]}};
+sjcl.mode.ocb2progressive={createEncryptor:function(a,b,d,c,e){if(128!==sjcl.bitArray.bitLength(b))throw new sjcl.exception.invalid("ocb iv must be 128 bits");var f,g=sjcl.mode.ocb2.U,h=sjcl.bitArray,k=h.l,l=[0,0,0,0],m=g(a.encrypt(b)),n,p,r=[],t;d=d||[];c=c||64;return{process:function(b){if(0==sjcl.bitArray.bitLength(b))return[];var d=[];r=r.concat(b);for(f=0;f+4<r.length;f+=4)n=r.slice(f,f+4),l=k(l,n),d=d.concat(k(m,a.encrypt(k(m,n)))),m=g(m);r=r.slice(f);return d},finalize:function(){n=r;p=h.bitLength(n);
+t=a.encrypt(k(m,[0,0,0,p]));n=h.clamp(k(n.concat([0,0,0]),t),p);l=k(l,k(n.concat([0,0,0]),t));l=a.encrypt(k(l,k(m,g(m))));d.length&&(l=k(l,e?d:sjcl.mode.ocb2.pmac(a,d)));return h.concat(n,h.clamp(l,c))}}},createDecryptor:function(a,b,d,c,e){if(128!==sjcl.bitArray.bitLength(b))throw new sjcl.exception.invalid("ocb iv must be 128 bits");c=c||64;var f,g=sjcl.mode.ocb2.U,h=sjcl.bitArray,k=h.l,l=[0,0,0,0],m=g(a.encrypt(b)),n,p,r=[],t;d=d||[];return{process:function(b){if(0==b.length)return[];var d=[];
+r=r.concat(b);b=sjcl.bitArray.bitLength(r);for(f=0;f+4<(b-c)/32;f+=4)n=k(m,a.decrypt(k(m,r.slice(f,f+4)))),l=k(l,n),d=d.concat(n),m=g(m);r=r.slice(f);return d},finalize:function(){p=sjcl.bitArray.bitLength(r)-c;t=a.encrypt(k(m,[0,0,0,p]));n=k(t,h.clamp(r,p).concat([0,0,0]));l=k(l,n);l=a.encrypt(k(l,k(m,g(m))));d.length&&(l=k(l,e?d:sjcl.mode.ocb2.pmac(a,d)));if(!h.equal(h.clamp(l,c),h.bitSlice(r,p)))throw new sjcl.exception.corrupt("ocb: tag doesn't match");return h.clamp(n,p)}}}};
+sjcl.mode.gcm={name:"gcm",encrypt:function(a,b,d,c,e){var f=b.slice(0);b=sjcl.bitArray;c=c||[];a=sjcl.mode.gcm.u(!0,a,f,c,d,e||128);return b.concat(a.data,a.tag)},decrypt:function(a,b,d,c,e){var f=b.slice(0),g=sjcl.bitArray,h=g.bitLength(f);e=e||128;c=c||[];e<=h?(b=g.bitSlice(f,h-e),f=g.bitSlice(f,0,h-e)):(b=f,f=[]);a=sjcl.mode.gcm.u(!1,a,f,c,d,e);if(!g.equal(a.tag,b))throw new sjcl.exception.corrupt("gcm: tag doesn't match");return a.data},Da:function(a,b){var d,c,e,f,g,h=sjcl.bitArray.l;e=[0,0,
+0,0];f=b.slice(0);for(d=0;128>d;d++){(c=0!==(a[Math.floor(d/32)]&1<<31-d%32))&&(e=h(e,f));g=0!==(f[3]&1);for(c=3;0<c;c--)f[c]=f[c]>>>1|(f[c-1]&1)<<31;f[0]>>>=1;g&&(f[0]^=-0x1f000000)}return e},J:function(a,b,d){var c,e=d.length;b=b.slice(0);for(c=0;c<e;c+=4)b[0]^=0xffffffff&d[c],b[1]^=0xffffffff&d[c+1],b[2]^=0xffffffff&d[c+2],b[3]^=0xffffffff&d[c+3],b=sjcl.mode.gcm.Da(b,a);return b},u:function(a,b,d,c,e,f){var g,h,k,l,m,n,p,r,t=sjcl.bitArray;n=d.length;p=t.bitLength(d);r=t.bitLength(c);h=t.bitLength(e);
+g=b.encrypt([0,0,0,0]);96===h?(e=e.slice(0),e=t.concat(e,[1])):(e=sjcl.mode.gcm.J(g,[0,0,0,0],e),e=sjcl.mode.gcm.J(g,e,[0,0,Math.floor(h/0x100000000),h&0xffffffff]));h=sjcl.mode.gcm.J(g,[0,0,0,0],c);m=e.slice(0);c=h.slice(0);a||(c=sjcl.mode.gcm.J(g,h,d));for(l=0;l<n;l+=4)m[3]++,k=b.encrypt(m),d[l]^=k[0],d[l+1]^=k[1],d[l+2]^=k[2],d[l+3]^=k[3];d=t.clamp(d,p);a&&(c=sjcl.mode.gcm.J(g,h,d));a=[Math.floor(r/0x100000000),r&0xffffffff,Math.floor(p/0x100000000),p&0xffffffff];c=sjcl.mode.gcm.J(g,c,a);k=b.encrypt(e);
+c[0]^=k[0];c[1]^=k[1];c[2]^=k[2];c[3]^=k[3];return{tag:t.bitSlice(c,0,f),data:d}}};sjcl.misc.hmac=function(a,b){this.ka=b=b||sjcl.hash.sha256;var d=[[],[]],c,e=b.prototype.blockSize/32;this.P=[new b,new b];a.length>e&&(a=b.hash(a));for(c=0;c<e;c++)d[0][c]=a[c]^909522486,d[1][c]=a[c]^1549556828;this.P[0].update(d[0]);this.P[1].update(d[1]);this.ea=new b(this.P[0])};
+sjcl.misc.hmac.prototype.encrypt=sjcl.misc.hmac.prototype.mac=function(a){if(this.ta)throw new sjcl.exception.invalid("encrypt on already updated hmac called!");this.update(a);return this.digest(a)};sjcl.misc.hmac.prototype.reset=function(){this.ea=new this.ka(this.P[0]);this.ta=!1};sjcl.misc.hmac.prototype.update=function(a){this.ta=!0;this.ea.update(a)};sjcl.misc.hmac.prototype.digest=function(){var a=this.ea.finalize(),a=(new this.ka(this.P[1])).update(a).finalize();this.reset();return a};
+sjcl.misc.pbkdf2=function(a,b,d,c,e){d=d||1E4;if(0>c||0>d)throw new sjcl.exception.invalid("invalid params to pbkdf2");"string"===typeof a&&(a=sjcl.codec.utf8String.toBits(a));"string"===typeof b&&(b=sjcl.codec.utf8String.toBits(b));e=e||sjcl.misc.hmac;a=new e(a);var f,g,h,k,l=[],m=sjcl.bitArray;for(k=1;32*l.length<(c||1);k++){e=f=a.encrypt(m.concat(b,[k]));for(g=1;g<d;g++)for(f=a.encrypt(f),h=0;h<f.length;h++)e[h]^=f[h];l=l.concat(e)}c&&(l=m.clamp(l,c));return l};
+sjcl.misc.scrypt=function(a,b,d,c,e,f,g){var h=Math.pow(2,32)-1,k=sjcl.misc.scrypt;d=d||16384;c=c||8;e=e||1;if(c*e>=Math.pow(2,30))throw sjcl.exception.invalid("The parameters r, p must satisfy r * p < 2^30");if(2>d||d&0!=d-1)throw sjcl.exception.invalid("The parameter N must be a power of 2.");if(d>h/128/c)throw sjcl.exception.invalid("N too big.");if(c>h/128/e)throw sjcl.exception.invalid("r too big.");b=sjcl.misc.pbkdf2(a,b,1,128*e*c*8,g);c=b.length/e;k.reverse(b);for(h=0;h<e;h++){var l=b.slice(h*
+c,(h+1)*c);k.blockcopy(k.ROMix(l,d),0,b,h*c)}k.reverse(b);return sjcl.misc.pbkdf2(a,b,1,f,g)};
+sjcl.misc.scrypt.salsa20Core=function(a,b){function d(a,b){return a<<b|a>>>32-b}for(var c=a.slice(0),e=b;0<e;e-=2)c[4]^=d(c[0]+c[12],7),c[8]^=d(c[4]+c[0],9),c[12]^=d(c[8]+c[4],13),c[0]^=d(c[12]+c[8],18),c[9]^=d(c[5]+c[1],7),c[13]^=d(c[9]+c[5],9),c[1]^=d(c[13]+c[9],13),c[5]^=d(c[1]+c[13],18),c[14]^=d(c[10]+c[6],7),c[2]^=d(c[14]+c[10],9),c[6]^=d(c[2]+c[14],13),c[10]^=d(c[6]+c[2],18),c[3]^=d(c[15]+c[11],7),c[7]^=d(c[3]+c[15],9),c[11]^=d(c[7]+c[3],13),c[15]^=d(c[11]+c[7],18),c[1]^=d(c[0]+c[3],7),c[2]^=
+d(c[1]+c[0],9),c[3]^=d(c[2]+c[1],13),c[0]^=d(c[3]+c[2],18),c[6]^=d(c[5]+c[4],7),c[7]^=d(c[6]+c[5],9),c[4]^=d(c[7]+c[6],13),c[5]^=d(c[4]+c[7],18),c[11]^=d(c[10]+c[9],7),c[8]^=d(c[11]+c[10],9),c[9]^=d(c[8]+c[11],13),c[10]^=d(c[9]+c[8],18),c[12]^=d(c[15]+c[14],7),c[13]^=d(c[12]+c[15],9),c[14]^=d(c[13]+c[12],13),c[15]^=d(c[14]+c[13],18);for(e=0;16>e;e++)a[e]=c[e]+a[e]};
+sjcl.misc.scrypt.blockMix=function(a){for(var b=a.slice(-16),d=[],c=a.length/16,e=sjcl.misc.scrypt,f=0;f<c;f++)e.blockxor(a,16*f,b,0,16),e.salsa20Core(b,8),0==(f&1)?e.blockcopy(b,0,d,8*f):e.blockcopy(b,0,d,8*(f^1+c));return d};sjcl.misc.scrypt.ROMix=function(a,b){for(var d=a.slice(0),c=[],e=sjcl.misc.scrypt,f=0;f<b;f++)c.push(d.slice(0)),d=e.blockMix(d);for(f=0;f<b;f++)e.blockxor(c[d[d.length-16]&b-1],0,d,0),d=e.blockMix(d);return d};
+sjcl.misc.scrypt.reverse=function(a){for(var b in a){var d=a[b]&255,d=d<<8|a[b]>>>8&255,d=d<<8|a[b]>>>16&255,d=d<<8|a[b]>>>24&255;a[b]=d}};sjcl.misc.scrypt.blockcopy=function(a,b,d,c,e){var f;e=e||a.length-b;for(f=0;f<e;f++)d[c+f]=a[b+f]|0};sjcl.misc.scrypt.blockxor=function(a,b,d,c,e){var f;e=e||a.length-b;for(f=0;f<e;f++)d[c+f]=d[c+f]^a[b+f]|0};
+sjcl.prng=function(a){this.s=[new sjcl.hash.sha256];this.K=[0];this.da=0;this.X={};this.ca=0;this.ia={};this.qa=this.B=this.L=this.Aa=0;this.i=[0,0,0,0,0,0,0,0];this.F=[0,0,0,0];this.aa=void 0;this.ba=a;this.V=!1;this.$={progress:{},seeded:{}};this.O=this.za=0;this.Y=1;this.Z=2;this.va=0x10000;this.fa=[0,48,64,96,128,192,0x100,384,512,768,1024];this.wa=3E4;this.ua=80};
+sjcl.prng.prototype={randomWords:function(a,b){var d=[],c;c=this.isReady(b);var e;if(c===this.O)throw new sjcl.exception.notReady("generator isn't seeded");if(c&this.Z){c=!(c&this.Y);e=[];var f=0,g;this.qa=e[0]=(new Date).valueOf()+this.wa;for(g=0;16>g;g++)e.push(0x100000000*Math.random()|0);for(g=0;g<this.s.length&&(e=e.concat(this.s[g].finalize()),f+=this.K[g],this.K[g]=0,c||!(this.da&1<<g));g++);this.da>=1<<this.s.length&&(this.s.push(new sjcl.hash.sha256),this.K.push(0));this.B-=f;f>this.L&&(this.L=
+f);this.da++;this.i=sjcl.hash.sha256.hash(this.i.concat(e));this.aa=new sjcl.cipher.aes(this.i);for(c=0;4>c&&(this.F[c]=this.F[c]+1|0,!this.F[c]);c++);}for(c=0;c<a;c+=4)0===(c+1)%this.va&&ca(this),e=da(this),d.push(e[0],e[1],e[2],e[3]);ca(this);return d.slice(0,a)},setDefaultParanoia:function(a,b){if(0===a&&"Setting paranoia=0 will ruin your security; use it only for testing"!==b)throw new sjcl.exception.invalid("Setting paranoia=0 will ruin your security; use it only for testing");this.ba=a},addEntropy:function(a,
+b,d){d=d||"user";var c,e,f=(new Date).valueOf(),g=this.X[d],h=this.isReady(),k=0;c=this.ia[d];void 0===c&&(c=this.ia[d]=this.Aa++);void 0===g&&(g=this.X[d]=0);this.X[d]=(this.X[d]+1)%this.s.length;switch(typeof a){case "number":void 0===b&&(b=1);this.s[g].update([c,this.ca++,1,b,f,1,a|0]);break;case "object":d=Object.prototype.toString.call(a);if("[object Uint32Array]"===d){e=[];for(d=0;d<a.length;d++)e.push(a[d]);a=e}else for("[object Array]"!==d&&(k=1),d=0;d<a.length&&!k;d++)"number"!==typeof a[d]&&
+(k=1);if(!k){if(void 0===b)for(d=b=0;d<a.length;d++)for(e=a[d];0<e;)b++,e=e>>>1;this.s[g].update([c,this.ca++,2,b,f,a.length].concat(a))}break;case "string":void 0===b&&(b=a.length);this.s[g].update([c,this.ca++,3,b,f,a.length]);this.s[g].update(a);break;default:k=1}if(k)throw new sjcl.exception.bug("random: addEntropy only supports number, array of numbers or string");this.K[g]+=b;this.B+=b;h===this.O&&(this.isReady()!==this.O&&ea("seeded",Math.max(this.L,this.B)),ea("progress",this.getProgress()))},
+isReady:function(a){a=this.fa[void 0!==a?a:this.ba];return this.L&&this.L>=a?this.K[0]>this.ua&&(new Date).valueOf()>this.qa?this.Z|this.Y:this.Y:this.B>=a?this.Z|this.O:this.O},getProgress:function(a){a=this.fa[a?a:this.ba];return this.L>=a?1:this.B>a?1:this.B/a},startCollectors:function(){if(!this.V){this.j={loadTimeCollector:H(this,this.Ia),mouseCollector:H(this,this.Ja),keyboardCollector:H(this,this.Ga),accelerometerCollector:H(this,this.xa),touchCollector:H(this,this.La)};if(window.addEventListener)window.addEventListener("load",
+this.j.loadTimeCollector,!1),window.addEventListener("mousemove",this.j.mouseCollector,!1),window.addEventListener("keypress",this.j.keyboardCollector,!1),window.addEventListener("devicemotion",this.j.accelerometerCollector,!1),window.addEventListener("touchmove",this.j.touchCollector,!1);else if(document.attachEvent)document.attachEvent("onload",this.j.loadTimeCollector),document.attachEvent("onmousemove",this.j.mouseCollector),document.attachEvent("keypress",this.j.keyboardCollector);else throw new sjcl.exception.bug("can't attach event");
+this.V=!0}},stopCollectors:function(){this.V&&(window.removeEventListener?(window.removeEventListener("load",this.j.loadTimeCollector,!1),window.removeEventListener("mousemove",this.j.mouseCollector,!1),window.removeEventListener("keypress",this.j.keyboardCollector,!1),window.removeEventListener("devicemotion",this.j.accelerometerCollector,!1),window.removeEventListener("touchmove",this.j.touchCollector,!1)):document.detachEvent&&(document.detachEvent("onload",this.j.loadTimeCollector),document.detachEvent("onmousemove",
+this.j.mouseCollector),document.detachEvent("keypress",this.j.keyboardCollector)),this.V=!1)},addEventListener:function(a,b){this.$[a][this.za++]=b},removeEventListener:function(a,b){var d,c,e=this.$[a],f=[];for(c in e)e.hasOwnProperty(c)&&e[c]===b&&f.push(c);for(d=0;d<f.length;d++)c=f[d],delete e[c]},Ga:function(){R(this,1)},Ja:function(a){var b,d;try{b=a.x||a.clientX||a.offsetX||0,d=a.y||a.clientY||a.offsetY||0}catch(c){d=b=0}0!=b&&0!=d&&this.addEntropy([b,d],2,"mouse");R(this,0)},La:function(a){a=
+a.touches[0]||a.changedTouches[0];this.addEntropy([a.pageX||a.clientX,a.pageY||a.clientY],1,"touch");R(this,0)},Ia:function(){R(this,2)},xa:function(a){a=a.accelerationIncludingGravity.x||a.accelerationIncludingGravity.y||a.accelerationIncludingGravity.z;if(window.orientation){var b=window.orientation;"number"===typeof b&&this.addEntropy(b,1,"accelerometer")}a&&this.addEntropy(a,2,"accelerometer");R(this,0)}};
+function ea(a,b){var d,c=sjcl.random.$[a],e=[];for(d in c)c.hasOwnProperty(d)&&e.push(c[d]);for(d=0;d<e.length;d++)e[d](b)}function R(a,b){"undefined"!==typeof window&&window.performance&&"function"===typeof window.performance.now?a.addEntropy(window.performance.now(),b,"loadtime"):a.addEntropy((new Date).valueOf(),b,"loadtime")}function ca(a){a.i=da(a).concat(da(a));a.aa=new sjcl.cipher.aes(a.i)}function da(a){for(var b=0;4>b&&(a.F[b]=a.F[b]+1|0,!a.F[b]);b++);return a.aa.encrypt(a.F)}
+function H(a,b){return function(){b.apply(a,arguments)}}sjcl.random=new sjcl.prng(6);
+a:try{var S,fa,V,ia;if(ia= true&&module.exports){var ja;try{ja=__webpack_require__(247)}catch(a){ja=null}ia=fa=ja}if(ia&&fa.randomBytes)S=fa.randomBytes(128),S=new Uint32Array((new Uint8Array(S)).buffer),sjcl.random.addEntropy(S,1024,"crypto['randomBytes']");else if("undefined"!==typeof window&&"undefined"!==typeof Uint32Array){V=new Uint32Array(32);if(window.crypto&&window.crypto.getRandomValues)window.crypto.getRandomValues(V);else if(window.msCrypto&&window.msCrypto.getRandomValues)window.msCrypto.getRandomValues(V);
+else break a;sjcl.random.addEntropy(V,1024,"crypto['getRandomValues']")}}catch(a){"undefined"!==typeof window&&window.console&&(console.log("There was an error collecting entropy from the browser:"),console.log(a))}
+sjcl.json={defaults:{v:1,iter:1E4,ks:128,ts:64,mode:"ccm",adata:"",cipher:"aes"},Ca:function(a,b,d,c){d=d||{};c=c||{};var e=sjcl.json,f=e.C({iv:sjcl.random.randomWords(4,0)},e.defaults),g;e.C(f,d);d=f.adata;"string"===typeof f.salt&&(f.salt=sjcl.codec.base64.toBits(f.salt));"string"===typeof f.iv&&(f.iv=sjcl.codec.base64.toBits(f.iv));if(!sjcl.mode[f.mode]||!sjcl.cipher[f.cipher]||"string"===typeof a&&100>=f.iter||64!==f.ts&&96!==f.ts&&128!==f.ts||128!==f.ks&&192!==f.ks&&0x100!==f.ks||2>f.iv.length||
+4<f.iv.length)throw new sjcl.exception.invalid("json encrypt: invalid parameters");"string"===typeof a?(g=sjcl.misc.cachedPbkdf2(a,f),a=g.key.slice(0,f.ks/32),f.salt=g.salt):sjcl.ecc&&a instanceof sjcl.ecc.elGamal.publicKey&&(g=a.kem(),f.kemtag=g.tag,a=g.key.slice(0,f.ks/32));"string"===typeof b&&(b=sjcl.codec.utf8String.toBits(b));"string"===typeof d&&(f.adata=d=sjcl.codec.utf8String.toBits(d));g=new sjcl.cipher[f.cipher](a);e.C(c,f);c.key=a;f.ct="ccm"===f.mode&&sjcl.arrayBuffer&&sjcl.arrayBuffer.ccm&&
+b instanceof ArrayBuffer?sjcl.arrayBuffer.ccm.encrypt(g,b,f.iv,d,f.ts):sjcl.mode[f.mode].encrypt(g,b,f.iv,d,f.ts);return f},encrypt:function(a,b,d,c){var e=sjcl.json,f=e.Ca.apply(e,arguments);return e.encode(f)},Ba:function(a,b,d,c){d=d||{};c=c||{};var e=sjcl.json;b=e.C(e.C(e.C({},e.defaults),b),d,!0);var f,g;f=b.adata;"string"===typeof b.salt&&(b.salt=sjcl.codec.base64.toBits(b.salt));"string"===typeof b.iv&&(b.iv=sjcl.codec.base64.toBits(b.iv));if(!sjcl.mode[b.mode]||!sjcl.cipher[b.cipher]||"string"===
+typeof a&&100>=b.iter||64!==b.ts&&96!==b.ts&&128!==b.ts||128!==b.ks&&192!==b.ks&&0x100!==b.ks||!b.iv||2>b.iv.length||4<b.iv.length)throw new sjcl.exception.invalid("json decrypt: invalid parameters");"string"===typeof a?(g=sjcl.misc.cachedPbkdf2(a,b),a=g.key.slice(0,b.ks/32),b.salt=g.salt):sjcl.ecc&&a instanceof sjcl.ecc.elGamal.secretKey&&(a=a.unkem(sjcl.codec.base64.toBits(b.kemtag)).slice(0,b.ks/32));"string"===typeof f&&(f=sjcl.codec.utf8String.toBits(f));g=new sjcl.cipher[b.cipher](a);f="ccm"===
+b.mode&&sjcl.arrayBuffer&&sjcl.arrayBuffer.ccm&&b.ct instanceof ArrayBuffer?sjcl.arrayBuffer.ccm.decrypt(g,b.ct,b.iv,b.tag,f,b.ts):sjcl.mode[b.mode].decrypt(g,b.ct,b.iv,f,b.ts);e.C(c,b);c.key=a;return 1===d.raw?f:sjcl.codec.utf8String.fromBits(f)},decrypt:function(a,b,d,c){var e=sjcl.json;return e.Ba(a,e.decode(b),d,c)},encode:function(a){var b,d="{",c="";for(b in a)if(a.hasOwnProperty(b)){if(!b.match(/^[a-z0-9]+$/i))throw new sjcl.exception.invalid("json encode: invalid property name");d+=c+'"'+
+b+'":';c=",";switch(typeof a[b]){case "number":case "boolean":d+=a[b];break;case "string":d+='"'+escape(a[b])+'"';break;case "object":d+='"'+sjcl.codec.base64.fromBits(a[b],0)+'"';break;default:throw new sjcl.exception.bug("json encode: unsupported type");}}return d+"}"},decode:function(a){a=a.replace(/\s/g,"");if(!a.match(/^\{.*\}$/))throw new sjcl.exception.invalid("json decode: this isn't json!");a=a.replace(/^\{|\}$/g,"").split(/,/);var b={},d,c;for(d=0;d<a.length;d++){if(!(c=a[d].match(/^\s*(?:(["']?)([a-z][a-z0-9]*)\1)\s*:\s*(?:(-?\d+)|"([a-z0-9+\/%*_.@=\-]*)"|(true|false))$/i)))throw new sjcl.exception.invalid("json decode: this isn't json!");
+null!=c[3]?b[c[2]]=parseInt(c[3],10):null!=c[4]?b[c[2]]=c[2].match(/^(ct|adata|salt|iv)$/)?sjcl.codec.base64.toBits(c[4]):unescape(c[4]):null!=c[5]&&(b[c[2]]="true"===c[5])}return b},C:function(a,b,d){void 0===a&&(a={});if(void 0===b)return a;for(var c in b)if(b.hasOwnProperty(c)){if(d&&void 0!==a[c]&&a[c]!==b[c])throw new sjcl.exception.invalid("required parameter overridden");a[c]=b[c]}return a},Na:function(a,b){var d={},c;for(c in a)a.hasOwnProperty(c)&&a[c]!==b[c]&&(d[c]=a[c]);return d},Ma:function(a,
+b){var d={},c;for(c=0;c<b.length;c++)void 0!==a[b[c]]&&(d[b[c]]=a[b[c]]);return d}};sjcl.encrypt=sjcl.json.encrypt;sjcl.decrypt=sjcl.json.decrypt;sjcl.misc.Ka={};sjcl.misc.cachedPbkdf2=function(a,b){var d=sjcl.misc.Ka,c;b=b||{};c=b.iter||1E3;d=d[a]=d[a]||{};c=d[c]=d[c]||{firstSalt:b.salt&&b.salt.length?b.salt.slice(0):sjcl.random.randomWords(2,0)};d=void 0===b.salt?c.firstSalt:b.salt;c[d]=c[d]||sjcl.misc.pbkdf2(a,d,b.iter);return{key:c[d].slice(0),salt:d.slice(0)}};sjcl.bn=function(a){this.initWith(a)};
+sjcl.bn.prototype={radix:24,maxMul:8,o:sjcl.bn,copy:function(){return new this.o(this)},initWith:function(a){var b=0,d;switch(typeof a){case "object":this.limbs=a.limbs.slice(0);break;case "number":this.limbs=[a];this.normalize();break;case "string":a=a.replace(/^0x/,"");this.limbs=[];d=this.radix/4;for(b=0;b<a.length;b+=d)this.limbs.push(parseInt(a.substring(Math.max(a.length-b-d,0),a.length-b),16));break;default:this.limbs=[0]}return this},equals:function(a){"number"===typeof a&&(a=new this.o(a));
+var b=0,d;this.fullReduce();a.fullReduce();for(d=0;d<this.limbs.length||d<a.limbs.length;d++)b|=this.getLimb(d)^a.getLimb(d);return 0===b},getLimb:function(a){return a>=this.limbs.length?0:this.limbs[a]},greaterEquals:function(a){"number"===typeof a&&(a=new this.o(a));var b=0,d=0,c,e,f;for(c=Math.max(this.limbs.length,a.limbs.length)-1;0<=c;c--)e=this.getLimb(c),f=a.getLimb(c),d|=f-e&~b,b|=e-f&~d;return(d|~b)>>>31},toString:function(){this.fullReduce();var a="",b,d,c=this.limbs;for(b=0;b<this.limbs.length;b++){for(d=
+c[b].toString(16);b<this.limbs.length-1&&6>d.length;)d="0"+d;a=d+a}return"0x"+a},addM:function(a){"object"!==typeof a&&(a=new this.o(a));var b=this.limbs,d=a.limbs;for(a=b.length;a<d.length;a++)b[a]=0;for(a=0;a<d.length;a++)b[a]+=d[a];return this},doubleM:function(){var a,b=0,d,c=this.radix,e=this.radixMask,f=this.limbs;for(a=0;a<f.length;a++)d=f[a],d=d+d+b,f[a]=d&e,b=d>>c;b&&f.push(b);return this},halveM:function(){var a,b=0,d,c=this.radix,e=this.limbs;for(a=e.length-1;0<=a;a--)d=e[a],e[a]=d+b>>
+1,b=(d&1)<<c;e[e.length-1]||e.pop();return this},subM:function(a){"object"!==typeof a&&(a=new this.o(a));var b=this.limbs,d=a.limbs;for(a=b.length;a<d.length;a++)b[a]=0;for(a=0;a<d.length;a++)b[a]-=d[a];return this},mod:function(a){var b=!this.greaterEquals(new sjcl.bn(0));a=(new sjcl.bn(a)).normalize();var d=(new sjcl.bn(this)).normalize(),c=0;for(b&&(d=(new sjcl.bn(0)).subM(d).normalize());d.greaterEquals(a);c++)a.doubleM();for(b&&(d=a.sub(d).normalize());0<c;c--)a.halveM(),d.greaterEquals(a)&&
+d.subM(a).normalize();return d.trim()},inverseMod:function(a){var b=new sjcl.bn(1),d=new sjcl.bn(0),c=new sjcl.bn(this),e=new sjcl.bn(a),f,g=1;if(!(a.limbs[0]&1))throw new sjcl.exception.invalid("inverseMod: p must be odd");do for(c.limbs[0]&1&&(c.greaterEquals(e)||(f=c,c=e,e=f,f=b,b=d,d=f),c.subM(e),c.normalize(),b.greaterEquals(d)||b.addM(a),b.subM(d)),c.halveM(),b.limbs[0]&1&&b.addM(a),b.normalize(),b.halveM(),f=g=0;f<c.limbs.length;f++)g|=c.limbs[f];while(g);if(!e.equals(1))throw new sjcl.exception.invalid("inverseMod: p and x must be relatively prime");
+return d},add:function(a){return this.copy().addM(a)},sub:function(a){return this.copy().subM(a)},mul:function(a){"number"===typeof a?a=new this.o(a):a.normalize();this.normalize();var b,d=this.limbs,c=a.limbs,e=d.length,f=c.length,g=new this.o,h=g.limbs,k,l=this.maxMul;for(b=0;b<this.limbs.length+a.limbs.length+1;b++)h[b]=0;for(b=0;b<e;b++){k=d[b];for(a=0;a<f;a++)h[b+a]+=k*c[a];--l||(l=this.maxMul,g.cnormalize())}return g.cnormalize().reduce()},square:function(){return this.mul(this)},power:function(a){a=
+(new sjcl.bn(a)).normalize().trim().limbs;var b,d,c=new this.o(1),e=this;for(b=0;b<a.length;b++)for(d=0;d<this.radix;d++){a[b]&1<<d&&(c=c.mul(e));if(b==a.length-1&&0==a[b]>>d+1)break;e=e.square()}return c},mulmod:function(a,b){return this.mod(b).mul(a.mod(b)).mod(b)},powermod:function(a,b){a=new sjcl.bn(a);b=new sjcl.bn(b);if(1==(b.limbs[0]&1)){var d=this.montpowermod(a,b);if(0!=d)return d}for(var c,e=a.normalize().trim().limbs,f=new this.o(1),g=this,d=0;d<e.length;d++)for(c=0;c<this.radix;c++){e[d]&
+1<<c&&(f=f.mulmod(g,b));if(d==e.length-1&&0==e[d]>>c+1)break;g=g.mulmod(g,b)}return f},montpowermod:function(a,b){function d(a,b){var d=b%a.radix;return(a.limbs[Math.floor(b/a.radix)]&1<<d)>>d}function c(a,d){var c,e,f=(1<<l+1)-1;c=a.mul(d);e=c.mul(r);e.limbs=e.limbs.slice(0,k.limbs.length);e.limbs.length==k.limbs.length&&(e.limbs[k.limbs.length-1]&=f);e=e.mul(b);e=c.add(e).normalize().trim();e.limbs=e.limbs.slice(k.limbs.length-1);for(c=0;c<e.limbs.length;c++)0<c&&(e.limbs[c-1]|=(e.limbs[c]&f)<<
+g-l-1),e.limbs[c]>>=l+1;e.greaterEquals(b)&&e.subM(b);return e}a=(new sjcl.bn(a)).normalize().trim();b=new sjcl.bn(b);var e,f,g=this.radix,h=new this.o(1);e=this.copy();var k,l,m;m=a.bitLength();k=new sjcl.bn({limbs:b.copy().normalize().trim().limbs.map(function(){return 0})});for(l=this.radix;0<l;l--)if(1==(b.limbs[b.limbs.length-1]>>l&1)){k.limbs[k.limbs.length-1]=1<<l;break}if(0==m)return this;m=18>m?1:48>m?3:144>m?4:768>m?5:6;var n=k.copy(),p=b.copy();f=new sjcl.bn(1);for(var r=new sjcl.bn(0),
+t=k.copy();t.greaterEquals(1);)t.halveM(),0==(f.limbs[0]&1)?(f.halveM(),r.halveM()):(f.addM(p),f.halveM(),r.halveM(),r.addM(n));f=f.normalize();r=r.normalize();n.doubleM();p=n.mulmod(n,b);if(!n.mul(f).sub(b.mul(r)).equals(1))return!1;e=c(e,p);h=c(h,p);n={};f=(1<<m-1)-1;n[1]=e.copy();n[2]=c(e,e);for(e=1;e<=f;e++)n[2*e+1]=c(n[2*e-1],n[2]);for(e=a.bitLength()-1;0<=e;)if(0==d(a,e))h=c(h,h),--e;else{for(p=e-m+1;0==d(a,p);)p++;t=0;for(f=p;f<=e;f++)t+=d(a,f)<<f-p,h=c(h,h);h=c(h,n[t]);e=p-1}return c(h,1)},
+trim:function(){var a=this.limbs,b;do b=a.pop();while(a.length&&0===b);a.push(b);return this},reduce:function(){return this},fullReduce:function(){return this.normalize()},normalize:function(){var a=0,b,d=this.placeVal,c=this.ipv,e,f=this.limbs,g=f.length,h=this.radixMask;for(b=0;b<g||0!==a&&-1!==a;b++)a=(f[b]||0)+a,e=f[b]=a&h,a=(a-e)*c;-1===a&&(f[b-1]-=d);this.trim();return this},cnormalize:function(){var a=0,b,d=this.ipv,c,e=this.limbs,f=e.length,g=this.radixMask;for(b=0;b<f-1;b++)a=e[b]+a,c=e[b]=
+a&g,a=(a-c)*d;e[b]+=a;return this},toBits:function(a){this.fullReduce();a=a||this.exponent||this.bitLength();var b=Math.floor((a-1)/24),d=sjcl.bitArray,c=[d.partial((a+7&-8)%this.radix||this.radix,this.getLimb(b))];for(b--;0<=b;b--)c=d.concat(c,[d.partial(Math.min(this.radix,a),this.getLimb(b))]),a-=this.radix;return c},bitLength:function(){this.fullReduce();for(var a=this.radix*(this.limbs.length-1),b=this.limbs[this.limbs.length-1];b;b>>>=1)a++;return a+7&-8}};
+sjcl.bn.fromBits=function(a){var b=new this,d=[],c=sjcl.bitArray,e=this.prototype,f=Math.min(this.bitLength||0x100000000,c.bitLength(a)),g=f%e.radix||e.radix;for(d[0]=c.extract(a,0,g);g<f;g+=e.radix)d.unshift(c.extract(a,g,e.radix));b.limbs=d;return b};sjcl.bn.prototype.ipv=1/(sjcl.bn.prototype.placeVal=Math.pow(2,sjcl.bn.prototype.radix));sjcl.bn.prototype.radixMask=(1<<sjcl.bn.prototype.radix)-1;
+sjcl.bn.pseudoMersennePrime=function(a,b){function d(a){this.initWith(a)}var c=d.prototype=new sjcl.bn,e,f,g;g=c.modOffset=Math.ceil(f=a/c.radix);c.exponent=a;c.offset=[];c.factor=[];c.minOffset=g;c.fullMask=0;c.fullOffset=[];c.fullFactor=[];c.modulus=d.modulus=new sjcl.bn(Math.pow(2,a));c.fullMask=0|-Math.pow(2,a%c.radix);for(e=0;e<b.length;e++)c.offset[e]=Math.floor(b[e][0]/c.radix-f),c.fullOffset[e]=Math.floor(b[e][0]/c.radix)-g+1,c.factor[e]=b[e][1]*Math.pow(.5,a-b[e][0]+c.offset[e]*c.radix),
+c.fullFactor[e]=b[e][1]*Math.pow(.5,a-b[e][0]+c.fullOffset[e]*c.radix),c.modulus.addM(new sjcl.bn(Math.pow(2,b[e][0])*b[e][1])),c.minOffset=Math.min(c.minOffset,-c.offset[e]);c.o=d;c.modulus.cnormalize();c.reduce=function(){var a,b,d,c=this.modOffset,e=this.limbs,f=this.offset,g=this.offset.length,t=this.factor,D;for(a=this.minOffset;e.length>c;){d=e.pop();D=e.length;for(b=0;b<g;b++)e[D+f[b]]-=t[b]*d;a--;a||(e.push(0),this.cnormalize(),a=this.minOffset)}this.cnormalize();return this};c.sa=-1===c.fullMask?
+c.reduce:function(){var a=this.limbs,b=a.length-1,d,c;this.reduce();if(b===this.modOffset-1){c=a[b]&this.fullMask;a[b]-=c;for(d=0;d<this.fullOffset.length;d++)a[b+this.fullOffset[d]]-=this.fullFactor[d]*c;this.normalize()}};c.fullReduce=function(){var a,b;this.sa();this.addM(this.modulus);this.addM(this.modulus);this.normalize();this.sa();for(b=this.limbs.length;b<this.modOffset;b++)this.limbs[b]=0;a=this.greaterEquals(this.modulus);for(b=0;b<this.limbs.length;b++)this.limbs[b]-=this.modulus.limbs[b]*
+a;this.cnormalize();return this};c.inverse=function(){return this.power(this.modulus.sub(2))};d.fromBits=sjcl.bn.fromBits;return d};var W=sjcl.bn.pseudoMersennePrime;
+sjcl.bn.prime={p127:W(127,[[0,-1]]),p25519:W(255,[[0,-19]]),p192k:W(192,[[32,-1],[12,-1],[8,-1],[7,-1],[6,-1],[3,-1],[0,-1]]),p224k:W(224,[[32,-1],[12,-1],[11,-1],[9,-1],[7,-1],[4,-1],[1,-1],[0,-1]]),p256k:W(0x100,[[32,-1],[9,-1],[8,-1],[7,-1],[6,-1],[4,-1],[0,-1]]),p192:W(192,[[0,-1],[64,-1]]),p224:W(224,[[0,1],[96,-1]]),p256:W(0x100,[[0,-1],[96,1],[192,1],[224,-1]]),p384:W(384,[[0,-1],[32,1],[96,-1],[128,-1]]),p521:W(521,[[0,-1]])};
+sjcl.bn.random=function(a,b){"object"!==typeof a&&(a=new sjcl.bn(a));for(var d,c,e=a.limbs.length,f=a.limbs[e-1]+1,g=new sjcl.bn;;){do d=sjcl.random.randomWords(e,b),0>d[e-1]&&(d[e-1]+=0x100000000);while(Math.floor(d[e-1]/f)===Math.floor(0x100000000/f));d[e-1]%=f;for(c=0;c<e-1;c++)d[c]&=a.radixMask;g.limbs=d;if(!g.greaterEquals(a))return g}};sjcl.ecc={};
+sjcl.ecc.point=function(a,b,d){void 0===b?this.isIdentity=!0:(b instanceof sjcl.bn&&(b=new a.field(b)),d instanceof sjcl.bn&&(d=new a.field(d)),this.x=b,this.y=d,this.isIdentity=!1);this.curve=a};
+sjcl.ecc.point.prototype={toJac:function(){return new sjcl.ecc.pointJac(this.curve,this.x,this.y,new this.curve.field(1))},mult:function(a){return this.toJac().mult(a,this).toAffine()},mult2:function(a,b,d){return this.toJac().mult2(a,this,b,d).toAffine()},multiples:function(){var a,b,d;if(void 0===this.pa){d=this.toJac().doubl();a=[d];for(b=3;16>b;b++)d=d.add(this),a.push(d);this.pa=[new sjcl.ecc.point(this.curve),this].concat(sjcl.ecc.pointJac.toAffineMultiple(a))}return this.pa},negate:function(){var a=
+(new this.curve.field(0)).sub(this.y).normalize().reduce();return new sjcl.ecc.point(this.curve,this.x,a)},isValid:function(){return this.y.square().equals(this.curve.b.add(this.x.mul(this.curve.a.add(this.x.square()))))},toBits:function(){return sjcl.bitArray.concat(this.x.toBits(),this.y.toBits())}};sjcl.ecc.pointJac=function(a,b,d,c){void 0===b?this.isIdentity=!0:(this.x=b,this.y=d,this.z=c,this.isIdentity=!1);this.curve=a};
+sjcl.ecc.pointJac.toAffineMultiple=function(a){for(var b=0,d,c=Array(a.length),e,f,g,h,k;b<a.length;b++){e=a[b];if(h!=e.curve){if(h){for(b=0;b<a.length;b++)c[b]=a[b].toAffine();return c}h=e.curve}e.isIdentity||e.z.equals(0)||(f?(f.push(g),g=g.mul(e.z)):(g=e.z,f=[]))}f&&(g=g.inverse(),d=f.length-1);for(b--;0<=b;b--)e=a[b],e.isIdentity||e.z.equals(0)?c[b]=new sjcl.ecc.point(e.curve):(0<=d?(h=g.mul(f[d]),g=g.mul(e.z),d--):h=g,k=h.square(),c[b]=new sjcl.ecc.point(e.curve,e.x.mul(k).fullReduce(),e.y.mul(k.mul(h)).fullReduce()));
+return c};
+sjcl.ecc.pointJac.prototype={add:function(a){var b,d,c,e;if(this.curve!==a.curve)throw new sjcl.exception.invalid("sjcl['ecc']['add'](): Points must be on the same curve to add them!");if(this.isIdentity)return a.toJac();if(a.isIdentity)return this;b=this.z.square();d=a.x.mul(b).subM(this.x);if(d.equals(0))return this.y.equals(a.y.mul(b.mul(this.z)))?this.doubl():new sjcl.ecc.pointJac(this.curve);b=a.y.mul(b.mul(this.z)).subM(this.y);c=d.square();a=b.square();e=d.square().mul(d).addM(this.x.add(this.x).mul(c));a=
+a.subM(e);b=this.x.mul(c).subM(a).mul(b);c=this.y.mul(d.square().mul(d));b=b.subM(c);d=this.z.mul(d);return new sjcl.ecc.pointJac(this.curve,a,b,d)},doubl:function(){if(this.isIdentity)return this;var a=this.y.square(),b=a.mul(this.x.mul(4)),d=a.square().mul(8),a=this.z.square(),c=this.curve.a.toString()==(new sjcl.bn(-3)).toString()?this.x.sub(a).mul(3).mul(this.x.add(a)):this.x.square().mul(3).add(a.square().mul(this.curve.a)),a=c.square().subM(b).subM(b),b=b.sub(a).mul(c).subM(d),d=this.y.add(this.y).mul(this.z);
+return new sjcl.ecc.pointJac(this.curve,a,b,d)},toAffine:function(){if(this.isIdentity||this.z.equals(0))return new sjcl.ecc.point(this.curve);var a=this.z.inverse(),b=a.square();return new sjcl.ecc.point(this.curve,this.x.mul(b).fullReduce(),this.y.mul(b.mul(a)).fullReduce())},mult:function(a,b){"number"===typeof a?a=[a]:void 0!==a.limbs&&(a=a.normalize().limbs);var d,c,e=(new sjcl.ecc.point(this.curve)).toJac(),f=b.multiples();for(d=a.length-1;0<=d;d--)for(c=sjcl.bn.prototype.radix-4;0<=c;c-=4)e=
+e.doubl().doubl().doubl().doubl().add(f[a[d]>>c&15]);return e},mult2:function(a,b,d,c){"number"===typeof a?a=[a]:void 0!==a.limbs&&(a=a.normalize().limbs);"number"===typeof d?d=[d]:void 0!==d.limbs&&(d=d.normalize().limbs);var e,f=(new sjcl.ecc.point(this.curve)).toJac();b=b.multiples();var g=c.multiples(),h,k;for(c=Math.max(a.length,d.length)-1;0<=c;c--)for(h=a[c]|0,k=d[c]|0,e=sjcl.bn.prototype.radix-4;0<=e;e-=4)f=f.doubl().doubl().doubl().doubl().add(b[h>>e&15]).add(g[k>>e&15]);return f},negate:function(){return this.toAffine().negate().toJac()},
+isValid:function(){var a=this.z.square(),b=a.square(),a=b.mul(a);return this.y.square().equals(this.curve.b.mul(a).add(this.x.mul(this.curve.a.mul(b).add(this.x.square()))))}};sjcl.ecc.curve=function(a,b,d,c,e,f){this.field=a;this.r=new sjcl.bn(b);this.a=new a(d);this.b=new a(c);this.G=new sjcl.ecc.point(this,new a(e),new a(f))};
+sjcl.ecc.curve.prototype.fromBits=function(a){var b=sjcl.bitArray,d=this.field.prototype.exponent+7&-8;a=new sjcl.ecc.point(this,this.field.fromBits(b.bitSlice(a,0,d)),this.field.fromBits(b.bitSlice(a,d,2*d)));if(!a.isValid())throw new sjcl.exception.corrupt("not on the curve!");return a};
+sjcl.ecc.curves={c192:new sjcl.ecc.curve(sjcl.bn.prime.p192,"0xffffffffffffffffffffffff99def836146bc9b1b4d22831",-3,"0x64210519e59c80e70fa7e9ab72243049feb8deecc146b9b1","0x188da80eb03090f67cbf20eb43a18800f4ff0afd82ff1012","0x07192b95ffc8da78631011ed6b24cdd573f977a11e794811"),c224:new sjcl.ecc.curve(sjcl.bn.prime.p224,"0xffffffffffffffffffffffffffff16a2e0b8f03e13dd29455c5c2a3d",-3,"0xb4050a850c04b3abf54132565044b0b7d7bfd8ba270b39432355ffb4","0xb70e0cbd6bb4bf7f321390b94a03c1d356c21122343280d6115c1d21",
+"0xbd376388b5f723fb4c22dfe6cd4375a05a07476444d5819985007e34"),c256:new sjcl.ecc.curve(sjcl.bn.prime.p256,"0xffffffff00000000ffffffffffffffffbce6faada7179e84f3b9cac2fc632551",-3,"0x5ac635d8aa3a93e7b3ebbd55769886bc651d06b0cc53b0f63bce3c3e27d2604b","0x6b17d1f2e12c4247f8bce6e563a440f277037d812deb33a0f4a13945d898c296","0x4fe342e2fe1a7f9b8ee7eb4a7c0f9e162bce33576b315ececbb6406837bf51f5"),c384:new sjcl.ecc.curve(sjcl.bn.prime.p384,"0xffffffffffffffffffffffffffffffffffffffffffffffffc7634d81f4372ddf581a0db248b0a77aecec196accc52973",
+-3,"0xb3312fa7e23ee7e4988e056be3f82d19181d9c6efe8141120314088f5013875ac656398d8a2ed19d2a85c8edd3ec2aef","0xaa87ca22be8b05378eb1c71ef320ad746e1d3b628ba79b9859f741e082542a385502f25dbf55296c3a545e3872760ab7","0x3617de4a96262c6f5d9e98bf9292dc29f8f41dbd289a147ce9da3113b5f0b8c00a60b1ce1d7e819d7a431d7c90ea0e5f"),c521:new sjcl.ecc.curve(sjcl.bn.prime.p521,"0x1FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFA51868783BF2F966B7FCC0148F709A5D03BB5C9B8899C47AEBB6FB71E91386409",-3,"0x051953EB9618E1C9A1F929A21A0B68540EEA2DA725B99B315F3B8B489918EF109E156193951EC7E937B1652C0BD3BB1BF073573DF883D2C34F1EF451FD46B503F00",
+"0xC6858E06B70404E9CD9E3ECB662395B4429C648139053FB521F828AF606B4D3DBAA14B5E77EFE75928FE1DC127A2FFA8DE3348B3C1856A429BF97E7E31C2E5BD66","0x11839296A789A3BC0045C8A5FB42C7D1BD998F54449579B446817AFBD17273E662C97EE72995EF42640C550B9013FAD0761353C7086A272C24088BE94769FD16650"),k192:new sjcl.ecc.curve(sjcl.bn.prime.p192k,"0xfffffffffffffffffffffffe26f2fc170f69466a74defd8d",0,3,"0xdb4ff10ec057e9ae26b07d0280b7f4341da5d1b1eae06c7d","0x9b2f2f6d9c5628a7844163d015be86344082aa88d95e2f9d"),k224:new sjcl.ecc.curve(sjcl.bn.prime.p224k,
+"0x010000000000000000000000000001dce8d2ec6184caf0a971769fb1f7",0,5,"0xa1455b334df099df30fc28a169a467e9e47075a90f7e650eb6b7a45c","0x7e089fed7fba344282cafbd6f7e319f7c0b0bd59e2ca4bdb556d61a5"),k256:new sjcl.ecc.curve(sjcl.bn.prime.p256k,"0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141",0,7,"0x79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798","0x483ada7726a3c4655da4fbfc0e1108a8fd17b448a68554199c47d08ffb10d4b8")};
+sjcl.ecc.curveName=function(a){for(var b in sjcl.ecc.curves)if(sjcl.ecc.curves.hasOwnProperty(b)&&sjcl.ecc.curves[b]===a)return b;throw new sjcl.exception.invalid("no such curve");};
+sjcl.ecc.deserialize=function(a){if(!a||!a.curve||!sjcl.ecc.curves[a.curve])throw new sjcl.exception.invalid("invalid serialization");if(-1===["elGamal","ecdsa"].indexOf(a.type))throw new sjcl.exception.invalid("invalid type");var b=sjcl.ecc.curves[a.curve];if(a.secretKey){if(!a.exponent)throw new sjcl.exception.invalid("invalid exponent");var d=new sjcl.bn(a.exponent);return new sjcl.ecc[a.type].secretKey(b,d)}if(!a.point)throw new sjcl.exception.invalid("invalid point");d=b.fromBits(sjcl.codec.hex.toBits(a.point));
+return new sjcl.ecc[a.type].publicKey(b,d)};
+sjcl.ecc.basicKey={publicKey:function(a,b){this.w=a;this.I=a.r.bitLength();b instanceof Array?this.H=a.fromBits(b):this.H=b;this.serialize=function(){var b=sjcl.ecc.curveName(a);return{type:this.getType(),secretKey:!1,point:sjcl.codec.hex.fromBits(this.H.toBits()),curve:b}};this.get=function(){var a=this.H.toBits(),b=sjcl.bitArray.bitLength(a),e=sjcl.bitArray.bitSlice(a,0,b/2),a=sjcl.bitArray.bitSlice(a,b/2);return{x:e,y:a}}},secretKey:function(a,b){this.w=a;this.I=a.r.bitLength();this.S=b;this.serialize=
+function(){var b=this.get(),c=sjcl.ecc.curveName(a);return{type:this.getType(),secretKey:!0,exponent:sjcl.codec.hex.fromBits(b),curve:c}};this.get=function(){return this.S.toBits()}}};sjcl.ecc.basicKey.generateKeys=function(a){return function(b,d,c){b=b||0x100;if("number"===typeof b&&(b=sjcl.ecc.curves["c"+b],void 0===b))throw new sjcl.exception.invalid("no such curve");c=c||sjcl.bn.random(b.r,d);d=b.G.mult(c);return{pub:new sjcl.ecc[a].publicKey(b,d),sec:new sjcl.ecc[a].secretKey(b,c)}}};
+sjcl.ecc.elGamal={generateKeys:sjcl.ecc.basicKey.generateKeys("elGamal"),publicKey:function(a,b){sjcl.ecc.basicKey.publicKey.apply(this,arguments)},secretKey:function(a,b){sjcl.ecc.basicKey.secretKey.apply(this,arguments)}};sjcl.ecc.elGamal.publicKey.prototype={kem:function(a){a=sjcl.bn.random(this.w.r,a);var b=this.w.G.mult(a).toBits();return{key:sjcl.hash.sha256.hash(this.H.mult(a).toBits()),tag:b}},getType:function(){return"elGamal"}};
+sjcl.ecc.elGamal.secretKey.prototype={unkem:function(a){return sjcl.hash.sha256.hash(this.w.fromBits(a).mult(this.S).toBits())},dh:function(a){return sjcl.hash.sha256.hash(a.H.mult(this.S).toBits())},dhJavaEc:function(a){return a.H.mult(this.S).x.toBits()},getType:function(){return"elGamal"}};sjcl.ecc.ecdsa={generateKeys:sjcl.ecc.basicKey.generateKeys("ecdsa")};sjcl.ecc.ecdsa.publicKey=function(a,b){sjcl.ecc.basicKey.publicKey.apply(this,arguments)};
+sjcl.ecc.ecdsa.publicKey.prototype={verify:function(a,b,d){sjcl.bitArray.bitLength(a)>this.I&&(a=sjcl.bitArray.clamp(a,this.I));var c=sjcl.bitArray,e=this.w.r,f=this.I,g=sjcl.bn.fromBits(c.bitSlice(b,0,f)),c=sjcl.bn.fromBits(c.bitSlice(b,f,2*f)),h=d?c:c.inverseMod(e),f=sjcl.bn.fromBits(a).mul(h).mod(e),h=g.mul(h).mod(e),f=this.w.G.mult2(f,h,this.H).x;if(g.equals(0)||c.equals(0)||g.greaterEquals(e)||c.greaterEquals(e)||!f.equals(g)){if(void 0===d)return this.verify(a,b,!0);throw new sjcl.exception.corrupt("signature didn't check out");
+}return!0},getType:function(){return"ecdsa"}};sjcl.ecc.ecdsa.secretKey=function(a,b){sjcl.ecc.basicKey.secretKey.apply(this,arguments)};
+sjcl.ecc.ecdsa.secretKey.prototype={sign:function(a,b,d,c){sjcl.bitArray.bitLength(a)>this.I&&(a=sjcl.bitArray.clamp(a,this.I));var e=this.w.r,f=e.bitLength();c=c||sjcl.bn.random(e.sub(1),b).add(1);b=this.w.G.mult(c).x.mod(e);a=sjcl.bn.fromBits(a).add(b.mul(this.S));d=d?a.inverseMod(e).mul(c).mod(e):a.mul(c.inverseMod(e)).mod(e);return sjcl.bitArray.concat(b.toBits(f),d.toBits(f))},getType:function(){return"ecdsa"}};
+sjcl.keyexchange.srp={makeVerifier:function(a,b,d,c){a=sjcl.keyexchange.srp.makeX(a,b,d);a=sjcl.bn.fromBits(a);return c.g.powermod(a,c.N)},makeX:function(a,b,d){a=sjcl.hash.sha1.hash(a+":"+b);return sjcl.hash.sha1.hash(sjcl.bitArray.concat(d,a))},knownGroup:function(a){"string"!==typeof a&&(a=a.toString());sjcl.keyexchange.srp.ja||sjcl.keyexchange.srp.Ea();return sjcl.keyexchange.srp.na[a]},ja:!1,Ea:function(){var a,b;for(a=0;a<sjcl.keyexchange.srp.ma.length;a++)b=sjcl.keyexchange.srp.ma[a].toString(),
+b=sjcl.keyexchange.srp.na[b],b.N=new sjcl.bn(b.N),b.g=new sjcl.bn(b.g);sjcl.keyexchange.srp.ja=!0},ma:[1024,1536,2048,3072,0x1000,6144,8192],na:{1024:{N:"EEAF0AB9ADB38DD69C33F80AFA8FC5E86072618775FF3C0B9EA2314C9C256576D674DF7496EA81D3383B4813D692C6E0E0D5D8E250B98BE48E495C1D6089DAD15DC7D7B46154D6B6CE8EF4AD69B15D4982559B297BCF1885C529F566660E57EC68EDBC3C05726CC02FD4CBF4976EAA9AFD5138FE8376435B9FC61D2FC0EB06E3",g:2},1536:{N:"9DEF3CAFB939277AB1F12A8617A47BBBDBA51DF499AC4C80BEEEA9614B19CC4D5F4F5F556E27CBDE51C6A94BE4607A291558903BA0D0F84380B655BB9A22E8DCDF028A7CEC67F0D08134B1C8B97989149B609E0BE3BAB63D47548381DBC5B1FC764E3F4B53DD9DA1158BFD3E2B9C8CF56EDF019539349627DB2FD53D24B7C48665772E437D6C7F8CE442734AF7CCB7AE837C264AE3A9BEB87F8A2FE9B8B5292E5A021FFF5E91479E8CE7A28C2442C6F315180F93499A234DCF76E3FED135F9BB",
+g:2},2048:{N:"AC6BDB41324A9A9BF166DE5E1389582FAF72B6651987EE07FC3192943DB56050A37329CBB4A099ED8193E0757767A13DD52312AB4B03310DCD7F48A9DA04FD50E8083969EDB767B0CF6095179A163AB3661A05FBD5FAAAE82918A9962F0B93B855F97993EC975EEAA80D740ADBF4FF747359D041D5C33EA71D281E446B14773BCA97B43A23FB801676BD207A436C6481F1D2B9078717461A5B9D32E688F87748544523B524B0D57D5EA77A2775D2ECFA032CFBDBF52FB3786160279004E57AE6AF874E7303CE53299CCC041C7BC308D82A5698F3A8D0C38271AE35F8E9DBFBB694B5C803D89F7AE435DE236D525F54759B65E372FCD68EF20FA7111F9E4AFF73",
+g:2},3072:{N:"FFFFFFFFFFFFFFFFC90FDAA22168C234C4C6628B80DC1CD129024E088A67CC74020BBEA63B139B22514A08798E3404DDEF9519B3CD3A431B302B0A6DF25F14374FE1356D6D51C245E485B576625E7EC6F44C42E9A637ED6B0BFF5CB6F406B7EDEE386BFB5A899FA5AE9F24117C4B1FE649286651ECE45B3DC2007CB8A163BF0598DA48361C55D39A69163FA8FD24CF5F83655D23DCA3AD961C62F356208552BB9ED529077096966D670C354E4ABC9804F1746C08CA18217C32905E462E36CE3BE39E772C180E86039B2783A2EC07A28FB5C55DF06F4C52C9DE2BCBF6955817183995497CEA956AE515D2261898FA051015728E5A8AAAC42DAD33170D04507A33A85521ABDF1CBA64ECFB850458DBEF0A8AEA71575D060C7DB3970F85A6E1E4C7ABF5AE8CDB0933D71E8C94E04A25619DCEE3D2261AD2EE6BF12FFA06D98A0864D87602733EC86A64521F2B18177B200CBBE117577A615D6C770988C0BAD946E208E24FA074E5AB3143DB5BFCE0FD108E4B82D120A93AD2CAFFFFFFFFFFFFFFFF",
+g:5},0x1000:{N:"FFFFFFFFFFFFFFFFC90FDAA22168C234C4C6628B80DC1CD129024E088A67CC74020BBEA63B139B22514A08798E3404DDEF9519B3CD3A431B302B0A6DF25F14374FE1356D6D51C245E485B576625E7EC6F44C42E9A637ED6B0BFF5CB6F406B7EDEE386BFB5A899FA5AE9F24117C4B1FE649286651ECE45B3DC2007CB8A163BF0598DA48361C55D39A69163FA8FD24CF5F83655D23DCA3AD961C62F356208552BB9ED529077096966D670C354E4ABC9804F1746C08CA18217C32905E462E36CE3BE39E772C180E86039B2783A2EC07A28FB5C55DF06F4C52C9DE2BCBF6955817183995497CEA956AE515D2261898FA051015728E5A8AAAC42DAD33170D04507A33A85521ABDF1CBA64ECFB850458DBEF0A8AEA71575D060C7DB3970F85A6E1E4C7ABF5AE8CDB0933D71E8C94E04A25619DCEE3D2261AD2EE6BF12FFA06D98A0864D87602733EC86A64521F2B18177B200CBBE117577A615D6C770988C0BAD946E208E24FA074E5AB3143DB5BFCE0FD108E4B82D120A92108011A723C12A787E6D788719A10BDBA5B2699C327186AF4E23C1A946834B6150BDA2583E9CA2AD44CE8DBBBC2DB04DE8EF92E8EFC141FBECAA6287C59474E6BC05D99B2964FA090C3A2233BA186515BE7ED1F612970CEE2D7AFB81BDD762170481CD0069127D5B05AA993B4EA988D8FDDC186FFB7DC90A6C08F4DF435C934063199FFFFFFFFFFFFFFFF",
+g:5},6144:{N:"FFFFFFFFFFFFFFFFC90FDAA22168C234C4C6628B80DC1CD129024E088A67CC74020BBEA63B139B22514A08798E3404DDEF9519B3CD3A431B302B0A6DF25F14374FE1356D6D51C245E485B576625E7EC6F44C42E9A637ED6B0BFF5CB6F406B7EDEE386BFB5A899FA5AE9F24117C4B1FE649286651ECE45B3DC2007CB8A163BF0598DA48361C55D39A69163FA8FD24CF5F83655D23DCA3AD961C62F356208552BB9ED529077096966D670C354E4ABC9804F1746C08CA18217C32905E462E36CE3BE39E772C180E86039B2783A2EC07A28FB5C55DF06F4C52C9DE2BCBF6955817183995497CEA956AE515D2261898FA051015728E5A8AAAC42DAD33170D04507A33A85521ABDF1CBA64ECFB850458DBEF0A8AEA71575D060C7DB3970F85A6E1E4C7ABF5AE8CDB0933D71E8C94E04A25619DCEE3D2261AD2EE6BF12FFA06D98A0864D87602733EC86A64521F2B18177B200CBBE117577A615D6C770988C0BAD946E208E24FA074E5AB3143DB5BFCE0FD108E4B82D120A92108011A723C12A787E6D788719A10BDBA5B2699C327186AF4E23C1A946834B6150BDA2583E9CA2AD44CE8DBBBC2DB04DE8EF92E8EFC141FBECAA6287C59474E6BC05D99B2964FA090C3A2233BA186515BE7ED1F612970CEE2D7AFB81BDD762170481CD0069127D5B05AA993B4EA988D8FDDC186FFB7DC90A6C08F4DF435C93402849236C3FAB4D27C7026C1D4DCB2602646DEC9751E763DBA37BDF8FF9406AD9E530EE5DB382F413001AEB06A53ED9027D831179727B0865A8918DA3EDBEBCF9B14ED44CE6CBACED4BB1BDB7F1447E6CC254B332051512BD7AF426FB8F401378CD2BF5983CA01C64B92ECF032EA15D1721D03F482D7CE6E74FEF6D55E702F46980C82B5A84031900B1C9E59E7C97FBEC7E8F323A97A7E36CC88BE0F1D45B7FF585AC54BD407B22B4154AACC8F6D7EBF48E1D814CC5ED20F8037E0A79715EEF29BE32806A1D58BB7C5DA76F550AA3D8A1FBFF0EB19CCB1A313D55CDA56C9EC2EF29632387FE8D76E3C0468043E8F663F4860EE12BF2D5B0B7474D6E694F91E6DCC4024FFFFFFFFFFFFFFFF",
+g:5},8192:{N:"FFFFFFFFFFFFFFFFC90FDAA22168C234C4C6628B80DC1CD129024E088A67CC74020BBEA63B139B22514A08798E3404DDEF9519B3CD3A431B302B0A6DF25F14374FE1356D6D51C245E485B576625E7EC6F44C42E9A637ED6B0BFF5CB6F406B7EDEE386BFB5A899FA5AE9F24117C4B1FE649286651ECE45B3DC2007CB8A163BF0598DA48361C55D39A69163FA8FD24CF5F83655D23DCA3AD961C62F356208552BB9ED529077096966D670C354E4ABC9804F1746C08CA18217C32905E462E36CE3BE39E772C180E86039B2783A2EC07A28FB5C55DF06F4C52C9DE2BCBF6955817183995497CEA956AE515D2261898FA051015728E5A8AAAC42DAD33170D04507A33A85521ABDF1CBA64ECFB850458DBEF0A8AEA71575D060C7DB3970F85A6E1E4C7ABF5AE8CDB0933D71E8C94E04A25619DCEE3D2261AD2EE6BF12FFA06D98A0864D87602733EC86A64521F2B18177B200CBBE117577A615D6C770988C0BAD946E208E24FA074E5AB3143DB5BFCE0FD108E4B82D120A92108011A723C12A787E6D788719A10BDBA5B2699C327186AF4E23C1A946834B6150BDA2583E9CA2AD44CE8DBBBC2DB04DE8EF92E8EFC141FBECAA6287C59474E6BC05D99B2964FA090C3A2233BA186515BE7ED1F612970CEE2D7AFB81BDD762170481CD0069127D5B05AA993B4EA988D8FDDC186FFB7DC90A6C08F4DF435C93402849236C3FAB4D27C7026C1D4DCB2602646DEC9751E763DBA37BDF8FF9406AD9E530EE5DB382F413001AEB06A53ED9027D831179727B0865A8918DA3EDBEBCF9B14ED44CE6CBACED4BB1BDB7F1447E6CC254B332051512BD7AF426FB8F401378CD2BF5983CA01C64B92ECF032EA15D1721D03F482D7CE6E74FEF6D55E702F46980C82B5A84031900B1C9E59E7C97FBEC7E8F323A97A7E36CC88BE0F1D45B7FF585AC54BD407B22B4154AACC8F6D7EBF48E1D814CC5ED20F8037E0A79715EEF29BE32806A1D58BB7C5DA76F550AA3D8A1FBFF0EB19CCB1A313D55CDA56C9EC2EF29632387FE8D76E3C0468043E8F663F4860EE12BF2D5B0B7474D6E694F91E6DBE115974A3926F12FEE5E438777CB6A932DF8CD8BEC4D073B931BA3BC832B68D9DD300741FA7BF8AFC47ED2576F6936BA424663AAB639C5AE4F5683423B4742BF1C978238F16CBE39D652DE3FDB8BEFC848AD922222E04A4037C0713EB57A81A23F0C73473FC646CEA306B4BCBC8862F8385DDFA9D4B7FA2C087E879683303ED5BDD3A062B3CF5B3A278A66D2A13F83F44F82DDF310EE074AB6A364597E899A0255DC164F31CC50846851DF9AB48195DED7EA1B1D510BD7EE74D73FAF36BC31ECFA268359046F4EB879F924009438B481C6CD7889A002ED5EE382BC9190DA6FC026E479558E4475677E9AA9E3050E2765694DFC81F56E880B96E7160C980DD98EDD3DFFFFFFFFFFFFFFFFF",
+g:19}}};sjcl.arrayBuffer=sjcl.arrayBuffer||{};"undefined"===typeof ArrayBuffer&&function(a){a.ArrayBuffer=function(){};a.DataView=function(){}}(this);
+sjcl.arrayBuffer.ccm={mode:"ccm",defaults:{tlen:128},compat_encrypt:function(a,b,d,c,e){var f=sjcl.codec.arrayBuffer.fromBits(b,!0,16);b=sjcl.bitArray.bitLength(b)/8;c=c||[];a=sjcl.arrayBuffer.ccm.encrypt(a,f,d,c,e||64,b);d=sjcl.codec.arrayBuffer.toBits(a.ciphertext_buffer);d=sjcl.bitArray.clamp(d,8*b);return sjcl.bitArray.concat(d,a.tag)},compat_decrypt:function(a,b,d,c,e){e=e||64;c=c||[];var f=sjcl.bitArray,g=f.bitLength(b),h=f.clamp(b,g-e);b=f.bitSlice(b,g-e);h=sjcl.codec.arrayBuffer.fromBits(h,
+!0,16);a=sjcl.arrayBuffer.ccm.decrypt(a,h,d,b,c,e,(g-e)/8);return sjcl.bitArray.clamp(sjcl.codec.arrayBuffer.toBits(a),g-e)},encrypt:function(a,b,d,c,e,f){var g,h=sjcl.bitArray,k=h.bitLength(d)/8;c=c||[];e=e||sjcl.arrayBuffer.ccm.defaults.tlen;f=f||b.byteLength;e=Math.ceil(e/8);for(g=2;4>g&&f>>>8*g;g++);g<15-k&&(g=15-k);d=h.clamp(d,8*(15-g));c=sjcl.arrayBuffer.ccm.R(a,b,d,c,e,f,g);c=sjcl.arrayBuffer.ccm.u(a,b,d,c,e,g);return{ciphertext_buffer:b,tag:c}},decrypt:function(a,b,d,c,e,f,g){var h,k=sjcl.bitArray,
+l=k.bitLength(d)/8;e=e||[];f=f||sjcl.arrayBuffer.ccm.defaults.tlen;g=g||b.byteLength;f=Math.ceil(f/8);for(h=2;4>h&&g>>>8*h;h++);h<15-l&&(h=15-l);d=k.clamp(d,8*(15-h));c=sjcl.arrayBuffer.ccm.u(a,b,d,c,f,h);a=sjcl.arrayBuffer.ccm.R(a,b,d,e,f,g,h);if(!sjcl.bitArray.equal(c,a))throw new sjcl.exception.corrupt("ccm: tag doesn't match");return b},R:function(a,b,d,c,e,f,g){d=sjcl.mode.ccm.oa(a,c,d,e,f,g);if(0!==b.byteLength){for(c=new DataView(b);f<b.byteLength;f++)c.setUint8(f,0);for(f=0;f<c.byteLength;f+=
+16)d[0]^=c.getUint32(f),d[1]^=c.getUint32(f+4),d[2]^=c.getUint32(f+8),d[3]^=c.getUint32(f+12),d=a.encrypt(d)}return sjcl.bitArray.clamp(d,8*e)},u:function(a,b,d,c,e,f){var g,h,k,l,m;g=sjcl.bitArray;h=g.l;var n=b.byteLength/50,p=n;new DataView(new ArrayBuffer(16));d=g.concat([g.partial(8,f-1)],d).concat([0,0,0]).slice(0,4);c=g.bitSlice(h(c,a.encrypt(d)),0,8*e);d[3]++;0===d[3]&&d[2]++;if(0!==b.byteLength)for(e=new DataView(b),m=0;m<e.byteLength;m+=16)m>n&&(sjcl.mode.ccm.ha(m/b.byteLength),n+=p),l=a.encrypt(d),
+g=e.getUint32(m),h=e.getUint32(m+4),f=e.getUint32(m+8),k=e.getUint32(m+12),e.setUint32(m,g^l[0]),e.setUint32(m+4,h^l[1]),e.setUint32(m+8,f^l[2]),e.setUint32(m+12,k^l[3]),d[3]++,0===d[3]&&d[2]++;return c}};"undefined"===typeof ArrayBuffer&&function(a){a.ArrayBuffer=function(){};a.DataView=function(){}}(this);
+sjcl.codec.arrayBuffer={fromBits:function(a,b,d){var c;b=void 0==b?!0:b;d=d||8;if(0===a.length)return new ArrayBuffer(0);c=sjcl.bitArray.bitLength(a)/8;if(0!==sjcl.bitArray.bitLength(a)%8)throw new sjcl.exception.invalid("Invalid bit size, must be divisble by 8 to fit in an arraybuffer correctly");b&&0!==c%d&&(c+=d-c%d);d=new DataView(new ArrayBuffer(4*a.length));for(b=0;b<a.length;b++)d.setUint32(4*b,a[b]<<32);a=new DataView(new ArrayBuffer(c));if(a.byteLength===d.byteLength)return d.buffer;c=d.byteLength<
+a.byteLength?d.byteLength:a.byteLength;for(b=0;b<c;b++)a.setUint8(b,d.getUint8(b));return a.buffer},toBits:function(a){var b=[],d,c,e;if(0===a.byteLength)return[];c=new DataView(a);d=c.byteLength-c.byteLength%4;for(a=0;a<d;a+=4)b.push(c.getUint32(a));if(0!=c.byteLength%4){e=new DataView(new ArrayBuffer(4));a=0;for(var f=c.byteLength%4;a<f;a++)e.setUint8(a+4-f,c.getUint8(d+a));b.push(sjcl.bitArray.partial(c.byteLength%4*8,e.getUint32(0)))}return b},Oa:function(a){function b(a){a=a+"";return 4<=a.length?
+a:Array(4-a.length+1).join("0")+a}a=new DataView(a);for(var d="",c=0;c<a.byteLength;c+=2)0==c%16&&(d+="\n"+c.toString(16)+"\t"),d+=b(a.getUint16(c).toString(16))+" ";void 0===typeof console&&(console=console||{log:function(){}});console.log(d.toUpperCase())}};
+(function(){function a(a,b){return a<<b|a>>>32-b}function b(a){return(a&255)<<24|(a&0xff00)<<8|(a&0xff0000)>>>8|(a&-0x1000000)>>>24}function d(b){for(var d=this.c[0],c=this.c[1],g=this.c[2],h=this.c[3],x=this.c[4],B=this.c[0],A=this.c[1],y=this.c[2],u=this.c[3],v=this.c[4],q=0,w;16>q;++q)w=a(d+(c^g^h)+b[k[q]]+e[q],m[q])+x,d=x,x=h,h=a(g,10),g=c,c=w,w=a(B+(A^(y|~u))+b[l[q]]+f[q],n[q])+v,B=v,v=u,u=a(y,10),y=A,A=w;for(;32>q;++q)w=a(d+(c&g|~c&h)+b[k[q]]+e[q],m[q])+x,d=x,x=h,h=a(g,10),g=c,c=w,w=a(B+(A&u|
+y&~u)+b[l[q]]+f[q],n[q])+v,B=v,v=u,u=a(y,10),y=A,A=w;for(;48>q;++q)w=a(d+((c|~g)^h)+b[k[q]]+e[q],m[q])+x,d=x,x=h,h=a(g,10),g=c,c=w,w=a(B+((A|~y)^u)+b[l[q]]+f[q],n[q])+v,B=v,v=u,u=a(y,10),y=A,A=w;for(;64>q;++q)w=a(d+(c&h|g&~h)+b[k[q]]+e[q],m[q])+x,d=x,x=h,h=a(g,10),g=c,c=w,w=a(B+(A&y|~A&u)+b[l[q]]+f[q],n[q])+v,B=v,v=u,u=a(y,10),y=A,A=w;for(;80>q;++q)w=a(d+(c^(g|~h))+b[k[q]]+e[q],m[q])+x,d=x,x=h,h=a(g,10),g=c,c=w,w=a(B+(A^y^u)+b[l[q]]+f[q],n[q])+v,B=v,v=u,u=a(y,10),y=A,A=w;w=this.c[1]+g+u;this.c[1]=
+this.c[2]+h+v;this.c[2]=this.c[3]+x+B;this.c[3]=this.c[4]+d+A;this.c[4]=this.c[0]+c+y;this.c[0]=w}sjcl.hash.ripemd160=function(a){a?(this.c=a.c.slice(0),this.h=a.h.slice(0),this.f=a.f):this.reset()};sjcl.hash.ripemd160.hash=function(a){return(new sjcl.hash.ripemd160).update(a).finalize()};sjcl.hash.ripemd160.prototype={reset:function(){this.c=c.slice(0);this.h=[];this.f=0;return this},update:function(a){"string"===typeof a&&(a=sjcl.codec.utf8String.toBits(a));var c,e=this.h=sjcl.bitArray.concat(this.h,
+a);c=this.f;a=this.f=c+sjcl.bitArray.bitLength(a);if(0x1fffffffffffff<a)throw new sjcl.exception.invalid("Cannot hash more than 2^53 - 1 bits");for(c=512+c-(512+c&0x1ff);c<=a;c+=512){for(var f=e.splice(0,16),g=0;16>g;++g)f[g]=b(f[g]);d.call(this,f)}return this},finalize:function(){var a=sjcl.bitArray.concat(this.h,[sjcl.bitArray.partial(1,1)]),c=(this.f+1)%512,c=(448<c?512:448)-c%448,e=c%32;for(0<e&&(a=sjcl.bitArray.concat(a,[sjcl.bitArray.partial(e,0)]));32<=c;c-=32)a.push(0);a.push(b(this.f|0));for(a.push(b(Math.floor(this.f/
+4294967296)));a.length;){e=a.splice(0,16);for(c=0;16>c;++c)e[c]=b(e[c]);d.call(this,e)}a=this.c;this.reset();for(c=0;5>c;++c)a[c]=b(a[c]);return a}};for(var c=[1732584193,4023233417,2562383102,271733878,3285377520],e=[0,1518500249,1859775393,2400959708,2840853838],f=[1352829926,1548603684,1836072691,2053994217,0],g=4;0<=g;--g)for(var h=1;16>h;++h)e.splice(g,0,e[g]),f.splice(g,0,f[g]);var k=[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,7,4,13,1,10,6,15,3,12,0,9,5,2,14,11,8,3,10,14,4,9,15,8,1,2,7,0,6,13,11,
+5,12,1,9,11,10,0,8,12,4,13,3,7,15,14,5,6,2,4,0,5,9,7,12,2,10,14,1,3,8,11,6,15,13],l=[5,14,7,0,9,2,11,4,13,6,15,8,1,10,3,12,6,11,3,7,0,13,5,10,14,15,8,12,4,9,1,2,15,5,1,3,7,14,6,9,11,8,12,2,10,0,4,13,8,6,4,1,3,11,15,0,5,12,2,13,9,7,10,14,12,15,10,4,1,5,8,7,6,2,13,14,0,3,9,11],m=[11,14,15,12,5,8,7,9,11,13,14,15,6,7,9,8,7,6,8,13,11,9,7,15,7,12,15,9,11,7,13,12,11,13,6,7,14,9,13,15,14,8,13,6,5,12,7,5,11,12,14,15,14,15,9,8,9,14,5,6,8,6,5,12,9,15,5,11,6,8,13,12,5,12,13,14,11,8,5,6],n=[8,9,9,11,13,15,15,
+5,7,7,8,11,14,14,12,6,9,13,15,7,12,8,9,11,7,7,12,7,6,15,13,11,9,7,15,11,8,6,6,14,12,13,5,14,13,13,7,5,15,5,8,11,14,14,6,14,6,9,12,9,12,5,15,8,8,5,12,9,12,5,14,6,8,13,6,5,15,13,11,11]})(); true&&module.exports&&(module.exports=sjcl); true&&!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = (function(){return sjcl}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
 
 /***/ }),
-/* 229 */
+/* 247 */
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+/* 248 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* WEBPACK VAR INJECTION */(function(process, global, module) {/* harmony import */ var core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(133);
+/* WEBPACK VAR INJECTION */(function(process, global, module) {/* harmony import */ var core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(109);
 /* harmony import */ var core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(132);
+/* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(146);
 /* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(38);
+/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(35);
 /* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_2__);
 
 
@@ -49497,7 +54811,7 @@ __webpack_require__.r(__webpack_exports__);
   }
 
   var COMMON_JS = !root.HI_BASE32_NO_COMMON_JS && typeof module === 'object' && module.exports;
-  var AMD = typeof define === 'function' && __webpack_require__(231);
+  var AMD = typeof define === 'function' && __webpack_require__(250);
   var BASE32_ENCODE_CHAR = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'.split('');
   var BASE32_DECODE_CHAR = {
     'A': 0,
@@ -49932,10 +55246,10 @@ __webpack_require__.r(__webpack_exports__);
     }
   }
 })();
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(27), __webpack_require__(61), __webpack_require__(230)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(18), __webpack_require__(29), __webpack_require__(249)(module)))
 
 /***/ }),
-/* 230 */
+/* 249 */
 /***/ (function(module, exports) {
 
 module.exports = function(originalModule) {
@@ -49965,7 +55279,7 @@ module.exports = function(originalModule) {
 
 
 /***/ }),
-/* 231 */
+/* 250 */
 /***/ (function(module, exports) {
 
 /* WEBPACK VAR INJECTION */(function(__webpack_amd_options__) {/* globals __webpack_amd_options__ */
@@ -49974,7 +55288,271 @@ module.exports = __webpack_amd_options__;
 /* WEBPACK VAR INJECTION */}.call(this, {}))
 
 /***/ }),
-/* 232 */
+/* 251 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/*
+ * Copyright (c) 2017, Bubelich Mykola
+ * https, 0x//www.bubelich.com
+ *
+ * (｡◕‿‿◕｡)
+ *
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met, 0x
+ *
+ * Redistributions of source code must retain the above copyright notice,
+ * this list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ *
+ * Neither the name of the copyright holder nor the names of its contributors
+ * may be used to endorse or promote products derived from this software without
+ * specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ *
+ * ChaCha20 is a stream cipher designed by D. J. Bernstein.
+ * It is a refinement of the Salsa20 algorithm, and it uses a 256-bit key.
+ *
+ * ChaCha20 successively calls the ChaCha20 block function, with the same key and nonce, and with successively increasing block counter parameters.
+ * ChaCha20 then serializes the resulting state by writing the numbers in little-endian order, creating a keystream block.
+ *
+ * Concatenating the keystream blocks from the successive blocks forms a keystream.
+ * The ChaCha20 function then performs an XOR of this keystream with the plaintext.
+ * Alternatively, each keystream block can be XORed with a plaintext block before proceeding to create the next block, saving some memory.
+ * There is no requirement for the plaintext to be an integral multiple of 512 bits.  If there is extra keystream from the last block, it is discarded.
+ *
+ * The inputs to ChaCha20 are
+ * - 256-bit key
+ * - 32-bit initial counter
+ * - 96-bit nonce.  In some protocols, this is known as the Initialization Vector
+ * - Arbitrary-length plaintext
+ *
+ * Implementation derived from chacha-ref.c version 20080118
+ * See for details, 0x http, 0x//cr.yp.to/chacha/chacha-20080128.pdf
+ */
+
+/**
+ *
+ * @param {Uint8Array} key
+ * @param {Uint8Array} nonce
+ * @param {number} counter
+ * @throws {Error}
+ *
+ * @constructor
+ */
+var JSChaCha20 = function (key, nonce, counter) {
+  if (typeof counter === 'undefined') {
+    counter = 0
+  }
+
+  if (!(key instanceof Uint8Array) || key.length !== 32) {
+    throw new Error('Key should be 32 byte array!')
+  }
+
+  if (!(nonce instanceof Uint8Array) || nonce.length !== 12) {
+    throw new Error('Nonce should be 12 byte array!')
+  }
+
+  this._rounds = 20
+  // Constants
+  this._sigma = [0x61707865, 0x3320646e, 0x79622d32, 0x6b206574]
+
+  // param construction
+  this._param = [
+    this._sigma[0],
+    this._sigma[1],
+    this._sigma[2],
+    this._sigma[3],
+    // key
+    this._get32(key, 0),
+    this._get32(key, 4),
+    this._get32(key, 8),
+    this._get32(key, 12),
+    this._get32(key, 16),
+    this._get32(key, 20),
+    this._get32(key, 24),
+    this._get32(key, 28),
+    // counter
+    counter,
+    // nonce
+    this._get32(nonce, 0),
+    this._get32(nonce, 4),
+    this._get32(nonce, 8)
+  ]
+
+  // init 64 byte keystream block //
+  this._keystream = [
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+  ]
+
+  // internal byte counter //
+  this._byteCounter = 0
+}
+
+JSChaCha20.prototype._chacha = function () {
+  var mix = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+  var i = 0
+  var b = 0
+
+  // copy param array to mix //
+  for (i = 0; i < 16; i++) {
+    mix[i] = this._param[i]
+  }
+
+  // mix rounds //
+  for (i = 0; i < this._rounds; i += 2) {
+    this._quarterround(mix, 0, 4, 8, 12)
+    this._quarterround(mix, 1, 5, 9, 13)
+    this._quarterround(mix, 2, 6, 10, 14)
+    this._quarterround(mix, 3, 7, 11, 15)
+
+    this._quarterround(mix, 0, 5, 10, 15)
+    this._quarterround(mix, 1, 6, 11, 12)
+    this._quarterround(mix, 2, 7, 8, 13)
+    this._quarterround(mix, 3, 4, 9, 14)
+  }
+
+  for (i = 0; i < 16; i++) {
+    // add
+    mix[i] += this._param[i]
+
+    // store keystream
+    this._keystream[b++] = mix[i] & 0xFF
+    this._keystream[b++] = (mix[i] >>> 8) & 0xFF
+    this._keystream[b++] = (mix[i] >>> 16) & 0xFF
+    this._keystream[b++] = (mix[i] >>> 24) & 0xFF
+  }
+}
+
+/**
+ * The basic operation of the ChaCha algorithm is the quarter round.
+ * It operates on four 32-bit unsigned integers, denoted a, b, c, and d.
+ *
+ * @param {Array} output
+ * @param {number} a
+ * @param {number} b
+ * @param {number} c
+ * @param {number} d
+ * @private
+ */
+JSChaCha20.prototype._quarterround = function (output, a, b, c, d) {
+  output[d] = this._rotl(output[d] ^ (output[a] += output[b]), 16)
+  output[b] = this._rotl(output[b] ^ (output[c] += output[d]), 12)
+  output[d] = this._rotl(output[d] ^ (output[a] += output[b]), 8)
+  output[b] = this._rotl(output[b] ^ (output[c] += output[d]), 7)
+
+  // JavaScript hack to make UINT32 :) //
+  output[a] >>>= 0
+  output[b] >>>= 0
+  output[c] >>>= 0
+  output[d] >>>= 0
+}
+
+/**
+ * Little-endian to uint 32 bytes
+ *
+ * @param {Uint8Array|[number]} data
+ * @param {number} index
+ * @return {number}
+ * @private
+ */
+JSChaCha20.prototype._get32 = function (data, index) {
+  return data[index++] ^ (data[index++] << 8) ^ (data[index++] << 16) ^ (data[index] << 24)
+}
+
+/**
+ * Cyclic left rotation
+ *
+ * @param {number} data
+ * @param {number} shift
+ * @return {number}
+ * @private
+ */
+JSChaCha20.prototype._rotl = function (data, shift) {
+  return ((data << shift) | (data >>> (32 - shift)))
+}
+
+/**
+ *  Encrypt data with key and nonce
+ *
+ * @param {Uint8Array} data
+ * @return {Uint8Array}
+ */
+JSChaCha20.prototype.encrypt = function (data) {
+  return this._update(data)
+}
+
+/**
+ *  Decrypt data with key and nonce
+ *
+ * @param {Uint8Array} data
+ * @return {Uint8Array}
+ */
+JSChaCha20.prototype.decrypt = function (data) {
+  return this._update(data)
+}
+
+/**
+ *  Encrypt or Decrypt data with key and nonce
+ *
+ * @param {Uint8Array} data
+ * @return {Uint8Array}
+ * @private
+ */
+JSChaCha20.prototype._update = function (data) {
+  if (!(data instanceof Uint8Array) || data.length === 0) {
+    throw new Error('Data should be type of bytes (Uint8Array) and not empty!')
+  }
+
+  var output = new Uint8Array(data.length)
+
+  // core function, build block and xor with input data //
+  for (var i = 0; i < data.length; i++) {
+    if (this._byteCounter === 0 || this._byteCounter === 64) {
+      // generate new block //
+
+      this._chacha()
+      // counter increment //
+      this._param[12]++
+
+      // reset internal counter //
+      this._byteCounter = 0
+    }
+
+    output[i] = data[i] ^ this._keystream[this._byteCounter++]
+  }
+
+  return output
+}
+
+// EXPORT //
+if ( true && module.exports) {
+  module.exports = JSChaCha20
+}
+
+
+/***/ }),
+/* 252 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {// MIT License
@@ -50198,10 +55776,10 @@ if( true && module.hasOwnProperty('exports')){
 
 
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(233)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(253)(module)))
 
 /***/ }),
-/* 233 */
+/* 253 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -50229,717 +55807,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 234 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(process) {// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-var getOwnPropertyDescriptors = Object.getOwnPropertyDescriptors ||
-  function getOwnPropertyDescriptors(obj) {
-    var keys = Object.keys(obj);
-    var descriptors = {};
-    for (var i = 0; i < keys.length; i++) {
-      descriptors[keys[i]] = Object.getOwnPropertyDescriptor(obj, keys[i]);
-    }
-    return descriptors;
-  };
-
-var formatRegExp = /%[sdj%]/g;
-exports.format = function(f) {
-  if (!isString(f)) {
-    var objects = [];
-    for (var i = 0; i < arguments.length; i++) {
-      objects.push(inspect(arguments[i]));
-    }
-    return objects.join(' ');
-  }
-
-  var i = 1;
-  var args = arguments;
-  var len = args.length;
-  var str = String(f).replace(formatRegExp, function(x) {
-    if (x === '%%') return '%';
-    if (i >= len) return x;
-    switch (x) {
-      case '%s': return String(args[i++]);
-      case '%d': return Number(args[i++]);
-      case '%j':
-        try {
-          return JSON.stringify(args[i++]);
-        } catch (_) {
-          return '[Circular]';
-        }
-      default:
-        return x;
-    }
-  });
-  for (var x = args[i]; i < len; x = args[++i]) {
-    if (isNull(x) || !isObject(x)) {
-      str += ' ' + x;
-    } else {
-      str += ' ' + inspect(x);
-    }
-  }
-  return str;
-};
-
-
-// Mark that a method should not be used.
-// Returns a modified function which warns once by default.
-// If --no-deprecation is set, then it is a no-op.
-exports.deprecate = function(fn, msg) {
-  if (typeof process !== 'undefined' && process.noDeprecation === true) {
-    return fn;
-  }
-
-  // Allow for deprecating things in the process of starting up.
-  if (typeof process === 'undefined') {
-    return function() {
-      return exports.deprecate(fn, msg).apply(this, arguments);
-    };
-  }
-
-  var warned = false;
-  function deprecated() {
-    if (!warned) {
-      if (process.throwDeprecation) {
-        throw new Error(msg);
-      } else if (process.traceDeprecation) {
-        console.trace(msg);
-      } else {
-        console.error(msg);
-      }
-      warned = true;
-    }
-    return fn.apply(this, arguments);
-  }
-
-  return deprecated;
-};
-
-
-var debugs = {};
-var debugEnviron;
-exports.debuglog = function(set) {
-  if (isUndefined(debugEnviron))
-    debugEnviron = process.env.NODE_DEBUG || '';
-  set = set.toUpperCase();
-  if (!debugs[set]) {
-    if (new RegExp('\\b' + set + '\\b', 'i').test(debugEnviron)) {
-      var pid = process.pid;
-      debugs[set] = function() {
-        var msg = exports.format.apply(exports, arguments);
-        console.error('%s %d: %s', set, pid, msg);
-      };
-    } else {
-      debugs[set] = function() {};
-    }
-  }
-  return debugs[set];
-};
-
-
-/**
- * Echos the value of a value. Trys to print the value out
- * in the best way possible given the different types.
- *
- * @param {Object} obj The object to print out.
- * @param {Object} opts Optional options object that alters the output.
- */
-/* legacy: obj, showHidden, depth, colors*/
-function inspect(obj, opts) {
-  // default options
-  var ctx = {
-    seen: [],
-    stylize: stylizeNoColor
-  };
-  // legacy...
-  if (arguments.length >= 3) ctx.depth = arguments[2];
-  if (arguments.length >= 4) ctx.colors = arguments[3];
-  if (isBoolean(opts)) {
-    // legacy...
-    ctx.showHidden = opts;
-  } else if (opts) {
-    // got an "options" object
-    exports._extend(ctx, opts);
-  }
-  // set default options
-  if (isUndefined(ctx.showHidden)) ctx.showHidden = false;
-  if (isUndefined(ctx.depth)) ctx.depth = 2;
-  if (isUndefined(ctx.colors)) ctx.colors = false;
-  if (isUndefined(ctx.customInspect)) ctx.customInspect = true;
-  if (ctx.colors) ctx.stylize = stylizeWithColor;
-  return formatValue(ctx, obj, ctx.depth);
-}
-exports.inspect = inspect;
-
-
-// http://en.wikipedia.org/wiki/ANSI_escape_code#graphics
-inspect.colors = {
-  'bold' : [1, 22],
-  'italic' : [3, 23],
-  'underline' : [4, 24],
-  'inverse' : [7, 27],
-  'white' : [37, 39],
-  'grey' : [90, 39],
-  'black' : [30, 39],
-  'blue' : [34, 39],
-  'cyan' : [36, 39],
-  'green' : [32, 39],
-  'magenta' : [35, 39],
-  'red' : [31, 39],
-  'yellow' : [33, 39]
-};
-
-// Don't use 'blue' not visible on cmd.exe
-inspect.styles = {
-  'special': 'cyan',
-  'number': 'yellow',
-  'boolean': 'yellow',
-  'undefined': 'grey',
-  'null': 'bold',
-  'string': 'green',
-  'date': 'magenta',
-  // "name": intentionally not styling
-  'regexp': 'red'
-};
-
-
-function stylizeWithColor(str, styleType) {
-  var style = inspect.styles[styleType];
-
-  if (style) {
-    return '\u001b[' + inspect.colors[style][0] + 'm' + str +
-           '\u001b[' + inspect.colors[style][1] + 'm';
-  } else {
-    return str;
-  }
-}
-
-
-function stylizeNoColor(str, styleType) {
-  return str;
-}
-
-
-function arrayToHash(array) {
-  var hash = {};
-
-  array.forEach(function(val, idx) {
-    hash[val] = true;
-  });
-
-  return hash;
-}
-
-
-function formatValue(ctx, value, recurseTimes) {
-  // Provide a hook for user-specified inspect functions.
-  // Check that value is an object with an inspect function on it
-  if (ctx.customInspect &&
-      value &&
-      isFunction(value.inspect) &&
-      // Filter out the util module, it's inspect function is special
-      value.inspect !== exports.inspect &&
-      // Also filter out any prototype objects using the circular check.
-      !(value.constructor && value.constructor.prototype === value)) {
-    var ret = value.inspect(recurseTimes, ctx);
-    if (!isString(ret)) {
-      ret = formatValue(ctx, ret, recurseTimes);
-    }
-    return ret;
-  }
-
-  // Primitive types cannot have properties
-  var primitive = formatPrimitive(ctx, value);
-  if (primitive) {
-    return primitive;
-  }
-
-  // Look up the keys of the object.
-  var keys = Object.keys(value);
-  var visibleKeys = arrayToHash(keys);
-
-  if (ctx.showHidden) {
-    keys = Object.getOwnPropertyNames(value);
-  }
-
-  // IE doesn't make error fields non-enumerable
-  // http://msdn.microsoft.com/en-us/library/ie/dww52sbt(v=vs.94).aspx
-  if (isError(value)
-      && (keys.indexOf('message') >= 0 || keys.indexOf('description') >= 0)) {
-    return formatError(value);
-  }
-
-  // Some type of object without properties can be shortcutted.
-  if (keys.length === 0) {
-    if (isFunction(value)) {
-      var name = value.name ? ': ' + value.name : '';
-      return ctx.stylize('[Function' + name + ']', 'special');
-    }
-    if (isRegExp(value)) {
-      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
-    }
-    if (isDate(value)) {
-      return ctx.stylize(Date.prototype.toString.call(value), 'date');
-    }
-    if (isError(value)) {
-      return formatError(value);
-    }
-  }
-
-  var base = '', array = false, braces = ['{', '}'];
-
-  // Make Array say that they are Array
-  if (isArray(value)) {
-    array = true;
-    braces = ['[', ']'];
-  }
-
-  // Make functions say that they are functions
-  if (isFunction(value)) {
-    var n = value.name ? ': ' + value.name : '';
-    base = ' [Function' + n + ']';
-  }
-
-  // Make RegExps say that they are RegExps
-  if (isRegExp(value)) {
-    base = ' ' + RegExp.prototype.toString.call(value);
-  }
-
-  // Make dates with properties first say the date
-  if (isDate(value)) {
-    base = ' ' + Date.prototype.toUTCString.call(value);
-  }
-
-  // Make error with message first say the error
-  if (isError(value)) {
-    base = ' ' + formatError(value);
-  }
-
-  if (keys.length === 0 && (!array || value.length == 0)) {
-    return braces[0] + base + braces[1];
-  }
-
-  if (recurseTimes < 0) {
-    if (isRegExp(value)) {
-      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
-    } else {
-      return ctx.stylize('[Object]', 'special');
-    }
-  }
-
-  ctx.seen.push(value);
-
-  var output;
-  if (array) {
-    output = formatArray(ctx, value, recurseTimes, visibleKeys, keys);
-  } else {
-    output = keys.map(function(key) {
-      return formatProperty(ctx, value, recurseTimes, visibleKeys, key, array);
-    });
-  }
-
-  ctx.seen.pop();
-
-  return reduceToSingleString(output, base, braces);
-}
-
-
-function formatPrimitive(ctx, value) {
-  if (isUndefined(value))
-    return ctx.stylize('undefined', 'undefined');
-  if (isString(value)) {
-    var simple = '\'' + JSON.stringify(value).replace(/^"|"$/g, '')
-                                             .replace(/'/g, "\\'")
-                                             .replace(/\\"/g, '"') + '\'';
-    return ctx.stylize(simple, 'string');
-  }
-  if (isNumber(value))
-    return ctx.stylize('' + value, 'number');
-  if (isBoolean(value))
-    return ctx.stylize('' + value, 'boolean');
-  // For some reason typeof null is "object", so special case here.
-  if (isNull(value))
-    return ctx.stylize('null', 'null');
-}
-
-
-function formatError(value) {
-  return '[' + Error.prototype.toString.call(value) + ']';
-}
-
-
-function formatArray(ctx, value, recurseTimes, visibleKeys, keys) {
-  var output = [];
-  for (var i = 0, l = value.length; i < l; ++i) {
-    if (hasOwnProperty(value, String(i))) {
-      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
-          String(i), true));
-    } else {
-      output.push('');
-    }
-  }
-  keys.forEach(function(key) {
-    if (!key.match(/^\d+$/)) {
-      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
-          key, true));
-    }
-  });
-  return output;
-}
-
-
-function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
-  var name, str, desc;
-  desc = Object.getOwnPropertyDescriptor(value, key) || { value: value[key] };
-  if (desc.get) {
-    if (desc.set) {
-      str = ctx.stylize('[Getter/Setter]', 'special');
-    } else {
-      str = ctx.stylize('[Getter]', 'special');
-    }
-  } else {
-    if (desc.set) {
-      str = ctx.stylize('[Setter]', 'special');
-    }
-  }
-  if (!hasOwnProperty(visibleKeys, key)) {
-    name = '[' + key + ']';
-  }
-  if (!str) {
-    if (ctx.seen.indexOf(desc.value) < 0) {
-      if (isNull(recurseTimes)) {
-        str = formatValue(ctx, desc.value, null);
-      } else {
-        str = formatValue(ctx, desc.value, recurseTimes - 1);
-      }
-      if (str.indexOf('\n') > -1) {
-        if (array) {
-          str = str.split('\n').map(function(line) {
-            return '  ' + line;
-          }).join('\n').substr(2);
-        } else {
-          str = '\n' + str.split('\n').map(function(line) {
-            return '   ' + line;
-          }).join('\n');
-        }
-      }
-    } else {
-      str = ctx.stylize('[Circular]', 'special');
-    }
-  }
-  if (isUndefined(name)) {
-    if (array && key.match(/^\d+$/)) {
-      return str;
-    }
-    name = JSON.stringify('' + key);
-    if (name.match(/^"([a-zA-Z_][a-zA-Z_0-9]*)"$/)) {
-      name = name.substr(1, name.length - 2);
-      name = ctx.stylize(name, 'name');
-    } else {
-      name = name.replace(/'/g, "\\'")
-                 .replace(/\\"/g, '"')
-                 .replace(/(^"|"$)/g, "'");
-      name = ctx.stylize(name, 'string');
-    }
-  }
-
-  return name + ': ' + str;
-}
-
-
-function reduceToSingleString(output, base, braces) {
-  var numLinesEst = 0;
-  var length = output.reduce(function(prev, cur) {
-    numLinesEst++;
-    if (cur.indexOf('\n') >= 0) numLinesEst++;
-    return prev + cur.replace(/\u001b\[\d\d?m/g, '').length + 1;
-  }, 0);
-
-  if (length > 60) {
-    return braces[0] +
-           (base === '' ? '' : base + '\n ') +
-           ' ' +
-           output.join(',\n  ') +
-           ' ' +
-           braces[1];
-  }
-
-  return braces[0] + base + ' ' + output.join(', ') + ' ' + braces[1];
-}
-
-
-// NOTE: These type checking functions intentionally don't use `instanceof`
-// because it is fragile and can be easily faked with `Object.create()`.
-function isArray(ar) {
-  return Array.isArray(ar);
-}
-exports.isArray = isArray;
-
-function isBoolean(arg) {
-  return typeof arg === 'boolean';
-}
-exports.isBoolean = isBoolean;
-
-function isNull(arg) {
-  return arg === null;
-}
-exports.isNull = isNull;
-
-function isNullOrUndefined(arg) {
-  return arg == null;
-}
-exports.isNullOrUndefined = isNullOrUndefined;
-
-function isNumber(arg) {
-  return typeof arg === 'number';
-}
-exports.isNumber = isNumber;
-
-function isString(arg) {
-  return typeof arg === 'string';
-}
-exports.isString = isString;
-
-function isSymbol(arg) {
-  return typeof arg === 'symbol';
-}
-exports.isSymbol = isSymbol;
-
-function isUndefined(arg) {
-  return arg === void 0;
-}
-exports.isUndefined = isUndefined;
-
-function isRegExp(re) {
-  return isObject(re) && objectToString(re) === '[object RegExp]';
-}
-exports.isRegExp = isRegExp;
-
-function isObject(arg) {
-  return typeof arg === 'object' && arg !== null;
-}
-exports.isObject = isObject;
-
-function isDate(d) {
-  return isObject(d) && objectToString(d) === '[object Date]';
-}
-exports.isDate = isDate;
-
-function isError(e) {
-  return isObject(e) &&
-      (objectToString(e) === '[object Error]' || e instanceof Error);
-}
-exports.isError = isError;
-
-function isFunction(arg) {
-  return typeof arg === 'function';
-}
-exports.isFunction = isFunction;
-
-function isPrimitive(arg) {
-  return arg === null ||
-         typeof arg === 'boolean' ||
-         typeof arg === 'number' ||
-         typeof arg === 'string' ||
-         typeof arg === 'symbol' ||  // ES6 symbol
-         typeof arg === 'undefined';
-}
-exports.isPrimitive = isPrimitive;
-
-exports.isBuffer = __webpack_require__(235);
-
-function objectToString(o) {
-  return Object.prototype.toString.call(o);
-}
-
-
-function pad(n) {
-  return n < 10 ? '0' + n.toString(10) : n.toString(10);
-}
-
-
-var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
-              'Oct', 'Nov', 'Dec'];
-
-// 26 Feb 16:19:34
-function timestamp() {
-  var d = new Date();
-  var time = [pad(d.getHours()),
-              pad(d.getMinutes()),
-              pad(d.getSeconds())].join(':');
-  return [d.getDate(), months[d.getMonth()], time].join(' ');
-}
-
-
-// log is just a thin wrapper to console.log that prepends a timestamp
-exports.log = function() {
-  console.log('%s - %s', timestamp(), exports.format.apply(exports, arguments));
-};
-
-
-/**
- * Inherit the prototype methods from one constructor into another.
- *
- * The Function.prototype.inherits from lang.js rewritten as a standalone
- * function (not on Function.prototype). NOTE: If this file is to be loaded
- * during bootstrapping this function needs to be rewritten using some native
- * functions as prototype setup using normal JavaScript does not work as
- * expected during bootstrapping (see mirror.js in r114903).
- *
- * @param {function} ctor Constructor function which needs to inherit the
- *     prototype.
- * @param {function} superCtor Constructor function to inherit prototype from.
- */
-exports.inherits = __webpack_require__(236);
-
-exports._extend = function(origin, add) {
-  // Don't do anything if add isn't an object
-  if (!add || !isObject(add)) return origin;
-
-  var keys = Object.keys(add);
-  var i = keys.length;
-  while (i--) {
-    origin[keys[i]] = add[keys[i]];
-  }
-  return origin;
-};
-
-function hasOwnProperty(obj, prop) {
-  return Object.prototype.hasOwnProperty.call(obj, prop);
-}
-
-var kCustomPromisifiedSymbol = typeof Symbol !== 'undefined' ? Symbol('util.promisify.custom') : undefined;
-
-exports.promisify = function promisify(original) {
-  if (typeof original !== 'function')
-    throw new TypeError('The "original" argument must be of type Function');
-
-  if (kCustomPromisifiedSymbol && original[kCustomPromisifiedSymbol]) {
-    var fn = original[kCustomPromisifiedSymbol];
-    if (typeof fn !== 'function') {
-      throw new TypeError('The "util.promisify.custom" argument must be of type Function');
-    }
-    Object.defineProperty(fn, kCustomPromisifiedSymbol, {
-      value: fn, enumerable: false, writable: false, configurable: true
-    });
-    return fn;
-  }
-
-  function fn() {
-    var promiseResolve, promiseReject;
-    var promise = new Promise(function (resolve, reject) {
-      promiseResolve = resolve;
-      promiseReject = reject;
-    });
-
-    var args = [];
-    for (var i = 0; i < arguments.length; i++) {
-      args.push(arguments[i]);
-    }
-    args.push(function (err, value) {
-      if (err) {
-        promiseReject(err);
-      } else {
-        promiseResolve(value);
-      }
-    });
-
-    try {
-      original.apply(this, args);
-    } catch (err) {
-      promiseReject(err);
-    }
-
-    return promise;
-  }
-
-  Object.setPrototypeOf(fn, Object.getPrototypeOf(original));
-
-  if (kCustomPromisifiedSymbol) Object.defineProperty(fn, kCustomPromisifiedSymbol, {
-    value: fn, enumerable: false, writable: false, configurable: true
-  });
-  return Object.defineProperties(
-    fn,
-    getOwnPropertyDescriptors(original)
-  );
-}
-
-exports.promisify.custom = kCustomPromisifiedSymbol
-
-function callbackifyOnRejected(reason, cb) {
-  // `!reason` guard inspired by bluebird (Ref: https://goo.gl/t5IS6M).
-  // Because `null` is a special error value in callbacks which means "no error
-  // occurred", we error-wrap so the callback consumer can distinguish between
-  // "the promise rejected with null" or "the promise fulfilled with undefined".
-  if (!reason) {
-    var newReason = new Error('Promise was rejected with a falsy value');
-    newReason.reason = reason;
-    reason = newReason;
-  }
-  return cb(reason);
-}
-
-function callbackify(original) {
-  if (typeof original !== 'function') {
-    throw new TypeError('The "original" argument must be of type Function');
-  }
-
-  // We DO NOT return the promise as it gives the user a false sense that
-  // the promise is actually somehow related to the callback's execution
-  // and that the callback throwing will reject the promise.
-  function callbackified() {
-    var args = [];
-    for (var i = 0; i < arguments.length; i++) {
-      args.push(arguments[i]);
-    }
-
-    var maybeCb = args.pop();
-    if (typeof maybeCb !== 'function') {
-      throw new TypeError('The last argument must be of type Function');
-    }
-    var self = this;
-    var cb = function() {
-      return maybeCb.apply(self, arguments);
-    };
-    // In true node style we process the callback on `nextTick` with all the
-    // implications (stack, `uncaughtException`, `async_hooks`)
-    original.apply(this, args)
-      .then(function(ret) { process.nextTick(cb, null, ret) },
-            function(rej) { process.nextTick(callbackifyOnRejected, rej, cb) });
-  }
-
-  Object.setPrototypeOf(callbackified, Object.getPrototypeOf(original));
-  Object.defineProperties(callbackified,
-                          getOwnPropertyDescriptors(original));
-  return callbackified;
-}
-exports.callbackify = callbackify;
-
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(27)))
-
-/***/ }),
-/* 235 */
+/* 254 */
 /***/ (function(module, exports) {
 
 module.exports = function isBuffer(arg) {
@@ -50950,36 +55818,7 @@ module.exports = function isBuffer(arg) {
 }
 
 /***/ }),
-/* 236 */
-/***/ (function(module, exports) {
-
-if (typeof Object.create === 'function') {
-  // implementation from standard node.js 'util' module
-  module.exports = function inherits(ctor, superCtor) {
-    ctor.super_ = superCtor
-    ctor.prototype = Object.create(superCtor.prototype, {
-      constructor: {
-        value: ctor,
-        enumerable: false,
-        writable: true,
-        configurable: true
-      }
-    });
-  };
-} else {
-  // old school shim for old browsers
-  module.exports = function inherits(ctor, superCtor) {
-    ctor.super_ = superCtor
-    var TempCtor = function () {}
-    TempCtor.prototype = superCtor.prototype
-    ctor.prototype = new TempCtor()
-    ctor.prototype.constructor = ctor
-  }
-}
-
-
-/***/ }),
-/* 237 */
+/* 255 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -50987,8 +55826,8 @@ if (typeof Object.create === 'function') {
  * Module dependencies.
  */
 
-var parseuri = __webpack_require__(150);
-var debug = __webpack_require__(76)('socket.io-client:url');
+var parseuri = __webpack_require__(163);
+var debug = __webpack_require__(84)('socket.io-client:url');
 
 /**
  * Module exports.
@@ -51060,7 +55899,7 @@ function url (uri, loc) {
 
 
 /***/ }),
-/* 238 */
+/* 256 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -51076,7 +55915,7 @@ function setup(env) {
 	createDebug.disable = disable;
 	createDebug.enable = enable;
 	createDebug.enabled = enabled;
-	createDebug.humanize = __webpack_require__(239);
+	createDebug.humanize = __webpack_require__(257);
 
 	Object.keys(env).forEach(key => {
 		createDebug[key] = env[key];
@@ -51332,7 +56171,7 @@ module.exports = setup;
 
 
 /***/ }),
-/* 239 */
+/* 257 */
 /***/ (function(module, exports) {
 
 /**
@@ -51500,7 +56339,7 @@ function plural(ms, msAbs, n, name) {
 
 
 /***/ }),
-/* 240 */
+/* 258 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {/**
@@ -51509,7 +56348,7 @@ function plural(ms, msAbs, n, name) {
  * Expose `debug()` as the module.
  */
 
-exports = module.exports = __webpack_require__(241);
+exports = module.exports = __webpack_require__(259);
 exports.log = log;
 exports.formatArgs = formatArgs;
 exports.save = save;
@@ -51699,10 +56538,10 @@ function localstorage() {
   } catch (e) {}
 }
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(27)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(18)))
 
 /***/ }),
-/* 241 */
+/* 259 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -51718,7 +56557,7 @@ exports.coerce = coerce;
 exports.disable = disable;
 exports.enable = enable;
 exports.enabled = enabled;
-exports.humanize = __webpack_require__(242);
+exports.humanize = __webpack_require__(260);
 
 /**
  * Active `debug` instances.
@@ -51933,7 +56772,7 @@ function coerce(val) {
 
 
 /***/ }),
-/* 242 */
+/* 260 */
 /***/ (function(module, exports) {
 
 /**
@@ -52091,7 +56930,7 @@ function plural(ms, n, name) {
 
 
 /***/ }),
-/* 243 */
+/* 261 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*global Blob,File*/
@@ -52100,8 +56939,8 @@ function plural(ms, n, name) {
  * Module requirements
  */
 
-var isArray = __webpack_require__(151);
-var isBuf = __webpack_require__(152);
+var isArray = __webpack_require__(164);
+var isBuf = __webpack_require__(165);
 var toString = Object.prototype.toString;
 var withNativeBlob = typeof Blob === 'function' || (typeof Blob !== 'undefined' && toString.call(Blob) === '[object BlobConstructor]');
 var withNativeFile = typeof File === 'function' || (typeof File !== 'undefined' && toString.call(File) === '[object FileConstructor]');
@@ -52238,11 +57077,11 @@ exports.removeBlobs = function(data, callback) {
 
 
 /***/ }),
-/* 244 */
+/* 262 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-module.exports = __webpack_require__(245);
+module.exports = __webpack_require__(263);
 
 /**
  * Exports parser
@@ -52250,24 +57089,24 @@ module.exports = __webpack_require__(245);
  * @api public
  *
  */
-module.exports.parser = __webpack_require__(54);
+module.exports.parser = __webpack_require__(57);
 
 
 /***/ }),
-/* 245 */
+/* 263 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
  * Module dependencies.
  */
 
-var transports = __webpack_require__(154);
-var Emitter = __webpack_require__(53);
-var debug = __webpack_require__(79)('engine.io-client:socket');
-var index = __webpack_require__(158);
-var parser = __webpack_require__(54);
-var parseuri = __webpack_require__(150);
-var parseqs = __webpack_require__(77);
+var transports = __webpack_require__(167);
+var Emitter = __webpack_require__(56);
+var debug = __webpack_require__(87)('engine.io-client:socket');
+var index = __webpack_require__(171);
+var parser = __webpack_require__(57);
+var parseuri = __webpack_require__(163);
+var parseqs = __webpack_require__(85);
 
 /**
  * Module exports.
@@ -52403,9 +57242,9 @@ Socket.protocol = parser.protocol; // this is an int
  */
 
 Socket.Socket = Socket;
-Socket.Transport = __webpack_require__(106);
-Socket.transports = __webpack_require__(154);
-Socket.parser = __webpack_require__(54);
+Socket.Transport = __webpack_require__(117);
+Socket.transports = __webpack_require__(167);
+Socket.parser = __webpack_require__(57);
 
 /**
  * Creates transport of the given type.
@@ -53008,7 +57847,7 @@ Socket.prototype.filterUpgrades = function (upgrades) {
 
 
 /***/ }),
-/* 246 */
+/* 264 */
 /***/ (function(module, exports) {
 
 
@@ -53031,7 +57870,7 @@ try {
 
 
 /***/ }),
-/* 247 */
+/* 265 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* global attachEvent */
@@ -53040,11 +57879,11 @@ try {
  * Module requirements.
  */
 
-var XMLHttpRequest = __webpack_require__(105);
-var Polling = __webpack_require__(155);
-var Emitter = __webpack_require__(53);
-var inherit = __webpack_require__(78);
-var debug = __webpack_require__(79)('engine.io-client:polling-xhr');
+var XMLHttpRequest = __webpack_require__(116);
+var Polling = __webpack_require__(168);
+var Emitter = __webpack_require__(56);
+var inherit = __webpack_require__(86);
+var debug = __webpack_require__(87)('engine.io-client:polling-xhr');
 
 /**
  * Module exports.
@@ -53454,7 +58293,7 @@ function unloadHandler () {
 
 
 /***/ }),
-/* 248 */
+/* 266 */
 /***/ (function(module, exports) {
 
 
@@ -53479,7 +58318,7 @@ module.exports = Object.keys || function keys (obj){
 
 
 /***/ }),
-/* 249 */
+/* 267 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -53490,7 +58329,7 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ }),
-/* 250 */
+/* 268 */
 /***/ (function(module, exports) {
 
 /**
@@ -53525,7 +58364,7 @@ module.exports = function(arraybuffer, start, end) {
 
 
 /***/ }),
-/* 251 */
+/* 269 */
 /***/ (function(module, exports) {
 
 module.exports = after
@@ -53559,7 +58398,7 @@ function noop() {}
 
 
 /***/ }),
-/* 252 */
+/* 270 */
 /***/ (function(module, exports) {
 
 /*! https://mths.be/utf8js v2.1.2 by @mathias */
@@ -53775,7 +58614,7 @@ module.exports = {
 
 
 /***/ }),
-/* 253 */
+/* 271 */
 /***/ (function(module, exports) {
 
 /*
@@ -53848,7 +58687,7 @@ module.exports = {
 
 
 /***/ }),
-/* 254 */
+/* 272 */
 /***/ (function(module, exports) {
 
 /**
@@ -53954,7 +58793,7 @@ module.exports = (function() {
 
 
 /***/ }),
-/* 255 */
+/* 273 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -53970,7 +58809,7 @@ function setup(env) {
 	createDebug.disable = disable;
 	createDebug.enable = enable;
 	createDebug.enabled = enabled;
-	createDebug.humanize = __webpack_require__(256);
+	createDebug.humanize = __webpack_require__(274);
 
 	Object.keys(env).forEach(key => {
 		createDebug[key] = env[key];
@@ -54226,7 +59065,7 @@ module.exports = setup;
 
 
 /***/ }),
-/* 256 */
+/* 274 */
 /***/ (function(module, exports) {
 
 /**
@@ -54394,15 +59233,15 @@ function plural(ms, msAbs, n, name) {
 
 
 /***/ }),
-/* 257 */
+/* 275 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
  * Module requirements.
  */
 
-var Polling = __webpack_require__(155);
-var inherit = __webpack_require__(78);
+var Polling = __webpack_require__(168);
+var inherit = __webpack_require__(86);
 
 /**
  * Module exports.
@@ -54637,22 +59476,22 @@ JSONPPolling.prototype.doWrite = function (data, fn) {
   }
 };
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(61)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(29)))
 
 /***/ }),
-/* 258 */
+/* 276 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {/**
  * Module dependencies.
  */
 
-var Transport = __webpack_require__(106);
-var parser = __webpack_require__(54);
-var parseqs = __webpack_require__(77);
-var inherit = __webpack_require__(78);
-var yeast = __webpack_require__(157);
-var debug = __webpack_require__(79)('engine.io-client:websocket');
+var Transport = __webpack_require__(117);
+var parser = __webpack_require__(57);
+var parseqs = __webpack_require__(85);
+var inherit = __webpack_require__(86);
+var yeast = __webpack_require__(170);
+var debug = __webpack_require__(87)('engine.io-client:websocket');
 
 var BrowserWebSocket, NodeWebSocket;
 
@@ -54664,7 +59503,7 @@ if (typeof WebSocket !== 'undefined') {
 
 if (typeof window === 'undefined') {
   try {
-    NodeWebSocket = __webpack_require__(259);
+    NodeWebSocket = __webpack_require__(277);
   } catch (e) { }
 }
 
@@ -54939,16 +59778,16 @@ WS.prototype.check = function () {
   return !!WebSocketImpl && !('__initialize' in WebSocketImpl && this.name === WS.prototype.name);
 };
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(32).Buffer))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(16).Buffer))
 
 /***/ }),
-/* 259 */
+/* 277 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
-/* 260 */
+/* 278 */
 /***/ (function(module, exports) {
 
 module.exports = toArray
@@ -54967,7 +59806,7 @@ function toArray(list, index) {
 
 
 /***/ }),
-/* 261 */
+/* 279 */
 /***/ (function(module, exports) {
 
 
@@ -55058,22 +59897,22 @@ Backoff.prototype.setJitter = function(jitter){
 
 
 /***/ }),
-/* 262 */
+/* 280 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* unused harmony export Participant */
-/* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(68);
+/* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(77);
 /* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(72);
+/* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(80);
 /* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(16);
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(17);
 /* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(15);
+/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(14);
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(4);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(5);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(5);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(6);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_5__);
 
 
@@ -55185,11 +60024,1272 @@ var Participant = /*#__PURE__*/function () {
 Participant.properties = ["nickname", "publicKey", "publicKeyFingerprint", "residence", "rights"];
 
 /***/ }),
-/* 263 */
+/* 281 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(Buffer) {var Socket = __webpack_require__(282);
+var IOStream = __webpack_require__(118);
+var BlobReadStream = __webpack_require__(298);
+
+
+exports = module.exports = lookup;
+
+/**
+ * Expose Node Buffer for browser.
+ *
+ * @api public
+ */
+exports.Buffer = Buffer;
+
+/**
+ * Expose Socket constructor.
+ *
+ * @api public
+ */
+exports.Socket = Socket;
+
+/**
+ * Expose IOStream constructor.
+ *
+ * @api public
+ */
+exports.IOStream = IOStream;
+
+/**
+ * Forces base 64 encoding when emitting. Must be set to true for Socket.IO v0.9 or lower.
+ *
+ * @api public
+ */
+exports.forceBase64 = false;
+
+/**
+ * Look up an existing Socket.
+ *
+ * @param {socket.io#Socket} socket.io
+ * @param {Object} options
+ * @return {Socket} Socket instance
+ * @api public
+ */
+function lookup(sio, options) {
+  options = options || {};
+  if (null == options.forceBase64) {
+    options.forceBase64 = exports.forceBase64;
+  }
+
+  if (!sio._streamSocket) {
+    sio._streamSocket = new Socket(sio, options);
+  }
+  return sio._streamSocket;
+}
+
+/**
+ * Creates a new duplex stream.
+ *
+ * @param {Object} options
+ * @return {IOStream} duplex stream
+ * @api public
+ */
+exports.createStream = function(options) {
+  return new IOStream(options);
+};
+
+/**
+ * Creates a new readable stream for Blob/File on browser.
+ *
+ * @param {Blob} blob
+ * @param {Object} options
+ * @return {BlobReadStream} stream
+ * @api public
+ */
+exports.createBlobReadStream = function(blob, options) {
+  return new BlobReadStream(blob, options);
+};
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(16).Buffer))
+
+/***/ }),
+/* 282 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(Buffer, global) {var util = __webpack_require__(67);
+var EventEmitter = __webpack_require__(69).EventEmitter;
+var bind = __webpack_require__(68);
+var IOStream = __webpack_require__(118);
+var parser = __webpack_require__(297);
+var debug = __webpack_require__(180)('socket.io-stream:socket');
+var emit = EventEmitter.prototype.emit;
+var on = EventEmitter.prototype.on;
+var slice = Array.prototype.slice;
+
+
+exports = module.exports = Socket;
+
+/**
+ * Base event name for messaging.
+ *
+ * @api public
+ */
+exports.event = '$stream';
+
+exports.events = [
+  'error',
+  'newListener',
+  'removeListener'
+];
+
+util.inherits(Socket, EventEmitter);
+
+/**
+ * Bidirectional stream socket which wraps Socket.IO.
+ *
+ * @param {socket.io#Socket} socket.io
+ * @api public
+ */
+function Socket(sio, options) {
+  if (!(this instanceof Socket)) {
+    return new Socket(sio, options);
+  }
+
+  EventEmitter.call(this);
+
+  options = options || {};
+
+  this.sio = sio;
+  this.forceBase64 = !!options.forceBase64;
+  this.streams = {};
+  this.encoder = new parser.Encoder();
+  this.decoder = new parser.Decoder();
+
+  var eventName = exports.event;
+  sio.on(eventName, bind(this, emit));
+  sio.on(eventName + '-read', bind(this, '_onread'));
+  sio.on(eventName + '-write', bind(this, '_onwrite'));
+  sio.on(eventName + '-end', bind(this, '_onend'));
+  sio.on(eventName + '-error', bind(this, '_onerror'));
+  sio.on('error', bind(this, emit, 'error'));
+  sio.on('disconnect', bind(this, '_ondisconnect'));
+
+  this.encoder.on('stream', bind(this, '_onencode'));
+  this.decoder.on('stream', bind(this, '_ondecode'));
+}
+
+/**
+ * Original emit function.
+ *
+ * @api private
+ */
+Socket.prototype.$emit = emit;
+
+/**
+ * Emits streams to this corresponding server/client.
+ *
+ * @return {Socket} self
+ * @api public
+ */
+Socket.prototype.emit = function(type) {
+  if (~exports.events.indexOf(type)) {
+    return emit.apply(this, arguments);
+  }
+  this._stream.apply(this, arguments);
+  return this;
+};
+
+Socket.prototype.on = function(type, listener) {
+  if (~exports.events.indexOf(type)) {
+    return on.apply(this, arguments);
+  }
+
+  this._onstream(type, listener);
+  return this;
+};
+
+/**
+ * Sends a new stream request.
+ *
+ * @param {String} event type
+ * @api private
+ */
+Socket.prototype._stream = function(type) {
+  debug('sending new streams');
+
+  var self = this;
+  var args = slice.call(arguments, 1);
+  var ack = args[args.length - 1];
+  if ('function' == typeof ack) {
+    args[args.length - 1] = function() {
+      var args = slice.call(arguments);
+      args = self.decoder.decode(args);
+      ack.apply(this, args);
+    };
+  }
+
+  args = this.encoder.encode(args);
+  var sio = this.sio;
+  sio.emit.apply(sio, [exports.event, type].concat(args));
+};
+
+/**
+ * Notifies the read event.
+ *
+ * @api private
+ */
+Socket.prototype._read = function(id, size) {
+  this.sio.emit(exports.event + '-read', id, size);
+};
+
+/**
+ * Requests to write a chunk.
+ *
+ * @api private
+ */
+Socket.prototype._write = function(id, chunk, encoding, callback) {
+  if (Buffer.isBuffer(chunk)) {
+    if (this.forceBase64) {
+      encoding = 'base64';
+      chunk = chunk.toString(encoding);
+    } else if (!global.Buffer) {
+      // socket.io can't handle Buffer when using browserify.
+      if (chunk.toArrayBuffer) {
+        chunk = chunk.toArrayBuffer();
+      } else {
+        chunk = chunk.buffer;
+      }
+    }
+  }
+  this.sio.emit(exports.event + '-write', id, chunk, encoding, callback);
+};
+
+Socket.prototype._end = function(id) {
+  this.sio.emit(exports.event + '-end', id);
+};
+
+Socket.prototype._error = function(id, err) {
+  this.sio.emit(exports.event + '-error', id, err.message || err);
+};
+
+/**
+ * Handles a new stream request.
+ *
+ * @param {String} event type
+ * @param {Function} listener
+ *
+ * @api private
+ */
+Socket.prototype._onstream = function(type, listener) {
+  if ('function' != typeof listener) {
+    throw TypeError('listener must be a function');
+  }
+
+  function onstream() {
+    debug('new streams');
+    var self = this;
+    var args = slice.call(arguments);
+    var ack = args[args.length - 1];
+    if ('function' == typeof ack) {
+      args[args.length - 1] = function() {
+        var args = slice.call(arguments);
+        args = self.encoder.encode(args);
+        ack.apply(this, args);
+      };
+    }
+
+    args = this.decoder.decode(args);
+    listener.apply(this, args);
+  }
+
+  // for removeListener
+  onstream.listener = listener;
+
+  on.call(this, type, onstream);
+};
+
+Socket.prototype._onread = function(id, size) {
+  debug('read: "%s"', id);
+
+  var stream = this.streams[id];
+  if (stream) {
+    stream._onread(size);
+  } else {
+    debug('ignore invalid stream id');
+  }
+};
+
+Socket.prototype._onwrite = function(id, chunk, encoding, callback) {
+  debug('write: "%s"', id);
+
+  var stream = this.streams[id];
+  if (!stream) {
+    callback('invalid stream id: ' + id);
+    return;
+  }
+
+  if (global.ArrayBuffer && chunk instanceof ArrayBuffer) {
+    // make sure that chunk is a buffer for stream
+    chunk = new Buffer(new Uint8Array(chunk));
+  }
+  stream._onwrite(chunk, encoding, callback);
+};
+
+Socket.prototype._onend = function(id) {
+  debug('end: "%s"', id);
+
+  var stream = this.streams[id];
+  if (!stream) {
+    debug('ignore non-existent stream id: "%s"', id);
+    return;
+  }
+
+  stream._end();
+};
+
+Socket.prototype._onerror = function(id, message) {
+  debug('error: "%s", "%s"', id, message);
+
+  var stream = this.streams[id];
+  if (!stream) {
+    debug('invalid stream id: "%s"', id);
+    return;
+  }
+
+  var err = new Error(message);
+  err.remote = true;
+  stream.emit('error', err);
+};
+
+Socket.prototype._ondisconnect = function() {
+  var stream;
+  for (var id in this.streams) {
+    stream = this.streams[id];
+    stream.destroy();
+
+    // Close streams when the underlaying
+    // socket.io connection is closed (regardless why)
+    stream.emit('close');
+    stream.emit('error', new Error('Connection aborted'));
+  }
+};
+
+Socket.prototype._onencode = function(stream) {
+  if (stream.socket || stream.destroyed) {
+    throw new Error('stream has already been sent.');
+  }
+
+  var id = stream.id;
+  if (this.streams[id]) {
+    throw new Error('Encoded stream already exists: ' + id);
+  }
+
+  this.streams[id] = stream;
+  stream.socket = this;
+};
+
+Socket.prototype._ondecode = function(stream) {
+  var id = stream.id;
+  if (this.streams[id]) {
+    this._error(id, new Error('Decoded stream already exists: ' + id));
+    return;
+  }
+
+  this.streams[id] = stream;
+  stream.socket = this;
+};
+
+Socket.prototype.cleanup = function(id) {
+  delete this.streams[id];
+};
+
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(16).Buffer, __webpack_require__(29)))
+
+/***/ }),
+/* 283 */
+/***/ (function(module, exports) {
+
+var toString = {}.toString;
+
+module.exports = Array.isArray || function (arr) {
+  return toString.call(arr) == '[object Array]';
+};
+
+
+/***/ }),
+/* 284 */
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+/* 285 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Buffer = __webpack_require__(120).Buffer;
+var util = __webpack_require__(286);
+
+function copyBuffer(src, target, offset) {
+  src.copy(target, offset);
+}
+
+module.exports = function () {
+  function BufferList() {
+    _classCallCheck(this, BufferList);
+
+    this.head = null;
+    this.tail = null;
+    this.length = 0;
+  }
+
+  BufferList.prototype.push = function push(v) {
+    var entry = { data: v, next: null };
+    if (this.length > 0) this.tail.next = entry;else this.head = entry;
+    this.tail = entry;
+    ++this.length;
+  };
+
+  BufferList.prototype.unshift = function unshift(v) {
+    var entry = { data: v, next: this.head };
+    if (this.length === 0) this.tail = entry;
+    this.head = entry;
+    ++this.length;
+  };
+
+  BufferList.prototype.shift = function shift() {
+    if (this.length === 0) return;
+    var ret = this.head.data;
+    if (this.length === 1) this.head = this.tail = null;else this.head = this.head.next;
+    --this.length;
+    return ret;
+  };
+
+  BufferList.prototype.clear = function clear() {
+    this.head = this.tail = null;
+    this.length = 0;
+  };
+
+  BufferList.prototype.join = function join(s) {
+    if (this.length === 0) return '';
+    var p = this.head;
+    var ret = '' + p.data;
+    while (p = p.next) {
+      ret += s + p.data;
+    }return ret;
+  };
+
+  BufferList.prototype.concat = function concat(n) {
+    if (this.length === 0) return Buffer.alloc(0);
+    if (this.length === 1) return this.head.data;
+    var ret = Buffer.allocUnsafe(n >>> 0);
+    var p = this.head;
+    var i = 0;
+    while (p) {
+      copyBuffer(p.data, ret, i);
+      i += p.data.length;
+      p = p.next;
+    }
+    return ret;
+  };
+
+  return BufferList;
+}();
+
+if (util && util.inspect && util.inspect.custom) {
+  module.exports.prototype[util.inspect.custom] = function () {
+    var obj = util.inspect({ length: this.length });
+    return this.constructor.name + ' ' + obj;
+  };
+}
+
+/***/ }),
+/* 286 */
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+/* 287 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global) {
+/**
+ * Module exports.
+ */
+
+module.exports = deprecate;
+
+/**
+ * Mark that a method should not be used.
+ * Returns a modified function which warns once by default.
+ *
+ * If `localStorage.noDeprecation = true` is set, then it is a no-op.
+ *
+ * If `localStorage.throwDeprecation = true` is set, then deprecated functions
+ * will throw an Error when invoked.
+ *
+ * If `localStorage.traceDeprecation = true` is set, then deprecated functions
+ * will invoke `console.trace()` instead of `console.error()`.
+ *
+ * @param {Function} fn - the function to deprecate
+ * @param {String} msg - the string to print to the console when `fn` is invoked
+ * @returns {Function} a new "deprecated" version of `fn`
+ * @api public
+ */
+
+function deprecate (fn, msg) {
+  if (config('noDeprecation')) {
+    return fn;
+  }
+
+  var warned = false;
+  function deprecated() {
+    if (!warned) {
+      if (config('throwDeprecation')) {
+        throw new Error(msg);
+      } else if (config('traceDeprecation')) {
+        console.trace(msg);
+      } else {
+        console.warn(msg);
+      }
+      warned = true;
+    }
+    return fn.apply(this, arguments);
+  }
+
+  return deprecated;
+}
+
+/**
+ * Checks `localStorage` for boolean values for the given `name`.
+ *
+ * @param {String} name
+ * @returns {Boolean}
+ * @api private
+ */
+
+function config (name) {
+  // accessing global.localStorage can trigger a DOMException in sandboxed iframes
+  try {
+    if (!global.localStorage) return false;
+  } catch (_) {
+    return false;
+  }
+  var val = global.localStorage[name];
+  if (null == val) return false;
+  return String(val).toLowerCase() === 'true';
+}
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(29)))
+
+/***/ }),
+/* 288 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* eslint-disable node/no-deprecated-api */
+var buffer = __webpack_require__(16)
+var Buffer = buffer.Buffer
+
+// alternative to using Object.keys for old browsers
+function copyProps (src, dst) {
+  for (var key in src) {
+    dst[key] = src[key]
+  }
+}
+if (Buffer.from && Buffer.alloc && Buffer.allocUnsafe && Buffer.allocUnsafeSlow) {
+  module.exports = buffer
+} else {
+  // Copy properties from require('buffer')
+  copyProps(buffer, exports)
+  exports.Buffer = SafeBuffer
+}
+
+function SafeBuffer (arg, encodingOrOffset, length) {
+  return Buffer(arg, encodingOrOffset, length)
+}
+
+SafeBuffer.prototype = Object.create(Buffer.prototype)
+
+// Copy static methods from Buffer
+copyProps(Buffer, SafeBuffer)
+
+SafeBuffer.from = function (arg, encodingOrOffset, length) {
+  if (typeof arg === 'number') {
+    throw new TypeError('Argument must not be a number')
+  }
+  return Buffer(arg, encodingOrOffset, length)
+}
+
+SafeBuffer.alloc = function (size, fill, encoding) {
+  if (typeof size !== 'number') {
+    throw new TypeError('Argument must be a number')
+  }
+  var buf = Buffer(size)
+  if (fill !== undefined) {
+    if (typeof encoding === 'string') {
+      buf.fill(fill, encoding)
+    } else {
+      buf.fill(fill)
+    }
+  } else {
+    buf.fill(0)
+  }
+  return buf
+}
+
+SafeBuffer.allocUnsafe = function (size) {
+  if (typeof size !== 'number') {
+    throw new TypeError('Argument must be a number')
+  }
+  return Buffer(size)
+}
+
+SafeBuffer.allocUnsafeSlow = function (size) {
+  if (typeof size !== 'number') {
+    throw new TypeError('Argument must be a number')
+  }
+  return buffer.SlowBuffer(size)
+}
+
+
+/***/ }),
+/* 289 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+// a passthrough stream.
+// basically just the most minimal sort of Transform stream.
+// Every written chunk gets output as-is.
+
+
+
+module.exports = PassThrough;
+
+var Transform = __webpack_require__(179);
+
+/*<replacement>*/
+var util = Object.create(__webpack_require__(70));
+util.inherits = __webpack_require__(47);
+/*</replacement>*/
+
+util.inherits(PassThrough, Transform);
+
+function PassThrough(options) {
+  if (!(this instanceof PassThrough)) return new PassThrough(options);
+
+  Transform.call(this, options);
+}
+
+PassThrough.prototype._transform = function (chunk, encoding, cb) {
+  cb(null, chunk);
+};
+
+/***/ }),
+/* 290 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(121);
+
+
+/***/ }),
+/* 291 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(48);
+
+
+/***/ }),
+/* 292 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(119).Transform
+
+
+/***/ }),
+/* 293 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(119).PassThrough
+
+
+/***/ }),
+/* 294 */
+/***/ (function(module, exports) {
+
+// UUID function from https://gist.github.com/jed/982883
+// More lightweight than node-uuid
+function b(
+  a                  // placeholder
+){
+  return a           // if the placeholder was passed, return
+    ? (              // a random number from 0 to 15
+      a ^            // unless b is 8,
+      Math.random()  // in which case
+      * 16           // a random number from
+      >> a/4         // 8 to 11
+      ).toString(16) // in hexadecimal
+    : (              // or otherwise a concatenated string:
+      [1e7] +        // 10000000 +
+      -1e3 +         // -1000 +
+      -4e3 +         // -4000 +
+      -8e3 +         // -80000000 +
+      -1e11          // -100000000000,
+      ).replace(     // replacing
+        /[018]/g,    // zeroes, ones, and eights with
+        b            // random hex digits
+      )
+}
+
+module.exports = b;
+
+
+/***/ }),
+/* 295 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-var content = __webpack_require__(264);
+/**
+ * This is the common logic for both the Node.js and web browser
+ * implementations of `debug()`.
+ *
+ * Expose `debug()` as the module.
+ */
+
+exports = module.exports = debug;
+exports.coerce = coerce;
+exports.disable = disable;
+exports.enable = enable;
+exports.enabled = enabled;
+exports.humanize = __webpack_require__(296);
+
+/**
+ * The currently active debug mode names, and names to skip.
+ */
+
+exports.names = [];
+exports.skips = [];
+
+/**
+ * Map of special "%n" handling functions, for the debug "format" argument.
+ *
+ * Valid key names are a single, lowercased letter, i.e. "n".
+ */
+
+exports.formatters = {};
+
+/**
+ * Previously assigned color.
+ */
+
+var prevColor = 0;
+
+/**
+ * Previous log timestamp.
+ */
+
+var prevTime;
+
+/**
+ * Select a color.
+ *
+ * @return {Number}
+ * @api private
+ */
+
+function selectColor() {
+  return exports.colors[prevColor++ % exports.colors.length];
+}
+
+/**
+ * Create a debugger with the given `namespace`.
+ *
+ * @param {String} namespace
+ * @return {Function}
+ * @api public
+ */
+
+function debug(namespace) {
+
+  // define the `disabled` version
+  function disabled() {
+  }
+  disabled.enabled = false;
+
+  // define the `enabled` version
+  function enabled() {
+
+    var self = enabled;
+
+    // set `diff` timestamp
+    var curr = +new Date();
+    var ms = curr - (prevTime || curr);
+    self.diff = ms;
+    self.prev = prevTime;
+    self.curr = curr;
+    prevTime = curr;
+
+    // add the `color` if not set
+    if (null == self.useColors) self.useColors = exports.useColors();
+    if (null == self.color && self.useColors) self.color = selectColor();
+
+    var args = Array.prototype.slice.call(arguments);
+
+    args[0] = exports.coerce(args[0]);
+
+    if ('string' !== typeof args[0]) {
+      // anything else let's inspect with %o
+      args = ['%o'].concat(args);
+    }
+
+    // apply any `formatters` transformations
+    var index = 0;
+    args[0] = args[0].replace(/%([a-z%])/g, function(match, format) {
+      // if we encounter an escaped % then don't increase the array index
+      if (match === '%%') return match;
+      index++;
+      var formatter = exports.formatters[format];
+      if ('function' === typeof formatter) {
+        var val = args[index];
+        match = formatter.call(self, val);
+
+        // now we need to remove `args[index]` since it's inlined in the `format`
+        args.splice(index, 1);
+        index--;
+      }
+      return match;
+    });
+
+    if ('function' === typeof exports.formatArgs) {
+      args = exports.formatArgs.apply(self, args);
+    }
+    var logFn = enabled.log || exports.log || console.log.bind(console);
+    logFn.apply(self, args);
+  }
+  enabled.enabled = true;
+
+  var fn = exports.enabled(namespace) ? enabled : disabled;
+
+  fn.namespace = namespace;
+
+  return fn;
+}
+
+/**
+ * Enables a debug mode by namespaces. This can include modes
+ * separated by a colon and wildcards.
+ *
+ * @param {String} namespaces
+ * @api public
+ */
+
+function enable(namespaces) {
+  exports.save(namespaces);
+
+  var split = (namespaces || '').split(/[\s,]+/);
+  var len = split.length;
+
+  for (var i = 0; i < len; i++) {
+    if (!split[i]) continue; // ignore empty strings
+    namespaces = split[i].replace(/\*/g, '.*?');
+    if (namespaces[0] === '-') {
+      exports.skips.push(new RegExp('^' + namespaces.substr(1) + '$'));
+    } else {
+      exports.names.push(new RegExp('^' + namespaces + '$'));
+    }
+  }
+}
+
+/**
+ * Disable debug output.
+ *
+ * @api public
+ */
+
+function disable() {
+  exports.enable('');
+}
+
+/**
+ * Returns true if the given mode name is enabled, false otherwise.
+ *
+ * @param {String} name
+ * @return {Boolean}
+ * @api public
+ */
+
+function enabled(name) {
+  var i, len;
+  for (i = 0, len = exports.skips.length; i < len; i++) {
+    if (exports.skips[i].test(name)) {
+      return false;
+    }
+  }
+  for (i = 0, len = exports.names.length; i < len; i++) {
+    if (exports.names[i].test(name)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * Coerce `val`.
+ *
+ * @param {Mixed} val
+ * @return {Mixed}
+ * @api private
+ */
+
+function coerce(val) {
+  if (val instanceof Error) return val.stack || val.message;
+  return val;
+}
+
+
+/***/ }),
+/* 296 */
+/***/ (function(module, exports) {
+
+/**
+ * Helpers.
+ */
+
+var s = 1000;
+var m = s * 60;
+var h = m * 60;
+var d = h * 24;
+var y = d * 365.25;
+
+/**
+ * Parse or format the given `val`.
+ *
+ * Options:
+ *
+ *  - `long` verbose formatting [false]
+ *
+ * @param {String|Number} val
+ * @param {Object} options
+ * @return {String|Number}
+ * @api public
+ */
+
+module.exports = function(val, options){
+  options = options || {};
+  if ('string' == typeof val) return parse(val);
+  return options.long
+    ? long(val)
+    : short(val);
+};
+
+/**
+ * Parse the given `str` and return milliseconds.
+ *
+ * @param {String} str
+ * @return {Number}
+ * @api private
+ */
+
+function parse(str) {
+  str = '' + str;
+  if (str.length > 10000) return;
+  var match = /^((?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|years?|yrs?|y)?$/i.exec(str);
+  if (!match) return;
+  var n = parseFloat(match[1]);
+  var type = (match[2] || 'ms').toLowerCase();
+  switch (type) {
+    case 'years':
+    case 'year':
+    case 'yrs':
+    case 'yr':
+    case 'y':
+      return n * y;
+    case 'days':
+    case 'day':
+    case 'd':
+      return n * d;
+    case 'hours':
+    case 'hour':
+    case 'hrs':
+    case 'hr':
+    case 'h':
+      return n * h;
+    case 'minutes':
+    case 'minute':
+    case 'mins':
+    case 'min':
+    case 'm':
+      return n * m;
+    case 'seconds':
+    case 'second':
+    case 'secs':
+    case 'sec':
+    case 's':
+      return n * s;
+    case 'milliseconds':
+    case 'millisecond':
+    case 'msecs':
+    case 'msec':
+    case 'ms':
+      return n;
+  }
+}
+
+/**
+ * Short format for `ms`.
+ *
+ * @param {Number} ms
+ * @return {String}
+ * @api private
+ */
+
+function short(ms) {
+  if (ms >= d) return Math.round(ms / d) + 'd';
+  if (ms >= h) return Math.round(ms / h) + 'h';
+  if (ms >= m) return Math.round(ms / m) + 'm';
+  if (ms >= s) return Math.round(ms / s) + 's';
+  return ms + 'ms';
+}
+
+/**
+ * Long format for `ms`.
+ *
+ * @param {Number} ms
+ * @return {String}
+ * @api private
+ */
+
+function long(ms) {
+  return plural(ms, d, 'day')
+    || plural(ms, h, 'hour')
+    || plural(ms, m, 'minute')
+    || plural(ms, s, 'second')
+    || ms + ' ms';
+}
+
+/**
+ * Pluralization helper.
+ */
+
+function plural(ms, n, name) {
+  if (ms < n) return;
+  if (ms < n * 1.5) return Math.floor(ms / n) + ' ' + name;
+  return Math.ceil(ms / n) + ' ' + name + 's';
+}
+
+
+/***/ }),
+/* 297 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var util = __webpack_require__(67);
+var EventEmitter = __webpack_require__(69).EventEmitter;
+var IOStream = __webpack_require__(118);
+var slice = Array.prototype.slice;
+
+exports.Encoder = Encoder;
+exports.Decoder = Decoder;
+
+util.inherits(Encoder, EventEmitter);
+
+function Encoder() {
+  EventEmitter.call(this);
+}
+
+/**
+ * Encode streams to placeholder objects.
+ *
+ * @api public
+ */
+Encoder.prototype.encode = function(v) {
+  if (v instanceof IOStream) {
+    return this.encodeStream(v);
+  } else if (util.isArray(v)) {
+    return this.encodeArray(v);
+  } else if (v && 'object' == typeof v) {
+    return this.encodeObject(v);
+  }
+  return v;
+}
+
+Encoder.prototype.encodeStream = function(stream) {
+  this.emit('stream', stream);
+
+  // represent a stream in an object.
+  var v = { $stream: stream.id };
+  if (stream.options) {
+    v.options = stream.options;
+  }
+  return v;
+}
+
+Encoder.prototype.encodeArray = function(arr) {
+  var v = [];
+  for (var i = 0, len = arr.length; i < len; i++) {
+    v.push(this.encode(arr[i]));
+  }
+  return v;
+}
+
+Encoder.prototype.encodeObject = function(obj) {
+  var v = {};
+  for (var k in obj) {
+    if (obj.hasOwnProperty(k)) {
+      v[k] = this.encode(obj[k]);
+    }
+  }
+  return v;
+}
+
+util.inherits(Decoder, EventEmitter);
+
+function Decoder() {
+  EventEmitter.call(this);
+}
+
+/**
+ * Decode placeholder objects to streams.
+ *
+ * @api public
+ */
+Decoder.prototype.decode = function(v) {
+  if (v && v.$stream) {
+    return this.decodeStream(v);
+  } else if (util.isArray(v)) {
+    return this.decodeArray(v);
+  } else if (v && 'object' == typeof v) {
+    return this.decodeObject(v);
+  }
+  return v;
+}
+
+Decoder.prototype.decodeStream = function(obj) {
+  var stream = new IOStream(obj.options);
+  stream.id = obj.$stream;
+  this.emit('stream', stream);
+  return stream;
+}
+
+Decoder.prototype.decodeArray = function(arr) {
+  var v = [];
+  for (var i = 0, len = arr.length; i < len; i++) {
+    v.push(this.decode(arr[i]));
+  }
+  return v;
+}
+
+Decoder.prototype.decodeObject = function(obj) {
+  var v = {};
+  for (var k in obj) {
+    if (obj.hasOwnProperty(k)) {
+      v[k] = this.decode(obj[k]);
+    }
+  }
+  return v;
+}
+
+
+/***/ }),
+/* 298 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(Buffer) {var util = __webpack_require__(67);
+var Readable = __webpack_require__(174).Readable;
+var bind = __webpack_require__(68);
+
+
+module.exports = BlobReadStream;
+
+util.inherits(BlobReadStream, Readable);
+
+/**
+ * Readable stream for Blob and File on browser.
+ *
+ * @param {Object} options
+ * @api private
+ */
+function BlobReadStream(blob, options) {
+  if (!(this instanceof BlobReadStream)) {
+    return new BlobReadStream(blob, options);
+  }
+
+  Readable.call(this, options);
+
+  options = options || {};
+  this.blob = blob;
+  this.slice = blob.slice || blob.webkitSlice || blob.mozSlice;
+  this.start = 0;
+  this.sync = options.synchronous || false;
+
+  var fileReader;
+
+  if (options.synchronous) {
+    fileReader = this.fileReader = new FileReaderSync();
+  } else {
+    fileReader = this.fileReader = new FileReader();
+  }
+
+  fileReader.onload = bind(this, '_onload');
+  fileReader.onerror = bind(this, '_onerror');
+}
+
+BlobReadStream.prototype._read = function(size) {
+  var start = this.start;
+  var end = this.start = this.start + size;
+  var chunk = this.slice.call(this.blob, start, end);
+
+  if (chunk.size) {
+    if (this.sync) {
+      var bufferChunk = new Buffer(new Uint8Array(this.fileReader.readAsArrayBuffer(chunk)));
+      this.push(bufferChunk);
+    } else {
+      this.fileReader.readAsArrayBuffer(chunk);
+    }
+  } else {
+    this.push(null);
+  }
+}
+
+BlobReadStream.prototype._onload = function(e) {
+  var chunk = new Buffer(new Uint8Array(e.target.result));
+  this.push(chunk);
+};
+
+BlobReadStream.prototype._onerror = function(e) {
+  var err = e.target.error;
+  this.emit('error', err);
+};
+
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(16).Buffer))
+
+/***/ }),
+/* 299 */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(300);
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -55203,28 +61303,28 @@ var options = {"hmr":true}
 options.transform = transform
 options.insertInto = undefined;
 
-var update = __webpack_require__(60)(content, options);
+var update = __webpack_require__(63)(content, options);
 
 if(content.locals) module.exports = content.locals;
 
 if(false) {}
 
 /***/ }),
-/* 264 */
+/* 300 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(59)(false);
+exports = module.exports = __webpack_require__(62)(false);
 // Module
-exports.push([module.i, "button{margin:.8rem .8rem .8rem 0;padding:1rem;background-color:#242831;border:none;cursor:pointer;outline:none;font-size:1.6rem;color:#eee}button:hover{background-color:#0c0;transition:.2s}.arrow{border:solid #eee;border-width:0 .3rem .3rem 0;width:1.5rem;position:relative;height:1.5rem;padding:.3rem}.arrow::before,.arrow::after{content:'';position:absolute;width:3rem;height:3rem;cursor:poninter}.arrow.right{transform:rotate(-45deg);-webkit-transform:rotate(-45deg)}.arrow.right::before,.arrow.right::after{transform:rotate(45deg);-webkit-transform:rotate(45deg);left:-1rem;top:-1rem}.arrow.down{transform:rotate(45deg);-webkit-transform:rotate(45deg)}.arrow.down::before,.arrow.down::after{transform:rotate(-45deg);-webkit-transform:rotate(-45deg)}.arrow.up{transform:rotate(-135deg);-webkit-transform:rotate(-135deg)}.arrow.up::before,.arrow.up::after{transform:rotate(135deg);-webkit-transform:rotate(135deg)}.arrow.left{transform:rotate(135deg);-webkit-transform:rotate(135deg)}.arrow.left::before,.arrow.left::after{transform:rotate(-135deg);-webkit-transform:rotate(-135deg)}button{margin:.8rem .8rem .8rem 0;padding:1rem;background-color:#242831;border:none;cursor:pointer;outline:none;font-size:1.6rem;color:#eee}button:hover{background-color:#0c0;transition:.2s}*,*::before,*::after{padding:0;margin:0;box-sizing:border-box}html{font-size:62.5%;font-family:sans-serif}body{font-size:1.5rem;height:100vh;display:flex;flex-direction:column;background-color:#2f3440}main{flex:1}header{display:flex;flex-direction:row;justify-content:space-between;background-color:#1e1f26;color:#ccc}input{margin:1rem 0 1rem 0;height:4rem;font-size:1.9rem;padding:0.6rem;border-radius:0.5rem;border:0.1rem solid #b5b5b5;outline:none}textarea{border:0.1rem solid #b5b5b5;border-radius:0.5rem;outline:none;height:10rem;width:25rem;margin:1rem 0 1rem 0}h1{font-size:4rem}h3{font-size:2rem}select{outline:none;padding:.3rem}.heading{padding:2rem 0 1rem 0}.heading .heading__main{font-weight:100;color:whitesmoke;text-transform:uppercase;font-family:monospace;font-size:3.5rem}.online__heading-icon i.fa{margin-right:1.8rem;color:green}.right-align{display:block;text-align:right}.left-align{display:block;text-align:left}.form-border{padding:3rem;border:1px solid #b5b5b5;border-radius:.5rem}.flex-column{display:flex;flex-direction:column}#help-link{margin-right:.5rem}button{margin:.8rem .8rem .8rem 0;padding:1rem;background-color:#242831;border:none;cursor:pointer;outline:none;font-size:1.6rem;color:#eee}button:hover{background-color:#0c0;transition:.2s}.header-section-left{display:flex;flex-direction:row;align-items:center}.header-section-left img{height:4rem;width:4rem;margin:1rem}.header-section-left #active-title{margin-left:1rem}#menu-button{width:4rem;height:4rem;margin:1rem;background:transparent url(\"/img/menu.svg\") no-repeat 0 50%;background-size:100% 100%}#menu-button:hover{cursor:pointer;-webkit-filter:brightness(70%);filter:birghtness(70%);transition:.2s}.menu-on{-webkit-filter:brightness(70%);filter:birghtness(70%)}.header-section-middle{display:flex;flex-direction:column;align-items:center}.header-section-middle img{margin:1rem;width:4rem;height:4rem;-webkit-filter:brightness(70%);filter:birghtness(70%)}.header-section-middle img:hover{cursor:pointer;-webkit-filter:brightness(100%);filter:birghtness(100%);transition:.2s}@media (max-width: 760px){.header-section-middle{display:none}}.header-section-right{display:flex;flex-direction:row}.header-section-right img{-webkit-filter:brightness(70%);filter:birghtness(70%);width:4rem;height:4rem;margin:1rem}.header-section-right img:hover{cursor:pointer;-webkit-filter:brightness(100%);filter:birghtness(100%);transition:.2s}main{background-color:#2f3440}#main-container{height:calc(100vh - 6rem);width:100%;display:flex;flex-direction:row}.side-panel-container{display:flex;flex-direction:column;width:30%;max-width:40rem;height:100%;align-items:flex-start}@media (max-width: 760px){.side-panel-container{width:100%;max-width:100%}}.carousel-wrap{width:100%;display:flex;flex-direction:row;align-items:center;height:7rem}.carousel-wrap .btn-rotate{margin:0 2.5rem 0 2.5rem;transition:.2s}.carousel-wrap .btn-rotate:hover{border-color:#0c0;transition:.2s}.carousel-wrap .carousel{flex:1;flex-direction:column;text-align:-webkit-center;padding:1.5rem 1rem 1.5rem 0;color:#eee;font-size:2.5rem;font-weight:bold;border:none;outline:none;background-color:inherit;appearance:none;-webkit-appearance:none;-moz-appearance:none;-ms-appearance:none}.carousel-wrap .carousel:-ms-expand{display:none}.carousel-wrap .carousel option{background-color:#242831;border:none;font-size:1.7rem;outline:none}.carousel-wrap .spin-carousel{width:2.5rem;height:2.4rem;margin:1.5rem 1rem 1.5rem 1rem}.side-panel-wrapper{display:flex;flex-direction:column;flex:1;width:100%}.side-block-wrap{overflow:auto;flex:1}.side-panel-block{display:flex;flex-direction:column;height:100%}.side-block-data-list{list-style-type:none;display:flex;flex:1;flex-direction:column;list-style-type:initial;overflow:auto;scrollbar-color:#0c0 #2f3440;list-style-position:inside;align-items:center}.side-block-data-list::-webkit-scrollbar{width:.5rem;background-color:none}.side-block-data-list::-webkit-scrollbar-track{-webkit-box-shadow:none;background-color:none;border-radius:10px}.side-block-data-list::-webkit-scrollbar-thumb{border-radius:10px;background-color:none;background-image:-webkit-gradient(linear, 40% 0%, 75% 84%, from(#4D9C41), to(#19911D), color-stop(0.6, #54DE5D))}.side-panel-button-row{display:flex;flex-direction:row;width:90%;overflow:hidden;height:6rem;margin-left:1rem;margin-top:1rem}.side-block-data-list-item{flex-direction:column;border-bottom:1px solid #242831;padding:.5rem;display:flex;width:100%}.side-block-data-list-item:hover{background-color:#242831;cursor:pointer}.topic-assets{margin-left:2rem;width:calc(100% - 2rem)}.topic-asset-item-wrap{padding:.5rem}.invite-list-item{display:flex;flex-direction:row;padding:.5rem;color:#eee;list-style:none;overflow:hidden;text-overflow:ellipsis;padding:.5rem;border-bottom:1px solid #242831;cursor:pointer}.invite-list-item:hover{background-color:#242831}.invite-list-item .invite-icon{background:url(\"/img/invite-light.svg\");background-size:cover;width:2rem;height:2rem}.invite-list-item .invite-label{color:#eee;margin-left:1rem;flex:1}.participant-list-item{display:flex;flex-direction:row;padding:.5rem;color:#eee;list-style:none;overflow:hidden;text-overflow:ellipsis;padding:.5rem;border-bottom:1px solid #242831;cursor:pointer}.participant-list-item:hover{background-color:#242831}.participant-list-item .participant-icon{background:url(\"/img/user-light.svg\");background-size:cover;width:2rem;height:2rem}.participant-list-item .participant-label{color:#eee;margin-left:1rem;flex:1}.active-asset{background-color:#135384}.active-asset:hover{background-color:#16619a}.topic-row-wrap{display:flex;flex-direction:row}.btn-expand-topic{width:2rem;height:2rem;background:url(\"/img/add-light.svg\");background-size:cover}.btn-collapse-topic{background:url(\"/img/minus-light.svg\");background-size:cover}.btn-top-row{width:100%;margin:0;padding-bottom:1rem;border-bottom:1px solid #242831}.btn-top{flex:1;margin:1rem;padding:0;background-color:#242831}.topic-name{font-size:1.8rem;margin-left:1.2rem;color:#eee;display:flex;flex:1}.unread-messages{font-weight:bold;display:flex;padding:.5rem;font-size:1.4rem;background-color:#0a0b0e;color:#eee;border-radius:40%;margin-right:1rem}.topic-in-focus{background-color:#385841}.topic-in-focus:hover{background-color:#42684d}.ctx-topic-buttons{display:flex;flex-direction:row;margin:2rem 1rem 1rem 1rem;flex-wrap:wrap}.ctx-topic-buttons button{flex:1}.bottom-section{height:40%}@media screen and (max-height: 800px){.bottom-section{display:none}}.connection-indicator-container{display:flex;flex-direction:row;flex-shrink:1;height:4rem;align-items:center;width:100%;padding:1rem}.connection-indicator-container .connection-indicator-label{font-size:1.3rem;color:#eee;font-weight:100;margin-left:1rem}.connection-indicator-container .connection-indicator{border-radius:50%;max-width:1rem;max-height:1rem;width:100%;height:100%}.connection-indicator-container .connected{background-color:green}.connection-indicator-container .dicsonnected{background-color:red}.connection-indicator-container .connecting{background-color:orange}.connection-indicator-container .unknown{background-color:grey}.version-wrapper{display:flex;flex-direction:row;background-color:#242831;align-items:center;padding:1rem;width:100%;border-right:1px solid #2f3440}.version-wrapper img{margin:0 1rem 0 1rem;width:3rem;height:3rem}.version-wrapper h3{color:#e1e1e1;font-size:1.4rem;font-weight:100}.manage-topics-view{color:#eee;display:flex;flex-direction:column;margin:4rem}@media (max-width: 760px){.manage-topics-view{margin:.5rem}}.manage-topics-list{color:#eee;margin:1rem 0 2rem 0}.manage-topics-list div{font-size:1.6rem;padding:1.3rem;border-bottom:1px solid #242831}.manage-topics-list div:hover{background-color:#242831;cursor:pointer}.manage-topics-list .selected{background-color:#385841}.manage-topics-list .selected:hover{background-color:#42684d;cursor:pointer}.new-message-container{max-height:50%;background-color:inherit;display:flex;margin:2rem 2rem 1rem 0;flex-direction:row;justify-content:flex-end}.control-col{display:flex;flex-direction:column;margin-left:2rem}.select-member-wrap{display:flex;flex-direction:row;justify-content:flex-end;border-bottom:none;margin:0;color:#eee}.select-member-wrap h4{margin:auto 1rem}.select-member-wrap select{color:#eee;background:#2f3440;padding:.8rem;min-width:37%;border:none;border-bottom:1px solid #242831;border-radius:.5rem .5rem 0 0;outline:none}.input-wrap{display:flex;flex-direction:row;width:100%;justify-content:flex-end;margin:0}.input-wrap #new-msg{width:100%;border-radius:.5rem 0 .5rem .5rem;height:3.5rem;margin:0 0 .5rem 0;resize:vertical;background-color:#2f3440;color:#eee;border:none}.input-wrap .button-column{display:flex;flex-direction:column;margin:0}.input-wrap .button-column img{cursor:pointer;border-radius:1rem;margin-right:2rem;width:3rem;height:3rem;transition:filter .2s ease}.input-wrap .button-column img:hover{filter:drop-shadow(1px 1px 2px #898c97)}.input-wrap .button-column .disabled{filter:grayscale(100%)}.new-msg-input{width:100%}.new-message-wrap{display:flex;flex-direction:column;align-items:flex-end}.new-message-wrap *{display:block;margin:1rem 0 1rem 0}.new-message-wrap #new-msg{background-color:#2f3440;min-width:60%;padding:1rem;border-radius:0.5rem;resize:vertical}.new-message-wrap .send-button-wrap{display:flex;flex-direction:row;align-items:center;margin:0}.new-message-wrap .send-button-wrap .hint-wrap{display:flex;flex-direction:column;align-items:flex-end}.new-message-wrap .send-button-wrap .hint-wrap .send-new-message-hint{margin:0 1.5rem 0 1.5rem;color:#9da3ad;font-size:1.2rem;font-style:italic}.btn-send{border:none;margin:0;outline:none;background-color:#2f3440;color:#eee;font-size:1.8rem;padding:.8rem;transition:.2s}.btn-send:hover{background-color:#0c0;transition:.2s}.attach-file-wrap{height:5rem;display:flex;flex-direction:row;justify-content:flex-end;align-items:center;align-self:flex-end;width:60%;min-width:10rem;padding:1rem;border-radius:0.5rem}.new-msg-buttons{width:7rem}.new-msg-buttons label{align-self:center;margin-top:1.5rem;width:4rem;height:4rem;display:flex}#chosen-files{margin-right:1.7rem;display:flex;flex-direction:row}#chosen-files .chosen-file-wrap{background-color:#3a404f;padding:.2rem;border-radius:.5rem;height:inherit;display:flex;align-items:center;font-size:1.6rem;font-weight:bolder;color:#e1e1e1}#chosen-files .chosen-file-wrap img{height:20px;width:20px}#chosen-files .chosen-file-wrap img:hover{filter:drop-shadow(1px 1px 2px #000)}.inputfile{width:0.1px;height:0.1px;opacity:0;overflow:hidden;position:absolute;z-index:-1}.inputfile+label{display:flex;flex-direction:row}.inputfile+label img{border-radius:1rem;cursor:pointer;width:32px;height:32px;transition:filter .2s ease}.inputfile+label img:hover{filter:drop-shadow(1px 1px 2px #000)}.new-msg-buttons{width:7rem}.new-msg-buttons label{align-self:center;margin-top:1.5rem;width:4rem;height:4rem;display:flex}.form-outer-wrapper{display:block;margin:10% auto;color:#eee}.form-outer-wrapper .form-border{background-color:#111113;border:none;display:flex;flex-direction:column;align-items:flex-start}.form-outer-wrapper .form-border p{margin:1rem 0 1rem 0}.form-input{background-color:#2f3440;color:#eee;border:none;outline:none}.form-button{border-radius:.4rem;background-color:#2f3440;color:#eee;border:none;outline:none;padding:1rem;font-size:1.8rem}.form-button:hover{background-color:#0c0;transition:.2s}.messages-panel-wrapper{background-color:#242831;width:70%;height:100%;display:flex;flex-direction:column;flex:1}.messages-panel-wrapper .messages-panel-container{width:100%;display:flex;flex:1;background-color:inherit;border-bottom:2px solid #2f3440;overflow-x:hidden;overflow-y:auto;flex-grow:1;border-radius:1rem;padding:1rem 2rem 1rem 2rem;resize:none;height:100%}.messages-window{width:100%;display:flex;flex-direction:column}.message{display:flex;flex-shrink:0;flex-direction:column;width:70%;border-radius:1rem;margin:0.5rem;padding:.3rem;color:#4c4c4c;height:auto;align-self:flex-start;background-color:#c4e8ff}.my_message{display:flex;flex-shrink:0;flex-direction:column;width:70%;border-radius:1rem;margin:0.5rem;padding:.3rem;color:#4c4c4c;height:auto;align-self:flex-end;background-color:#d6ffef;text-align:right}.my_message .msg-body{text-align:left}.service-record{display:flex;flex-shrink:0;flex-direction:column;width:70%;border-radius:1rem;margin:0.5rem;padding:.3rem;color:#4c4c4c;height:auto;width:100%;background-color:#e6e6e6;text-align:left;font-size:1.2rem;color:#8a8a8a}.service-record .msg-body{text-align:left}.ephemeral-msg{display:flex;flex-shrink:0;flex-direction:column;width:70%;border-radius:1rem;margin:0.5rem;padding:.3rem;color:#4c4c4c;height:auto;width:100%;background-color:#fff0da;text-align:left;font-size:1.2rem;color:#8a8a8a}.ephemeral-msg .msg-body{text-align:left}.private-message{border:.3rem solid #b0afca}.private-mark{font-style:italic;margin:0 .5rem 0 .5rem}.msg-time-stamp{font-style:italic;font-size:1rem;margin:0 .5rem 0 .5rem}.msg-body{height:auto;overflow-wrap:break-word}.m-author-id{display:none}.m-recipient-id{display:none}.attach-file-wrap{height:5rem;display:flex;flex-direction:row;justify-content:flex-end;align-items:center;align-self:flex-end;width:60%;min-width:10rem;padding:1rem;border-radius:0.5rem}.msg-attachments{display:flex;margin-top:.8rem;align-self:flex-start}.att-view{cursor:pointer;margin:1rem}.att-view .att-state{display:none}.att-view .att-state .spinner{width:1.7rem;margin-right:.3rem;display:flex}.att-view .att-name{font-weight:bold;color:#003d77;font-size:1.6rem;margin-right:.4rem}.att-view .att-size{font-size:1.1rem}.att-view .att-icon{width:1.4rem;height:1.4rem}.att-info{display:none}\n", ""]);
+exports.push([module.i, "button{margin:.8rem .8rem .8rem 0;padding:1rem;background-color:#242831;border:none;cursor:pointer;outline:none;font-size:1.6rem;color:#eee}button:hover{background-color:#0c0;transition:.2s}.arrow{border:solid #eee;border-width:0 .3rem .3rem 0;width:1.5rem;position:relative;height:1.5rem;padding:.3rem}.arrow::before,.arrow::after{content:'';position:absolute;width:3rem;height:3rem;cursor:poninter}.arrow.right{transform:rotate(-45deg);-webkit-transform:rotate(-45deg)}.arrow.right::before,.arrow.right::after{transform:rotate(45deg);-webkit-transform:rotate(45deg);left:-1rem;top:-1rem}.arrow.down{transform:rotate(45deg);-webkit-transform:rotate(45deg)}.arrow.down::before,.arrow.down::after{transform:rotate(-45deg);-webkit-transform:rotate(-45deg)}.arrow.up{transform:rotate(-135deg);-webkit-transform:rotate(-135deg)}.arrow.up::before,.arrow.up::after{transform:rotate(135deg);-webkit-transform:rotate(135deg)}.arrow.left{transform:rotate(135deg);-webkit-transform:rotate(135deg)}.arrow.left::before,.arrow.left::after{transform:rotate(-135deg);-webkit-transform:rotate(-135deg)}button{margin:.8rem .8rem .8rem 0;padding:1rem;background-color:#242831;border:none;cursor:pointer;outline:none;font-size:1.6rem;color:#eee}button:hover{background-color:#0c0;transition:.2s}*,*::before,*::after{padding:0;margin:0;box-sizing:border-box}html{font-size:62.5%;font-family:sans-serif}body{font-size:1.5rem;height:100vh;display:flex;flex-direction:column;background-color:#2f3440}main{flex:1}header{display:flex;flex-direction:row;justify-content:space-between;background-color:#1e1f26;color:#ccc}input{margin:1rem 0 1rem 0;height:4rem;font-size:1.9rem;padding:0.6rem;border-radius:0.5rem;border:0.1rem solid #b5b5b5;outline:none}textarea{border:0.1rem solid #b5b5b5;border-radius:0.5rem;outline:none;height:10rem;width:25rem;margin:1rem 0 1rem 0}h1{font-size:4rem}h3{font-size:2rem}select{outline:none;padding:.3rem}.heading{padding:2rem 0 1rem 0}.heading .heading__main{font-weight:100;color:whitesmoke;text-transform:uppercase;font-family:monospace;font-size:3.5rem}.online__heading-icon i.fa{margin-right:1.8rem;color:green}.right-align{display:block;text-align:right}.left-align{display:block;text-align:left}.form-border{padding:3rem;border:1px solid #b5b5b5;border-radius:.5rem}.flex-column{display:flex;flex-direction:column}#help-link{margin-right:.5rem}button{margin:.8rem .8rem .8rem 0;padding:1rem;background-color:#242831;border:none;cursor:pointer;outline:none;font-size:1.6rem;color:#eee}button:hover{background-color:#0c0;transition:.2s}.header-section-left{display:flex;flex-direction:row;align-items:center}.header-section-left img{height:4rem;width:4rem;margin:1rem}.header-section-left #active-title{margin-left:1rem}#menu-button{width:4rem;height:4rem;margin:1rem;background:transparent url(\"/img/menu.svg\") no-repeat 0 50%;background-size:100% 100%}#menu-button:hover{cursor:pointer;-webkit-filter:brightness(70%);filter:birghtness(70%);transition:.2s}.menu-on{-webkit-filter:brightness(70%);filter:birghtness(70%)}.header-section-middle{display:flex;flex-direction:column;align-items:center}.header-section-middle img{margin:1rem;width:4rem;height:4rem;-webkit-filter:brightness(70%);filter:birghtness(70%)}.header-section-middle img:hover{cursor:pointer;-webkit-filter:brightness(100%);filter:birghtness(100%);transition:.2s}@media (max-width: 760px){.header-section-middle{display:none}}.header-section-right{display:flex;flex-direction:row}.header-section-right img{-webkit-filter:brightness(70%);filter:birghtness(70%);width:4rem;height:4rem;margin:1rem}.header-section-right img:hover{cursor:pointer;-webkit-filter:brightness(100%);filter:birghtness(100%);transition:.2s}main{background-color:#2f3440}#main-container{height:calc(100vh - 6rem);width:100%;display:flex;flex-direction:row}.side-panel-container{display:flex;flex-direction:column;width:30%;max-width:40rem;height:100%;align-items:flex-start}@media (max-width: 760px){.side-panel-container{width:100%;max-width:100%}}.carousel-wrap{width:100%;display:flex;flex-direction:row;align-items:center;height:7rem}.carousel-wrap .btn-rotate{margin:0 2.5rem 0 2.5rem;transition:.2s}.carousel-wrap .btn-rotate:hover{border-color:#0c0;transition:.2s}.carousel-wrap .carousel{flex:1;flex-direction:column;text-align:-webkit-center;padding:1.5rem 1rem 1.5rem 0;color:#eee;font-size:2.5rem;font-weight:bold;border:none;outline:none;background-color:inherit;appearance:none;-webkit-appearance:none;-moz-appearance:none;-ms-appearance:none}.carousel-wrap .carousel:-ms-expand{display:none}.carousel-wrap .carousel option{background-color:#242831;border:none;font-size:1.7rem;outline:none}.carousel-wrap .spin-carousel{width:2.5rem;height:2.4rem;margin:1.5rem 1rem 1.5rem 1rem}.side-panel-wrapper{display:flex;flex-direction:column;flex:1;width:100%}.side-block-wrap{overflow:auto;flex:1}.side-panel-block{display:flex;flex-direction:column;height:100%}.side-block-data-list{list-style-type:none;display:flex;flex:1;flex-direction:column;list-style-type:initial;overflow:auto;scrollbar-color:#0c0 #2f3440;list-style-position:inside;align-items:center}.side-block-data-list::-webkit-scrollbar{width:.5rem;background-color:none}.side-block-data-list::-webkit-scrollbar-track{-webkit-box-shadow:none;background-color:none;border-radius:10px}.side-block-data-list::-webkit-scrollbar-thumb{border-radius:10px;background-color:none;background-image:-webkit-gradient(linear, 40% 0%, 75% 84%, from(#4D9C41), to(#19911D), color-stop(0.6, #54DE5D))}.side-panel-button-row{display:flex;flex-direction:row;width:90%;overflow:hidden;height:6rem;margin-left:1rem;margin-top:1rem}.side-block-data-list-item{flex-direction:column;border-bottom:1px solid #242831;padding:.5rem;display:flex;width:100%}.side-block-data-list-item:hover{background-color:#242831;cursor:pointer}.topic-assets{margin-left:2rem;width:calc(100% - 2rem)}.topic-asset-item-wrap{padding:.5rem}.invite-list-item{display:flex;flex-direction:row;padding:.5rem;color:#eee;list-style:none;overflow:hidden;text-overflow:ellipsis;padding:.5rem;border-bottom:1px solid #242831;cursor:pointer}.invite-list-item:hover{background-color:#242831}.invite-list-item .invite-icon{background:url(\"/img/invite-light.svg\");background-size:cover;width:2rem;height:2rem}.invite-list-item .invite-label{color:#eee;margin-left:1rem;flex:1}.participant-list-item{display:flex;flex-direction:row;padding:.5rem;color:#eee;list-style:none;overflow:hidden;text-overflow:ellipsis;padding:.5rem;border-bottom:1px solid #242831;cursor:pointer}.participant-list-item:hover{background-color:#242831}.participant-list-item .participant-icon{background:url(\"/img/user-light.svg\");background-size:cover;width:2rem;height:2rem}.participant-list-item .participant-label{color:#eee;margin-left:1rem;flex:1}.active-asset{background-color:#135384}.active-asset:hover{background-color:#16619a}.topic-row-wrap{display:flex;flex-direction:row}.btn-expand-topic{width:2rem;height:2rem;background:url(\"/img/add-light.svg\");background-size:cover}.btn-collapse-topic{background:url(\"/img/minus-light.svg\");background-size:cover}.btn-top-row{width:100%;margin:0;padding-bottom:1rem;border-bottom:1px solid #242831}.btn-top{flex:1;margin:1rem;padding:0;background-color:#242831}.topic-name{font-size:1.8rem;margin-left:1.2rem;color:#eee;display:flex;flex:1}.unread-messages{font-weight:bold;display:flex;padding:.5rem;font-size:1.4rem;background-color:#0a0b0e;color:#eee;border-radius:40%;margin-right:1rem}.topic-in-focus{background-color:#385841}.topic-in-focus:hover{background-color:#42684d}.ctx-topic-buttons{display:flex;flex-direction:row;margin:2rem 1rem 1rem 1rem;flex-wrap:wrap}.ctx-topic-buttons button{flex:1}.bottom-section{height:40%}@media screen and (max-height: 800px){.bottom-section{display:none}}.connection-indicator-container{display:flex;flex-direction:row;flex-shrink:1;height:4rem;align-items:center;width:100%;padding:1rem}.connection-indicator-container .connection-indicator-label{font-size:1.3rem;color:#eee;font-weight:100;margin-left:1rem}.connection-indicator-container .connection-indicator{border-radius:50%;max-width:1rem;max-height:1rem;width:100%;height:100%}.connection-indicator-container .connected{background-color:green}.connection-indicator-container .dicsonnected{background-color:red}.connection-indicator-container .connecting{background-color:orange}.connection-indicator-container .unknown{background-color:grey}.version-wrapper{display:flex;flex-direction:row;background-color:#242831;align-items:center;padding:1rem;width:100%;border-right:1px solid #2f3440}.version-wrapper img{margin:0 1rem 0 1rem;width:3rem;height:3rem}.version-wrapper h3{color:#e1e1e1;font-size:1.4rem;font-weight:100}.manage-topics-view{color:#eee;display:flex;flex-direction:column;margin:4rem}@media (max-width: 760px){.manage-topics-view{margin:.5rem}}.manage-topics-list{color:#eee;margin:1rem 0 2rem 0}.manage-topics-list div{font-size:1.6rem;padding:1.3rem;border-bottom:1px solid #242831}.manage-topics-list div:hover{background-color:#242831;cursor:pointer}.manage-topics-list .selected{background-color:#385841}.manage-topics-list .selected:hover{background-color:#42684d;cursor:pointer}.new-message-container{max-height:50%;background-color:inherit;display:flex;margin:2rem 2rem 1rem 0;flex-direction:row;justify-content:flex-end}.control-col{display:flex;flex-direction:column;margin-left:2rem}.select-member-wrap{display:flex;flex-direction:row;justify-content:flex-end;border-bottom:none;margin:0;color:#eee}.select-member-wrap h4{margin:auto 1rem}.select-member-wrap select{color:#eee;background:#2f3440;padding:.8rem;min-width:37%;border:none;border-bottom:1px solid #242831;border-radius:.5rem .5rem 0 0;outline:none}.input-wrap{display:flex;flex-direction:row;width:100%;justify-content:flex-end;margin:0}.input-wrap #new-msg{width:100%;border-radius:.5rem 0 .5rem .5rem;height:3.5rem;margin:0 0 .5rem 0;resize:vertical;background-color:#2f3440;color:#eee;border:none}.input-wrap .button-column{display:flex;flex-direction:column;margin:0}.input-wrap .button-column img{cursor:pointer;border-radius:1rem;margin-right:2rem;width:3rem;height:3rem;transition:filter .2s ease}.input-wrap .button-column img:hover{filter:drop-shadow(1px 1px 2px #898c97)}.input-wrap .button-column .disabled{filter:grayscale(100%)}.new-msg-input{width:100%}.new-message-wrap{display:flex;flex-direction:column;align-items:flex-end}.new-message-wrap *{display:block;margin:1rem 0 1rem 0}.new-message-wrap #new-msg{background-color:#2f3440;min-width:60%;padding:1rem;border-radius:0.5rem;resize:vertical}.new-message-wrap .send-button-wrap{display:flex;flex-direction:row;align-items:center;margin:0}.new-message-wrap .send-button-wrap .hint-wrap{display:flex;flex-direction:column;align-items:flex-end}.new-message-wrap .send-button-wrap .hint-wrap .send-new-message-hint{margin:0 1.5rem 0 1.5rem;color:#9da3ad;font-size:1.2rem;font-style:italic}.btn-send{border:none;margin:0;outline:none;background-color:#2f3440;color:#eee;font-size:1.8rem;padding:.8rem;transition:.2s}.btn-send:hover{background-color:#0c0;transition:.2s}.attach-file-wrap{height:5rem;display:flex;flex-direction:row;justify-content:flex-end;align-items:center;align-self:flex-end;width:60%;min-width:10rem;padding:1rem;border-radius:0.5rem}.new-msg-buttons{width:7rem}.new-msg-buttons label{align-self:center;margin-top:1.5rem;width:4rem;height:4rem;display:flex}#chosen-files{margin-right:1.7rem;display:flex;flex-direction:row}#chosen-files .chosen-file-wrap{background-color:#3a404f;padding:.2rem;border-radius:.5rem;height:inherit;display:flex;align-items:center;font-size:1.6rem;font-weight:bolder;color:#e1e1e1}#chosen-files .chosen-file-wrap img{height:20px;width:20px}#chosen-files .chosen-file-wrap img:hover{filter:drop-shadow(1px 1px 2px #fff)}.inputfile{width:0.1px;height:0.1px;opacity:0;overflow:hidden;position:absolute;z-index:-1}.inputfile+label{display:flex;flex-direction:row}.inputfile+label img{border-radius:1rem;cursor:pointer;width:32px;height:32px;transition:filter .2s ease}.inputfile+label img:hover{filter:drop-shadow(1px 1px 2px #000)}.new-msg-buttons{width:7rem}.new-msg-buttons label{align-self:center;margin-top:1.5rem;width:4rem;height:4rem;display:flex}.form-outer-wrapper{display:block;margin:10% auto;color:#eee}.form-outer-wrapper .form-border{background-color:#111113;border:none;display:flex;flex-direction:column;align-items:flex-start}.form-outer-wrapper .form-border p{margin:1rem 0 1rem 0}.form-input{background-color:#2f3440;color:#eee;border:none;outline:none}.form-button{border-radius:.4rem;background-color:#2f3440;color:#eee;border:none;outline:none;padding:1rem;font-size:1.8rem}.form-button:hover{background-color:#0c0;transition:.2s}.messages-panel-wrapper{background-color:#242831;width:70%;height:100%;display:flex;flex-direction:column;flex:1}.messages-panel-wrapper .messages-panel-container{width:100%;display:flex;flex:1;background-color:inherit;border-bottom:2px solid #2f3440;overflow-x:hidden;overflow-y:auto;flex-grow:1;border-radius:1rem;padding:1rem 2rem 1rem 2rem;resize:none;height:100%}.messages-window{width:100%;display:flex;flex-direction:column}.message{display:flex;flex-shrink:0;flex-direction:column;width:70%;border-radius:1rem;margin:0.5rem;padding:.3rem;color:#4c4c4c;height:auto;align-self:flex-start;background-color:#c4e8ff}.my_message{display:flex;flex-shrink:0;flex-direction:column;width:70%;border-radius:1rem;margin:0.5rem;padding:.3rem;color:#4c4c4c;height:auto;align-self:flex-end;background-color:#d6ffef;text-align:right}.my_message .msg-body{text-align:left}.service-record{display:flex;flex-shrink:0;flex-direction:column;width:70%;border-radius:1rem;margin:0.5rem;padding:.3rem;color:#4c4c4c;height:auto;width:100%;background-color:#e6e6e6;text-align:left;font-size:1.2rem;color:#8a8a8a}.service-record .msg-body{text-align:left}.ephemeral-msg{display:flex;flex-shrink:0;flex-direction:column;width:70%;border-radius:1rem;margin:0.5rem;padding:.3rem;color:#4c4c4c;height:auto;width:100%;background-color:#fff0da;text-align:left;font-size:1.2rem;color:#8a8a8a}.ephemeral-msg .msg-body{text-align:left}.private-message{border:.3rem solid #b0afca}.private-mark{font-style:italic;margin:0 .5rem 0 .5rem}.msg-time-stamp{font-style:italic;font-size:1rem;margin:0 .5rem 0 .5rem}.msg-body{height:auto;overflow-wrap:break-word}.m-author-id{display:none}.m-recipient-id{display:none}.attach-file-wrap{height:5rem;display:flex;flex-direction:row;justify-content:flex-end;align-items:center;align-self:flex-end;width:60%;min-width:10rem;padding:1rem;border-radius:0.5rem}.msg-attachments{display:flex;margin-top:.8rem;align-self:flex-start}.att-view{cursor:pointer;margin:1rem}.att-view .att-state{display:none}.att-view .att-state .spinner{width:1.7rem;margin-right:.3rem;display:flex}.att-view .att-name{font-weight:bold;color:#003d77;font-size:1.6rem;margin-right:.4rem}.att-view .att-size{font-size:1.1rem}.att-view .att-icon{width:1.4rem;height:1.4rem}.att-info{display:none}\n", ""]);
 
 
 
 /***/ }),
-/* 265 */
+/* 301 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-var content = __webpack_require__(266);
+var content = __webpack_require__(302);
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -55238,24 +61338,24 @@ var options = {"hmr":true}
 options.transform = transform
 options.insertInto = undefined;
 
-var update = __webpack_require__(60)(content, options);
+var update = __webpack_require__(63)(content, options);
 
 if(content.locals) module.exports = content.locals;
 
 if(false) {}
 
 /***/ }),
-/* 266 */
+/* 302 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(59)(false);
+exports = module.exports = __webpack_require__(62)(false);
 // Module
 exports.push([module.i, ".ld.reverse{-webkit-animation-direction:reverse;animation-direction:reverse}.ld.xhalf{-webkit-animation-duration:0.5s;animation-duration:0.5s}.ld.x1{-webkit-animation-duration:1s;animation-duration:1s}.ld.x2{-webkit-animation-duration:2s;animation-duration:2s}.ld.x4{-webkit-animation-duration:4s;animation-duration:4s}.ld.running{-webkit-animation-play-state:running;animation-play-state:running}.ld.paused{-webkit-animation-play-state:paused;animation-play-state:paused}.ld.f00{-webkit-animation-delay:0s;animation-delay:0s}.ld.f01{-webkit-animation-delay:-0.1s;animation-delay:-0.1s}.ld.f02{-webkit-animation-delay:-0.2s;animation-delay:-0.2s}.ld.f03{-webkit-animation-delay:-0.3s;animation-delay:-0.3s}.ld.f04{-webkit-animation-delay:-0.4s;animation-delay:-0.4s}.ld.f05{-webkit-animation-delay:-0.5s;animation-delay:-0.5s}.ld.f06{-webkit-animation-delay:-0.6s;animation-delay:-0.6s}.ld.f07{-webkit-animation-delay:-0.7s;animation-delay:-0.7s}.ld.f08{-webkit-animation-delay:-0.8s;animation-delay:-0.8s}.ld.f09{-webkit-animation-delay:-0.9s;animation-delay:-0.9s}.ld.f10{-webkit-animation-delay:-1s;animation-delay:-1s}.ld-ball,.ld-ring,.ld-hourglass,.ld-loader,.ld-cross,.ld-square,.ld-pie,.ld-spinner{width:1em;height:1em;position:relative;color:inherit;display:inline-block}.ld-ball:after,.ld-ring:after,.ld-hourglass:after,.ld-loader:after,.ld-cross:after,.ld-square:after,.ld-pie:after,.ld-spinner:after{position:absolute;margin:auto;width:100%;height:100%;top:0;left:0;right:0;bottom:0;content:\" \";display:inline-block;background:center center no-repeat;background-size:cover}.ld-ball:after{border-radius:50%;background:currentColor}.ld-pie:after{width:0;height:0;border-radius:50%;border-style:solid;border-width:0.5em;-webkit-background-clip:padding-box;border-color:currentColor currentColor currentColor transparent}.ld-ring:after{border-radius:50%;border-style:solid;border-width:0.15em;-webkit-background-clip:padding-box;border-color:currentColor currentColor currentColor transparent;box-sizing:border-box}.ld-hourglass:after{width:0;height:0;background:none;border-radius:50%;border-style:solid;border-width:0.5em;border-color:currentColor transparent currentColor transparent}.ld-cross:after{width:18%;height:18%;background:currentColor;box-shadow:0 0.18em 0 1px currentColor, 0 -0.18em 0 1px currentColor, 0.18em 0 0 1px currentColor, -0.18em 0 0 1px currentColor, 0 0.36em 0 1px currentColor, 0 -0.36em 0 1px currentColor, 0.36em 0 0 1px currentColor, -0.36em 0 0 1px currentColor}.ld-square:after{width:90%;height:90%;background:currentColor}.ld-spinner:after{width:20%;height:20%;border-radius:50%;background:none;box-shadow:0 0.5em 0 0 currentColor,0 -.5em 0 0 currentColor,.5em 0 0 0 currentColor,-.5em 0 0 0 currentColor,.35355339059327373em .35355339059327373em 0 0 currentColor,-.35355339059327373em .35355339059327373em 0 0 currentColor,.35355339059327373em -.35355339059327373em 0 0 currentColor,-.35355339059327373em -.35355339059327373em 0 0 currentColor}.ld-loader{background-size:cover}@keyframes ld-blink{0%{opacity:1}49%{opacity:1}50%{opacity:0}100%{opacity:0}}@-webkit-keyframes ld-blink{0%{opacity:1}49%{opacity:1}50%{opacity:0}100%{opacity:0}}.ld.ld-blink{-webkit-animation:ld-blink 1s infinite linear;animation:ld-blink 1s infinite linear}@keyframes ld-blur{0%{filter:blur(0)}50%{filter:blur(5px)}100%{filter:blur(0)}}@-webkit-keyframes ld-blur{0%{filter:blur(0)}50%{filter:blur(5px)}100%{filter:blur(0)}}.ld.ld-blur{-webkit-animation:ld-blur 1s infinite;animation:ld-blur 1s infinite}@keyframes ld-breath{0%{-webkit-transform:scale(0.86);transform:scale(0.86)}50%{-webkit-transform:scale(1.06);transform:scale(1.06)}100%{-webkit-transform:scale(0.86);transform:scale(0.86)}}@-webkit-keyframes ld-breath{0%{-webkit-transform:scale(0.86);transform:scale(0.86)}50%{-webkit-transform:scale(1.06);transform:scale(1.06)}100%{-webkit-transform:scale(0.86);transform:scale(0.86)}}.ld.ld-breath{-webkit-animation:ld-breath 1s infinite;animation:ld-breath 1s infinite}@keyframes ld-broadcast{0%{box-shadow:0 0 0 3px rgba(0,0,0,0.9)}19%{box-shadow:0 0 0 2px rgba(0,0,0,0.7)}20%{box-shadow:0 0 0 6px rgba(0,0,0,0.8)}39%{box-shadow:0 0 0 5px rgba(0,0,0,0.6)}40%{box-shadow:0 0 0 9px rgba(0,0,0,0.7)}60%{box-shadow:0 0 0 8px rgba(0,0,0,0.6);animation-timing-function:cubic-bezier(0.5, 0, 1, 0.5)}100%{box-shadow:0 0 0 0px rgba(0,0,0,0.2)}}@-webkit-keyframes ld-broadcast{0%{box-shadow:0 0 0 3px rgba(0,0,0,0.9)}19%{box-shadow:0 0 0 2px rgba(0,0,0,0.7)}20%{box-shadow:0 0 0 6px rgba(0,0,0,0.8)}39%{box-shadow:0 0 0 5px rgba(0,0,0,0.6)}40%{box-shadow:0 0 0 9px rgba(0,0,0,0.7)}60%{box-shadow:0 0 0 8px rgba(0,0,0,0.6);animation-timing-function:cubic-bezier(0.5, 0, 1, 0.5)}100%{box-shadow:0 0 0 0px rgba(0,0,0,0.2)}}.ld.ld-broadcast{-webkit-animation:ld-broadcast 1s infinite ease-out;animation:ld-broadcast 1s infinite ease-out;border-radius:50%}@keyframes ld-clock{0%{-webkit-transform:rotate(0deg);transform:rotate(0deg)}8.333%{-webkit-transform:rotate(30deg);transform:rotate(30deg)}16.667%{-webkit-transform:rotate(60deg);transform:rotate(60deg)}25%{-webkit-transform:rotate(90deg);transform:rotate(90deg)}33.333%{-webkit-transform:rotate(120deg);transform:rotate(120deg)}41.667%{-webkit-transform:rotate(150deg);transform:rotate(150deg)}50%{-webkit-transform:rotate(180deg);transform:rotate(180deg)}58.333%{-webkit-transform:rotate(210deg);transform:rotate(210deg)}66.667%{-webkit-transform:rotate(240deg);transform:rotate(240deg)}75%{-webkit-transform:rotate(270deg);transform:rotate(270deg)}83.333%{-webkit-transform:rotate(300deg);transform:rotate(300deg)}91.667%{-webkit-transform:rotate(330deg);transform:rotate(330deg)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@-webkit-keyframes ld-clock{0%{-webkit-transform:rotate(0deg);transform:rotate(0deg)}8.333%{-webkit-transform:rotate(30deg);transform:rotate(30deg)}16.667%{-webkit-transform:rotate(60deg);transform:rotate(60deg)}25%{-webkit-transform:rotate(90deg);transform:rotate(90deg)}33.333%{-webkit-transform:rotate(120deg);transform:rotate(120deg)}41.667%{-webkit-transform:rotate(150deg);transform:rotate(150deg)}50%{-webkit-transform:rotate(180deg);transform:rotate(180deg)}58.333%{-webkit-transform:rotate(210deg);transform:rotate(210deg)}66.667%{-webkit-transform:rotate(240deg);transform:rotate(240deg)}75%{-webkit-transform:rotate(270deg);transform:rotate(270deg)}83.333%{-webkit-transform:rotate(300deg);transform:rotate(300deg)}91.667%{-webkit-transform:rotate(330deg);transform:rotate(330deg)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}.ld.ld-clock{-webkit-animation:ld-clock 9s infinite cubic-bezier(0, 0.7, 0.3, 1);animation:ld-clock 9s infinite cubic-bezier(0, 0.7, 0.3, 1)}@keyframes ld-cycle{0%,50%,100%{animation-timing-function:cubic-bezier(0.5, 0.5, 0.5, 0.5)}0%{-webkit-transform:rotate(0);transform:rotate(0)}50%{-webkit-transform:rotate(180deg);transform:rotate(180deg)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@-webkit-keyframes ld-cycle{0%,50%,100%{animation-timing-function:cubic-bezier(0.5, 0.5, 0.5, 0.5)}0%{-webkit-transform:rotate(0);transform:rotate(0)}50%{-webkit-transform:rotate(180deg);transform:rotate(180deg)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}.ld.ld-cycle{-webkit-animation:ld-cycle 1s infinite linear;animation:ld-cycle 1s infinite linear}@keyframes ld-fade{0%{opacity:1}100%{opacity:0}}@-webkit-keyframes ld-fade{0%{opacity:1}100%{opacity:0}}.ld.ld-fade{-webkit-animation:ld-fade 1s infinite linear;animation:ld-fade 1s infinite linear}@keyframes ld-flip{0%,25%,50%,75%,100%{animation-timing-function:cubic-bezier(0, 0.5, 0.5, 1)}0%{-webkit-transform:rotateY(0deg) rotateX(0deg);transform:rotateY(0deg) rotateX(0deg)}25%{-webkit-transform:rotateY(180deg) rotateX(0deg);transform:rotateY(180deg) rotateX(0deg)}50%{-webkit-transform:rotateY(180deg) rotateX(180deg);transform:rotateY(180deg) rotateX(180deg)}75%{-webkit-transform:rotateY(0deg) rotateX(180deg);transform:rotateY(0deg) rotateX(180deg)}100%{-webkit-transform:rotateY(0deg) rotateX(0deg);transform:rotateY(0deg) rotateX(0deg)}}@-webkit-keyframes ld-flip{0%,25%,50%,75%,100%{animation-timing-function:cubic-bezier(0, 0.5, 0.5, 1)}0%{-webkit-transform:rotateY(0deg) rotateX(0deg);transform:rotateY(0deg) rotateX(0deg)}25%{-webkit-transform:rotateY(180deg) rotateX(0deg);transform:rotateY(180deg) rotateX(0deg)}50%{-webkit-transform:rotateY(180deg) rotateX(180deg);transform:rotateY(180deg) rotateX(180deg)}75%{-webkit-transform:rotateY(0deg) rotateX(180deg);transform:rotateY(0deg) rotateX(180deg)}100%{-webkit-transform:rotateY(0deg) rotateX(0deg);transform:rotateY(0deg) rotateX(0deg)}}.ld.ld-flip{-webkit-animation:ld-flip 2s infinite;animation:ld-flip 2s infinite}@keyframes ld-flip-v{0%,25%,50%,75%,100%{animation-timing-function:cubic-bezier(0, 0.5, 0.5, 1)}0%{-webkit-transform:rotateX(0deg) rotateY(0deg);transform:rotateX(0deg) rotateY(0deg)}50%{-webkit-transform:rotateX(180deg) rotateY(0deg);transform:rotateX(180deg) rotateY(0deg)}100%{-webkit-transform:rotateX(0deg) rotateY(0deg);transform:rotateX(0deg) rotateY(0deg)}}@-webkit-keyframes ld-flip-v{0%,25%,50%,75%,100%{animation-timing-function:cubic-bezier(0, 0.5, 0.5, 1)}0%{-webkit-transform:rotateX(0deg) rotateY(0deg);transform:rotateX(0deg) rotateY(0deg)}50%{-webkit-transform:rotateX(180deg) rotateY(0deg);transform:rotateX(180deg) rotateY(0deg)}100%{-webkit-transform:rotateX(0deg) rotateY(0deg);transform:rotateX(0deg) rotateY(0deg)}}.ld.ld-flip-v{-webkit-animation:ld-flip-v 1s infinite;animation:ld-flip-v 1s infinite}@keyframes ld-flip-h{0%,25%,50%,75%,100%{animation-timing-function:cubic-bezier(0, 0.5, 0.5, 1)}0%{-webkit-transform:rotateY(0deg) rotateX(0deg);transform:rotateY(0deg) rotateX(0deg)}50%{-webkit-transform:rotateY(180deg) rotateX(0deg);transform:rotateY(180deg) rotateX(0deg)}100%{-webkit-transform:rotateY(0deg) rotateX(0deg);transform:rotateY(0deg) rotateX(0deg)}}@-webkit-keyframes ld-flip-h{0%,25%,50%,75%,100%{animation-timing-function:cubic-bezier(0, 0.5, 0.5, 1)}0%{-webkit-transform:rotateY(0deg) rotateX(0deg);transform:rotateY(0deg) rotateX(0deg)}50%{-webkit-transform:rotateY(180deg) rotateX(0deg);transform:rotateY(180deg) rotateX(0deg)}100%{-webkit-transform:rotateY(0deg) rotateX(0deg);transform:rotateY(0deg) rotateX(0deg)}}.ld.ld-flip-h{-webkit-animation:ld-flip-h 1s infinite;animation:ld-flip-h 1s infinite}@keyframes ld-coin-v{0%,100%{animation-timing-function:cubic-bezier(0.5, 0, 1, 0.5)}50%{animation-timing-function:cubic-bezier(0, 0.5, 0.5, 1)}0%{-webkit-transform:rotateX(0deg);transform:rotateX(0deg)}50%{-webkit-transform:rotateX(1800deg);transform:rotateX(1800deg)}100%{-webkit-transform:rotateX(3600deg);transform:rotateX(3600deg)}}@-webkit-keyframes ld-coin-v{0%,100%{animation-timing-function:cubic-bezier(0.5, 0, 1, 0.5)}50%{animation-timing-function:cubic-bezier(0, 0.5, 0.5, 1)}0%{-webkit-transform:rotateX(0deg);transform:rotateX(0deg)}50%{-webkit-transform:rotateX(1800deg);transform:rotateX(1800deg)}100%{-webkit-transform:rotateX(3600deg);transform:rotateX(3600deg)}}.ld.ld-coin-v{-webkit-animation:ld-coin-v 2s infinite;animation:ld-coin-v 2s infinite}@keyframes ld-coin-h{0%,100%{animation-timing-function:cubic-bezier(0.5, 0, 1, 0.5)}50%{animation-timing-function:cubic-bezier(0, 0.5, 0.5, 1)}0%{-webkit-transform:rotateY(0deg);transform:rotateY(0deg)}50%{-webkit-transform:rotateY(1800deg);transform:rotateY(1800deg)}100%{-webkit-transform:rotateY(3600deg);transform:rotateY(3600deg)}}@-webkit-keyframes ld-coin-h{0%,100%{animation-timing-function:cubic-bezier(0.5, 0, 1, 0.5)}50%{animation-timing-function:cubic-bezier(0, 0.5, 0.5, 1)}0%{-webkit-transform:rotateY(0deg);transform:rotateY(0deg)}50%{-webkit-transform:rotateY(1800deg);transform:rotateY(1800deg)}100%{-webkit-transform:rotateY(3600deg);transform:rotateY(3600deg)}}.ld.ld-coin-h{-webkit-animation:ld-coin-h 2s infinite;animation:ld-coin-h 2s infinite}@keyframes ld-heartbeat{0%{-webkit-transform:scale(1.05);transform:scale(1.05)}5%{-webkit-transform:scale(1.25);transform:scale(1.25)}39%{-webkit-transform:scale(0.9);transform:scale(0.9)}45%{-webkit-transform:scale(1.15);transform:scale(1.15)}60%{-webkit-transform:scale(1.05);transform:scale(1.05)}100%{-webkit-transform:scale(1);transform:scale(1)}}@-webkit-keyframes ld-heartbeat{0%{-webkit-transform:scale(1.05);transform:scale(1.05)}5%{-webkit-transform:scale(1.25);transform:scale(1.25)}39%{-webkit-transform:scale(0.9);transform:scale(0.9)}45%{-webkit-transform:scale(1.15);transform:scale(1.15)}60%{-webkit-transform:scale(1.05);transform:scale(1.05)}100%{-webkit-transform:scale(1);transform:scale(1)}}.ld.ld-heartbeat{-webkit-animation:ld-heartbeat 0.8s infinite cubic-bezier(0.215, 0.61, 0.355, 1);animation:ld-heartbeat 0.8s infinite cubic-bezier(0.215, 0.61, 0.355, 1)}@keyframes ld-radio{0%{animation-timing-function:cubic-bezier(0.3, 0.27, 0.13, 1)}0%{-webkit-transform:scale(0.8);transform:scale(0.8);opacity:0}5%{-webkit-transform:scale(1);transform:scale(1);opacity:1}100%{-webkit-transform:scale(1.5);transform:scale(1.5);opacity:0}}@-webkit-keyframes ld-radio{0%{animation-timing-function:cubic-bezier(0.3, 0.27, 0.13, 1)}0%{-webkit-transform:scale(0.8);transform:scale(0.8);opacity:0}5%{-webkit-transform:scale(1);transform:scale(1);opacity:1}100%{-webkit-transform:scale(1.5);transform:scale(1.5);opacity:0}}.ld.ld-radio{position:relative;display:inline-block;margin:0;padding:0}.ld.ld-radio:after{-webkit-animation:ld-radio 1s infinite;animation:ld-radio 1s infinite;content:\" \";display:block;position:absolute;top:0;left:0;width:100%;height:100%;border:6px solid #000;border-radius:50%;background:none}.ld.ld-radio.square:after{border-radius:0}@keyframes ld-rotate{0%,33%,66%,100%{animation-timing-function:cubic-bezier(0.5, 0, 1, 0.5)}16%,50%,83%{animation-timing-function:cubic-bezier(0, 0.5, 0.5, 1)}0%{-webkit-transform:skewX(0deg) skewY(0deg) scaleX(2) scaleY(0.5);transform:skewX(0deg) skewY(0deg) scaleX(2) scaleY(0.5)}16%{-webkit-transform:skewX(45deg) skewY(0deg) scaleX(1) scaleY(1);transform:skewX(45deg) skewY(0deg) scaleX(1) scaleY(1)}33%{-webkit-transform:skewX(0deg) skewY(45deg) scaleX(1) scaleY(1);transform:skewX(0deg) skewY(45deg) scaleX(1) scaleY(1)}50%{-webkit-transform:skewX(0deg) skewY(0deg) scaleX(0.5) scaleY(2);transform:skewX(0deg) skewY(0deg) scaleX(0.5) scaleY(2)}66%{-webkit-transform:skewX(0deg) skewY(-45deg) scaleX(1) scaleY(1);transform:skewX(0deg) skewY(-45deg) scaleX(1) scaleY(1)}83%{-webkit-transform:skewX(-45deg) skewY(0deg) scaleX(1) scaleY(1);transform:skewX(-45deg) skewY(0deg) scaleX(1) scaleY(1)}100%{-webkit-transform:skewX(0deg) skewY(0deg) scaleX(2) scaleY(0.5);transform:skewX(0deg) skewY(0deg) scaleX(2) scaleY(0.5)}}@-webkit-keyframes ld-rotate{0%,33%,66%,100%{animation-timing-function:cubic-bezier(0.5, 0, 1, 0.5)}16%,50%,83%{animation-timing-function:cubic-bezier(0, 0.5, 0.5, 1)}0%{-webkit-transform:skewX(0deg) skewY(0deg) scaleX(2) scaleY(0.5);transform:skewX(0deg) skewY(0deg) scaleX(2) scaleY(0.5)}16%{-webkit-transform:skewX(45deg) skewY(0deg) scaleX(1) scaleY(1);transform:skewX(45deg) skewY(0deg) scaleX(1) scaleY(1)}33%{-webkit-transform:skewX(0deg) skewY(45deg) scaleX(1) scaleY(1);transform:skewX(0deg) skewY(45deg) scaleX(1) scaleY(1)}50%{-webkit-transform:skewX(0deg) skewY(0deg) scaleX(0.5) scaleY(2);transform:skewX(0deg) skewY(0deg) scaleX(0.5) scaleY(2)}66%{-webkit-transform:skewX(0deg) skewY(-45deg) scaleX(1) scaleY(1);transform:skewX(0deg) skewY(-45deg) scaleX(1) scaleY(1)}83%{-webkit-transform:skewX(-45deg) skewY(0deg) scaleX(1) scaleY(1);transform:skewX(-45deg) skewY(0deg) scaleX(1) scaleY(1)}100%{-webkit-transform:skewX(0deg) skewY(0deg) scaleX(2) scaleY(0.5);transform:skewX(0deg) skewY(0deg) scaleX(2) scaleY(0.5)}}.ld.ld-rotate{-webkit-animation:ld-rotate 1s infinite;animation:ld-rotate 1s infinite}@keyframes ld-rubber{0%{-webkit-transform:scale(1, 1);transform:scale(1, 1)}20%{-webkit-transform:scale(1.5, 1);transform:scale(1.5, 1)}30%{-webkit-transform:scale(0.8, 1);transform:scale(0.8, 1)}40%{-webkit-transform:scale(1.3, 1);transform:scale(1.3, 1)}50%{-webkit-transform:scale(0.85, 1);transform:scale(0.85, 1)}60%{-webkit-transform:scale(1.2, 1);transform:scale(1.2, 1)}70%{-webkit-transform:scale(0.9, 1);transform:scale(0.9, 1)}80%{-webkit-transform:scale(1.1, 1);transform:scale(1.1, 1)}90%{-webkit-transform:scale(0.95, 1);transform:scale(0.95, 1)}100%{-webkit-transform:scale(1, 1);transform:scale(1, 1)}}@-webkit-keyframes ld-rubber{0%{-webkit-transform:scale(1, 1);transform:scale(1, 1)}20%{-webkit-transform:scale(1.5, 1);transform:scale(1.5, 1)}30%{-webkit-transform:scale(0.8, 1);transform:scale(0.8, 1)}40%{-webkit-transform:scale(1.3, 1);transform:scale(1.3, 1)}50%{-webkit-transform:scale(0.85, 1);transform:scale(0.85, 1)}60%{-webkit-transform:scale(1.2, 1);transform:scale(1.2, 1)}70%{-webkit-transform:scale(0.9, 1);transform:scale(0.9, 1)}80%{-webkit-transform:scale(1.1, 1);transform:scale(1.1, 1)}90%{-webkit-transform:scale(0.95, 1);transform:scale(0.95, 1)}100%{-webkit-transform:scale(1, 1);transform:scale(1, 1)}}.ld.ld-rubber{-webkit-animation:ld-rubber 1s ease-out infinite;animation:ld-rubber 1s ease-out infinite}@keyframes ld-shadow{0%,100%{animation-timing-function:cubic-bezier(0.5, 0, 0.5, 1)}50%{animation-timing-function:cubic-bezier(0.5, 0, 0.5, 1)}0%{box-shadow:0 0 0 0 rgba(0,0,0,0.2)}50%{box-shadow:0 0 0 10px rgba(0,0,0,0.9)}100%{box-shadow:0 0 0 0 rgba(0,0,0,0.2)}}@-webkit-keyframes ld-shadow{0%,100%{animation-timing-function:cubic-bezier(0.5, 0, 0.5, 1)}50%{animation-timing-function:cubic-bezier(0.5, 0, 0.5, 1)}0%{box-shadow:0 0 0 0 rgba(0,0,0,0.2)}50%{box-shadow:0 0 0 10px rgba(0,0,0,0.9)}100%{box-shadow:0 0 0 0 rgba(0,0,0,0.2)}}.ld.ld-shadow{-webkit-animation:ld-shadow 1s infinite;animation:ld-shadow 1s infinite;border-radius:50%}@keyframes ld-shadow-a{0%{box-shadow:3px 0px 0 6px rgba(0,0,0,0.5)}8.33%{box-shadow:3px 1px 0 6px rgba(0,0,0,0.5)}16.67%{box-shadow:2px 3px 0 6px rgba(0,0,0,0.5)}25%{box-shadow:0px 3px 0 6px rgba(0,0,0,0.5)}33.33%{box-shadow:-1px 3px 0 6px rgba(0,0,0,0.5)}41.67%{box-shadow:-3px 1px 0 6px rgba(0,0,0,0.5)}50%{box-shadow:-3px 0px 0 6px rgba(0,0,0,0.5)}58.33%{box-shadow:-3px -1px 0 6px rgba(0,0,0,0.5)}66.67%{box-shadow:-2px -3px 0 6px rgba(0,0,0,0.5)}75%{box-shadow:0px -3px 0 6px rgba(0,0,0,0.5)}83.33%{box-shadow:2px -3px 0 6px rgba(0,0,0,0.5)}91.67%{box-shadow:3px -2px 0 6px rgba(0,0,0,0.5)}100%{box-shadow:3px 0px 0 6px rgba(0,0,0,0.5)}}@-webkit-keyframes ld-shadow-a{0%{box-shadow:3px 0px 0 6px rgba(0,0,0,0.5)}8.33%{box-shadow:3px 1px 0 6px rgba(0,0,0,0.5)}16.67%{box-shadow:2px 3px 0 6px rgba(0,0,0,0.5)}25%{box-shadow:0px 3px 0 6px rgba(0,0,0,0.5)}33.33%{box-shadow:-1px 3px 0 6px rgba(0,0,0,0.5)}41.67%{box-shadow:-3px 1px 0 6px rgba(0,0,0,0.5)}50%{box-shadow:-3px 0px 0 6px rgba(0,0,0,0.5)}58.33%{box-shadow:-3px -1px 0 6px rgba(0,0,0,0.5)}66.67%{box-shadow:-2px -3px 0 6px rgba(0,0,0,0.5)}75%{box-shadow:0px -3px 0 6px rgba(0,0,0,0.5)}83.33%{box-shadow:2px -3px 0 6px rgba(0,0,0,0.5)}91.67%{box-shadow:3px -2px 0 6px rgba(0,0,0,0.5)}100%{box-shadow:3px 0px 0 6px rgba(0,0,0,0.5)}}.ld.ld-shadow-a{-webkit-animation:ld-shadow-a 0.5s infinite;animation:ld-shadow-a 0.5s infinite;box-shadow:3px 0px 0 6px rgba(0,0,0,0.5);border-radius:50%}@keyframes ld-skew{0%,50%,100%{animation-timing-function:cubic-bezier(0.4, 0, 1, 0.6)}25%,75%{animation-timing-function:cubic-bezier(0, 0.4, 0.6, 1)}0%{-webkit-transform:skewX(20deg) scale(1);transform:skewX(20deg) scale(1)}25%{-webkit-transform:skewX(0deg) scale(0.9);transform:skewX(0deg) scale(0.9)}50%{-webkit-transform:skewX(-20deg) scale(1);transform:skewX(-20deg) scale(1)}75%{-webkit-transform:skewX(0deg) scale(0.9);transform:skewX(0deg) scale(0.9)}100%{-webkit-transform:skewX(20deg) scale(1);transform:skewX(20deg) scale(1)}}@-webkit-keyframes ld-skew{0%,50%,100%{animation-timing-function:cubic-bezier(0.4, 0, 1, 0.6)}25%,75%{animation-timing-function:cubic-bezier(0, 0.4, 0.6, 1)}0%{-webkit-transform:skewX(20deg) scale(1);transform:skewX(20deg) scale(1)}25%{-webkit-transform:skewX(0deg) scale(0.9);transform:skewX(0deg) scale(0.9)}50%{-webkit-transform:skewX(-20deg) scale(1);transform:skewX(-20deg) scale(1)}75%{-webkit-transform:skewX(0deg) scale(0.9);transform:skewX(0deg) scale(0.9)}100%{-webkit-transform:skewX(20deg) scale(1);transform:skewX(20deg) scale(1)}}.ld.ld-skew{-webkit-animation:ld-skew 1s infinite;animation:ld-skew 1s infinite}@keyframes ld-spin{0%{-webkit-transform:rotate(0);transform:rotate(0);animation-timing-function:cubic-bezier(0.55, 0.055, 0.675, 0.19)}50%{-webkit-transform:rotate(180deg);transform:rotate(180deg);animation-timing-function:cubic-bezier(0.215, 0.61, 0.355, 1)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@-webkit-keyframes ld-spin{0%{-webkit-transform:rotate(0);transform:rotate(0);animation-timing-function:cubic-bezier(0.55, 0.055, 0.675, 0.19)}50%{-webkit-transform:rotate(180deg);transform:rotate(180deg);animation-timing-function:cubic-bezier(0.215, 0.61, 0.355, 1)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}.ld.ld-spin{-webkit-animation:ld-spin 1s infinite;animation:ld-spin 1s infinite}@keyframes ld-spin-fast{0%{-webkit-transform:rotate(0);transform:rotate(0);animation-timing-function:cubic-bezier(0.55, 0.055, 0.675, 0.19)}50%{-webkit-transform:rotate(900deg);transform:rotate(900deg);animation-timing-function:cubic-bezier(0.215, 0.61, 0.355, 1)}100%{-webkit-transform:rotate(1800deg);transform:rotate(1800deg)}}@-webkit-keyframes ld-spin-fast{0%{-webkit-transform:rotate(0);transform:rotate(0);animation-timing-function:cubic-bezier(0.55, 0.055, 0.675, 0.19)}50%{-webkit-transform:rotate(900deg);transform:rotate(900deg);animation-timing-function:cubic-bezier(0.215, 0.61, 0.355, 1)}100%{-webkit-transform:rotate(1800deg);transform:rotate(1800deg)}}.ld.ld-spin-fast{-webkit-animation:ld-spin-fast 1s infinite;animation:ld-spin-fast 1s infinite}@keyframes ld-squeeze{0%{-webkit-transform:scale(1, 0.5);transform:scale(1, 0.5)}50%{-webkit-transform:scale(0.5, 1);transform:scale(0.5, 1)}100%{-webkit-transform:scale(1, 0.5);transform:scale(1, 0.5)}}@-webkit-keyframes ld-squeeze{0%{-webkit-transform:scale(1, 0.5);transform:scale(1, 0.5)}50%{-webkit-transform:scale(0.5, 1);transform:scale(0.5, 1)}100%{-webkit-transform:scale(1, 0.5);transform:scale(1, 0.5)}}.ld.ld-squeeze{-webkit-animation:ld-squeeze 0.8s infinite cubic-bezier(0.215, 0.61, 0.355, 1);animation:ld-squeeze 0.8s infinite cubic-bezier(0.215, 0.61, 0.355, 1)}@keyframes ld-surprise{0%{-webkit-transform:skewX(0deg) scale(1);transform:skewX(0deg) scale(1)}10%{-webkit-transform:skewX(-15deg) scale(0.8);transform:skewX(-15deg) scale(0.8)}20%{-webkit-transform:skewX(-15deg) scale(0.8);transform:skewX(-15deg) scale(0.8)}30%{-webkit-transform:skewX(15deg) scale(1.3);transform:skewX(15deg) scale(1.3)}40%{-webkit-transform:skewX(-15deg) scale(1.3);transform:skewX(-15deg) scale(1.3)}50%{-webkit-transform:skewX(15deg) scale(1.3);transform:skewX(15deg) scale(1.3)}60%{-webkit-transform:skewX(-15deg) scale(1.3);transform:skewX(-15deg) scale(1.3)}70%{-webkit-transform:skewX(15deg) scale(1.3);transform:skewX(15deg) scale(1.3)}80%{-webkit-transform:skewX(-15deg) scale(1.3);transform:skewX(-15deg) scale(1.3)}90%{-webkit-transform:skewX(15deg) scale(1.3);transform:skewX(15deg) scale(1.3)}100%{-webkit-transform:skewX(-15deg) scale(1.3);transform:skewX(-15deg) scale(1.3)}}@-webkit-keyframes ld-surprise{0%{-webkit-transform:skewX(0deg) scale(1);transform:skewX(0deg) scale(1)}10%{-webkit-transform:skewX(-15deg) scale(0.8);transform:skewX(-15deg) scale(0.8)}20%{-webkit-transform:skewX(-15deg) scale(0.8);transform:skewX(-15deg) scale(0.8)}30%{-webkit-transform:skewX(15deg) scale(1.3);transform:skewX(15deg) scale(1.3)}40%{-webkit-transform:skewX(-15deg) scale(1.3);transform:skewX(-15deg) scale(1.3)}50%{-webkit-transform:skewX(15deg) scale(1.3);transform:skewX(15deg) scale(1.3)}60%{-webkit-transform:skewX(-15deg) scale(1.3);transform:skewX(-15deg) scale(1.3)}70%{-webkit-transform:skewX(15deg) scale(1.3);transform:skewX(15deg) scale(1.3)}80%{-webkit-transform:skewX(-15deg) scale(1.3);transform:skewX(-15deg) scale(1.3)}90%{-webkit-transform:skewX(15deg) scale(1.3);transform:skewX(15deg) scale(1.3)}100%{-webkit-transform:skewX(-15deg) scale(1.3);transform:skewX(-15deg) scale(1.3)}}.ld.ld-surprise{-webkit-animation:ld-surprise 1s infinite linear;animation:ld-surprise 1s infinite linear}@keyframes ld-tick{0%{-webkit-transform:rotate(0);transform:rotate(0)}20%{-webkit-transform:rotate(-30deg);transform:rotate(-30deg)}30%{-webkit-transform:rotate(30deg);transform:rotate(30deg)}40%{-webkit-transform:rotate(-21deg);transform:rotate(-21deg)}50%{-webkit-transform:rotate(15deg);transform:rotate(15deg)}60%{-webkit-transform:rotate(-10deg);transform:rotate(-10deg)}70%{-webkit-transform:rotate(6deg);transform:rotate(6deg)}80%{-webkit-transform:rotate(-2deg);transform:rotate(-2deg)}90%{-webkit-transform:rotate(1deg);transform:rotate(1deg)}100%{-webkit-transform:rotate(0deg);transform:rotate(0deg)}}@-webkit-keyframes ld-tick{0%{-webkit-transform:rotate(0);transform:rotate(0)}20%{-webkit-transform:rotate(-30deg);transform:rotate(-30deg)}30%{-webkit-transform:rotate(30deg);transform:rotate(30deg)}40%{-webkit-transform:rotate(-21deg);transform:rotate(-21deg)}50%{-webkit-transform:rotate(15deg);transform:rotate(15deg)}60%{-webkit-transform:rotate(-10deg);transform:rotate(-10deg)}70%{-webkit-transform:rotate(6deg);transform:rotate(6deg)}80%{-webkit-transform:rotate(-2deg);transform:rotate(-2deg)}90%{-webkit-transform:rotate(1deg);transform:rotate(1deg)}100%{-webkit-transform:rotate(0deg);transform:rotate(0deg)}}.ld.ld-tick{-webkit-animation:ld-tick 1s ease-out infinite;animation:ld-tick 1s ease-out infinite}@keyframes ld-vortex-in{0%{-webkit-transform:rotate(1800deg) scale(3);transform:rotate(1800deg) scale(3);opacity:0}60%{-webkit-transform:rotate(0deg) scale(1);transform:rotate(0deg) scale(1);opacity:1}100%{opacity:0}}@-webkit-keyframes ld-vortex-in{0%{-webkit-transform:rotate(1800deg) scale(3);transform:rotate(1800deg) scale(3);opacity:0}60%{-webkit-transform:rotate(0deg) scale(1);transform:rotate(0deg) scale(1);opacity:1}100%{opacity:0}}.ld.ld-vortex-in{-webkit-animation:ld-vortex-in 2s infinite;animation:ld-vortex-in 2s infinite;animation-timing-function:cubic-bezier(0.3, 0, 1, 0.7)}@keyframes ld-vortex-out{0%{-webkit-transform:rotate(0deg) scale(0);transform:rotate(0deg) scale(0);opacity:1}60%{-webkit-transform:rotate(1800deg) scale(1);transform:rotate(1800deg) scale(1);opacity:1}100%{-webkit-transform:rotate(1800deg) scale(1);transform:rotate(1800deg) scale(1);opacity:0}}@-webkit-keyframes ld-vortex-out{0%{-webkit-transform:rotate(0deg) scale(0);transform:rotate(0deg) scale(0);opacity:1}60%{-webkit-transform:rotate(1800deg) scale(1);transform:rotate(1800deg) scale(1);opacity:1}100%{-webkit-transform:rotate(1800deg) scale(1);transform:rotate(1800deg) scale(1);opacity:0}}.ld.ld-vortex-out{-webkit-animation:ld-vortex-out 2s infinite;animation:ld-vortex-out 2s infinite;animation-timing-function:cubic-bezier(0.5, 0, 1, 0.5)}@keyframes ld-wrench{20%,36%,70%,86%{-webkit-transform:rotate(0deg);transform:rotate(0deg)}0%,50%,100%{-webkit-transform:rotate(45deg);transform:rotate(45deg)}}@-webkit-keyframes ld-wrench{20%,36%,70%,86%{-webkit-transform:rotate(0deg);transform:rotate(0deg)}0%,50%,100%{-webkit-transform:rotate(45deg);transform:rotate(45deg)}}.ld.ld-wrench{-webkit-animation:ld-wrench 1s infinite;animation:ld-wrench 1s infinite}@keyframes ld-pulse{0%{-webkit-transform:scale(1.1);transform:scale(1.1)}50%{-webkit-transform:scale(0.9);transform:scale(0.9)}51%{-webkit-transform:scale(1.1);transform:scale(1.1)}100%{-webkit-transform:scale(0.9);transform:scale(0.9)}}@-webkit-keyframes ld-pulse{0%{-webkit-transform:scale(1.1);transform:scale(1.1)}50%{-webkit-transform:scale(0.9);transform:scale(0.9)}51%{-webkit-transform:scale(1.1);transform:scale(1.1)}100%{-webkit-transform:scale(0.9);transform:scale(0.9)}}.ld.ld-pulse{-webkit-animation:ld-pulse 0.8s infinite cubic-bezier(0.215, 0.61, 0.355, 1);animation:ld-pulse 0.8s infinite cubic-bezier(0.215, 0.61, 0.355, 1)}@keyframes ld-bounce{0%,90%{animation-timing-function:linear}10%{animation-timing-function:cubic-bezier(0, 0.4, 0.6, 1)}50%{animation-timing-function:cubic-bezier(0.4, 0, 1, 0.6)}0%{-webkit-transform:translate(0%, 30%) scaleY(0.5);transform:translate(0%, 30%) scaleY(0.5)}10%{-webkit-transform:translate(0%, 5%) scaleY(1.1);transform:translate(0%, 5%) scaleY(1.1)}50%{-webkit-transform:translate(0%, -37%) scaleY(1.1);transform:translate(0%, -37%) scaleY(1.1)}90%{-webkit-transform:translate(0%, 5%) scaleY(1.1);transform:translate(0%, 5%) scaleY(1.1)}100%{-webkit-transform:translate(0%, 30%) scaleY(0.5);transform:translate(0%, 30%) scaleY(0.5)}}@-webkit-keyframes ld-bounce{0%,90%{animation-timing-function:linear}10%{animation-timing-function:cubic-bezier(0, 0.4, 0.6, 1)}50%{animation-timing-function:cubic-bezier(0.4, 0, 1, 0.6)}0%{-webkit-transform:translate(0%, 30%) scaleY(0.5);transform:translate(0%, 30%) scaleY(0.5)}10%{-webkit-transform:translate(0%, 5%) scaleY(1.1);transform:translate(0%, 5%) scaleY(1.1)}50%{-webkit-transform:translate(0%, -37%) scaleY(1.1);transform:translate(0%, -37%) scaleY(1.1)}90%{-webkit-transform:translate(0%, 5%) scaleY(1.1);transform:translate(0%, 5%) scaleY(1.1)}100%{-webkit-transform:translate(0%, 30%) scaleY(0.5);transform:translate(0%, 30%) scaleY(0.5)}}.ld.ld-bounce{-webkit-animation:ld-bounce 1s infinite;animation:ld-bounce 1s infinite}@keyframes ld-bounce-rtl{0%{-webkit-transform:translate(160%, -40%);transform:translate(160%, -40%)}12.5%{-webkit-transform:translate(120%, -23%);transform:translate(120%, -23%)}25%{-webkit-transform:translate(80%, 0%);transform:translate(80%, 0%)}37.5%{-webkit-transform:translate(50%, -23%);transform:translate(50%, -23%)}50%{-webkit-transform:translate(0%, -40%);transform:translate(0%, -40%)}62.5%{-webkit-transform:translate(-50%, -23%);transform:translate(-50%, -23%)}75%{-webkit-transform:translate(-80%, 0%);transform:translate(-80%, 0%)}87.5%{-webkit-transform:translate(-120%, -23%);transform:translate(-120%, -23%)}100%{-webkit-transform:translate(-160%, -40%);transform:translate(-160%, -40%)}}@-webkit-keyframes ld-bounce-rtl{0%{-webkit-transform:translate(160%, -40%);transform:translate(160%, -40%)}12.5%{-webkit-transform:translate(120%, -23%);transform:translate(120%, -23%)}25%{-webkit-transform:translate(80%, 0%);transform:translate(80%, 0%)}37.5%{-webkit-transform:translate(50%, -23%);transform:translate(50%, -23%)}50%{-webkit-transform:translate(0%, -40%);transform:translate(0%, -40%)}62.5%{-webkit-transform:translate(-50%, -23%);transform:translate(-50%, -23%)}75%{-webkit-transform:translate(-80%, 0%);transform:translate(-80%, 0%)}87.5%{-webkit-transform:translate(-120%, -23%);transform:translate(-120%, -23%)}100%{-webkit-transform:translate(-160%, -40%);transform:translate(-160%, -40%)}}.ld.ld-bounce-rtl{-webkit-animation:ld-bounce-rtl 1s infinite linear;animation:ld-bounce-rtl 1s infinite linear}@keyframes ld-bounce-ltr{0%{-webkit-transform:translate(-160%, -40%);transform:translate(-160%, -40%)}12.5%{-webkit-transform:translate(-120%, -23%);transform:translate(-120%, -23%)}25%{-webkit-transform:translate(-100%, 0%);transform:translate(-100%, 0%)}37.5%{-webkit-transform:translate(-50%, -23%);transform:translate(-50%, -23%)}50%{-webkit-transform:translate(0%, -40%);transform:translate(0%, -40%)}62.5%{-webkit-transform:translate(50%, -23%);transform:translate(50%, -23%)}75%{-webkit-transform:translate(100%, 0%);transform:translate(100%, 0%)}87.5%{-webkit-transform:translate(120%, -23%);transform:translate(120%, -23%)}100%{-webkit-transform:translate(160%, -40%);transform:translate(160%, -40%)}}@-webkit-keyframes ld-bounce-ltr{0%{-webkit-transform:translate(-160%, -40%);transform:translate(-160%, -40%)}12.5%{-webkit-transform:translate(-120%, -23%);transform:translate(-120%, -23%)}25%{-webkit-transform:translate(-100%, 0%);transform:translate(-100%, 0%)}37.5%{-webkit-transform:translate(-50%, -23%);transform:translate(-50%, -23%)}50%{-webkit-transform:translate(0%, -40%);transform:translate(0%, -40%)}62.5%{-webkit-transform:translate(50%, -23%);transform:translate(50%, -23%)}75%{-webkit-transform:translate(100%, 0%);transform:translate(100%, 0%)}87.5%{-webkit-transform:translate(120%, -23%);transform:translate(120%, -23%)}100%{-webkit-transform:translate(160%, -40%);transform:translate(160%, -40%)}}.ld.ld-bounce-ltr{-webkit-animation:ld-bounce-ltr 1s infinite linear;animation:ld-bounce-ltr 1s infinite linear}@keyframes ld-bounce-a-px{0%,25%,50%,75%,100%{animation-timing-function:cubic-bezier(0, 0.4, 0.6, 1)}12.5%,37.5%,62.5%,87.5%{animation-timing-function:cubic-bezier(0.4, 0, 1, 0.6)}0%{-webkit-transform:translate(0%, 0%);transform:translate(0%, 0%)}12.5%{-webkit-transform:translate(5%, -28%);transform:translate(5%, -28%)}25%{-webkit-transform:translate(10%, 0%);transform:translate(10%, 0%)}37.5%{-webkit-transform:translate(5%, -28%);transform:translate(5%, -28%)}50%{-webkit-transform:translate(0%, 0%);transform:translate(0%, 0%)}62.5%{-webkit-transform:translate(-5%, -28%);transform:translate(-5%, -28%)}75%{-webkit-transform:translate(-10%, 0%);transform:translate(-10%, 0%)}87.5%{-webkit-transform:translate(-5%, -28%);transform:translate(-5%, -28%)}100%{-webkit-transform:translate(0%, 0%);transform:translate(0%, 0%)}}@-webkit-keyframes ld-bounce-a-px{0%,25%,50%,75%,100%{animation-timing-function:cubic-bezier(0, 0.4, 0.6, 1)}12.5%,37.5%,62.5%,87.5%{animation-timing-function:cubic-bezier(0.4, 0, 1, 0.6)}0%{-webkit-transform:translate(0%, 0%);transform:translate(0%, 0%)}12.5%{-webkit-transform:translate(5%, -28%);transform:translate(5%, -28%)}25%{-webkit-transform:translate(10%, 0%);transform:translate(10%, 0%)}37.5%{-webkit-transform:translate(5%, -28%);transform:translate(5%, -28%)}50%{-webkit-transform:translate(0%, 0%);transform:translate(0%, 0%)}62.5%{-webkit-transform:translate(-5%, -28%);transform:translate(-5%, -28%)}75%{-webkit-transform:translate(-10%, 0%);transform:translate(-10%, 0%)}87.5%{-webkit-transform:translate(-5%, -28%);transform:translate(-5%, -28%)}100%{-webkit-transform:translate(0%, 0%);transform:translate(0%, 0%)}}.ld.ld-bounce-a-px{-webkit-animation:ld-bounce-a-px 2s infinite;animation:ld-bounce-a-px 2s infinite}@keyframes ld-float{0%,100%{animation-timing-function:cubic-bezier(0.5, 0, 1, 0.5)}50%{animation-timing-function:linear}0%{-webkit-transform:translate(0, 0);transform:translate(0, 0);box-shadow:0 0 0 rgba(0,0,0,0.3)}30%{-webkit-transform:translate(0, -10%);transform:translate(0, -10%);box-shadow:0 5px 5px rgba(0,0,0,0.3)}50%{-webkit-transform:translate(0, -10%);transform:translate(0, -10%);box-shadow:0 5px 5px rgba(0,0,0,0.3)}100%{-webkit-transform:translate(0, 0);transform:translate(0, 0);box-shadow:0 0 0 rgba(0,0,0,0.3)}}@-webkit-keyframes ld-float{0%,100%{animation-timing-function:cubic-bezier(0.5, 0, 1, 0.5)}50%{animation-timing-function:linear}0%{-webkit-transform:translate(0, 0);transform:translate(0, 0);box-shadow:0 0 0 rgba(0,0,0,0.3)}30%{-webkit-transform:translate(0, -10%);transform:translate(0, -10%);box-shadow:0 5px 5px rgba(0,0,0,0.3)}50%{-webkit-transform:translate(0, -10%);transform:translate(0, -10%);box-shadow:0 5px 5px rgba(0,0,0,0.3)}100%{-webkit-transform:translate(0, 0);transform:translate(0, 0);box-shadow:0 0 0 rgba(0,0,0,0.3)}}.ld.ld-float{-webkit-animation:ld-float 1s infinite;animation:ld-float 1s infinite}@keyframes ld-hit{0%{animation-timing-function:cubic-bezier(0.5, 0, 1, 0.5);-webkit-transform:scale(0) translate(0, 0) skewX(0);transform:scale(0) translate(0, 0) skewX(0)}20%{-webkit-transform:scale(1) translate(0, 0) skewX(20deg);transform:scale(1) translate(0, 0) skewX(20deg)}50%{animation-timing-function:cubic-bezier(1, 0, 1, 0.5);-webkit-transform:scale(1) translate(0, 0) skewX(20deg);transform:scale(1) translate(0, 0) skewX(20deg)}100%{-webkit-transform:scale(1) translate(0, 200%) skewX(20deg);transform:scale(1) translate(0, 200%) skewX(20deg)}}@-webkit-keyframes ld-hit{0%{animation-timing-function:cubic-bezier(0.5, 0, 1, 0.5);-webkit-transform:scale(0) translate(0, 0) skewX(0);transform:scale(0) translate(0, 0) skewX(0)}20%{-webkit-transform:scale(1) translate(0, 0) skewX(20deg);transform:scale(1) translate(0, 0) skewX(20deg)}50%{animation-timing-function:cubic-bezier(1, 0, 1, 0.5);-webkit-transform:scale(1) translate(0, 0) skewX(20deg);transform:scale(1) translate(0, 0) skewX(20deg)}100%{-webkit-transform:scale(1) translate(0, 200%) skewX(20deg);transform:scale(1) translate(0, 200%) skewX(20deg)}}.ld.ld-hit{-webkit-animation:ld-hit 2s infinite;animation:ld-hit 2s infinite}@keyframes ld-jelly{0%,16.6%,33.3%,50%,66.6%,83.3%{animation-timing-function:cubic-bezier(0, 0.5, 0.5, 1)}0%{-webkit-transform:translate(0, 0) skewX(0deg);transform:translate(0, 0) skewX(0deg)}16.6%{-webkit-transform:translate(-30%, 0) skewX(30deg);transform:translate(-30%, 0) skewX(30deg)}33.3%{-webkit-transform:translate(25%, 0) skewX(-20deg);transform:translate(25%, 0) skewX(-20deg)}50%{-webkit-transform:translate(-12%, 0) skewX(10deg);transform:translate(-12%, 0) skewX(10deg)}66.6%{-webkit-transform:translate(6%, 0) skewX(-5deg);transform:translate(6%, 0) skewX(-5deg)}83.3%{-webkit-transform:translate(-2.5%, 0) skewX(2deg);transform:translate(-2.5%, 0) skewX(2deg)}100%{-webkit-transform:translate(0, 0) skewX(0deg);transform:translate(0, 0) skewX(0deg)}}@-webkit-keyframes ld-jelly{0%,16.6%,33.3%,50%,66.6%,83.3%{animation-timing-function:cubic-bezier(0, 0.5, 0.5, 1)}0%{-webkit-transform:translate(0, 0) skewX(0deg);transform:translate(0, 0) skewX(0deg)}16.6%{-webkit-transform:translate(-30%, 0) skewX(30deg);transform:translate(-30%, 0) skewX(30deg)}33.3%{-webkit-transform:translate(25%, 0) skewX(-20deg);transform:translate(25%, 0) skewX(-20deg)}50%{-webkit-transform:translate(-12%, 0) skewX(10deg);transform:translate(-12%, 0) skewX(10deg)}66.6%{-webkit-transform:translate(6%, 0) skewX(-5deg);transform:translate(6%, 0) skewX(-5deg)}83.3%{-webkit-transform:translate(-2.5%, 0) skewX(2deg);transform:translate(-2.5%, 0) skewX(2deg)}100%{-webkit-transform:translate(0, 0) skewX(0deg);transform:translate(0, 0) skewX(0deg)}}.ld.ld-jelly{-webkit-animation:ld-jelly 1s infinite linear;animation:ld-jelly 1s infinite linear}@keyframes ld-jump{0%,28%,48%,64%,76%,86%,93%,100%{animation-timing-function:ease-out}14%,38%,56%,70%,81%,90%,97%{animation-timing-function:ease-in}0%{-webkit-transform:translateY(0%);transform:translateY(0%)}14%{-webkit-transform:translateY(-27%);transform:translateY(-27%)}28%{-webkit-transform:translateY(0%);transform:translateY(0%)}38%{-webkit-transform:translateY(-20%);transform:translateY(-20%)}48%{-webkit-transform:translateY(0%);transform:translateY(0%)}56%{-webkit-transform:translateY(-16%);transform:translateY(-16%)}64%{-webkit-transform:translateY(0%);transform:translateY(0%)}70%{-webkit-transform:translateY(-12%);transform:translateY(-12%)}76%{-webkit-transform:translateY(0%);transform:translateY(0%)}81%{-webkit-transform:translateY(-7.5%);transform:translateY(-7.5%)}86%{-webkit-transform:translateY(0%);transform:translateY(0%)}90%{-webkit-transform:translateY(-3%);transform:translateY(-3%)}93%{-webkit-transform:translateY(0%);transform:translateY(0%)}97%{-webkit-transform:translateY(-1.5%);transform:translateY(-1.5%)}100%{-webkit-transform:translateY(0%);transform:translateY(0%)}}@-webkit-keyframes ld-jump{0%,28%,48%,64%,76%,86%,93%,100%{animation-timing-function:ease-out}14%,38%,56%,70%,81%,90%,97%{animation-timing-function:ease-in}0%{-webkit-transform:translateY(0%);transform:translateY(0%)}14%{-webkit-transform:translateY(-27%);transform:translateY(-27%)}28%{-webkit-transform:translateY(0%);transform:translateY(0%)}38%{-webkit-transform:translateY(-20%);transform:translateY(-20%)}48%{-webkit-transform:translateY(0%);transform:translateY(0%)}56%{-webkit-transform:translateY(-16%);transform:translateY(-16%)}64%{-webkit-transform:translateY(0%);transform:translateY(0%)}70%{-webkit-transform:translateY(-12%);transform:translateY(-12%)}76%{-webkit-transform:translateY(0%);transform:translateY(0%)}81%{-webkit-transform:translateY(-7.5%);transform:translateY(-7.5%)}86%{-webkit-transform:translateY(0%);transform:translateY(0%)}90%{-webkit-transform:translateY(-3%);transform:translateY(-3%)}93%{-webkit-transform:translateY(0%);transform:translateY(0%)}97%{-webkit-transform:translateY(-1.5%);transform:translateY(-1.5%)}100%{-webkit-transform:translateY(0%);transform:translateY(0%)}}.ld.ld-jump{-webkit-animation:ld-jump 1.5s ease-in infinite;animation:ld-jump 1.5s ease-in infinite}@keyframes ld-orbit{0%{-webkit-transform:translate(30%, 0%) rotate(0deg);transform:translate(30%, 0%) rotate(0deg)}12.5%{-webkit-transform:translate(21%, 21%) rotate(45deg);transform:translate(21%, 21%) rotate(45deg)}25%{-webkit-transform:translate(0%, 30%) rotate(90deg);transform:translate(0%, 30%) rotate(90deg)}37.5%{-webkit-transform:translate(-21%, 21%) rotate(135deg);transform:translate(-21%, 21%) rotate(135deg)}50%{-webkit-transform:translate(-30%, 0%) rotate(180deg);transform:translate(-30%, 0%) rotate(180deg)}62.5%{-webkit-transform:translate(-21%, -21%) rotate(225deg);transform:translate(-21%, -21%) rotate(225deg)}75%{-webkit-transform:translate(0%, -30%) rotate(270deg);transform:translate(0%, -30%) rotate(270deg)}87.5%{-webkit-transform:translate(21%, -21%) rotate(315deg);transform:translate(21%, -21%) rotate(315deg)}100%{-webkit-transform:translate(30%, 0%) rotate(360deg);transform:translate(30%, 0%) rotate(360deg)}}@-webkit-keyframes ld-orbit{0%{-webkit-transform:translate(30%, 0%) rotate(0deg);transform:translate(30%, 0%) rotate(0deg)}12.5%{-webkit-transform:translate(21%, 21%) rotate(45deg);transform:translate(21%, 21%) rotate(45deg)}25%{-webkit-transform:translate(0%, 30%) rotate(90deg);transform:translate(0%, 30%) rotate(90deg)}37.5%{-webkit-transform:translate(-21%, 21%) rotate(135deg);transform:translate(-21%, 21%) rotate(135deg)}50%{-webkit-transform:translate(-30%, 0%) rotate(180deg);transform:translate(-30%, 0%) rotate(180deg)}62.5%{-webkit-transform:translate(-21%, -21%) rotate(225deg);transform:translate(-21%, -21%) rotate(225deg)}75%{-webkit-transform:translate(0%, -30%) rotate(270deg);transform:translate(0%, -30%) rotate(270deg)}87.5%{-webkit-transform:translate(21%, -21%) rotate(315deg);transform:translate(21%, -21%) rotate(315deg)}100%{-webkit-transform:translate(30%, 0%) rotate(360deg);transform:translate(30%, 0%) rotate(360deg)}}.ld.ld-orbit{-webkit-animation:ld-orbit 1s infinite linear;animation:ld-orbit 1s infinite linear}@keyframes ld-rush-rtl{0%{-webkit-transform:translate(200%, 0) skewX(-45deg);transform:translate(200%, 0) skewX(-45deg);animation-timing-function:cubic-bezier(0, 0.5, 0.5, 1)}30%{-webkit-transform:translate(-40%, 0) skewX(35deg);transform:translate(-40%, 0) skewX(35deg)}45%{-webkit-transform:translate(20%, 0) skewX(-15deg);transform:translate(20%, 0) skewX(-15deg)}60%{-webkit-transform:translate(-10%, 0) skewX(7deg);transform:translate(-10%, 0) skewX(7deg)}80%{-webkit-transform:translate(0%, 0) skewX(0deg);transform:translate(0%, 0) skewX(0deg)}100%{-webkit-transform:translate(-250%, 0) skewX(-45deg);transform:translate(-250%, 0) skewX(-45deg)}}@-webkit-keyframes ld-rush-rtl{0%{-webkit-transform:translate(200%, 0) skewX(-45deg);transform:translate(200%, 0) skewX(-45deg);animation-timing-function:cubic-bezier(0, 0.5, 0.5, 1)}30%{-webkit-transform:translate(-40%, 0) skewX(35deg);transform:translate(-40%, 0) skewX(35deg)}45%{-webkit-transform:translate(20%, 0) skewX(-15deg);transform:translate(20%, 0) skewX(-15deg)}60%{-webkit-transform:translate(-10%, 0) skewX(7deg);transform:translate(-10%, 0) skewX(7deg)}80%{-webkit-transform:translate(0%, 0) skewX(0deg);transform:translate(0%, 0) skewX(0deg)}100%{-webkit-transform:translate(-250%, 0) skewX(-45deg);transform:translate(-250%, 0) skewX(-45deg)}}.ld.ld-rush-rtl{-webkit-animation:ld-rush-rtl 1.5s infinite linear;animation:ld-rush-rtl 1.5s infinite linear}@keyframes ld-rush-ltr{0%{-webkit-transform:translate(-200%, 0) skewX(45deg);transform:translate(-200%, 0) skewX(45deg);animation-timing-function:cubic-bezier(0, 0.5, 0.5, 1)}30%{-webkit-transform:translate(40%, 0) skewX(-35deg);transform:translate(40%, 0) skewX(-35deg)}45%{-webkit-transform:translate(-20%, 0) skewX(15deg);transform:translate(-20%, 0) skewX(15deg)}60%{-webkit-transform:translate(10%, 0) skewX(-7deg);transform:translate(10%, 0) skewX(-7deg)}80%{-webkit-transform:translate(0%, 0) skewX(0deg);transform:translate(0%, 0) skewX(0deg)}100%{-webkit-transform:translate(250%, 0) skewX(45deg);transform:translate(250%, 0) skewX(45deg)}}@-webkit-keyframes ld-rush-ltr{0%{-webkit-transform:translate(-200%, 0) skewX(45deg);transform:translate(-200%, 0) skewX(45deg);animation-timing-function:cubic-bezier(0, 0.5, 0.5, 1)}30%{-webkit-transform:translate(40%, 0) skewX(-35deg);transform:translate(40%, 0) skewX(-35deg)}45%{-webkit-transform:translate(-20%, 0) skewX(15deg);transform:translate(-20%, 0) skewX(15deg)}60%{-webkit-transform:translate(10%, 0) skewX(-7deg);transform:translate(10%, 0) skewX(-7deg)}80%{-webkit-transform:translate(0%, 0) skewX(0deg);transform:translate(0%, 0) skewX(0deg)}100%{-webkit-transform:translate(250%, 0) skewX(45deg);transform:translate(250%, 0) skewX(45deg)}}.ld.ld-rush-ltr{-webkit-animation:ld-rush-ltr 1.5s infinite linear;animation:ld-rush-ltr 1.5s infinite linear}@keyframes ld-shake{0%,16.6%,33.3%,50%,66.6%,83.3%{animation-timing-function:cubic-bezier(0, 0.5, 0.5, 1)}0%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}16.6%{-webkit-transform:translate(-35%, 0);transform:translate(-35%, 0)}33.3%{-webkit-transform:translate(25%, 0);transform:translate(25%, 0)}50%{-webkit-transform:translate(-12%, 0);transform:translate(-12%, 0)}66.6%{-webkit-transform:translate(6%, 0);transform:translate(6%, 0)}83.3%{-webkit-transform:translate(-2.5%, 0);transform:translate(-2.5%, 0)}100%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}}@-webkit-keyframes ld-shake{0%,16.6%,33.3%,50%,66.6%,83.3%{animation-timing-function:cubic-bezier(0, 0.5, 0.5, 1)}0%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}16.6%{-webkit-transform:translate(-35%, 0);transform:translate(-35%, 0)}33.3%{-webkit-transform:translate(25%, 0);transform:translate(25%, 0)}50%{-webkit-transform:translate(-12%, 0);transform:translate(-12%, 0)}66.6%{-webkit-transform:translate(6%, 0);transform:translate(6%, 0)}83.3%{-webkit-transform:translate(-2.5%, 0);transform:translate(-2.5%, 0)}100%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}}.ld.ld-shake{-webkit-animation:ld-shake 1s infinite linear;animation:ld-shake 1s infinite linear}@keyframes ld-slide-ltr{0%,100%{animation-timing-function:cubic-bezier(0.5, 0, 1, 0.5)}50%{animation-timing-function:cubic-bezier(0, 0.5, 0.5, 1)}0%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}49.9%{-webkit-transform:translate(200%, 0);transform:translate(200%, 0)}50%{-webkit-transform:translate(-200%, 0);transform:translate(-200%, 0)}100%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}}@-webkit-keyframes ld-slide-ltr{0%,100%{animation-timing-function:cubic-bezier(0.5, 0, 1, 0.5)}50%{animation-timing-function:cubic-bezier(0, 0.5, 0.5, 1)}0%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}49.9%{-webkit-transform:translate(200%, 0);transform:translate(200%, 0)}50%{-webkit-transform:translate(-200%, 0);transform:translate(-200%, 0)}100%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}}.ld.ld-slide-ltr{-webkit-animation:ld-slide-ltr 1s infinite;animation:ld-slide-ltr 1s infinite}@keyframes ld-slide-rtl{0%,100%{animation-timing-function:cubic-bezier(0.5, 0, 1, 0.5)}50%{animation-timing-function:cubic-bezier(0, 0.5, 0.5, 1)}0%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}49.9%{-webkit-transform:translate(-200%, 0);transform:translate(-200%, 0)}50%{-webkit-transform:translate(200%, 0);transform:translate(200%, 0)}100%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}}@-webkit-keyframes ld-slide-rtl{0%,100%{animation-timing-function:cubic-bezier(0.5, 0, 1, 0.5)}50%{animation-timing-function:cubic-bezier(0, 0.5, 0.5, 1)}0%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}49.9%{-webkit-transform:translate(-200%, 0);transform:translate(-200%, 0)}50%{-webkit-transform:translate(200%, 0);transform:translate(200%, 0)}100%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}}.ld.ld-slide-rtl{-webkit-animation:ld-slide-rtl 1s infinite;animation:ld-slide-rtl 1s infinite}@keyframes ld-slide-btt{0%,100%{animation-timing-function:cubic-bezier(0.5, 0, 1, 0.5)}50%{animation-timing-function:cubic-bezier(0, 0.5, 0.5, 1)}0%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}49.9%{-webkit-transform:translate(0, -200%);transform:translate(0, -200%)}50%{-webkit-transform:translate(0, 200%);transform:translate(0, 200%)}100%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}}@-webkit-keyframes ld-slide-btt{0%,100%{animation-timing-function:cubic-bezier(0.5, 0, 1, 0.5)}50%{animation-timing-function:cubic-bezier(0, 0.5, 0.5, 1)}0%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}49.9%{-webkit-transform:translate(0, -200%);transform:translate(0, -200%)}50%{-webkit-transform:translate(0, 200%);transform:translate(0, 200%)}100%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}}.ld.ld-slide-btt{-webkit-animation:ld-slide-btt 1s infinite;animation:ld-slide-btt 1s infinite}@keyframes ld-slide-ttb{0%,100%{animation-timing-function:cubic-bezier(0.5, 0, 1, 0.5)}50%{animation-timing-function:cubic-bezier(0, 0.5, 0.5, 1)}0%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}49.9%{-webkit-transform:translate(0, 200%);transform:translate(0, 200%)}50%{-webkit-transform:translate(0, -200%);transform:translate(0, -200%)}100%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}}@-webkit-keyframes ld-slide-ttb{0%,100%{animation-timing-function:cubic-bezier(0.5, 0, 1, 0.5)}50%{animation-timing-function:cubic-bezier(0, 0.5, 0.5, 1)}0%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}49.9%{-webkit-transform:translate(0, 200%);transform:translate(0, 200%)}50%{-webkit-transform:translate(0, -200%);transform:translate(0, -200%)}100%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}}.ld.ld-slide-ttb{-webkit-animation:ld-slide-ttb 1s infinite;animation:ld-slide-ttb 1s infinite}@keyframes ld-tremble{0%{-webkit-transform:translate(1%, 1%);transform:translate(1%, 1%)}5%{-webkit-transform:translate(0%, 1%);transform:translate(0%, 1%)}10%{-webkit-transform:translate(1%, 2%);transform:translate(1%, 2%)}15%{-webkit-transform:translate(2%, 1%);transform:translate(2%, 1%)}20%{-webkit-transform:translate(3%, 0%);transform:translate(3%, 0%)}25%{-webkit-transform:translate(1%, 2%);transform:translate(1%, 2%)}30%{-webkit-transform:translate(1%, 3%);transform:translate(1%, 3%)}35%{-webkit-transform:translate(0%, 1%);transform:translate(0%, 1%)}40%{-webkit-transform:translate(1%, 1%);transform:translate(1%, 1%)}45%{-webkit-transform:translate(1%, 0%);transform:translate(1%, 0%)}50%{-webkit-transform:translate(2%, 1%);transform:translate(2%, 1%)}55%{-webkit-transform:translate(1%, 2%);transform:translate(1%, 2%)}60%{-webkit-transform:translate(3%, 1%);transform:translate(3%, 1%)}65%{-webkit-transform:translate(0%, 2%);transform:translate(0%, 2%)}70%{-webkit-transform:translate(3%, 0%);transform:translate(3%, 0%)}75%{-webkit-transform:translate(0%, 0%);transform:translate(0%, 0%)}80%{-webkit-transform:translate(2%, 3%);transform:translate(2%, 3%)}85%{-webkit-transform:translate(1%, 0%);transform:translate(1%, 0%)}90%{-webkit-transform:translate(0%, 2%);transform:translate(0%, 2%)}95%{-webkit-transform:translate(3%, 2%);transform:translate(3%, 2%)}}@-webkit-keyframes ld-tremble{0%{-webkit-transform:translate(1%, 1%);transform:translate(1%, 1%)}5%{-webkit-transform:translate(0%, 1%);transform:translate(0%, 1%)}10%{-webkit-transform:translate(1%, 2%);transform:translate(1%, 2%)}15%{-webkit-transform:translate(2%, 1%);transform:translate(2%, 1%)}20%{-webkit-transform:translate(3%, 0%);transform:translate(3%, 0%)}25%{-webkit-transform:translate(1%, 2%);transform:translate(1%, 2%)}30%{-webkit-transform:translate(1%, 3%);transform:translate(1%, 3%)}35%{-webkit-transform:translate(0%, 1%);transform:translate(0%, 1%)}40%{-webkit-transform:translate(1%, 1%);transform:translate(1%, 1%)}45%{-webkit-transform:translate(1%, 0%);transform:translate(1%, 0%)}50%{-webkit-transform:translate(2%, 1%);transform:translate(2%, 1%)}55%{-webkit-transform:translate(1%, 2%);transform:translate(1%, 2%)}60%{-webkit-transform:translate(3%, 1%);transform:translate(3%, 1%)}65%{-webkit-transform:translate(0%, 2%);transform:translate(0%, 2%)}70%{-webkit-transform:translate(3%, 0%);transform:translate(3%, 0%)}75%{-webkit-transform:translate(0%, 0%);transform:translate(0%, 0%)}80%{-webkit-transform:translate(2%, 3%);transform:translate(2%, 3%)}85%{-webkit-transform:translate(1%, 0%);transform:translate(1%, 0%)}90%{-webkit-transform:translate(0%, 2%);transform:translate(0%, 2%)}95%{-webkit-transform:translate(3%, 2%);transform:translate(3%, 2%)}}.ld.ld-tremble{-webkit-animation:ld-tremble 1s infinite;animation:ld-tremble 1s infinite}@keyframes ld-wander-h{0%{-webkit-transform:translate(-35%, 0);transform:translate(-35%, 0)}50%{-webkit-transform:translate(35%, 0);transform:translate(35%, 0)}100%{-webkit-transform:translate(-35%, 0);transform:translate(-35%, 0)}}@-webkit-keyframes ld-wander-h{0%{-webkit-transform:translate(-35%, 0);transform:translate(-35%, 0)}50%{-webkit-transform:translate(35%, 0);transform:translate(35%, 0)}100%{-webkit-transform:translate(-35%, 0);transform:translate(-35%, 0)}}.ld.ld-wander-h{-webkit-animation:ld-wander-h 1s infinite ease-out;animation:ld-wander-h 1s infinite ease-out}@keyframes ld-wander-v{0%{-webkit-transform:translate(0, -35%);transform:translate(0, -35%)}50%{-webkit-transform:translate(0, 35%);transform:translate(0, 35%)}100%{-webkit-transform:translate(0, -35%);transform:translate(0, -35%)}}@-webkit-keyframes ld-wander-v{0%{-webkit-transform:translate(0, -35%);transform:translate(0, -35%)}50%{-webkit-transform:translate(0, 35%);transform:translate(0, 35%)}100%{-webkit-transform:translate(0, -35%);transform:translate(0, -35%)}}.ld.ld-wander-v{-webkit-animation:ld-wander-v 1s infinite ease-out;animation:ld-wander-v 1s infinite ease-out}@keyframes ld-jingle{0%{-webkit-transform:translate(0, -40%) rotate(0deg) translate(0, 40%);transform:translate(0, -40%) rotate(0deg) translate(0, 40%)}4%{-webkit-transform:translate(0, -40%) rotate(11deg) translate(0, 40%);transform:translate(0, -40%) rotate(11deg) translate(0, 40%)}10%{-webkit-transform:translate(0, -40%) rotate(15deg) translate(0, 40%);transform:translate(0, -40%) rotate(15deg) translate(0, 40%)}18%{-webkit-transform:translate(0, -40%) rotate(-11deg) translate(0, 40%);transform:translate(0, -40%) rotate(-11deg) translate(0, 40%)}20%{-webkit-transform:translate(0, -40%) rotate(-13deg) translate(0, 40%);transform:translate(0, -40%) rotate(-13deg) translate(0, 40%)}21%{-webkit-transform:translate(0, -40%) rotate(-12deg) translate(0, 40%);transform:translate(0, -40%) rotate(-12deg) translate(0, 40%)}22%{-webkit-transform:translate(0, -40%) rotate(-10deg) translate(0, 40%);transform:translate(0, -40%) rotate(-10deg) translate(0, 40%)}24%{-webkit-transform:translate(0, -40%) rotate(-5deg) translate(0, 40%);transform:translate(0, -40%) rotate(-5deg) translate(0, 40%)}26%{-webkit-transform:translate(0, -40%) rotate(3deg) translate(0, 40%);transform:translate(0, -40%) rotate(3deg) translate(0, 40%)}28%{-webkit-transform:translate(0, -40%) rotate(9deg) translate(0, 40%);transform:translate(0, -40%) rotate(9deg) translate(0, 40%)}30%{-webkit-transform:translate(0, -40%) rotate(10deg) translate(0, 40%);transform:translate(0, -40%) rotate(10deg) translate(0, 40%)}31%{-webkit-transform:translate(0, -40%) rotate(9deg) translate(0, 40%);transform:translate(0, -40%) rotate(9deg) translate(0, 40%)}33%{-webkit-transform:translate(0, -40%) rotate(5deg) translate(0, 40%);transform:translate(0, -40%) rotate(5deg) translate(0, 40%)}34%{-webkit-transform:translate(0, -40%) rotate(1deg) translate(0, 40%);transform:translate(0, -40%) rotate(1deg) translate(0, 40%)}36%{-webkit-transform:translate(0, -40%) rotate(-5deg) translate(0, 40%);transform:translate(0, -40%) rotate(-5deg) translate(0, 40%)}39%{-webkit-transform:translate(0, -40%) rotate(-8deg) translate(0, 40%);transform:translate(0, -40%) rotate(-8deg) translate(0, 40%)}40%{-webkit-transform:translate(0, -40%) rotate(-7deg) translate(0, 40%);transform:translate(0, -40%) rotate(-7deg) translate(0, 40%)}44%{-webkit-transform:translate(0, -40%) rotate(3deg) translate(0, 40%);transform:translate(0, -40%) rotate(3deg) translate(0, 40%)}47%{-webkit-transform:translate(0, -40%) rotate(7deg) translate(0, 40%);transform:translate(0, -40%) rotate(7deg) translate(0, 40%)}56%{-webkit-transform:translate(0, -40%) rotate(-5deg) translate(0, 40%);transform:translate(0, -40%) rotate(-5deg) translate(0, 40%)}63%{-webkit-transform:translate(0, -40%) rotate(1deg) translate(0, 40%);transform:translate(0, -40%) rotate(1deg) translate(0, 40%)}75%{-webkit-transform:translate(0, -40%) rotate(-1deg) translate(0, 40%);transform:translate(0, -40%) rotate(-1deg) translate(0, 40%)}100%{-webkit-transform:translate(0, -40%) rotate(0deg) translate(0, 40%);transform:translate(0, -40%) rotate(0deg) translate(0, 40%)}}@-webkit-keyframes ld-jingle{0%{-webkit-transform:translate(0, -40%) rotate(0deg) translate(0, 40%);transform:translate(0, -40%) rotate(0deg) translate(0, 40%)}4%{-webkit-transform:translate(0, -40%) rotate(11deg) translate(0, 40%);transform:translate(0, -40%) rotate(11deg) translate(0, 40%)}10%{-webkit-transform:translate(0, -40%) rotate(15deg) translate(0, 40%);transform:translate(0, -40%) rotate(15deg) translate(0, 40%)}18%{-webkit-transform:translate(0, -40%) rotate(-11deg) translate(0, 40%);transform:translate(0, -40%) rotate(-11deg) translate(0, 40%)}20%{-webkit-transform:translate(0, -40%) rotate(-13deg) translate(0, 40%);transform:translate(0, -40%) rotate(-13deg) translate(0, 40%)}21%{-webkit-transform:translate(0, -40%) rotate(-12deg) translate(0, 40%);transform:translate(0, -40%) rotate(-12deg) translate(0, 40%)}22%{-webkit-transform:translate(0, -40%) rotate(-10deg) translate(0, 40%);transform:translate(0, -40%) rotate(-10deg) translate(0, 40%)}24%{-webkit-transform:translate(0, -40%) rotate(-5deg) translate(0, 40%);transform:translate(0, -40%) rotate(-5deg) translate(0, 40%)}26%{-webkit-transform:translate(0, -40%) rotate(3deg) translate(0, 40%);transform:translate(0, -40%) rotate(3deg) translate(0, 40%)}28%{-webkit-transform:translate(0, -40%) rotate(9deg) translate(0, 40%);transform:translate(0, -40%) rotate(9deg) translate(0, 40%)}30%{-webkit-transform:translate(0, -40%) rotate(10deg) translate(0, 40%);transform:translate(0, -40%) rotate(10deg) translate(0, 40%)}31%{-webkit-transform:translate(0, -40%) rotate(9deg) translate(0, 40%);transform:translate(0, -40%) rotate(9deg) translate(0, 40%)}33%{-webkit-transform:translate(0, -40%) rotate(5deg) translate(0, 40%);transform:translate(0, -40%) rotate(5deg) translate(0, 40%)}34%{-webkit-transform:translate(0, -40%) rotate(1deg) translate(0, 40%);transform:translate(0, -40%) rotate(1deg) translate(0, 40%)}36%{-webkit-transform:translate(0, -40%) rotate(-5deg) translate(0, 40%);transform:translate(0, -40%) rotate(-5deg) translate(0, 40%)}39%{-webkit-transform:translate(0, -40%) rotate(-8deg) translate(0, 40%);transform:translate(0, -40%) rotate(-8deg) translate(0, 40%)}40%{-webkit-transform:translate(0, -40%) rotate(-7deg) translate(0, 40%);transform:translate(0, -40%) rotate(-7deg) translate(0, 40%)}44%{-webkit-transform:translate(0, -40%) rotate(3deg) translate(0, 40%);transform:translate(0, -40%) rotate(3deg) translate(0, 40%)}47%{-webkit-transform:translate(0, -40%) rotate(7deg) translate(0, 40%);transform:translate(0, -40%) rotate(7deg) translate(0, 40%)}56%{-webkit-transform:translate(0, -40%) rotate(-5deg) translate(0, 40%);transform:translate(0, -40%) rotate(-5deg) translate(0, 40%)}63%{-webkit-transform:translate(0, -40%) rotate(1deg) translate(0, 40%);transform:translate(0, -40%) rotate(1deg) translate(0, 40%)}75%{-webkit-transform:translate(0, -40%) rotate(-1deg) translate(0, 40%);transform:translate(0, -40%) rotate(-1deg) translate(0, 40%)}100%{-webkit-transform:translate(0, -40%) rotate(0deg) translate(0, 40%);transform:translate(0, -40%) rotate(0deg) translate(0, 40%)}}.ld.ld-jingle{-webkit-animation:ld-jingle 1s infinite;animation:ld-jingle 1s infinite}@keyframes ld-swim{0%{-webkit-transform:translate(0, 0) rotate(0deg);transform:translate(0, 0) rotate(0deg)}12.5%{-webkit-transform:translate(5%, -10%) rotate(3deg);transform:translate(5%, -10%) rotate(3deg)}25%{-webkit-transform:translate(0, -15%) rotate(6deg);transform:translate(0, -15%) rotate(6deg)}37.5%{-webkit-transform:translate(-5%, -10%) rotate(3deg);transform:translate(-5%, -10%) rotate(3deg)}50%{-webkit-transform:translate(0, 0) rotate(0deg);transform:translate(0, 0) rotate(0deg)}62.5%{-webkit-transform:translate(5%, 10%) rotate(-3deg);transform:translate(5%, 10%) rotate(-3deg)}75%{-webkit-transform:translate(0, 15%) rotate(-6deg);transform:translate(0, 15%) rotate(-6deg)}87.5%{-webkit-transform:translate(-5%, 10%) rotate(-3deg);transform:translate(-5%, 10%) rotate(-3deg)}100%{-webkit-transform:translate(0, 0) rotate(0deg);transform:translate(0, 0) rotate(0deg)}}@-webkit-keyframes ld-swim{0%{-webkit-transform:translate(0, 0) rotate(0deg);transform:translate(0, 0) rotate(0deg)}12.5%{-webkit-transform:translate(5%, -10%) rotate(3deg);transform:translate(5%, -10%) rotate(3deg)}25%{-webkit-transform:translate(0, -15%) rotate(6deg);transform:translate(0, -15%) rotate(6deg)}37.5%{-webkit-transform:translate(-5%, -10%) rotate(3deg);transform:translate(-5%, -10%) rotate(3deg)}50%{-webkit-transform:translate(0, 0) rotate(0deg);transform:translate(0, 0) rotate(0deg)}62.5%{-webkit-transform:translate(5%, 10%) rotate(-3deg);transform:translate(5%, 10%) rotate(-3deg)}75%{-webkit-transform:translate(0, 15%) rotate(-6deg);transform:translate(0, 15%) rotate(-6deg)}87.5%{-webkit-transform:translate(-5%, 10%) rotate(-3deg);transform:translate(-5%, 10%) rotate(-3deg)}100%{-webkit-transform:translate(0, 0) rotate(0deg);transform:translate(0, 0) rotate(0deg)}}.ld.ld-swim{-webkit-animation:ld-swim 3s infinite linear;animation:ld-swim 3s infinite linear}@keyframes ld-leaf{0%{-webkit-transform:translate(-14.7%, -117%) rotate(-0.3deg);transform:translate(-14.7%, -117%) rotate(-0.3deg)}1%{-webkit-transform:translate(-14.4%, -112.5%) rotate(-0.6deg);transform:translate(-14.4%, -112.5%) rotate(-0.6deg)}2%{-webkit-transform:translate(-13.8%, -102%) rotate(-1.2deg);transform:translate(-13.8%, -102%) rotate(-1.2deg)}3%{-webkit-transform:translate(-13.5%, -100.5%) rotate(-1.5deg);transform:translate(-13.5%, -100.5%) rotate(-1.5deg)}5%{-webkit-transform:translate(-7.2%, -87%) rotate(-7.8deg);transform:translate(-7.2%, -87%) rotate(-7.8deg)}7%{-webkit-transform:translate(5.4%, -79.5%) rotate(-20.4deg);transform:translate(5.4%, -79.5%) rotate(-20.4deg)}10%{-webkit-transform:translate(12.9%, -76.5%) rotate(-27.9deg);transform:translate(12.9%, -76.5%) rotate(-27.9deg)}12%{-webkit-transform:translate(14.4%, -75%) rotate(-29.4deg);transform:translate(14.4%, -75%) rotate(-29.4deg)}13%{-webkit-transform:translate(14.7%, -75%) rotate(-29.7deg);transform:translate(14.7%, -75%) rotate(-29.7deg)}14%{-webkit-transform:translate(15%, -75%) rotate(-30deg);transform:translate(15%, -75%) rotate(-30deg)}15%{-webkit-transform:translate(14.4%, -69%) rotate(0.6deg);transform:translate(14.4%, -69%) rotate(0.6deg)}16%{-webkit-transform:translate(13.8%, -58.5%) rotate(1.2deg);transform:translate(13.8%, -58.5%) rotate(1.2deg)}19%{-webkit-transform:translate(7.2%, -45%) rotate(7.8deg);transform:translate(7.2%, -45%) rotate(7.8deg)}21%{-webkit-transform:translate(-5.4%, -37.5%) rotate(20.4deg);transform:translate(-5.4%, -37.5%) rotate(20.4deg)}24%{-webkit-transform:translate(-12.9%, -33%) rotate(27.9deg);transform:translate(-12.9%, -33%) rotate(27.9deg)}26%{-webkit-transform:translate(-14.4%, -33%) rotate(29.4deg);transform:translate(-14.4%, -33%) rotate(29.4deg)}27%{-webkit-transform:translate(-14.7%, -31.5%) rotate(29.7deg);transform:translate(-14.7%, -31.5%) rotate(29.7deg)}28%{-webkit-transform:translate(-15%, -31.5%) rotate(30deg);transform:translate(-15%, -31.5%) rotate(30deg)}29%{-webkit-transform:translate(-14.4%, -27%) rotate(-0.6deg);transform:translate(-14.4%, -27%) rotate(-0.6deg)}30%{-webkit-transform:translate(-13.8%, -16.5%) rotate(-1.2deg);transform:translate(-13.8%, -16.5%) rotate(-1.2deg)}31%{-webkit-transform:translate(-13.5%, -15%) rotate(-1.5deg);transform:translate(-13.5%, -15%) rotate(-1.5deg)}33%{-webkit-transform:translate(-7.2%, -1.5%) rotate(-7.8deg);transform:translate(-7.2%, -1.5%) rotate(-7.8deg)}36%{-webkit-transform:translate(5.4%, 4.5%) rotate(-20.4deg);transform:translate(5.4%, 4.5%) rotate(-20.4deg)}38%{-webkit-transform:translate(12.9%, 9%) rotate(-27.9deg);transform:translate(12.9%, 9%) rotate(-27.9deg)}40%{-webkit-transform:translate(14.4%, 10.5%) rotate(-29.4deg);transform:translate(14.4%, 10.5%) rotate(-29.4deg)}41%{-webkit-transform:translate(14.7%, 10.5%) rotate(-29.7deg);transform:translate(14.7%, 10.5%) rotate(-29.7deg)}42%{-webkit-transform:translate(15%, 10.5%) rotate(-30deg);transform:translate(15%, 10.5%) rotate(-30deg)}43%{-webkit-transform:translate(15%, 10.5%) rotate(-30deg);transform:translate(15%, 10.5%) rotate(-30deg)}43%{-webkit-transform:translate(14.7%, 10.5%) rotate(0.3deg);transform:translate(14.7%, 10.5%) rotate(0.3deg)}43%{-webkit-transform:translate(14.4%, 16.5%) rotate(0.6deg);transform:translate(14.4%, 16.5%) rotate(0.6deg)}45%{-webkit-transform:translate(13.8%, 25.5%) rotate(1.2deg);transform:translate(13.8%, 25.5%) rotate(1.2deg)}45%{-webkit-transform:translate(13.5%, 27%) rotate(1.5deg);transform:translate(13.5%, 27%) rotate(1.5deg)}48%{-webkit-transform:translate(7.2%, 40.5%) rotate(7.8deg);transform:translate(7.2%, 40.5%) rotate(7.8deg)}50%{-webkit-transform:translate(-5.4%, 48%) rotate(20.4deg);transform:translate(-5.4%, 48%) rotate(20.4deg)}52%{-webkit-transform:translate(-12.9%, 51%) rotate(27.9deg);transform:translate(-12.9%, 51%) rotate(27.9deg)}54%{-webkit-transform:translate(-14.4%, 52.5%) rotate(29.4deg);transform:translate(-14.4%, 52.5%) rotate(29.4deg)}56%{-webkit-transform:translate(-14.7%, 54%) rotate(29.7deg);transform:translate(-14.7%, 54%) rotate(29.7deg)}57%{-webkit-transform:translate(-14.7%, 54%) rotate(-0.3deg);transform:translate(-14.7%, 54%) rotate(-0.3deg)}58%{-webkit-transform:translate(-14.4%, 58.5%) rotate(-0.6deg);transform:translate(-14.4%, 58.5%) rotate(-0.6deg)}59%{-webkit-transform:translate(-13.5%, 70.5%) rotate(-1.5deg);transform:translate(-13.5%, 70.5%) rotate(-1.5deg)}62%{-webkit-transform:translate(-7.2%, 84%) rotate(-7.8deg);transform:translate(-7.2%, 84%) rotate(-7.8deg)}64%{-webkit-transform:translate(5.4%, 91.5%) rotate(-20.4deg);transform:translate(5.4%, 91.5%) rotate(-20.4deg)}67%{-webkit-transform:translate(12.9%, 94.5%) rotate(-27.9deg);transform:translate(12.9%, 94.5%) rotate(-27.9deg)}69%{-webkit-transform:translate(14.4%, 96%) rotate(-29.4deg);transform:translate(14.4%, 96%) rotate(-29.4deg)}70%{-webkit-transform:translate(14.7%, 96%) rotate(-29.7deg);transform:translate(14.7%, 96%) rotate(-29.7deg)}71%{-webkit-transform:translate(15%, 96%) rotate(-30deg);transform:translate(15%, 96%) rotate(-30deg)}72%{-webkit-transform:translate(14.4%, 102%) rotate(0.6deg);transform:translate(14.4%, 102%) rotate(0.6deg)}73%{-webkit-transform:translate(13.8%, 111%) rotate(1.2deg);transform:translate(13.8%, 111%) rotate(1.2deg)}74%{-webkit-transform:translate(13.5%, 112.5%) rotate(1.5deg);transform:translate(13.5%, 112.5%) rotate(1.5deg)}76%{-webkit-transform:translate(7.2%, 126%) rotate(7.8deg);transform:translate(7.2%, 126%) rotate(7.8deg)}79%{-webkit-transform:translate(-5.4%, 133.5%) rotate(20.4deg);transform:translate(-5.4%, 133.5%) rotate(20.4deg)}81%{-webkit-transform:translate(-12.9%, 138%) rotate(27.9deg);transform:translate(-12.9%, 138%) rotate(27.9deg)}83%{-webkit-transform:translate(-14.4%, 139.5%) rotate(29.4deg);transform:translate(-14.4%, 139.5%) rotate(29.4deg)}84%{-webkit-transform:translate(-14.7%, 139.5%) rotate(29.7deg);transform:translate(-14.7%, 139.5%) rotate(29.7deg)}85%{-webkit-transform:translate(-15%, 139.5%) rotate(30deg);transform:translate(-15%, 139.5%) rotate(30deg)}86%{-webkit-transform:translate(-14.7%, 139.5%) rotate(-0.3deg);transform:translate(-14.7%, 139.5%) rotate(-0.3deg)}86%{-webkit-transform:translate(-14.4%, 144%) rotate(-0.6deg);transform:translate(-14.4%, 144%) rotate(-0.6deg)}88%{-webkit-transform:translate(-13.5%, 156%) rotate(-1.5deg);transform:translate(-13.5%, 156%) rotate(-1.5deg)}90%{-webkit-transform:translate(-7.2%, 169.5%) rotate(-7.8deg);transform:translate(-7.2%, 169.5%) rotate(-7.8deg)}93%{-webkit-transform:translate(5.4%, 177%) rotate(-20.4deg);transform:translate(5.4%, 177%) rotate(-20.4deg)}95%{-webkit-transform:translate(12.9%, 180%) rotate(-27.9deg);transform:translate(12.9%, 180%) rotate(-27.9deg)}97%{-webkit-transform:translate(14.4%, 181.5%) rotate(-29.4deg);transform:translate(14.4%, 181.5%) rotate(-29.4deg)}99%{-webkit-transform:translate(14.7%, 181.5%) rotate(-29.7deg);transform:translate(14.7%, 181.5%) rotate(-29.7deg)}100%{-webkit-transform:translate(15%, 181.5%) rotate(-30deg);transform:translate(15%, 181.5%) rotate(-30deg)}}@-webkit-keyframes ld-leaf{0%{-webkit-transform:translate(-14.7%, -117%) rotate(-0.3deg);transform:translate(-14.7%, -117%) rotate(-0.3deg)}1%{-webkit-transform:translate(-14.4%, -112.5%) rotate(-0.6deg);transform:translate(-14.4%, -112.5%) rotate(-0.6deg)}2%{-webkit-transform:translate(-13.8%, -102%) rotate(-1.2deg);transform:translate(-13.8%, -102%) rotate(-1.2deg)}3%{-webkit-transform:translate(-13.5%, -100.5%) rotate(-1.5deg);transform:translate(-13.5%, -100.5%) rotate(-1.5deg)}5%{-webkit-transform:translate(-7.2%, -87%) rotate(-7.8deg);transform:translate(-7.2%, -87%) rotate(-7.8deg)}7%{-webkit-transform:translate(5.4%, -79.5%) rotate(-20.4deg);transform:translate(5.4%, -79.5%) rotate(-20.4deg)}10%{-webkit-transform:translate(12.9%, -76.5%) rotate(-27.9deg);transform:translate(12.9%, -76.5%) rotate(-27.9deg)}12%{-webkit-transform:translate(14.4%, -75%) rotate(-29.4deg);transform:translate(14.4%, -75%) rotate(-29.4deg)}13%{-webkit-transform:translate(14.7%, -75%) rotate(-29.7deg);transform:translate(14.7%, -75%) rotate(-29.7deg)}14%{-webkit-transform:translate(15%, -75%) rotate(-30deg);transform:translate(15%, -75%) rotate(-30deg)}15%{-webkit-transform:translate(14.4%, -69%) rotate(0.6deg);transform:translate(14.4%, -69%) rotate(0.6deg)}16%{-webkit-transform:translate(13.8%, -58.5%) rotate(1.2deg);transform:translate(13.8%, -58.5%) rotate(1.2deg)}19%{-webkit-transform:translate(7.2%, -45%) rotate(7.8deg);transform:translate(7.2%, -45%) rotate(7.8deg)}21%{-webkit-transform:translate(-5.4%, -37.5%) rotate(20.4deg);transform:translate(-5.4%, -37.5%) rotate(20.4deg)}24%{-webkit-transform:translate(-12.9%, -33%) rotate(27.9deg);transform:translate(-12.9%, -33%) rotate(27.9deg)}26%{-webkit-transform:translate(-14.4%, -33%) rotate(29.4deg);transform:translate(-14.4%, -33%) rotate(29.4deg)}27%{-webkit-transform:translate(-14.7%, -31.5%) rotate(29.7deg);transform:translate(-14.7%, -31.5%) rotate(29.7deg)}28%{-webkit-transform:translate(-15%, -31.5%) rotate(30deg);transform:translate(-15%, -31.5%) rotate(30deg)}29%{-webkit-transform:translate(-14.4%, -27%) rotate(-0.6deg);transform:translate(-14.4%, -27%) rotate(-0.6deg)}30%{-webkit-transform:translate(-13.8%, -16.5%) rotate(-1.2deg);transform:translate(-13.8%, -16.5%) rotate(-1.2deg)}31%{-webkit-transform:translate(-13.5%, -15%) rotate(-1.5deg);transform:translate(-13.5%, -15%) rotate(-1.5deg)}33%{-webkit-transform:translate(-7.2%, -1.5%) rotate(-7.8deg);transform:translate(-7.2%, -1.5%) rotate(-7.8deg)}36%{-webkit-transform:translate(5.4%, 4.5%) rotate(-20.4deg);transform:translate(5.4%, 4.5%) rotate(-20.4deg)}38%{-webkit-transform:translate(12.9%, 9%) rotate(-27.9deg);transform:translate(12.9%, 9%) rotate(-27.9deg)}40%{-webkit-transform:translate(14.4%, 10.5%) rotate(-29.4deg);transform:translate(14.4%, 10.5%) rotate(-29.4deg)}41%{-webkit-transform:translate(14.7%, 10.5%) rotate(-29.7deg);transform:translate(14.7%, 10.5%) rotate(-29.7deg)}42%{-webkit-transform:translate(15%, 10.5%) rotate(-30deg);transform:translate(15%, 10.5%) rotate(-30deg)}43%{-webkit-transform:translate(15%, 10.5%) rotate(-30deg);transform:translate(15%, 10.5%) rotate(-30deg)}43%{-webkit-transform:translate(14.7%, 10.5%) rotate(0.3deg);transform:translate(14.7%, 10.5%) rotate(0.3deg)}43%{-webkit-transform:translate(14.4%, 16.5%) rotate(0.6deg);transform:translate(14.4%, 16.5%) rotate(0.6deg)}45%{-webkit-transform:translate(13.8%, 25.5%) rotate(1.2deg);transform:translate(13.8%, 25.5%) rotate(1.2deg)}45%{-webkit-transform:translate(13.5%, 27%) rotate(1.5deg);transform:translate(13.5%, 27%) rotate(1.5deg)}48%{-webkit-transform:translate(7.2%, 40.5%) rotate(7.8deg);transform:translate(7.2%, 40.5%) rotate(7.8deg)}50%{-webkit-transform:translate(-5.4%, 48%) rotate(20.4deg);transform:translate(-5.4%, 48%) rotate(20.4deg)}52%{-webkit-transform:translate(-12.9%, 51%) rotate(27.9deg);transform:translate(-12.9%, 51%) rotate(27.9deg)}54%{-webkit-transform:translate(-14.4%, 52.5%) rotate(29.4deg);transform:translate(-14.4%, 52.5%) rotate(29.4deg)}56%{-webkit-transform:translate(-14.7%, 54%) rotate(29.7deg);transform:translate(-14.7%, 54%) rotate(29.7deg)}57%{-webkit-transform:translate(-14.7%, 54%) rotate(-0.3deg);transform:translate(-14.7%, 54%) rotate(-0.3deg)}58%{-webkit-transform:translate(-14.4%, 58.5%) rotate(-0.6deg);transform:translate(-14.4%, 58.5%) rotate(-0.6deg)}59%{-webkit-transform:translate(-13.5%, 70.5%) rotate(-1.5deg);transform:translate(-13.5%, 70.5%) rotate(-1.5deg)}62%{-webkit-transform:translate(-7.2%, 84%) rotate(-7.8deg);transform:translate(-7.2%, 84%) rotate(-7.8deg)}64%{-webkit-transform:translate(5.4%, 91.5%) rotate(-20.4deg);transform:translate(5.4%, 91.5%) rotate(-20.4deg)}67%{-webkit-transform:translate(12.9%, 94.5%) rotate(-27.9deg);transform:translate(12.9%, 94.5%) rotate(-27.9deg)}69%{-webkit-transform:translate(14.4%, 96%) rotate(-29.4deg);transform:translate(14.4%, 96%) rotate(-29.4deg)}70%{-webkit-transform:translate(14.7%, 96%) rotate(-29.7deg);transform:translate(14.7%, 96%) rotate(-29.7deg)}71%{-webkit-transform:translate(15%, 96%) rotate(-30deg);transform:translate(15%, 96%) rotate(-30deg)}72%{-webkit-transform:translate(14.4%, 102%) rotate(0.6deg);transform:translate(14.4%, 102%) rotate(0.6deg)}73%{-webkit-transform:translate(13.8%, 111%) rotate(1.2deg);transform:translate(13.8%, 111%) rotate(1.2deg)}74%{-webkit-transform:translate(13.5%, 112.5%) rotate(1.5deg);transform:translate(13.5%, 112.5%) rotate(1.5deg)}76%{-webkit-transform:translate(7.2%, 126%) rotate(7.8deg);transform:translate(7.2%, 126%) rotate(7.8deg)}79%{-webkit-transform:translate(-5.4%, 133.5%) rotate(20.4deg);transform:translate(-5.4%, 133.5%) rotate(20.4deg)}81%{-webkit-transform:translate(-12.9%, 138%) rotate(27.9deg);transform:translate(-12.9%, 138%) rotate(27.9deg)}83%{-webkit-transform:translate(-14.4%, 139.5%) rotate(29.4deg);transform:translate(-14.4%, 139.5%) rotate(29.4deg)}84%{-webkit-transform:translate(-14.7%, 139.5%) rotate(29.7deg);transform:translate(-14.7%, 139.5%) rotate(29.7deg)}85%{-webkit-transform:translate(-15%, 139.5%) rotate(30deg);transform:translate(-15%, 139.5%) rotate(30deg)}86%{-webkit-transform:translate(-14.7%, 139.5%) rotate(-0.3deg);transform:translate(-14.7%, 139.5%) rotate(-0.3deg)}86%{-webkit-transform:translate(-14.4%, 144%) rotate(-0.6deg);transform:translate(-14.4%, 144%) rotate(-0.6deg)}88%{-webkit-transform:translate(-13.5%, 156%) rotate(-1.5deg);transform:translate(-13.5%, 156%) rotate(-1.5deg)}90%{-webkit-transform:translate(-7.2%, 169.5%) rotate(-7.8deg);transform:translate(-7.2%, 169.5%) rotate(-7.8deg)}93%{-webkit-transform:translate(5.4%, 177%) rotate(-20.4deg);transform:translate(5.4%, 177%) rotate(-20.4deg)}95%{-webkit-transform:translate(12.9%, 180%) rotate(-27.9deg);transform:translate(12.9%, 180%) rotate(-27.9deg)}97%{-webkit-transform:translate(14.4%, 181.5%) rotate(-29.4deg);transform:translate(14.4%, 181.5%) rotate(-29.4deg)}99%{-webkit-transform:translate(14.7%, 181.5%) rotate(-29.7deg);transform:translate(14.7%, 181.5%) rotate(-29.7deg)}100%{-webkit-transform:translate(15%, 181.5%) rotate(-30deg);transform:translate(15%, 181.5%) rotate(-30deg)}}.ld.ld-leaf{-webkit-animation:ld-leaf 4s infinite cubic-bezier(0.1, 0.5, 0.1, 0.5);animation:ld-leaf 4s infinite cubic-bezier(0.1, 0.5, 0.1, 0.5)}@keyframes ld-slot{0%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}9.09%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}9.1%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}16.99%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}17%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}23.79%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}23.8%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}29.59%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}29.6%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}34.49%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}34.5%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}38.49%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}38.5%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}41.79%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}41.8%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}44.39%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}44.4%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}46.29%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}46.3%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}47.79%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}47.8%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}48.79%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}48.8%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}49.39%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}49.4%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}49.79%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}49.8%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}49.99%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}50%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}49.99%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}50%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}49.99%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}50%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}49.99%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}50%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}50.190000000000005%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}50.2%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}50.59%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}50.6%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}51.190000000000005%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}51.2%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}52.190000000000005%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}52.2%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}53.690000000000005%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}53.7%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}55.59%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}55.6%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}58.190000000000005%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}58.2%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}61.49%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}61.5%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}65.49%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}65.5%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}70.39%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}70.4%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}76.19%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}76.2%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}82.99%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}83%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}90.89%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}90.9%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}99.99%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}100%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}}@-webkit-keyframes ld-slot{0%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}9.09%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}9.1%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}16.99%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}17%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}23.79%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}23.8%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}29.59%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}29.6%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}34.49%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}34.5%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}38.49%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}38.5%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}41.79%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}41.8%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}44.39%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}44.4%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}46.29%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}46.3%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}47.79%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}47.8%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}48.79%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}48.8%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}49.39%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}49.4%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}49.79%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}49.8%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}49.99%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}50%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}49.99%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}50%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}49.99%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}50%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}49.99%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}50%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}50.190000000000005%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}50.2%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}50.59%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}50.6%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}51.190000000000005%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}51.2%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}52.190000000000005%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}52.2%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}53.690000000000005%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}53.7%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}55.59%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}55.6%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}58.190000000000005%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}58.2%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}61.49%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}61.5%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}65.49%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}65.5%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}70.39%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}70.4%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}76.19%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}76.2%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}82.99%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}83%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}90.89%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}90.9%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}99.99%{-webkit-transform:translate(0, 160%);transform:translate(0, 160%)}100%{-webkit-transform:translate(0, -160%);transform:translate(0, -160%)}}.ld.ld-slot{-webkit-animation:ld-slot 6s infinite linear;animation:ld-slot 6s infinite linear}@keyframes ld-bounce-px{0%,90%{animation-timing-function:linear}10%{animation-timing-function:cubic-bezier(0, 0.4, 0.6, 1)}50%{animation-timing-function:cubic-bezier(0.4, 0, 1, 0.6)}0%{-webkit-transform:translate(0, 30px) scaleY(0.5);transform:translate(0, 30px) scaleY(0.5)}10%{-webkit-transform:translate(0, 5px) scaleY(1.1);transform:translate(0, 5px) scaleY(1.1)}50%{-webkit-transform:translate(0, -37px) scaleY(1.1);transform:translate(0, -37px) scaleY(1.1)}90%{-webkit-transform:translate(0, 5px) scaleY(1.1);transform:translate(0, 5px) scaleY(1.1)}100%{-webkit-transform:translate(0, 30px) scaleY(0.5);transform:translate(0, 30px) scaleY(0.5)}}@-webkit-keyframes ld-bounce-px{0%,90%{animation-timing-function:linear}10%{animation-timing-function:cubic-bezier(0, 0.4, 0.6, 1)}50%{animation-timing-function:cubic-bezier(0.4, 0, 1, 0.6)}0%{-webkit-transform:translate(0, 30px) scaleY(0.5);transform:translate(0, 30px) scaleY(0.5)}10%{-webkit-transform:translate(0, 5px) scaleY(1.1);transform:translate(0, 5px) scaleY(1.1)}50%{-webkit-transform:translate(0, -37px) scaleY(1.1);transform:translate(0, -37px) scaleY(1.1)}90%{-webkit-transform:translate(0, 5px) scaleY(1.1);transform:translate(0, 5px) scaleY(1.1)}100%{-webkit-transform:translate(0, 30px) scaleY(0.5);transform:translate(0, 30px) scaleY(0.5)}}.ld.ld-bounce-px{-webkit-animation:ld-bounce-px 1s infinite;animation:ld-bounce-px 1s infinite}@keyframes ld-bounce-px-rtl{0%{-webkit-transform:translate(80px, -20px);transform:translate(80px, -20px)}12.5%{-webkit-transform:translate(60px, -12px);transform:translate(60px, -12px)}25%{-webkit-transform:translate(40px, 0);transform:translate(40px, 0)}37.5%{-webkit-transform:translate(25px, -12px);transform:translate(25px, -12px)}50%{-webkit-transform:translate(0, -20px);transform:translate(0, -20px)}62.5%{-webkit-transform:translate(-25px, -12px);transform:translate(-25px, -12px)}75%{-webkit-transform:translate(-40px, 0);transform:translate(-40px, 0)}87.5%{-webkit-transform:translate(-60px, -12px);transform:translate(-60px, -12px)}100%{-webkit-transform:translate(-80px, -20px);transform:translate(-80px, -20px)}}@-webkit-keyframes ld-bounce-px-rtl{0%{-webkit-transform:translate(80px, -20px);transform:translate(80px, -20px)}12.5%{-webkit-transform:translate(60px, -12px);transform:translate(60px, -12px)}25%{-webkit-transform:translate(40px, 0);transform:translate(40px, 0)}37.5%{-webkit-transform:translate(25px, -12px);transform:translate(25px, -12px)}50%{-webkit-transform:translate(0, -20px);transform:translate(0, -20px)}62.5%{-webkit-transform:translate(-25px, -12px);transform:translate(-25px, -12px)}75%{-webkit-transform:translate(-40px, 0);transform:translate(-40px, 0)}87.5%{-webkit-transform:translate(-60px, -12px);transform:translate(-60px, -12px)}100%{-webkit-transform:translate(-80px, -20px);transform:translate(-80px, -20px)}}.ld.ld-bounce-px-rtl{-webkit-animation:ld-bounce-px-rtl 1s infinite linear;animation:ld-bounce-px-rtl 1s infinite linear}@keyframes ld-bounce-px-ltr{0%{-webkit-transform:translate(-80px, -20px);transform:translate(-80px, -20px)}12.5%{-webkit-transform:translate(-60px, -12px);transform:translate(-60px, -12px)}25%{-webkit-transform:translate(-50px, 0);transform:translate(-50px, 0)}37.5%{-webkit-transform:translate(-25px, -12px);transform:translate(-25px, -12px)}50%{-webkit-transform:translate(0, -20px);transform:translate(0, -20px)}62.5%{-webkit-transform:translate(25px, -12px);transform:translate(25px, -12px)}75%{-webkit-transform:translate(50px, 0);transform:translate(50px, 0)}87.5%{-webkit-transform:translate(60px, -12px);transform:translate(60px, -12px)}100%{-webkit-transform:translate(80px, -20px);transform:translate(80px, -20px)}}@-webkit-keyframes ld-bounce-px-ltr{0%{-webkit-transform:translate(-80px, -20px);transform:translate(-80px, -20px)}12.5%{-webkit-transform:translate(-60px, -12px);transform:translate(-60px, -12px)}25%{-webkit-transform:translate(-50px, 0);transform:translate(-50px, 0)}37.5%{-webkit-transform:translate(-25px, -12px);transform:translate(-25px, -12px)}50%{-webkit-transform:translate(0, -20px);transform:translate(0, -20px)}62.5%{-webkit-transform:translate(25px, -12px);transform:translate(25px, -12px)}75%{-webkit-transform:translate(50px, 0);transform:translate(50px, 0)}87.5%{-webkit-transform:translate(60px, -12px);transform:translate(60px, -12px)}100%{-webkit-transform:translate(80px, -20px);transform:translate(80px, -20px)}}.ld.ld-bounce-px-ltr{-webkit-animation:ld-bounce-px-ltr 1s infinite linear;animation:ld-bounce-px-ltr 1s infinite linear}@keyframes ld-bounce-a-px{0%,25%,50%,75%,100%{animation-timing-function:cubic-bezier(0, 0.4, 0.6, 1)}12.5%,37.5%,62.5%,87.5%{animation-timing-function:cubic-bezier(0.4, 0, 1, 0.6)}0%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}12.5%{-webkit-transform:translate(5px, -28px);transform:translate(5px, -28px)}25%{-webkit-transform:translate(10px, 0);transform:translate(10px, 0)}37.5%{-webkit-transform:translate(5px, -28px);transform:translate(5px, -28px)}50%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}62.5%{-webkit-transform:translate(-5px, -28px);transform:translate(-5px, -28px)}75%{-webkit-transform:translate(-10px, 0);transform:translate(-10px, 0)}87.5%{-webkit-transform:translate(-5px, -28px);transform:translate(-5px, -28px)}100%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}}@-webkit-keyframes ld-bounce-a-px{0%,25%,50%,75%,100%{animation-timing-function:cubic-bezier(0, 0.4, 0.6, 1)}12.5%,37.5%,62.5%,87.5%{animation-timing-function:cubic-bezier(0.4, 0, 1, 0.6)}0%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}12.5%{-webkit-transform:translate(5px, -28px);transform:translate(5px, -28px)}25%{-webkit-transform:translate(10px, 0);transform:translate(10px, 0)}37.5%{-webkit-transform:translate(5px, -28px);transform:translate(5px, -28px)}50%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}62.5%{-webkit-transform:translate(-5px, -28px);transform:translate(-5px, -28px)}75%{-webkit-transform:translate(-10px, 0);transform:translate(-10px, 0)}87.5%{-webkit-transform:translate(-5px, -28px);transform:translate(-5px, -28px)}100%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}}.ld.ld-bounce-a-px{-webkit-animation:ld-bounce-a-px 2s infinite;animation:ld-bounce-a-px 2s infinite}@keyframes ld-float-px{0%,100%{animation-timing-function:cubic-bezier(0.5, 0, 1, 0.5)}50%{animation-timing-function:linear}0%{-webkit-transform:translate(0, 0);transform:translate(0, 0);box-shadow:0 0 0 rgba(0,0,0,0.3)}30%{-webkit-transform:translate(0, -10px);transform:translate(0, -10px);box-shadow:0 5px 5px rgba(0,0,0,0.3)}50%{-webkit-transform:translate(0, -10px);transform:translate(0, -10px);box-shadow:0 5px 5px rgba(0,0,0,0.3)}100%{-webkit-transform:translate(0, 0);transform:translate(0, 0);box-shadow:0 0 0 rgba(0,0,0,0.3)}}@-webkit-keyframes ld-float-px{0%,100%{animation-timing-function:cubic-bezier(0.5, 0, 1, 0.5)}50%{animation-timing-function:linear}0%{-webkit-transform:translate(0, 0);transform:translate(0, 0);box-shadow:0 0 0 rgba(0,0,0,0.3)}30%{-webkit-transform:translate(0, -10px);transform:translate(0, -10px);box-shadow:0 5px 5px rgba(0,0,0,0.3)}50%{-webkit-transform:translate(0, -10px);transform:translate(0, -10px);box-shadow:0 5px 5px rgba(0,0,0,0.3)}100%{-webkit-transform:translate(0, 0);transform:translate(0, 0);box-shadow:0 0 0 rgba(0,0,0,0.3)}}.ld.ld-float-px{-webkit-animation:ld-float-px 1s infinite;animation:ld-float-px 1s infinite}@keyframes ld-hit-px{0%{animation-timing-function:cubic-bezier(0.5, 0, 1, 0.5);-webkit-transform:scale(0) translate(0, 0) skewX(0);transform:scale(0) translate(0, 0) skewX(0)}20%{-webkit-transform:scale(1) translate(0, 0) skewX(20deg);transform:scale(1) translate(0, 0) skewX(20deg)}50%{animation-timing-function:cubic-bezier(1, 0, 1, 0.5);-webkit-transform:scale(1) translate(0, 0) skewX(20deg);transform:scale(1) translate(0, 0) skewX(20deg)}100%{-webkit-transform:scale(1) translate(0, 150px) skewX(20deg);transform:scale(1) translate(0, 150px) skewX(20deg)}}@-webkit-keyframes ld-hit-px{0%{animation-timing-function:cubic-bezier(0.5, 0, 1, 0.5);-webkit-transform:scale(0) translate(0, 0) skewX(0);transform:scale(0) translate(0, 0) skewX(0)}20%{-webkit-transform:scale(1) translate(0, 0) skewX(20deg);transform:scale(1) translate(0, 0) skewX(20deg)}50%{animation-timing-function:cubic-bezier(1, 0, 1, 0.5);-webkit-transform:scale(1) translate(0, 0) skewX(20deg);transform:scale(1) translate(0, 0) skewX(20deg)}100%{-webkit-transform:scale(1) translate(0, 150px) skewX(20deg);transform:scale(1) translate(0, 150px) skewX(20deg)}}.ld.ld-hit-px{-webkit-animation:ld-hit-px 2s infinite;animation:ld-hit-px 2s infinite}@keyframes ld-jelly-px{0%,16.6%,33.3%,50%,66.6%,83.3%{animation-timing-function:cubic-bezier(0, 0.5, 0.5, 1)}0%{-webkit-transform:translate(0, 0) skewX(0deg);transform:translate(0, 0) skewX(0deg)}16.6%{-webkit-transform:translate(-30px, 0) skewX(30deg);transform:translate(-30px, 0) skewX(30deg)}33.3%{-webkit-transform:translate(25px, 0) skewX(-20deg);transform:translate(25px, 0) skewX(-20deg)}50%{-webkit-transform:translate(-12px, 0) skewX(10deg);transform:translate(-12px, 0) skewX(10deg)}66.6%{-webkit-transform:translate(6px, 0) skewX(-5deg);transform:translate(6px, 0) skewX(-5deg)}83.3%{-webkit-transform:translate(-2.5px, 0) skewX(2deg);transform:translate(-2.5px, 0) skewX(2deg)}100%{-webkit-transform:translate(0, 0) skewX(0deg);transform:translate(0, 0) skewX(0deg)}}@-webkit-keyframes ld-jelly-px{0%,16.6%,33.3%,50%,66.6%,83.3%{animation-timing-function:cubic-bezier(0, 0.5, 0.5, 1)}0%{-webkit-transform:translate(0, 0) skewX(0deg);transform:translate(0, 0) skewX(0deg)}16.6%{-webkit-transform:translate(-30px, 0) skewX(30deg);transform:translate(-30px, 0) skewX(30deg)}33.3%{-webkit-transform:translate(25px, 0) skewX(-20deg);transform:translate(25px, 0) skewX(-20deg)}50%{-webkit-transform:translate(-12px, 0) skewX(10deg);transform:translate(-12px, 0) skewX(10deg)}66.6%{-webkit-transform:translate(6px, 0) skewX(-5deg);transform:translate(6px, 0) skewX(-5deg)}83.3%{-webkit-transform:translate(-2.5px, 0) skewX(2deg);transform:translate(-2.5px, 0) skewX(2deg)}100%{-webkit-transform:translate(0, 0) skewX(0deg);transform:translate(0, 0) skewX(0deg)}}.ld.ld-jelly-px{-webkit-animation:ld-jelly-px 1s infinite linear;animation:ld-jelly-px 1s infinite linear}@keyframes ld-jump-px{0%,28%,48%,64%,76%,86%,93%,100%{animation-timing-function:ease-out}14%,38%,56%,70%,81%,90%,97%{animation-timing-function:ease-in}0%{-webkit-transform:translateY(0px);transform:translateY(0px)}14%{-webkit-transform:translateY(-27px);transform:translateY(-27px)}28%{-webkit-transform:translateY(0px);transform:translateY(0px)}38%{-webkit-transform:translateY(-20px);transform:translateY(-20px)}48%{-webkit-transform:translateY(0px);transform:translateY(0px)}56%{-webkit-transform:translateY(-16px);transform:translateY(-16px)}64%{-webkit-transform:translateY(0px);transform:translateY(0px)}70%{-webkit-transform:translateY(-12px);transform:translateY(-12px)}76%{-webkit-transform:translateY(0px);transform:translateY(0px)}81%{-webkit-transform:translateY(-7.5px);transform:translateY(-7.5px)}86%{-webkit-transform:translateY(0px);transform:translateY(0px)}90%{-webkit-transform:translateY(-3px);transform:translateY(-3px)}93%{-webkit-transform:translateY(0px);transform:translateY(0px)}97%{-webkit-transform:translateY(-1.5px);transform:translateY(-1.5px)}100%{-webkit-transform:translateY(0px);transform:translateY(0px)}}@-webkit-keyframes ld-jump-px{0%,28%,48%,64%,76%,86%,93%,100%{animation-timing-function:ease-out}14%,38%,56%,70%,81%,90%,97%{animation-timing-function:ease-in}0%{-webkit-transform:translateY(0px);transform:translateY(0px)}14%{-webkit-transform:translateY(-27px);transform:translateY(-27px)}28%{-webkit-transform:translateY(0px);transform:translateY(0px)}38%{-webkit-transform:translateY(-20px);transform:translateY(-20px)}48%{-webkit-transform:translateY(0px);transform:translateY(0px)}56%{-webkit-transform:translateY(-16px);transform:translateY(-16px)}64%{-webkit-transform:translateY(0px);transform:translateY(0px)}70%{-webkit-transform:translateY(-12px);transform:translateY(-12px)}76%{-webkit-transform:translateY(0px);transform:translateY(0px)}81%{-webkit-transform:translateY(-7.5px);transform:translateY(-7.5px)}86%{-webkit-transform:translateY(0px);transform:translateY(0px)}90%{-webkit-transform:translateY(-3px);transform:translateY(-3px)}93%{-webkit-transform:translateY(0px);transform:translateY(0px)}97%{-webkit-transform:translateY(-1.5px);transform:translateY(-1.5px)}100%{-webkit-transform:translateY(0px);transform:translateY(0px)}}.ld.ld-jump-px{-webkit-animation:ld-jump-px 1.5s ease-in infinite;animation:ld-jump-px 1.5s ease-in infinite}@keyframes ld-orbit-px{0%{-webkit-transform:translate(30px, 0) rotate(0deg);transform:translate(30px, 0) rotate(0deg)}12.5%{-webkit-transform:translate(21px, 21px) rotate(45deg);transform:translate(21px, 21px) rotate(45deg)}25%{-webkit-transform:translate(0, 30px) rotate(90deg);transform:translate(0, 30px) rotate(90deg)}37.5%{-webkit-transform:translate(-21px, 21px) rotate(135deg);transform:translate(-21px, 21px) rotate(135deg)}50%{-webkit-transform:translate(-30px, 0) rotate(180deg);transform:translate(-30px, 0) rotate(180deg)}62.5%{-webkit-transform:translate(-21px, -21px) rotate(225deg);transform:translate(-21px, -21px) rotate(225deg)}75%{-webkit-transform:translate(0, -30px) rotate(270deg);transform:translate(0, -30px) rotate(270deg)}87.5%{-webkit-transform:translate(21px, -21px) rotate(315deg);transform:translate(21px, -21px) rotate(315deg)}100%{-webkit-transform:translate(30px, 0) rotate(360deg);transform:translate(30px, 0) rotate(360deg)}}@-webkit-keyframes ld-orbit-px{0%{-webkit-transform:translate(30px, 0) rotate(0deg);transform:translate(30px, 0) rotate(0deg)}12.5%{-webkit-transform:translate(21px, 21px) rotate(45deg);transform:translate(21px, 21px) rotate(45deg)}25%{-webkit-transform:translate(0, 30px) rotate(90deg);transform:translate(0, 30px) rotate(90deg)}37.5%{-webkit-transform:translate(-21px, 21px) rotate(135deg);transform:translate(-21px, 21px) rotate(135deg)}50%{-webkit-transform:translate(-30px, 0) rotate(180deg);transform:translate(-30px, 0) rotate(180deg)}62.5%{-webkit-transform:translate(-21px, -21px) rotate(225deg);transform:translate(-21px, -21px) rotate(225deg)}75%{-webkit-transform:translate(0, -30px) rotate(270deg);transform:translate(0, -30px) rotate(270deg)}87.5%{-webkit-transform:translate(21px, -21px) rotate(315deg);transform:translate(21px, -21px) rotate(315deg)}100%{-webkit-transform:translate(30px, 0) rotate(360deg);transform:translate(30px, 0) rotate(360deg)}}.ld.ld-orbit-px{-webkit-animation:ld-orbit-px 1s infinite linear;animation:ld-orbit-px 1s infinite linear}@keyframes ld-rush-px-rtl{0%{-webkit-transform:translate(100px, 0) skewX(-45deg);transform:translate(100px, 0) skewX(-45deg);animation-timing-function:cubic-bezier(0, 0.5, 0.5, 1)}30%{-webkit-transform:translate(-20px, 0) skewX(35deg);transform:translate(-20px, 0) skewX(35deg)}45%{-webkit-transform:translate(10px, 0) skewX(-15deg);transform:translate(10px, 0) skewX(-15deg)}60%{-webkit-transform:translate(-5px, 0) skewX(7deg);transform:translate(-5px, 0) skewX(7deg)}80%{-webkit-transform:translate(0, 0) skewX(0deg);transform:translate(0, 0) skewX(0deg)}100%{-webkit-transform:translate(-150px, 0) skewX(-45deg);transform:translate(-150px, 0) skewX(-45deg)}}@-webkit-keyframes ld-rush-px-rtl{0%{-webkit-transform:translate(100px, 0) skewX(-45deg);transform:translate(100px, 0) skewX(-45deg);animation-timing-function:cubic-bezier(0, 0.5, 0.5, 1)}30%{-webkit-transform:translate(-20px, 0) skewX(35deg);transform:translate(-20px, 0) skewX(35deg)}45%{-webkit-transform:translate(10px, 0) skewX(-15deg);transform:translate(10px, 0) skewX(-15deg)}60%{-webkit-transform:translate(-5px, 0) skewX(7deg);transform:translate(-5px, 0) skewX(7deg)}80%{-webkit-transform:translate(0, 0) skewX(0deg);transform:translate(0, 0) skewX(0deg)}100%{-webkit-transform:translate(-150px, 0) skewX(-45deg);transform:translate(-150px, 0) skewX(-45deg)}}.ld.ld-rush-px-rtl{-webkit-animation:ld-rush-px-rtl 1.5s infinite linear;animation:ld-rush-px-rtl 1.5s infinite linear}@keyframes ld-rush-px-ltr{0%{-webkit-transform:translate(-100px, 0) skewX(45deg);transform:translate(-100px, 0) skewX(45deg);animation-timing-function:cubic-bezier(0, 0.5, 0.5, 1)}30%{-webkit-transform:translate(20px, 0) skewX(-35deg);transform:translate(20px, 0) skewX(-35deg)}45%{-webkit-transform:translate(-10px, 0) skewX(15deg);transform:translate(-10px, 0) skewX(15deg)}60%{-webkit-transform:translate(5px, 0) skewX(-7deg);transform:translate(5px, 0) skewX(-7deg)}80%{-webkit-transform:translate(0, 0) skewX(0deg);transform:translate(0, 0) skewX(0deg)}100%{-webkit-transform:translate(150px, 0) skewX(45deg);transform:translate(150px, 0) skewX(45deg)}}@-webkit-keyframes ld-rush-px-ltr{0%{-webkit-transform:translate(-100px, 0) skewX(45deg);transform:translate(-100px, 0) skewX(45deg);animation-timing-function:cubic-bezier(0, 0.5, 0.5, 1)}30%{-webkit-transform:translate(20px, 0) skewX(-35deg);transform:translate(20px, 0) skewX(-35deg)}45%{-webkit-transform:translate(-10px, 0) skewX(15deg);transform:translate(-10px, 0) skewX(15deg)}60%{-webkit-transform:translate(5px, 0) skewX(-7deg);transform:translate(5px, 0) skewX(-7deg)}80%{-webkit-transform:translate(0, 0) skewX(0deg);transform:translate(0, 0) skewX(0deg)}100%{-webkit-transform:translate(150px, 0) skewX(45deg);transform:translate(150px, 0) skewX(45deg)}}.ld.ld-rush-px-ltr{-webkit-animation:ld-rush-px-ltr 1.5s infinite linear;animation:ld-rush-px-ltr 1.5s infinite linear}@keyframes ld-shake-px{0%,16.6%,33.3%,50%,66.6%,83.3%{animation-timing-function:cubic-bezier(0, 0.5, 0.5, 1)}0%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}16.6%{-webkit-transform:translate(-35px, 0);transform:translate(-35px, 0)}33.3%{-webkit-transform:translate(25px, 0);transform:translate(25px, 0)}50%{-webkit-transform:translate(-12px, 0);transform:translate(-12px, 0)}66.6%{-webkit-transform:translate(6px, 0);transform:translate(6px, 0)}83.3%{-webkit-transform:translate(-2.5px, 0);transform:translate(-2.5px, 0)}100%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}}@-webkit-keyframes ld-shake-px{0%,16.6%,33.3%,50%,66.6%,83.3%{animation-timing-function:cubic-bezier(0, 0.5, 0.5, 1)}0%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}16.6%{-webkit-transform:translate(-35px, 0);transform:translate(-35px, 0)}33.3%{-webkit-transform:translate(25px, 0);transform:translate(25px, 0)}50%{-webkit-transform:translate(-12px, 0);transform:translate(-12px, 0)}66.6%{-webkit-transform:translate(6px, 0);transform:translate(6px, 0)}83.3%{-webkit-transform:translate(-2.5px, 0);transform:translate(-2.5px, 0)}100%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}}.ld.ld-shake-px{-webkit-animation:ld-shake-px 1s infinite linear;animation:ld-shake-px 1s infinite linear}@keyframes ld-slide-px-ltr{0%,100%{animation-timing-function:cubic-bezier(0.5, 0, 1, 0.5)}50%{animation-timing-function:cubic-bezier(0, 0.5, 0.5, 1)}0%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}49.9%{-webkit-transform:translate(100px, 0);transform:translate(100px, 0)}50%{-webkit-transform:translate(-100px, 0);transform:translate(-100px, 0)}100%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}}@-webkit-keyframes ld-slide-px-ltr{0%,100%{animation-timing-function:cubic-bezier(0.5, 0, 1, 0.5)}50%{animation-timing-function:cubic-bezier(0, 0.5, 0.5, 1)}0%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}49.9%{-webkit-transform:translate(100px, 0);transform:translate(100px, 0)}50%{-webkit-transform:translate(-100px, 0);transform:translate(-100px, 0)}100%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}}.ld.ld-slide-px-ltr{-webkit-animation:ld-slide-px-ltr 1s infinite;animation:ld-slide-px-ltr 1s infinite}@keyframes ld-slide-px-rtl{0%,100%{animation-timing-function:cubic-bezier(0.5, 0, 1, 0.5)}50%{animation-timing-function:cubic-bezier(0, 0.5, 0.5, 1)}0%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}49.9%{-webkit-transform:translate(-100px, 0);transform:translate(-100px, 0)}50%{-webkit-transform:translate(100px, 0);transform:translate(100px, 0)}100%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}}@-webkit-keyframes ld-slide-px-rtl{0%,100%{animation-timing-function:cubic-bezier(0.5, 0, 1, 0.5)}50%{animation-timing-function:cubic-bezier(0, 0.5, 0.5, 1)}0%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}49.9%{-webkit-transform:translate(-100px, 0);transform:translate(-100px, 0)}50%{-webkit-transform:translate(100px, 0);transform:translate(100px, 0)}100%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}}.ld.ld-slide-px-rtl{-webkit-animation:ld-slide-px-rtl 1s infinite;animation:ld-slide-px-rtl 1s infinite}@keyframes ld-slide-px-btt{0%,100%{animation-timing-function:cubic-bezier(0.5, 0, 1, 0.5)}50%{animation-timing-function:cubic-bezier(0, 0.5, 0.5, 1)}0%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}49.9%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}50%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}100%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}}@-webkit-keyframes ld-slide-px-btt{0%,100%{animation-timing-function:cubic-bezier(0.5, 0, 1, 0.5)}50%{animation-timing-function:cubic-bezier(0, 0.5, 0.5, 1)}0%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}49.9%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}50%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}100%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}}.ld.ld-slide-px-btt{-webkit-animation:ld-slide-px-btt 1s infinite;animation:ld-slide-px-btt 1s infinite}@keyframes ld-slide-px-ttb{0%,100%{animation-timing-function:cubic-bezier(0.5, 0, 1, 0.5)}50%{animation-timing-function:cubic-bezier(0, 0.5, 0.5, 1)}0%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}49.9%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}50%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}100%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}}@-webkit-keyframes ld-slide-px-ttb{0%,100%{animation-timing-function:cubic-bezier(0.5, 0, 1, 0.5)}50%{animation-timing-function:cubic-bezier(0, 0.5, 0.5, 1)}0%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}49.9%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}50%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}100%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}}.ld.ld-slide-px-ttb{-webkit-animation:ld-slide-px-ttb 1s infinite;animation:ld-slide-px-ttb 1s infinite}@keyframes ld-tremble-px{0%{-webkit-transform:translate(1px, 1px);transform:translate(1px, 1px)}5%{-webkit-transform:translate(0, 1px);transform:translate(0, 1px)}10%{-webkit-transform:translate(1px, 2px);transform:translate(1px, 2px)}15%{-webkit-transform:translate(2px, 1px);transform:translate(2px, 1px)}20%{-webkit-transform:translate(3px, 0);transform:translate(3px, 0)}25%{-webkit-transform:translate(1px, 2px);transform:translate(1px, 2px)}30%{-webkit-transform:translate(1px, 3px);transform:translate(1px, 3px)}35%{-webkit-transform:translate(0, 1px);transform:translate(0, 1px)}40%{-webkit-transform:translate(1px, 1px);transform:translate(1px, 1px)}45%{-webkit-transform:translate(1px, 0);transform:translate(1px, 0)}50%{-webkit-transform:translate(2px, 1px);transform:translate(2px, 1px)}55%{-webkit-transform:translate(1px, 2px);transform:translate(1px, 2px)}60%{-webkit-transform:translate(3px, 1px);transform:translate(3px, 1px)}65%{-webkit-transform:translate(0, 2px);transform:translate(0, 2px)}70%{-webkit-transform:translate(3px, 0);transform:translate(3px, 0)}75%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}80%{-webkit-transform:translate(2px, 3px);transform:translate(2px, 3px)}85%{-webkit-transform:translate(1px, 0);transform:translate(1px, 0)}90%{-webkit-transform:translate(0, 2px);transform:translate(0, 2px)}95%{-webkit-transform:translate(3px, 2px);transform:translate(3px, 2px)}}@-webkit-keyframes ld-tremble-px{0%{-webkit-transform:translate(1px, 1px);transform:translate(1px, 1px)}5%{-webkit-transform:translate(0, 1px);transform:translate(0, 1px)}10%{-webkit-transform:translate(1px, 2px);transform:translate(1px, 2px)}15%{-webkit-transform:translate(2px, 1px);transform:translate(2px, 1px)}20%{-webkit-transform:translate(3px, 0);transform:translate(3px, 0)}25%{-webkit-transform:translate(1px, 2px);transform:translate(1px, 2px)}30%{-webkit-transform:translate(1px, 3px);transform:translate(1px, 3px)}35%{-webkit-transform:translate(0, 1px);transform:translate(0, 1px)}40%{-webkit-transform:translate(1px, 1px);transform:translate(1px, 1px)}45%{-webkit-transform:translate(1px, 0);transform:translate(1px, 0)}50%{-webkit-transform:translate(2px, 1px);transform:translate(2px, 1px)}55%{-webkit-transform:translate(1px, 2px);transform:translate(1px, 2px)}60%{-webkit-transform:translate(3px, 1px);transform:translate(3px, 1px)}65%{-webkit-transform:translate(0, 2px);transform:translate(0, 2px)}70%{-webkit-transform:translate(3px, 0);transform:translate(3px, 0)}75%{-webkit-transform:translate(0, 0);transform:translate(0, 0)}80%{-webkit-transform:translate(2px, 3px);transform:translate(2px, 3px)}85%{-webkit-transform:translate(1px, 0);transform:translate(1px, 0)}90%{-webkit-transform:translate(0, 2px);transform:translate(0, 2px)}95%{-webkit-transform:translate(3px, 2px);transform:translate(3px, 2px)}}.ld.ld-tremble-px{-webkit-animation:ld-tremble-px 1s infinite;animation:ld-tremble-px 1s infinite}@keyframes ld-wander-px-h{0%{-webkit-transform:translate(-35px, 0);transform:translate(-35px, 0)}50%{-webkit-transform:translate(35px, 0);transform:translate(35px, 0)}100%{-webkit-transform:translate(-35px, 0);transform:translate(-35px, 0)}}@-webkit-keyframes ld-wander-px-h{0%{-webkit-transform:translate(-35px, 0);transform:translate(-35px, 0)}50%{-webkit-transform:translate(35px, 0);transform:translate(35px, 0)}100%{-webkit-transform:translate(-35px, 0);transform:translate(-35px, 0)}}.ld.ld-wander-px-h{-webkit-animation:ld-wander-px-h 1s infinite ease-out;animation:ld-wander-px-h 1s infinite ease-out}@keyframes ld-wander-px-v{0%{-webkit-transform:translate(0, -35px);transform:translate(0, -35px)}50%{-webkit-transform:translate(0, 35px);transform:translate(0, 35px)}100%{-webkit-transform:translate(0, -35px);transform:translate(0, -35px)}}@-webkit-keyframes ld-wander-px-v{0%{-webkit-transform:translate(0, -35px);transform:translate(0, -35px)}50%{-webkit-transform:translate(0, 35px);transform:translate(0, 35px)}100%{-webkit-transform:translate(0, -35px);transform:translate(0, -35px)}}.ld.ld-wander-px-v{-webkit-animation:ld-wander-px-v 1s infinite ease-out;animation:ld-wander-px-v 1s infinite ease-out}@keyframes ld-jingle-px{0%{-webkit-transform:translate(0, -40px) rotate(0deg) translate(0, 40px);transform:translate(0, -40px) rotate(0deg) translate(0, 40px)}4%{-webkit-transform:translate(0, -40px) rotate(11deg) translate(0, 40px);transform:translate(0, -40px) rotate(11deg) translate(0, 40px)}10%{-webkit-transform:translate(0, -40px) rotate(15deg) translate(0, 40px);transform:translate(0, -40px) rotate(15deg) translate(0, 40px)}18%{-webkit-transform:translate(0, -40px) rotate(-11deg) translate(0, 40px);transform:translate(0, -40px) rotate(-11deg) translate(0, 40px)}20%{-webkit-transform:translate(0, -40px) rotate(-13deg) translate(0, 40px);transform:translate(0, -40px) rotate(-13deg) translate(0, 40px)}21%{-webkit-transform:translate(0, -40px) rotate(-12deg) translate(0, 40px);transform:translate(0, -40px) rotate(-12deg) translate(0, 40px)}22%{-webkit-transform:translate(0, -40px) rotate(-10deg) translate(0, 40px);transform:translate(0, -40px) rotate(-10deg) translate(0, 40px)}24%{-webkit-transform:translate(0, -40px) rotate(-5deg) translate(0, 40px);transform:translate(0, -40px) rotate(-5deg) translate(0, 40px)}26%{-webkit-transform:translate(0, -40px) rotate(3deg) translate(0, 40px);transform:translate(0, -40px) rotate(3deg) translate(0, 40px)}28%{-webkit-transform:translate(0, -40px) rotate(9deg) translate(0, 40px);transform:translate(0, -40px) rotate(9deg) translate(0, 40px)}30%{-webkit-transform:translate(0, -40px) rotate(10deg) translate(0, 40px);transform:translate(0, -40px) rotate(10deg) translate(0, 40px)}31%{-webkit-transform:translate(0, -40px) rotate(9deg) translate(0, 40px);transform:translate(0, -40px) rotate(9deg) translate(0, 40px)}33%{-webkit-transform:translate(0, -40px) rotate(5deg) translate(0, 40px);transform:translate(0, -40px) rotate(5deg) translate(0, 40px)}34%{-webkit-transform:translate(0, -40px) rotate(1deg) translate(0, 40px);transform:translate(0, -40px) rotate(1deg) translate(0, 40px)}36%{-webkit-transform:translate(0, -40px) rotate(-5deg) translate(0, 40px);transform:translate(0, -40px) rotate(-5deg) translate(0, 40px)}39%{-webkit-transform:translate(0, -40px) rotate(-8deg) translate(0, 40px);transform:translate(0, -40px) rotate(-8deg) translate(0, 40px)}40%{-webkit-transform:translate(0, -40px) rotate(-7deg) translate(0, 40px);transform:translate(0, -40px) rotate(-7deg) translate(0, 40px)}44%{-webkit-transform:translate(0, -40px) rotate(3deg) translate(0, 40px);transform:translate(0, -40px) rotate(3deg) translate(0, 40px)}47%{-webkit-transform:translate(0, -40px) rotate(7deg) translate(0, 40px);transform:translate(0, -40px) rotate(7deg) translate(0, 40px)}56%{-webkit-transform:translate(0, -40px) rotate(-5deg) translate(0, 40px);transform:translate(0, -40px) rotate(-5deg) translate(0, 40px)}63%{-webkit-transform:translate(0, -40px) rotate(1deg) translate(0, 40px);transform:translate(0, -40px) rotate(1deg) translate(0, 40px)}75%{-webkit-transform:translate(0, -40px) rotate(-1deg) translate(0, 40px);transform:translate(0, -40px) rotate(-1deg) translate(0, 40px)}100%{-webkit-transform:translate(0, -40px) rotate(0deg) translate(0, 40px);transform:translate(0, -40px) rotate(0deg) translate(0, 40px)}}@-webkit-keyframes ld-jingle-px{0%{-webkit-transform:translate(0, -40px) rotate(0deg) translate(0, 40px);transform:translate(0, -40px) rotate(0deg) translate(0, 40px)}4%{-webkit-transform:translate(0, -40px) rotate(11deg) translate(0, 40px);transform:translate(0, -40px) rotate(11deg) translate(0, 40px)}10%{-webkit-transform:translate(0, -40px) rotate(15deg) translate(0, 40px);transform:translate(0, -40px) rotate(15deg) translate(0, 40px)}18%{-webkit-transform:translate(0, -40px) rotate(-11deg) translate(0, 40px);transform:translate(0, -40px) rotate(-11deg) translate(0, 40px)}20%{-webkit-transform:translate(0, -40px) rotate(-13deg) translate(0, 40px);transform:translate(0, -40px) rotate(-13deg) translate(0, 40px)}21%{-webkit-transform:translate(0, -40px) rotate(-12deg) translate(0, 40px);transform:translate(0, -40px) rotate(-12deg) translate(0, 40px)}22%{-webkit-transform:translate(0, -40px) rotate(-10deg) translate(0, 40px);transform:translate(0, -40px) rotate(-10deg) translate(0, 40px)}24%{-webkit-transform:translate(0, -40px) rotate(-5deg) translate(0, 40px);transform:translate(0, -40px) rotate(-5deg) translate(0, 40px)}26%{-webkit-transform:translate(0, -40px) rotate(3deg) translate(0, 40px);transform:translate(0, -40px) rotate(3deg) translate(0, 40px)}28%{-webkit-transform:translate(0, -40px) rotate(9deg) translate(0, 40px);transform:translate(0, -40px) rotate(9deg) translate(0, 40px)}30%{-webkit-transform:translate(0, -40px) rotate(10deg) translate(0, 40px);transform:translate(0, -40px) rotate(10deg) translate(0, 40px)}31%{-webkit-transform:translate(0, -40px) rotate(9deg) translate(0, 40px);transform:translate(0, -40px) rotate(9deg) translate(0, 40px)}33%{-webkit-transform:translate(0, -40px) rotate(5deg) translate(0, 40px);transform:translate(0, -40px) rotate(5deg) translate(0, 40px)}34%{-webkit-transform:translate(0, -40px) rotate(1deg) translate(0, 40px);transform:translate(0, -40px) rotate(1deg) translate(0, 40px)}36%{-webkit-transform:translate(0, -40px) rotate(-5deg) translate(0, 40px);transform:translate(0, -40px) rotate(-5deg) translate(0, 40px)}39%{-webkit-transform:translate(0, -40px) rotate(-8deg) translate(0, 40px);transform:translate(0, -40px) rotate(-8deg) translate(0, 40px)}40%{-webkit-transform:translate(0, -40px) rotate(-7deg) translate(0, 40px);transform:translate(0, -40px) rotate(-7deg) translate(0, 40px)}44%{-webkit-transform:translate(0, -40px) rotate(3deg) translate(0, 40px);transform:translate(0, -40px) rotate(3deg) translate(0, 40px)}47%{-webkit-transform:translate(0, -40px) rotate(7deg) translate(0, 40px);transform:translate(0, -40px) rotate(7deg) translate(0, 40px)}56%{-webkit-transform:translate(0, -40px) rotate(-5deg) translate(0, 40px);transform:translate(0, -40px) rotate(-5deg) translate(0, 40px)}63%{-webkit-transform:translate(0, -40px) rotate(1deg) translate(0, 40px);transform:translate(0, -40px) rotate(1deg) translate(0, 40px)}75%{-webkit-transform:translate(0, -40px) rotate(-1deg) translate(0, 40px);transform:translate(0, -40px) rotate(-1deg) translate(0, 40px)}100%{-webkit-transform:translate(0, -40px) rotate(0deg) translate(0, 40px);transform:translate(0, -40px) rotate(0deg) translate(0, 40px)}}.ld.ld-jingle-px{-webkit-animation:ld-jingle-px 1s infinite;animation:ld-jingle-px 1s infinite}@keyframes ld-swim-px{0%{-webkit-transform:translate(0, 0) rotate(0deg);transform:translate(0, 0) rotate(0deg)}12.5%{-webkit-transform:translate(1px, -2px) rotate(3deg);transform:translate(1px, -2px) rotate(3deg)}25%{-webkit-transform:translate(0, -3px) rotate(6deg);transform:translate(0, -3px) rotate(6deg)}37.5%{-webkit-transform:translate(-1px, -2px) rotate(3deg);transform:translate(-1px, -2px) rotate(3deg)}50%{-webkit-transform:translate(0, 0) rotate(0deg);transform:translate(0, 0) rotate(0deg)}62.5%{-webkit-transform:translate(1px, 2px) rotate(-3deg);transform:translate(1px, 2px) rotate(-3deg)}75%{-webkit-transform:translate(0, 3px) rotate(-6deg);transform:translate(0, 3px) rotate(-6deg)}87.5%{-webkit-transform:translate(-1px, 2px) rotate(-3deg);transform:translate(-1px, 2px) rotate(-3deg)}100%{-webkit-transform:translate(0, 0) rotate(0deg);transform:translate(0, 0) rotate(0deg)}}@-webkit-keyframes ld-swim-px{0%{-webkit-transform:translate(0, 0) rotate(0deg);transform:translate(0, 0) rotate(0deg)}12.5%{-webkit-transform:translate(1px, -2px) rotate(3deg);transform:translate(1px, -2px) rotate(3deg)}25%{-webkit-transform:translate(0, -3px) rotate(6deg);transform:translate(0, -3px) rotate(6deg)}37.5%{-webkit-transform:translate(-1px, -2px) rotate(3deg);transform:translate(-1px, -2px) rotate(3deg)}50%{-webkit-transform:translate(0, 0) rotate(0deg);transform:translate(0, 0) rotate(0deg)}62.5%{-webkit-transform:translate(1px, 2px) rotate(-3deg);transform:translate(1px, 2px) rotate(-3deg)}75%{-webkit-transform:translate(0, 3px) rotate(-6deg);transform:translate(0, 3px) rotate(-6deg)}87.5%{-webkit-transform:translate(-1px, 2px) rotate(-3deg);transform:translate(-1px, 2px) rotate(-3deg)}100%{-webkit-transform:translate(0, 0) rotate(0deg);transform:translate(0, 0) rotate(0deg)}}.ld.ld-swim-px{-webkit-animation:ld-swim-px 3s infinite linear;animation:ld-swim-px 3s infinite linear}@keyframes ld-leaf-px{0%{-webkit-transform:translate(-14.7px, -117px) rotate(-0.3deg);transform:translate(-14.7px, -117px) rotate(-0.3deg)}1%{-webkit-transform:translate(-14.4px, -112.5px) rotate(-0.6deg);transform:translate(-14.4px, -112.5px) rotate(-0.6deg)}2%{-webkit-transform:translate(-13.8px, -102px) rotate(-1.2deg);transform:translate(-13.8px, -102px) rotate(-1.2deg)}3%{-webkit-transform:translate(-13.5px, -100.5px) rotate(-1.5deg);transform:translate(-13.5px, -100.5px) rotate(-1.5deg)}5%{-webkit-transform:translate(-7.2px, -87px) rotate(-7.8deg);transform:translate(-7.2px, -87px) rotate(-7.8deg)}7%{-webkit-transform:translate(5.4px, -79.5px) rotate(-20.4deg);transform:translate(5.4px, -79.5px) rotate(-20.4deg)}10%{-webkit-transform:translate(12.9px, -76.5px) rotate(-27.9deg);transform:translate(12.9px, -76.5px) rotate(-27.9deg)}12%{-webkit-transform:translate(14.4px, -75px) rotate(-29.4deg);transform:translate(14.4px, -75px) rotate(-29.4deg)}13%{-webkit-transform:translate(14.7px, -75px) rotate(-29.7deg);transform:translate(14.7px, -75px) rotate(-29.7deg)}14%{-webkit-transform:translate(15px, -75px) rotate(-30deg);transform:translate(15px, -75px) rotate(-30deg)}15%{-webkit-transform:translate(14.4px, -69px) rotate(0.6deg);transform:translate(14.4px, -69px) rotate(0.6deg)}16%{-webkit-transform:translate(13.8px, -58.5px) rotate(1.2deg);transform:translate(13.8px, -58.5px) rotate(1.2deg)}19%{-webkit-transform:translate(7.2px, -45px) rotate(7.8deg);transform:translate(7.2px, -45px) rotate(7.8deg)}21%{-webkit-transform:translate(-5.4px, -37.5px) rotate(20.4deg);transform:translate(-5.4px, -37.5px) rotate(20.4deg)}24%{-webkit-transform:translate(-12.9px, -33px) rotate(27.9deg);transform:translate(-12.9px, -33px) rotate(27.9deg)}26%{-webkit-transform:translate(-14.4px, -33px) rotate(29.4deg);transform:translate(-14.4px, -33px) rotate(29.4deg)}27%{-webkit-transform:translate(-14.7px, -31.5px) rotate(29.7deg);transform:translate(-14.7px, -31.5px) rotate(29.7deg)}28%{-webkit-transform:translate(-15px, -31.5px) rotate(30deg);transform:translate(-15px, -31.5px) rotate(30deg)}29%{-webkit-transform:translate(-14.4px, -27px) rotate(-0.6deg);transform:translate(-14.4px, -27px) rotate(-0.6deg)}30%{-webkit-transform:translate(-13.8px, -16.5px) rotate(-1.2deg);transform:translate(-13.8px, -16.5px) rotate(-1.2deg)}31%{-webkit-transform:translate(-13.5px, -15px) rotate(-1.5deg);transform:translate(-13.5px, -15px) rotate(-1.5deg)}33%{-webkit-transform:translate(-7.2px, -1.5px) rotate(-7.8deg);transform:translate(-7.2px, -1.5px) rotate(-7.8deg)}36%{-webkit-transform:translate(5.4px, 4.5px) rotate(-20.4deg);transform:translate(5.4px, 4.5px) rotate(-20.4deg)}38%{-webkit-transform:translate(12.9px, 9px) rotate(-27.9deg);transform:translate(12.9px, 9px) rotate(-27.9deg)}40%{-webkit-transform:translate(14.4px, 10.5px) rotate(-29.4deg);transform:translate(14.4px, 10.5px) rotate(-29.4deg)}41%{-webkit-transform:translate(14.7px, 10.5px) rotate(-29.7deg);transform:translate(14.7px, 10.5px) rotate(-29.7deg)}42%{-webkit-transform:translate(15px, 10.5px) rotate(-30deg);transform:translate(15px, 10.5px) rotate(-30deg)}43%{-webkit-transform:translate(15px, 10.5px) rotate(-30deg);transform:translate(15px, 10.5px) rotate(-30deg)}43%{-webkit-transform:translate(14.7px, 10.5px) rotate(0.3deg);transform:translate(14.7px, 10.5px) rotate(0.3deg)}43%{-webkit-transform:translate(14.4px, 16.5px) rotate(0.6deg);transform:translate(14.4px, 16.5px) rotate(0.6deg)}45%{-webkit-transform:translate(13.8px, 25.5px) rotate(1.2deg);transform:translate(13.8px, 25.5px) rotate(1.2deg)}45%{-webkit-transform:translate(13.5px, 27px) rotate(1.5deg);transform:translate(13.5px, 27px) rotate(1.5deg)}48%{-webkit-transform:translate(7.2px, 40.5px) rotate(7.8deg);transform:translate(7.2px, 40.5px) rotate(7.8deg)}50%{-webkit-transform:translate(-5.4px, 48px) rotate(20.4deg);transform:translate(-5.4px, 48px) rotate(20.4deg)}52%{-webkit-transform:translate(-12.9px, 51px) rotate(27.9deg);transform:translate(-12.9px, 51px) rotate(27.9deg)}54%{-webkit-transform:translate(-14.4px, 52.5px) rotate(29.4deg);transform:translate(-14.4px, 52.5px) rotate(29.4deg)}56%{-webkit-transform:translate(-14.7px, 54px) rotate(29.7deg);transform:translate(-14.7px, 54px) rotate(29.7deg)}57%{-webkit-transform:translate(-14.7px, 54px) rotate(-0.3deg);transform:translate(-14.7px, 54px) rotate(-0.3deg)}58%{-webkit-transform:translate(-14.4px, 58.5px) rotate(-0.6deg);transform:translate(-14.4px, 58.5px) rotate(-0.6deg)}59%{-webkit-transform:translate(-13.5px, 70.5px) rotate(-1.5deg);transform:translate(-13.5px, 70.5px) rotate(-1.5deg)}62%{-webkit-transform:translate(-7.2px, 84px) rotate(-7.8deg);transform:translate(-7.2px, 84px) rotate(-7.8deg)}64%{-webkit-transform:translate(5.4px, 91.5px) rotate(-20.4deg);transform:translate(5.4px, 91.5px) rotate(-20.4deg)}67%{-webkit-transform:translate(12.9px, 94.5px) rotate(-27.9deg);transform:translate(12.9px, 94.5px) rotate(-27.9deg)}69%{-webkit-transform:translate(14.4px, 96px) rotate(-29.4deg);transform:translate(14.4px, 96px) rotate(-29.4deg)}70%{-webkit-transform:translate(14.7px, 96px) rotate(-29.7deg);transform:translate(14.7px, 96px) rotate(-29.7deg)}71%{-webkit-transform:translate(15px, 96px) rotate(-30deg);transform:translate(15px, 96px) rotate(-30deg)}72%{-webkit-transform:translate(14.4px, 102px) rotate(0.6deg);transform:translate(14.4px, 102px) rotate(0.6deg)}73%{-webkit-transform:translate(13.8px, 111px) rotate(1.2deg);transform:translate(13.8px, 111px) rotate(1.2deg)}74%{-webkit-transform:translate(13.5px, 112.5px) rotate(1.5deg);transform:translate(13.5px, 112.5px) rotate(1.5deg)}76%{-webkit-transform:translate(7.2px, 126px) rotate(7.8deg);transform:translate(7.2px, 126px) rotate(7.8deg)}79%{-webkit-transform:translate(-5.4px, 133.5px) rotate(20.4deg);transform:translate(-5.4px, 133.5px) rotate(20.4deg)}81%{-webkit-transform:translate(-12.9px, 138px) rotate(27.9deg);transform:translate(-12.9px, 138px) rotate(27.9deg)}83%{-webkit-transform:translate(-14.4px, 139.5px) rotate(29.4deg);transform:translate(-14.4px, 139.5px) rotate(29.4deg)}84%{-webkit-transform:translate(-14.7px, 139.5px) rotate(29.7deg);transform:translate(-14.7px, 139.5px) rotate(29.7deg)}85%{-webkit-transform:translate(-15px, 139.5px) rotate(30deg);transform:translate(-15px, 139.5px) rotate(30deg)}86%{-webkit-transform:translate(-14.7px, 139.5px) rotate(-0.3deg);transform:translate(-14.7px, 139.5px) rotate(-0.3deg)}86%{-webkit-transform:translate(-14.4px, 144px) rotate(-0.6deg);transform:translate(-14.4px, 144px) rotate(-0.6deg)}88%{-webkit-transform:translate(-13.5px, 156px) rotate(-1.5deg);transform:translate(-13.5px, 156px) rotate(-1.5deg)}90%{-webkit-transform:translate(-7.2px, 169.5px) rotate(-7.8deg);transform:translate(-7.2px, 169.5px) rotate(-7.8deg)}93%{-webkit-transform:translate(5.4px, 177px) rotate(-20.4deg);transform:translate(5.4px, 177px) rotate(-20.4deg)}95%{-webkit-transform:translate(12.9px, 180px) rotate(-27.9deg);transform:translate(12.9px, 180px) rotate(-27.9deg)}97%{-webkit-transform:translate(14.4px, 181.5px) rotate(-29.4deg);transform:translate(14.4px, 181.5px) rotate(-29.4deg)}99%{-webkit-transform:translate(14.7px, 181.5px) rotate(-29.7deg);transform:translate(14.7px, 181.5px) rotate(-29.7deg)}100%{-webkit-transform:translate(15px, 181.5px) rotate(-30deg);transform:translate(15px, 181.5px) rotate(-30deg)}}@-webkit-keyframes ld-leaf-px{0%{-webkit-transform:translate(-14.7px, -117px) rotate(-0.3deg);transform:translate(-14.7px, -117px) rotate(-0.3deg)}1%{-webkit-transform:translate(-14.4px, -112.5px) rotate(-0.6deg);transform:translate(-14.4px, -112.5px) rotate(-0.6deg)}2%{-webkit-transform:translate(-13.8px, -102px) rotate(-1.2deg);transform:translate(-13.8px, -102px) rotate(-1.2deg)}3%{-webkit-transform:translate(-13.5px, -100.5px) rotate(-1.5deg);transform:translate(-13.5px, -100.5px) rotate(-1.5deg)}5%{-webkit-transform:translate(-7.2px, -87px) rotate(-7.8deg);transform:translate(-7.2px, -87px) rotate(-7.8deg)}7%{-webkit-transform:translate(5.4px, -79.5px) rotate(-20.4deg);transform:translate(5.4px, -79.5px) rotate(-20.4deg)}10%{-webkit-transform:translate(12.9px, -76.5px) rotate(-27.9deg);transform:translate(12.9px, -76.5px) rotate(-27.9deg)}12%{-webkit-transform:translate(14.4px, -75px) rotate(-29.4deg);transform:translate(14.4px, -75px) rotate(-29.4deg)}13%{-webkit-transform:translate(14.7px, -75px) rotate(-29.7deg);transform:translate(14.7px, -75px) rotate(-29.7deg)}14%{-webkit-transform:translate(15px, -75px) rotate(-30deg);transform:translate(15px, -75px) rotate(-30deg)}15%{-webkit-transform:translate(14.4px, -69px) rotate(0.6deg);transform:translate(14.4px, -69px) rotate(0.6deg)}16%{-webkit-transform:translate(13.8px, -58.5px) rotate(1.2deg);transform:translate(13.8px, -58.5px) rotate(1.2deg)}19%{-webkit-transform:translate(7.2px, -45px) rotate(7.8deg);transform:translate(7.2px, -45px) rotate(7.8deg)}21%{-webkit-transform:translate(-5.4px, -37.5px) rotate(20.4deg);transform:translate(-5.4px, -37.5px) rotate(20.4deg)}24%{-webkit-transform:translate(-12.9px, -33px) rotate(27.9deg);transform:translate(-12.9px, -33px) rotate(27.9deg)}26%{-webkit-transform:translate(-14.4px, -33px) rotate(29.4deg);transform:translate(-14.4px, -33px) rotate(29.4deg)}27%{-webkit-transform:translate(-14.7px, -31.5px) rotate(29.7deg);transform:translate(-14.7px, -31.5px) rotate(29.7deg)}28%{-webkit-transform:translate(-15px, -31.5px) rotate(30deg);transform:translate(-15px, -31.5px) rotate(30deg)}29%{-webkit-transform:translate(-14.4px, -27px) rotate(-0.6deg);transform:translate(-14.4px, -27px) rotate(-0.6deg)}30%{-webkit-transform:translate(-13.8px, -16.5px) rotate(-1.2deg);transform:translate(-13.8px, -16.5px) rotate(-1.2deg)}31%{-webkit-transform:translate(-13.5px, -15px) rotate(-1.5deg);transform:translate(-13.5px, -15px) rotate(-1.5deg)}33%{-webkit-transform:translate(-7.2px, -1.5px) rotate(-7.8deg);transform:translate(-7.2px, -1.5px) rotate(-7.8deg)}36%{-webkit-transform:translate(5.4px, 4.5px) rotate(-20.4deg);transform:translate(5.4px, 4.5px) rotate(-20.4deg)}38%{-webkit-transform:translate(12.9px, 9px) rotate(-27.9deg);transform:translate(12.9px, 9px) rotate(-27.9deg)}40%{-webkit-transform:translate(14.4px, 10.5px) rotate(-29.4deg);transform:translate(14.4px, 10.5px) rotate(-29.4deg)}41%{-webkit-transform:translate(14.7px, 10.5px) rotate(-29.7deg);transform:translate(14.7px, 10.5px) rotate(-29.7deg)}42%{-webkit-transform:translate(15px, 10.5px) rotate(-30deg);transform:translate(15px, 10.5px) rotate(-30deg)}43%{-webkit-transform:translate(15px, 10.5px) rotate(-30deg);transform:translate(15px, 10.5px) rotate(-30deg)}43%{-webkit-transform:translate(14.7px, 10.5px) rotate(0.3deg);transform:translate(14.7px, 10.5px) rotate(0.3deg)}43%{-webkit-transform:translate(14.4px, 16.5px) rotate(0.6deg);transform:translate(14.4px, 16.5px) rotate(0.6deg)}45%{-webkit-transform:translate(13.8px, 25.5px) rotate(1.2deg);transform:translate(13.8px, 25.5px) rotate(1.2deg)}45%{-webkit-transform:translate(13.5px, 27px) rotate(1.5deg);transform:translate(13.5px, 27px) rotate(1.5deg)}48%{-webkit-transform:translate(7.2px, 40.5px) rotate(7.8deg);transform:translate(7.2px, 40.5px) rotate(7.8deg)}50%{-webkit-transform:translate(-5.4px, 48px) rotate(20.4deg);transform:translate(-5.4px, 48px) rotate(20.4deg)}52%{-webkit-transform:translate(-12.9px, 51px) rotate(27.9deg);transform:translate(-12.9px, 51px) rotate(27.9deg)}54%{-webkit-transform:translate(-14.4px, 52.5px) rotate(29.4deg);transform:translate(-14.4px, 52.5px) rotate(29.4deg)}56%{-webkit-transform:translate(-14.7px, 54px) rotate(29.7deg);transform:translate(-14.7px, 54px) rotate(29.7deg)}57%{-webkit-transform:translate(-14.7px, 54px) rotate(-0.3deg);transform:translate(-14.7px, 54px) rotate(-0.3deg)}58%{-webkit-transform:translate(-14.4px, 58.5px) rotate(-0.6deg);transform:translate(-14.4px, 58.5px) rotate(-0.6deg)}59%{-webkit-transform:translate(-13.5px, 70.5px) rotate(-1.5deg);transform:translate(-13.5px, 70.5px) rotate(-1.5deg)}62%{-webkit-transform:translate(-7.2px, 84px) rotate(-7.8deg);transform:translate(-7.2px, 84px) rotate(-7.8deg)}64%{-webkit-transform:translate(5.4px, 91.5px) rotate(-20.4deg);transform:translate(5.4px, 91.5px) rotate(-20.4deg)}67%{-webkit-transform:translate(12.9px, 94.5px) rotate(-27.9deg);transform:translate(12.9px, 94.5px) rotate(-27.9deg)}69%{-webkit-transform:translate(14.4px, 96px) rotate(-29.4deg);transform:translate(14.4px, 96px) rotate(-29.4deg)}70%{-webkit-transform:translate(14.7px, 96px) rotate(-29.7deg);transform:translate(14.7px, 96px) rotate(-29.7deg)}71%{-webkit-transform:translate(15px, 96px) rotate(-30deg);transform:translate(15px, 96px) rotate(-30deg)}72%{-webkit-transform:translate(14.4px, 102px) rotate(0.6deg);transform:translate(14.4px, 102px) rotate(0.6deg)}73%{-webkit-transform:translate(13.8px, 111px) rotate(1.2deg);transform:translate(13.8px, 111px) rotate(1.2deg)}74%{-webkit-transform:translate(13.5px, 112.5px) rotate(1.5deg);transform:translate(13.5px, 112.5px) rotate(1.5deg)}76%{-webkit-transform:translate(7.2px, 126px) rotate(7.8deg);transform:translate(7.2px, 126px) rotate(7.8deg)}79%{-webkit-transform:translate(-5.4px, 133.5px) rotate(20.4deg);transform:translate(-5.4px, 133.5px) rotate(20.4deg)}81%{-webkit-transform:translate(-12.9px, 138px) rotate(27.9deg);transform:translate(-12.9px, 138px) rotate(27.9deg)}83%{-webkit-transform:translate(-14.4px, 139.5px) rotate(29.4deg);transform:translate(-14.4px, 139.5px) rotate(29.4deg)}84%{-webkit-transform:translate(-14.7px, 139.5px) rotate(29.7deg);transform:translate(-14.7px, 139.5px) rotate(29.7deg)}85%{-webkit-transform:translate(-15px, 139.5px) rotate(30deg);transform:translate(-15px, 139.5px) rotate(30deg)}86%{-webkit-transform:translate(-14.7px, 139.5px) rotate(-0.3deg);transform:translate(-14.7px, 139.5px) rotate(-0.3deg)}86%{-webkit-transform:translate(-14.4px, 144px) rotate(-0.6deg);transform:translate(-14.4px, 144px) rotate(-0.6deg)}88%{-webkit-transform:translate(-13.5px, 156px) rotate(-1.5deg);transform:translate(-13.5px, 156px) rotate(-1.5deg)}90%{-webkit-transform:translate(-7.2px, 169.5px) rotate(-7.8deg);transform:translate(-7.2px, 169.5px) rotate(-7.8deg)}93%{-webkit-transform:translate(5.4px, 177px) rotate(-20.4deg);transform:translate(5.4px, 177px) rotate(-20.4deg)}95%{-webkit-transform:translate(12.9px, 180px) rotate(-27.9deg);transform:translate(12.9px, 180px) rotate(-27.9deg)}97%{-webkit-transform:translate(14.4px, 181.5px) rotate(-29.4deg);transform:translate(14.4px, 181.5px) rotate(-29.4deg)}99%{-webkit-transform:translate(14.7px, 181.5px) rotate(-29.7deg);transform:translate(14.7px, 181.5px) rotate(-29.7deg)}100%{-webkit-transform:translate(15px, 181.5px) rotate(-30deg);transform:translate(15px, 181.5px) rotate(-30deg)}}.ld.ld-leaf-px{-webkit-animation:ld-leaf-px 4s infinite cubic-bezier(0.1, 0.5, 0.1, 0.5);animation:ld-leaf-px 4s infinite cubic-bezier(0.1, 0.5, 0.1, 0.5)}@keyframes ld-slot-px{0%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}9.09%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}9.1%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}16.99%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}17%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}23.79%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}23.8%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}29.59%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}29.6%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}34.49%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}34.5%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}38.49%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}38.5%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}41.79%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}41.8%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}44.39%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}44.4%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}46.29%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}46.3%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}47.79%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}47.8%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}48.79%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}48.8%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}49.39%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}49.4%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}49.79%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}49.8%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}49.99%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}50%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}49.99%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}50%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}49.99%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}50%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}49.99%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}50%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}50.190000000000005%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}50.2%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}50.59%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}50.6%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}51.190000000000005%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}51.2%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}52.190000000000005%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}52.2%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}53.690000000000005%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}53.7%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}55.59%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}55.6%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}58.190000000000005%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}58.2%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}61.49%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}61.5%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}65.49%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}65.5%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}70.39%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}70.4%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}76.19%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}76.2%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}82.99%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}83%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}90.89%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}90.9%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}99.99%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}100%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}}@-webkit-keyframes ld-slot-px{0%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}9.09%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}9.1%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}16.99%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}17%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}23.79%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}23.8%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}29.59%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}29.6%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}34.49%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}34.5%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}38.49%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}38.5%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}41.79%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}41.8%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}44.39%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}44.4%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}46.29%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}46.3%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}47.79%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}47.8%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}48.79%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}48.8%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}49.39%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}49.4%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}49.79%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}49.8%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}49.99%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}50%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}49.99%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}50%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}49.99%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}50%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}49.99%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}50%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}50.190000000000005%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}50.2%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}50.59%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}50.6%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}51.190000000000005%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}51.2%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}52.190000000000005%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}52.2%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}53.690000000000005%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}53.7%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}55.59%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}55.6%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}58.190000000000005%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}58.2%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}61.49%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}61.5%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}65.49%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}65.5%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}70.39%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}70.4%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}76.19%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}76.2%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}82.99%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}83%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}90.89%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}90.9%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}99.99%{-webkit-transform:translate(0, 100px);transform:translate(0, 100px)}100%{-webkit-transform:translate(0, -100px);transform:translate(0, -100px)}}.ld.ld-slot-px{-webkit-animation:ld-slot-px 6s infinite linear;animation:ld-slot-px 6s infinite linear}\n", ""]);
 
 
 
 /***/ }),
-/* 267 */
+/* 303 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -55295,45 +61395,45 @@ __webpack_require__.d(dom_util_namespaceObject, "generateRandomId", function() {
 __webpack_require__.d(dom_util_namespaceObject, "isParent", function() { return isParent; });
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/regenerator/index.js
-var regenerator = __webpack_require__(6);
+var regenerator = __webpack_require__(2);
 var regenerator_default = /*#__PURE__*/__webpack_require__.n(regenerator);
 
 // EXTERNAL MODULE: ./node_modules/regenerator-runtime/runtime.js
-var runtime = __webpack_require__(33);
+var runtime = __webpack_require__(32);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.array.sort.js
-var es6_array_sort = __webpack_require__(173);
+var es6_array_sort = __webpack_require__(191);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/asyncToGenerator.js
-var asyncToGenerator = __webpack_require__(9);
+var asyncToGenerator = __webpack_require__(8);
 var asyncToGenerator_default = /*#__PURE__*/__webpack_require__.n(asyncToGenerator);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.split.js
-var es6_regexp_split = __webpack_require__(38);
+var es6_regexp_split = __webpack_require__(35);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.search.js
-var es6_regexp_search = __webpack_require__(179);
+var es6_regexp_search = __webpack_require__(197);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.to-string.js
-var es6_regexp_to_string = __webpack_require__(68);
+var es6_regexp_to_string = __webpack_require__(77);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es7.symbol.async-iterator.js
-var es7_symbol_async_iterator = __webpack_require__(40);
+var es7_symbol_async_iterator = __webpack_require__(42);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.symbol.js
-var es6_symbol = __webpack_require__(41);
+var es6_symbol = __webpack_require__(43);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/web.dom.iterable.js
-var web_dom_iterable = __webpack_require__(16);
+var web_dom_iterable = __webpack_require__(17);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.promise.js
-var es6_promise = __webpack_require__(51);
+var es6_promise = __webpack_require__(36);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.object.to-string.js
-var es6_object_to_string = __webpack_require__(15);
+var es6_object_to_string = __webpack_require__(14);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es7.promise.finally.js
-var es7_promise_finally = __webpack_require__(194);
+var es7_promise_finally = __webpack_require__(212);
 
 // CONCATENATED MODULE: ./client/src/js/lib/dom-util.js
 
@@ -55728,10 +61828,10 @@ function isParent(parent, child) {
   return false;
 }
 // EXTERNAL MODULE: ./node_modules/tingle.js/dist/tingle.min.js
-var tingle_min = __webpack_require__(162);
+var tingle_min = __webpack_require__(181);
 
 // EXTERNAL MODULE: ./client/src/css/vendor/tingle.css
-var tingle = __webpack_require__(195);
+var tingle = __webpack_require__(213);
 
 // CONCATENATED MODULE: ./client/src/js/lib/DynmaicModal.js
 
@@ -55753,7 +61853,7 @@ function prepareModal(content) {
   return modal;
 }
 // EXTERNAL MODULE: ./common/IError.js
-var IError = __webpack_require__(2);
+var IError = __webpack_require__(3);
 
 // CONCATENATED MODULE: ./client/src/js/lib/ChatUIFactory.js
 
@@ -56294,15 +62394,15 @@ function bakeTopicJoinModal(joinClick) {
 // }                                        //
 //////////////////////////////////////////////
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/classCallCheck.js
-var classCallCheck = __webpack_require__(4);
+var classCallCheck = __webpack_require__(5);
 var classCallCheck_default = /*#__PURE__*/__webpack_require__.n(classCallCheck);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/createClass.js
-var createClass = __webpack_require__(5);
+var createClass = __webpack_require__(6);
 var createClass_default = /*#__PURE__*/__webpack_require__.n(createClass);
 
 // EXTERNAL MODULE: ./client/src/css/vendor/blocking-spinner.min.css
-var blocking_spinner_min = __webpack_require__(198);
+var blocking_spinner_min = __webpack_require__(216);
 
 // CONCATENATED MODULE: ./client/src/js/lib/BlockingSpinner.js
 
@@ -56368,17 +62468,17 @@ var BlockingSpinner_BlockingSpinner = /*#__PURE__*/function () {
   return BlockingSpinner;
 }();
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es7.object.get-own-property-descriptors.js
-var es7_object_get_own_property_descriptors = __webpack_require__(200);
+var es7_object_get_own_property_descriptors = __webpack_require__(218);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.array.from.js
-var es6_array_from = __webpack_require__(202);
+var es6_array_from = __webpack_require__(220);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/defineProperty.js
-var defineProperty = __webpack_require__(163);
+var defineProperty = __webpack_require__(182);
 var defineProperty_default = /*#__PURE__*/__webpack_require__.n(defineProperty);
 
 // EXTERNAL MODULE: ./client/src/css/vendor/toastr.css
-var toastr = __webpack_require__(203);
+var toastr = __webpack_require__(221);
 
 // CONCATENATED MODULE: ./client/src/js/lib/toastr.js
 
@@ -56566,19 +62666,19 @@ var toastr_toastr = {
 };
 /* harmony default export */ var lib_toastr = (toastr_toastr);
 // EXTERNAL MODULE: ./client/src/js/lib/ChatClient.js
-var ChatClient = __webpack_require__(164);
+var ChatClient = __webpack_require__(183);
 
 // EXTERNAL MODULE: ./common/Events.js
 var Events = __webpack_require__(0);
 
 // EXTERNAL MODULE: ./client/src/css/chat.sass
-var chat = __webpack_require__(263);
+var chat = __webpack_require__(299);
 
 // EXTERNAL MODULE: ./client/src/css/vendor/loading.css
-var loading = __webpack_require__(265);
+var loading = __webpack_require__(301);
 
 // EXTERNAL MODULE: ./client/src/js/lib/Vault.js + 1 modules
-var Vault = __webpack_require__(81);
+var Vault = __webpack_require__(91);
 
 // CONCATENATED MODULE: ./client/src/js/chat-ui.js
 
@@ -56798,14 +62898,14 @@ function renderLayout() {
 function sendMessage() {
   console.log("Sending message...");
   var msg = $("#new-msg").value;
+  var files = document.querySelector('#attach-file').files;
 
-  if (msg.length === 0) {
+  if (msg.length === 0 && files.length === 0) {
     console.log("Empty message");
     return;
   }
 
-  var recipient = $("#select-member").value;
-  var files = null; //pass files later
+  var recipient = $("#select-member").value; // pass files later
 
   if (!topicInFocus) {
     console.error("No topic selected to write to.");
@@ -57514,6 +63614,41 @@ function showCodeView(event) {
   var div = document.createElement("div");
   div.appendChild(pre);
   showModalNotification("Code:", div.innerHTML);
+}
+
+function appendEphemeralMessage(msg) {
+  if (!msg) {
+    console.log("Message is empty.");
+    return;
+  }
+
+  try {
+    var msgContainer = bake("div", {
+      classes: "ephemeral-msg"
+    });
+    var headingContainer = bake("div", {
+      classes: "msg-heading"
+    });
+    var text = bake("b", {
+      text: "Ephemeral"
+    });
+    var timestamp = bake("span", {
+      classes: "msg-time-stamp"
+    });
+    timestamp.innerText = getChatFormatedDate(new Date());
+    appendChildren(headingContainer, [text, timestamp]);
+    var msgBodyContainer = bake("div", {
+      classes: "msg-body"
+    });
+    var msgBody = bake("div", {
+      html: msg
+    });
+    msgBodyContainer.appendChild(msgBody);
+    appendChildren(msgContainer, [headingContainer, msgBodyContainer]);
+    $("#chat_window").appendChild(msgContainer);
+  } catch (err) {
+    console.log("EPHEMERAL ERROR: " + err);
+  }
 } //~END MESSAGES RENDERING///////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 

@@ -3,6 +3,8 @@ import { Message } from "./Message"
 import { assert } from "../../../../common/IError";
 import { Topic } from "./Topic";
 import { Internal } from "../../../../common/Events";
+import { FileWorker } from "./FileWorker"
+import { AttachmentInfo } from "./AttachmentInfo";
 
 export class SendMessageAgent{
     constructor(topic, msg, recipient, files){
@@ -24,9 +26,9 @@ export class SendMessageAgent{
             const metaID = self.topic.metadataId;
 
             if (self.files && self.files.length >0){
-                attachmentsInfo = await self.uploadAttachments(filesAttached, chatMessage.header.id, metaID);
+                attachmentsInfo = await self.uploadAttachments(self.files, self.chatMessage.header.id, metaID);
                 for (let att of attachmentsInfo) {
-                    chatMessage.addAttachmentInfo(att);
+                    self.chatMessage.addAttachmentInfo(att);
                 }
             }
 
@@ -66,9 +68,94 @@ export class SendMessageAgent{
         return chatMessage;
     }
 
-    uploadAttachments(){
 
+    /**
+     * Takes list of files and uploads them
+     * to the Island asynchronously.
+     *
+     * Resolves with list of fileInfo JSON objects.
+     * @param filesAttached list of files each type of File
+     * @return Promise
+     */
+    uploadAttachments(filesAttached, messageID, metaID){
+        return new Promise(async (resolve, reject)=>{
+            const self = this;
+
+            const filesProcessed = [];
+
+            const pkfp = self.topic.pkfp;
+            const privk = self.topic.privateKey;
+            const symk = self.topic.sharedKey;
+            const residence = self.topic.participants[pkfp].residence;
+
+            for (let file of filesAttached){
+                console.log("Calling worker function");
+                filesProcessed.push(self.uploadAttachmentDefault(file, pkfp, privk, symk, messageID, metaID, residence))
+            }
+
+            Promise.all(filesProcessed)
+                .then((fileInfo)=>{
+                    resolve(fileInfo)
+                })
+                .catch(()=>{
+                    console.log("ERROR DURING UPLOAD ATTACHMENTS");
+                    reject();
+                })
+        })
     }
+
+    /**
+     * Uploads single attachment without workers asyncronously
+     *
+     */
+    uploadAttachmentDefault(file, pkfp, privk, symk, messageID, metaID, residence){
+        let self = this;
+        return new Promise((resolve, reject)=>{
+
+            console.log(`Initializing worker...`);
+            let uploader = new FileWorker(0);
+
+            let uploadComplete = (msg)=>{
+                let fileInfo = new AttachmentInfo(file, residence, pkfp, metaID, privk, messageID, msg.hashEncrypted, msg.hashUnencrypted);
+                resolve(fileInfo);
+            };
+
+            let uploadProgress = (msg) =>{
+                //TODO implement event handling
+                console.log("Upload progress: " + msg)
+
+            };
+
+            let logMessage = (msg)=>{
+                console.log("WORKER LOG: " + msg);
+            }
+
+            let uploadError = (msg)=>{
+                console.log(`Upload attachment error: ${msg.data}`)
+                reject(msg.data);
+            };
+
+            let messageHandlers = {
+                "upload_complete": uploadComplete,
+                "upload_progress": uploadProgress,
+                "upload_error": uploadError,
+                "log": logMessage
+            };
+
+            uploader.on("message", (data)=>{
+                let msg = data.data;
+                messageHandlers[msg.message](msg.data);
+            });
+
+            uploader.uploadFile({
+                attachment: file,
+                pkfp: pkfp,
+                privk: privk,
+                symk: symk
+            })
+        })
+    }
+
 
 
 }

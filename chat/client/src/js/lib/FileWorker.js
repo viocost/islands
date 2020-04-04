@@ -1,6 +1,6 @@
 import { iCrypto } from "./iCrypto"
 import * as io from "socket.io-client";
-import { WildEmitter } from "../chat/WildEmitter";
+import { WildEmitter } from "./WildEmitter";
 import * as ss from "socket.io-stream";
 
 export class FileWorker{
@@ -47,9 +47,6 @@ export class FileWorker{
         tmp.set(new Uint8Array(buffer2), buffer1.byteLength);
         return tmp.buffer;
     };
-
-
-
 
     uploadFile(data) {
         let self = this;

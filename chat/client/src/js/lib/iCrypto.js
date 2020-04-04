@@ -2,6 +2,7 @@
 const forge = require('node-forge');
 const sjcl = require("sjcl");
 const Base32 = require("./Base32.js");
+const JSChaCha20 = require("js-chacha20");
 
 export class iCrypto {
     constructor(settings){
