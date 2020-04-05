@@ -181,6 +181,13 @@ class ClientSession extends EventEmitter{
     // Sends given message to connection identified by connId
     send(msg, connId){
         Logger.debug(`Unicasting. Topics: ${this.topics}`, { cat: "session" })
+        if (!connId){
+            if (this.connections.length === 0){
+                return;
+            } else {
+                connId = this.connections[0];
+            }
+        }
         this.connectionManager.sendMessage(connId, msg);
     }
 

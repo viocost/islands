@@ -137,7 +137,7 @@ export class TopicJoinAgent{
 
         let metadata = msg.body.metadata;
         topic.loadMetadata(metadata);
-        topic.bootstrap(topic, self.messageQueue, self.arrivalHub, self.version)
+        topic.bootstrap(self.messageQueue, self.arrivalHub, self.version)
         topic.settings = Topic.prepareNewTopicSettings(self.version, self.nickname, self.topicName, self.publicKey, false)
         topic.saveClientSettings();
         self.vault.registerTopic(topic);

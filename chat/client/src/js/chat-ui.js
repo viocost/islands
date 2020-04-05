@@ -20,6 +20,10 @@ let colors = ["#cfeeff", "#ffebcc", "#ccffd4", "#ccfffb", "#e6e6ff", "#f8e6ff", 
 let spinner = new BlockingSpinner();
 let topicCreateModal;
 let topicJoinModal;
+let setAliasModal;
+let newMessageBlock; // container with new message inputs and elements
+let messagesPanel;   // messages container
+let sidePanel;
 // ---------------------------------------------------------------------------------------------------------------------------
 // Objects
 
@@ -112,10 +116,10 @@ function initUI(){
 
 
 
-    let sidePanel = UI.bakeSidePanel();
+    sidePanel = UI.bakeSidePanel();
 
-    let newMessageBlock = UI.bakeNewMessageControl(sendMessage, processAttachmentChosen);
-    let messagesPanel = UI.bakeMessagesPanel(newMessageBlock)
+    newMessageBlock = UI.bakeNewMessageControl(sendMessage, processAttachmentChosen);
+    messagesPanel = UI.bakeMessagesPanel(newMessageBlock)
 
     util.appendChildren(mainContainer, [sidePanel, messagesPanel]);
 
@@ -149,11 +153,16 @@ function initUI(){
         topicJoinModal.close();
     })
 
+
+    setAliasModal = UI.bakeSetAliasModal(()=>{
+        console.log("Ok handler")
+        setAliasModal.close();
+    })
     // prepare side panel
     //let sidePanel = bakeSidePanel();
     //let messagesPanel = bakeMessagesPanel();
     //let newMessagePanel = bakeNewMessageControl();
-    //let messagesWrapper = util.wrap([messagesPanel, newMessagePanel], "messages-panel-wrapper");
+    //let messagesWrapper = util.wrap([messagesPanel, newMessagePanel], "main-panel-container");
 
 
     // util.appendChildren(container, [sidePanel, messagesWrapper]);
@@ -166,6 +175,7 @@ function setupSidePanelListeners(){
 
     util.$("#btn-ctx-invite").onclick = processNewInviteClick;
     util.$("#btn-ctx-delete").onclick = processCtxDeleteClick;
+    util.$("#btn-ctx-alias").onclick = processCtxAliasClick;
 
     //util.$("#btn-mng-delete-topic").onclick = processDeleteTopicClick;
     //util.$("#btn-mng-topics-go-back").onclick = backToChat;
@@ -211,7 +221,7 @@ function renderLayout(){
     console.log("Rendering layout")
     let isSidePanelOn = util.hasClass("#menu-button", "menu-on");
     let sidePanel = util.$(".side-panel-container");
-    let messagesPanel = util.$(".messages-panel-wrapper");
+    let messagesPanel = util.$(".main-panel-container");
 
     if (isSidePanelOn) {
 
@@ -245,10 +255,15 @@ function renderLayout(){
 // ---------------------------------------------------------------------------------------------------------------------------
 // UI handlers
 
+function newMessageBlockSetVisible(visible){
+    let display = !!visible ? "flex" : "none";
+    util.$("#new-message-container").style.display = display
+}
+
 function sendMessage(){
     console.log("Sending message...");
     let msg = util.$("#new-msg").value;
-    let files = document.querySelector('#attach-file').files;
+    let files = util.$('#attach-file').files;
     if (msg.length === 0 && files.length === 0){
         console.log("Empty message");
         return;
@@ -285,12 +300,6 @@ function clearAttachments() {
     attachemtsWrapper.innerHTML = "";
 }
 
-function createTopic(){
-    let nickname = util.$("new-topic-nickname");
-    let topicName = util.$("new-topic-name");
-    let form = UI.bakeTopicCreateModal()
-}
-
 function registerVault() {
     let password = util.$("#new-passwd");
     let confirm =  util.$("#confirm-passwd");
@@ -321,6 +330,7 @@ function processActivateTopicClick(ev){
     }
 
     displayTopicContextButtons("topic")
+    newMessageBlockSetVisible(true);
 }
 
 function processExpandTopicClick(ev){
@@ -453,6 +463,11 @@ function processRefreshInvitesClick() {
     console.log("Refresh invites");
 }
 
+function processCtxAliasClick(){
+    console.log("Alias button clicked");
+    setAliasModal.open();
+}
+
 function processCtxDeleteClick(){
     console.log("Delete click. Processing...");
     let inFocus = topicInFocus;
@@ -511,8 +526,9 @@ function processLoginResult(err){
         toastr.warning(`Login error: ${err.message}`)
     } else {
         initUI();
-        toastr.success("Login successful");
+        appendEphemeralMessage("Login successful. Loading data...")
     }
+
     loadingOff()
 }
 
@@ -534,7 +550,7 @@ function processMessagesLoaded(pkfp, messages){
                 private: message.header.private,
                 recipient: message.header.recipient,
                 attachments: message.attachments
-            }, pkfp, windowInFocus);
+            }, pkfp, windowInFocus, true);
         }
 
     } else {
@@ -1123,9 +1139,17 @@ function initChat(){
     chat = new Chat({version: "2.0.0"})
     chat.on(Events.LOGIN_ERROR, processLoginResult)
     chat.on(Events.LOGIN_SUCCESS, processLoginResult)
+    chat.on(Events.POST_LOGIN_SUCCESS, ()=>{
+        appendEphemeralMessage("Topics have been loaded and decrypted successfully.")
+    })
     chat.on(Events.TOPIC_CREATED, ()=>{
         refreshTopics()
         toastr.success("New topic has been initialized!")
+    })
+
+    chat.on(Events.TOPIC_JOINED, (data)=>{
+        console.log(`Topic joined: ${data}`)
+        refreshTopics()
     })
 
     chat.on(Events.TOPIC_DELETED, (pkfp)=>{

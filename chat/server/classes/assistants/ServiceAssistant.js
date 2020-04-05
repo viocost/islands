@@ -272,13 +272,14 @@ class ServiceAssistant{
                 return;
             }
         }
-        if(broadcast){
-            self.sessionManager.broadcastServiceMessage(pkfpDest, request)
-        }else{
-            let destActiveSessions = self.sessionManager.getActiveUserSessions(pkfpDest);
-            if (destActiveSessions.length > 0){
-                self.sessionManager.sendServiceMessage(destActiveSessions[0].getConnectionID(), request)
-            }
+
+        //TODO This is temporary and must be refactored!
+        request.headers.pkfpDest = pkfpDest
+        let session = self.sessionManager.getSession(pkfpDest);
+
+        if (session){
+            let command = broadcast ? "broadcast" : "send"
+            session[command](request)
         }
     }
 
@@ -286,7 +287,8 @@ class ServiceAssistant{
     async processStandardNameExchangeRequest(request, self){
         Logger.debug("Sending name request", {
             pkfpSource: request.headers.pkfpSource,
-            pkfpDest: request.headers.pkfpDest
+            pkfpDest: request.headers.pkfpDest,
+            cat: "service"
         });
         const metadata = JSON.parse(await self.hm.getLastMetadata(request.headers.pkfpSource));
         const recipient = metadata.body.participants[request.headers.pkfpDest];
@@ -294,7 +296,8 @@ class ServiceAssistant{
         const myPublicKey = sender.publicKey;
         if(!self.sessionManager.isSessionActive(request.headers.pkfpSource)){
             Logger.warn("Attempt to send a message without logging in", {
-                pkfp: request.headers.pkfpSource
+                pkfp: request.headers.pkfpSource,
+                cat: "service"
             });
             throw new Error("Login required");
         }
@@ -302,8 +305,11 @@ class ServiceAssistant{
             throw new Error("Sending private message error: signature is not valid!");
         }
         if(recipient){
+            logger.debug(`Sending nickiname exchange request to ${recipient}`, {cat: "service"})
             await self._sendToSignleRecipient(request, sender.residence, recipient.residence,)
         } else {
+
+            logger.debug(`Sending nickiname exchange request to all`, {cat: "service"})
             await self._sendToAll(request, metadata)
         }
         await self.createServiceRecordOnNameChangeRequest(request)
@@ -345,7 +351,8 @@ class ServiceAssistant{
     async _sendToSignleRecipient(request, origin, destination){
         Logger.debug("Sending service message to single participant", {
             origin: origin,
-            destination: destination
+            destination: destination,
+            cat: "service"
         });
         let envelope = new Envelope(destination, request, origin);
         envelope.setReturnOnFail(true);
@@ -353,7 +360,10 @@ class ServiceAssistant{
     }
 
     _sendToAll(request, metadata){
-        Logger.debug("Sending service message to all participants");
+        Logger.debug("Sending service message to all participants", {
+            command: request.headers.command,
+            cat: "chat"
+        });
         let participants = metadata.body.participants;
         const sender = metadata.body.participants[request.headers.pkfpSource];
         let stringifiedRequest = JSON.stringify(request);
@@ -422,8 +432,7 @@ class ServiceAssistant{
 
     //Subscribes to relevant cross-island requests
     subscribeToCrossIslandsMessages(ciMessenger){
-        this.subscribe(ciMessenger, {
-            //HANDLERS
+        let handlers = {
             whats_your_name: this.processIncomingNicknameRequest,
             nickname_change_broadcast: this.processIncomingNameChangeNote,
             my_name_response: this.processNicknameResponse,
@@ -434,7 +443,9 @@ class ServiceAssistant{
             request_invite_success: this.processInviteRequestSuccess,
             metadata_outdated: this.processMetadataOutdatedNote,
             return_request_invite: this.processInviteRequestError
-        }, this.crossIslandErrorHandler)
+        }
+        handlers[Internal.NICKNAME_INITAL_EXCHANGE] = this.processIncomingNicknameRequest
+        this.subscribe(ciMessenger, handlers, this.crossIslandErrorHandler)
     }
 
     async crossIslandErrorHandler(envelope, self, err){

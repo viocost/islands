@@ -2,16 +2,34 @@
 
 
 * Current tasks
-** TODO Bug Incoming message not verified in browser
+** UI task
+*** On doubletap when chosing topic the side panel should close when it is in mobile mode
+*** New message input should be visible only when there is an active topic selected
+*** Implement older messages loading
+*** Implement scrolling down on new messages
+
+
+** TODO Fix mutable dest header
+** TODO Implement aliases for members
+** TODO How to mark my nickname and where?
+
 ** TODO finish with nickname exchange
-** TODO Wire file transfer
-
-** TODO Implement Boot member mechanism
-** TODO Implement Leave mechanism
 ** TODO Implement topic rename
-
+** TODO Implement Boot member mechanism
+** TODO Bug Incoming message not verified in browser
+** TODO Implement Leave mechanism
+** TODO BUG aliases are not set when joining the topic
+** TODO BUG Topic name and member name are not appear
+** TODO BUG Spamming topic join - unhandled rejection
 ** TODO Re-implement reconnection protocol and pings
 
+
+** TODO Admin vault registration
+When island is virgin there must be a vault registration page, where admin
+enters password twice.
+
+** DONE Wire file transfer
+CLOSED: [2020-04-04 Sat 22:10]
 
 ** DONE Implement basic messages delivery
 CLOSED: [2020-04-01 Wed 23:00]
@@ -28,15 +46,8 @@ vault
 CLOSED: [2020-03-24 Tue 18:32]
 ** DONE BUG Messages are not decrypted on load.
 CLOSED: [2020-04-01 Wed 00:56]
-** TODO BUG Topic name and member name are not appear
-** TODO BUG aliases are not set when joining the topic
-** TODO BUG Spamming topic join - unhandled rejection
 ** DONE Implement messages sending
 CLOSED: [2020-03-31 Tue 21:19]
-
-** TODO Admin vault registration
-When island is virgin there must be a vault registration page, where admin
-enters password twice.
 
 ** DONE Invites are not created. Timeout. (Prob wrong proxy port)
 CLOSED: [2020-03-24 Tue 16:46]

@@ -346,16 +346,16 @@ class HistoryManager{
     }
 
 
-    taGetInvite(inviteId = Err.required(), pkfp = Err.required()){
-        return new Promise(async (resolve, reject)=>{
-            let invitePath = path.join(this.pathToInvites(pkfp) , inviteId);
-            if (! await fs.exists(invitePath)  ){
-                console.log("INVITE COULD NOT BE FOUND: " + invitePath);
-                reject(new Error("Invite does not exist"));
-            }
-            let data = await fs.readFile(invitePath);
-            resolve(data.toString());
-        })
+    async taGetInvite(inviteId = Err.required(), pkfp = Err.required()){
+        let invitePath = path.join(this.pathToInvites(pkfp) , inviteId);
+        if (! await fs.exists(invitePath)  ){
+            Logger.warn("INVITE COULD NOT BE FOUND: " + invitePath, {
+                cat: "topic_join"
+            });
+            throw new Error("Invite does not exist");
+        }
+        let data = await fs.readFile(invitePath);
+        return data.toString();
     }
 
     async taDelInvite(inviteId = Err.required(), pkfp = Err.required()){

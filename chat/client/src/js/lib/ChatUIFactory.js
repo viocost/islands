@@ -137,8 +137,7 @@ function bakeTopicsBlock(){
                                 text: "Alias",
                                 style: "display: none",
                                 class: "btn",
-                                id: "btn-ctx-alias"
-
+                                id: "btn-ctx-alias",
                             }),
                             util.bake("button", {
                                 text: "Invite",
@@ -244,7 +243,7 @@ export function bakeInviteListItem(inviteCode, onclick, onDoubleClick){
 
 export function bakeMessagesPanel(newMsgBlock){
     return util.bake("div", {
-        class: "messages-panel-wrapper",
+        class: "main-panel-container",
         children: [
             util.bake("div", {
                 class: "messages-panel-container",
@@ -261,7 +260,7 @@ export function bakeMessagesPanel(newMsgBlock){
 export function bakeNewMessageControl(sendHandler = Err.required("sendMessage handler"),
                                       attachmentChosenHandler = Err.required("attachmentChosen handler")){
     return util.bake("div", {
-        class: "new-message-container",
+        id: "new-message-container",
         children: [
             util.bake("div", {
                 class: ["control-col", "new-msg-input"],
@@ -403,7 +402,7 @@ export function bakeEphemeralMessage(timeStamp = Err.required("Timestamp"),
                 class: "msg-heading",
                 children: [
                     util.bake("b", {
-                        text: "Islands"
+                        text: "Islands ephemeral note"
                     }),
 
                     util.bake("span", {
@@ -650,6 +649,42 @@ export function bakeTopicListItem(topic, topicOnClick, expandOnClick){
         ]
     })
 
+}
+
+export function bakeSetAliasModal(okClick = Err.required("Ok handler required")){
+    let clearFields = ()=>{
+        let newAlias = util.$("#new-alias");
+        newAlias.value = "";
+    };
+
+    let wrap =  util.bake("div", {
+        children: [
+            util.bake("h2", {
+                text: "New alias"
+            }),
+            util.bake("input", {
+                id: "new-alias",
+                class: "left-align",
+                attributes:{
+                    placeholder: "Enter new alias",
+                maxlength: "255",
+                    required: true
+                }
+            }),
+
+        ]
+    })
+
+    let form  = Modal.prepareModal(wrap, {
+        closeMethods: ["button"],
+        onOpen: clearFields,
+        onClose: clearFields
+    })
+
+    form.addFooterBtn('Ok',
+                      'tingle-btn tingle-btn--primary tingle-btn--pull-right',
+                      okClick);
+    return form
 }
 
 export function bakeTopicCreateModal(createClick){

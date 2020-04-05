@@ -16,6 +16,7 @@ module.exports.Events = Object.freeze({
 
     TOPIC_CREATED: "toipc_created",
     TOPIC_DELETED: "topic_deleted",
+    TOPIC_JOINED: "topic_joined",
     INIT_TOPIC_SUCCESS: "init_topic_success",
     INIT_TOPIC_ERROR: "init_topic_error",
 

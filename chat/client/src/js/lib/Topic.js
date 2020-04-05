@@ -67,19 +67,18 @@ export class Topic{
     }
     // ---------------------------------------------------------------------------------------------------------------------------
     // INITIALIZING
-    bootstrap(self,
-              messageQueue,
+    bootstrap(messageQueue,
               arrivalHub,
               version){
-        self.messageQueue = messageQueue;
-        self.arrivalHub = arrivalHub;
-        self.arrivalHub.on(self.pkfp, (msg)=>{
-            self.preprocessIncomingMessage(msg, self);
+        this.messageQueue = messageQueue;
+        this.arrivalHub = arrivalHub;
+        this.arrivalHub.on(this.pkfp, (msg)=>{
+            this.preprocessIncomingMessage(msg, this);
         });
-        self.version = version;
-        self.setHandlers()
+        this.version = version;
+        this.setHandlers()
 
-        self.bootstrapped = true;
+        this.isBootstrapped = true;
     }
 
 
@@ -167,6 +166,10 @@ export class Topic{
         this.handlers[Internal.SETTINGS_UPDATED] = (msg)=>{
             console.log("Settings updated");
             self.processSettingsUpdated(msg);
+        }
+
+        this.handlers[Internal.NICKNAME_INITAL_EXCHANGE] = (msg)=>{
+            console.log("Initial nickname exchange request received");
         }
 
         this.handlers[Internal.BROADCAST_MESSAGE] = (msg)=>{
@@ -364,6 +367,7 @@ export class Topic{
     // Nickname handling
     //TODO
     exchangeNicknames(){
+        console.log("Attempting to exchange nicknames");
         if(!this.isBootstrapped){
             console.log("Cannot exchange nicknames: topic not bootstrapped.");
             return;
@@ -377,6 +381,7 @@ export class Topic{
         request.body.myNickname = myNickname;
         request.signMessage(this.privateKey);
         this.messageQueue.enqueue(request);
+        console.log("Nicknames exchange request sent");
     }
 
     setMemberAlias(pkfp, alias){
@@ -616,6 +621,14 @@ export class Topic{
         }
     }
 
+
+    setParticipantAlias(pkfp, newAlias){
+        console.log("Set participant alias called");
+        assert(this.settgins.membersData[pkfp], `Participant ${pkfp}, not found`);
+        this.settings.membersData[pkfp] = newAlias;
+        this.saveClientSettings();
+    }
+
     getPublicKey(){
         if(!this.privateKey) throw new Error("No private key found")
         if(!this.publicKey){
@@ -634,7 +647,7 @@ export class Topic{
     }
 
     ensureBootstrapped(self){
-        if(!self.bootstrapped || !self.messageQueue || !self.arrivalHub){
+        if(!self.isBootstrapped || !self.messageQueue || !self.arrivalHub){
             throw new Error("Topic is not bootstrapped!");
         }
     }

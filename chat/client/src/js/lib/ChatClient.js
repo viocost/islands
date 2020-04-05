@@ -77,7 +77,7 @@ export class ChatClient{
                 console.log(`Initializing topic listeners...`);
                 this.topics = this.vault.topics;
                 for(let pkfp of Object.keys(this.topics)){
-                    this.topics[pkfp].bootstrap(this.topics[pkfp], this.messageQueue, this.arrivalHub, this.version);
+                    this.topics[pkfp].bootstrap(this.messageQueue, this.arrivalHub, this.version);
                     this.initTopicListeners(this.topics[pkfp])
                 }
 
@@ -369,7 +369,7 @@ export class ChatClient{
     async joinTopic(nickname, topicName, inviteString) {
         let topicJoinAgent = new TopicJoinAgent(nickname, topicName, inviteString, this.arrivalHub, this.messageQueue, this.vault);
         topicJoinAgent.on(Internal.JOIN_TOPIC_SUCCESS, (data)=>{
-            this.notifyJoinSuccess(this, data);
+            this.emit(Events.TOPIC_JOINED, data)
         })
         topicJoinAgent.on(Internal.JOIN_TOPIC_FAIL, ()=>{ console.log("Join topic fail received from the agent")})
         topicJoinAgent.start()
@@ -469,9 +469,6 @@ export class ChatClient{
         self.emit("settings_updated");
     }
 
-    notifyJoinSuccess(self, data){
-        console.log("Join successfull received by ChatClient");
-    }
 
 
 
@@ -618,7 +615,7 @@ export class ChatClient{
         let topicName = pendingTopic.topicName;
 
         let topic = self.vault.addTopic(pkfp, topicName, privateKey);
-        topic.bootstrap(topic, self.messageQueue, self.arrivalHub, self.version);
+        topic.bootstrap(self.messageQueue, self.arrivalHub, self.version);
         topic.loadMetadata(data.body.metadata);
         self.vault.save(Internal.TOPIC_ADDED);
 
@@ -664,6 +661,10 @@ export class ChatClient{
         return this.topics[topicPkfp].getParticipantAlias(participantPkfp);
     }
 
+    setParticipantAlias(topicPkfp, participantPkfp, newAlias){
+        assert(this.topics[topicPkfp], `Topic ${topicPkfp}, not found`)
+        this.toipcs[topicPkfp].setParticipantAlias(participantPkfp, newAlias)
+    }
 
     // Sends message
     sendMessage(msg, topicPkfp, recipient, files){

@@ -66,10 +66,9 @@ class ClientSessionManager{
 
     }
 
-    getActiveUserSessions(pkfp){
-        return Object.values(this.sessions).filter(val =>{
-            return val.pkfp === pkfp;
-        });
+    //Given participant's pkfp returns active session if exists
+    getSession(pkfp){
+        return this.topicToSessionMap[pkfp];
     }
 
     getSessionByConnectionId(connectionId = Err.required()){
@@ -125,14 +124,14 @@ class ClientSessionManager{
 
 
     broadcastUserResponse(pkfp, response){
-        const activeConnections = this.getActiveUserSessions(pkfp);
+        const activeConnections = this.getSession(pkfp);
         activeConnections.forEach((session)=>{
             this.connectionManager.sendResponse(session.getConnectionID(), response)
         })
     }
 
     broadcastServiceMessage(pkfp, message){
-        const activeConnections = this.getActiveUserSessions(pkfp);
+        const activeConnections = this.getSession(pkfp);
         activeConnections.forEach((session)=>{
             this.connectionManager.sendServiceMessage(session.getConnectionID(), message)
         })
@@ -143,7 +142,7 @@ class ClientSessionManager{
     }
 
     broadcastServiceRecord(pkfp, record){
-        const activeConnections = this.getActiveUserSessions(pkfp);
+        const activeConnections = this.getSession(pkfp);
         activeConnections.forEach((session)=>{
             this.connectionManager.sendServiceRecord(session.getConnectionID(), record)
         })
@@ -166,7 +165,7 @@ class ClientSessionManager{
     }
 
     isSessionActive(pkfp){
-        const sessions = this.getActiveUserSessions(pkfp);
+        const sessions = this.getSession(pkfp);
         return sessions.length > 0;
     }
 
