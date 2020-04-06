@@ -9,6 +9,8 @@
 *** Implement scrolling down on new messages
 
 ** TODO Fix service records handling on client
+** DONE Fix invites operations crypto
+CLOSED: [2020-04-06 Mon 23:41]
 ** TODO Debug load_messages
 ** TODO Fix service records and messages
 ** TODO Fix mutable dest header

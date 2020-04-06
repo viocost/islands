@@ -159,8 +159,14 @@ export class Topic{
         }
         this.handlers[Events.INVITE_CREATED] = (msg)=>{
             console.log("Invite created event");
-            self.processInviteCreated(self, msg);
+            self.processInvitesUpdated(self, msg);
             self.emit(Events.INVITE_CREATED);
+        }
+
+        this.handlers[Internal.DELETE_INVITE_SUCCESS] = (msg)=>{
+            console.log("Invite deleted event");
+            self.processInvitesUpdated(self, msg);
+            self.emit(Internal.DELETE_INVITE_SUCCESS)
         }
 
         this.handlers[Internal.SETTINGS_UPDATED] = (msg)=>{
@@ -594,14 +600,15 @@ export class Topic{
 
     }
 
-    processInviteCreated(self, msg){
-        console.log("Invite created message received");
 
+    processInvitesUpdated(self, msg){
         assert(Message.verifyMessage(self.topicAuthority.publicKey, msg), "TA signature is invalid")
-
         let data = JSON.parse(ChatUtility.decryptStandardMessage(msg.body.data, self.privateKey))
 
-        console.log(`Invites data has been decrypted successfully. Invite code: ${data.inviteCode}`);
+        console.log(`Invites data has been decrypted successfully.`);
+        if (data.inviteCode){
+            console.log(`New invite: ${data.inviteCode}`);
+        }
 
         let userInvites = data.userInvites;
 
@@ -619,9 +626,6 @@ export class Topic{
         }
         self.saveClientSettings(self.settings, self.privateKey);
     }
-
-
-
 
     getParticipantAlias(pkfp){
         if(!this.isBootstrapped || !pkfp){

@@ -70,7 +70,8 @@ class TopicAuthority extends EventEmitter{
 
     async processDelInviteRequest(request){
         const participant = this.currentMetadata.body.participants[request.headers.pkfpSource];
-        if (!Request.isRequestValid(request, participant.publicKey)){
+        const pubKey = participant.publicKey
+        if (!Request.isRequestValid(request, pubKey)){
             throw new Error("Request is invalid!");
         }
 
@@ -86,7 +87,12 @@ class TopicAuthority extends EventEmitter{
         let remainingInvites =  await this.getUserInvites(request.headers.pkfpSource);
         Logger.debug(`DELETE invite success. taPkfp: ${this.pkfp}`, {cat: "invite"});
         let response = Message.makeResponse(request, this.pkfp, Internal.DELETE_INVITE_SUCCESS)
-        response.body.invites = remainingInvites;
+
+        let rawData = JSON.stringify({
+            userInvites: remainingInvites
+        })
+        let cipher = Util.encryptStandardMessage(rawData, pubKey);
+        response.setAttribute("data", cipher);
         this.signMessage(response);
         return response;
     }

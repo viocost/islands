@@ -7674,8 +7674,14 @@ var Topic_Topic = /*#__PURE__*/function () {
 
       this.handlers[Events["Events"].INVITE_CREATED] = function (msg) {
         console.log("Invite created event");
-        self.processInviteCreated(self, msg);
+        self.processInvitesUpdated(self, msg);
         self.emit(Events["Events"].INVITE_CREATED);
+      };
+
+      this.handlers[Events["Internal"].DELETE_INVITE_SUCCESS] = function (msg) {
+        console.log("Invite deleted event");
+        self.processInvitesUpdated(self, msg);
+        self.emit(Events["Internal"].DELETE_INVITE_SUCCESS);
       };
 
       this.handlers[Events["Internal"].SETTINGS_UPDATED] = function (msg) {
@@ -8137,12 +8143,16 @@ var Topic_Topic = /*#__PURE__*/function () {
     key: "processNicknameChangeNote",
     value: function processNicknameChangeNote() {}
   }, {
-    key: "processInviteCreated",
-    value: function processInviteCreated(self, msg) {
-      console.log("Invite created message received");
+    key: "processInvitesUpdated",
+    value: function processInvitesUpdated(self, msg) {
       Object(IError["b" /* assert */])(Message["a" /* Message */].verifyMessage(self.topicAuthority.publicKey, msg), "TA signature is invalid");
       var data = JSON.parse(ChatUtility["a" /* ChatUtility */].decryptStandardMessage(msg.body.data, self.privateKey));
-      console.log("Invites data has been decrypted successfully. Invite code: ".concat(data.inviteCode));
+      console.log("Invites data has been decrypted successfully.");
+
+      if (data.inviteCode) {
+        console.log("New invite: ".concat(data.inviteCode));
+      }
+
       var userInvites = data.userInvites;
       if (!self.settings.invites) self.settings.invites = {};
       var _iteratorNormalCompletion2 = true;

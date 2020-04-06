@@ -141,20 +141,21 @@ class InviteAssistant{
     }
 
     async deleteInviteIncoming(envelope, self){
-
         Logger.debug("Delete invite incoming", {cat: "invite"})
         let request = envelope.payload;
         let ta = self.topicAuthorityManager.getTopicAuthority(request.headers.pkfpDest);
         let response = await ta.processDelInviteRequest(request);
-        let responseEnvelope = new Envelope(envelope.origin, response, envelope.destination)
-        responseEnvelope.setResponse();
+        let dest = envelope.origin;
+        let orig = envelope.destination
+        let responseEnvelope = new Envelope(dest, response, orig)
         await self.crossIslandMessenger.send(responseEnvelope)
     }
 
     async deleteInviteSuccess(envelope, self){
+        Logger.debug("Invite assistant, delete invite success received", {cat: "invite"})
         const response = envelope.payload;
 
-        await self.sessionManager.broadcastUserResponse(response.headers.pkfpSource,
+        await self.sessionManager.broadcastMessage(response.headers.pkfpDest,
             response);
     }
 
