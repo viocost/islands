@@ -57,7 +57,7 @@ class ServiceAssistant{
         let newMetadata = Metadata.parseMetadata(message.body.metadata);
         newMetadata.setSettings(prevMeta.body.settings);
         await self.hm.appendMetadata(newMetadata.toBlob(), message.headers.pkfpDest);
-        self.sessionManager.broadcastServiceMessage(message.headers.pkfpDest, message);
+        self.sessionManager.broadcastMessage(message.headers.pkfpDest, message);
         await self.registerMetadataUpdate(message, message.headers.pkfpDest);
 
     }
@@ -145,7 +145,7 @@ class ServiceAssistant{
         }
 
         response.body.metadata = metadataRecords[metadataRecords.length - 1];
-        self.sessionManager.broadcastServiceMessage(response.headers.pkfpSource, response);
+        self.sessionManager.broadcastMessage(response.headers.pkfpSource, response);
         Logger.info("Resync completed on "+response.headers.pkfpDest);
         self.syncInProgress.delete(response.headers.pkfpSource);
         Coordinator.notify("metadata_synced", response.headers.pkfpSource);
@@ -155,30 +155,30 @@ class ServiceAssistant{
     async registerMetadataUpdate(message, pkfp){
         let msg = await this.createSaveServiceRecord(pkfp, message.headers.event,
             this.generateMessageOnMetadataIssue(message));
-        this.sessionManager.broadcastServiceRecord(pkfp, msg);
+        this.sessionManager.broadcastMessage(pkfp, msg);
     }
 
     async registerInviteRequest(request, connectionID, self){
         let msg = await self.createSaveServiceRecord(request.headers.pkfpSource, request.headers.command, "Invite requested");
-        self.sessionManager.broadcastServiceRecord(request.headers.pkfpSource, msg);
+        self.sessionManager.broadcastMessage(request.headers.pkfpSource, msg);
     }
 
 
     async processInviteRequestSuccess(envelope, self){
         let request = envelope.payload;
         let msg = await self.createSaveServiceRecord(request.headers.pkfpSource, request.headers.command, "Invite created successfully. Code: " + request.body.inviteCode);
-        self.sessionManager.broadcastServiceRecord(request.headers.pkfpSource, msg);
+        self.sessionManager.broadcastMessage(request.headers.pkfpSource, msg);
     }
 
     async serviceRecordOnRequestError(envelope, self){
         let request = Envelope.getOriginalPayload(envelope);
         let msg = await self.createSaveServiceRecord(request.headers.pkfpSource, request.headers.command, envelope.error);
-        self.sessionManager.broadcastServiceRecord(request.headers.pkfpSource, msg);
+        self.sessionManager.broadcastMessage(request.headers.pkfpSource, msg);
     }
 
     async registerBootMemberRequest(request, connectionID, self){
         let msg = await self.createSaveServiceRecord(request.headers.pkfpSource, request.headers.command, "Boot requested for user " + request.body.pkfp +  " created successfully");
-        self.sessionManager.broadcastServiceRecord(request.headers.pkfpSource, msg);
+        self.sessionManager.broadcastMessage(request.headers.pkfpSource, msg);
     }
 
     async registerBootNotce(envelope, self){
@@ -189,7 +189,7 @@ class ServiceAssistant{
             return;
         }
         let msg = await self.createSaveServiceRecord(message.headers.pkfpDest, "u_booted", "You have been excluded from this channel");
-        self.sessionManager.broadcastServiceRecord(message.headers.pkfpSource, msg);
+        self.sessionManager.broadcastMessage(message.headers.pkfpSource, msg);
     }
 
     async registerSettingsUpdate(){
@@ -216,7 +216,7 @@ class ServiceAssistant{
         console.log("Load more messages called");
         let messages, metadataIDs;
 
-        //Getting public key og the owner
+        //Getting public key of the owner
         let publicKey = await self.hm.getOwnerPublicKey(request.headers.pkfpSource)
         assert(Request.isRequestValid(request, publicKey), "Request was not verified")
 
@@ -312,7 +312,7 @@ class ServiceAssistant{
         if (request.headers.command === "nickname_change_broadcast"){
             let msg = await this.createSaveServiceRecord(request.headers.pkfpSource, request.headers.command,
                 "You have changed your nickname.");
-            this.sessionManager.broadcastServiceRecord(request.headers.pkfpSource, msg);
+            this.sessionManager.broadcastMessage(request.headers.pkfpSource, msg);
         }
     }
 
@@ -327,7 +327,7 @@ class ServiceAssistant{
             request.body.event,
             request.body.message,
             true);
-        self.sessionManager.broadcastServiceRecord(request.headers.pkfpSource, msg);
+        self.sessionManager.broadcastMessage(request.headers.pkfpSource, msg);
 
     }
 

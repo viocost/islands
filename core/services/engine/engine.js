@@ -95,6 +95,10 @@ let chatCmdArgs = [`${process.env["APPS"]}/chat/server/app.js`];
 if (process.env["DEBUG"]){
     console.log("Setting DEUBG flag for chat")
     chatCmdArgs.push("--debug")
+    if(config.nodeDebugPort && config.nodeDebugHost){
+        console.log(`Setting node debug to: ${config.nodeDebugHost}:${config.nodeDebugPort}`)
+        chatCmdArgs.splice(0, 0, `--inspect=${config.nodeDebugHost}:${config.nodeDebugPort}`);
+    }
 }
 
 console.log(`In engine. Chat port is: ${process.env["CHAT_PORT"]}`);

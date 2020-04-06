@@ -31,7 +31,9 @@ def main(*args, **kwargs):
                 "hiddenServicePort": 15142,
                 "torExitPolicy": "reject *:*",
             },
-            "data": ""
+            "data": "",
+            "nodeDebugHost": "127.0.0.1",
+            "nodeDebugPort": 9229
         }, fp, indent=4)
 
     print("Config written successfully")

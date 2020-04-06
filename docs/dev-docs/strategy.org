@@ -8,7 +8,8 @@
 *** Implement older messages loading
 *** Implement scrolling down on new messages
 
-
+** TODO Debug load_messages
+** TODO Fix service records and messages
 ** TODO Fix mutable dest header
 ** TODO Implement aliases for members
 ** TODO How to mark my nickname and where?

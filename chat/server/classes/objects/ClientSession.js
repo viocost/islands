@@ -40,8 +40,6 @@ class ClientSession extends EventEmitter{
         this.sendSessionKey(connectionId);
     }
 
-
-
     initKey(){
         let self = this;
         setTimeout(()=>{
@@ -181,14 +179,16 @@ class ClientSession extends EventEmitter{
     // Sends given message to connection identified by connId
     send(msg, connId){
         Logger.debug(`Unicasting. Topics: ${this.topics}`, { cat: "session" })
+        let connectionId = connId;
         if (!connId){
             if (this.connections.length === 0){
                 return;
             } else {
-                connId = this.connections[0];
+                connectionId = this.connections[0];
             }
         }
-        this.connectionManager.sendMessage(connId, msg);
+        Logger.debug(`Session: sending message, to ${connectionId}`, { cat: "session" })
+        this.connectionManager.sendMessage(connectionId, msg);
     }
 
     isActive(){
@@ -196,6 +196,9 @@ class ClientSession extends EventEmitter{
         return this.connections.length > 0;
     }
 
+    activeConnectionsCount(){
+        return this.connections.length;
+    }
 
     startSelfDestructionTimer(){
 

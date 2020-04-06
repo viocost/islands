@@ -131,10 +131,12 @@ class ClientSessionManager{
     }
 
     broadcastServiceMessage(pkfp, message){
-        const activeConnections = this.getSession(pkfp);
-        activeConnections.forEach((session)=>{
-            this.connectionManager.sendServiceMessage(session.getConnectionID(), message)
-        })
+        const session = this.getSession(pkfp);
+        if (session && session.activeConnectionsCount() > 0){
+            session.broadcast(message)
+        } else {
+            Logger.debug(`No active connections found for ${pkfp}`, { cat: "session" });
+        }
     }
 
     sendServiceMessage(connectionId, message){
@@ -159,7 +161,7 @@ class ClientSessionManager{
 
         Logger.verbose("Broadcasting chat message",{
             pkfp: pkfp,
-            cat: "chat"
+            cat: "session"
         });
         session.broadcast(message);
     }
