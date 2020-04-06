@@ -8,6 +8,7 @@
 *** Implement older messages loading
 *** Implement scrolling down on new messages
 
+** TODO Fix service records handling on client
 ** TODO Debug load_messages
 ** TODO Fix service records and messages
 ** TODO Fix mutable dest header

@@ -172,6 +172,19 @@ export class Topic{
             console.log("Initial nickname exchange request received");
         }
 
+        this.handlers[Internal.SERVICE_RECORD] = (msg)=>{
+            console.log("New service record arrved")
+            let record = msg.body.serviceRecord;
+            if (!record){
+                console.error("Error: Service record is not found!");
+                return;
+            }
+
+            record = new ChatMessage(record);
+            record.decryptServiceRecord(self.privateKey);
+            self.addNewMessage(self, record);
+        }
+
         this.handlers[Internal.BROADCAST_MESSAGE] = (msg)=>{
             let msgCopy = JSON.parse(JSON.stringify(msg))
             // pkfpDest is added by server when message is broadcasted, so to verify it
@@ -442,7 +455,7 @@ export class Topic{
             console.trace("Invalid signature");
             return
         }
-        let existingNickname = self.getMemberNickname(request.headers.pkfpSource);
+        let existingNickname = self.getMemberNicknamr(request.headers.pkfpSource);
         let memberRepr = self.getMemberRepr(request.headers.pkfpSource);
         let newNickname = broadcast ? ChatUtility.symKeyDecrypt(request.body.nickname, self.session.metadata.sharedKey) :
             ChatUtility.decryptStandardMessage(request.body.nickname, self.session.privateKey);

@@ -77,6 +77,24 @@ export class ChatMessage{
         }
     }
 
+    decryptServiceRecord(privateKey, ){
+        let symLenghtEncoded = 4
+        let blob = this.body;
+
+        let symKeyLenght = parseInt(blob.substr(blob.length - symLenghtEncoded));
+
+        let symKeyCipher = blob.substring(blob.length - symLenghtEncoded - symKeyLenght, blob.length - symLenghtEncoded);
+        let payloadCipher = blob.substring(0, blob.length - symLenghtEncoded - symKeyLenght);
+        let ic = new iCrypto();
+        ic.addBlob("blobcip", payloadCipher)
+            .addBlob("symkciphex", symKeyCipher)
+            .hexToBytes("symkciphex", "symkcip")
+            .asym.setKey("privk", privateKey, "private")
+            .asym.decrypt("symkcip", "privk", "symk")
+            .AESDecrypt("blobcip", "symk", "blob-raw", true, "CBC", "utf8");
+        this.body = ic.get("blob-raw");
+    }
+
     decryptPrivateMessage(privateKey){
         try{
             let ic = new iCrypto();

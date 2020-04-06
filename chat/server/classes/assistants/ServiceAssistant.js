@@ -3,7 +3,6 @@ const Err = require("../libs/IError.js");
 const Envelope = require("../objects/CrossIslandEnvelope.js");
 const ServiceRecord = require("../objects/ServiceRecord.js");
 const Request = require("../objects/ClientRequest.js");
-const Response = require("../objects/ClientResponse.js");
 const Message = require("../objects/Message.js");
 const ServiceMessage = require("../objects/ServiceMessage.js");
 const Metadata = require("../objects/Metadata.js");
@@ -160,7 +159,9 @@ class ServiceAssistant{
 
     async registerInviteRequest(request, connectionID, self){
         let msg = await self.createSaveServiceRecord(request.headers.pkfpSource, request.headers.command, "Invite requested");
-        self.sessionManager.broadcastMessage(request.headers.pkfpSource, msg);
+        let response = Message.makeResponse(request, "island", Internal.SERVICE_RECORD);
+        response.setAttribute("serviceRecord", msg);
+        self.sessionManager.broadcastMessage(request.headers.pkfpSource, response);
     }
 
 
