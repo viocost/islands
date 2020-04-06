@@ -1,5 +1,6 @@
 const iCrypto = require("../libs/iCrypto.js");
 const Err = require("../libs/IError.js");
+const assert = require("../libs/assert.js");
 const Metadata = require("./Metadata.js");
 const Message = require("./Message.js");
 const EventEmitter = require("events").EventEmitter;
@@ -12,7 +13,7 @@ const Invite = require("./Invite.js");
 const CuteSet = require("cute-set");
 const MetadataIssue = require("../enums/MetadataIssueMessages.js");
 const Logger = require("../libs/Logger.js");
-const Internal = require("../../../common/Events.js").Internal;
+const { Internal, Events } = require("../../../common/Events.js");
 const objUtil = require("../../../common/ObjectUtil");
 
 
@@ -40,15 +41,31 @@ class TopicAuthority extends EventEmitter{
     /****************************************
      * Request handling
      ****************************************/
+    /**
+     * Processes invite request and returns formed response
+     */
     async processInviteRequest(request){
         const participant = this.currentMetadata.body.participants[request.headers.pkfpSource];
-        Request.isRequestValid(request, participant.publicKey);
+        const pubKey = participant.publicKey
+
+        assert(Message.verify(request, pubKey), "Invite request signature is invalid");
+
         const newInviteCode = await this.createNewInvite(participant.pkfp, request.body.nickname, request.body.topicName);
+        Logger.debug("Topic authority created new invite ", {
+            cat: "invite",
+            inviter: participant.pkfp,
+            inviteCode: newInviteCode
+        })
         const userInvites = await this.getUserInvites(participant.pkfp);
-        return {
+        let response = Message.makeResponse(request, this.pkfp, Events.INVITE_CREATED);
+        let rawData = JSON.stringify({
             inviteCode: newInviteCode,
             userInvites: userInvites
-        }
+        })
+        let cipher = Util.encryptStandardMessage(rawData, pubKey);
+        response.setAttribute("data", cipher);
+        this.signMessage(response);
+        return response;
     }
 
     async processDelInviteRequest(request){

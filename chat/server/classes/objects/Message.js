@@ -33,12 +33,6 @@ class Message{
         return message;
     }
 
-    verify(message, publicKey){
-        const ic = new iCrypto();
-        res.body = data.body;
-    }
-
-
 
     setAttribute(key = Err.required(), value = Err.required()){
         if(this.body[key]){

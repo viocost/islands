@@ -6,9 +6,7 @@ const Message = require("../objects/Message.js")
 const Logger = require("../libs/Logger.js");
 const Metadata = require("../objects/Metadata.js");
 const Coordinator = require("./AssistantCoordinator.js");
-const ChatUtil = require("../libs/ChatUtility");
-const Internal = require("../../../common/Events.js").Internal;
-const ChatEvents = require("../../../common/Events.js").Events;
+const { Events, Internal } = require("../../../common/Events.js");
 
 class InviteAssistant{
     constructor(connectionManager = Err.required(),
@@ -79,15 +77,7 @@ class InviteAssistant{
         console.log("invite request incoming! Processing");
         const request =  Request.parse(envelope.payload);
         const ta = self.topicAuthorityManager.getTopicAuthority(request.headers.pkfpDest);
-        const data = await ta.processInviteRequest(request);
-        const inviteCode = data.inviteCode;
-        const userInvites = data.userInvites;
-        //       const response = new Response("request_invite_success", request);
-        const response = Message.makeResponse(request, request.headers.pkfpDest, ChatEvents.INVITE_CREATED);
-
-        response.body.inviteCode = inviteCode;
-        response.body.userInvites = userInvites;
-        console.log("About to send success invite code: " + inviteCode);
+        const response = await ta.processInviteRequest(request);
         const responseEnvelope = new Envelope(envelope.origin, response, envelope.destination);
         await self.crossIslandMessenger.send(responseEnvelope);
     }
@@ -259,7 +249,7 @@ class InviteAssistant{
 
     subscribeToCrossIslandsMessages(ciMessenger){
         let handlers = {}
-        handlers[ChatEvents.INVITE_CREATED] = this.requestInviteSuccess;
+        handlers[Events.INVITE_CREATED] = this.requestInviteSuccess;
         handlers[Internal.DELETE_INVITE] = this.deleteInviteIncoming;
         handlers[Internal.DELETE_INVITE_SUCCESS] = this.deleteInviteSuccess;
 

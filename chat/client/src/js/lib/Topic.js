@@ -595,8 +595,16 @@ export class Topic{
     }
 
     processInviteCreated(self, msg){
-        console.log(`New invite: ${msg.body.inviteCode}`);
-        let userInvites = msg.body.userInvites;
+        console.log("Invite created message received");
+
+        assert(Message.verifyMessage(self.topicAuthority.publicKey, msg), "TA signature is invalid")
+
+        let data = JSON.parse(ChatUtility.decryptStandardMessage(msg.body.data, self.privateKey))
+
+        console.log(`Invites data has been decrypted successfully. Invite code: ${data.inviteCode}`);
+
+        let userInvites = data.userInvites;
+
         if(!self.settings.invites) self.settings.invites = {}
 
         for(let i of userInvites){
