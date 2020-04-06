@@ -284,7 +284,7 @@ class ServiceAssistant{
     }
 
 
-    async processStandardNameExchangeRequest(request, self){
+    async processStandardNameExchangeRequest(request, connectionId, self){
         Logger.debug("Sending name request", {
             pkfpSource: request.headers.pkfpSource,
             pkfpDest: request.headers.pkfpDest,
@@ -294,22 +294,15 @@ class ServiceAssistant{
         const recipient = metadata.body.participants[request.headers.pkfpDest];
         const sender = metadata.body.participants[request.headers.pkfpSource];
         const myPublicKey = sender.publicKey;
-        if(!self.sessionManager.isSessionActive(request.headers.pkfpSource)){
-            Logger.warn("Attempt to send a message without logging in", {
-                pkfp: request.headers.pkfpSource,
-                cat: "service"
-            });
-            throw new Error("Login required");
-        }
-        if(!Request.isRequestValid(request, myPublicKey)){
-            throw new Error("Sending private message error: signature is not valid!");
-        }
+
+        assert(Request.isRequestValid(request, myPublicKey), "Sending private message error: signature is not valid!")
+
         if(recipient){
-            logger.debug(`Sending nickiname exchange request to ${recipient}`, {cat: "service"})
+            Logger.debug(`Sending nickiname exchange request to ${recipient}`, {cat: "service"})
             await self._sendToSignleRecipient(request, sender.residence, recipient.residence,)
         } else {
 
-            logger.debug(`Sending nickiname exchange request to all`, {cat: "service"})
+            Logger.debug(`Sending nickiname exchange request to all`, {cat: "service"})
             await self._sendToAll(request, metadata)
         }
         await self.createServiceRecordOnNameChangeRequest(request)
@@ -500,7 +493,11 @@ class ServiceAssistant{
         try{
             await handlers[command](...args)
         }catch(err){
-            Logger.error(`Service assistant error on command: ${command} : ${err.message}`, {stack: err.stack} )
+            Logger.error(`Service assistant error on command: ${command} : ${err.message}`, {
+                stack: err.stack,
+                cat: "service"
+            })
+
             args.push(err);
             await errorHandler(...args);
         }

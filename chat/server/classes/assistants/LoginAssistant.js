@@ -338,24 +338,6 @@ class LoginAssistant{
         }
     }
 
-    /**
-     * Given public key fingerprint of a user
-     * returns whether an active session is registered on the island
-     * and whether there is at list one connected client socket
-     * @param pkfp
-     */
-    isSessionActive(pkfp){
-        let session = this.activeSessions[pkfp];
-        //console.log("=============ACTIVE SESSIONS: " + CircularJSON.stringify(this.activeSessions));
-        if(session){
-            for (let i = 0; i<session.sockets.length; ++i){
-                if (session.sockets[i].connected){
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 
     /*********************************************
      * ~ End helper Functions

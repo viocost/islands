@@ -53,15 +53,6 @@ class ChatMessageAssistant{
             msg: message.body.message,
             cat: "chat"
         });
-        ///////////////////////////////////////////////////////////////////////
-        // if(!self.sessionManager.isSessionActive(pkfp)){                   //
-        //     Logger.warn("Attempt to send a message without logging in", { //
-        //         pkfp: pkfp,                                               //
-        //         cat: "chat"                                               //
-        //     });                                                           //
-        //     throw new Error("Login required");                            //
-        // }                                                                 //
-        ///////////////////////////////////////////////////////////////////////
 
         assert(message.body.message.length < 65535, "Message is too long")
 

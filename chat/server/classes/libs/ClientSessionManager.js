@@ -164,10 +164,6 @@ class ClientSessionManager{
         session.broadcast(message);
     }
 
-    isSessionActive(pkfp){
-        const sessions = this.getSession(pkfp);
-        return sessions.length > 0;
-    }
 
 }
 
