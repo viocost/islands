@@ -414,7 +414,7 @@ class TopicAuthority extends EventEmitter{
 
     issueMetadata(data = {}){
         data.metadata = this.getCurrentMetadata();
-        this.emit("metadata_issue", data)
+        this.emit(Internal.METADATA_ISSUE, data)
     }
 
     verifyIsOperational(){

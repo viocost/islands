@@ -432,13 +432,14 @@ class ServiceAssistant{
             my_name_response: this.processNicknameResponse,
             u_booted: this.registerBootNotce,
             meta_sync: this.processIncomingResyncRequest,
-            metadata_issue: this.metadataIssue, //new member joined
             meta_sync_success: this.processMetaSyncResponse,
             request_invite_success: this.processInviteRequestSuccess,
             metadata_outdated: this.processMetadataOutdatedNote,
             return_request_invite: this.processInviteRequestError
         }
+
         handlers[Internal.NICKNAME_INITAL_EXCHANGE] = this.processIncomingNicknameRequest
+        handlers[Internal.METADATA_ISSUE] = this.metadataIssue;
         this.subscribe(ciMessenger, handlers, this.crossIslandErrorHandler)
     }
 

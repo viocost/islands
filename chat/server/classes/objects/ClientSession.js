@@ -184,7 +184,7 @@ class ClientSession extends EventEmitter{
             if (this.connections.length === 0){
                 return;
             } else {
-                connectionId = this.connections[0];
+                connectionId = this.connections.toArray()[0];
             }
         }
         Logger.debug(`Session: sending message, to ${connectionId}`, { cat: "session" })
