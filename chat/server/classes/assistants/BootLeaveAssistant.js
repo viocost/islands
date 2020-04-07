@@ -83,7 +83,7 @@ class BootLeaveAssistant extends Assistant{
 
         const publicKey = await self.hm.getOwnerPublicKey(pkfp);
         if(!Request.isRequestValid(request, publicKey)){
-            throw new Error("Boot request was not verified");
+            throw new Error("Delete topic request was not verified");
         }
 
         let metadata = Metadata.parseMetadata(await self.hm.getLastMetadata(pkfp));

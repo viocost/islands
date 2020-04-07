@@ -26,6 +26,7 @@ module.exports.Events = Object.freeze({
 
     NEW_MEMBER_JOINED: "new_member_joined",
 
+    METADATA_UPDATED: "metadata_updated",
 
     TOPIC_SETTINGS_UPDATED: "settings_updated",
 
@@ -102,6 +103,9 @@ module.exports.Internal = Object.freeze({
 
     //Sent by client to server after establishing the connection
     POST_LOGIN: "post_login",
+
+    //Metadata updates
+    METADATA_ISSUE: "metadata_issue",
 
     //Nickname exchange
     NICKNAME_REQUEST: "whats_your_name",

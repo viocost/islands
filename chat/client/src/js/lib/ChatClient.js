@@ -223,7 +223,11 @@ export class ChatClient{
         })
 
         topic.on(Events.NEW_CHAT_MESSAGE, (msg, pkfp)=>{
-            this.emit(Events.NEW_CHAT_MESSAGE, msg, pkfp);
+            this.emit(Events.NEW_CHAT_MESSAGE, msg, topic.pkfp);
+        })
+
+        topic.on(Events.METADATA_UPDATED, ()=>{
+            this.emit(Events.METADATA_UPDATED, topic.pkfp);
         })
     }
     //END//////////////////////////////////////////////////////////////////////

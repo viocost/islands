@@ -1172,6 +1172,11 @@ function initChat(){
         }
     })
 
+    chat.on(Events.METADATA_UPDATED, (pkfp)=>{
+        console.log("Metadata updated event from chat");
+        refreshTopics();
+    })
+
     chat.on(Events.NEW_CHAT_MESSAGE, (message, topicPkfp)=>{
         console.log(`New incoming chat message received for ${topicPkfp}`)
 

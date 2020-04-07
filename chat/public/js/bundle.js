@@ -108,6 +108,7 @@ module.exports.Events = Object.freeze({
   VAULT_UPDATED: "vault_updated",
   CHAT_ERROR: "chat_error",
   NEW_MEMBER_JOINED: "new_member_joined",
+  METADATA_UPDATED: "metadata_updated",
   TOPIC_SETTINGS_UPDATED: "settings_updated",
   INVITE_SYNC_OK: "invite_sync_ok",
   INVITE_SYNC_ERROR: "invite_sync_error",
@@ -163,6 +164,8 @@ module.exports.Internal = Object.freeze({
   INIT_TOPIC: "init_topic_finalize",
   //Sent by client to server after establishing the connection
   POST_LOGIN: "post_login",
+  //Metadata updates
+  METADATA_ISSUE: "metadata_issue",
   //Nickname exchange
   NICKNAME_REQUEST: "whats_your_name",
   NICKNAME_NOTE: "nickname_note",
@@ -7687,6 +7690,15 @@ var Topic_Topic = /*#__PURE__*/function () {
       this.handlers[Events["Internal"].SETTINGS_UPDATED] = function (msg) {
         console.log("Settings updated");
         self.processSettingsUpdated(msg);
+      };
+
+      this.handlers[Events["Internal"].METADATA_ISSUE] = function (msg) {
+        console.log("Metadata issue received. Checking...");
+        Object(IError["b" /* assert */])(Message["a" /* Message */].verifyMessage(self.topicAuthority.publicKey, msg), "TA signature is invalid");
+        console.log("Loading metadata");
+        self.loadMetadata(msg.body.metadata);
+        console.log("Metadata updated");
+        self.emit(Events["Events"].METADATA_UPDATED);
       };
 
       this.handlers[Events["Internal"].NICKNAME_INITAL_EXCHANGE] = function (msg) {
@@ -45204,7 +45216,10 @@ var ChatClient = /*#__PURE__*/function () {
         });
       });
       topic.on(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].NEW_CHAT_MESSAGE, function (msg, pkfp) {
-        _this4.emit(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].NEW_CHAT_MESSAGE, msg, pkfp);
+        _this4.emit(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].NEW_CHAT_MESSAGE, msg, topic.pkfp);
+      });
+      topic.on(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].METADATA_UPDATED, function () {
+        _this4.emit(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].METADATA_UPDATED, topic.pkfp);
       });
     } //END//////////////////////////////////////////////////////////////////////
     // ---------------------------------------------------------------------------------------------------------------------------
@@ -64210,6 +64225,10 @@ function initChat() {
     if (data.pkfp === topicInFocus) {
       refreshInvites();
     }
+  });
+  chat_ui_chat.on(Events["Events"].METADATA_UPDATED, function (pkfp) {
+    console.log("Metadata updated event from chat");
+    refreshTopics();
   });
   chat_ui_chat.on(Events["Events"].NEW_CHAT_MESSAGE, function (message, topicPkfp) {
     console.log("New incoming chat message received for ".concat(topicPkfp));

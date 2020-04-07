@@ -40,7 +40,14 @@ class ServiceAssistant{
     async metadataIssue(envelope, self){
         Logger.verbose("Metadata issue received");
         let message = envelope.payload;
-        let prevMeta  = Metadata.parseMetadata(await  self.hm.getLastMetadata(message.headers.pkfpDest));
+        let curMetaBlob
+        try{
+            curMetaBlob = await  self.hm.getLastMetadata(message.headers.pkfpDest);
+        } catch (err){
+            Logger.warn(`Error obtaining metadata for ${message.headers.pkfpDest}: ${err}`);
+            return;
+        }
+        let prevMeta  = Metadata.parseMetadata(curMetaBlob);
         let taPublicKey = prevMeta.body.topicAuthority.publicKey;
 
         console.log("\nMetadata issue incoming, event: " + message.headers.event+"\n");
@@ -58,7 +65,6 @@ class ServiceAssistant{
         await self.hm.appendMetadata(newMetadata.toBlob(), message.headers.pkfpDest);
         self.sessionManager.broadcastMessage(message.headers.pkfpDest, message);
         await self.registerMetadataUpdate(message, message.headers.pkfpDest);
-
     }
 
     async requestMetadataSync(pkfp, self){
@@ -154,7 +160,11 @@ class ServiceAssistant{
     async registerMetadataUpdate(message, pkfp){
         let msg = await this.createSaveServiceRecord(pkfp, message.headers.event,
             this.generateMessageOnMetadataIssue(message));
-        this.sessionManager.broadcastMessage(pkfp, msg);
+        let note = new Message();
+        note.setHeader("pkfpDest", pkfp);
+        note.setHeader("command", Internal.SERVICE_RECORD);
+        note.setAttribute("serviceRecord", msg);
+        this.sessionManager.broadcastMessage(pkfp, note);
     }
 
     async registerInviteRequest(request, connectionID, self){
@@ -257,8 +267,9 @@ class ServiceAssistant{
     }
 
     async verifyAndForwardServiceMessage(envelope, self, broadcast = false){
-        Logger.debug("Received service message. ", { cat: "service" })
         let request = Envelope.getOriginalPayload(envelope);
+
+        Logger.debug("Received service message. ", { cat: "service", command: request.headers.command })
         let pkfpDest = request.headers.pkfpDest;
         let metadata = Metadata.parseMetadata(await self.hm.getLastMetadata(pkfpDest));
         let senderPublicKey = metadata.body.participants[request.headers.pkfpSource].publicKey;

@@ -126,7 +126,6 @@ export class Topic{
 
         this.invites = metadata.body.settings.invites;
         this.metadataLoaded = true;
-
     }
 
     /**
@@ -172,6 +171,15 @@ export class Topic{
         this.handlers[Internal.SETTINGS_UPDATED] = (msg)=>{
             console.log("Settings updated");
             self.processSettingsUpdated(msg);
+        }
+
+        this.handlers[Internal.METADATA_ISSUE] = (msg) =>{
+            console.log("Metadata issue received. Checking...")
+            assert(Message.verifyMessage(self.topicAuthority.publicKey, msg), "TA signature is invalid")
+            console.log("Loading metadata");
+            self.loadMetadata(msg.body.metadata);
+            console.log("Metadata updated");
+            self.emit(Events.METADATA_UPDATED);
         }
 
         this.handlers[Internal.NICKNAME_INITAL_EXCHANGE] = (msg)=>{
