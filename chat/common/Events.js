@@ -28,7 +28,7 @@ module.exports.Events = Object.freeze({
 
     METADATA_UPDATED: "metadata_updated",
 
-    TOPIC_SETTINGS_UPDATED: "settings_updated",
+    SETTINGS_UPDATED: "settings_updated",
 
     INVITE_SYNC_OK: "invite_sync_ok",
     INVITE_SYNC_ERROR: "invite_sync_error",

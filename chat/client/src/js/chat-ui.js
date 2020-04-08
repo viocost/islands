@@ -1177,6 +1177,10 @@ function initChat(){
         refreshTopics();
     })
 
+    chat.on(Events.SETTINGS_UPDATED, (pkfp)=>{
+        console.log("Settings updated event from chat");
+    })
+
     chat.on(Events.NEW_CHAT_MESSAGE, (message, topicPkfp)=>{
         console.log(`New incoming chat message received for ${topicPkfp}`)
 

@@ -234,6 +234,10 @@ export class ChatClient{
         topic.on(Events.METADATA_UPDATED, ()=>{
             this.emit(Events.METADATA_UPDATED, topic.pkfp);
         })
+
+        topic.on(Events.SETTINGS_UPDATED, ()=>{
+            this.emit(Events.SETTINGS_UPDATED, topic.pkfp);
+        })
     }
     //END//////////////////////////////////////////////////////////////////////
 
