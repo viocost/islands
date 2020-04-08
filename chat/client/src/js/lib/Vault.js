@@ -396,7 +396,7 @@ export class Vault{
         //if(!Message.verifyMessage(self.sessionKey, data)){
         //    throw new Error("Session key signature is invalid!")
         //}
-        console.log(`Inviter nickname: ${data.body.inviterNickname}`)
+        console.log(`Adding new topic to vault`)
         let vaultRecord = data.body.vaultRecord;
         let metadata = data.body.metadata;
         let topicData = self.decryptTopic(vaultRecord, self.password);

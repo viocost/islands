@@ -185,18 +185,19 @@ export class Topic{
         this.handlers[Internal.NICKNAME_INITAL_EXCHANGE] = (msg)=>{
             console.log("Initial nickname exchange request received. Processing");
             let senderPkfp = msg.headers.pkfpSource
-            let senderPublicKey = self.participants[senderPkfp].publicKey;
             assert(self.participants[senderPkfp], "Member has not yet been registered")
             //assert(Message.verifyMessage(senderPublicKey, msg), "Signature is invalid")
             if(msg.body.metadataId === self.metadataId && msg.body.myNickname){
                 console.log("Decrypting new participant nickname...");
                 let nickname = ChatUtility.symKeyDecrypt(msg.body.myNickname, self.sharedKey);
                 self.setParticipantNickname(senderPkfp, nickname);
-                console.log("Saving client settings");
+                console.log(`New member's nickname is ${nickname}`);
+                console.log(`My current nickname is ${self.getCurrentNickname()}`);
                 self.saveClientSettings();
             }
 
-            console.log("Sending current nickname");
+            let curNickname = self.getCurrentNickname()
+            console.log(`Sending current nickname: ${curNickname}`);
             let response = new Message(self.version);
             response.setCommand(Internal.NICKNAME_NOTE)
             response.setSource(self.pkfp);
@@ -335,7 +336,10 @@ export class Topic{
         if (!this.metadataLoaded){
             throw new Error("Cannot get current nickname: metadata is not loaded.")
         }
-        return this.participants[this.pkfp].nickname;
+        if (!this._metadata.body.settings.membersData[this.pkfp]){
+            return ""
+        }
+        return this._metadata.body.settings.membersData[this.pkfp].nickname;
     }
 
     _loadMessages(self, quantity=25, lastMessageId){
@@ -431,13 +435,13 @@ export class Topic{
     // Nickname handling
     //TODO
     exchangeNicknames(){
-        console.log("Attempting to exchange nicknames");
+        console.log(`Attempting to exchange nicknames. Sending my nickname: ${this.getCurrentNickname()}`);
         if(!this.isBootstrapped){
             console.log("Cannot exchange nicknames: topic not bootstrapped.");
             return;
         }
-
-        let myNickname = ChatUtility.symKeyEncrypt(this.participants[this.pkfp].nickname,  this.sharedKey);
+        let myNicknameRaw = this.getCurrentNickname();
+        let myNickname = ChatUtility.symKeyEncrypt(myNicknameRaw,  this.sharedKey);
         let request = Message.createRequest(this.version,
                                             this.pkfp,
                                             Internal.NICKNAME_INITAL_EXCHANGE)
@@ -453,6 +457,10 @@ export class Topic{
         if (!this._metadata.body.settings.membersData[pkfp])
             this._metadata.body.settings.membersData[pkfp] = {}
         this._metadata.body.settings.membersData[pkfp].nickname = nickname;
+        this.participants[pkfp].nickname = nickname;
+        if (pkfp === this.pkfp){
+            this.nickname = nickname;
+        }
         this.saveClientSettings();
     }
 
@@ -522,7 +530,7 @@ export class Topic{
         newNickname = newNickname.toString("utf8");
 
         if( newNickname !== existingNickname){
-            self.setMemberNickname(request.headers.pkfpSource, newNickname);
+            self.setParticipantNickname(request.headers.pkfpSource, newNickname);
             self.saveClientSettings();
             if(existingNickname && existingNickname !== ""){
                 self.createServiceRecordOnMemberNicknameChange(memberRepr, newNickname, request.headers.pkfpSource);

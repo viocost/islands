@@ -138,7 +138,8 @@ export class TopicJoinAgent{
         let metadata = msg.body.metadata;
         topic.loadMetadata(metadata);
         topic.bootstrap(self.messageQueue, self.arrivalHub, self.version)
-        topic.settings = Topic.prepareNewTopicSettings(self.version, self.nickname, self.topicName, self.publicKey, false)
+        console.log(`Preparing settings with nickname ${self.nickname}`);
+        topic.setParticipantNickname(self.pkfp, self.nickname);
         topic.saveClientSettings();
         self.vault.registerTopic(topic);
         topic.exchangeNicknames();

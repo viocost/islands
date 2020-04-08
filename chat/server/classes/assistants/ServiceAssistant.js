@@ -178,13 +178,21 @@ class ServiceAssistant{
     async processInviteRequestSuccess(envelope, self){
         let request = envelope.payload;
         let msg = await self.createSaveServiceRecord(request.headers.pkfpSource, request.headers.command, "Invite created successfully. Code: " + request.body.inviteCode);
-        self.sessionManager.broadcastMessage(request.headers.pkfpSource, msg);
+        let note = new Message()
+        note.setHeader("pkfpDest", pkfp);
+        note.setHeader("command", Internal.SERVICE_RECORD);
+        note.setAttribute("serviceRecord", msg);
+        self.sessionManager.broadcastMessage(request.headers.pkfpSource, note);
     }
 
     async serviceRecordOnRequestError(envelope, self){
         let request = Envelope.getOriginalPayload(envelope);
         let msg = await self.createSaveServiceRecord(request.headers.pkfpSource, request.headers.command, envelope.error);
-        self.sessionManager.broadcastMessage(request.headers.pkfpSource, msg);
+        let note = new Message()
+        note.setHeader("pkfpDest", pkfp);
+        note.setHeader("command", Internal.SERVICE_RECORD);
+        note.setAttribute("serviceRecord", msg);
+        self.sessionManager.broadcastMessage(request.headers.pkfpSource, note);
     }
 
     async registerBootMemberRequest(request, connectionID, self){
