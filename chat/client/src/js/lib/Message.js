@@ -101,6 +101,10 @@ export class Message{
     }
 
 
+    setAttribute(attr=Err.required("Attribute name"), value){
+        this.body[attr] = value;
+    }
+
     setSource(pkfp){
         this.headers.pkfpSource = pkfp;
     }

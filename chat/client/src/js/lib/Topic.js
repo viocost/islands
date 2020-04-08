@@ -183,7 +183,44 @@ export class Topic{
         }
 
         this.handlers[Internal.NICKNAME_INITAL_EXCHANGE] = (msg)=>{
-            console.log("Initial nickname exchange request received");
+            console.log("Initial nickname exchange request received. Processing");
+            let senderPkfp = msg.headers.pkfpSource
+            let senderPublicKey = self.participants[senderPkfp].publicKey;
+            assert(self.participants[senderPkfp], "Member has not yet been registered")
+            assert(Message.verifyMessage(senderPublicKey, msg), "Signature is invalid")
+            if(msg.body.metadataId === self.metadataId && msg.body.myNickname){
+                console.log("Decrypting new participant nickname...");
+                let nickname = ChatUtility.symKeyDecrypt(msg.body.myNickname, self.sharedKey);
+                self.setParticipantNickname(senderPkfp, nickname);
+                console.log("Saving client settings");
+                self.saveClientSettings();
+            }
+
+            console.log("Sending current nickname");
+            let response = new Message(self.version);
+            response.setCommand(Internal.NICKNAME_NOTE)
+            response.setSource(self.pkfp);
+            response.setDest(senderPkfp);
+            response.addNonce();
+            response.setAttribute("nickname",
+                                  ChatUtility.symKeyEncrypt(self.getCurrentNickname(), self.sharedKey));
+            response.setAttribute(Internal.METADATA_ID, self.metadataId);
+            response.signMessage(self.privateKey);
+            self.messageQueue.enqueue(response);
+        }
+
+        this.handlers[Internal.NICKNAME_NOTE] = (msg)=>{
+            console.log("nickname note received");
+            let senderPkfp = msg.headers.pkfpSource
+            let senderPublicKey = self.participants[senderPkfp].publicKey;
+            assert(Message.verifyMessage(senderPublicKey, msg), "Signature is invalid")
+            let sharedKey = ChatUtility.privateKeyDecrypt(msg.sharedKey, self.privateKey)
+            let nickname = ChatUtililty.symKeyDecrypt(msg.body.nickname, sharedKey)
+            console.log(`Participan ${senderPkdf} changed his nickname to ${nickname}` );
+            self.setParticipantNickname(senderPkfp, nickname)
+            self.saveClientSettings();
+
+
         }
 
         this.handlers[Internal.SERVICE_RECORD] = (msg)=>{
@@ -411,7 +448,16 @@ export class Topic{
         console.log("Nicknames exchange request sent");
     }
 
-    setMemberAlias(pkfp, alias){
+    setParticipantNickname(pkfp, nickname){
+        assert(this._metadata.body.settings.membersData);
+        if (!this._metadata.body.settings.membersData[pkfp])
+            this._metadata.body.settings.membersData[pkfp] = {}
+        this._metadata.body.settings.membersData[pkfp].nickname = nickname;
+        this.saveClientSettings();
+    }
+
+
+    setParticipantAlias(pkfp, alias){
         if(!pkfp){
             throw new Error("Missing required parameter");
         }
@@ -490,6 +536,7 @@ export class Topic{
     // Settings handling
 
     saveClientSettings(settingsRaw, privateKey){
+        console.log("Saving client settings");
         if(!settingsRaw){
             settingsRaw = this.settings;
         }

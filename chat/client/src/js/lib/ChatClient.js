@@ -66,10 +66,15 @@ export class ChatClient{
                 //Initialize message queue
                 this.messageQueue = new MessageQueue(this.connector);
 
+                console.log("Bootstrapping vault...");
                 //bootstrapping vault
                 this.vault.bootstrap(this.arrivalHub, this.messageQueue, this.version);
+
+
+                console.log("Setting listeneres");
                 this.setVaultListeners()
 
+                console.log("Establishing connection");
                 await this.connector.establishConnection(vaultId);
                 console.log("Connection established. Initializing arrival hub..");
 

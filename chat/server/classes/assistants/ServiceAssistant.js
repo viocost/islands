@@ -285,6 +285,12 @@ class ServiceAssistant{
             }
         }
 
+        if (request.body[Internal.METADATA_ID]){
+            let metadata = Metadata.parseMetadata(await self.hm.getMetadata(pkfpDest, request.body[Internal.METADATA_ID]))
+            request.sharedKey = metadata.body.participants[pkfpDest].key;
+            request.sharedKeySignature = metadata.body.sharedKeySignature;
+        }
+
         //TODO This is temporary and must be refactored!
         request.headers.pkfpDest = pkfpDest
         let session = self.sessionManager.getSession(pkfpDest);
@@ -294,6 +300,7 @@ class ServiceAssistant{
             session[command](request)
         }
     }
+
 
 
     async processStandardNameExchangeRequest(request, connectionId, self){

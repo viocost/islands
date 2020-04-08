@@ -106,6 +106,7 @@ module.exports.Internal = Object.freeze({
 
     //Metadata updates
     METADATA_ISSUE: "metadata_issue",
+    METADATA_ID: "metadata_id",
 
     //Nickname exchange
     NICKNAME_REQUEST: "whats_your_name",
@@ -144,6 +145,7 @@ module.exports.Internal = Object.freeze({
 
     KILL_SESSION: "kill_session",
     SESSION_KEY: "session_key",
+
 
 
 })
