@@ -8,7 +8,8 @@ import "../css/chat.sass"
 import "../css/vendor/loading.css"
 import { Vault } from "./lib/Vault";
 //import "../css/vendor/toastr.min.css"
-
+// impor
+import { ChatUtility as ChatUtil, ChatUtility } from "./lib/ChatUtility"
 
 // ---------------------------------------------------------------------------------------------------------------------------
 // CONSTANTS
@@ -50,6 +51,7 @@ window.util = util;
 window.toastr = toastr;
 window.chat = chat;
 window.spinner = spinner;
+window.chatutil = ChatUtility;
 // ---------------------------------------------------------------------------------------------------------------------------
 // ~END TEST
 

@@ -1,5 +1,6 @@
 import { iCrypto } from "./iCrypto"
 import { IError as Err }  from "../../../../common/IError";
+import * as CuteSet from "cute-set";
 
 
 export class ChatUtility{
@@ -97,5 +98,23 @@ export class ChatUtility{
             .addBlob("b", data);
         ic.publicKeyVerify("b", "sign", "pubk", "v");
         return ic.get("v");
+    }
+
+    //Given set of keys master and object slave
+    //return new object that contains entries of slave object which keys
+    // are included in master set
+    // and empty entries for those key that exist in master but not in slave
+    static syncMap(master = Err.required("master dict"),
+                   slave = Err.required("slave dict"),
+                   empty = {}){
+
+        let slaveKeys = new CuteSet(Object.keys(slave))
+        let masterKeys = new CuteSet(master)
+        let keySet = masterKeys.intersection(slaveKeys).union(masterKeys);
+        let result = {};
+        for (let key of keySet){
+            result[key] = slave[key] || empty;
+        }
+        return result;
     }
 }

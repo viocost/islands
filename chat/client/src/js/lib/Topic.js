@@ -82,6 +82,24 @@ export class Topic{
     }
 
 
+    //Called when newly issued metadata arrived
+    updateMetadata(metadata){
+        if(typeof metadata === "string"){
+            metadata = JSON.parse(metadata);
+        }
+        let settings = this._metadata.body.settings
+        metadata.body.settings = settings;
+        settings.membersData = ChatUtility.syncMap(Object.keys(metadata.body.participants),
+                                                               settings.membersData,
+                                                               {nickname: ""})
+        this._metadata = metadata
+        this.sharedKey = ChatUtility.privateKeyDecrypt(this.participants[this.pkfp].key, this.privateKey);
+        this.metadataId = metadata.body.id;
+        this.topicAuthority = metadata.body.topicAuthority;
+        this.updateParticipants();
+        this.saveClientSettings();
+    }
+   
     loadMetadata(metadata){
         if(typeof metadata === "string"){
             metadata = JSON.parse(metadata);
@@ -98,6 +116,23 @@ export class Topic{
         this._metadata = metadata
         this._metadata.body.settings = settings;
         this.settings = settings;
+        this.updateParticipants()
+
+        this.sharedKey = ChatUtility.privateKeyDecrypt(this.participants[this.pkfp].key, this.privateKey);
+        this.metadataId = metadata.body.id;
+
+        this.topicAuthority = metadata.body.topicAuthority;
+        if (!metadata.body.settings.invites){
+            metadata.body.settings.invites = {};
+        }
+
+        this.invites = metadata.body.settings.invites;
+        this.metadataLoaded = true;
+    }
+
+    updateParticipants(){
+        console.log("Updating participants");
+        let metadata = this._metadata
         this.participants = {};
         for(let pkfp of Object.keys(metadata.body.participants)){
             this.participants[pkfp] = {};
@@ -113,19 +148,7 @@ export class Topic{
                 this.participants[pkfp].joined = metadata.body.settings.membersData[pkfp]?
                     metadata.body.settings.membersData[pkfp].joined : "";
             }
-
         }
-
-        this.sharedKey = ChatUtility.privateKeyDecrypt(this.participants[this.pkfp].key, this.privateKey);
-        this.metadataId = metadata.body.id;
-
-        this.topicAuthority = metadata.body.topicAuthority;
-        if (!metadata.body.settings.invites){
-            metadata.body.settings.invites = {};
-        }
-
-        this.invites = metadata.body.settings.invites;
-        this.metadataLoaded = true;
     }
 
     /**
@@ -177,7 +200,8 @@ export class Topic{
             console.log("Metadata issue received. Checking...")
             assert(Message.verifyMessage(self.topicAuthority.publicKey, msg), "TA signature is invalid")
             console.log("Loading metadata");
-            self.loadMetadata(msg.body.metadata);
+            let metadata = Metadata.parseMetadata(msg.body.metadata)
+            self.updateMetadata(metadata);
             console.log("Metadata updated");
             self.emit(Events.METADATA_UPDATED);
         }
@@ -190,7 +214,7 @@ export class Topic{
             if(msg.body.metadataId === self.metadataId && msg.body.myNickname){
                 console.log("Decrypting new participant nickname...");
                 let nickname = ChatUtility.symKeyDecrypt(msg.body.myNickname, self.sharedKey);
-                self.setParticipantNickname(senderPkfp, nickname);
+                self.setParticipantNickname(nickname, senderPkfp);
                 console.log(`New member's nickname is ${nickname}`);
                 console.log(`My current nickname is ${self.getCurrentNickname()}`);
                 self.saveClientSettings();
@@ -218,7 +242,7 @@ export class Topic{
             let sharedKey = ChatUtility.privateKeyDecrypt(msg.sharedKey, self.privateKey)
             let nickname = ChatUtililty.symKeyDecrypt(msg.body.nickname, sharedKey)
             console.log(`Participan ${senderPkdf} changed his nickname to ${nickname}` );
-            self.setParticipantNickname(senderPkfp, nickname)
+            self.setParticipantNickname(nickname, senderPkfp)
             self.saveClientSettings();
 
 
@@ -250,6 +274,11 @@ export class Topic{
             let message = new ChatMessage(msg.body.message)
             message.decryptMessage(self.sharedKey);
             self.addNewMessage(self, message);
+
+            if(message.header.nickname !== self.getParticipantNickname(msg.headers.pkfpSource)){
+                console.log(`Member's nickname has changed from ${self.getParticipantNickname(msg.headers.pkfpSource)} to ${message.header.nickname}`);
+                self.setParticipantNickname(message.header.nickname, msg.headers.pkfpSource);
+            }
 
         }
 
@@ -452,7 +481,18 @@ export class Topic{
         console.log("Nicknames exchange request sent");
     }
 
-    setParticipantNickname(pkfp, nickname){
+
+    getParticipantNickname(pkfp){
+        if (this._metadata.body.settings.membersData[pkfp]){
+            return this._metadata.body.settings.membersData[pkfp].nickname
+        }
+    }
+
+    setParticipantNickname(nickname, pkfp){
+        if (!pkfp){
+            console.log(`Resetting topic owner pkfp to ${nickname}`);
+            pkfp = this.pkfp;
+        }
         assert(this._metadata.body.settings.membersData);
         if (!this._metadata.body.settings.membersData[pkfp])
             this._metadata.body.settings.membersData[pkfp] = {}
@@ -530,7 +570,7 @@ export class Topic{
         newNickname = newNickname.toString("utf8");
 
         if( newNickname !== existingNickname){
-            self.setParticipantNickname(request.headers.pkfpSource, newNickname);
+            self.setParticipantNickname(newNickname, request.headers.pkfpSource);
             self.saveClientSettings();
             if(existingNickname && existingNickname !== ""){
                 self.createServiceRecordOnMemberNicknameChange(memberRepr, newNickname, request.headers.pkfpSource);
@@ -546,7 +586,7 @@ export class Topic{
     saveClientSettings(settingsRaw, privateKey){
         console.log("Saving client settings");
         if(!settingsRaw){
-            settingsRaw = this.settings;
+            settingsRaw = this._metadata.body.settings;
         }
         if(!privateKey){
             privateKey = this.privateKey;
@@ -638,8 +678,10 @@ export class Topic{
           .publicKeyVerify("settings", "sign", "pub", "res")
         if(!ic.get("res")) throw new Error("Settings blob signature verification failed")
         let settingsPlain = JSON.parse(ChatUtility.decryptStandardMessage(settings, self.privateKey))
-        self.settings = settingsPlain
-        console.log("Settings updated successfully!")
+        self._metadata.body.settings = settingsPlain;
+        self.settings = self._metadata.body.settings;
+        self.updateParticipants();
+        console.log("Settings updated successfully!");
         self.emit(Events.SETTINGS_UPDATED);
     }
 

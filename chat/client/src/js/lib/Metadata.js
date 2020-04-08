@@ -30,8 +30,5 @@ export class Metadata{
           .publicKeyVerify("body", "sign", "pub", "res")
         return ic.get("res");
     }
+
 }
-
-
-
-

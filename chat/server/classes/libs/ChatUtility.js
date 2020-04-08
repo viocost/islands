@@ -87,6 +87,7 @@ class ChatUtility{
           .bytesToHex("n", "nhex")
         return ic.get("nhex").substring(0, length);
     }
+
 }
 
 module.exports = ChatUtility;
