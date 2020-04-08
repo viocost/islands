@@ -1,4 +1,5 @@
 import { iCrypto } from "./iCrypto"
+import { assert, IErrror as Err } from "../../../../common/IError";
 
 export class Metadata{
     static parseMetadata(blob){
@@ -31,4 +32,46 @@ export class Metadata{
         return ic.get("res");
     }
 
+
+    constructor(){
+        this.body = {
+            id: "",
+            timestamp: "",
+            owner: "",
+            sharedKeySignature: "",
+            participants: {},
+            topicAuthority: {},
+            settings: {
+                version: "",
+                membersData: {},
+                invites: {}
+            }
+        }
+        this.signature;
+    }
+
+    setMemberAlias(alias = Err.required("alias"), pkfp){
+        if(!pkfp){
+            pkfp = this.body.owner;
+        }
+        return this.body.settings.membersData[pkfp].alias = alias;
+    }
+
+    getMemberAlias(pkfp){
+        if(!pkfp){
+            pkfp = this.body.owner;
+        }
+        return this.body.settings.membersData[pkfp].alias
+    }
+
+    setMemberNickname(nickname = Err.required("nickname"), pkfp){
+        if(!pkfp){
+            pkfp = this.body.owner;
+        }
+        return this.body.settings.membersData[pkfp].nickname = nickname;
+    }
+
+    getMemberNickname(){
+        return this.body.settings.membersData[pkfp].nickname
+    }
 }

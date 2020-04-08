@@ -584,26 +584,8 @@ export class Topic{
     // Settings handling
 
     saveClientSettings(settingsRaw, privateKey){
-        console.log("Saving client settings");
-        if(!settingsRaw){
-            settingsRaw = this._metadata.body.settings;
-        }
-        if(!privateKey){
-            privateKey = this.privateKey;
-        }
-        let ic = new iCrypto();
-        ic.asym.setKey("privk", privateKey, "private")
-            .publicFromPrivate("privk", "pub")
-        let publicKey = ic.get("pub");
 
-        if(typeof settingsRaw === "object"){
-            settingsRaw = JSON.stringify(settingsRaw);
-        }
-        let settingsEnc = ClientSettings.encrypt(publicKey, settingsRaw);
-
-        ic.addBlob("cipher", settingsEnc)
-          .privateKeySign("cipher", "privk", "sign")
-
+        this._metadata.getSettingsEncrypted(privateKey)
         let body = {
             settings: settingsEnc,
             signature: ic.get("sign")
