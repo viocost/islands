@@ -99,8 +99,16 @@ export class Topic{
         this.updateParticipants();
         this.saveClientSettings();
     }
-   
+
     loadMetadata(metadata){
+        let privateKey=this.privateKey;
+        this._metadata = Metadata.fromBlob(metadata, privateKey);
+        this.updateParticipants();
+        this.sharedKey = this._metadata.getSharedKey(this.pkfp, privateKey);
+        this.metadataLoaded = true;
+    }
+    //called only when loading metadata from Island on login
+    loadMetadataBAK(metadata){
         if(typeof metadata === "string"){
             metadata = JSON.parse(metadata);
         }

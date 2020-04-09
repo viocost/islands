@@ -1,5 +1,7 @@
 import { iCrypto } from "./iCrypto"
-import { assert, IErrror as Err } from "../../../../common/IError";
+import { assert, IError as Err } from "../../../../common/IError";
+import { ClientSettings } from "./ClientSettings";
+import { ChatUtility } from "./ChatUtility";
 
 export class Metadata{
     static parseMetadata(blob){
@@ -8,15 +10,6 @@ export class Metadata{
         }else{
             return blob;
         }
-    }
-
-    static extractSharedKey(pkfp, privateKey, metadata){
-        let keyCipher = metadata.body.participants[pkfp].key;
-        let ic = new iCrypto();
-        ic.addBlob("symcip", keyCipher)
-            .asym.setKey("priv", privateKey, "private")
-            .asym.decrypt("symcip", "priv", "sym", "hex");
-        return ic.get("sym");
     }
 
     static isMetadataValid(metadata){
@@ -30,6 +23,41 @@ export class Metadata{
           .addBlob("sign", metadata.signature)
           .publicKeyVerify("body", "sign", "pub", "res")
         return ic.get("res");
+    }
+
+    //Parses metadata blob and decrypts settings if found
+    static fromBlob(metadata = Err.required(), privateKey){
+        let parsed = typeof metadata === "string" ? JSON.parse(metadata) : metadata;
+        let res = new Metadata();
+
+        res.body = parsed.body;
+        res.signature = parsed.signature;
+        if (parsed.body.settings){
+            assert(privateKey, "No Private key to decrypt settings")
+            res.body.settings = res.decryptSettings(parsed.body.settings, privateKey);
+        } else {
+            console.log("Warning! Metadata without settings!")
+            res.body.settings = res.initializeSettings();
+        }
+
+        return res;
+    }
+
+    decryptSettings(settings = Err.required("settings"),
+                    privateKey = Err.required("privateKey")){
+      return JSON.parse(ChatUtility.decryptStandardMessage(settings, privateKey))
+    }
+
+    encryptSettings(publicKey = Err.required("publicKey"), settings = Err.required("settings")){
+        if(typeof settings === "object"){
+            settings = JSON.stringify(settings);
+        }
+        return ChatUtility.encryptStandardMessage(settings, publicKey);
+    }
+
+    getSharedKey(privateKey){
+
+        return ChatUtility.privateKeyDecrypt(this.body.participants[this.pkfp].key, this.privateKey);
     }
 
 
@@ -73,5 +101,59 @@ export class Metadata{
 
     getMemberNickname(){
         return this.body.settings.membersData[pkfp].nickname
+    }
+
+
+    addInvite(inviteCode, name = ""){
+        this.body.settings.invites[inviteCode] =  {
+            name: name
+        }
+    }
+
+    deleteInvite(inviteCode){
+        delete this.body.settings.invites[inviteCode];
+    }
+
+    updateParticipants(newMetadata){
+
+    }
+
+    updateInvites(){
+
+    }
+
+    updateSettings(){
+
+    }
+
+    getSharedKey(pkfp = Err.required("pkfp"),
+                 privateKey = Err.required("privateKey")){
+        return ChatUtility.privateKeyDecrypt(this.body.participants[pkfp].key, privateKey);
+    }
+
+    getSettingsEncrypted(privateKey = Err.required()){
+        let ic = new iCrypto();
+        ic.asym.setKey("privk", privateKey, "private")
+            .publicFromPrivate("privk", "pub")
+        let publicKey = ic.get("pub");
+
+        let settings = JSON.stringify(this.body.settings);
+        let settingsEnc = ClientSettings.encrypt(publicKey, settings);
+
+        ic.addBlob("cipher", settingsEnc)
+          .privateKeySign("cipher", "privk", "sign")
+
+        return {
+            settings: settingsEnc,
+            signature: ic.get("sign")
+        }
+    }
+
+    initializeSettings(version = "2.0.0"){
+        return {
+            version: version,
+            membersData: {},
+            invites : {}
+        }
     }
 }

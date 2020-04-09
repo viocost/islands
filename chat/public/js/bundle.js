@@ -4843,6 +4843,172 @@ util.estimateCores = function(options, callback) {
 
 /***/ }),
 /* 8 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ChatUtility; });
+/* harmony import */ var core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(38);
+/* harmony import */ var core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(39);
+/* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(17);
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(14);
+/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(5);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(6);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(2);
+/* harmony import */ var _common_IError__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(1);
+/* harmony import */ var cute_set__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(28);
+/* harmony import */ var cute_set__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(cute_set__WEBPACK_IMPORTED_MODULE_8__);
+
+
+
+
+
+
+
+
+
+var ChatUtility = /*#__PURE__*/function () {
+  function ChatUtility() {
+    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_4___default()(this, ChatUtility);
+  }
+
+  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_5___default()(ChatUtility, null, [{
+    key: "decryptStandardMessage",
+
+    /**
+     * Standard message referred to string of form [payload] + [sym key cipher] + [const length sym key length encoded]
+     * All messages in the system encrypted and decrypted in the described way except for chat messages files and streams.
+     * Sym key generated randomly every time
+     * @param blob - cipher blob
+     * @param lengthSymLengthEncoded number of digits used to encode length of the sym key
+     * @param privateKey
+     * @returns {}
+     */
+    value: function decryptStandardMessage() {
+      var blob = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _common_IError__WEBPACK_IMPORTED_MODULE_7__[/* IError */ "a"].required();
+      var privateKey = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _common_IError__WEBPACK_IMPORTED_MODULE_7__[/* IError */ "a"].required();
+      var lengthSymLengthEncoded = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 4;
+      var symKeyLength = parseInt(blob.substr(blob.length - lengthSymLengthEncoded));
+      var symKeyCipher = blob.substring(blob.length - lengthSymLengthEncoded - symKeyLength, blob.length - lengthSymLengthEncoded);
+      var payloadCipher = blob.substring(0, blob.length - lengthSymLengthEncoded - symKeyLength);
+      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_6__[/* iCrypto */ "a"]();
+      ic.addBlob("blobcip", payloadCipher).addBlob("symkcip", symKeyCipher).asym.setKey("privk", privateKey, "private").privateKeyDecrypt("symkcip", "privk", "symk", "hex").AESDecrypt("blobcip", "symk", "blob-raw", true, "CBC", "utf8");
+      return ic.get("blob-raw");
+    }
+  }, {
+    key: "encryptStandardMessage",
+    value: function encryptStandardMessage() {
+      var blob = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _common_IError__WEBPACK_IMPORTED_MODULE_7__[/* IError */ "a"].required();
+      var publicKey = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _common_IError__WEBPACK_IMPORTED_MODULE_7__[/* IError */ "a"].required();
+      var lengthSymLengthEncoded = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 4;
+      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_6__[/* iCrypto */ "a"]();
+      ic.sym.createKey("symk").addBlob("payload", blob).asym.setKey("pubk", publicKey, "public").AESEncrypt("payload", "symk", "blobcip", true, "CBC", "utf8").asym.encrypt("symk", "pubk", "symcip", "hex").encodeBlobLength("symcip", lengthSymLengthEncoded, "0", "symciplength").merge(["blobcip", "symcip", "symciplength"], "res");
+      return ic.get("res");
+    }
+  }, {
+    key: "publicKeyEncrypt",
+    value: function publicKeyEncrypt() {
+      var blob = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _common_IError__WEBPACK_IMPORTED_MODULE_7__[/* IError */ "a"].required();
+      var publicKey = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _common_IError__WEBPACK_IMPORTED_MODULE_7__[/* IError */ "a"].required();
+      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_6__[/* iCrypto */ "a"]();
+      ic.addBlob("blob", blob).asym.setKey("pubk", publicKey, "public").publicKeyEncrypt("blob", "pubk", "blobcip", "hex");
+      return ic.get("blobcip");
+    }
+  }, {
+    key: "privateKeyDecrypt",
+    value: function privateKeyDecrypt(blob, privateKey) {
+      var encoding = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "hex";
+      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_6__[/* iCrypto */ "a"]();
+      ic.addBlob("blobcip", blob).asym.setKey("priv", privateKey, "private").privateKeyDecrypt("blobcip", "priv", "blob", encoding);
+      return ic.get("blob");
+    }
+  }, {
+    key: "symKeyEncrypt",
+    value: function symKeyEncrypt(blob, key) {
+      var hexify = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_6__[/* iCrypto */ "a"]();
+      ic.addBlob("b", blob).sym.setKey("sym", key).AESEncrypt("b", "sym", "cip", hexify, "CBC", "utf8");
+      return ic.get("cip");
+    }
+  }, {
+    key: "symKeyDecrypt",
+    value: function symKeyDecrypt(cip, key) {
+      var dehexify = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_6__[/* iCrypto */ "a"]();
+      ic.addBlob("cip", cip).sym.setKey("sym", key).AESDecrypt("cip", "sym", "b", dehexify, "CBC", "utf8");
+      return ic.get("b");
+    }
+  }, {
+    key: "sign",
+    value: function sign(data, privateKey) {
+      if (typeof data !== "string") throw new Error("Data must be a string");
+      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_6__[/* iCrypto */ "a"]();
+      ic.addBlob("body", data).setRSAKey("priv", privateKey, "private").privateKeySign("body", "priv", "sign");
+      return ic.get("sign");
+    } //data must be string
+    // sign must be hexified string
+
+  }, {
+    key: "verify",
+    value: function verify(data, publicKey, sign) {
+      if (typeof data !== "string") throw new Error("Data must be a string");
+      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_6__[/* iCrypto */ "a"]();
+      ic.setRSAKey("pubk", publicKey, "public").addBlob("sign", sign).hexToBytes('sign', "signraw").addBlob("b", data);
+      ic.publicKeyVerify("b", "sign", "pubk", "v");
+      return ic.get("v");
+    } //Given set of keys master and object slave
+    //return new object that contains entries of slave object which keys
+    // are included in master set
+    // and empty entries for those key that exist in master but not in slave
+
+  }, {
+    key: "syncMap",
+    value: function syncMap() {
+      var master = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _common_IError__WEBPACK_IMPORTED_MODULE_7__[/* IError */ "a"].required("master dict");
+      var slave = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _common_IError__WEBPACK_IMPORTED_MODULE_7__[/* IError */ "a"].required("slave dict");
+      var empty = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+      var slaveKeys = new cute_set__WEBPACK_IMPORTED_MODULE_8__(Object.keys(slave));
+      var masterKeys = new cute_set__WEBPACK_IMPORTED_MODULE_8__(master);
+      var keySet = masterKeys.intersection(slaveKeys).union(masterKeys);
+      var result = {};
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = keySet[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var key = _step.value;
+          result[key] = slave[key] || empty;
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return != null) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
+
+      return result;
+    }
+  }]);
+
+  return ChatUtility;
+}();
+
+/***/ }),
+/* 9 */
 /***/ (function(module, exports) {
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
@@ -4884,7 +5050,7 @@ function _asyncToGenerator(fn) {
 module.exports = _asyncToGenerator;
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5070,172 +5236,6 @@ var Message = /*#__PURE__*/function () {
   return Message;
 }();
 Message.properties = ["headers", "body", "signature"];
-
-/***/ }),
-/* 10 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ChatUtility; });
-/* harmony import */ var core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(38);
-/* harmony import */ var core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(39);
-/* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(17);
-/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(14);
-/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(5);
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(6);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(2);
-/* harmony import */ var _common_IError__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(1);
-/* harmony import */ var cute_set__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(28);
-/* harmony import */ var cute_set__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(cute_set__WEBPACK_IMPORTED_MODULE_8__);
-
-
-
-
-
-
-
-
-
-var ChatUtility = /*#__PURE__*/function () {
-  function ChatUtility() {
-    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_4___default()(this, ChatUtility);
-  }
-
-  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_5___default()(ChatUtility, null, [{
-    key: "decryptStandardMessage",
-
-    /**
-     * Standard message referred to string of form [payload] + [sym key cipher] + [const length sym key length encoded]
-     * All messages in the system encrypted and decrypted in the described way except for chat messages files and streams.
-     * Sym key generated randomly every time
-     * @param blob - cipher blob
-     * @param lengthSymLengthEncoded number of digits used to encode length of the sym key
-     * @param privateKey
-     * @returns {}
-     */
-    value: function decryptStandardMessage() {
-      var blob = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _common_IError__WEBPACK_IMPORTED_MODULE_7__[/* IError */ "a"].required();
-      var privateKey = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _common_IError__WEBPACK_IMPORTED_MODULE_7__[/* IError */ "a"].required();
-      var lengthSymLengthEncoded = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 4;
-      var symKeyLength = parseInt(blob.substr(blob.length - lengthSymLengthEncoded));
-      var symKeyCipher = blob.substring(blob.length - lengthSymLengthEncoded - symKeyLength, blob.length - lengthSymLengthEncoded);
-      var payloadCipher = blob.substring(0, blob.length - lengthSymLengthEncoded - symKeyLength);
-      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_6__[/* iCrypto */ "a"]();
-      ic.addBlob("blobcip", payloadCipher).addBlob("symkcip", symKeyCipher).asym.setKey("privk", privateKey, "private").privateKeyDecrypt("symkcip", "privk", "symk", "hex").AESDecrypt("blobcip", "symk", "blob-raw", true, "CBC", "utf8");
-      return ic.get("blob-raw");
-    }
-  }, {
-    key: "encryptStandardMessage",
-    value: function encryptStandardMessage() {
-      var blob = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _common_IError__WEBPACK_IMPORTED_MODULE_7__[/* IError */ "a"].required();
-      var publicKey = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _common_IError__WEBPACK_IMPORTED_MODULE_7__[/* IError */ "a"].required();
-      var lengthSymLengthEncoded = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 4;
-      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_6__[/* iCrypto */ "a"]();
-      ic.sym.createKey("symk").addBlob("payload", blob).asym.setKey("pubk", publicKey, "public").AESEncrypt("payload", "symk", "blobcip", true, "CBC", "utf8").asym.encrypt("symk", "pubk", "symcip", "hex").encodeBlobLength("symcip", lengthSymLengthEncoded, "0", "symciplength").merge(["blobcip", "symcip", "symciplength"], "res");
-      return ic.get("res");
-    }
-  }, {
-    key: "publicKeyEncrypt",
-    value: function publicKeyEncrypt() {
-      var blob = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _common_IError__WEBPACK_IMPORTED_MODULE_7__[/* IError */ "a"].required();
-      var publicKey = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _common_IError__WEBPACK_IMPORTED_MODULE_7__[/* IError */ "a"].required();
-      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_6__[/* iCrypto */ "a"]();
-      ic.addBlob("blob", blob).asym.setKey("pubk", publicKey, "public").publicKeyEncrypt("blob", "pubk", "blobcip", "hex");
-      return ic.get("blobcip");
-    }
-  }, {
-    key: "privateKeyDecrypt",
-    value: function privateKeyDecrypt(blob, privateKey) {
-      var encoding = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "hex";
-      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_6__[/* iCrypto */ "a"]();
-      ic.addBlob("blobcip", blob).asym.setKey("priv", privateKey, "private").privateKeyDecrypt("blobcip", "priv", "blob", encoding);
-      return ic.get("blob");
-    }
-  }, {
-    key: "symKeyEncrypt",
-    value: function symKeyEncrypt(blob, key) {
-      var hexify = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_6__[/* iCrypto */ "a"]();
-      ic.addBlob("b", blob).sym.setKey("sym", key).AESEncrypt("b", "sym", "cip", hexify, "CBC", "utf8");
-      return ic.get("cip");
-    }
-  }, {
-    key: "symKeyDecrypt",
-    value: function symKeyDecrypt(cip, key) {
-      var dehexify = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_6__[/* iCrypto */ "a"]();
-      ic.addBlob("cip", cip).sym.setKey("sym", key).AESDecrypt("cip", "sym", "b", dehexify, "CBC", "utf8");
-      return ic.get("b");
-    }
-  }, {
-    key: "sign",
-    value: function sign(data, privateKey) {
-      if (typeof data !== "string") throw new Error("Data must be a string");
-      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_6__[/* iCrypto */ "a"]();
-      ic.addBlob("body", data).setRSAKey("priv", privateKey, "private").privateKeySign("body", "priv", "sign");
-      return ic.get("sign");
-    } //data must be string
-    // sign must be hexified string
-
-  }, {
-    key: "verify",
-    value: function verify(data, publicKey, sign) {
-      if (typeof data !== "string") throw new Error("Data must be a string");
-      var ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_6__[/* iCrypto */ "a"]();
-      ic.setRSAKey("pubk", publicKey, "public").addBlob("sign", sign).hexToBytes('sign', "signraw").addBlob("b", data);
-      ic.publicKeyVerify("b", "sign", "pubk", "v");
-      return ic.get("v");
-    } //Given set of keys master and object slave
-    //return new object that contains entries of slave object which keys
-    // are included in master set
-    // and empty entries for those key that exist in master but not in slave
-
-  }, {
-    key: "syncMap",
-    value: function syncMap() {
-      var master = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _common_IError__WEBPACK_IMPORTED_MODULE_7__[/* IError */ "a"].required("master dict");
-      var slave = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _common_IError__WEBPACK_IMPORTED_MODULE_7__[/* IError */ "a"].required("slave dict");
-      var empty = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-      var slaveKeys = new cute_set__WEBPACK_IMPORTED_MODULE_8__(Object.keys(slave));
-      var masterKeys = new cute_set__WEBPACK_IMPORTED_MODULE_8__(master);
-      var keySet = masterKeys.intersection(slaveKeys).union(masterKeys);
-      var result = {};
-      var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
-
-      try {
-        for (var _iterator = keySet[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          var key = _step.value;
-          result[key] = slave[key] || empty;
-        }
-      } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion && _iterator.return != null) {
-            _iterator.return();
-          }
-        } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
-          }
-        }
-      }
-
-      return result;
-    }
-  }]);
-
-  return ChatUtility;
-}();
 
 /***/ }),
 /* 11 */
@@ -7249,7 +7249,7 @@ var getKeys = __webpack_require__(77);
 var redefine = __webpack_require__(35);
 var global = __webpack_require__(12);
 var hide = __webpack_require__(19);
-var Iterators = __webpack_require__(53);
+var Iterators = __webpack_require__(54);
 var wks = __webpack_require__(13);
 var ITERATOR = wks('iterator');
 var TO_STRING_TAG = wks('toStringTag');
@@ -7499,7 +7499,7 @@ process.umask = function() { return 0; };
 /***/ (function(module, exports, __webpack_require__) {
 
 var dP = __webpack_require__(20);
-var createDesc = __webpack_require__(51);
+var createDesc = __webpack_require__(52);
 module.exports = __webpack_require__(21) ? function (object, key, value) {
   return dP.f(object, key, createDesc(1, value));
 } : function (object, key, value) {
@@ -7795,7 +7795,7 @@ var regenerator_default = /*#__PURE__*/__webpack_require__.n(regenerator);
 var runtime = __webpack_require__(29);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/asyncToGenerator.js
-var asyncToGenerator = __webpack_require__(8);
+var asyncToGenerator = __webpack_require__(9);
 var asyncToGenerator_default = /*#__PURE__*/__webpack_require__.n(asyncToGenerator);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/web.dom.iterable.js
@@ -7819,21 +7819,53 @@ var Events = __webpack_require__(0);
 var WildEmitter = __webpack_require__(11);
 
 // EXTERNAL MODULE: ./client/src/js/lib/Message.js
-var Message = __webpack_require__(9);
+var Message = __webpack_require__(10);
 
 // EXTERNAL MODULE: ./client/src/js/lib/iCrypto.js
 var iCrypto = __webpack_require__(2);
+
+// EXTERNAL MODULE: ./common/IError.js
+var IError = __webpack_require__(1);
+
+// EXTERNAL MODULE: ./client/src/js/lib/ClientSettings.js
+var ClientSettings = __webpack_require__(51);
+
+// EXTERNAL MODULE: ./client/src/js/lib/ChatUtility.js
+var ChatUtility = __webpack_require__(8);
 
 // CONCATENATED MODULE: ./client/src/js/lib/Metadata.js
 
 
 
-var Metadata_Metadata = /*#__PURE__*/function () {
-  function Metadata() {
-    classCallCheck_default()(this, Metadata);
-  }
 
-  createClass_default()(Metadata, null, [{
+
+
+var Metadata_Metadata = /*#__PURE__*/function () {
+  createClass_default()(Metadata, [{
+    key: "decryptSettings",
+    value: function decryptSettings() {
+      var settings = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : IError["a" /* IError */].required("settings");
+      var privateKey = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : IError["a" /* IError */].required("privateKey");
+      return JSON.parse(ChatUtility["a" /* ChatUtility */].decryptStandardMessage(settings, privateKey));
+    }
+  }, {
+    key: "encryptSettings",
+    value: function encryptSettings() {
+      var publicKey = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : IError["a" /* IError */].required("publicKey");
+      var settings = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : IError["a" /* IError */].required("settings");
+
+      if (typeof settings === "object") {
+        settings = JSON.stringify(settings);
+      }
+
+      return ChatUtility["a" /* ChatUtility */].encryptStandardMessage(settings, publicKey);
+    }
+  }, {
+    key: "getSharedKey",
+    value: function getSharedKey(privateKey) {
+      return ChatUtility["a" /* ChatUtility */].privateKeyDecrypt(this.body.participants[this.pkfp].key, this.privateKey);
+    }
+  }], [{
     key: "parseMetadata",
     value: function parseMetadata(blob) {
       if (typeof blob === "string") {
@@ -7841,14 +7873,6 @@ var Metadata_Metadata = /*#__PURE__*/function () {
       } else {
         return blob;
       }
-    }
-  }, {
-    key: "extractSharedKey",
-    value: function extractSharedKey(pkfp, privateKey, metadata) {
-      var keyCipher = metadata.body.participants[pkfp].key;
-      var ic = new iCrypto["a" /* iCrypto */]();
-      ic.addBlob("symcip", keyCipher).asym.setKey("priv", privateKey, "private").asym.decrypt("symcip", "priv", "sym", "hex");
-      return ic.get("sym");
     }
   }, {
     key: "isMetadataValid",
@@ -7860,28 +7884,153 @@ var Metadata_Metadata = /*#__PURE__*/function () {
       var ic = new iCrypto["a" /* iCrypto */]();
       ic.setRSAKey("pub", metadata.body.topicAuthority.publicKey, "public").addBlob("body", JSON.stringify(metadata.body)).addBlob("sign", metadata.signature).publicKeyVerify("body", "sign", "pub", "res");
       return ic.get("res");
+    } //Parses metadata blob and decrypts settings if found
+
+  }, {
+    key: "fromBlob",
+    value: function fromBlob() {
+      var metadata = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : IError["a" /* IError */].required();
+      var privateKey = arguments.length > 1 ? arguments[1] : undefined;
+      var parsed = typeof metadata === "string" ? JSON.parse(metadata) : metadata;
+      var res = new Metadata();
+      res.body = parsed.body;
+      res.signature = parsed.signature;
+
+      if (parsed.body.settings) {
+        Object(IError["b" /* assert */])(privateKey, "No Private key to decrypt settings");
+        res.body.settings = res.decryptSettings(parsed.body.settings, privateKey);
+      } else {
+        console.log("Warning! Metadata without settings!");
+        res.body.settings = res.initializeSettings();
+      }
+
+      return res;
+    }
+  }]);
+
+  function Metadata() {
+    classCallCheck_default()(this, Metadata);
+
+    this.body = {
+      id: "",
+      timestamp: "",
+      owner: "",
+      sharedKeySignature: "",
+      participants: {},
+      topicAuthority: {},
+      settings: {
+        version: "",
+        membersData: {},
+        invites: {}
+      }
+    };
+    this.signature;
+  }
+
+  createClass_default()(Metadata, [{
+    key: "setMemberAlias",
+    value: function setMemberAlias() {
+      var alias = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : IError["a" /* IError */].required("alias");
+      var pkfp = arguments.length > 1 ? arguments[1] : undefined;
+
+      if (!pkfp) {
+        pkfp = this.body.owner;
+      }
+
+      return this.body.settings.membersData[pkfp].alias = alias;
+    }
+  }, {
+    key: "getMemberAlias",
+    value: function getMemberAlias(pkfp) {
+      if (!pkfp) {
+        pkfp = this.body.owner;
+      }
+
+      return this.body.settings.membersData[pkfp].alias;
+    }
+  }, {
+    key: "setMemberNickname",
+    value: function setMemberNickname() {
+      var nickname = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : IError["a" /* IError */].required("nickname");
+      var pkfp = arguments.length > 1 ? arguments[1] : undefined;
+
+      if (!pkfp) {
+        pkfp = this.body.owner;
+      }
+
+      return this.body.settings.membersData[pkfp].nickname = nickname;
+    }
+  }, {
+    key: "getMemberNickname",
+    value: function getMemberNickname() {
+      return this.body.settings.membersData[pkfp].nickname;
+    }
+  }, {
+    key: "addInvite",
+    value: function addInvite(inviteCode) {
+      var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "";
+      this.body.settings.invites[inviteCode] = {
+        name: name
+      };
+    }
+  }, {
+    key: "deleteInvite",
+    value: function deleteInvite(inviteCode) {
+      delete this.body.settings.invites[inviteCode];
+    }
+  }, {
+    key: "updateParticipants",
+    value: function updateParticipants(newMetadata) {}
+  }, {
+    key: "updateInvites",
+    value: function updateInvites() {}
+  }, {
+    key: "updateSettings",
+    value: function updateSettings() {}
+  }, {
+    key: "getSharedKey",
+    value: function getSharedKey() {
+      var pkfp = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : IError["a" /* IError */].required("pkfp");
+      var privateKey = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : IError["a" /* IError */].required("privateKey");
+      return ChatUtility["a" /* ChatUtility */].privateKeyDecrypt(this.body.participants[pkfp].key, privateKey);
+    }
+  }, {
+    key: "getSettingsEncrypted",
+    value: function getSettingsEncrypted() {
+      var privateKey = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : IError["a" /* IError */].required();
+      var ic = new iCrypto["a" /* iCrypto */]();
+      ic.asym.setKey("privk", privateKey, "private").publicFromPrivate("privk", "pub");
+      var publicKey = ic.get("pub");
+      var settings = JSON.stringify(this.body.settings);
+      var settingsEnc = ClientSettings["a" /* ClientSettings */].encrypt(publicKey, settings);
+      ic.addBlob("cipher", settingsEnc).privateKeySign("cipher", "privk", "sign");
+      return {
+        settings: settingsEnc,
+        signature: ic.get("sign")
+      };
+    }
+  }, {
+    key: "initializeSettings",
+    value: function initializeSettings() {
+      var version = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "2.0.0";
+      return {
+        version: version,
+        membersData: {},
+        invites: {}
+      };
     }
   }]);
 
   return Metadata;
 }();
-// EXTERNAL MODULE: ./client/src/js/lib/ChatUtility.js
-var ChatUtility = __webpack_require__(10);
-
 // EXTERNAL MODULE: ./client/src/js/lib/ChatMessage.js
 var ChatMessage = __webpack_require__(40);
-
-// EXTERNAL MODULE: ./client/src/js/lib/ClientSettings.js
-var ClientSettings = __webpack_require__(57);
 
 // EXTERNAL MODULE: ./node_modules/cute-set/index.js
 var cute_set = __webpack_require__(28);
 
 // EXTERNAL MODULE: ./node_modules/buffer/index.js
 var buffer = __webpack_require__(16);
-
-// EXTERNAL MODULE: ./common/IError.js
-var IError = __webpack_require__(1);
 
 // CONCATENATED MODULE: ./client/src/js/lib/Topic.js
 
@@ -7985,6 +8134,16 @@ var Topic_Topic = /*#__PURE__*/function () {
   }, {
     key: "loadMetadata",
     value: function loadMetadata(metadata) {
+      var privateKey = this.privateKey;
+      this._metadata = Metadata_Metadata.fromBlob(metadata, privateKey);
+      this.updateParticipants();
+      this.sharedKey = this._metadata.getSharedKey(this.pkfp, privateKey);
+      this.metadataLoaded = true;
+    } //called only when loading metadata from Island on login
+
+  }, {
+    key: "loadMetadataBAK",
+    value: function loadMetadataBAK(metadata) {
       if (typeof metadata === "string") {
         metadata = JSON.parse(metadata);
       }
@@ -8541,26 +8700,8 @@ var Topic_Topic = /*#__PURE__*/function () {
   }, {
     key: "saveClientSettings",
     value: function saveClientSettings(settingsRaw, privateKey) {
-      console.log("Saving client settings");
+      this._metadata.getSettingsEncrypted(privateKey);
 
-      if (!settingsRaw) {
-        settingsRaw = this._metadata.body.settings;
-      }
-
-      if (!privateKey) {
-        privateKey = this.privateKey;
-      }
-
-      var ic = new iCrypto["a" /* iCrypto */]();
-      ic.asym.setKey("privk", privateKey, "private").publicFromPrivate("privk", "pub");
-      var publicKey = ic.get("pub");
-
-      if (typeof settingsRaw === "object") {
-        settingsRaw = JSON.stringify(settingsRaw);
-      }
-
-      var settingsEnc = ClientSettings["a" /* ClientSettings */].encrypt(publicKey, settingsRaw);
-      ic.addBlob("cipher", settingsEnc).privateKeySign("cipher", "privk", "sign");
       var body = {
         settings: settingsEnc,
         signature: ic.get("sign")
@@ -11578,7 +11719,7 @@ var isObject = __webpack_require__(27);
 var toObject = __webpack_require__(30);
 var toIObject = __webpack_require__(46);
 var toPrimitive = __webpack_require__(72);
-var createDesc = __webpack_require__(51);
+var createDesc = __webpack_require__(52);
 var _create = __webpack_require__(99);
 var gOPNExt = __webpack_require__(212);
 var $GOPD = __webpack_require__(102);
@@ -13555,6 +13696,75 @@ Duplex.prototype._destroy = function (err, cb) {
 
 /***/ }),
 /* 51 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ClientSettings; });
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _common_IError__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1);
+/* harmony import */ var _ChatUtility__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(8);
+
+
+
+
+var ClientSettings = /*#__PURE__*/function () {
+  function ClientSettings() {
+    var version = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _common_IError__WEBPACK_IMPORTED_MODULE_2__[/* IError */ "a"].required();
+    var nickname = arguments.length > 1 ? arguments[1] : undefined;
+    var pkfp = arguments.length > 2 ? arguments[2] : undefined;
+
+    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0___default()(this, ClientSettings);
+
+    this.version = version;
+    this.membersData = {};
+    this.invites = {};
+
+    if (nickname) {
+      console.log("Setting nickname for new settings: ".concat(nickname));
+      this.nickname = nickname;
+      this.membersData[pkfp] = {
+        nickname: nickname
+      };
+    }
+  }
+
+  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1___default()(ClientSettings, [{
+    key: "setOwnerNickname",
+    value: function setOwnerNickname(pkfp, nickname) {
+      this.setNickname(pkfp, nickname);
+      this.nickname = nickname;
+    }
+  }, {
+    key: "setNickname",
+    value: function setNickname(pkfp, nickname) {
+      if (!this.membersData.hasOwnProperty(pkfp)) {
+        this.membersData[pkfp] = {};
+      }
+
+      this.membersData[pkfp].nickname = nickname;
+    }
+  }], [{
+    key: "encrypt",
+    value: function encrypt() {
+      var publicKey = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _common_IError__WEBPACK_IMPORTED_MODULE_2__[/* IError */ "a"].required;
+      var settings = arguments.length > 1 ? arguments[1] : undefined;
+
+      if (typeof settings === "object") {
+        settings = JSON.stringify(settings);
+      }
+
+      return _ChatUtility__WEBPACK_IMPORTED_MODULE_3__[/* ChatUtility */ "a"].encryptStandardMessage(settings, publicKey);
+    }
+  }]);
+
+  return ClientSettings;
+}();
+
+/***/ }),
+/* 52 */
 /***/ (function(module, exports) {
 
 module.exports = function (bitmap, value) {
@@ -13568,7 +13778,7 @@ module.exports = function (bitmap, value) {
 
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -13579,14 +13789,14 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, exports) {
 
 module.exports = {};
 
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -13822,7 +14032,7 @@ function ltrim(str) {
 
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -13991,7 +14201,7 @@ Emitter.prototype.hasListeners = function(event){
 
 
 /***/ }),
-/* 56 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -14602,75 +14812,6 @@ exports.decodePayloadAsBinary = function (data, binaryType, callback) {
 
 
 /***/ }),
-/* 57 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ClientSettings; });
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5);
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _common_IError__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1);
-/* harmony import */ var _ChatUtility__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(10);
-
-
-
-
-var ClientSettings = /*#__PURE__*/function () {
-  function ClientSettings() {
-    var version = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _common_IError__WEBPACK_IMPORTED_MODULE_2__[/* IError */ "a"].required();
-    var nickname = arguments.length > 1 ? arguments[1] : undefined;
-    var pkfp = arguments.length > 2 ? arguments[2] : undefined;
-
-    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0___default()(this, ClientSettings);
-
-    this.version = version;
-    this.membersData = {};
-    this.invites = {};
-
-    if (nickname) {
-      console.log("Setting nickname for new settings: ".concat(nickname));
-      this.nickname = nickname;
-      this.membersData[pkfp] = {
-        nickname: nickname
-      };
-    }
-  }
-
-  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1___default()(ClientSettings, [{
-    key: "setOwnerNickname",
-    value: function setOwnerNickname(pkfp, nickname) {
-      this.setNickname(pkfp, nickname);
-      this.nickname = nickname;
-    }
-  }, {
-    key: "setNickname",
-    value: function setNickname(pkfp, nickname) {
-      if (!this.membersData.hasOwnProperty(pkfp)) {
-        this.membersData[pkfp] = {};
-      }
-
-      this.membersData[pkfp].nickname = nickname;
-    }
-  }], [{
-    key: "encrypt",
-    value: function encrypt() {
-      var publicKey = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _common_IError__WEBPACK_IMPORTED_MODULE_2__[/* IError */ "a"].required;
-      var settings = arguments.length > 1 ? arguments[1] : undefined;
-
-      if (typeof settings === "object") {
-        settings = JSON.stringify(settings);
-      }
-
-      return _ChatUtility__WEBPACK_IMPORTED_MODULE_3__[/* ChatUtility */ "a"].encryptStandardMessage(settings, publicKey);
-    }
-  }]);
-
-  return ClientSettings;
-}();
-
-/***/ }),
 /* 58 */
 /***/ (function(module, exports) {
 
@@ -14711,7 +14852,7 @@ module.exports = function (it, tag, stat) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // getting tag from 19.1.3.6 Object.prototype.toString()
-var cof = __webpack_require__(52);
+var cof = __webpack_require__(53);
 var TAG = __webpack_require__(13)('toStringTag');
 // ES3 wrong here
 var ARG = cof(function () { return arguments; }()) == 'Arguments';
@@ -21931,7 +22072,7 @@ exports.Socket = __webpack_require__(172);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(29);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(8);
+/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(9);
 /* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(31);
 /* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_3__);
@@ -22438,7 +22579,7 @@ var es6_object_to_string = __webpack_require__(14);
 var runtime = __webpack_require__(29);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/asyncToGenerator.js
-var asyncToGenerator = __webpack_require__(8);
+var asyncToGenerator = __webpack_require__(9);
 var asyncToGenerator_default = /*#__PURE__*/__webpack_require__.n(asyncToGenerator);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/classCallCheck.js
@@ -22466,7 +22607,7 @@ function verifyPassword(password, confirm) {
 var Topic = __webpack_require__(25);
 
 // EXTERNAL MODULE: ./client/src/js/lib/ClientSettings.js
-var ClientSettings = __webpack_require__(57);
+var ClientSettings = __webpack_require__(51);
 
 // EXTERNAL MODULE: ./client/src/js/lib/iCrypto.js
 var iCrypto = __webpack_require__(2);
@@ -22475,13 +22616,13 @@ var iCrypto = __webpack_require__(2);
 var WildEmitter = __webpack_require__(11);
 
 // EXTERNAL MODULE: ./client/src/js/lib/Message.js
-var Message = __webpack_require__(9);
+var Message = __webpack_require__(10);
 
 // EXTERNAL MODULE: ./common/Events.js
 var Events = __webpack_require__(0);
 
 // EXTERNAL MODULE: ./client/src/js/lib/ChatUtility.js
-var ChatUtility = __webpack_require__(10);
+var ChatUtility = __webpack_require__(8);
 
 // EXTERNAL MODULE: ./client/src/js/lib/xhr.js
 var xhr = __webpack_require__(88);
@@ -23171,7 +23312,7 @@ module.exports = (
 /***/ (function(module, exports, __webpack_require__) {
 
 // check on default Array iterator
-var Iterators = __webpack_require__(53);
+var Iterators = __webpack_require__(54);
 var ITERATOR = __webpack_require__(13)('iterator');
 var ArrayProto = Array.prototype;
 
@@ -23233,7 +23374,7 @@ module.exports = Object.create || function create(O, Properties) {
 
 var classof = __webpack_require__(61);
 var ITERATOR = __webpack_require__(13)('iterator');
-var Iterators = __webpack_require__(53);
+var Iterators = __webpack_require__(54);
 module.exports = __webpack_require__(41).getIteratorMethod = function (it) {
   if (it != undefined) return it[ITERATOR]
     || it['@@iterator']
@@ -23274,7 +23415,7 @@ module.exports = function (exec, skipClosing) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var pIE = __webpack_require__(103);
-var createDesc = __webpack_require__(51);
+var createDesc = __webpack_require__(52);
 var toIObject = __webpack_require__(46);
 var toPrimitive = __webpack_require__(72);
 var has = __webpack_require__(36);
@@ -24441,7 +24582,7 @@ __webpack_require__(79);
 __webpack_require__(34);
 __webpack_require__(240);
 __webpack_require__(48);
-__webpack_require__(54);
+__webpack_require__(55);
 __webpack_require__(115);
 __webpack_require__(80);
 __webpack_require__(7);
@@ -27855,7 +27996,7 @@ pss.create = function(options) {
  */
 
 var debug = __webpack_require__(259)('socket.io-parser');
-var Emitter = __webpack_require__(55);
+var Emitter = __webpack_require__(56);
 var binary = __webpack_require__(262);
 var isArray = __webpack_require__(164);
 var isBuf = __webpack_require__(165);
@@ -28317,8 +28458,8 @@ module.exports = function (opts) {
  * Module dependencies.
  */
 
-var parser = __webpack_require__(56);
-var Emitter = __webpack_require__(55);
+var parser = __webpack_require__(57);
+var Emitter = __webpack_require__(56);
 
 /**
  * Module exports.
@@ -29548,7 +29689,7 @@ module.exports = _toConsumableArray;
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(29);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(8);
+/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(9);
 /* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(5);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_3__);
@@ -29758,7 +29899,7 @@ if (__webpack_require__(21)) {
   var $buffer = __webpack_require__(195);
   var ctx = __webpack_require__(44);
   var anInstance = __webpack_require__(94);
-  var propertyDesc = __webpack_require__(51);
+  var propertyDesc = __webpack_require__(52);
   var hide = __webpack_require__(19);
   var redefineAll = __webpack_require__(93);
   var toInteger = __webpack_require__(45);
@@ -29781,7 +29922,7 @@ if (__webpack_require__(21)) {
   var createArrayIncludes = __webpack_require__(95);
   var speciesConstructor = __webpack_require__(78);
   var ArrayIterators = __webpack_require__(135);
-  var Iterators = __webpack_require__(53);
+  var Iterators = __webpack_require__(54);
   var $iterDetect = __webpack_require__(101);
   var setSpecies = __webpack_require__(137);
   var arrayFill = __webpack_require__(131);
@@ -30308,7 +30449,7 @@ module.exports = function (object, names) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // fallback for non-array-like ES3 and non-enumerable old V8 strings
-var cof = __webpack_require__(52);
+var cof = __webpack_require__(53);
 // eslint-disable-next-line no-prototype-builtins
 module.exports = Object('z').propertyIsEnumerable(0) ? Object : function (it) {
   return cof(it) == 'String' ? it.split('') : Object(it);
@@ -30369,7 +30510,7 @@ module.exports = Object.getPrototypeOf || function (O) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.2.2 IsArray(argument)
-var cof = __webpack_require__(52);
+var cof = __webpack_require__(53);
 module.exports = Array.isArray || function isArray(arg) {
   return cof(arg) == 'Array';
 };
@@ -30383,7 +30524,7 @@ module.exports = Array.isArray || function isArray(arg) {
 
 var addToUnscopables = __webpack_require__(136);
 var step = __webpack_require__(200);
-var Iterators = __webpack_require__(53);
+var Iterators = __webpack_require__(54);
 var toIObject = __webpack_require__(46);
 
 // 22.1.3.4 Array.prototype.entries()
@@ -30551,7 +30692,7 @@ if (!setTask || !clearTask) {
     delete queue[id];
   };
   // Node.js 0.8-
-  if (__webpack_require__(52)(process) == 'process') {
+  if (__webpack_require__(53)(process) == 'process') {
     defer = function (id) {
       process.nextTick(ctx(run, id, 1));
     };
@@ -30644,7 +30785,7 @@ module.exports = function (C, x) {
 "use strict";
 
 var $defineProperty = __webpack_require__(20);
-var createDesc = __webpack_require__(51);
+var createDesc = __webpack_require__(52);
 
 module.exports = function (object, index, value) {
   if (index in object) $defineProperty.f(object, index, createDesc(0, value));
@@ -32010,7 +32151,7 @@ var forge = __webpack_require__(4);
 __webpack_require__(33);
 __webpack_require__(65);
 __webpack_require__(112);
-__webpack_require__(54);
+__webpack_require__(55);
 __webpack_require__(149);
 __webpack_require__(24);
 __webpack_require__(66);
@@ -36061,7 +36202,7 @@ var forge = __webpack_require__(4);
 __webpack_require__(33);
 __webpack_require__(48);
 __webpack_require__(150);
-__webpack_require__(54);
+__webpack_require__(55);
 __webpack_require__(113);
 __webpack_require__(157);
 __webpack_require__(115);
@@ -36183,7 +36324,7 @@ __webpack_require__(79);
 __webpack_require__(34);
 __webpack_require__(48);
 __webpack_require__(113);
-__webpack_require__(54);
+__webpack_require__(55);
 __webpack_require__(24);
 __webpack_require__(154);
 __webpack_require__(80);
@@ -41575,7 +41716,7 @@ function isBuf(obj) {
 
 var eio = __webpack_require__(263);
 var Socket = __webpack_require__(172);
-var Emitter = __webpack_require__(55);
+var Emitter = __webpack_require__(56);
 var parser = __webpack_require__(116);
 var on = __webpack_require__(173);
 var bind = __webpack_require__(68);
@@ -42212,7 +42353,7 @@ function polling (opts) {
 
 var Transport = __webpack_require__(118);
 var parseqs = __webpack_require__(83);
-var parser = __webpack_require__(56);
+var parser = __webpack_require__(57);
 var inherit = __webpack_require__(84);
 var yeast = __webpack_require__(170);
 var debug = __webpack_require__(85)('engine.io-client:polling');
@@ -42624,7 +42765,7 @@ module.exports = function(arr, obj){
  */
 
 var parser = __webpack_require__(116);
-var Emitter = __webpack_require__(55);
+var Emitter = __webpack_require__(56);
 var toArray = __webpack_require__(279);
 var on = __webpack_require__(173);
 var bind = __webpack_require__(68);
@@ -45077,7 +45218,7 @@ module.exports = _defineProperty;
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(29);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(8);
+/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(9);
 /* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(5);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_6__);
@@ -45092,8 +45233,8 @@ module.exports = _defineProperty;
 /* harmony import */ var _Connector__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(185);
 /* harmony import */ var _MessageQueue__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(124);
 /* harmony import */ var _ArrivalHub__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(187);
-/* harmony import */ var _ChatUtility__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(10);
-/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(9);
+/* harmony import */ var _ChatUtility__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(8);
+/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(10);
 /* harmony import */ var _Topic__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(25);
 /* harmony import */ var _DownloadAttachmentAgent__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(188);
 /* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(2);
@@ -47597,7 +47738,7 @@ function coerce (version, options) {
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(29);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(8);
+/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(9);
 /* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(5);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_5__);
@@ -47917,7 +48058,7 @@ var ArrivalHub = function ArrivalHub(connector) {
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(29);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(8);
+/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(9);
 /* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(5);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_5__);
@@ -48121,12 +48262,12 @@ var DownloadAttachmentAgent = /*#__PURE__*/function () {
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(6);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(2);
-/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(9);
+/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(10);
 /* harmony import */ var _WildEmitter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(11);
 /* harmony import */ var _Topic__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(25);
 /* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(0);
 /* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_common_Events__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var _ChatUtility__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(10);
+/* harmony import */ var _ChatUtility__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(8);
 
 
 
@@ -48315,14 +48456,14 @@ var TopicJoinAgent = /*#__PURE__*/function () {
 /* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(29);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(8);
+/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(9);
 /* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_7__);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(5);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_8__);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(6);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_9__);
 /* harmony import */ var _ChatMessage__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(40);
-/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(9);
+/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(10);
 /* harmony import */ var _common_IError__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(1);
 /* harmony import */ var _Topic__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(25);
 /* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(0);
@@ -49807,7 +49948,7 @@ var LIBRARY = __webpack_require__(43);
 var $export = __webpack_require__(26);
 var redefine = __webpack_require__(35);
 var hide = __webpack_require__(19);
-var Iterators = __webpack_require__(53);
+var Iterators = __webpack_require__(54);
 var $iterCreate = __webpack_require__(202);
 var setToStringTag = __webpack_require__(60);
 var getPrototypeOf = __webpack_require__(133);
@@ -49880,7 +50021,7 @@ module.exports = function (Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCE
 "use strict";
 
 var create = __webpack_require__(99);
-var descriptor = __webpack_require__(51);
+var descriptor = __webpack_require__(52);
 var setToStringTag = __webpack_require__(60);
 var IteratorPrototype = {};
 
@@ -49932,7 +50073,7 @@ module.exports = [].copyWithin || function copyWithin(target /* = 0 */, start /*
 
 // 7.2.8 IsRegExp(argument)
 var isObject = __webpack_require__(27);
-var cof = __webpack_require__(52);
+var cof = __webpack_require__(53);
 var MATCH = __webpack_require__(13)('match');
 module.exports = function (it) {
   var isRegExp;
@@ -50206,7 +50347,7 @@ var macrotask = __webpack_require__(142).set;
 var Observer = global.MutationObserver || global.WebKitMutationObserver;
 var process = global.process;
 var Promise = global.Promise;
-var isNode = __webpack_require__(52)(process) == 'process';
+var isNode = __webpack_require__(53)(process) == 'process';
 
 module.exports = function () {
   var head, last, notify;
@@ -50875,7 +51016,7 @@ __webpack_require__(162);
 __webpack_require__(243);
 __webpack_require__(159);
 __webpack_require__(113);
-__webpack_require__(54);
+__webpack_require__(55);
 __webpack_require__(155);
 __webpack_require__(157);
 __webpack_require__(244);
@@ -52875,7 +53016,7 @@ __webpack_require__(47);
 __webpack_require__(33);
 __webpack_require__(79);
 __webpack_require__(48);
-__webpack_require__(54);
+__webpack_require__(55);
 __webpack_require__(158);
 __webpack_require__(24);
 __webpack_require__(7);
@@ -57568,7 +57709,7 @@ module.exports = __webpack_require__(264);
  * @api public
  *
  */
-module.exports.parser = __webpack_require__(56);
+module.exports.parser = __webpack_require__(57);
 
 
 /***/ }),
@@ -57580,10 +57721,10 @@ module.exports.parser = __webpack_require__(56);
  */
 
 var transports = __webpack_require__(167);
-var Emitter = __webpack_require__(55);
+var Emitter = __webpack_require__(56);
 var debug = __webpack_require__(85)('engine.io-client:socket');
 var index = __webpack_require__(171);
-var parser = __webpack_require__(56);
+var parser = __webpack_require__(57);
 var parseuri = __webpack_require__(163);
 var parseqs = __webpack_require__(83);
 
@@ -57723,7 +57864,7 @@ Socket.protocol = parser.protocol; // this is an int
 Socket.Socket = Socket;
 Socket.Transport = __webpack_require__(118);
 Socket.transports = __webpack_require__(167);
-Socket.parser = __webpack_require__(56);
+Socket.parser = __webpack_require__(57);
 
 /**
  * Creates transport of the given type.
@@ -58360,7 +58501,7 @@ try {
 
 var XMLHttpRequest = __webpack_require__(117);
 var Polling = __webpack_require__(168);
-var Emitter = __webpack_require__(55);
+var Emitter = __webpack_require__(56);
 var inherit = __webpack_require__(84);
 var debug = __webpack_require__(85)('engine.io-client:polling-xhr');
 
@@ -59966,7 +60107,7 @@ JSONPPolling.prototype.doWrite = function (data, fn) {
  */
 
 var Transport = __webpack_require__(118);
-var parser = __webpack_require__(56);
+var parser = __webpack_require__(57);
 var parseqs = __webpack_require__(83);
 var inherit = __webpack_require__(84);
 var yeast = __webpack_require__(170);
@@ -61760,7 +61901,7 @@ var es6_array_sort = __webpack_require__(192);
 var es6_typed_uint8_array = __webpack_require__(75);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/asyncToGenerator.js
-var asyncToGenerator = __webpack_require__(8);
+var asyncToGenerator = __webpack_require__(9);
 var asyncToGenerator_default = /*#__PURE__*/__webpack_require__.n(asyncToGenerator);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.split.js
@@ -63084,7 +63225,7 @@ var loading = __webpack_require__(301);
 var Vault = __webpack_require__(91);
 
 // EXTERNAL MODULE: ./client/src/js/lib/ChatUtility.js
-var ChatUtility = __webpack_require__(10);
+var ChatUtility = __webpack_require__(8);
 
 // CONCATENATED MODULE: ./client/src/js/chat-ui.js
 

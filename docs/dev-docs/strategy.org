@@ -8,6 +8,15 @@
 *** Implement older messages loading
 *** Implement scrolling down on new messages
 
+** TODO Refactor metadata handling
+1. Load metadata from island with settings encrypted
+2. Update settings
+3. Update Participants and shared key
+4. Update invites which is also update settings
+
+
+
+
 ** TODO Re-implement leave/delete toipc
 ** TODO Debug metadata update
 ** TODO Fix service records handling on client
