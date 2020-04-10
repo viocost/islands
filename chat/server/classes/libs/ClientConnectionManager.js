@@ -101,42 +101,6 @@ class ClientConnectionManager extends EventEmitter{
         client.emit(message, data);
     }
 
-
-
-    // ---------------------------------------------------------------------------------------------------------------------------
-    // JUNK
-
-
-    ////////////////////////////////////////////////////////
-    // sendError(connectionId, errMessage){               //
-    //     this.send(connectionId, "error", errMessage);  //
-    // }                                                  //
-    //                                                    //
-    // sendResponse(connectionId, response){              //
-    //     this.send(connectionId, "response", response); //
-    // }                                                  //
-    //                                                    //
-    // sendRequest(connectionId, request){                //
-    //     this.send(connectionId, "request", request);   //
-    // }                                                  //
-    ////////////////////////////////////////////////////////
-
-    ////////////////////////////////////////////////////////////
-    // sendServiceMessage(connectionId, message){             //
-    //     this.send(connectionId, "service", message);       //
-    // }                                                      //
-    //                                                        //
-    // sendServiceRecord(connectionId, record){               //
-    //     console.log("Sending service record");             //
-    //     this.send(connectionId, "service_record", record); //
-    // }                                                      //
-    //                                                        //
-    // sendChatMessage(connectionId, message){                //
-    //     this.send(connectionId, "message", message);       //
-    // }                                                      //
-    ////////////////////////////////////////////////////////////
-
-
 }
 
 

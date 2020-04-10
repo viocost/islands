@@ -139,8 +139,7 @@ export class TopicJoinAgent{
         topic.loadMetadata(metadata);
         topic.bootstrap(self.messageQueue, self.arrivalHub, self.version)
         console.log(`Preparing settings with nickname ${self.nickname}`);
-        topic.setParticipantNickname(self.pkfp, self.nickname);
-        topic.saveClientSettings();
+        topic.setParticipantNickname(self.nickname, self.pkfp);
         self.vault.registerTopic(topic);
         topic.exchangeNicknames();
 
@@ -148,8 +147,6 @@ export class TopicJoinAgent{
             pkfp: self.pkfp,
             nickname: self.nickname
         })
-
-
     }
 
     onJoinTopicFail(self, msg){

@@ -63,7 +63,11 @@ class ServiceAssistant{
         let newMetadata = Metadata.parseMetadata(message.body.metadata);
         newMetadata.setSettings(prevMeta.body.settings);
         await self.hm.appendMetadata(newMetadata.toBlob(), message.headers.pkfpDest);
-        self.sessionManager.broadcastMessage(message.headers.pkfpDest, message);
+        let session = self.sessionManager.getSession(message.headers.pkfpDest);
+        if (session){
+            //this sends the new metadata to first connected client in the session
+            session.send(message)
+        }
         await self.registerMetadataUpdate(message, message.headers.pkfpDest);
     }
 
@@ -157,6 +161,7 @@ class ServiceAssistant{
     }
 
 
+    //This just sends service record to all the clients and appends it to history
     async registerMetadataUpdate(message, pkfp){
         let msg = await this.createSaveServiceRecord(pkfp, message.headers.event,
             this.generateMessageOnMetadataIssue(message));

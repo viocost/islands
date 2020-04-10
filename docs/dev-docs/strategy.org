@@ -15,8 +15,9 @@
 4. Update invites which is also update settings
 
 
+  
 
-
+** TODO When topic is created on one client - it must appear on all other connected clients
 ** TODO Re-implement leave/delete toipc
 ** TODO Debug metadata update
 ** TODO Fix service records handling on client

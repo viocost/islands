@@ -78,39 +78,43 @@ export class Metadata{
         this.signature;
     }
 
-    setMemberAlias(alias = Err.required("alias"), pkfp){
-        if(!pkfp){
-            pkfp = this.body.owner;
+    setParticipantAlias(alias = Err.required("alias"), pkfp){
+        assert(this.body.participants.hasOwnProperty(pkfp), `Participant ${pkfp} not found`)
+        if (!this.body.settings.membersData.hasOwnProperty(pkfp)){
+            this.body.settings.membersData[pkfp] = {}
         }
-        return this.body.settings.membersData[pkfp].alias = alias;
+        this.body.settings.membersData[pkfp].alias = alias;
     }
 
-    getMemberAlias(pkfp){
+
+    setParticipantNickname(nickname = Err.required("nickname"), pkfp = Err.required("pkfp")){
+        assert(this.body.participants.hasOwnProperty(pkfp), `Participant ${pkfp} not found`)
+        if (!this.body.settings.membersData.hasOwnProperty(pkfp)){
+            this.body.settings.membersData[pkfp] = {}
+        }
+        this.body.settings.membersData[pkfp].nickname = nickname;
+    }
+
+    getParticipantAlias(pkfp){
         if(!pkfp){
             pkfp = this.body.owner;
         }
         return this.body.settings.membersData[pkfp].alias
     }
 
-    setMemberNickname(nickname = Err.required("nickname"), pkfp){
-        if(!pkfp){
-            pkfp = this.body.owner;
-        }
-        return this.body.settings.membersData[pkfp].nickname = nickname;
-    }
 
-    getMemberNickname(){
+    getParticipantNickname(pkfp = Err.required("pkfp")){
         return this.body.settings.membersData[pkfp].nickname
     }
 
 
-    addInvite(inviteCode, name = ""){
+    addInvite(inviteCode = Err.required("inviteCode"), name = ""){
         this.body.settings.invites[inviteCode] =  {
             name: name
         }
     }
 
-    deleteInvite(inviteCode){
+    deleteInvite(inviteCode = Err.required("inviteCode")){
         delete this.body.settings.invites[inviteCode];
     }
 
@@ -118,16 +122,36 @@ export class Metadata{
         return JSON.parse(JSON.stringify(this.body.settings.invites));
     }
 
-    updateMetadata(newMetadata){
+    hasInvite(inviteCode){
+        return this.body.settings.invites.hasOwnProperty(inviteCode);
+    }
 
+    updateMetadata(newMetadata){
+        //assert(Metadata.isMetadataValid(newMetadata), "Metadata is invalid")
+        console.log("Updating metadata...");
+        if(typeof newMetadata === "string"){
+            newMetadata = JSON.parse(newMetadata);
+        }
+        let currentParticipants = Object.keys(newMetadata.body.participants)
+        this.body.participants = newMetadata.body.participants;
+
+        this.body.settings.membersData = ChatUtility.syncMap(currentParticipants, this.body.settings.membersData, {nickname: ""});
+        this.body.id = newMetadata.body.id;
+        this.body.timestamp = newMetadata.body.timestampa;
+        this.body.sharedKeySignature = newMetadata.body.sharedKeySignature;
+        this.signature = newMetadata.signature;
     }
 
     updateInvites(invites){
         this.body.settings.invites = ChatUtility.syncMap(invites, this.body.settings.invites, {name: ""});
     }
 
-    updateSettings(){
-
+    updateSettings(settings){
+        assert(typeof settings === "object", "Settings are of invalid type.")
+        let currentParticipants = Object.keys(this.body.participants)
+        this.body.settings.membersData = ChatUtility.syncMap(currentParticipants, settings.membersData, {nickname: ""})
+        this.body.settings.invites = settings.invites;
+        this.body.settings.version = settings.version;
     }
 
     getId(){

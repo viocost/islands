@@ -49,6 +49,7 @@ class ClientSettingsAssistant{
         await self.hm.appendMetadata(metadata.toBlob(), request.headers.pkfpSource);
 
         let response =  Message.makeResponse(request, "island", Internal.SETTINGS_UPDATED);
+        response.body.metadata = metadata;
         response.body.settings = request.body.settings;
         response.body.signature = request.body.signature;
         let session = self.sessionManager.getSessionByConnectionId(connectionID);

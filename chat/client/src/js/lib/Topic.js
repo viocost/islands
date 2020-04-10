@@ -208,9 +208,9 @@ export class Topic{
         this.handlers[Internal.METADATA_ISSUE] = (msg) =>{
             console.log("Metadata issue received. Checking...")
             assert(Message.verifyMessage(self._metadata.getTAPublicKey(), msg), "TA signature is invalid")
-            console.log("Loading metadata");
-            let metadata = Metadata.parseMetadata(msg.body.metadata)
-            self.updateMetadata(metadata);
+            console.log("Signature verified. Loading metadata...");
+            self._metadata.updateMetadata(msg.body.metadata);
+            self.saveClientSettings();
             console.log("Metadata updated");
             self.emit(Events.METADATA_UPDATED);
         }
@@ -442,18 +442,16 @@ export class Topic{
     updateInvite(){
 
         this.session.settings.invites[inviteID].name = name;
-        this.saveClientSettings(this.session.settings, this.session.privateKey)
+        this.saveClientSettings()
     }
 
     deleteInvite(inviteCode){
         console.log("About to delete invite: " + inviteCode);
-        if(!this.invites.hasOwnProperty(inviteCode)){
-            console.error(`Invite does not exist: ${inviteCode}`)
-        }
+        assert(this._metadata.hasInvite(inviteCode), `Invite does not exists: ${inviteCode}`)
         let request = new Message(this.version);
         request.headers.command = Internal.DELETE_INVITE;
         request.headers.pkfpSource = this.pkfp;
-        request.headers.pkfpDest = this.topicAuthority.pkfp
+        request.headers.pkfpDest = this._metadata.getTAPkfp();
         let body = {
             invite: inviteCode,
         };
@@ -474,7 +472,7 @@ export class Topic{
             }
         }
 
-        this.saveClientSettings(this.session.settings, this.session.privateKey);
+        this.saveClientSettings();
     }
     //END//////////////////////////////////////////////////////////////////////
 
@@ -507,39 +505,14 @@ export class Topic{
     }
 
     setParticipantNickname(nickname, pkfp){
-        if (!pkfp){
-            console.log(`Resetting topic owner pkfp to ${nickname}`);
-            pkfp = this.pkfp;
-        }
-        assert(this._metadata.body.settings.membersData);
-        if (!this._metadata.body.settings.membersData[pkfp])
-            this._metadata.body.settings.membersData[pkfp] = {}
-        this._metadata.body.settings.membersData[pkfp].nickname = nickname;
-        this.participants[pkfp].nickname = nickname;
-        if (pkfp === this.pkfp){
-            this.nickname = nickname;
-        }
+        this._metadata.setParticipantNickname(nickname, pkfp);
         this.saveClientSettings();
     }
 
 
-    setParticipantAlias(pkfp, alias){
-        if(!pkfp){
-            throw new Error("Missing required parameter");
-        }
-        if(!this.session){
-            return
-        }
-        let membersData = this.session.settings.membersData;
-        if (!membersData[pkfp]){
-            membersData[pkfp] = {}
-        }
-        if(!alias){
-            delete membersData[pkfp].alias
-        }else{
-            membersData[pkfp].alias = alias;
-        }
-
+    setParticipantAlias(alias, pkfp){
+        this._metadata.setParticipantAlias(alias, pkfp)
+        this.saveClientSettings();
     }
 
     requestNickname(pkfp){
@@ -601,13 +574,13 @@ export class Topic{
     // ---------------------------------------------------------------------------------------------------------------------------
     // Settings handling
 
-    saveClientSettings(settingsRaw, privateKey){
-        let body = this._metadata.getSettingsEncrypted(privateKey)
+    saveClientSettings(){
+        let body = this._metadata.getSettingsEncrypted(this.privateKey)
         let request = new Message(this.version);
         request.setSource(this.pkfp);
         request.setCommand(Internal.UPDATE_SETTINGS)
         request.set("body", body);
-        request.signMessage(privateKey);
+        request.signMessage(this.privateKey);
         console.log("Sending update settings request");
         this.messageQueue.enqueue(request);
     }
@@ -662,6 +635,7 @@ export class Topic{
     processSettingsUpdated(self, msg){
         let settings = msg.body.settings;
         let signature = msg.body.signature;
+        let metadata = Metadata.fromBlob(msg.body.metadata, self.privateKey);
 
         let ic = new iCrypto()
         ic.addBlob("settings", settings)
@@ -669,9 +643,15 @@ export class Topic{
           .setRSAKey("pub", self.getPublicKey(), "public")
           .publicKeyVerify("settings", "sign", "pub", "res")
         if(!ic.get("res")) throw new Error("Settings blob signature verification failed")
+
         let settingsPlain = JSON.parse(ChatUtility.decryptStandardMessage(settings, self.privateKey))
-        self._metadata.body.settings = settingsPlain;
-        self.settings = self._metadata.body.settings;
+        if(this._metadata.getId() !== metadata.getId()){
+            console.log("Metadata has been updated. Updating...");
+            this._metadata.updateMetadata(metadata)
+        }
+
+
+        self._metadata.updateSettings(settingsPlain);
         self.updateParticipants();
         console.log("Settings updated successfully!");
         self.emit(Events.SETTINGS_UPDATED);
@@ -709,7 +689,7 @@ export class Topic{
         }
 
         self._metadata.updateInvites(data.userInvites);
-        self.saveClientSettings(self.settings, self.privateKey);
+        self.saveClientSettings();
     }
 
     getParticipantAlias(pkfp){

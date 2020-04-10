@@ -423,17 +423,6 @@ export class Vault{
         return pkfp
     }
 
-
-    initSettingsOnTopicJoin(self, pkfp, inviteeNickname, request){
-        let topic = self.topics[pkfp];
-        let privateKey = topic.privateKey;
-        let inviterNickname = ChatUtility.decryptStandardMessage(request.body.inviterNickname, privateKey);
-        let inviterPkfp = request.body.inviterPkfp;
-        let settings = new ClientSettings(self.version, inviteeNickname, pkfp);
-        settings.setNickname(inviterPkfp, inviterNickname);
-        topic.saveClientSettings(settings, privateKey)
-    }
-
     pack(){
          let vaultBlob =  JSON.stringify({
             version: this.version,
