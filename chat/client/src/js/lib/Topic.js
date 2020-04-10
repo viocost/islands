@@ -105,6 +105,7 @@ export class Topic{
         this._metadata = Metadata.fromBlob(metadata, privateKey);
         this.updateParticipants();
         this.sharedKey = this._metadata.getSharedKey(this.pkfp, privateKey);
+        this.metadataId = this._metadata.getId();
         this.metadataLoaded = true;
     }
     //called only when loading metadata from Island on login
@@ -206,7 +207,7 @@ export class Topic{
 
         this.handlers[Internal.METADATA_ISSUE] = (msg) =>{
             console.log("Metadata issue received. Checking...")
-            assert(Message.verifyMessage(self.topicAuthority.publicKey, msg), "TA signature is invalid")
+            assert(Message.verifyMessage(self._metadata.getTAPublicKey(), msg), "TA signature is invalid")
             console.log("Loading metadata");
             let metadata = Metadata.parseMetadata(msg.body.metadata)
             self.updateMetadata(metadata);
@@ -379,6 +380,11 @@ export class Topic{
         return this._metadata.body.settings.membersData[this.pkfp].nickname;
     }
 
+    getSharedKey(){
+        return this._metadata.getSharedKey(this.pkfp, this.privateKey);
+    }
+
+
     _loadMessages(self, quantity=25, lastMessageId){
         let request = new Message(self.version);
         request.headers.command = Internal.LOAD_MESSAGES;
@@ -403,19 +409,23 @@ export class Topic{
         }
         setTimeout(()=>{
             let request = new Message(self.version);
-            let taPublicKey = self.topicAuthority.publicKey;
+            let taPublicKey = self._metadata.getTAPublicKey();
             let myNickNameEncrypted = ChatUtility.encryptStandardMessage(self.participants[self.pkfp].nickname,
                 taPublicKey);
             let topicNameEncrypted = ChatUtility.encryptStandardMessage(self.name, taPublicKey);
             request.setCommand(Internal.REQUEST_INVITE);
             request.setSource(self.pkfp);
-            request.setDest(self.topicAuthority.pkfp);
+            request.setDest(self._metadata.getTAPkfp());
             request.body.nickname = myNickNameEncrypted;
             request.body.topicName = topicNameEncrypted;
             request.signMessage(self.privateKey);
             self.messageQueue.enqueue(request);
         }, 100)
 
+    }
+
+    getInvites(){
+        return this._metadata.getInvites();
     }
 
     syncInvites(){
@@ -592,13 +602,7 @@ export class Topic{
     // Settings handling
 
     saveClientSettings(settingsRaw, privateKey){
-
-        this._metadata.getSettingsEncrypted(privateKey)
-        let body = {
-            settings: settingsEnc,
-            signature: ic.get("sign")
-        };
-
+        let body = this._metadata.getSettingsEncrypted(privateKey)
         let request = new Message(this.version);
         request.setSource(this.pkfp);
         request.setCommand(Internal.UPDATE_SETTINGS)
@@ -612,8 +616,6 @@ export class Topic{
 
     processMessagesLoaded(msg, self){
         let data = msg.body.lastMessages;
-
-
         let keys = data.keys;
 
         console.log(`Messages loaded. Processing.... Keys: ${keys}`);
@@ -698,7 +700,7 @@ export class Topic{
 
 
     processInvitesUpdated(self, msg){
-        assert(Message.verifyMessage(self.topicAuthority.publicKey, msg), "TA signature is invalid")
+        assert(Message.verifyMessage(self._metadata.getTAPublicKey(), msg), "TA signature is invalid")
         let data = JSON.parse(ChatUtility.decryptStandardMessage(msg.body.data, self.privateKey))
 
         console.log(`Invites data has been decrypted successfully.`);
@@ -706,20 +708,7 @@ export class Topic{
             console.log(`New invite: ${data.inviteCode}`);
         }
 
-        let userInvites = data.userInvites;
-
-        if(!self.settings.invites) self.settings.invites = {}
-
-        for(let i of userInvites){
-            if(!self.settings.invites.hasOwnProperty(i)){
-                self.settings.invites[i] = {}
-            }
-        }
-        for (let i of Object.keys(self.settings.invites)){
-            if(!userInvites.includes(i)){
-                delete self.settings.invites[i];
-            }
-        }
+        self._metadata.updateInvites(data.userInvites);
         self.saveClientSettings(self.settings, self.privateKey);
     }
 

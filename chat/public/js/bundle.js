@@ -7979,14 +7979,28 @@ var Metadata_Metadata = /*#__PURE__*/function () {
       delete this.body.settings.invites[inviteCode];
     }
   }, {
-    key: "updateParticipants",
-    value: function updateParticipants(newMetadata) {}
+    key: "getInvites",
+    value: function getInvites() {
+      return JSON.parse(JSON.stringify(this.body.settings.invites));
+    }
+  }, {
+    key: "updateMetadata",
+    value: function updateMetadata(newMetadata) {}
   }, {
     key: "updateInvites",
-    value: function updateInvites() {}
+    value: function updateInvites(invites) {
+      this.body.settings.invites = ChatUtility["a" /* ChatUtility */].syncMap(invites, this.body.settings.invites, {
+        name: ""
+      });
+    }
   }, {
     key: "updateSettings",
     value: function updateSettings() {}
+  }, {
+    key: "getId",
+    value: function getId() {
+      return this.body.id;
+    }
   }, {
     key: "getSharedKey",
     value: function getSharedKey() {
@@ -8008,6 +8022,16 @@ var Metadata_Metadata = /*#__PURE__*/function () {
         settings: settingsEnc,
         signature: ic.get("sign")
       };
+    }
+  }, {
+    key: "getTAPublicKey",
+    value: function getTAPublicKey() {
+      return this.body.topicAuthority.publicKey;
+    }
+  }, {
+    key: "getTAPkfp",
+    value: function getTAPkfp() {
+      return this.body.topicAuthority.pkfp;
     }
   }, {
     key: "initializeSettings",
@@ -8138,6 +8162,7 @@ var Topic_Topic = /*#__PURE__*/function () {
       this._metadata = Metadata_Metadata.fromBlob(metadata, privateKey);
       this.updateParticipants();
       this.sharedKey = this._metadata.getSharedKey(this.pkfp, privateKey);
+      this.metadataId = this._metadata.getId();
       this.metadataLoaded = true;
     } //called only when loading metadata from Island on login
 
@@ -8274,7 +8299,7 @@ var Topic_Topic = /*#__PURE__*/function () {
 
       this.handlers[Events["Internal"].METADATA_ISSUE] = function (msg) {
         console.log("Metadata issue received. Checking...");
-        Object(IError["b" /* assert */])(Message["a" /* Message */].verifyMessage(self.topicAuthority.publicKey, msg), "TA signature is invalid");
+        Object(IError["b" /* assert */])(Message["a" /* Message */].verifyMessage(self._metadata.getTAPublicKey(), msg), "TA signature is invalid");
         console.log("Loading metadata");
         var metadata = Metadata_Metadata.parseMetadata(msg.body.metadata);
         self.updateMetadata(metadata);
@@ -8440,6 +8465,11 @@ var Topic_Topic = /*#__PURE__*/function () {
       return this._metadata.body.settings.membersData[this.pkfp].nickname;
     }
   }, {
+    key: "getSharedKey",
+    value: function getSharedKey() {
+      return this._metadata.getSharedKey(this.pkfp, this.privateKey);
+    }
+  }, {
     key: "_loadMessages",
     value: function _loadMessages(self) {
       var quantity = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 25;
@@ -8470,17 +8500,24 @@ var Topic_Topic = /*#__PURE__*/function () {
 
       setTimeout(function () {
         var request = new Message["a" /* Message */](self.version);
-        var taPublicKey = self.topicAuthority.publicKey;
+
+        var taPublicKey = self._metadata.getTAPublicKey();
+
         var myNickNameEncrypted = ChatUtility["a" /* ChatUtility */].encryptStandardMessage(self.participants[self.pkfp].nickname, taPublicKey);
         var topicNameEncrypted = ChatUtility["a" /* ChatUtility */].encryptStandardMessage(self.name, taPublicKey);
         request.setCommand(Events["Internal"].REQUEST_INVITE);
         request.setSource(self.pkfp);
-        request.setDest(self.topicAuthority.pkfp);
+        request.setDest(self._metadata.getTAPkfp());
         request.body.nickname = myNickNameEncrypted;
         request.body.topicName = topicNameEncrypted;
         request.signMessage(self.privateKey);
         self.messageQueue.enqueue(request);
       }, 100);
+    }
+  }, {
+    key: "getInvites",
+    value: function getInvites() {
+      return this._metadata.getInvites();
     }
   }, {
     key: "syncInvites",
@@ -8700,12 +8737,8 @@ var Topic_Topic = /*#__PURE__*/function () {
   }, {
     key: "saveClientSettings",
     value: function saveClientSettings(settingsRaw, privateKey) {
-      this._metadata.getSettingsEncrypted(privateKey);
+      var body = this._metadata.getSettingsEncrypted(privateKey);
 
-      var body = {
-        settings: settingsEnc,
-        signature: ic.get("sign")
-      };
       var request = new Message["a" /* Message */](this.version);
       request.setSource(this.pkfp);
       request.setCommand(Events["Internal"].UPDATE_SETTINGS);
@@ -8796,7 +8829,7 @@ var Topic_Topic = /*#__PURE__*/function () {
   }, {
     key: "processInvitesUpdated",
     value: function processInvitesUpdated(self, msg) {
-      Object(IError["b" /* assert */])(Message["a" /* Message */].verifyMessage(self.topicAuthority.publicKey, msg), "TA signature is invalid");
+      Object(IError["b" /* assert */])(Message["a" /* Message */].verifyMessage(self._metadata.getTAPublicKey(), msg), "TA signature is invalid");
       var data = JSON.parse(ChatUtility["a" /* ChatUtility */].decryptStandardMessage(msg.body.data, self.privateKey));
       console.log("Invites data has been decrypted successfully.");
 
@@ -8804,42 +8837,7 @@ var Topic_Topic = /*#__PURE__*/function () {
         console.log("New invite: ".concat(data.inviteCode));
       }
 
-      var userInvites = data.userInvites;
-      if (!self.settings.invites) self.settings.invites = {};
-      var _iteratorNormalCompletion2 = true;
-      var _didIteratorError2 = false;
-      var _iteratorError2 = undefined;
-
-      try {
-        for (var _iterator2 = userInvites[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-          var i = _step2.value;
-
-          if (!self.settings.invites.hasOwnProperty(i)) {
-            self.settings.invites[i] = {};
-          }
-        }
-      } catch (err) {
-        _didIteratorError2 = true;
-        _iteratorError2 = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
-            _iterator2.return();
-          }
-        } finally {
-          if (_didIteratorError2) {
-            throw _iteratorError2;
-          }
-        }
-      }
-
-      for (var _i5 = 0, _Object$keys3 = Object.keys(self.settings.invites); _i5 < _Object$keys3.length; _i5++) {
-        var _i6 = _Object$keys3[_i5];
-
-        if (!userInvites.includes(_i6)) {
-          delete self.settings.invites[_i6];
-        }
-      }
+      self._metadata.updateInvites(data.userInvites);
 
       self.saveClientSettings(self.settings, self.privateKey);
     }
@@ -45556,9 +45554,8 @@ var ChatClient = /*#__PURE__*/function () {
   }, {
     key: "getInvites",
     value: function getInvites(topicId) {
-      if (!this.topics.hasOwnProperty(topicId)) throw new Error("Topic ".concat(topicId, ", not found"));
-      var topic = this.topics[topicId];
-      return JSON.parse(JSON.stringify(topic.invites));
+      Object(_common_IError__WEBPACK_IMPORTED_MODULE_10__[/* assert */ "b"])(this.topics.hasOwnProperty(topicId), "Topic ".concat(topicId, ", not found"));
+      return this.topics[topicId].getInvites();
     } // ---------------------------------------------------------------------------------------------------------------------------
     // Topic creation
 
@@ -48568,7 +48565,7 @@ var SendMessageAgent = /*#__PURE__*/function () {
                 return _context.finish(16);
 
               case 24:
-                self.chatMessage.encryptMessage(self.topic.sharedKey);
+                self.chatMessage.encryptMessage(self.topic.getSharedKey());
                 self.chatMessage.sign(self.topic.privateKey); //Preparing request
 
                 message = new _Message__WEBPACK_IMPORTED_MODULE_11__[/* Message */ "a"](self.version);

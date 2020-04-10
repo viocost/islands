@@ -32,7 +32,7 @@ export class SendMessageAgent{
                 }
             }
 
-            self.chatMessage.encryptMessage(self.topic.sharedKey);
+            self.chatMessage.encryptMessage(self.topic.getSharedKey());
             self.chatMessage.sign(self.topic.privateKey);
 
             //Preparing request

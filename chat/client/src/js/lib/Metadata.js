@@ -114,16 +114,24 @@ export class Metadata{
         delete this.body.settings.invites[inviteCode];
     }
 
-    updateParticipants(newMetadata){
+    getInvites(){
+        return JSON.parse(JSON.stringify(this.body.settings.invites));
+    }
+
+    updateMetadata(newMetadata){
 
     }
 
-    updateInvites(){
-
+    updateInvites(invites){
+        this.body.settings.invites = ChatUtility.syncMap(invites, this.body.settings.invites, {name: ""});
     }
 
     updateSettings(){
 
+    }
+
+    getId(){
+        return this.body.id;
     }
 
     getSharedKey(pkfp = Err.required("pkfp"),
@@ -148,6 +156,15 @@ export class Metadata{
             signature: ic.get("sign")
         }
     }
+
+    getTAPublicKey(){
+        return this.body.topicAuthority.publicKey
+    }
+
+    getTAPkfp(){
+        return this.body.topicAuthority.pkfp
+    }
+
 
     initializeSettings(version = "2.0.0"){
         return {

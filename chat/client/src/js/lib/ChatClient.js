@@ -259,9 +259,8 @@ export class ChatClient{
     }
 
     getInvites(topicId){
-        if (!this.topics.hasOwnProperty(topicId)) throw new Error(`Topic ${topicId}, not found`)
-        let topic = this.topics[topicId];
-        return JSON.parse(JSON.stringify(topic.invites));
+        assert(this.topics.hasOwnProperty(topicId), `Topic ${topicId}, not found`)
+        return this.topics[topicId].getInvites();
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------
