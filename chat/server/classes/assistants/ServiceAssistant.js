@@ -1,4 +1,5 @@
 const CuteSet = require("cute-set");
+
 const Err = require("../libs/IError.js");
 const Envelope = require("../objects/CrossIslandEnvelope.js");
 const ServiceRecord = require("../objects/ServiceRecord.js");
@@ -194,7 +195,7 @@ class ServiceAssistant{
         let request = Envelope.getOriginalPayload(envelope);
         let msg = await self.createSaveServiceRecord(request.headers.pkfpSource, request.headers.command, envelope.error);
         let note = new Message()
-        note.setHeader("pkfpDest", pkfp);
+        note.setHeader("pkfpDest", request.headers.pkfpSource);
         note.setHeader("command", Internal.SERVICE_RECORD);
         note.setAttribute("serviceRecord", msg);
         self.sessionManager.broadcastMessage(request.headers.pkfpSource, note);
