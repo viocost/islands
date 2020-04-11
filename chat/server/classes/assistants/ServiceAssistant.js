@@ -270,8 +270,21 @@ class ServiceAssistant{
         return self.verifyAndForwardServiceMessage(envelope, self)
     }
 
-    async processNicknameResponse(envelope, self){
-        return self.verifyAndForwardServiceMessage(envelope, self)
+    async processNicknameNote(envelope, self){
+        //return self.verifyAndForwardServiceMessage(envelope, self)
+        Logger.debug("Processing nickname note.", {cat: "service"})
+        let request = Envelope.getOriginalPayload(envelope);
+        let pkfpDest = request.headers.pkfpDest;
+        let metadata = Metadata.parseMetadata(await self.hm.getMetadata(pkfpDest, request.body[Internal.METADATA_ID]));
+        let senderPublicKey = metadata.body.participants[request.headers.pkfpSource].publicKey;
+        assert(Request.isRequestValid(request, senderPublicKey), "Nickname change note: signature is invalid");
+        request.sharedKey = metadata.body.participants[pkfpDest].key;
+        let session = self.sessionManager.getSession(pkfpDest);
+        if(session){
+
+            Logger.debug("Nickname note: client session found. Forwarding request...", {cat: "service"})
+            session.send(request);
+        }
     }
 
 
@@ -314,7 +327,19 @@ class ServiceAssistant{
         }
     }
 
+    async sendNicknameNote(request, connectionId, self){
+        Logger.debug("Sending nickname note", {
+            cat: "service"
+        })
 
+        const metadata = JSON.parse(await self.hm.getLastMetadata(request.headers.pkfpSource));
+        const recipient = metadata.body.participants[request.headers.pkfpDest].residence;
+        const sender = metadata.body.participants[request.headers.pkfpSource].residence;
+        const myPublicKey = metadata.body.participants[request.headers.pkfpSource].publicKey;
+
+        assert(Request.isRequestValid(request, myPublicKey), "Sending private message error: signature is not valid!")
+        self._sendToSignleRecipient(request, sender, recipient)
+    }
 
     async processStandardNameExchangeRequest(request, connectionId, self){
         Logger.debug("Sending name request", {
@@ -380,7 +405,7 @@ class ServiceAssistant{
             cat: "service"
         });
         let envelope = new Envelope(destination, request, origin);
-        envelope.setReturnOnFail(true);
+        envelope.setReturnOnFail(false);
         this.ciMessenger.send(envelope);
     }
 
@@ -441,11 +466,10 @@ class ServiceAssistant{
         handlers[Internal.LOAD_MESSAGES] = this.loadMoreMessages;
         handlers[Internal.UPDATE_SETTINGS] = this.registerSettingsUpdate;
         handlers[Internal.NICKNAME_INITAL_EXCHANGE] = this.processStandardNameExchangeRequest;
+        handlers[Internal.NICKNAME_NOTE] = this.sendNicknameNote;
 
         this.subscribe(requestEmitter, {
-            whats_your_name: this.processStandardNameExchangeRequest,
             nickname_change_broadcast: this.processStandardNameExchangeRequest,
-            my_name_response: this.processStandardNameExchangeRequest,
             request_invite: this.registerInviteRequest,
             boot_participant: this.registerBootMemberRequest,
             register_service_record: this.registerClientServiceRecord
@@ -460,7 +484,6 @@ class ServiceAssistant{
         let handlers = {
             whats_your_name: this.processIncomingNicknameRequest,
             nickname_change_broadcast: this.processIncomingNameChangeNote,
-            my_name_response: this.processNicknameResponse,
             u_booted: this.registerBootNotce,
             meta_sync: this.processIncomingResyncRequest,
             meta_sync_success: this.processMetaSyncResponse,
@@ -469,6 +492,7 @@ class ServiceAssistant{
             return_request_invite: this.processInviteRequestError
         }
 
+        handlers[Internal.NICKNAME_NOTE] = this.processNicknameNote
         handlers[Internal.NICKNAME_INITAL_EXCHANGE] = this.processIncomingNicknameRequest
         handlers[Internal.METADATA_ISSUE] = this.metadataIssue;
         this.subscribe(ciMessenger, handlers, this.crossIslandErrorHandler)
@@ -526,7 +550,7 @@ class ServiceAssistant{
         try{
             await handlers[command](...args)
         }catch(err){
-            Logger.error(`Service assistant error on command: ${command} : ${err.message}`, {
+            Logger.error(`Service assistant error on command: ${command} : ${err}`, {
                 stack: err.stack,
                 cat: "service"
             })

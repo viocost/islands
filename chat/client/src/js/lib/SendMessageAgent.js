@@ -23,7 +23,7 @@ export class SendMessageAgent{
         let self = this;
         setTimeout(async ()=>{
             let attachmentsInfo;
-            const metaID = self.topic.metadataId;
+            const metaID = self.topic.getMetadataId();
 
             if (self.files && self.files.length >0){
                 attachmentsInfo = await self.uploadAttachments(self.files, self.chatMessage.header.id, metaID);
@@ -58,7 +58,7 @@ export class SendMessageAgent{
 
         let chatMessage = new ChatMessage();
         chatMessage.version = version;
-        chatMessage.header.metadataID = this.topic.metadataId;
+        chatMessage.header.metadataID = this.topic.getMetadataId();
         console.log(`Metadata id is set to ${chatMessage.header.metadataID}`)
         chatMessage.header.author = this.pkfp;
         chatMessage.header.recipient = this.recipient ? this.recipient : "ALL";
@@ -85,7 +85,7 @@ export class SendMessageAgent{
 
             const pkfp = self.topic.pkfp;
             const privk = self.topic.privateKey;
-            const symk = self.topic.sharedKey;
+            const symk = self.topic.getSharedKey();
             const residence = self.topic.participants[pkfp].residence;
 
             for (let file of filesAttached){

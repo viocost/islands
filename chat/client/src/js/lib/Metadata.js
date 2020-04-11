@@ -132,10 +132,12 @@ export class Metadata{
         if(typeof newMetadata === "string"){
             newMetadata = JSON.parse(newMetadata);
         }
-        let currentParticipants = Object.keys(newMetadata.body.participants)
-        this.body.participants = newMetadata.body.participants;
+        this.body.participants = JSON.parse(JSON.stringify(newMetadata.body.participants));
 
-        this.body.settings.membersData = ChatUtility.syncMap(currentParticipants, this.body.settings.membersData, {nickname: ""});
+
+        this.body.settings.membersData = ChatUtility.syncMap(Object.keys(this.body.participants),
+                                                             this.body.settings.membersData,
+                                                             {nickname: "Unknown"});
         this.body.id = newMetadata.body.id;
         this.body.timestamp = newMetadata.body.timestampa;
         this.body.sharedKeySignature = newMetadata.body.sharedKeySignature;
@@ -149,7 +151,7 @@ export class Metadata{
     updateSettings(settings){
         assert(typeof settings === "object", "Settings are of invalid type.")
         let currentParticipants = Object.keys(this.body.participants)
-        this.body.settings.membersData = ChatUtility.syncMap(currentParticipants, settings.membersData, {nickname: ""})
+        this.body.settings.membersData = ChatUtility.syncMap(currentParticipants, settings.membersData, {nickname: "Unknown"})
         this.body.settings.invites = settings.invites;
         this.body.settings.version = settings.version;
     }

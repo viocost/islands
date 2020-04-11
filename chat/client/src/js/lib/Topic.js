@@ -104,7 +104,7 @@ export class Topic{
         let privateKey=this.privateKey;
         this._metadata = Metadata.fromBlob(metadata, privateKey);
         this.updateParticipants();
-        this.sharedKey = this._metadata.getSharedKey(this.pkfp, privateKey);
+        this.sharedKey = this.getSharedKey()
         this.metadataId = this._metadata.getId();
         this.metadataLoaded = true;
     }
@@ -220,41 +220,41 @@ export class Topic{
             let senderPkfp = msg.headers.pkfpSource
             assert(self.participants[senderPkfp], "Member has not yet been registered")
             //assert(Message.verifyMessage(senderPublicKey, msg), "Signature is invalid")
-            if(msg.body.metadataId === self.metadataId && msg.body.myNickname){
+            if(msg.body.metadataId === self._metadata.getId() && msg.body.myNickname){
                 console.log("Decrypting new participant nickname...");
-                let nickname = ChatUtility.symKeyDecrypt(msg.body.myNickname, self.sharedKey);
-                self.setParticipantNickname(nickname, senderPkfp);
+                let nickname = ChatUtility.symKeyDecrypt(msg.body.myNickname,
+                                                         self.getSharedKey())
                 console.log(`New member's nickname is ${nickname}`);
                 console.log(`My current nickname is ${self.getCurrentNickname()}`);
-                self.saveClientSettings();
+                self.setParticipantNickname(nickname, senderPkfp);
             }
 
             let curNickname = self.getCurrentNickname()
-            console.log(`Sending current nickname: ${curNickname}`);
+            let sharedKey = self.getSharedKey()
+            console.log(`Sending current nickname: ${curNickname}. Encrypting with: ${sharedKey}`);
             let response = new Message(self.version);
             response.setCommand(Internal.NICKNAME_NOTE)
             response.setSource(self.pkfp);
             response.setDest(senderPkfp);
             response.addNonce();
             response.setAttribute("nickname",
-                                  ChatUtility.symKeyEncrypt(self.getCurrentNickname(), self.sharedKey));
-            response.setAttribute(Internal.METADATA_ID, self.metadataId);
+                                  ChatUtility.symKeyEncrypt(curNickname, sharedKey));
+            response.setAttribute(Internal.METADATA_ID, self._metadata.getId());
             response.signMessage(self.privateKey);
             self.messageQueue.enqueue(response);
         }
 
         this.handlers[Internal.NICKNAME_NOTE] = (msg)=>{
-            console.log("nickname note received");
+            console.log(`nickname note received: metadataId: ${msg.body[Internal.METADATA_ID]}`);
             let senderPkfp = msg.headers.pkfpSource
             let senderPublicKey = self.participants[senderPkfp].publicKey;
             assert(Message.verifyMessage(senderPublicKey, msg), "Signature is invalid")
             let sharedKey = ChatUtility.privateKeyDecrypt(msg.sharedKey, self.privateKey)
-            let nickname = ChatUtililty.symKeyDecrypt(msg.body.nickname, sharedKey)
-            console.log(`Participan ${senderPkdf} changed his nickname to ${nickname}` );
+            let currentSharedKey = self.getSharedKey();
+            console.log(`Current key: ${currentSharedKey}, received key ${sharedKey}`);
+            let nickname = ChatUtility.symKeyDecrypt(msg.body.nickname, sharedKey)
+            console.log(`Participan ${senderPkfp} changed his nickname to ${nickname}` );
             self.setParticipantNickname(nickname, senderPkfp)
-            self.saveClientSettings();
-
-
         }
 
         this.handlers[Internal.SERVICE_RECORD] = (msg)=>{
@@ -281,7 +281,7 @@ export class Topic{
 
             //assert(Message.verifyMessage(publicKey, msgCopy), "Message was not verified")
             let message = new ChatMessage(msg.body.message)
-            message.decryptMessage(self.sharedKey);
+            message.decryptMessage(self.getSharedKey())
             self.addNewMessage(self, message);
 
             if(message.header.nickname !== self.getParticipantNickname(msg.headers.pkfpSource)){
@@ -331,7 +331,7 @@ export class Topic{
             console.log("Decrypting and adding sent message.");
             sentMessage.header.private ?
                 sentMessage.decryptPrivateMessage(self.privateKey) :
-                sentMessage.decryptMessage(self.sharedKey)
+                sentMessage.decryptMessage(self.getSharedKey())
             self.addNewMessage(self, sentMessage);
         }
     }
@@ -374,14 +374,16 @@ export class Topic{
         if (!this.metadataLoaded){
             throw new Error("Cannot get current nickname: metadata is not loaded.")
         }
-        if (!this._metadata.body.settings.membersData[this.pkfp]){
-            return ""
-        }
-        return this._metadata.body.settings.membersData[this.pkfp].nickname;
+
+        return this._metadata.getParticipantNickname(this.pkfp);
     }
 
     getSharedKey(){
         return this._metadata.getSharedKey(this.pkfp, this.privateKey);
+    }
+
+    getMetadataId(){
+        return this._metadata.getId();
     }
 
 
@@ -494,7 +496,7 @@ export class Topic{
         request.body.myNickname = myNickname;
         request.signMessage(this.privateKey);
         this.messageQueue.enqueue(request);
-        console.log("Nicknames exchange request sent");
+        console.log(`Nicknames exchange request sent: nickname: ${myNicknameRaw}`);
     }
 
 
@@ -611,6 +613,9 @@ export class Topic{
             } else if(message.header.private){
                 message.decryptPrivateMessage(self.privateKey);
             } else{
+                if(!keys.hasOwnProperty(message.header.metadataID)){
+                    console.error(`Warning! key not found for ${message.headers.metadataID}`)
+                }
                 message.decryptMessage(keys[message.header.metadataID]);
             }
             result.push(message);
