@@ -86,6 +86,9 @@ export class Metadata{
         this.body.settings.membersData[pkfp].alias = alias;
     }
 
+    hasParticipant(pkfp){
+        return this.body.participants.hasOwnProperty(pkfp);
+    }
 
     setParticipantNickname(nickname = Err.required("nickname"), pkfp = Err.required("pkfp")){
         assert(this.body.participants.hasOwnProperty(pkfp), `Participant ${pkfp} not found`)
@@ -125,6 +128,7 @@ export class Metadata{
     hasInvite(inviteCode){
         return this.body.settings.invites.hasOwnProperty(inviteCode);
     }
+
 
     updateMetadata(newMetadata){
         //assert(Metadata.isMetadataValid(newMetadata), "Metadata is invalid")

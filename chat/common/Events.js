@@ -40,6 +40,7 @@ module.exports.Events = Object.freeze({
     DELETE_INVITE_ERROR: "del_invite_error",
 
 
+    PARTICIPANT_LEFT: "participant_left",
     MEMBER_BOOTED: "member_booted",
     MEMBER_BOOT_ERROR: "member_boot_error",
     YOU_BOOTED: "u_booted",
@@ -127,6 +128,8 @@ module.exports.Internal = Object.freeze({
     SYNC_INVITES_ERROR: "sync_invites_error",
     INVITE_REQUEST_TIMEOUT: "invite_request_timeout",
     INVITE_REQUEST_FAIL: "invite_request_fail",
+
+    LEAVE_TOPIC: "leave_topic",
 
     JOIN_TOPIC: "join_topic",
     JOIN_TOPIC_SUCCESS: "join_topic_success",

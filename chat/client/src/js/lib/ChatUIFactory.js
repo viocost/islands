@@ -188,7 +188,13 @@ function bakeTopicsBlock(){
 }
 
 
-export function bakeParticipantListItem(nickname, pkfp, alias, onClick){
+export function bakeParticipantListItem(nickname, pkfp, alias, onClick, me = false){
+
+    let iconClasses = ["participant-icon", ]
+
+    if(me){
+        iconClasses.push("that-is-me");
+    }
 
     return util.bake("div", {
         class: "participant-list-item",
@@ -200,7 +206,7 @@ export function bakeParticipantListItem(nickname, pkfp, alias, onClick){
         },
         children: [
             util.bake("div", {
-                class: "participant-icon"
+                class: iconClasses
             }),
 
             util.bake("div", {

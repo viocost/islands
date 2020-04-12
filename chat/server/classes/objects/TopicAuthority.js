@@ -261,7 +261,16 @@ class TopicAuthority extends EventEmitter{
         }
     }
 
+    async processTopicLeave(pkfp){
+        await this._excludeParticipant(pkfp);
 
+        let remainingParticipants = new CuteSet(Object.keys(lastMeta.body.participants)).minus(pkfp).toArray();
+        this.issueMetadata({
+            event: Events.PARTICIPANT_LEFT,
+            recipients: remainingParticipants,
+            participantLeft: pkfp
+        })
+    }
 
     async processBootRequest(request){
         let requestorPkfp = request.headers.pkfpSource;
@@ -273,7 +282,7 @@ class TopicAuthority extends EventEmitter{
             //Todo log suspicious request
             throw new Error("requester has not enough rights to boot");
         }
-        await this._bootParticipant(bootCandidate.pkfp);
+        await this._excludeParticipant(bootCandidate.pkfp);
         let noticeToBooted = new ServiceMessage(this.getPkfp(), bootCandidate.pkfp, "u_booted");
         this.emit("send_notice", {notice: noticeToBooted, residence: bootCandidate.residence});
         //issue metadata
@@ -284,7 +293,7 @@ class TopicAuthority extends EventEmitter{
         })
     }
 
-    async _bootParticipant(pkfp){
+    async _excludeParticipant(pkfp){
         let lastMeta = this.getCurrentMetadata();
         lastMeta.removeParticipant(pkfp);
         let newMetadata = this.reKeyMetadata(lastMeta);

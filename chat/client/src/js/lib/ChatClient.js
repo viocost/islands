@@ -13,6 +13,7 @@ import { DownloadAttachmentAgent } from "./DownloadAttachmentAgent";
 import { iCrypto } from "./iCrypto"
 import { TopicJoinAgent } from "./TopicJoinAgent";
 import { SendMessageAgent } from "./SendMessageAgent";
+import { BootParticipantAgent } from "./BootParticipantAgent";
 
 export class ChatClient{
     constructor(opts){
@@ -339,7 +340,7 @@ export class ChatClient{
 
 
     // ---------------------------------------------------------------------------------------------------------------------------
-    // DELETE TOPIC
+    // DELETE TOPIC, LEAVE
     deleteTopic(pkfp){
         let self = this
        
@@ -365,9 +366,48 @@ export class ChatClient{
         self.messageQueue.enqueue(request);
     }
 
+
+    leaveTopic(pkfp, deleteHistory = true){
+
+        let self = this
+
+        // let privateKey = this.session.privateKey;
+        let topic = this.vault.topics[pkfp]
+        assert(topic, `Topic ${pkfp} not found`)
+
+        let ic = new iCrypto();
+        ic.createNonce("n")
+            .bytesToHex("n", "nhex")
+            .setRSAKey("priv", self.vault.privateKey, "private")
+            .privateKeySign("nhex", "priv", "sign")
+
+        let request = new Message(self.version);
+        request.setCommand(Internal.LEAVE_TOPIC);
+        request.setSource(self.vault.id);
+        request.body.vaultId = self.vault.id;
+        request.body.topicPkfp = pkfp;
+        request.body.deleteHistory = deleteHistory;
+        request.body.vaultNonce = ic.get("nhex")
+        request.body.vaultSign = ic.get("sign")
+        request.addNonce();
+        request.signMessage(topic.getPrivateKey());
+        self.messageQueue.enqueue(request);
+    }
+
     //~END DELETE TOPIC////////////////////////////////////////////////////////
 
 
+    // ---------------------------------------------------------------------------------------------------------------------------
+    // BOOT PARTICIPANT
+
+    bootParticipant(topicPkfp, participantPkfp){
+        let topic = this.topics[topicPkfp.trim()];
+        assert(topic, `No topic found: ${topicPkfp}`);
+        assert(topic.hasParticipant(participantPkfp.trim()), `No participant found: ${participantPkfp}`)
+        let bootAgent = new BootParticipantAgent(topic, participantPkfp, this.messageQueue)
+        console.log("Proceeding participant boot");
+        bootAgent.boot();
+    }
 
     // ---------------------------------------------------------------------------------------------------------------------------
     // TOPIC JOIN

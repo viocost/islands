@@ -103,6 +103,10 @@ class BootLeaveAssistant extends Assistant{
                 }catch(err){console.log(`err deleting tor: ${err.message}`)}
             }
             await self.hm.deleteTopic(metadata.body.topicAuthority.pkfp)
+        } else {
+            //just sending leave note to topic authority
+            let envelope = new Envelope(taResidence, request, userResidence);
+            self.crossIslandMessenger.send(envelope);
         }
 
         await self.hm.deleteTopic(pkfp);
@@ -123,19 +127,97 @@ class BootLeaveAssistant extends Assistant{
         session.broadcast(response);
     }
 
+    async processTopicLeave(envelope, self){
+
+        let request = envelope.payload;
+        let ta = self.topicAuthorityManager.getTopicAuthority(request.headers.pkfpDest);
+        assert(ta, `No toipc authority ${request.headers.pkfpDest} found, or it is not launched`)
+        let metadata = ta.getCurrentMetadata()
+
+        const publicKey = metadata.body.participants[request.headers.pkfpSource].publicKey;
+        assert(Request.isRequestValid(request, publicKey), "Leave request was not verified")
+
+        await ta.processTopicLeave(request.headers.pkfpSource);
+
+
+    }
+
+    //TODO
+    async leaveTopic(request, connectionId, self){
+        Logger.debug("Leaving toipc", {cat: "topic_delete"})
+        let pkfp = request.body.topicPkfp;
+
+        const publicKey = await self.hm.getOwnerPublicKey(pkfp);
+        if(!Request.isRequestValid(request, publicKey)){
+            throw new Error("Delete topic request was not verified");
+        }
+
+        let metadata = Metadata.parseMetadata(await self.hm.getLastMetadata(pkfp));
+        let userResidence = metadata.body.participants[pkfp].residence;
+        let taResidence = metadata.body.owner === pkfp ? metadata.body.topicAuthority.residence : null
+
+        //sending leave note to TA
+        let envelope = new Envelope(taResidence, request, userResidence);
+        self.crossIslandMessenger.send(envelope);
+
+        if(await self.connector.isHSUp(userResidence)){
+            Logger.info(`Taking down user hidden service ${userResidence} on toipc delete`, {cat: "topic_delete"})
+            try{
+                await self.connector.killHiddenService(userResidence);
+            }catch(err){console.log(`err deleting tor: ${err.message}`, {cat: "topic_delete"})}
+        }
+
+        if (request.body.deleteHistory){
+            Logger.debug("Deleting history on leave", {cat: "topic_delete"});
+            await self.hm.deleteTopic(pkfp);
+            await self.vaultManager.deleteTopic(request.body.vaultId,
+                                                pkfp,
+                                                request.body.vaultNonce,
+                                                request.body.vaultSign)
+        }
+
+
+        let response = Message.makeResponse(request, "island", Internal.TOPIC_DELETED);
+        response.body.vaultNonce = request.body.vaultNonce;
+        response.body.vaultSign = request.body.vaultSign;
+        response.body.topicPkfp = pkfp;
+        Logger.debug("Topic has been deleted successfully. Sending notification to client", {cat: "topic_delete"})
+        let session = self.sessionManager.getSessionByConnectionId(connectionID);
+        session.deleteTopic(pkfp);
+        session.broadcast(response);
+        //////////////////////////////
+        // send leave note to TA    //
+        //                          //
+        // if owner:                //
+        //     seal TA              //
+        //     set destroy TA timer //
+        //                          //
+        //                          //
+        // if delete history        //
+        //     delete  history      //
+        // else                     //
+        //     seal history         //
+        //////////////////////////////
+
+
+
+
+
+    }
+
 
     /***Error handlers****/
     async crossIslandErrorHandler(envelope, self, err){
-	try{
-	    if(envelope.return){
-            Logger.warn("Error processing return envelope: " + err);
-            return;
-	    }
-	    Logger.warn("Boot/leave error: " + err + " returning envelope...");
-	    await self.crossIslandMessenger.returnEnvelope(envelope);
-	}catch(err){
-	    Logger.error("FATAL ERROR: " + err, {stack: err.stack});
-	}	
+        try{
+            if(envelope.return){
+                Logger.warn("Error processing return envelope: " + err);
+                return;
+            }
+            Logger.warn("Boot/leave error: " + err + " returning envelope...");
+            await self.crossIslandMessenger.returnEnvelope(envelope);
+        }catch(err){
+            Logger.error("FATAL ERROR: " + err, {stack: err.stack});
+        }
     }
 
 
@@ -191,10 +273,12 @@ class BootLeaveAssistant extends Assistant{
 
 
     subscribeToCrossIslandsMessages(crossIslandMessenger){
-        this.subscribe(crossIslandMessenger, {
+        let handlers = {
             boot_participant: this.bootParticipantIncoming,
             u_booted: this.leaveTopicOnBoot
-        }, this.crossIslandErrorHandler)
+        }
+        handlers[Internal.DELETE_TOPIC] = this.processTopicLeave
+        this.subscribe(crossIslandMessenger, handlers, this.crossIslandErrorHandler)
     }
     /*****************************************************
      * ~END UTILS

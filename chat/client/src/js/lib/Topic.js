@@ -206,7 +206,7 @@ export class Topic{
         }
 
         this.handlers[Internal.METADATA_ISSUE] = (msg) =>{
-            console.log("Metadata issue received. Checking...")
+            console.log(`Metadata issue received. Event: ${msg.headers.event}`)
             assert(Message.verifyMessage(self._metadata.getTAPublicKey(), msg), "TA signature is invalid")
             console.log("Signature verified. Loading metadata...");
             self._metadata.updateMetadata(msg.body.metadata);
@@ -353,9 +353,7 @@ export class Topic{
         }
     }
 
-
-
-    //Incoming message
+    // Incoming message
     preprocessIncomingMessage(msg, self){
         console.log(`Incoming message on ${this.pkfp} received!`);
 
@@ -366,9 +364,6 @@ export class Topic{
             throw new Error(errMsg);
         }
     }
-
-
-
 
     getCurrentNickname(){
         if (!this.metadataLoaded){
@@ -499,6 +494,13 @@ export class Topic{
         console.log(`Nicknames exchange request sent: nickname: ${myNicknameRaw}`);
     }
 
+    getMetadata(){
+        return this._metadata;
+    }
+
+    hasParticipant(pkfp){
+        return this._metadata.hasParticipant(pkfp);
+    }
 
     getParticipantNickname(pkfp){
         if (this._metadata.body.settings.membersData[pkfp]){

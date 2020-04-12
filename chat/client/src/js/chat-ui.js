@@ -178,6 +178,7 @@ function setupSidePanelListeners(){
     util.$("#btn-ctx-invite").onclick = processNewInviteClick;
     util.$("#btn-ctx-delete").onclick = processCtxDeleteClick;
     util.$("#btn-ctx-alias").onclick = processCtxAliasClick;
+    util.$("#btn-ctx-boot").onclick = processCtxBootClick;
 
     //util.$("#btn-mng-delete-topic").onclick = processDeleteTopicClick;
     //util.$("#btn-mng-topics-go-back").onclick = backToChat;
@@ -468,6 +469,15 @@ function processRefreshInvitesClick() {
 function processCtxAliasClick(){
     console.log("Alias button clicked");
     setAliasModal.open();
+}
+
+function processCtxBootClick(){
+    console.log("booting participant")
+    let topicPkfp = topicInFocus;
+    let asset = getActiveTopicAsset()
+    let participantPkfp = asset.getAttribute("pkfp")
+    chat.bootParticipant(topicPkfp, participantPkfp)
+
 }
 
 function processCtxDeleteClick(){
@@ -975,9 +985,11 @@ function refreshParticipants(){
         let participant = participants[pkfp]
 
         elements.push(UI.bakeParticipantListItem(participant.nickname,
-                                                            pkfp,
-                                                            participant.alias,
-                                                            processParticipantListItemClick))
+                                                 pkfp,
+                                                 participant.alias,
+                                                 processParticipantListItemClick,
+                                                 topicInFocus === pkfp
+                                                ))
     }
     util.prependChildren(topicAssets, elements)
 }
@@ -1119,7 +1131,7 @@ function displayTopicContextButtons(state, displayBoot = false){
             util.flex(alias);
             util.hide(invite);
             util.flex(mute);
-            displayBoot ? util.flex(boot) : util.hide(boot)
+            util.flex(boot);
             util.hide(_delete);
             util.hide(leave);
             break;
