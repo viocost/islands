@@ -271,6 +271,7 @@ export class Topic{
         }
 
         this.handlers[Internal.BROADCAST_MESSAGE] = (msg)=>{
+            console.log("Broadcast message received");
             let msgCopy = JSON.parse(JSON.stringify(msg))
             // pkfpDest is added by server when message is broadcasted, so to verify it
             // must be deleted

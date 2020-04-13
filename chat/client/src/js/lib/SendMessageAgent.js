@@ -60,7 +60,7 @@ export class SendMessageAgent{
         chatMessage.version = version;
         chatMessage.header.metadataID = this.topic.getMetadataId();
         console.log(`Metadata id is set to ${chatMessage.header.metadataID}`)
-        chatMessage.header.author = this.pkfp;
+        chatMessage.header.author = this.topic.pkfp;
         chatMessage.header.recipient = this.recipient ? this.recipient : "ALL";
         chatMessage.header.private = this.private;
         chatMessage.header.nickname = this.topic.getCurrentNickname();

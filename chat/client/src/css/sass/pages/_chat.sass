@@ -665,30 +665,29 @@ main
 .message
   @include message
   align-self: flex-start
-  background-color: #c4e8ff
+  //background-color: lighten($main-background, 5%)
 
 .my_message
   @include message
-  align-self: flex-end
-  background-color: #d6ffef
-  text-align: right
-  .msg-body
-    text-align: left
+  color: #5bde25
+  //align-self: flex-end
+  //background-color: #d6ffef
+  //text-align: right
+  //.msg-body
+    //text-align: left
 
 .service-record
   @include message
   width: 100%
-  background-color: #e6e6e6
   text-align: left
   font-size: 1.2rem
-  color: #8a8a8a
+  color: #4c4c4c
   .msg-body
     text-align: left
 
 .ephemeral-msg
   @include message
   width: 100%
-  background-color: #fff0da
   text-align: left
   font-size: 1.2rem
   color: #8a8a8a

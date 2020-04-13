@@ -605,7 +605,7 @@ function appendMessageToChat(message, topicPkfp, chatWindow,  toHead = false) {
         author.classList.add("m-author-id");
         author.innerHTML = message.pkfp;
         let participantIndex = Object.keys(chat.topics[topicPkfp].participants).indexOf(message.pkfp)
-        msg.style.backgroundColor = colors[participantIndex % colors.length];
+        msg.style.color = colors[participantIndex % colors.length];
         message_heading.appendChild(author);
     }
     if (message.private) {
@@ -659,8 +659,9 @@ function buildMessageHeading(message, topicPkfp) {
 
     if (message.pkfp === topicPkfp) {
         // My messages
-        message_heading.appendChild(time_stamp);
+        nickname.innerText = `${nickname.innerText} (me)`
         message_heading.appendChild(nickname);
+        message_heading.appendChild(time_stamp);
     } else if (message.service) {
         // Service message
         message_heading.innerHTML += '<b>Service  </b>';
@@ -1112,10 +1113,10 @@ function displayTopicContextButtons(state, displayBoot = false){
         case "topic":
             util.flex(alias);
             util.flex(invite);
-            util.flex(mute);
+            util.hide(mute);
             util.hide(boot);
             util.flex(_delete);
-            util.flex(leave);
+            util.hide(leave);
             break;
 
         case "invite":
