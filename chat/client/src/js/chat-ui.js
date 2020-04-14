@@ -59,6 +59,7 @@ document.addEventListener('DOMContentLoaded', event =>{
     //console.log(`Initializing page. Registration: ${isRegistration()}, Version: ${version}`);
     initChat();
     initLoginUI();
+
     //util.$("#print-dpi").onclick = ()=>{alert(window.devicePixelRatio)}
     //util.$("#print-max").onclick = ()=>{alert(window.innerWidth)}
 });
@@ -121,12 +122,14 @@ function initUI(){
     sidePanel = UI.bakeSidePanel();
 
     newMessageBlock = UI.bakeNewMessageControl(sendMessage, processAttachmentChosen);
+
     messagesPanel = UI.bakeMessagesPanel(newMessageBlock)
 
     util.appendChildren(mainContainer, [sidePanel, messagesPanel]);
 
     setupSidePanelListeners()
 
+    setupHotkeysHandlers()
 
     refreshTopics();
     // add listener to the menu button
@@ -167,7 +170,23 @@ function initUI(){
     //let messagesWrapper = util.wrap([messagesPanel, newMessagePanel], "main-panel-container");
 
 
-    // util.appendChildren(container, [sidePanel, messagesWrapper]);
+    util.$("#remove-private").addEventListener("click", removePrivate);
+    util.$("#messages-panel-container").onscroll = processChatScroll;
+}
+
+function setupHotkeysHandlers(){
+
+    util.$('#new-msg').onkeypress = function (e) {
+        if (!e.ctrlKey && e.keyCode === 13) {
+            event.preventDefault();
+            sendMessage();
+            moveCursor(e.target, "start");
+            return false;
+        } else if (e.ctrlKey && e.keyCode === 13) {
+            e.target.value += "\n";
+            moveCursor(e.target, "end");
+        }
+    };
 }
 
 function setupSidePanelListeners(){
@@ -265,20 +284,27 @@ function newMessageBlockSetVisible(visible){
 
 function sendMessage(){
     console.log("Sending message...");
-    let msg = util.$("#new-msg").value;
-    let files = util.$('#attach-file').files;
-    if (msg.length === 0 && files.length === 0){
-        console.log("Empty message");
-        return;
-    }
-    let recipient = util.$("#select-member").value;
-
     // pass files later
     if (!topicInFocus){
         console.error("No topic selected to write to.")
         return;
     }
+
+    let msgEl = util.$("#new-msg");
+    let msg = msgEl.value
+    let files = util.$('#attach-file').files;
+    if (msg.length === 0 && files.length === 0){
+        console.log("Empty message");
+        return;
+    }
+
+    let recipient = util.$("#private-label").children[2].getAttribute("pkfp");
+
     chat.sendMessage(msg, topicInFocus, recipient, files);
+    msgEl.value=""
+    clearAttachments()
+
+
 }
 
 
@@ -303,6 +329,7 @@ function clearAttachments() {
     attachemtsWrapper.innerHTML = "";
 }
 
+
 function registerVault() {
     let password = util.$("#new-passwd");
     let confirm =  util.$("#confirm-passwd");
@@ -312,6 +339,7 @@ function registerVault() {
 
 function processActivateTopicClick(ev){
     console.error("PROCESSING activate topic click");
+    removePrivate();
     let element = ev.currentTarget;
     let pkfp = element.getAttribute("pkfp");
     if (!pkfp){
@@ -324,6 +352,13 @@ function processActivateTopicClick(ev){
     console.log(`Setting topic in focus: ${pkfp}`);
 
     setTopicInFocus(pkfp)
+    let topic = chat.topics[pkfp]
+    let privatePkfp = topic.getPrivate()
+    if (privatePkfp){
+        enablePrivate(privatePkfp, `${topic.getParticipantNickname(privatePkfp)}`);
+    } else {
+        removePrivate()
+    }
     // load messges in the new window
 
     refreshMessages()
@@ -368,9 +403,31 @@ function processExpandTopicClick(ev){
 
 function processParticipantListItemClick(ev){
     activateTopicAsset(ev);
-   
     console.log("participant list item clicked");
+}
 
+function processParticipantListItemDoubleClick(ev){
+
+    let el = ev.currentTarget;
+    console.log("Double click participant event fired!");
+    enablePrivate(el.getAttribute("pkfp"), el.children[1].innerHTML)
+
+}
+
+function enablePrivate(pkfp, name){
+
+    let privateBlock = util.$("#private-label")
+    privateBlock.children[2].setAttribute("pkfp", pkfp)
+    privateBlock.children[2].innerText = name;
+    util.flex(privateBlock);
+}
+
+function removePrivate(){
+    console.log("Removing private");
+    let privateBlock = util.$("#private-label")
+    privateBlock.children[2].removeAttribute("pkfp")
+    privateBlock.children[2].innerText = ""
+    util.hide(privateBlock);
 }
 
 function setTopicInFocus(pkfp){
@@ -608,8 +665,10 @@ function appendMessageToChat(message, topicPkfp, chatWindow,  toHead = false) {
         msg.style.color = colors[participantIndex % colors.length];
         message_heading.appendChild(author);
     }
+
     if (message.private) {
-        let privateMark = preparePrivateMark(message);
+        let isMyMessage = topicPkfp === message.pkfp
+        let privateMark = preparePrivateMark(message, chat.topics[topicPkfp]);
         message_heading.appendChild(privateMark);
         msg.classList.add('private-message');
     }
@@ -684,12 +743,14 @@ function buildMessageHeading(message, topicPkfp) {
     return message_heading;
 }
 
-function preparePrivateMark(message) {
+function preparePrivateMark(message, topic) {
+
     let privateMark = document.createElement("span");
+    let isMyMessage = message.pkfp === topic.pkfp;
     privateMark.classList.add("private-mark");
-    if (isMyMessage(message.pkfp)) {
+    if (isMyMessage) {
         privateMark.innerText = "(private to: ";
-        let recipientName = chat.getMemberRepr(message.recipient);
+        let recipientName = chat.getParticipantRepr(topic.pkfp, message.recipient);
         privateMark.innerText += recipientName + ")";
     } else {
         privateMark.innerText = "(private)";
@@ -892,6 +953,17 @@ function appendEphemeralMessage(msg){
 //~END MESSAGES RENDERING///////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+
+function processChatScroll(event) {
+    let chatWindow = event.target;
+    if (!chatWindow.firstChild) return;
+    if (event.target.scrollTop <= 1 && topicInFocus) {
+        //load more messages
+        console.log("loading more messages");
+        chat.loadMoreMessages(topicInFocus);
+    }
+}
+
 function getChatWindowInFocus(){
     return util.$("#messages-window-1");
 }
@@ -937,8 +1009,7 @@ function refreshTopics(){
 
 
 function refreshInvites(){
-
-    if (!topicInFocus && !isExpanded(topicInFocus)){
+    if (!topicInFocus || !isExpanded(topicInFocus)){
         return;
     }
 
@@ -989,6 +1060,7 @@ function refreshParticipants(){
                                                  pkfp,
                                                  participant.alias,
                                                  processParticipantListItemClick,
+                                                 processParticipantListItemDoubleClick,
                                                  topicInFocus === pkfp
                                                 ))
     }
@@ -1217,6 +1289,9 @@ function initChat(){
             recipient: message.header.recipient,
             attachments: message.attachments
         }, topicInFocus, util.$("#messages-window-1"));
+        let messagesWindow = util.$("#messages-panel-container")
+        messagesWindow.scrollTop = messagesWindow.scrollHeight;
+
     })
 
     chat.on(Events.DOWNLOAD_SUCCESS, (data, fileName)=>{

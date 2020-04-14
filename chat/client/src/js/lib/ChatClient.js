@@ -746,6 +746,11 @@ export class ChatClient{
         downloadAttachmentAgent.download();
     }
 
+    loadMoreMessages(topicPkfp){
+        assert(this.topics[topicPkfp], "Topic is invalid");
+        this.topics[topicPkfp].loadMoreMessages();
+    }
+
     // ---------------------------------------------------------------------------------------------------------------------------
     // HELPERS
     //

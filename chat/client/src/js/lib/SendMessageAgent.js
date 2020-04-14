@@ -16,8 +16,9 @@ export class SendMessageAgent{
         this.files = files;
         this.version = this.topic.version;
         this.chatMessage = this.prepareMessage(this.version, msg, recipient);
+        recipient ?  this.topic.setPrivate(recipient) : this.topic.resetPrivate();
+        console.log(`Message private: ${this.private}. Recipient set to ${this.recipient}`);
     }
-
 
     send(){
         let self = this;
@@ -32,7 +33,13 @@ export class SendMessageAgent{
                 }
             }
 
-            self.chatMessage.encryptMessage(self.topic.getSharedKey());
+            if (self.private){
+                let keys = [self.topic.getParticipantPublicKey(self.recipient), self.topic.getPublicKey()];
+                self.chatMessage.encryptPrivateMessage(keys);
+            } else {
+                self.chatMessage.encryptMessage(self.topic.getSharedKey());
+            }
+
             self.chatMessage.sign(self.topic.privateKey);
 
             //Preparing request
@@ -40,6 +47,12 @@ export class SendMessageAgent{
             message.headers.pkfpSource = self.topic.pkfp;
             message.headers.command = (self.private) ?
                 Internal.SEND_MESSAGE : Internal.BROADCAST_MESSAGE;
+
+            if(this.private){
+                message.setDest(this.recipient);
+                message.setHeader("private", true);
+            }
+
             message.body.message = self.chatMessage.toBlob();
             let currentTime = new Date().getTime();
             message.travelLog = {};
@@ -61,7 +74,7 @@ export class SendMessageAgent{
         chatMessage.header.metadataID = this.topic.getMetadataId();
         console.log(`Metadata id is set to ${chatMessage.header.metadataID}`)
         chatMessage.header.author = this.topic.pkfp;
-        chatMessage.header.recipient = this.recipient ? this.recipient : "ALL";
+        chatMessage.header.recipient = recipient ? recipient : "ALL";
         chatMessage.header.private = this.private;
         chatMessage.header.nickname = this.topic.getCurrentNickname();
         chatMessage.body = messageContent;

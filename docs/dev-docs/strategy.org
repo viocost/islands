@@ -8,6 +8,10 @@
 *** Implement older messages loading
 *** Implement scrolling down on new messages
 
+** DONE Private messages
+CLOSED: [2020-04-15 Wed 00:14]
+** TODO Scroll and load messages
+** TODO Admin page
 ** DONE Refactor metadata handling
 CLOSED: [2020-04-12 Sun 02:25]
 1. Load metadata from island with settings encrypted
@@ -17,7 +21,11 @@ CLOSED: [2020-04-12 Sun 02:25]
 
 
   
-
+** TODO Sounds
+** DONE Send on enter
+CLOSED: [2020-04-13 Mon 13:38]
+** DONE Clear inputs on send
+CLOSED: [2020-04-13 Mon 13:38]
 ** TODO Implement aliases for members
 ** TODO Topic rename
 ** TODO Re-implement leave/delete toipc

@@ -106,25 +106,13 @@ class ChatMessageAssistant{
         const recipient = metadata.body.participants[message.headers.pkfpDest];
         const sender = metadata.body.participants[message.headers.pkfpSource];
         const myPublicKey = sender.publicKey;
-        ///////////////////////////////////////////////////////////////////////////
-        // if(!self.sessionManager.isSessionActive(message.headers.pkfpSource)){ //
-        //     Logger.warn("Attempt to send a message without logging in", {     //
-        //         pkfp: message.headers.pkfpSource,                             //
-        //         cat: "chat"                                                   //
-        //     });                                                               //
-        //     throw new Error("Login required");                                //
-        // }                                                                     //
-        ///////////////////////////////////////////////////////////////////////////
 
-        if (message.body.message.length > 65535){
-            Logger.warn("Attempt to send message of length more than 65535 bytes. Actual length is " + message.body.message.length);
-            throw new Error("Message is too long");
-        }
+        assert(message.body.message.length < 65535, "Message is too long")
 	
         const verified = Message.verifyMessage(myPublicKey, message);
-        if(!verified){
-            throw new Error("Sending private message error: signature is not valid!");
-        }
+
+        assert(Message.verifyMessage(myPublicKey, message), "Sending private message error: signature is not valid!")
+
         let msgString = JSON.stringify(message);
         Logger.debug("Send message request verified", {
             origMsg: msgString
@@ -133,8 +121,13 @@ class ChatMessageAssistant{
         await self.hm.appendMessage(message.body.message, message.headers.pkfpSource);
         let envelope = new Envelope(recipient.residence, new Message(msgString), sender.residence);
         await self.crossIslandMessenger.send(envelope);
-        message.headers.response = "send_success";
-        self.sessionManager.broadcastUserResponse(sender.pkfp, message);
+
+        let receipt  = Message.makeResponse(message, "island", Internal.MESSAGE_SENT);
+        receipt.body.message = message.body.message;
+        let session = self.sessionManager.getSessionByConnectionId(connectionId);
+        if (session){
+            session.broadcast(receipt);
+        }
     }
 
 

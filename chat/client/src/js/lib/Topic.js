@@ -26,6 +26,7 @@ export class Topic{
         this.currentMetadata;
         this.sharedKey;
         this.metadataId;
+        this.lastPrivate;
         this.participants = {};
         this.messages = [];
         this.settings = {};
@@ -47,6 +48,8 @@ export class Topic{
 
         // When topic has sent load n messages from the server and awaiting result
         this.awaitingMessages = false
+
+
     }
 
     static prepareNewTopicSettings(version, nickname, topicName, publicKey, encrypt = true){
@@ -173,10 +176,6 @@ export class Topic{
         })
     }
 
-    //Called when init_load event is received
-    processInitLoad(data){
-
-    }
 
     setHandlers(){
         let self = this;
@@ -293,11 +292,13 @@ export class Topic{
         }
 
         this.handlers[Internal.SEND_MESSAGE] = (msg)=>{
-            assert(self.participants[msg.headers.pkfpSource])
+
+            assert(self.participants[msg.headers.pkfpSource], `The participant ${msg.headers.pkfpDest} not found`)
+
             let publicKey = self.participants[msg.headers.pkfpSource].publicKey;
-            assert(Message.verifyMessage(msg, self.publicKey))
+            assert(Message.verifyMessage(publicKey, msg))
             let message = new ChatMessage(msg.body.message)
-            message.decryptMessage(self.sharedKey);
+            message.decryptPrivateMessage(self.privateKey);
             self.addNewMessage(self, message);
         }
 
@@ -378,10 +379,25 @@ export class Topic{
         return this._metadata.getSharedKey(this.pkfp, this.privateKey);
     }
 
+    getParticipantPublicKey(pkfp){
+        return this._metadata.getParticipantPublicKey(pkfp);
+    }
+
     getMetadataId(){
         return this._metadata.getId();
     }
 
+    loadMoreMessages(){
+        if (this.awaitingMessages || this.allMessagesLoaded){
+            console.log("Already awaiting messages")
+            return;
+        }
+        console.log("Loading more messages");
+        this.awaitingMessages = true;
+        let lastMessageId = this.messages.length > 0 ?
+            this.messages[this.messages.length-1].header.id : undefined;
+        this._loadMessages(this, 25, lastMessageId);
+    }
 
     _loadMessages(self, quantity=25, lastMessageId){
         let request = new Message(self.version);
@@ -637,6 +653,7 @@ export class Topic{
         }
         self.initLoaded = true;
         self.allMessagesLoaded = data.allLoaded;
+        self.awaitingMessages = false;
         self.emit(Events.MESSAGES_LOADED, self.messages);
     }
 
@@ -754,6 +771,18 @@ export class Topic{
         this.name = name;
     }
 
+    setPrivate(pkfp){
+        assert(this.hasParticipant(pkfp), `Set private error: no member found ${pkfp}`)
+        this.lastPrivate = pkfp;
+    }
+
+    getPrivate(pkfp){
+        return this.lastPrivate;
+    }
+
+    resetPrivate(){
+        this.lastPrivate = null
+    }
 
     //Verifies current metadata
     verifyMetadata(){

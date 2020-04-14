@@ -59,6 +59,37 @@ export class Connector{
 
             self.chatSocket.on('connect', ()=>{
                 //this.finishSocketSetup();
+
+                let pingPongCount = 0
+
+                function ping(){
+                    console.log("pining server");
+                    if(!self.isConnected()){
+                        console.log("socket disconnected. Nothing to ping");
+                        return
+                    }
+
+                    self.chatSocket.send("ping" );
+                    pingPongCount++;
+
+                    if (pingPongCount >= 10){
+                        console.log("Looks like connection is dead. Resetting...");
+
+                        self.chatSocket.disconnect();
+                        attempted = 0
+                        setTimeout(attemptConnection, reconnectionDelay)
+
+                    } else {
+                        setTimeout(ping, 10000)
+                    }
+
+                }
+
+                self.chatSocket.on("pong", ()=>{
+                    console.log(`Pong. Count: ${pingPongCount}`)
+                    pingPongCount = 0;
+                })
+
                 console.log("Island connection established");
                 //this.islandConnectionStatus = true;
                 //this.emit("connected_to_island");
@@ -75,6 +106,10 @@ export class Connector{
 
                 self.chatSocket.on('error', (err)=>{
                     console.error(`Socket error: ${err}`)
+                    attempted = 0;
+                    self.chatSocket.disconnect();
+                    console.log("Resetting connection...")
+                    setTimeout(attemptConnection, reconnectionDelay)
                 })
                 resolve();
             });
@@ -82,6 +117,8 @@ export class Connector{
             self.chatSocket.on("disconnect", ()=>{
                 console.log("Island disconnected.");
                 self.emit("disconnect");
+                attempted = 0
+                setTimeout(attemptConnection, reconnectionDelay);
                 //this.islandConnectionStatus = false;
                 //this.emit("disconnected_from_island");
             });

@@ -245,8 +245,10 @@ class ServiceAssistant{
         let publicKey = await self.hm.getOwnerPublicKey(request.headers.pkfpSource)
         assert(Request.isRequestValid(request, publicKey), "Request was not verified")
 
+        let messagesToLoad = request.body.quantity ? parseInt(request.body.quantity) : undefined
         let data = await self.hm.loadMoreMessages(request.headers.pkfpSource,
-                                                  request.body.lastLoadedMessageID);
+                                                  request.body.lastMessageId,
+                                                  messagesToLoad);
         messages = data[0];
         metadataIDs = data[1];
         let allLoaded = data[2];

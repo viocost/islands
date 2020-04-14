@@ -110,6 +110,11 @@ export class Metadata{
         return this.body.settings.membersData[pkfp].nickname
     }
 
+    getParticipantPublicKey(pkfp){
+        assert(this.body.participants.hasOwnProperty(pkfp), `Participant ${pkfp} not found`)
+        return this.body.participants[pkfp].publicKey;
+    }
+
 
     addInvite(inviteCode = Err.required("inviteCode"), name = ""){
         this.body.settings.invites[inviteCode] =  {

@@ -36,6 +36,11 @@ class ClientConnectionManager extends EventEmitter{
                 self.emit("client_reconnected", socket.id)
             });
 
+            socket.on("ping", ()=>{
+                console.log("ping event")
+                socket.send("pong");
+            })
+
             socket.on("error", (err)=>{
                 Logger.error(`Client socket error: ${err.message}`, {stack: err.stack});
             })

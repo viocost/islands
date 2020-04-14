@@ -3,6 +3,8 @@ const router = Router();
 const VaultManager = require("./classes/libs/VaultManager");
 const Logger = require("./classes/libs/Logger");
 const AdminKey = require("./classes/libs/AdminKey");
+const HSMap = require("./classes/libs/HSVaultMap");
+
 
 let vaultManager;
 

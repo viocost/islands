@@ -188,7 +188,7 @@ function bakeTopicsBlock(){
 }
 
 
-export function bakeParticipantListItem(nickname, pkfp, alias, onClick, me = false){
+export function bakeParticipantListItem(nickname, pkfp, alias, onClick, onDClick, me = false){
 
     let iconClasses = ["participant-icon", ]
 
@@ -199,7 +199,8 @@ export function bakeParticipantListItem(nickname, pkfp, alias, onClick, me = fal
     return util.bake("div", {
         class: "participant-list-item",
         listeners: {
-            click: onClick
+            click: onClick,
+            dblclick: onDClick
         },
         attributes: {
             pkfp: pkfp
@@ -253,6 +254,7 @@ export function bakeMessagesPanel(newMsgBlock){
         children: [
             util.bake("div", {
                 class: "messages-panel-container",
+                id: "messages-panel-container",
                 children: util.bake("div", {
                     class: "messages-window",
                     id: "messages-window-1"
@@ -272,26 +274,21 @@ export function bakeNewMessageControl(sendHandler = Err.required("sendMessage ha
                 class: ["control-col", "new-msg-input"],
                 children: [
                     util.bake("div", {
-                        class: "select-member-wrap",
+                        class: "private-label",
+                        id: "private-label",
                         children: [
-                            util.bake("h4", {
-                                html: "To"
-                            }),
-                            util.bake("select", {
-                                id: "select-member",
-                                attributes: {
-                                    name: "participant"
+                            util.bake("img", {
+                                attributes:{
+                                    id: "remove-private",
+                                    src: "/img/close.png"
                                 },
-                                children: [
-                                    util.bake("option", {
-                                        attributes: {
-                                            value: "ALL",
-                                            text: "All"
-                                        }
-                                    })
-                                ]
 
-                            })
+                            }),
+                            util.bake("span", {
+                                text: "Prvate to: "
+                            }),
+                            util.bake("span")
+
                         ]
                     }),
                     util.bake("div", {
