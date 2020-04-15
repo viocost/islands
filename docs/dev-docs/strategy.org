@@ -11,7 +11,8 @@
 ** DONE Private messages
 CLOSED: [2020-04-15 Wed 00:14]
 ** TODO Scroll and load messages
-** TODO Admin page
+** DONE Admin page
+CLOSED: [2020-04-15 Wed 16:33]
 ** DONE Refactor metadata handling
 CLOSED: [2020-04-12 Sun 02:25]
 1. Load metadata from island with settings encrypted
@@ -21,7 +22,8 @@ CLOSED: [2020-04-12 Sun 02:25]
 
 
   
-** TODO Sounds
+** DONE Sounds
+CLOSED: [2020-04-15 Wed 16:33]
 ** DONE Send on enter
 CLOSED: [2020-04-13 Mon 13:38]
 ** DONE Clear inputs on send

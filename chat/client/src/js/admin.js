@@ -96,12 +96,12 @@ document.addEventListener('DOMContentLoaded', event => {
     util.$('#add-guest-service').onclick = createGuest;
 
 
-    util.$('#to-chat').onclick = returnToChat;
-    util.$('#admin-logout-button').onclick = adminLogout;
+    //util.$('#to-chat').onclick = returnToChat;
+    //util.$('#admin-logout-button').onclick = adminLogout;
 
     util.$('#clear-logs').onclick = clearLogs;
-
-    util.displayFlex('#admin-login--wrapper');
+//
+    //util.displayFlex('#admin-login--wrapper');
 
 
 
@@ -683,7 +683,7 @@ function adminLogout() {
 }
 
 function displayAdminMenu(on) {
-    on ? util.displayFlex("#admin-menu") : util.displayNone("#admin-menu")
+    //on ? util.displayFlex("#admin-menu") : util.displayNone("#admin-menu")
 }
 
 function prepareAdminMenuListeners() {

@@ -11,6 +11,7 @@ import { Vault } from "./lib/Vault";
 // impor
 import { ChatUtility as ChatUtil, ChatUtility } from "./lib/ChatUtility"
 
+
 // ---------------------------------------------------------------------------------------------------------------------------
 // CONSTANTS
 const SMALL_WIDTH = 760; // Width screen in pixels considered to be small
@@ -30,6 +31,9 @@ let sidePanel;
 
 //Chast client instance
 let chat;
+
+// Sounds will be loaded here
+let sounds = {}
 
 //Opened views stack for navigation
 const viewStack = []
@@ -57,6 +61,8 @@ window.chatutil = ChatUtility;
 
 document.addEventListener('DOMContentLoaded', event =>{
     //console.log(`Initializing page. Registration: ${isRegistration()}, Version: ${version}`);
+
+    loadSounds();
     initChat();
     initLoginUI();
 
@@ -594,8 +600,10 @@ function processLoginResult(err){
     if (err){
         toastr.warning(`Login error: ${err.message}`)
     } else {
+
         initUI();
         appendEphemeralMessage("Login successful. Loading data...")
+        //playSound("user_online");
     }
 
     loadingOff()
@@ -626,6 +634,7 @@ function processMessagesLoaded(pkfp, messages){
         console.log("Topic is inactive. Ignoring")
     }
 }
+
 
 // ---------------------------------------------------------------------------------------------------------------------------
 // ~END Chat Event handlers
@@ -877,6 +886,29 @@ function processMessageBody(text) {
 }
 
 
+/**
+ * Processes and styles code block
+ *
+ */
+function processCodeBlock(code) {
+    code = code.trim();
+    let separator = code.match(/\r?\n/) ? code.match(/\r?\n/)[0] : "\r\n";
+    let lines = code.split(/\r?\n/);
+    let min = Infinity;
+    for (let i = 1; i < lines.length; ++i) {
+        if (lines[i] === "") continue;
+        try {
+            min = Math.min(lines[i].match(/^\s+/)[0].length, min);
+        } catch (err) {
+            //found a line with no spaces, therefore returning the entire block as is
+            return lines.join(separator);
+        }
+    }
+    for (let i = 1; i < lines.length; ++i) {
+        lines[i] = lines[i].substr(min);
+    }
+    return lines.join(separator);
+}
 
 /**
  * Click handler when user clicks on attached file
@@ -1217,6 +1249,31 @@ function displayTopicContextButtons(state, displayBoot = false){
 
 //~END SIDE PANEL HANDLERS/////////////////////////////////////////////////////
 
+
+// ---------------------------------------------------------------------------------------------------------------------------
+// SOUNDS
+
+
+function loadSounds() {
+    let sMap = {
+        "incoming_message": "message_incoming.mp3",
+        "message_sent": "message_sent.mp3",
+        "user_online": "user_online.mp3"
+    };
+
+    for (let s of Object.keys(sMap)) {
+        sounds[s] = new Audio("/sounds/" + sMap[s]);
+        sounds[s].load();
+    }
+}
+
+function playSound(sound) {
+    //if (chat.session.settings.soundsOn) {
+    sounds[sound].play();
+   // }
+}
+
+//END SOUNDS///////////////////////////////////////////////////////////////////
 
 // ---------------------------------------------------------------------------------------------------------------------------
 // Util
