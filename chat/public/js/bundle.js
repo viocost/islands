@@ -7250,7 +7250,7 @@ var $iterators = __webpack_require__(136);
 var getKeys = __webpack_require__(77);
 var redefine = __webpack_require__(35);
 var global = __webpack_require__(12);
-var hide = __webpack_require__(20);
+var hide = __webpack_require__(21);
 var Iterators = __webpack_require__(53);
 var wks = __webpack_require__(13);
 var ITERATOR = wks('iterator');
@@ -7510,262 +7510,6 @@ process.umask = function() { return 0; };
 
 /***/ }),
 /* 20 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var dP = __webpack_require__(21);
-var createDesc = __webpack_require__(51);
-module.exports = __webpack_require__(22) ? function (object, key, value) {
-  return dP.f(object, key, createDesc(1, value));
-} : function (object, key, value) {
-  object[key] = value;
-  return object;
-};
-
-
-/***/ }),
-/* 21 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var anObject = __webpack_require__(15);
-var IE8_DOM_DEFINE = __webpack_require__(126);
-var toPrimitive = __webpack_require__(72);
-var dP = Object.defineProperty;
-
-exports.f = __webpack_require__(22) ? Object.defineProperty : function defineProperty(O, P, Attributes) {
-  anObject(O);
-  P = toPrimitive(P, true);
-  anObject(Attributes);
-  if (IE8_DOM_DEFINE) try {
-    return dP(O, P, Attributes);
-  } catch (e) { /* empty */ }
-  if ('get' in Attributes || 'set' in Attributes) throw TypeError('Accessors not supported!');
-  if ('value' in Attributes) O[P] = Attributes.value;
-  return O;
-};
-
-
-/***/ }),
-/* 22 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// Thank's IE8 for his funny defineProperty
-module.exports = !__webpack_require__(23)(function () {
-  return Object.defineProperty({}, 'a', { get: function () { return 7; } }).a != 7;
-});
-
-
-/***/ }),
-/* 23 */
-/***/ (function(module, exports) {
-
-module.exports = function (exec) {
-  try {
-    return !!exec();
-  } catch (e) {
-    return true;
-  }
-};
-
-
-/***/ }),
-/* 24 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/**
- * An API for getting cryptographically-secure random bytes. The bytes are
- * generated using the Fortuna algorithm devised by Bruce Schneier and
- * Niels Ferguson.
- *
- * Getting strong random bytes is not yet easy to do in javascript. The only
- * truish random entropy that can be collected is from the mouse, keyboard, or
- * from timing with respect to page loads, etc. This generator makes a poor
- * attempt at providing random bytes when those sources haven't yet provided
- * enough entropy to initially seed or to reseed the PRNG.
- *
- * @author Dave Longley
- *
- * Copyright (c) 2009-2014 Digital Bazaar, Inc.
- */
-var forge = __webpack_require__(6);
-__webpack_require__(47);
-__webpack_require__(152);
-__webpack_require__(153);
-__webpack_require__(8);
-
-(function() {
-
-// forge.random already defined
-if(forge.random && forge.random.getBytes) {
-  module.exports = forge.random;
-  return;
-}
-
-(function(jQuery) {
-
-// the default prng plugin, uses AES-128
-var prng_aes = {};
-var _prng_aes_output = new Array(4);
-var _prng_aes_buffer = forge.util.createBuffer();
-prng_aes.formatKey = function(key) {
-  // convert the key into 32-bit integers
-  var tmp = forge.util.createBuffer(key);
-  key = new Array(4);
-  key[0] = tmp.getInt32();
-  key[1] = tmp.getInt32();
-  key[2] = tmp.getInt32();
-  key[3] = tmp.getInt32();
-
-  // return the expanded key
-  return forge.aes._expandKey(key, false);
-};
-prng_aes.formatSeed = function(seed) {
-  // convert seed into 32-bit integers
-  var tmp = forge.util.createBuffer(seed);
-  seed = new Array(4);
-  seed[0] = tmp.getInt32();
-  seed[1] = tmp.getInt32();
-  seed[2] = tmp.getInt32();
-  seed[3] = tmp.getInt32();
-  return seed;
-};
-prng_aes.cipher = function(key, seed) {
-  forge.aes._updateBlock(key, seed, _prng_aes_output, false);
-  _prng_aes_buffer.putInt32(_prng_aes_output[0]);
-  _prng_aes_buffer.putInt32(_prng_aes_output[1]);
-  _prng_aes_buffer.putInt32(_prng_aes_output[2]);
-  _prng_aes_buffer.putInt32(_prng_aes_output[3]);
-  return _prng_aes_buffer.getBytes();
-};
-prng_aes.increment = function(seed) {
-  // FIXME: do we care about carry or signed issues?
-  ++seed[3];
-  return seed;
-};
-prng_aes.md = forge.md.sha256;
-
-/**
- * Creates a new PRNG.
- */
-function spawnPrng() {
-  var ctx = forge.prng.create(prng_aes);
-
-  /**
-   * Gets random bytes. If a native secure crypto API is unavailable, this
-   * method tries to make the bytes more unpredictable by drawing from data that
-   * can be collected from the user of the browser, eg: mouse movement.
-   *
-   * If a callback is given, this method will be called asynchronously.
-   *
-   * @param count the number of random bytes to get.
-   * @param [callback(err, bytes)] called once the operation completes.
-   *
-   * @return the random bytes in a string.
-   */
-  ctx.getBytes = function(count, callback) {
-    return ctx.generate(count, callback);
-  };
-
-  /**
-   * Gets random bytes asynchronously. If a native secure crypto API is
-   * unavailable, this method tries to make the bytes more unpredictable by
-   * drawing from data that can be collected from the user of the browser,
-   * eg: mouse movement.
-   *
-   * @param count the number of random bytes to get.
-   *
-   * @return the random bytes in a string.
-   */
-  ctx.getBytesSync = function(count) {
-    return ctx.generate(count);
-  };
-
-  return ctx;
-}
-
-// create default prng context
-var _ctx = spawnPrng();
-
-// add other sources of entropy only if window.crypto.getRandomValues is not
-// available -- otherwise this source will be automatically used by the prng
-var getRandomValues = null;
-if(typeof window !== 'undefined') {
-  var _crypto = window.crypto || window.msCrypto;
-  if(_crypto && _crypto.getRandomValues) {
-    getRandomValues = function(arr) {
-      return _crypto.getRandomValues(arr);
-    };
-  }
-}
-if(forge.options.usePureJavaScript ||
-  (!forge.util.isNodejs && !getRandomValues)) {
-  // if this is a web worker, do not use weak entropy, instead register to
-  // receive strong entropy asynchronously from the main thread
-  if(typeof window === 'undefined' || window.document === undefined) {
-    // FIXME:
-  }
-
-  // get load time entropy
-  _ctx.collectInt(+new Date(), 32);
-
-  // add some entropy from navigator object
-  if(typeof(navigator) !== 'undefined') {
-    var _navBytes = '';
-    for(var key in navigator) {
-      try {
-        if(typeof(navigator[key]) == 'string') {
-          _navBytes += navigator[key];
-        }
-      } catch(e) {
-        /* Some navigator keys might not be accessible, e.g. the geolocation
-          attribute throws an exception if touched in Mozilla chrome://
-          context.
-
-          Silently ignore this and just don't use this as a source of
-          entropy. */
-      }
-    }
-    _ctx.collect(_navBytes);
-    _navBytes = null;
-  }
-
-  // add mouse and keyboard collectors if jquery is available
-  if(jQuery) {
-    // set up mouse entropy capture
-    jQuery().mousemove(function(e) {
-      // add mouse coords
-      _ctx.collectInt(e.clientX, 16);
-      _ctx.collectInt(e.clientY, 16);
-    });
-
-    // set up keyboard entropy capture
-    jQuery().keypress(function(e) {
-      _ctx.collectInt(e.charCode, 8);
-    });
-  }
-}
-
-/* Random API */
-if(!forge.random) {
-  forge.random = _ctx;
-} else {
-  // extend forge.random with _ctx
-  for(var key in _ctx) {
-    forge.random[key] = _ctx[key];
-  }
-}
-
-// expose spawn PRNG
-forge.random.createInstance = spawnPrng;
-
-module.exports = forge.random;
-
-})(typeof(jQuery) !== 'undefined' ? jQuery : null);
-
-})();
-
-
-/***/ }),
-/* 25 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -8873,21 +8617,6 @@ var Topic_Topic = /*#__PURE__*/function () {
     } //TODO Cleanup or implememnt
 
   }, {
-    key: "bootPraticipant",
-    value: function bootPraticipant() {}
-  }, {
-    key: "processMetadataUpdate",
-    value: function processMetadataUpdate() {}
-  }, {
-    key: "processNicknameRequest",
-    value: function processNicknameRequest() {}
-  }, {
-    key: "processNicknameResponse",
-    value: function processNicknameResponse() {}
-  }, {
-    key: "processNicknameChangeNote",
-    value: function processNicknameChangeNote() {}
-  }, {
     key: "processInvitesUpdated",
     value: function processInvitesUpdated(self, msg) {
       Object(IError["b" /* assert */])(Message["a" /* Message */].verifyMessage(self._metadata.getTAPublicKey(), msg), "TA signature is invalid");
@@ -9015,12 +8744,268 @@ var Topic_Topic = /*#__PURE__*/function () {
 }();
 
 /***/ }),
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var dP = __webpack_require__(22);
+var createDesc = __webpack_require__(51);
+module.exports = __webpack_require__(23) ? function (object, key, value) {
+  return dP.f(object, key, createDesc(1, value));
+} : function (object, key, value) {
+  object[key] = value;
+  return object;
+};
+
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var anObject = __webpack_require__(15);
+var IE8_DOM_DEFINE = __webpack_require__(126);
+var toPrimitive = __webpack_require__(72);
+var dP = Object.defineProperty;
+
+exports.f = __webpack_require__(23) ? Object.defineProperty : function defineProperty(O, P, Attributes) {
+  anObject(O);
+  P = toPrimitive(P, true);
+  anObject(Attributes);
+  if (IE8_DOM_DEFINE) try {
+    return dP(O, P, Attributes);
+  } catch (e) { /* empty */ }
+  if ('get' in Attributes || 'set' in Attributes) throw TypeError('Accessors not supported!');
+  if ('value' in Attributes) O[P] = Attributes.value;
+  return O;
+};
+
+
+/***/ }),
+/* 23 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Thank's IE8 for his funny defineProperty
+module.exports = !__webpack_require__(24)(function () {
+  return Object.defineProperty({}, 'a', { get: function () { return 7; } }).a != 7;
+});
+
+
+/***/ }),
+/* 24 */
+/***/ (function(module, exports) {
+
+module.exports = function (exec) {
+  try {
+    return !!exec();
+  } catch (e) {
+    return true;
+  }
+};
+
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/**
+ * An API for getting cryptographically-secure random bytes. The bytes are
+ * generated using the Fortuna algorithm devised by Bruce Schneier and
+ * Niels Ferguson.
+ *
+ * Getting strong random bytes is not yet easy to do in javascript. The only
+ * truish random entropy that can be collected is from the mouse, keyboard, or
+ * from timing with respect to page loads, etc. This generator makes a poor
+ * attempt at providing random bytes when those sources haven't yet provided
+ * enough entropy to initially seed or to reseed the PRNG.
+ *
+ * @author Dave Longley
+ *
+ * Copyright (c) 2009-2014 Digital Bazaar, Inc.
+ */
+var forge = __webpack_require__(6);
+__webpack_require__(47);
+__webpack_require__(152);
+__webpack_require__(153);
+__webpack_require__(8);
+
+(function() {
+
+// forge.random already defined
+if(forge.random && forge.random.getBytes) {
+  module.exports = forge.random;
+  return;
+}
+
+(function(jQuery) {
+
+// the default prng plugin, uses AES-128
+var prng_aes = {};
+var _prng_aes_output = new Array(4);
+var _prng_aes_buffer = forge.util.createBuffer();
+prng_aes.formatKey = function(key) {
+  // convert the key into 32-bit integers
+  var tmp = forge.util.createBuffer(key);
+  key = new Array(4);
+  key[0] = tmp.getInt32();
+  key[1] = tmp.getInt32();
+  key[2] = tmp.getInt32();
+  key[3] = tmp.getInt32();
+
+  // return the expanded key
+  return forge.aes._expandKey(key, false);
+};
+prng_aes.formatSeed = function(seed) {
+  // convert seed into 32-bit integers
+  var tmp = forge.util.createBuffer(seed);
+  seed = new Array(4);
+  seed[0] = tmp.getInt32();
+  seed[1] = tmp.getInt32();
+  seed[2] = tmp.getInt32();
+  seed[3] = tmp.getInt32();
+  return seed;
+};
+prng_aes.cipher = function(key, seed) {
+  forge.aes._updateBlock(key, seed, _prng_aes_output, false);
+  _prng_aes_buffer.putInt32(_prng_aes_output[0]);
+  _prng_aes_buffer.putInt32(_prng_aes_output[1]);
+  _prng_aes_buffer.putInt32(_prng_aes_output[2]);
+  _prng_aes_buffer.putInt32(_prng_aes_output[3]);
+  return _prng_aes_buffer.getBytes();
+};
+prng_aes.increment = function(seed) {
+  // FIXME: do we care about carry or signed issues?
+  ++seed[3];
+  return seed;
+};
+prng_aes.md = forge.md.sha256;
+
+/**
+ * Creates a new PRNG.
+ */
+function spawnPrng() {
+  var ctx = forge.prng.create(prng_aes);
+
+  /**
+   * Gets random bytes. If a native secure crypto API is unavailable, this
+   * method tries to make the bytes more unpredictable by drawing from data that
+   * can be collected from the user of the browser, eg: mouse movement.
+   *
+   * If a callback is given, this method will be called asynchronously.
+   *
+   * @param count the number of random bytes to get.
+   * @param [callback(err, bytes)] called once the operation completes.
+   *
+   * @return the random bytes in a string.
+   */
+  ctx.getBytes = function(count, callback) {
+    return ctx.generate(count, callback);
+  };
+
+  /**
+   * Gets random bytes asynchronously. If a native secure crypto API is
+   * unavailable, this method tries to make the bytes more unpredictable by
+   * drawing from data that can be collected from the user of the browser,
+   * eg: mouse movement.
+   *
+   * @param count the number of random bytes to get.
+   *
+   * @return the random bytes in a string.
+   */
+  ctx.getBytesSync = function(count) {
+    return ctx.generate(count);
+  };
+
+  return ctx;
+}
+
+// create default prng context
+var _ctx = spawnPrng();
+
+// add other sources of entropy only if window.crypto.getRandomValues is not
+// available -- otherwise this source will be automatically used by the prng
+var getRandomValues = null;
+if(typeof window !== 'undefined') {
+  var _crypto = window.crypto || window.msCrypto;
+  if(_crypto && _crypto.getRandomValues) {
+    getRandomValues = function(arr) {
+      return _crypto.getRandomValues(arr);
+    };
+  }
+}
+if(forge.options.usePureJavaScript ||
+  (!forge.util.isNodejs && !getRandomValues)) {
+  // if this is a web worker, do not use weak entropy, instead register to
+  // receive strong entropy asynchronously from the main thread
+  if(typeof window === 'undefined' || window.document === undefined) {
+    // FIXME:
+  }
+
+  // get load time entropy
+  _ctx.collectInt(+new Date(), 32);
+
+  // add some entropy from navigator object
+  if(typeof(navigator) !== 'undefined') {
+    var _navBytes = '';
+    for(var key in navigator) {
+      try {
+        if(typeof(navigator[key]) == 'string') {
+          _navBytes += navigator[key];
+        }
+      } catch(e) {
+        /* Some navigator keys might not be accessible, e.g. the geolocation
+          attribute throws an exception if touched in Mozilla chrome://
+          context.
+
+          Silently ignore this and just don't use this as a source of
+          entropy. */
+      }
+    }
+    _ctx.collect(_navBytes);
+    _navBytes = null;
+  }
+
+  // add mouse and keyboard collectors if jquery is available
+  if(jQuery) {
+    // set up mouse entropy capture
+    jQuery().mousemove(function(e) {
+      // add mouse coords
+      _ctx.collectInt(e.clientX, 16);
+      _ctx.collectInt(e.clientY, 16);
+    });
+
+    // set up keyboard entropy capture
+    jQuery().keypress(function(e) {
+      _ctx.collectInt(e.charCode, 8);
+    });
+  }
+}
+
+/* Random API */
+if(!forge.random) {
+  forge.random = _ctx;
+} else {
+  // extend forge.random with _ctx
+  for(var key in _ctx) {
+    forge.random[key] = _ctx[key];
+  }
+}
+
+// expose spawn PRNG
+forge.random.createInstance = spawnPrng;
+
+module.exports = forge.random;
+
+})(typeof(jQuery) !== 'undefined' ? jQuery : null);
+
+})();
+
+
+/***/ }),
 /* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var global = __webpack_require__(12);
 var core = __webpack_require__(41);
-var hide = __webpack_require__(20);
+var hide = __webpack_require__(21);
 var redefine = __webpack_require__(35);
 var ctx = __webpack_require__(44);
 var PROTOTYPE = 'prototype';
@@ -11577,7 +11562,7 @@ forge.md.algorithms = forge.md.algorithms || {};
 /***/ (function(module, exports, __webpack_require__) {
 
 var global = __webpack_require__(12);
-var hide = __webpack_require__(20);
+var hide = __webpack_require__(21);
 var has = __webpack_require__(36);
 var SRC = __webpack_require__(42)('src');
 var $toString = __webpack_require__(194);
@@ -11633,7 +11618,7 @@ var advanceStringIndex = __webpack_require__(106);
 var toLength = __webpack_require__(18);
 var callRegExpExec = __webpack_require__(79);
 var regexpExec = __webpack_require__(107);
-var fails = __webpack_require__(23);
+var fails = __webpack_require__(24);
 var $min = Math.min;
 var $push = [].push;
 var $SPLIT = 'split';
@@ -11776,11 +11761,11 @@ __webpack_require__(139)('asyncIterator');
 // ECMAScript 6 symbols shim
 var global = __webpack_require__(12);
 var has = __webpack_require__(36);
-var DESCRIPTORS = __webpack_require__(22);
+var DESCRIPTORS = __webpack_require__(23);
 var $export = __webpack_require__(26);
 var redefine = __webpack_require__(35);
 var META = __webpack_require__(212).KEY;
-var $fails = __webpack_require__(23);
+var $fails = __webpack_require__(24);
 var shared = __webpack_require__(73);
 var setToStringTag = __webpack_require__(60);
 var uid = __webpack_require__(42);
@@ -11799,7 +11784,7 @@ var _create = __webpack_require__(101);
 var gOPNExt = __webpack_require__(214);
 var $GOPD = __webpack_require__(104);
 var $GOPS = __webpack_require__(110);
-var $DP = __webpack_require__(21);
+var $DP = __webpack_require__(22);
 var $keys = __webpack_require__(77);
 var gOPD = $GOPD.f;
 var dP = $DP.f;
@@ -12011,7 +11996,7 @@ $JSON && $export($export.S + $export.F * (!USE_NATIVE || $fails(function () {
 });
 
 // 19.4.3.4 Symbol.prototype[@@toPrimitive](hint)
-$Symbol[PROTOTYPE][TO_PRIMITIVE] || __webpack_require__(20)($Symbol[PROTOTYPE], TO_PRIMITIVE, $Symbol[PROTOTYPE].valueOf);
+$Symbol[PROTOTYPE][TO_PRIMITIVE] || __webpack_require__(21)($Symbol[PROTOTYPE], TO_PRIMITIVE, $Symbol[PROTOTYPE].valueOf);
 // 19.4.3.5 Symbol.prototype[@@toStringTag]
 setToStringTag($Symbol, 'Symbol');
 // 20.2.1.9 Math[@@toStringTag]
@@ -14913,7 +14898,7 @@ exports.f = Object.getOwnPropertyNames || function getOwnPropertyNames(O) {
 /* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var def = __webpack_require__(21).f;
+var def = __webpack_require__(22).f;
 var has = __webpack_require__(36);
 var TAG = __webpack_require__(13)('toStringTag');
 
@@ -17443,8 +17428,8 @@ module.exports = function (R, S) {
 
 __webpack_require__(207);
 var redefine = __webpack_require__(35);
-var hide = __webpack_require__(20);
-var fails = __webpack_require__(23);
+var hide = __webpack_require__(21);
+var fails = __webpack_require__(24);
 var defined = __webpack_require__(74);
 var wks = __webpack_require__(13);
 var regexpExec = __webpack_require__(107);
@@ -18112,7 +18097,7 @@ __webpack_require__(83);
 __webpack_require__(48);
 __webpack_require__(155);
 __webpack_require__(156);
-__webpack_require__(24);
+__webpack_require__(25);
 __webpack_require__(8);
 
 if(typeof BigInteger === 'undefined') {
@@ -22810,7 +22795,7 @@ function verifyPassword(password, confirm) {
   }
 }
 // EXTERNAL MODULE: ./client/src/js/lib/Topic.js + 1 modules
-var Topic = __webpack_require__(25);
+var Topic = __webpack_require__(20);
 
 // EXTERNAL MODULE: ./client/src/js/lib/ClientSettings.js
 var ClientSettings = __webpack_require__(57);
@@ -22909,20 +22894,7 @@ var Vault_Vault = /*#__PURE__*/function () {
     key: "initHandlers",
     value: function initHandlers() {
       var self = this;
-      this.handlers = {}; /////////////////////////////////////////////////////////////////////////////
-      // this.handlers[Internal.JOIN_TOPIC_SUCCESS] = (msg)=>{                   //
-      //     console.log("Topic join success! Adding new topic...");             //
-      //     let topicPkfp = self.addNewTopic(self, msg);                        //
-      //     self.vault.topics[topicPkfp].exchangeNicknames()                    //
-      //                                                                         //
-      //                                                                         //
-      //                                                                         //
-      // }                                                                       //
-      //                                                                         //
-      // this.handlers[Internal.JOIN_TOPIC_FAIL] = (msg)=>{                      //
-      //     console.log(`Join topic attempt has failed: ${msg.body.errorMsg}`); //
-      // }                                                                       //
-      /////////////////////////////////////////////////////////////////////////////
+      this.handlers = {};
 
       this.handlers[Events["Internal"].POST_LOGIN_DECRYPT] = function (msg) {
         self.emit(Events["Internal"].POST_LOGIN_DECRYPT, msg);
@@ -23006,8 +22978,9 @@ var Vault_Vault = /*#__PURE__*/function () {
   }, {
     key: "initSaved",
     value: function () {
-      var _initSaved = asyncToGenerator_default()( /*#__PURE__*/regenerator_default.a.mark(function _callee() {
-        var vault_encrypted,
+      var _initSaved = asyncToGenerator_default()( /*#__PURE__*/regenerator_default.a.mark(function _callee2() {
+        var version,
+            vault_encrypted,
             password,
             topics,
             ic,
@@ -23016,15 +22989,17 @@ var Vault_Vault = /*#__PURE__*/function () {
             _i,
             _Object$keys,
             pkfp,
-            _args = arguments;
+            self,
+            _args2 = arguments;
 
-        return regenerator_default.a.wrap(function _callee$(_context) {
+        return regenerator_default.a.wrap(function _callee2$(_context2) {
           while (1) {
-            switch (_context.prev = _context.next) {
+            switch (_context2.prev = _context2.next) {
               case 0:
-                vault_encrypted = _args.length > 0 && _args[0] !== undefined ? _args[0] : IError["a" /* IError */].required("Vault parse: data parameter missing");
-                password = _args.length > 1 && _args[1] !== undefined ? _args[1] : IError["a" /* IError */].required("Vault parse: password parameter missing");
-                topics = _args.length > 2 && _args[2] !== undefined ? _args[2] : {};
+                version = _args2.length > 0 && _args2[0] !== undefined ? _args2[0] : IError["a" /* IError */].required("Current chat version");
+                vault_encrypted = _args2.length > 1 && _args2[1] !== undefined ? _args2[1] : IError["a" /* IError */].required("Vault parse: data parameter missing");
+                password = _args2.length > 2 && _args2[2] !== undefined ? _args2[2] : IError["a" /* IError */].required("Vault parse: password parameter missing");
+                topics = _args2.length > 3 && _args2[3] !== undefined ? _args2[3] : {};
                 ic = new iCrypto["a" /* iCrypto */](); //console.log(`Salt: ${vault_encrypted.substring(0, 256)}`)
                 //console.log(`Vault: ${vault_encrypted.substr(256)}`)
 
@@ -23052,33 +23027,39 @@ var Vault_Vault = /*#__PURE__*/function () {
                     console.log("INITIALIZING TOPIC ".concat(pkfp));
                     this.topics[pkfp] = new Topic["a" /* Topic */](this.version, pkfp, unpackedTopics[pkfp].name, unpackedTopics[pkfp].key, unpackedTopics[pkfp].comment);
                   }
-                } //     this.topics[pkfp] = new Topic(         //
-                //         pkfp,                              //
-                //         data.topics[pkfp].name,            //
-                //         data.topics[pkfp].key,             //
-                //         data.topics[pkfp].comment);        //
-                // });                                        //
-
-
-                if (!(!data.version || semver["lt"](data.version, "1.0.5"))) {
-                  _context.next = 18;
-                  break;
                 }
 
-                // TODO format update required!
-                console.log("vault format update required");
-                _context.next = 18;
-                return this.updateVaultFormat(data);
+                if (!data.version || semver["lt"](data.version, "2.0.0")) {
+                  // TODO format update required!
+                  console.log("vault format update required to version ".concat(version));
+                  self = this;
+                  this.version = version;
+                  this.versionUpdate = /*#__PURE__*/asyncToGenerator_default()( /*#__PURE__*/regenerator_default.a.mark(function _callee() {
+                    return regenerator_default.a.wrap(function _callee$(_context) {
+                      while (1) {
+                        switch (_context.prev = _context.next) {
+                          case 0:
+                            console.log("!!!Version update lambda");
+                            _context.next = 3;
+                            return self.updateVaultFormat(data);
 
-              case 18:
+                          case 3:
+                          case "end":
+                            return _context.stop();
+                        }
+                      }
+                    }, _callee);
+                  }));
+                }
+
                 this.initialized = true;
 
-              case 19:
+              case 17:
               case "end":
-                return _context.stop();
+                return _context2.stop();
             }
           }
-        }, _callee, this);
+        }, _callee2, this);
       }));
 
       function initSaved() {
@@ -23090,27 +23071,24 @@ var Vault_Vault = /*#__PURE__*/function () {
   }, {
     key: "updateVaultFormat",
     value: function () {
-      var _updateVaultFormat = asyncToGenerator_default()( /*#__PURE__*/regenerator_default.a.mark(function _callee2(data) {
-        return regenerator_default.a.wrap(function _callee2$(_context2) {
-          while (1) {
-            switch (_context2.prev = _context2.next) {
-              case 0:
-                console.log("Updating vault format..."); ////////////////////////////////////////////////
-                // Object.keys(data.topics).forEach((pkfp)=>{ //
-                //     this.topics[pkfp] = new Topic(         //
-                //         pkfp,                              //
-                //         data.topics[pkfp].name,            //
-                //         data.topics[pkfp].key,             //
-                //         data.topics[pkfp].comment);        //
-                // });                                        //
-                ////////////////////////////////////////////////
+      var _updateVaultFormat = asyncToGenerator_default()( /*#__PURE__*/regenerator_default.a.mark(function _callee3(data) {
+        var _this = this;
 
-              case 1:
+        return regenerator_default.a.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                Object.keys(data.topics).forEach(function (pkfp) {
+                  _this.topics[pkfp] = new Topic["a" /* Topic */](_this.version, pkfp, data.topics[pkfp].name, data.topics[pkfp].key, data.topics[pkfp].comment);
+                });
+                this.save("update_format");
+
+              case 2:
               case "end":
-                return _context2.stop();
+                return _context3.stop();
             }
           }
-        }, _callee2);
+        }, _callee3, this);
       }));
 
       function updateVaultFormat(_x) {
@@ -23137,15 +23115,44 @@ var Vault_Vault = /*#__PURE__*/function () {
     }
   }, {
     key: "bootstrap",
-    value: function bootstrap(arrivalHub, messageQueue, version) {
-      var self = this;
-      this.version = version;
-      this.arrivalHub = arrivalHub;
-      this.messageQueue = messageQueue;
-      this.arrivalHub.on(this.id, function (msg) {
-        self.processIncomingMessage(msg, self);
-      });
-    }
+    value: function () {
+      var _bootstrap = asyncToGenerator_default()( /*#__PURE__*/regenerator_default.a.mark(function _callee4(arrivalHub, messageQueue, version) {
+        var self;
+        return regenerator_default.a.wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                self = this;
+                this.version = version;
+                this.arrivalHub = arrivalHub;
+                this.messageQueue = messageQueue;
+                this.arrivalHub.on(this.id, function (msg) {
+                  self.processIncomingMessage(msg, self);
+                });
+
+                if (!this.versionUpdate) {
+                  _context4.next = 9;
+                  break;
+                }
+
+                console.log("Updating vault to new format..");
+                _context4.next = 9;
+                return this.versionUpdate();
+
+              case 9:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4, this);
+      }));
+
+      function bootstrap(_x2, _x3, _x4) {
+        return _bootstrap.apply(this, arguments);
+      }
+
+      return bootstrap;
+    }()
   }, {
     key: "processIncomingMessage",
     value: function processIncomingMessage(msg, self) {
@@ -23167,20 +23174,27 @@ var Vault_Vault = /*#__PURE__*/function () {
   }, {
     key: "save",
     value: function save(cause) {
-      if (!this.password || this.privateKey || this.topics) {
+      if (!this.password || !this.privateKey || !this.topics) {
         throw new Error("Vault object structure is not valid");
       }
 
-      var vault = this.pack();
+      var _this$pack = this.pack(),
+          vault = _this$pack.vault,
+          topics = _this$pack.topics,
+          hash = _this$pack.hash,
+          sign = _this$pack.sign;
+
       var message = new Message["a" /* Message */](this.version);
       message.setSource(this.id);
       message.setCommand(Events["Internal"].SAVE_VAULT);
       message.addNonce();
       message.body.vault = vault;
       message.body.sign = sign;
+      message.body.hash = hash;
+      message.body.topics = topics;
       message.body.cause = cause;
-      message.body.hash = vault.hash;
       message.signMessage(this.privateKey);
+      console.log("SAVING VAULT");
       this.messageQueue.enqueue(message);
     }
   }, {
@@ -23286,32 +23300,6 @@ var Vault_Vault = /*#__PURE__*/function () {
       return {
         vault: ic.get("res"),
         topics: topics,
-        hash: ic.get("vault-hash"),
-        sign: ic.get("sign")
-      };
-    }
-    /**
-     * Stringifies this vault and topics, hashes, signes and encrypts it
-     */
-
-  }, {
-    key: "packBAK",
-    value: function packBAK() {
-      var vaultBlob = JSON.stringify({
-        topics: this.packTopics(),
-        publicKey: this.publicKey,
-        privateKey: this.privateKey,
-        admin: this.admin,
-        adminKey: this.adminKey,
-        settings: this.settings
-      });
-      var ic = new iCrypto["a" /* iCrypto */]();
-      ic.createNonce("salt", 128).encode("salt", "hex", "salt-hex").createPasswordBasedSymKey("key", this.password, "salt-hex").addBlob("vault", vaultBlob).AESEncrypt("vault", "key", "cip-hex", true, "CBC", "utf8").merge(["salt-hex", "cip-hex"], "res").hash("res", "vault-hash").setRSAKey("asymkey", this.privateKey, "private").privateKeySign("vault-hash", "asymkey", "sign"); //console.log(`Salt: ${ic.get("salt-hex")}`)
-      //console.log(`Vault: ${ic.get("cip-hex")}`)
-      //Sign encrypted vault with private key
-
-      return {
-        vault: ic.get("res"),
         hash: ic.get("vault-hash"),
         sign: ic.get("sign")
       };
@@ -23617,7 +23605,7 @@ var has = __webpack_require__(36);
 var IE8_DOM_DEFINE = __webpack_require__(126);
 var gOPD = Object.getOwnPropertyDescriptor;
 
-exports.f = __webpack_require__(22) ? gOPD : function getOwnPropertyDescriptor(O, P) {
+exports.f = __webpack_require__(23) ? gOPD : function getOwnPropertyDescriptor(O, P) {
   O = toIObject(O);
   P = toPrimitive(P, true);
   if (IE8_DOM_DEFINE) try {
@@ -23743,7 +23731,7 @@ module.exports = function () {
 __webpack_require__(211);
 var anObject = __webpack_require__(15);
 var $flags = __webpack_require__(108);
-var DESCRIPTORS = __webpack_require__(22);
+var DESCRIPTORS = __webpack_require__(23);
 var TO_STRING = 'toString';
 var $toString = /./[TO_STRING];
 
@@ -23752,7 +23740,7 @@ var define = function (fn) {
 };
 
 // 21.2.5.14 RegExp.prototype.toString()
-if (__webpack_require__(23)(function () { return $toString.call({ source: 'a', flags: 'b' }) != '/a/b'; })) {
+if (__webpack_require__(24)(function () { return $toString.call({ source: 'a', flags: 'b' }) != '/a/b'; })) {
   define(function toString() {
     var R = anObject(this);
     return '/'.concat(R.source, '/',
@@ -27830,7 +27818,7 @@ pki.verifyCertificateChain = function(caStore, chain, verify) {
  * Copyright (c) 2012 Stefan Siegl <stesie@brokenpipe.de>
  */
 var forge = __webpack_require__(6);
-__webpack_require__(24);
+__webpack_require__(25);
 __webpack_require__(8);
 
 // shortcut for PSS API
@@ -29958,7 +29946,7 @@ var MessageQueue = /*#__PURE__*/function () {
 /* 126 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = !__webpack_require__(22) && !__webpack_require__(23)(function () {
+module.exports = !__webpack_require__(23) && !__webpack_require__(24)(function () {
   return Object.defineProperty(__webpack_require__(94)('div'), 'a', { get: function () { return 7; } }).a != 7;
 });
 
@@ -29969,17 +29957,17 @@ module.exports = !__webpack_require__(22) && !__webpack_require__(23)(function (
 
 "use strict";
 
-if (__webpack_require__(22)) {
+if (__webpack_require__(23)) {
   var LIBRARY = __webpack_require__(43);
   var global = __webpack_require__(12);
-  var fails = __webpack_require__(23);
+  var fails = __webpack_require__(24);
   var $export = __webpack_require__(26);
   var $typed = __webpack_require__(128);
   var $buffer = __webpack_require__(196);
   var ctx = __webpack_require__(44);
   var anInstance = __webpack_require__(96);
   var propertyDesc = __webpack_require__(51);
-  var hide = __webpack_require__(20);
+  var hide = __webpack_require__(21);
   var redefineAll = __webpack_require__(95);
   var toInteger = __webpack_require__(45);
   var toLength = __webpack_require__(18);
@@ -30006,7 +29994,7 @@ if (__webpack_require__(22)) {
   var setSpecies = __webpack_require__(138);
   var arrayFill = __webpack_require__(132);
   var arrayCopyWithin = __webpack_require__(204);
-  var $DP = __webpack_require__(21);
+  var $DP = __webpack_require__(22);
   var $GOPD = __webpack_require__(104);
   var dP = $DP.f;
   var gOPD = $GOPD.f;
@@ -30455,7 +30443,7 @@ if (__webpack_require__(22)) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var global = __webpack_require__(12);
-var hide = __webpack_require__(20);
+var hide = __webpack_require__(21);
 var uid = __webpack_require__(42);
 var TYPED = uid('typed_array');
 var VIEW = uid('view');
@@ -30643,7 +30631,7 @@ addToUnscopables('entries');
 // 22.1.3.31 Array.prototype[@@unscopables]
 var UNSCOPABLES = __webpack_require__(13)('unscopables');
 var ArrayProto = Array.prototype;
-if (ArrayProto[UNSCOPABLES] == undefined) __webpack_require__(20)(ArrayProto, UNSCOPABLES, {});
+if (ArrayProto[UNSCOPABLES] == undefined) __webpack_require__(21)(ArrayProto, UNSCOPABLES, {});
 module.exports = function (key) {
   ArrayProto[UNSCOPABLES][key] = true;
 };
@@ -30656,8 +30644,8 @@ module.exports = function (key) {
 "use strict";
 
 var global = __webpack_require__(12);
-var dP = __webpack_require__(21);
-var DESCRIPTORS = __webpack_require__(22);
+var dP = __webpack_require__(22);
+var DESCRIPTORS = __webpack_require__(23);
 var SPECIES = __webpack_require__(13)('species');
 
 module.exports = function (KEY) {
@@ -30677,7 +30665,7 @@ var global = __webpack_require__(12);
 var core = __webpack_require__(41);
 var LIBRARY = __webpack_require__(43);
 var wksExt = __webpack_require__(140);
-var defineProperty = __webpack_require__(21).f;
+var defineProperty = __webpack_require__(22).f;
 module.exports = function (name) {
   var $Symbol = core.Symbol || (core.Symbol = LIBRARY ? {} : global.Symbol || {});
   if (name.charAt(0) != '_' && !(name in $Symbol)) defineProperty($Symbol, name, { value: wksExt.f(name) });
@@ -30848,7 +30836,7 @@ module.exports = function (C, x) {
 
 "use strict";
 
-var $defineProperty = __webpack_require__(21);
+var $defineProperty = __webpack_require__(22);
 var createDesc = __webpack_require__(51);
 
 module.exports = function (object, index, value) {
@@ -32217,7 +32205,7 @@ __webpack_require__(65);
 __webpack_require__(113);
 __webpack_require__(54);
 __webpack_require__(149);
-__webpack_require__(24);
+__webpack_require__(25);
 __webpack_require__(66);
 __webpack_require__(8);
 
@@ -36389,7 +36377,7 @@ __webpack_require__(34);
 __webpack_require__(48);
 __webpack_require__(114);
 __webpack_require__(54);
-__webpack_require__(24);
+__webpack_require__(25);
 __webpack_require__(154);
 __webpack_require__(82);
 __webpack_require__(8);
@@ -38620,7 +38608,7 @@ forge.rc2.createDecryptionCipher = function(key, bits) {
  */
 var forge = __webpack_require__(6);
 __webpack_require__(8);
-__webpack_require__(24);
+__webpack_require__(25);
 __webpack_require__(66);
 
 // shortcut for PKCS#1 API
@@ -38865,7 +38853,7 @@ function rsa_mgf1(seed, maskLength, hash) {
 var forge = __webpack_require__(6);
 __webpack_require__(8);
 __webpack_require__(83);
-__webpack_require__(24);
+__webpack_require__(25);
 
 (function() {
 
@@ -39259,7 +39247,7 @@ __webpack_require__(65);
 __webpack_require__(48);
 __webpack_require__(158);
 __webpack_require__(150);
-__webpack_require__(24);
+__webpack_require__(25);
 __webpack_require__(82);
 __webpack_require__(66);
 __webpack_require__(8);
@@ -45299,7 +45287,7 @@ module.exports = _defineProperty;
 /* harmony import */ var _ArrivalHub__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(187);
 /* harmony import */ var _ChatUtility__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(7);
 /* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(9);
-/* harmony import */ var _Topic__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(25);
+/* harmony import */ var _Topic__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(20);
 /* harmony import */ var _DownloadAttachmentAgent__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(188);
 /* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(2);
 /* harmony import */ var _TopicJoinAgent__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(189);
@@ -45383,35 +45371,37 @@ var ChatClient = /*#__PURE__*/function () {
 
               case 6:
                 response = _context.sent;
+                vault = response.vault, vaultId = response.vaultId;
 
-                if (response.vault) {
-                  _context.next = 9;
+                if (vault) {
+                  _context.next = 10;
                   break;
                 }
 
                 throw new Error("Vault not found");
 
-              case 9:
-                _this.vault = new _Vault__WEBPACK_IMPORTED_MODULE_11__[/* Vault */ "a"]();
-                vault = response.vault;
-                vaultId = response.vaultId;
+              case 10:
                 console.log("Got vault. Initializing"); //Initialize vault
-
-                _this.vault.initSaved(vault.vault, password, vault.topics);
-
-                _this.vault.setId(vaultId);
-
-                console.log("Vault initialized. Initializing connector..."); //Initialize multiplexor socket
+                // Initialize multiplexor socket
 
                 _this.connector = new _Connector__WEBPACK_IMPORTED_MODULE_13__[/* Connector */ "a"](); //Initializing arrival hub
 
                 _this.arrivalHub = new _ArrivalHub__WEBPACK_IMPORTED_MODULE_15__[/* ArrivalHub */ "a"](_this.connector); //Initialize message queue
 
                 _this.messageQueue = new _MessageQueue__WEBPACK_IMPORTED_MODULE_14__[/* MessageQueue */ "a"](_this.connector);
+                _this.vault = new _Vault__WEBPACK_IMPORTED_MODULE_11__[/* Vault */ "a"]();
+
+                _this.vault.initSaved(_this.version, vault.vault, password, vault.topics);
+
+                _this.vault.setId(vaultId);
+
+                console.log("Vault initialized. Initializing connector...");
                 console.log("Bootstrapping vault..."); //bootstrapping vault
 
-                _this.vault.bootstrap(_this.arrivalHub, _this.messageQueue, _this.version);
+                _context.next = 21;
+                return _this.vault.bootstrap(_this.arrivalHub, _this.messageQueue, _this.version);
 
+              case 21:
                 console.log("Setting listeneres");
 
                 _this.setVaultListeners();
@@ -48406,7 +48396,7 @@ var DownloadAttachmentAgent = /*#__PURE__*/function () {
 /* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(2);
 /* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(9);
 /* harmony import */ var _WildEmitter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(11);
-/* harmony import */ var _Topic__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(25);
+/* harmony import */ var _Topic__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(20);
 /* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(0);
 /* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_common_Events__WEBPACK_IMPORTED_MODULE_7__);
 /* harmony import */ var _ChatUtility__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(7);
@@ -48606,7 +48596,7 @@ var TopicJoinAgent = /*#__PURE__*/function () {
 /* harmony import */ var _ChatMessage__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(40);
 /* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(9);
 /* harmony import */ var _common_IError__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(1);
-/* harmony import */ var _Topic__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(25);
+/* harmony import */ var _Topic__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(20);
 /* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(0);
 /* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_14___default = /*#__PURE__*/__webpack_require__.n(_common_Events__WEBPACK_IMPORTED_MODULE_14__);
 /* harmony import */ var _FileWorker__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(92);
@@ -49709,7 +49699,7 @@ try {
 var $export = __webpack_require__(26);
 var aFunction = __webpack_require__(58);
 var toObject = __webpack_require__(30);
-var fails = __webpack_require__(23);
+var fails = __webpack_require__(24);
 var $sort = [].sort;
 var test = [1, 2, 3];
 
@@ -49743,7 +49733,7 @@ module.exports = __webpack_require__(73)('native-function-to-string', Function.t
 
 "use strict";
 
-var fails = __webpack_require__(23);
+var fails = __webpack_require__(24);
 
 module.exports = function (method, arg) {
   return !!method && fails(function () {
@@ -49760,18 +49750,18 @@ module.exports = function (method, arg) {
 "use strict";
 
 var global = __webpack_require__(12);
-var DESCRIPTORS = __webpack_require__(22);
+var DESCRIPTORS = __webpack_require__(23);
 var LIBRARY = __webpack_require__(43);
 var $typed = __webpack_require__(128);
-var hide = __webpack_require__(20);
+var hide = __webpack_require__(21);
 var redefineAll = __webpack_require__(95);
-var fails = __webpack_require__(23);
+var fails = __webpack_require__(24);
 var anInstance = __webpack_require__(96);
 var toInteger = __webpack_require__(45);
 var toLength = __webpack_require__(18);
 var toIndex = __webpack_require__(129);
 var gOPN = __webpack_require__(59).f;
-var dP = __webpack_require__(21).f;
+var dP = __webpack_require__(22).f;
 var arrayFill = __webpack_require__(132);
 var setToStringTag = __webpack_require__(60);
 var ARRAY_BUFFER = 'ArrayBuffer';
@@ -50040,11 +50030,11 @@ exports[DATA_VIEW] = $DataView;
 /* 197 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var dP = __webpack_require__(21);
+var dP = __webpack_require__(22);
 var anObject = __webpack_require__(15);
 var getKeys = __webpack_require__(77);
 
-module.exports = __webpack_require__(22) ? Object.defineProperties : function defineProperties(O, Properties) {
+module.exports = __webpack_require__(23) ? Object.defineProperties : function defineProperties(O, Properties) {
   anObject(O);
   var keys = getKeys(Properties);
   var length = keys.length;
@@ -50157,7 +50147,7 @@ module.exports = function (done, value) {
 var LIBRARY = __webpack_require__(43);
 var $export = __webpack_require__(26);
 var redefine = __webpack_require__(35);
-var hide = __webpack_require__(20);
+var hide = __webpack_require__(21);
 var Iterators = __webpack_require__(53);
 var $iterCreate = __webpack_require__(203);
 var setToStringTag = __webpack_require__(60);
@@ -50236,7 +50226,7 @@ var setToStringTag = __webpack_require__(60);
 var IteratorPrototype = {};
 
 // 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
-__webpack_require__(20)(IteratorPrototype, __webpack_require__(13)('iterator'), function () { return this; });
+__webpack_require__(21)(IteratorPrototype, __webpack_require__(13)('iterator'), function () { return this; });
 
 module.exports = function (Constructor, NAME, next) {
   Constructor.prototype = create(IteratorPrototype, { next: descriptor(1, next) });
@@ -50431,7 +50421,7 @@ module.exports = Object.is || function is(x, y) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // 21.2.5.3 get RegExp.prototype.flags()
-if (__webpack_require__(22) && /./g.flags != 'g') __webpack_require__(21).f(RegExp.prototype, 'flags', {
+if (__webpack_require__(23) && /./g.flags != 'g') __webpack_require__(22).f(RegExp.prototype, 'flags', {
   configurable: true,
   get: __webpack_require__(108)
 });
@@ -50444,12 +50434,12 @@ if (__webpack_require__(22) && /./g.flags != 'g') __webpack_require__(21).f(RegE
 var META = __webpack_require__(42)('meta');
 var isObject = __webpack_require__(27);
 var has = __webpack_require__(36);
-var setDesc = __webpack_require__(21).f;
+var setDesc = __webpack_require__(22).f;
 var id = 0;
 var isExtensible = Object.isExtensible || function () {
   return true;
 };
-var FREEZE = !__webpack_require__(23)(function () {
+var FREEZE = !__webpack_require__(24)(function () {
   return isExtensible(Object.preventExtensions({}));
 });
 var setMeta = function (it) {
@@ -51281,7 +51271,7 @@ __webpack_require__(149);
 __webpack_require__(156);
 __webpack_require__(153);
 __webpack_require__(116);
-__webpack_require__(24);
+__webpack_require__(25);
 __webpack_require__(154);
 __webpack_require__(247);
 __webpack_require__(248);
@@ -52066,7 +52056,7 @@ forge.mgf.mgf1 = forge.mgf1;
  */
 var forge = __webpack_require__(6);
 __webpack_require__(83);
-__webpack_require__(24);
+__webpack_require__(25);
 __webpack_require__(161);
 __webpack_require__(8);
 
@@ -53068,7 +53058,7 @@ function M(o, a, b) {
  */
 var forge = __webpack_require__(6);
 __webpack_require__(8);
-__webpack_require__(24);
+__webpack_require__(25);
 __webpack_require__(83);
 
 module.exports = forge.kem = forge.kem || {};
@@ -53275,7 +53265,7 @@ __webpack_require__(81);
 __webpack_require__(48);
 __webpack_require__(54);
 __webpack_require__(158);
-__webpack_require__(24);
+__webpack_require__(25);
 __webpack_require__(8);
 __webpack_require__(115);
 

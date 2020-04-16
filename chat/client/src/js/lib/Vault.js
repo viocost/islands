@@ -118,21 +118,6 @@ export class Vault{
         let self = this;
         this.handlers = {};
 
-        /////////////////////////////////////////////////////////////////////////////
-        // this.handlers[Internal.JOIN_TOPIC_SUCCESS] = (msg)=>{                   //
-        //     console.log("Topic join success! Adding new topic...");             //
-        //     let topicPkfp = self.addNewTopic(self, msg);                        //
-        //     self.vault.topics[topicPkfp].exchangeNicknames()                    //
-        //                                                                         //
-        //                                                                         //
-        //                                                                         //
-        // }                                                                       //
-        //                                                                         //
-        // this.handlers[Internal.JOIN_TOPIC_FAIL] = (msg)=>{                      //
-        //     console.log(`Join topic attempt has failed: ${msg.body.errorMsg}`); //
-        // }                                                                       //
-        /////////////////////////////////////////////////////////////////////////////
-
         this.handlers[Internal.POST_LOGIN_DECRYPT] = (msg)=>{ self.emit(Internal.POST_LOGIN_DECRYPT, msg) }
         this.handlers[Events.POST_LOGIN_SUCCESS] = ()=>{ self.emit(Events.POST_LOGIN_SUCCESS); }
         this.handlers[Internal.TOPIC_CREATED] = (msg)=>{
@@ -199,9 +184,10 @@ export class Vault{
     }
 
 
-    async initSaved(vault_encrypted = Err.required("Vault parse: data parameter missing"),
-              password = Err.required("Vault parse: password parameter missing"),
-              topics={}){
+    async initSaved(version = Err.required("Current chat version"),
+                    vault_encrypted = Err.required("Vault parse: data parameter missing"),
+                    password = Err.required("Vault parse: password parameter missing"),
+                    topics={}){
         let ic = new iCrypto();
         //console.log(`Salt: ${vault_encrypted.substring(0, 256)}`)
         //console.log(`Vault: ${vault_encrypted.substr(256)}`)
@@ -243,18 +229,16 @@ export class Vault{
                 )
             }
         }
-            //     this.topics[pkfp] = new Topic(         //
-            //         pkfp,                              //
-            //         data.topics[pkfp].name,            //
-            //         data.topics[pkfp].key,             //
-            //         data.topics[pkfp].comment);        //
-            // });                                        //
 
-        if (!data.version || semver.lt(data.version, "1.0.5")){
+        if (!data.version || semver.lt(data.version, "2.0.0")){
             // TODO format update required!
-            console.log("vault format update required")
-
-            await this.updateVaultFormat(data)
+            console.log(`vault format update required to version ${version}`)
+            let self = this;
+            this.version = version;
+            this.versionUpdate = async ()=>{
+                console.log("!!!Version update lambda");
+                await  self.updateVaultFormat(data)
+            };
         }
 
 
@@ -264,17 +248,15 @@ export class Vault{
 
 
     async updateVaultFormat(data){
-        console.log("Updating vault format...")
-
-            ////////////////////////////////////////////////
-            // Object.keys(data.topics).forEach((pkfp)=>{ //
-            //     this.topics[pkfp] = new Topic(         //
-            //         pkfp,                              //
-            //         data.topics[pkfp].name,            //
-            //         data.topics[pkfp].key,             //
-            //         data.topics[pkfp].comment);        //
-            // });                                        //
-            ////////////////////////////////////////////////
+        Object.keys(data.topics).forEach((pkfp)=>{
+            this.topics[pkfp] = new Topic(
+                this.version,
+                pkfp,
+                data.topics[pkfp].name,
+                data.topics[pkfp].key,
+                data.topics[pkfp].comment);
+        });
+        this.save("update_format")
 
     }
 
@@ -290,7 +272,7 @@ export class Vault{
         return this.admin;
     }
 
-    bootstrap(arrivalHub, messageQueue ,version){
+    async bootstrap(arrivalHub, messageQueue ,version){
         let self = this;
         this.version = version;
         this.arrivalHub = arrivalHub;
@@ -298,6 +280,10 @@ export class Vault{
         this.arrivalHub.on(this.id, (msg)=>{
             self.processIncomingMessage(msg, self);
         })
+        if(this.versionUpdate){
+            console.log("Updating vault to new format..");
+            await this.versionUpdate();
+        }
     }
 
     processIncomingMessage(msg, self){
@@ -315,20 +301,23 @@ export class Vault{
     // Saves current sate of the vault on the island
     // cause - cause for vault update
     save(cause){
-        if (!this.password || this.privateKey || this.topics){
+        if (!this.password || !this.privateKey || !this.topics){
             throw new Error("Vault object structure is not valid");
         }
 
-        let vault = this.pack();
+        let { vault, topics, hash, sign } = this.pack();
         let message = new Message(this.version);
         message.setSource(this.id);
         message.setCommand(Internal.SAVE_VAULT);
         message.addNonce();
         message.body.vault = vault;
         message.body.sign = sign;
+        message.body.hash = hash;
+        message.body.topics = topics;
         message.body.cause = cause;
-        message.body.hash = vault.hash;
         message.signMessage(this.privateKey);
+
+        console.log("SAVING VAULT");
         this.messageQueue.enqueue(message)
     }
 
@@ -459,44 +448,6 @@ export class Vault{
 
 
     }
-
-    /**
-     * Stringifies this vault and topics, hashes, signes and encrypts it
-     */
-    packBAK(){
-         let vaultBlob =  JSON.stringify({
-            topics: this.packTopics(),
-            publicKey: this.publicKey,
-            privateKey: this.privateKey,
-            admin: this.admin,
-            adminKey: this.adminKey,
-            settings: this.settings
-        });
-
-        let ic = new iCrypto();
-        ic.createNonce("salt", 128)
-            .encode("salt","hex", "salt-hex")
-            .createPasswordBasedSymKey("key", this.password, "salt-hex")
-            .addBlob("vault", vaultBlob)
-            .AESEncrypt("vault", "key", "cip-hex", true, "CBC", "utf8")
-            .merge(["salt-hex", "cip-hex"], "res")
-            .hash("res", "vault-hash")
-            .setRSAKey("asymkey", this.privateKey, "private")
-            .privateKeySign("vault-hash", "asymkey", "sign");
-
-
-        //console.log(`Salt: ${ic.get("salt-hex")}`)
-        //console.log(`Vault: ${ic.get("cip-hex")}`)
-        //Sign encrypted vault with private key
-        return {
-            vault:  ic.get("res"),
-            hash : ic.get("vault-hash"),
-            sign :  ic.get("sign")
-        }
-
-
-    }
-
 
     processNewTopicEvent(self, data){
         //verify session key

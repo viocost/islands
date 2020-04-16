@@ -683,26 +683,6 @@ export class Topic{
     }
 
     //TODO Cleanup or implememnt
-    bootPraticipant(){
-
-    }
-
-    processMetadataUpdate(){
-
-    }
-
-    processNicknameRequest(){
-
-    }
-
-    processNicknameResponse(){
-
-    }
-
-    processNicknameChangeNote(){
-
-    }
-
 
     processInvitesUpdated(self, msg){
         assert(Message.verifyMessage(self._metadata.getTAPublicKey(), msg), "TA signature is invalid")

@@ -29,6 +29,13 @@ class VaultManager{
         this.vaultIdLength = config.vaultIdLength || 64;
     }
 
+    updateVaultFormat(id, vaultBlob, topics, publicKey, hash){
+        Logger.info("Updating vault format", {cat: "vault"});
+        this._writeVault(id, vaultBlob, publicKey, hash)
+        for(let pkfp of Object.keys(topics)){
+            this.saveTopic(id, pkfp, topics[pkfp])
+        }
+    }
 
 
     updateVault(vaultBlob, id, hash, previousHash, signature, publicKey = null){
@@ -40,6 +47,7 @@ class VaultManager{
         if(!this.isOwnerVerified(vaultBlob, hash, signature, publicKey)){
             throw new Error("Owner's signature is invalid");
         }
+
         if(this.isRegistrationPending(id)){
             throw new Error("The vault registration is pending. Updates are disabled");
         }
@@ -161,6 +169,10 @@ class VaultManager{
         }
         let vaultPath = this.getVaultPath(id);
         let topicsPath = this.getTopicsPath(id);
+        if (!fs.existsSync(topicsPath)){
+            console.log("Topics path does not exist. Probably vault is in v1 format. Creating...")
+            fs.mkdirSync(topicsPath)
+        }
         let topicsFiles = fs.readdirSync(topicsPath)
         let res = {}
         res.vault = fs.readFileSync(vaultPath, 'utf8');

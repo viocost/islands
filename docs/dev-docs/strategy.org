@@ -2,6 +2,9 @@
 
 
 * Current tasks
+** TODO Version compatability
+*** TODO On vault login, if vault is in old format - save it in new format
+
 ** UI task
 *** On doubletap when chosing topic the side panel should close when it is in mobile mode
 *** New message input should be visible only when there is an active topic selected
@@ -12,7 +15,8 @@ CLOSED: [2020-04-15 Wed 20:47]
 
 ** DONE Private messages
 CLOSED: [2020-04-15 Wed 00:14]
-** TODO Scroll and load messages
+** DONE Scroll and load messages
+CLOSED: [2020-04-16 Thu 19:27]
 ** DONE Admin page
 CLOSED: [2020-04-15 Wed 16:33]
 ** DONE Refactor metadata handling

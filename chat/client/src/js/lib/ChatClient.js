@@ -44,21 +44,16 @@ export class ChatClient{
                 }
                 console.log("Initializing session");
                 let response = await this.getVault();
-                if (!response.vault){
+
+                let { vault, vaultId } = response;
+                if (!vault){
                     throw new Error("Vault not found")
                 }
 
-                this.vault = new Vault()
-                let vault = response.vault;
-                let vaultId = response.vaultId;
                 console.log("Got vault. Initializing");
                 //Initialize vault
 
-                this.vault.initSaved(vault.vault, password, vault.topics)
-                this.vault.setId(vaultId);
-                console.log("Vault initialized. Initializing connector...");
-
-                //Initialize multiplexor socket
+                // Initialize multiplexor socket
                 this.connector = new Connector();
 
                 //Initializing arrival hub
@@ -67,9 +62,16 @@ export class ChatClient{
                 //Initialize message queue
                 this.messageQueue = new MessageQueue(this.connector);
 
+                this.vault = new Vault()
+
+                this.vault.initSaved(this.version, vault.vault, password, vault.topics)
+                this.vault.setId(vaultId);
+                console.log("Vault initialized. Initializing connector...");
+
+
                 console.log("Bootstrapping vault...");
                 //bootstrapping vault
-                this.vault.bootstrap(this.arrivalHub, this.messageQueue, this.version);
+                await this.vault.bootstrap(this.arrivalHub, this.messageQueue, this.version);
 
 
                 console.log("Setting listeneres");

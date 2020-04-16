@@ -8,8 +8,9 @@ const OutgoingPendingJoinRequest = require("../objects/OutgoingPendingJoinReques
 const Invite = require("../objects/Invite.js");
 const Util = require("../libs/ChatUtility.js");
 const Logger = require("../libs/Logger.js");
-const Events = require("../../../common/Events").Events;
-const Internal = require("../../../common/Events").Internal;
+const { Events, Internal } = require("../../../common/Events");
+const semver = require("semver")
+
 
 class TopicJoinAssistant {
     constructor(connectionManager = Err.required(),
@@ -40,6 +41,12 @@ class TopicJoinAssistant {
     async joinTopicIncoming(envelope, self) {
         Logger.debug("Join topic incoming request receives", {cat: "topic_join"});
         const request = Request.parse(envelope.payload);
+
+        if(semver.lt("2.0.0", request.headers.version)){
+            Logger.debug("Legacy join request", {cat: "topic_join"})
+            await self.joinTopicIncomingLegacy(envelope, self)
+            return;
+        }
         const invite = Invite.parse(request.body.inviteString);
         const topicAuthority = self.topicAuthorityManager.getTopicAuthority(invite.getPkfp());
         console.log("\n\n METADATA AT JOIN TOPIC INCOMING: " + topicAuthority.getCurrentMetadata().toBlob()+"\n\n")
@@ -55,6 +62,26 @@ class TopicJoinAssistant {
         responseEnvelope.setResponse();
         Logger.debug("Sending metadata to the invitee", {cat: "topic_join"});
         await self.crossIslandMessenger.send(responseEnvelope);
+    }
+
+    //LEGACY
+    async joinTopicIncomingLegacy(evnvelope, self){
+        Logger.debug("Join topic incoming request receives", {cat: "topic_join"});
+        const request = Request.parse(envelope.payload);
+        const invite = Invite.parse(request.body.inviteString);
+        const topicAuthority = self.topicAuthorityManager.getTopicAuthority(invite.getPkfp());
+        let newTopicData = await topicAuthority.joinByInvite(request.body.inviteString, request.body.invitee, envelope.origin);
+        Logger.debug("Join topic request processed by topic authority", {cat: "topic_join"});
+        const response = new Response("join_topic_success", request);
+        response.setAttribute("metadata", newTopicData.metadata);
+        response.setAttribute("inviterNickname", newTopicData.inviterNickname);
+        response.setAttribute("inviterPkfp", newTopicData.inviterPkfp);
+        response.setAttribute("topicName", newTopicData.topicName);
+        const responseEnvelope = new Envelope(envelope.origin, response, envelope.destination);
+        responseEnvelope.setResponse();
+        Logger.debug("Sending metadata to the invitee", {cat: "topic_join"});
+        await self.crossIslandMessenger.send(responseEnvelope);
+
     }
 
     /*****************************************************

@@ -16,7 +16,6 @@ const Internal = require("../../../common/Events").Internal;
 
 
 class LoginAssistant{
-
     constructor(connectionManager = Err.required(),
                 requestEmitter = Err.required(),
                 historyManager = Err.required(),
@@ -24,6 +23,7 @@ class LoginAssistant{
                 connector = Err.required(),
                 clientSessionManager = Err.required(),
                 vaultManager = Err.required()){
+
         this.pendingLogins = {};
         this.connectionManager = connectionManager;
         this.hm = historyManager;
@@ -31,7 +31,6 @@ class LoginAssistant{
         this.connector = connector;
         this.sessionManager = clientSessionManager;
         this.setHandlers();
-        this.setEventsHandled();
         this.setClientErrorTypes();
         this.subscribe(requestEmitter);
         this.topicAuthorityManager = taManager;
@@ -158,19 +157,17 @@ class LoginAssistant{
     }
 
     async saveVault(request, connectionId, self){
-        let vault = request.body.vault;
-        let hash = request.body.hash;
-        let previousHash = request.body.previousHash;
-        let cause = request.body.cause;
-        let sign = request.body.sign;
+        console.log("SAVING VAULT!!!")
+        let { vault, hash, sign, topics } = request.body
         let id = request.headers.pkfpSource;
-        let publicKey = this.vaultManager.getVaultPublicKey(id);
+        let publicKey = self.vaultManager.getVaultPublicKey(id);
         if (!Request.isRequestValid(request, publicKey)){
             throw new Error("Save vault request signature is not verified.")
         }
 
-        self.vaultManager.updateVault(vault, id, hash, previousHash,  sign)
-
+        console.log("Updating vault")
+        self.vaultManager.updateVaultFormat(id, vault, topics, publicKey,  hash)
+        console.log("VAULT UPDATED!");
         let message = Message.makeResponse(request, "island", Events.VAULT_UPDATED)
         message.body = request.body;
         let session = self.sessionManager.getSessionByConnectionId(connectionId);
@@ -267,17 +264,9 @@ class LoginAssistant{
         return this.pendingLogins[sessionID];
     }
 
-    setEventsHandled(){
-        this.eventsHandled = [
-            Internal.POST_LOGIN,
-            Internal.POST_LOGIN_CHECK_SERVICES,
-            Events.VAULT_UPDATED
-        ]
-    }
-
     setClientErrorTypes(){
         this.clientErrorTypes = {};
-        this.eventsHandled.forEach((val)=>{
+        Object.keys(this.handlers).forEach((val)=>{
             this.clientErrorTypes[val] = Events.LOGIN_ERROR;
         })
     }
@@ -291,7 +280,7 @@ class LoginAssistant{
 
     subscribe(requestEmitter){
         let self = this;
-        self.eventsHandled.forEach((val)=>{
+        Object.keys(self.handlers).forEach((val)=>{
             requestEmitter.on(val, async (request, connectionId)=>{
                 await self.handleRequest(request, connectionId, self);
             })
