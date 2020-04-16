@@ -106,6 +106,7 @@ export class ChatClient{
             console.log("Session key is set!")
         })
         this.vault.on(Events.TOPIC_CREATED, (pkfp)=>{
+            self.initTopicListeners(self.topics[pkfp])
             self.emit(Events.TOPIC_CREATED, pkfp);
         })
 
@@ -420,7 +421,10 @@ export class ChatClient{
      */
     async joinTopic(nickname, topicName, inviteString) {
         let topicJoinAgent = new TopicJoinAgent(nickname, topicName, inviteString, this.arrivalHub, this.messageQueue, this.vault);
+
         topicJoinAgent.on(Internal.JOIN_TOPIC_SUCCESS, (data)=>{
+            // data is object: { pkfp: pkfp, nickname: nickname }
+            self.initTopicListeners(self.topics[data.pkfp])
             this.emit(Events.TOPIC_JOINED, data)
         })
         topicJoinAgent.on(Internal.JOIN_TOPIC_FAIL, ()=>{ console.log("Join topic fail received from the agent")})

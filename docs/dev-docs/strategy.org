@@ -5,8 +5,10 @@
 ** UI task
 *** On doubletap when chosing topic the side panel should close when it is in mobile mode
 *** New message input should be visible only when there is an active topic selected
-*** Implement older messages loading
-*** Implement scrolling down on new messages
+*** DONE Implement older messages loading
+CLOSED: [2020-04-15 Wed 20:47]
+*** DONE Implement scrolling down on new messages
+CLOSED: [2020-04-15 Wed 20:47]
 
 ** DONE Private messages
 CLOSED: [2020-04-15 Wed 00:14]

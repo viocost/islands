@@ -45469,6 +45469,7 @@ var ChatClient = /*#__PURE__*/function () {
         console.log("Session key is set!");
       });
       this.vault.on(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].TOPIC_CREATED, function (pkfp) {
+        self.initTopicListeners(self.topics[pkfp]);
         self.emit(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].TOPIC_CREATED, pkfp);
       });
       this.vault.on(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Internal"].TOPIC_DELETED, function (pkfp) {
@@ -45793,6 +45794,9 @@ var ChatClient = /*#__PURE__*/function () {
               case 0:
                 topicJoinAgent = new _TopicJoinAgent__WEBPACK_IMPORTED_MODULE_21__[/* TopicJoinAgent */ "a"](nickname, topicName, inviteString, this.arrivalHub, this.messageQueue, this.vault);
                 topicJoinAgent.on(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Internal"].JOIN_TOPIC_SUCCESS, function (data) {
+                  // data is object: { pkfp: pkfp, nickname: nickname }
+                  self.initTopicListeners(self.topics[data.pkfp]);
+
                   _this6.emit(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].TOPIC_JOINED, data);
                 });
                 topicJoinAgent.on(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Internal"].JOIN_TOPIC_FAIL, function () {
