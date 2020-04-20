@@ -79,6 +79,7 @@ const torControlPort = verifyGetConfigParameter("TOR_CONTROL_PORT", configFile);
 const torControlHost = verifyGetConfigParameter("TOR_CONTROL_HOST", configFile);
 const torHost = verifyGetConfigParameter("TOR_HOST", configFile);
 const torPort = verifyGetConfigParameter("TOR_PORT", configFile);
+const torSOCKSPort = verifyGetConfigParameter("TOR_SOCKS_PORT", configFile);
 
 const config = {
     "historyPath":        path.join(basePath, "history"),
@@ -96,7 +97,8 @@ const config = {
         "torListenerPort": 80,
         "torControlHost": torControlHost,
         "torControlPort": torControlPort,
-        "torControlPassword" : torPassword
+        "torControlPassword" : torPassword,
+        "torSOCKSPort":  torSOCKSPort
     }
 }
 
