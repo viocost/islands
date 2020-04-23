@@ -645,6 +645,7 @@ module.exports.getAdminVault = function(){
     ic.setRSAKey("pubk", pubKey, "public")
         .getPublicKeyFingerprint("pubk", "pkfp");
     Logger.debug("Searching for vault with id: " + ic.get("pkfp"));
+    console.log("Searching for vault with id: " + ic.get("pkfp"));
     return vaultManager.getVault(ic.get("pkfp"));
 };
 

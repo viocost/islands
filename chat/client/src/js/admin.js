@@ -11,6 +11,8 @@ import { BlockingSpinner } from "./lib/BlockingSpinner"
 import { verifyPassword } from "./lib/PasswordVerify";
 import * as util from "./lib/dom-util";
 import { iCrypto } from "./lib/iCrypto"
+import * as semver from "semver"
+window.semver = semver;
 let adminSession;
 let filterFieldSelector;
 let logTableBody;
@@ -19,6 +21,9 @@ let spinner = new BlockingSpinner()
 window.util = util;
 
 window.iCrypto = iCrypto
+
+
+let VERSION;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // window.testCrypto = ()=>{                                                            //
@@ -69,6 +74,10 @@ let processAdminRequest = ()=>{
 
 
 document.addEventListener('DOMContentLoaded', event => {
+    if(!getVersion){
+        throw new Error("getVersion is not defined!")
+    }
+    VERSION = getVersion();
     document.title = "Islands | Admin login";
     util.$("main").classList.add("main-admin");
     util.$("header").style.minWidth = "111rem";
@@ -490,6 +499,7 @@ function adminLogin() {
         url: "/admin/vault",
         success: async res =>{
             try{
+                console.log("Decryptting admin vault");
                 let decryptedVault = await decryptVault(res.vault.vault, password);
                 await requestAdminLogin(decryptedVault.adminKey);
             }catch(err){
@@ -517,7 +527,7 @@ function decryptVault(vaultEnc, password){
     return new Promise((resolve, reject)=>{
         try{
             let vault = new Vault();
-            vault.initSaved(vaultEnc, password);
+            vault.initSaved(VERSION, vaultEnc, password);
             if(!vault.admin || !vault.adminKey){
                 reject("Admin vault is invalid, or doesn't have a private key")
             }

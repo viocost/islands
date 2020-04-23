@@ -1,9 +1,15 @@
 #+TITLE: Islands development strategy and tasks
 
 
-* Current tasks
-** TODO Version compatability
-*** TODO On vault login, if vault is in old format - save it in new format
+* Current tasks [0%]
+- [ ]  Debug version mess
+
+** Implement save vault of a guest as zip
+
+** DONE Version compatability
+CLOSED: [2020-04-21 Tue 18:41]
+*** DONE On vault login, if vault is in old format - save it in new format
+CLOSED: [2020-04-21 Tue 18:41]
 
 ** UI task
 *** On doubletap when chosing topic the side panel should close when it is in mobile mode
@@ -98,6 +104,7 @@ All is working. To apply filtering edit logger conf file in _data_ dir.
 CLOSED: [2020-03-23 Mon 12:16]
 ** DONE Implement debug mode in all core scripts
 CLOSED: [2020-03-21 Sat 13:46]
+
 
 * Roadmap
 Chat, file transfer, chat admin, island admin, file transfer admin, updates.

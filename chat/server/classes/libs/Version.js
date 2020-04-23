@@ -17,5 +17,6 @@ module.exports.getVersion = ()=>{
 };
 
 function readCurrentVersion(){
-    return JSON.parse(fs.readFileSync("./package.json")).version;
+    let pkgJson = path.join(__dirname, "../../../", "package.json")
+    return JSON.parse(fs.readFileSync(pkgJson)).version;
 }

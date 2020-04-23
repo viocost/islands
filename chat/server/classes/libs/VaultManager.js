@@ -31,6 +31,7 @@ class VaultManager{
 
     updateVaultFormat(id, vaultBlob, topics, publicKey, hash){
         Logger.info("Updating vault format", {cat: "vault"});
+        this._backupVault(id)
         this._writeVault(id, vaultBlob, publicKey, hash)
         for(let pkfp of Object.keys(topics)){
             this.saveTopic(id, pkfp, topics[pkfp])
@@ -221,6 +222,10 @@ class VaultManager{
         Logger.warn("Unauthorized vault write attempt!", data)
     }
 
+    getVaultDirPath(id){
+        return path.join(this.vaultsPath, id);
+    }
+
     getVaultPath(id){
         return path.join(this.vaultsPath, id, "vault");
     }
@@ -257,6 +262,20 @@ class VaultManager{
         fs.writeFileSync(path.join(vaultPath, "vault"), blob);
         fs.writeFileSync(path.join(vaultPath, "publicKey"), publicKey);
         fs.writeFileSync(path.join(vaultPath, "hash"), hash);
+    }
+
+    _backupVault(id){
+        let vaultPath = path.join(this.vaultsPath, id);
+        let bakPath = path.join(this.vaultsPath, `${id}_BAK`);
+
+        if(!fs.existsSync(vaultPath)){
+            return;
+        }
+
+        if(!fs.existsSync(bakPath)){
+            fs.mkdirSync(bakPath)
+        }
+        fs.copySync(vaultPath, bakPath)
     }
 
     _updateVault(id, blob){

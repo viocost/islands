@@ -44,6 +44,10 @@ class HistoryManager{
         this.historyDirectory = hPath;
     }
 
+    getHistoryDirectory(){
+        return this.historyDirectory;
+    }
+
     setCommonPaths(){
         this.commonPaths = {
             topicRoot: "",

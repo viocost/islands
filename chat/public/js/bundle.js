@@ -23078,9 +23078,12 @@ var Vault_Vault = /*#__PURE__*/function () {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
-                Object.keys(data.topics).forEach(function (pkfp) {
-                  _this.topics[pkfp] = new Topic["a" /* Topic */](_this.version, pkfp, data.topics[pkfp].name, data.topics[pkfp].key, data.topics[pkfp].comment);
-                });
+                if (typeof data.topics === "object") {
+                  Object.keys(data.topics).forEach(function (pkfp) {
+                    _this.topics[pkfp] = new Topic["a" /* Topic */](_this.version, pkfp, data.topics[pkfp].name, data.topics[pkfp].key, data.topics[pkfp].comment);
+                  });
+                }
+
                 this.save("update_format");
 
               case 2:

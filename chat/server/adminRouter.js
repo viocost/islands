@@ -11,7 +11,10 @@ let VERSION;
 router.get("/vault", (req, res)=>{
    let vault =  adminServer.getAdminVault();
    res.set("Content-Type", "application/json")
-       .status(200).send({"vault": vault})
+      .status(200).send({
+          "vault": vault,
+          "version": version.getVersion()
+      })
 
 });
 

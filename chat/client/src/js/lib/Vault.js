@@ -248,14 +248,19 @@ export class Vault{
 
 
     async updateVaultFormat(data){
-        Object.keys(data.topics).forEach((pkfp)=>{
-            this.topics[pkfp] = new Topic(
-                this.version,
-                pkfp,
-                data.topics[pkfp].name,
-                data.topics[pkfp].key,
-                data.topics[pkfp].comment);
-        });
+        if (typeof data.topics === "object"){
+
+
+            Object.keys(data.topics).forEach((pkfp)=>{
+                this.topics[pkfp] = new Topic(
+                    this.version,
+                    pkfp,
+                    data.topics[pkfp].name,
+                    data.topics[pkfp].key,
+                    data.topics[pkfp].comment);
+            });
+
+        }
         this.save("update_format")
 
     }
