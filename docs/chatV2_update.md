@@ -15,6 +15,12 @@ the data. You will not be able to downgrade.
    converted to v2.0.0
 5. All set.
 
+## Update from Islands VM version 1.0.5
+1. Get full Islands v2 bundle 
+2. Copy all content of islandsData directory into /your/new/island/dir/data/IslandsChat
+3. Shut down your VM island and start your new island
+4. All set.
+
 ## Vault import/export
 You can import or export vaults using vaultMigration.js CLI tool which is located
 under /your/island/dir/chat/islandMigration.js. It is available only in version
