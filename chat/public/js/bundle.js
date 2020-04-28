@@ -63825,12 +63825,10 @@ function processActivateTopicClick(ev) {
   }
 
   displayTopicContextButtons("topic");
-  newMessageBlockSetVisible(true);
 }
 
 function processExpandTopicClick(ev) {
   ev.stopPropagation();
-  console.error("PROCESSING expand topic click");
   var expandButton = ev.target;
   var topicListItem = expandButton.parentNode.parentNode;
   var pkfp = topicListItem.getAttribute("pkfp");
@@ -63912,6 +63910,8 @@ function setTopicInFocus(pkfp) {
       }
     }
   }
+
+  newMessageBlockSetVisible(topicInFocus);
 }
 
 function processMuteClick() {

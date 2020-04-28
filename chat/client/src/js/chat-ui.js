@@ -374,14 +374,11 @@ function processActivateTopicClick(ev){
     }
 
     displayTopicContextButtons("topic")
-    newMessageBlockSetVisible(true);
 }
 
 function processExpandTopicClick(ev){
     ev.stopPropagation();
 
-
-    console.error("PROCESSING expand topic click")
     let expandButton = ev.target;
     let topicListItem = expandButton.parentNode.parentNode
     let pkfp = topicListItem.getAttribute("pkfp")
@@ -446,6 +443,8 @@ function setTopicInFocus(pkfp){
             util.removeClass(el, "topic-in-focus");
         }
     }
+
+    newMessageBlockSetVisible(topicInFocus);
 }
 
 function processMuteClick(){

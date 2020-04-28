@@ -161,7 +161,8 @@ class InviteAssistant{
 
     async requestInviteError(envelope, self){
         Logger.debug("Request invite error received.",{
-            error: envelope.error
+            error: envelope.error,
+            cat: "service"
         } ) ;
         await self._processStandardClientError(envelope, self)
     }
@@ -249,21 +250,22 @@ class InviteAssistant{
     }
 
     subscribeToCrossIslandsMessages(ciMessenger){
-        let handlers = {}
+        let handlers = {
+
+            request_invite: this.requestInviteIncoming,
+            sync_invites: this.syncInvitesIncoming,
+            sync_invites_success: this.syncInvitesSuccess,
+            return_delete_invite: this.deleteInviteError,
+            return_sync_invites: this.syncInvitesError,
+            return_request_invite: this.requestInviteError
+        }
         handlers[Events.INVITE_CREATED] = this.requestInviteSuccess;
         handlers[Internal.DELETE_INVITE] = this.deleteInviteIncoming;
         handlers[Internal.DELETE_INVITE_SUCCESS] = this.deleteInviteSuccess;
 
+
         this.subscribe(ciMessenger, handlers, this.crossIslandErrorHandler)
 
-        this.subscribe(ciMessenger, {
-            request_invite: this.requestInviteIncoming,
-            return_request_invite: this.requestInviteError,
-            return_delete_invite: this.deleteInviteError,
-            return_sync_invites: this.syncInvitesError,
-            sync_invites: this.syncInvitesIncoming,
-            sync_invites_success: this.syncInvitesSuccess
-        }, this.crossIslandErrorHandler)
     }
 
 

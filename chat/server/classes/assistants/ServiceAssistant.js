@@ -191,9 +191,14 @@ class ServiceAssistant{
         self.sessionManager.broadcastMessage(request.headers.pkfpSource, note);
     }
 
-    async serviceRecordOnRequestError(envelope, self){
+    async processInviteRequestReturn(envelope, self){
+        let message = `Invite request error: ${envelope.error}`
+        return self.serviceRecordOnRequestError(envelope, message, self)
+    }
+
+    async serviceRecordOnRequestError(envelope, errMessage, self){
         let request = Envelope.getOriginalPayload(envelope);
-        let msg = await self.createSaveServiceRecord(request.headers.pkfpSource, request.headers.command, envelope.error);
+        let msg = await self.createSaveServiceRecord(request.headers.pkfpSource, request.headers.command, errMessage);
         let note = new Message()
         note.setHeader("pkfpDest", request.headers.pkfpSource);
         note.setHeader("command", Internal.SERVICE_RECORD);
@@ -455,12 +460,12 @@ class ServiceAssistant{
 
         Coordinator.on("invite_request_timeout", async (envelope)=>{
             Logger.debug("Processing invite request timeout");
-            await self.serviceRecordOnRequestError(envelope, self);
+            await self.serviceRecordOnRequestError(envelope, envelope.error, self);
         });
 
         Coordinator.on("sync_invite_timeout", async(envelope)=>{
             Logger.debug("Processing invite sync request timeout");
-            await self.serviceRecordOnRequestError(envelope, self);
+            await self.serviceRecordOnRequestError(envelope, envelope.error, self);
         })
     }
 
@@ -492,7 +497,7 @@ class ServiceAssistant{
             meta_sync_success: this.processMetaSyncResponse,
             request_invite_success: this.processInviteRequestSuccess,
             metadata_outdated: this.processMetadataOutdatedNote,
-            return_request_invite: this.processInviteRequestError
+            return_request_invite: this.processInviteRequestReturn
         }
 
         handlers[Internal.NICKNAME_NOTE] = this.processNicknameNote

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+VERSION="1.0.0"
+
 while [[ $# -gt 0 ]]
 
 do
@@ -14,6 +16,10 @@ case $key in
     -d|--debug)
     export DEBUG=true
     shift
+    ;;
+    -v | --version)
+    echo "Islands Linux Launcher version ${VERSION}"
+    exit 0
     ;;
     -h | --help)
     HELP=true
