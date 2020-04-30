@@ -48,6 +48,9 @@ window.getTopicInFocus = ()=>{console.log(topicInFocus)};
 // Topics that are in the split windows and display messages
 let activeTopics
 
+//Counters for unread messages
+const unreadCounters = {}
+
 // ---------------------------------------------------------------------------------------------------------------------------
 // TEST ONLY!
 // Comment out for production!
@@ -445,6 +448,7 @@ function setTopicInFocus(pkfp){
     }
 
     newMessageBlockSetVisible(topicInFocus);
+    resetUnreadCounter(pkfp);
 }
 
 function processMuteClick(){
@@ -1025,7 +1029,6 @@ function refreshSidePanel(){
 
 
 function refreshTopics(){
-
     let topics = chat.getTopics();
     let topicsList = util.$("#topics-list")
     util.removeAllChildren(topicsList)
@@ -1329,6 +1332,7 @@ function initChat(){
 
         if (topicInFocus !== topicPkfp){
             console.log("Topic not in focus")
+            incrementUnreadCounter(topicPkfp)
             return
         }
 
@@ -1404,6 +1408,44 @@ function copyInviteCode(event) {
         toastr.error("Error copying invite code to the clipboard");
     }
     textArea.remove();
+}
+
+
+function incrementUnreadCounter(pkfp){
+    console.log("Incrementing unread messages counter");
+    if (!unreadCounters.hasOwnProperty(pkfp)){
+        unreadCounters[pkfp] = 1
+    } else {
+         unreadCounters[pkfp]++;
+    }
+    setUnreadMessagesIndicator(pkfp, unreadCounters[pkfp])
+}
+
+function resetUnreadCounter(pkfp){
+    console.log("Resetting unread messages counter");
+    unreadCounters[pkfp] = 0
+    setUnreadMessagesIndicator(pkfp, unreadCounters[pkfp])
+}
+
+function setUnreadMessagesIndicator(pkfp, num){
+    console.log("Setting unread messages indicator");
+    let topicEl
+
+    for (let topic of util.$("#topics-list").children){
+        if (topic.getAttribute("pkfp") === pkfp){
+            topicEl = topic;
+            break;
+        }
+    }
+    if (!topicEl){
+        console.log(`Error: topic element with pkfp ${pkfp} is not found`);
+        return
+    }
+
+    let unreadCounterLabel = topicEl.firstElementChild.children[2]
+
+    util.html(unreadCounterLabel, "");
+    num ? unreadCounterLabel.appendChild(UI.bakeUnreadMessagesElement(num)) : 1===1;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------

@@ -17,6 +17,7 @@ class CoreUnit{
         this.crashes = getLimitedLengthArray(15);
         this.process = null //  process handle
         this.killing = false // kill flag
+        this.onoutput;
     }
 
     setCrashLevel(level){
@@ -62,16 +63,22 @@ class CoreUnit{
             }, tmt)
         }
         this.process.on('exit', handler)
-        this.process.stdout.on("data", (data)=>{
-            if (this.output){
-                console.log(data.toString('utf8'))
-            }
-        })
-        this.process.stderr.on("data", (data)=>{
-            if(this.output){
-                console.log(data.toString('utf8'))
-            }
-        })
+        this.process.stdout.on("data", data => { this.handleOutput(data, this) })
+        this.process.stderr.on("data", data => { this.handleOutput(data, this) })
+    }
+
+    handleOutput(data, self){
+        let msg = data.toString('utf8')
+        if (self.output){
+            console.log(msg)
+        }
+        if (typeof self.onoutput === "function"){
+            self.onoutput(msg)
+        }
+    }
+
+    switchOuput(onOff){
+        this.output = !!onOff;
     }
 
     restart(){

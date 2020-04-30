@@ -10,6 +10,14 @@ const crypto = require("crypto");
 const hound = require('hound')
 
 
+//output handling
+let lastOutput = new Date();
+const CONNECTION_STRING_SHOW_TIMEOUT = 2000
+const CHAT_CONNECTION = {
+    host: "localhost",
+    port: 4000
+}
+
 // Checking environment variables
 const envVariables = ['BASE', 'NODEJS', 'TOR', 'ISLANDS_DATA', 'APPS', 'CONFIG'];
 const osEnv = {
@@ -19,6 +27,8 @@ const osEnv = {
 }
 
 
+
+console.log("Parsing configuration...");
 
 for (let env of envVariables.concat(osEnv[platform()])){
     if (!process.env.hasOwnProperty(env)){
@@ -57,7 +67,6 @@ if (!process.env["TOR_PASSWD_HASH"]){
     process.exit(1)
 }
 
-console.log(`TOR HASH IS ${process.env["TOR_PASSWD_HASH"]}`)
 
 //preparing tor data directory
 let torDir = path.join(process.env["ISLANDS_DATA"], "tor")
@@ -65,7 +74,6 @@ if (!fs.existsSync(torDir)){
     fs.mkdirSync(torDir);
 }
 
-console.log(`Tor data directory is ${torDir}`);
 //generate torrc
 let torConfig = `
 ControlPort ${config.tor.torControlPort}
@@ -85,11 +93,14 @@ process.env["TOR_HOST"] = '127.0.0.1';
 process.env["TOR_SOCKS_PORT"] = config.tor.torSOCKSPort;
 
 
+console.log("Launching tor...");
 // Set tor env variables
 // launch tor
 let torCmdArgs = ["-f", torrcPath];
 const tor = new CoreUnit(process.env["TOR"], torCmdArgs, true);
 tor.launch();
+tor.onoutput = outputHandler;
+
 
 let chatCmdArgs = [`${process.env["APPS"]}/chat/server/app.js`];
 if (process.env["DEBUG"]){
@@ -101,15 +112,16 @@ if (process.env["DEBUG"]){
     }
 }
 
-console.log(`In engine. Chat port is: ${process.env["CHAT_PORT"]}`);
 
 if (process.env["CHAT_PORT"] && parseInt(process.env["CHAT_PORT"]) < 65536){
     chatCmdArgs.push("-p")
     chatCmdArgs.push(process.env["CHAT_PORT"]);
+    CHAT_CONNECTION.port = process.env["CHAT_PORT"]
 }
 
 const chat = new CoreUnit(process.env["NODEJS"], chatCmdArgs, true)
 chat.launch();
+chat.onoutput = outputHandler;
 
 console.log("Done. Launching apps.");
 
@@ -142,6 +154,21 @@ if (process.env["DEBUG"]){
     })
 }
 
+function outputHandler(){
+    //resetting timestamp
+    lastOutput = new Date();
+    setTimeout(()=>{
+        if (new Date() - lastOutput > CONNECTION_STRING_SHOW_TIMEOUT){
+            printConnectionString();
+        }
+    }, CONNECTION_STRING_SHOW_TIMEOUT)
+
+}
+
+function printConnectionString(){
+    console.log(`ISLAND CONNECTIONS: http://${CHAT_CONNECTION.host}:${CHAT_CONNECTION.port}`)
+    console.log(`ADMIN CONNECTIONS: http://${CHAT_CONNECTION.host}:${CHAT_CONNECTION.port}/admin`)
+}
 
 const rl = readline.createInterface({
     input: process.stdin,

@@ -629,9 +629,8 @@ export function bakeTopicListItem(topic, topicOnClick, expandOnClick){
                         text: topic.name
                     }),
 
-                    util.bake("span", {
-                        class: "unread-messages",
-                        text: "25"
+                    util.bake("div", {
+                        class: "unread-messages-container",
                     })
                 ]
             }),
@@ -652,6 +651,13 @@ export function bakeTopicListItem(topic, topicOnClick, expandOnClick){
         ]
     })
 
+}
+
+export function bakeUnreadMessagesElement(num){
+    return util.bake("span", {
+        class: "unread-messages",
+        text: num
+    })
 }
 
 export function bakeSetAliasModal(okClick = Err.required("Ok handler required")){

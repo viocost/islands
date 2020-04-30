@@ -1,10 +1,19 @@
 #+TITLE: Islands development strategy and tasks
 
+* Immediate tasks [1/5]
+** TODO Indication where to connect
+** DONE Send area handling
+CLOSED: [2020-04-29 Wed 19:33]
+** TODO Remove invite if member online on join
+** TODO Debug topic join
+** TODO Unseen message counter
 
-* Current tasks [0%]
+
+* Current tasks [69%]
 - [ ]  Debug version mess
 
-** Implement save vault of a guest as zip
+** DONE Implement save vault of a guest as zip
+CLOSED: [2020-04-29 Wed 19:30]
 
 ** DONE Version compatability
 CLOSED: [2020-04-21 Tue 18:41]
