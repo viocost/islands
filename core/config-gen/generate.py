@@ -26,9 +26,6 @@ def main(*args, **kwargs):
     with open(os.path.join(args.dest_path, "island_conf.json"), "w") as fp:
         json.dump({
             "tor": {
-                "torSOCKSPort": 15140,
-                "torControlPort": 15141,
-                "hiddenServicePort": 15142,
                 "torExitPolicy": "reject *:*",
             },
             "data": "",

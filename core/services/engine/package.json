@@ -9,6 +9,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "get-port": "^5.1.1",
     "hound": "^1.0.5"
   }
 }
