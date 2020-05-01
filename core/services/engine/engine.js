@@ -123,10 +123,6 @@ function initializeTorEnv(){
     process.env["TOR_PORT"] = torConfig.hiddenServicePort;
     process.env["TOR_HOST"] = torConfig.torHost;
     process.env["TOR_SOCKS_PORT"] = torConfig.torSOCKSPort;
-
-    console.log(`TOR PORTS: ${torConfig.torControlPort},
-    ${torConfig.hiddenServicePort}
-    ${torConfig.torSOCKSPort}`);
 }
 
 
