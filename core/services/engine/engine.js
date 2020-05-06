@@ -10,6 +10,22 @@ const crypto = require("crypto");
 const hound = require('hound');  //Filewatcher for debug mode. Restarts when something is changed
 const getPort = require('get-port');
 
+const USAGE = `ISLANDS ENGINE
+
+OPTIONS:
+
+-p
+    Chat port. Default port is ephemeral.
+
+-d
+    Debug mode.
+
+-h
+    Print this message
+
+
+
+`
 
 //output handling
 let lastOutput = new Date();
@@ -31,24 +47,6 @@ let config;
 let tor; //tor subprocess handle
 let chat; //chat subprocess handle
 
-// Checking environment variables
-const envVariables = ['BASE', 'NODEJS', 'TOR', 'ISLANDS_DATA', 'APPS', 'CONFIG'];
-const osEnv = {
-    "darwin": ['DYLD_LIBRARY_PATH'],
-    "linux": ['LD_LIBRARY_PATH'],
-    "win32": []
-}
-
-
-console.log("Parsing configuration...");
-
-for (let env of envVariables.concat(osEnv[platform()])){
-    if (!process.env.hasOwnProperty(env)){
-        console.log(`Missing environment variable ${env}`)
-        process.exit(1);
-    }
-}
-
 
 //Parse islands config
 async function parseTorConfig(){
@@ -63,13 +61,6 @@ async function parseTorConfig(){
     torConfig.hiddenServicePort = config.tor.hiddenServicePort || await getPort();
     torConfig.torSOCKSPort = config.tor.torSOCKSPort || await getPort();
     torConfig.torExitPolicy = config.tor.torExitPolicy;
-
-}
-
-
-//Generates random tor control password
-// hashes it using tor binary and saves in TOR_PASSWD_HASH environment variable
-function generateDynamicTorPassword(){
 
 }
 
@@ -98,7 +89,6 @@ function generateTorrc(){
 
 
 function initializeTorEnv(){
-
     //gen dynamic tor password
     process.env["TOR_PASSWD"] = crypto.randomBytes(20).toString('hex');
 
@@ -193,7 +183,7 @@ function outputHandler(){
     //resetting timestamp
     lastOutput = new Date();
     setTimeout(()=>{
-        if (new Date() - lastOutput > CONNECTION_STRING_SHOW_TIMEOUT){
+        if (new Date() - lastOutput >= CONNECTION_STRING_SHOW_TIMEOUT - 20){
             printConnectionString();
         }
     }, CONNECTION_STRING_SHOW_TIMEOUT)
@@ -207,20 +197,20 @@ function printConnectionString(){
 
 //Putting it all together
 async function main(){
+    parseArgs();
+    initEnv();
+    console.log("Parsing configuration...");
     await parseTorConfig();
     prepareTorDataDirectory();
     initializeTorEnv();
     generateTorrc();
     launchTor();
-
     await launchChat();
 }
 
 
 
-
-main()
-    .then(()=>{
+function createCli(){
 
         const rl = readline.createInterface({
             input: process.stdin,
@@ -231,7 +221,6 @@ main()
 
 
         rl.setPrompt(process.env["PROMPT"] ? `${process.env["PROMPT"]}:>` : "island:> ")
-        rl.prompt
 
         const usage = `
             help - print this message
@@ -266,6 +255,78 @@ main()
         }).on('close', ()=>{
             console.log("closing");
         })
+}
+
+//initialization
+function initEnv(){
+    if(!process.env.hasOwnProperty("BASE")){
+            console.log(`Missing environment variable BASE`)
+            process.exit(1);
+    }
+
+    process.env["APPS"] = path.join(process.env["BASE"], "apps");
+    process.env["CONFIG"] = path.join(process.env["BASE"], "config");
+    process.env["ISLANDS_DATA"] = path.join(process.env["BASE"], "data");
+
+    const p = platform()
+    if (p === "linux"){
+            initLinux();
+    } else if (p === "darwin"){
+
+            initMac();
+    } else if (p === "win32"){
+
+            initWin();
+    } else {
+        console.log("ERROR: UNKNONWN PLATFORM");
+        process.exit(1);
+    }
+}
+
+function initLinux(){
+    process.env["TOR"] = path.join(process.env["BASE"], "core/linux/bin/tor");
+    process.env["NODEJS"] = path.join(process.env["BASE"], "core/linux/bin/node");
+    process.env['LD_LIBRARY_PATH'] = path.join(process.env["BASE"], "core/linux/lib");
+}
+
+function initMac(){
+    process.env["TOR"] = path.join(process.env["BASE"], "core/mac/bin/tor");
+    process.env["NODEJS"] = path.join(process.env["BASE"], "core/mac/bin/node");
+    process.env['LD_LIBRARY_PATH'] = path.join(process.env["BASE"], "core/mac/lib");
+}
+
+function initWin(){
+    let winPath = process.arch === "x64" ? "win64" : "win32"
+    process.env["TOR"] = path.join(process.env["BASE"], "core", winPath, "tor", "tor.exe");
+    process.env["NODEJS"] = path.join(process.env["BASE"], "core", winPath, "node", "node.exe");
+}
+
+function parseArgs(){
+    const args = process.argv.slice(2);
+
+    args.forEach((val, index, arr)=>{
+        switch(val){
+            case "-d":
+                process.env["DEBUG"] = true;
+                break;
+            case "-p":
+                process.env["CHAT_PORT"] = arr[index+1];
+                break;
+
+            case "-h":
+                console.log(USAGE);
+                process.exit(0);
+        }
+    })
+
+
+}
+//end
+
+main()
+    .then(()=>{
+        console.log("Running....");
+
     })
     .catch(err=>{
         console.error(`Main script error: ${err}`)

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION="1.01"
+VERSION="1.0.1"
 
 function unleash(){
     if [[ -z $1 ]]; then
@@ -9,7 +9,7 @@ function unleash(){
     fi
 
     for i in $(ls $1); do
-        if [[ -d "${1}/${i}" ]] && [[ i != node_modules  ]]; then
+        if [[ -d "${1}/${i}" ]] && [[ ${i} != "node_modules"  ]]; then
             unleash "${1}/${i}"
         else
             if  [[ ${i} == *".dylib" ]] || [[ -x ${1}/${i}  ]]; then
@@ -22,27 +22,13 @@ function unleash(){
 
 # Core binaries for easy access
 export BASE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-export NODEJS=${BASE}/core/mac/bin/node
-export NPM=${BASE}/core/mac/bin/npm
-export TOR=${BASE}/core/mac/bin/tor
-export TORIFY=${BASE}/core/mac/bin/torify
-export DYLD_LIBRARY_PATH=${BASE}/core/mac/lib
+NODEJS=${BASE}/core/mac/bin/node
+APPS=${BASE}/apps
 
-# Data dir
-export ISLANDS_DATA=${BASE}/data
-
-# Apps dir
-export APPS=${BASE}/apps
-
-# Config dir
-export CONFIG=${BASE}/config
 
 # Removing quarantine nonsense
 echo "Preparing islands"
-unleash $BASE/core/mac/bin
-
+unleash ${BASE}/core/mac
 
 echo Starting up island...
-${NODEJS} ${APPS}/engine/engine.js
-
-
+${NODEJS} ${APPS}/engine/engine.js  $@
