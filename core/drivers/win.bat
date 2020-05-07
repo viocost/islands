@@ -13,9 +13,7 @@ if %OS%==64BIT (
     set WINDIR=win32
 )
 set NODEJS=!BASE!/core/!WINDIR!/node/node.exe
-
+set APPS=!BASE!/apps
 
 echo Starting up island...
-!NODEJS! !APPS!/engine/engine.js
-
-
+!NODEJS! !APPS!/engine/engine.js %*
