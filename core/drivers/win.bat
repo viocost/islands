@@ -13,17 +13,7 @@ if %OS%==64BIT (
     set WINDIR=win32
 )
 set NODEJS=!BASE!/core/!WINDIR!/node/node.exe
-set PYTHON=!BASE!/core/!WINDIR!/python/python.exe
-set TOR=!BASE!/core/!WINDIR!/tor/tor.exe
 
-rem Data dir
-set ISLANDS_DATA=!BASE!/data
-
-rem Apps dir
-set APPS=!BASE!/apps
-
-rem Config dir
-set CONFIG=!BASE!/config
 
 echo Starting up island...
 !NODEJS! !APPS!/engine/engine.js

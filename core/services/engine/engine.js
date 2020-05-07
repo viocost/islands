@@ -292,7 +292,7 @@ function initLinux(){
 function initMac(){
     process.env["TOR"] = path.join(process.env["BASE"], "core/mac/bin/tor");
     process.env["NODEJS"] = path.join(process.env["BASE"], "core/mac/bin/node");
-    process.env['LD_LIBRARY_PATH'] = path.join(process.env["BASE"], "core/mac/lib");
+    process.env['DYLD_LIBRARY_PATH'] = path.join(process.env["BASE"], "core/mac/lib");
 }
 
 function initWin(){
