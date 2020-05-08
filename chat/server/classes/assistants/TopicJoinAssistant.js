@@ -65,7 +65,7 @@ class TopicJoinAssistant {
     }
 
     //LEGACY
-    async joinTopicIncomingLegacy(evnvelope, self){
+    async joinTopicIncomingLegacy(envelope, self){
         Logger.debug("Join topic incoming request receives", {cat: "topic_join"});
         const request = Request.parse(envelope.payload);
         const invite = Invite.parse(request.body.inviteString);

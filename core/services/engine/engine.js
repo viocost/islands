@@ -34,6 +34,7 @@ const CHAT_CONNECTION = {
     host: "localhost",
     port: 4000
 }
+let DEBUG_PORT;
 
 const torConfig = {
     torHost: '127.0.0.1',
@@ -134,10 +135,13 @@ async function launchChat(){
     if (process.env["DEBUG"]){
         console.log("Setting DEUBG flag for chat")
         chatCmdArgs.push("--debug")
-        if(config.nodeDebugPort && config.nodeDebugHost){
-            console.log(`Setting node debug to: ${config.nodeDebugHost}:${config.nodeDebugPort}`)
-            chatCmdArgs.splice(0, 0, `--inspect=${config.nodeDebugHost}:${config.nodeDebugPort}`);
-        }
+
+        let dPort = config.nodeDebugPort || await getPort();
+        let dHost = config.nodeDebugHost || "localhost";
+        DEBUG_PORT = dPort;
+
+        console.log(`Setting node debug to: ${dHost}:${dPort}`)
+        chatCmdArgs.splice(0, 0, `--inspect=${dHost}:${dPort}`);
     }
 
 
@@ -194,6 +198,8 @@ function outputHandler(){
 function printConnectionString(){
     console.log(`CONNECT TO ISLAND: http://${CHAT_CONNECTION.host}:${CHAT_CONNECTION.port}`)
     console.log(`ADMIN: http://${CHAT_CONNECTION.host}:${CHAT_CONNECTION.port}/admin`)
+    if (process.env['DEBUG']) console.log(`DEBUG PORT: ${DEBUG_PORT}`);
+
 }
 
 //Putting it all together

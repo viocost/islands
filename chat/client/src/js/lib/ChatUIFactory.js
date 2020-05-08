@@ -488,6 +488,29 @@ export function bakeRegistrationBlock(onRegisterClick){
                         maxlength: "50"
                     }
                 }),
+
+                util.bake("div", {
+                    class: "password-warning-wrap",
+                    children: [
+                        util.bake("img", {
+                            src: "/img/warning.svg"
+                        }),
+
+                        util.bake("div", {
+                            children: [
+                                util.bake("b", {
+                                    text: "Please, save your password!!!",
+                                }),
+
+                                util.bake("p", {
+                                    text: "There is no password recovery. Once you lose it - it's gone forever!"
+
+                                })
+                            ]
+                        })
+
+                    ]
+                }),
                 util.bake("button", {
                     listeners: {
                         click: onRegisterClick
@@ -511,10 +534,6 @@ export function bakeRegistrationSuccessBlock(okClick){
                 children: [
                     util.bake("h3", {
                         text: "Vault created!"
-                    }),
-                    util.bake("p", {
-                        html: `Please, save your password!!!
-        <br>There is no password recovery.<br>Once you lose it - it's gone forever!`
                     }),
                     util.bake("button", {
                         text: "Ok",

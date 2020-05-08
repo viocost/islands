@@ -1,6 +1,7 @@
 const Lock = require("./Lock.js");
 const MessageQueueBlocking = require("./MessageQueueBlocking.js");
 const Logger = require("./Logger.js");
+const Err = require("../libs/IError");
 
 
 /**
@@ -18,7 +19,8 @@ class Multiqueue{
         this._queues = {}
     }
 
-    async enqueue(dest, obj, timeout, onTimeout){
+    async enqueue(dest = Err.required("dest"),
+                  obj = Err.required("obj"), timeout, onTimeout){
         Logger.debug("Enqueueing object for: " + dest);
         if (!this._queues.hasOwnProperty(dest)){
             try {

@@ -1075,13 +1075,17 @@ function refreshTopics(){
     })
     topicsElements.sort((el)=>{ return el.innerText })
     util.appendChildren(topicsList, topicsElements)
-    Array.prototype.map.call(topicsList.querySelector("li"), el=>{
-        let pkfp = el.getAttribute("pkfp")
-        if (expandedTopics.has(pkfp)){
-            console.log("Topic was expanded. Expanding...");
-            expandTopic(el);
-        }
-    })
+
+    topicsListItems = topicsList.querySelector("li");
+    if(topicsListItems){
+        Array.prototype.map.call(topicsList.querySelector("li"), el=>{
+            let pkfp = el.getAttribute("pkfp")
+            if (expandedTopics.has(pkfp)){
+                console.log("Topic was expanded. Expanding...");
+                expandTopic(el);
+            }
+        })
+    }
 }
 
 
@@ -1216,8 +1220,10 @@ function getActiveTopicAsset(){
 
 function deactivateTopicAsset(pkfp){
     let topicAssets = getTopicAssets(pkfp);
-    for(let asset of topicAssets.children){
-        util.removeClass(asset, "active-asset")
+    if(topicAssets){
+        for(let asset of topicAssets.children){
+            util.removeClass(asset, "active-asset")
+        }
     }
     displayTopicContextButtons("topic")
 }

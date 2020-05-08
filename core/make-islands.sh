@@ -93,7 +93,6 @@ function make_dir(){
 
 
 # Create directory tree
-#BUILD_PATH=${BASE_PATH}/islands
 CORE_PATH=${BUILD_PATH}/core
 DATA_PATH=${BUILD_PATH}/data
 APPS_PATH=${BUILD_PATH}/apps
@@ -146,6 +145,9 @@ fi
 
 echo Copying drivers
 cp ${INSTALLER_PATH}/drivers/* ${BUILD_PATH}
+
+echo Copying zip script
+cp  ${INSTALLER_PATH}/zip-build.sh ${BUILD_PATH}
 
 
 # copy driver scripts
