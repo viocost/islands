@@ -423,11 +423,11 @@ export class ChatClient{
      */
     async joinTopic(nickname, topicName, inviteString) {
         let topicJoinAgent = new TopicJoinAgent(nickname, topicName, inviteString, this.arrivalHub, this.messageQueue, this.vault);
-
+        let self = this;
         topicJoinAgent.on(Internal.JOIN_TOPIC_SUCCESS, (data)=>{
             // data is object: { pkfp: pkfp, nickname: nickname }
             self.initTopicListeners(self.topics[data.pkfp])
-            this.emit(Events.TOPIC_JOINED, data)
+            self.emit(Events.TOPIC_JOINED, data)
         })
         topicJoinAgent.on(Internal.JOIN_TOPIC_FAIL, ()=>{ console.log("Join topic fail received from the agent")})
         topicJoinAgent.start()

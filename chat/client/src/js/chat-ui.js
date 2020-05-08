@@ -5,11 +5,12 @@ import toastr from "./lib/toastr";
 import { ChatClient as Chat } from "./lib/ChatClient";
 import { Events } from "../../../common/Events";
 import "../css/chat.sass"
-import "../css/vendor/loading.css"
+import "../css/vendor/loading.css";
+import * as CuteSet from "cute-set";
 import { Vault } from "./lib/Vault";
 //import "../css/vendor/toastr.min.css"
 // impor
-import {  ChatUtility } from "./lib/ChatUtility"
+import { ChatUtility } from "./lib/ChatUtility"
 
 
 // ---------------------------------------------------------------------------------------------------------------------------
@@ -384,8 +385,8 @@ function processActivateTopicClick(ev){
 
     refreshMessages()
     if(isExpanded(pkfp)){
-        refreshInvites();
-        refreshParticipants();
+        refreshInvites(pkfp);
+        refreshParticipants(pkfp);
     }
 
     displayTopicContextButtons("topic")
@@ -406,16 +407,34 @@ function processExpandTopicClick(ev){
 
     if(!isExpanded(pkfp)){
         // item is not expanded already
-        let topicAssets = util.bake("div", {class: "topic-assets"})
-        util.addAfter(topicListItem, topicAssets);
-        refreshParticipants();
-        refreshInvites();
+        expandTopic(topicListItem)
     } else {
-        collapseTopicAssets(pkfp);
+        collapseTopic(topicListItem);
     }
 
-    util.toggleClass(expandButton, "btn-collapse-topic")
+    refreshParticipants(pkfp);
+    refreshInvites(pkfp);
+}
 
+
+function collapseTopic(topicListItem){
+    let pkfp = topicListItem.getAttribute("pkfp");
+    let expandCollapseButton = topicListItem.firstChild.firstChild;
+    if(isExpanded(pkfp)){
+        console.log(`Collapsing ${pkfp}`);
+        let selected = util.$$(`.side-block-data-list-item[pkfp="${pkfp}"]`)
+        util.remove(util.$nextEl(selected[0]))
+    }
+
+    util.removeClass(expandCollapseButton, "btn-collapse-topic")
+
+}
+
+function expandTopic(topicListItem){
+    let expandCollapseButton = topicListItem.firstChild.firstChild;
+    let topicAssets = util.bake("div", {class: "topic-assets"})
+    util.addAfter(topicListItem, topicAssets);
+    util.addClass(expandCollapseButton, "btn-collapse-topic")
 }
 
 
@@ -1043,6 +1062,12 @@ function refreshSidePanel(){
 function refreshTopics(){
     let topics = chat.getTopics();
     let topicsList = util.$("#topics-list")
+    let topicsListItems = topicsList.querySelector("li");
+    let expandedTopics = topicsListItems ?  new CuteSet(Array.prototype.map.call(topicsListItems,
+                                                              el=>{ return el.getAttribute("pkfp") } ).filter(pkfp=>{
+                                                                  return isExpanded(pkfp);
+                                                              })) : new CuteSet()
+
     util.removeAllChildren(topicsList)
     let topicsElements = []
     Object.keys(topics).forEach(key=>{
@@ -1050,25 +1075,30 @@ function refreshTopics(){
     })
     topicsElements.sort((el)=>{ return el.innerText })
     util.appendChildren(topicsList, topicsElements)
+    Array.prototype.map.call(topicsList.querySelector("li"), el=>{
+        let pkfp = el.getAttribute("pkfp")
+        if (expandedTopics.has(pkfp)){
+            console.log("Topic was expanded. Expanding...");
+            expandTopic(el);
+        }
+    })
 }
 
 
 
-function refreshInvites(){
-    if (!topicInFocus || !isExpanded(topicInFocus)){
-        return;
+function refreshInvites(pkfp){
+    if(!isExpanded(pkfp)){
+        return
     }
+    clearExpandedInvites(pkfp);
 
-    clearExpandedInvites(topicInFocus);
+    let topicAssets = getTopicAssets(pkfp)
 
-    let topicAssets = getTopicAssets(topicInFocus)
-
-    let invites = chat.getInvites(topicInFocus);
+    let invites = chat.getInvites(pkfp);
 
     Object.keys(invites).forEach((i)=>{
         topicAssets.appendChild(UI.bakeInviteListItem(i, activateTopicAsset, copyInviteCode))
     })
-
 }
 
 function activateTopicAsset(ev){
@@ -1089,25 +1119,26 @@ function activateTopicAsset(ev){
 
 
 
-function refreshParticipants(){
+function refreshParticipants(pkfp){
     //refresh side panel and to list
-    if (!topicInFocus || !isExpanded(topicInFocus)){
+    if(!isExpanded(pkfp)){
+        console.log("Topic not expanded. ");
         return;
     }
-    clearExpandedParticipants(topicInFocus);
-    let topicAssets = getTopicAssets(topicInFocus)
-    let participants = chat.getParticipants(topicInFocus);
+    clearExpandedParticipants(pkfp);
+    let topicAssets = getTopicAssets(pkfp)
+    let participants = chat.getParticipants(pkfp);
 
     let elements = []
-    for (let pkfp of Object.keys(participants)){
-        let participant = participants[pkfp]
+    for (let pPkfp of Object.keys(participants)){
+        let participant = participants[pPkfp]
 
         elements.push(UI.bakeParticipantListItem(participant.nickname,
-                                                 pkfp,
+                                                 pPkfp,
                                                  participant.alias,
                                                  processParticipantListItemClick,
                                                  processParticipantListItemDoubleClick,
-                                                 topicInFocus === pkfp
+                                                 pkfp === pPkfp
                                                 ))
     }
     util.prependChildren(topicAssets, elements)
@@ -1153,20 +1184,12 @@ function clearExpandedParticipants(pkfp){
     if(!isExpanded(pkfp)) return;
     let selected = util.$$(`.side-block-data-list-item[pkfp="${pkfp}"]`)
     let assets = util.$nextEl(selected[0])
-    if (!assets.firstElementChild) return
-    while(util.hasClass(assets.firstElementChild, "participant-list-item")){
+    while(assets.firstElementChild && util.hasClass(assets.firstElementChild, "participant-list-item")){
         util.remove(assets.firstElementChild);
     }
 }
 
 
-function collapseTopicAssets(pkfp){
-    if(isExpanded(pkfp)){
-        console.log(`Collapsing ${pkfp}`);
-        let selected = util.$$(`.side-block-data-list-item[pkfp="${pkfp}"]`)
-        util.remove(util.$nextEl(selected[0]))
-    }
-}
 
 function getTopicAssets(pkfp){
     let selected = util.$$(`.side-block-data-list-item[pkfp="${pkfp}"]`)
@@ -1307,6 +1330,7 @@ function initChat(){
 
     chat.on(Events.TOPIC_JOINED, (data)=>{
         console.log(`Topic joined: ${data}`)
+        appendEphemeralMessage(`You have joined topic ${data.pkfp}`)
         refreshTopics()
     })
 
@@ -1326,7 +1350,7 @@ function initChat(){
     chat.on(Events.INVITE_CREATED, (data)=>{
         console.log("Invite created event from chat");
         if (data.pkfp === topicInFocus){
-            refreshInvites();
+            refreshInvites(data.pkfp);
         }
     })
 
