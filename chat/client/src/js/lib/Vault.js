@@ -71,10 +71,19 @@ export class Vault{
                             vaultSign: vaultEncData.sign,
                             vaultPublicKey: vaultPublicKey,
                         },
-                        success: () => {
-                            resolve();
+                        success: (data, statusText, res) => {
+                            if(res.status >= 400){
+                                reject(new Error(`Vault registration error: ${res.statusText} Response code ${res.status}, `))
+                                return;
+
+                            } else {
+                                console.log("VAULT REGISTER SUCCESS");
+                                resolve();
+                            }
                         },
                         error: err => {
+
+                            console.log(`VAULT REGISTER ERROR: ${err}`);
                             reject(err);
                         }
                     });
@@ -82,6 +91,57 @@ export class Vault{
                     reject(err)
                 }
             }, 50)
+        })
+    }
+
+
+    static registerAdminVault(passwdEl, confirmEl, version){
+        return new Promise((resolve, reject)=>{
+            let password = passwdEl.value.trim()
+            let result = verifyPassword(password, confirmEl.value.trim());
+            if(result !== undefined ){
+                throw new Error(result);
+            }
+
+            let ic = new iCrypto();
+            ic.generateRSAKeyPair("adminkp")
+                .createNonce("n")
+                .privateKeySign("n", "adminkp", "sign")
+                .bytesToHex("n", "nhex");
+            let vault = new Vault();
+            vault.initAdmin(password, ic.get("adminkp").privateKey, version);
+
+
+            let vaultEncData = vault.pack();
+            let vaultPublicKey = vault.publicKey;
+            let adminPublicKey = ic.get("adminkp").publicKey;
+
+            console.log(`sending register request. Hash: ${vaultEncData.hash}`);
+
+
+            XHR({
+                type: "POST",
+                url: "/admin",
+                dataType: "json",
+                data: {
+                    action: "admin_setup",
+                    adminPublickKey: adminPublicKey,
+                    hash: vaultEncData.hash,
+                    nonce: ic.get('nhex'),
+                    sign: ic.get("sign"),
+                    vault: vaultEncData.vault,
+                    vaultPublicKey: vaultPublicKey,
+                    vaultSign: vaultEncData.sign
+                },
+                success: () => {
+                    console.log("Success admin register");
+                    resolve();
+                },
+                error: err => {
+                    console.log(err.message);
+                    reject("Fail!" + err);
+                }
+            });
         })
     }
 

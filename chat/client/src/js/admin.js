@@ -666,7 +666,7 @@ function setupAdminContinue(password) {
                 loadingOff();
                 console.log(err.message);
                 reject("Fail!" + err);
-                util.removeClass('#island-setup', 'btn-loading');
+                UTIL.REMOVECLASS('#ISLAND-SETUP', 'BTN-LOADING');
             }
         });
     });

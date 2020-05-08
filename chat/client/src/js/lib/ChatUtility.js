@@ -117,4 +117,9 @@ export class ChatUtility{
         }
         return result;
     }
+
+    isOnion(str){
+        let pattern = /.*[a-z2-7]{16}\.onion.*/;
+        return pattern.test(str);
+    }
 }

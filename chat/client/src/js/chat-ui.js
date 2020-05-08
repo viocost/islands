@@ -9,7 +9,7 @@ import "../css/vendor/loading.css"
 import { Vault } from "./lib/Vault";
 //import "../css/vendor/toastr.min.css"
 // impor
-import { ChatUtility as ChatUtil, ChatUtility } from "./lib/ChatUtility"
+import {  ChatUtility } from "./lib/ChatUtility"
 
 
 // ---------------------------------------------------------------------------------------------------------------------------
@@ -81,7 +81,6 @@ function initLoginUI(){
     util.appendChildren(header, UI.bakeLoginHeader());
 
     let mainContainer = util.$('#main-container');
-
     util.removeAllChildren(mainContainer);
 
     if (isRegistration()){
@@ -347,7 +346,13 @@ function clearAttachments() {
 function registerVault() {
     let password = util.$("#new-passwd");
     let confirm =  util.$("#confirm-passwd");
-    return Vault.registerVault(password, confirm, chat.version)
+    if (/^((?:[0-9]{1,3}\.){3}[0-9]{1,3}|localhost)(\:[0-9]{1,5})?$/.test(document.location.host)){
+        return Vault.registerAdminVault(password, confirm, chat.version)
+    } else if (ChatUtility.isOnion(document.location.host)){
+        return Vault.registerVault(password, confirm, chat.version)
+    } else {
+        throw new Error("Unrecognized host!")
+    }
 }
 
 

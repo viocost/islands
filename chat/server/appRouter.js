@@ -18,7 +18,6 @@ router.get('/', (req, res)=>{
     res.render("chat", {
         title:"Islands chat",
         version: global.VERSION,
-        secured: isSecured(),
         registration: isVaultAwaitingRegistration(req.headers["host"]),
 
     });
@@ -45,14 +44,48 @@ router.post("/", (req, res)=>{
     }
 });
 
+router.post("/register", (req, res)=>{
+    console.log("GUEST REGISTRATION!");
+    if(!isVaultAwaitingRegistration(req.headers.host)) {
+        res.status(401).send("Error: vault is not awaiting registration.");
+        return;
+    }
+    guestVaultRegistration(req, res);
+})
 
-function isVaultAwaitingRegistration(onion){
-    let vaultID = HSMap.getVaultId(onion);
-    if (!vaultID){
+function guestVaultRegistration(req, res){
+    try{
+        let host = req.headers["host"];
+        let vaultId = getVaultId(host);
+        let vaultData = req.body;
+        console.log(`vault hash is : ${vaultData.vaultHash}`);
+        vaultManager.completeRegistration(
+            vaultData.vault,
+            vaultData.vaultHash,
+            vaultData.vaultSign,
+            vaultData.vaultPublicKey,
+            vaultId
+            );
+        res.set("Content-Type", "application/json");
+        res.status(200).send(req.body);
+    }catch(err){
+        Logger.debug(err)
+        res.status(400).send({error: err})
+    }
+}
+
+function isVaultAwaitingRegistration(host){
+    //host is either ip address or onion
+    console.log(`HOST IS ${host}`)
+    if (isOnion(host)){
+        let vaultId = HSMap.getVaultId(vaultID)
+        return vaultId ? vaultManager.isRegistrationPending(vaultId) : false;
+    }else if (/^((?:[0-9]{1,3}\.){3}[0-9]{1,3}|localhost)(\:[0-9]{1,5})?$/.test(host)){
+        return !isSecured()
+    } else {
+        Logger.warn(`Unrecognized host: ${host}`, { cat: "chat" });
         return false;
     }
-    return vaultManager.isRegistrationPending(vaultID);
-
 }
 
 //Given a host returns vault ID associated with it
