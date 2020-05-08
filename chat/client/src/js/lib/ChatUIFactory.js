@@ -41,7 +41,7 @@ export function bakeCarousel(){
 
 
 
-export function bakeSidePanel(){
+export function bakeSidePanel(version = Err.required("Version")){
     let carousel = bakeCarousel()
     return util.bake("div", {
         class: "side-panel-container",
@@ -74,7 +74,7 @@ export function bakeSidePanel(){
                         }
                     }),
                     util.bake("h3", {
-                        text: "Islands v1.0.0"
+                        text: `Islands Chat v${version}`
                     })
                 ]
             })

@@ -133,7 +133,7 @@ function initUI(){
 
 
 
-    sidePanel = UI.bakeSidePanel();
+    sidePanel = UI.bakeSidePanel(chat.version);
 
     newMessageBlock = UI.bakeNewMessageControl(sendMessage, processAttachmentChosen);
 
@@ -1317,7 +1317,8 @@ function playSound(sound) {
 
 function initChat(){
     //chat = new Chat({version: version})
-    chat = new Chat({version: "2.0.0"})
+
+    chat = new Chat({version: util.$("#islands-version").value})
     chat.on(Events.LOGIN_ERROR, processLoginResult)
     chat.on(Events.LOGIN_SUCCESS, processLoginResult)
     chat.on(Events.POST_LOGIN_SUCCESS, ()=>{

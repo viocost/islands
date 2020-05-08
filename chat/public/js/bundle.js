@@ -62692,6 +62692,7 @@ function bakeCarousel() {
   });
 }
 function bakeSidePanel() {
+  var version = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : IError["a" /* IError */].required("Version");
   var carousel = bakeCarousel();
   return bake("div", {
     class: "side-panel-container",
@@ -62712,7 +62713,7 @@ function bakeSidePanel() {
           src: "/img/island.svg"
         }
       }), bake("h3", {
-        text: "Islands v1.0.0"
+        text: "Islands Chat v".concat(version)
       })]
     })]
   });
@@ -63686,7 +63687,7 @@ function initUI() {
   removeAllChildren(main);
   var mainContainer = bakeMainContainer();
   appendChildren(main, mainContainer);
-  chat_ui_sidePanel = bakeSidePanel();
+  chat_ui_sidePanel = bakeSidePanel(chat_ui_chat.version);
   newMessageBlock = bakeNewMessageControl(sendMessage, processAttachmentChosen);
   chat_ui_messagesPanel = bakeMessagesPanel(newMessageBlock);
   appendChildren(mainContainer, [chat_ui_sidePanel, chat_ui_messagesPanel]);
@@ -65014,7 +65015,7 @@ function playSound(sound) {
 function initChat() {
   //chat = new Chat({version: version})
   chat_ui_chat = new ChatClient["a" /* ChatClient */]({
-    version: "2.0.0"
+    version: $("#islands-version").value
   });
   chat_ui_chat.on(Events["Events"].LOGIN_ERROR, processLoginResult);
   chat_ui_chat.on(Events["Events"].LOGIN_SUCCESS, processLoginResult);
