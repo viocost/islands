@@ -347,8 +347,10 @@ function registerVault() {
     let password = util.$("#new-passwd");
     let confirm =  util.$("#confirm-passwd");
     if (/^((?:[0-9]{1,3}\.){3}[0-9]{1,3}|localhost)(\:[0-9]{1,5})?$/.test(document.location.host)){
+        console.log("Registering admin vault");
         return Vault.registerAdminVault(password, confirm, chat.version)
     } else if (ChatUtility.isOnion(document.location.host)){
+        console.log("Registering guest vault");
         return Vault.registerVault(password, confirm, chat.version)
     } else {
         throw new Error("Unrecognized host!")

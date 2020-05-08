@@ -78,7 +78,7 @@ function isVaultAwaitingRegistration(host){
     //host is either ip address or onion
     console.log(`HOST IS ${host}`)
     if (isOnion(host)){
-        let vaultId = HSMap.getVaultId(vaultID)
+        let vaultId = HSMap.getVaultId(host)
         return vaultId ? vaultManager.isRegistrationPending(vaultId) : false;
     }else if (/^((?:[0-9]{1,3}\.){3}[0-9]{1,3}|localhost)(\:[0-9]{1,5})?$/.test(host)){
         return !isSecured()

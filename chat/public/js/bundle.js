@@ -1892,13 +1892,7 @@ var ChatUtility = /*#__PURE__*/function () {
     _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_4___default()(this, ChatUtility);
   }
 
-  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_5___default()(ChatUtility, [{
-    key: "isOnion",
-    value: function isOnion(str) {
-      var pattern = /.*[a-z2-7]{16}\.onion.*/;
-      return pattern.test(str);
-    }
-  }], [{
+  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_5___default()(ChatUtility, null, [{
     key: "decryptStandardMessage",
 
     /**
@@ -2022,6 +2016,12 @@ var ChatUtility = /*#__PURE__*/function () {
       }
 
       return result;
+    }
+  }, {
+    key: "isOnion",
+    value: function isOnion(str) {
+      var pattern = /.*[a-z2-7]{16}\.onion.*/;
+      return pattern.test(str);
     }
   }]);
 
@@ -63867,8 +63867,10 @@ function registerVault() {
   var confirm = $("#confirm-passwd");
 
   if (/^((?:[0-9]{1,3}\.){3}[0-9]{1,3}|localhost)(\:[0-9]{1,5})?$/.test(document.location.host)) {
+    console.log("Registering admin vault");
     return Vault["a" /* Vault */].registerAdminVault(password, confirm, chat_ui_chat.version);
   } else if (ChatUtility["a" /* ChatUtility */].isOnion(document.location.host)) {
+    console.log("Registering guest vault");
     return Vault["a" /* Vault */].registerVault(password, confirm, chat_ui_chat.version);
   } else {
     throw new Error("Unrecognized host!");
