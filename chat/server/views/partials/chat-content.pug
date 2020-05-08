@@ -1,18 +1,16 @@
 header.chat-header
-    .header-section-left
-        img.logo(src="/img/island.svg")
-        h3#active-title Welcome to Islands!
 
 main
     #main-container.container.tingle-content-wrapper
 
 
 
-if secured !== undefined
-    script.
-        const secured = #{secured};
 
 script.
     isRegistration = function(){
         return #{registration}
+    }
+
+    isSecured = function(){
+        return #{secured}
     }

@@ -4,6 +4,7 @@ const VaultManager = require("./classes/libs/VaultManager");
 const Logger = require("./classes/libs/Logger");
 const AdminKey = require("./classes/libs/AdminKey");
 const HSMap = require("./classes/libs/HSVaultMap");
+const { isSecured } = require("./classes/AdminServer");
 
 
 let vaultManager;
@@ -14,7 +15,13 @@ module.exports.init = function(config) {
 
 router.get('/', (req, res)=>{
     console.log(`GET chat. Version ${global.VERSION}`);
-    res.render("chat", {title:"Islands chat", version: global.VERSION});
+    res.render("chat", {
+        title:"Islands chat",
+        version: global.VERSION,
+        secured: isSecured(),
+        registration: isVaultAwaitingRegistration(req.headers["host"]),
+
+    });
 });
 
 

@@ -154,30 +154,31 @@ async function launchChat(){
     chat = new CoreUnit(process.env["NODEJS"], chatCmdArgs, true)
     chat.launch();
     chat.onoutput = outputHandler;
+
+    if (process.env["DEBUG"]){
+        console.log("Enabling chat debug source watcher")
+        let watcher = hound.watch(path.join(process.env["APPS"], "chat"))
+
+        watcher.on("change", ()=>{
+            chat.restart()
+            console.log("Something has changed")
+        })
+
+        watcher.on("create", ()=>{
+            console.log("Something has been created")
+            chat.restart()
+        })
+
+        watcher.on("delete", ()=>{
+            console.log("Something has been deleted")
+            chat.restart()
+        })
+    }
 }
 
 console.log("Done. Launching apps.");
 
 
-if (process.env["DEBUG"]){
-    console.log("Enabling chat debug source watcher")
-    let watcher = hound.watch(path.join(process.env["APPS"], "chat"))
-
-    watcher.on("change", ()=>{
-        chat.restart()
-        console.log("Something has changed")
-    })
-
-    watcher.on("create", ()=>{
-        console.log("Something has been created")
-        chat.restart()
-    })
-
-    watcher.on("delete", ()=>{
-        console.log("Something has been deleted")
-        chat.restart()
-    })
-}
 
 function outputHandler(){
     //resetting timestamp

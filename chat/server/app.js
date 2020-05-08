@@ -148,9 +148,6 @@ HSVaultMap.init(config.hsVaultMap);
 adminRouter.init(app, config, HOST, PORT, adminKeyPath, updatePath);
 appRouter.init(config);
 app.use("/", appRouter.router);
-//app.use("/mobile", mobileRouter.router);
-//app.use("/help", helpRouter);
-//app.use("/vault", vaultsPath.router);
 app.use("/admin", adminRouter.router);
 
 

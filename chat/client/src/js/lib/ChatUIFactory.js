@@ -529,6 +529,22 @@ export function bakeRegistrationSuccessBlock(okClick){
     })
 }
 
+export function bakeLoginHeader(){
+    return util.bake("div", {
+        class: "header-section-left",
+        children: [
+            util.bake('img', {
+                src: "/img/island.svg"
+            }),
+
+            util.bake("h3", {
+                id: "active-title",
+                text: "Welcome to Islands!"
+            })
+        ]
+    })
+}
+
 export function bakeHeaderLeftSection(menuClickHandler){
     return util.bake("div", {
         class: "header-section-left",

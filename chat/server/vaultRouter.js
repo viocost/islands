@@ -20,7 +20,7 @@ router.get('/', (req, res)=>{
     res.render("vault", {
         version: global.VERSION,
         title: "Islands chat - Vault",
-        registration: isRegistration,
+        registration: "blabla",
     });
 });
 

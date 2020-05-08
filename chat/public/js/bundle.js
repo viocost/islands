@@ -62990,6 +62990,17 @@ function bakeRegistrationSuccessBlock(okClick) {
     })]
   });
 }
+function bakeLoginHeader() {
+  return bake("div", {
+    class: "header-section-left",
+    children: [bake('img', {
+      src: "/img/island.svg"
+    }), bake("h3", {
+      id: "active-title",
+      text: "Welcome to Islands!"
+    })]
+  });
+}
 function bakeHeaderLeftSection(menuClickHandler) {
   return bake("div", {
     class: "header-section-left",
@@ -63576,6 +63587,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
 });
 
 function initLoginUI() {
+  var header = $("header");
+  appendChildren(header, bakeLoginHeader());
   var mainContainer = $('#main-container');
   removeAllChildren(mainContainer);
 

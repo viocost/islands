@@ -76,7 +76,12 @@ document.addEventListener('DOMContentLoaded', event =>{
 
 
 function initLoginUI(){
+
+    let header = util.$("header")
+    util.appendChildren(header, UI.bakeLoginHeader());
+
     let mainContainer = util.$('#main-container');
+
     util.removeAllChildren(mainContainer);
 
     if (isRegistration()){
