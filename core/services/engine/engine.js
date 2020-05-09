@@ -29,6 +29,7 @@ OPTIONS:
 
 //output handling
 let lastOutput = new Date();
+let connectionStringPrintedLast = false;
 const CONNECTION_STRING_SHOW_TIMEOUT = 2000
 const CHAT_CONNECTION = {
     host: "localhost",
@@ -186,9 +187,10 @@ console.log("Done. Launching apps.");
 
 function outputHandler(){
     //resetting timestamp
+    connectionStringPrintedLast = false;
     lastOutput = new Date();
     setTimeout(()=>{
-        if (new Date() - lastOutput >= CONNECTION_STRING_SHOW_TIMEOUT - 20){
+        if (new Date() - lastOutput >= CONNECTION_STRING_SHOW_TIMEOUT - 20 && !connectionStringPrintedLast){
             printConnectionString();
         }
     }, CONNECTION_STRING_SHOW_TIMEOUT)
@@ -196,10 +198,13 @@ function outputHandler(){
 }
 
 function printConnectionString(){
-    console.log(`CONNECT TO ISLAND: http://${CHAT_CONNECTION.host}:${CHAT_CONNECTION.port}`)
-    console.log(`ADMIN: http://${CHAT_CONNECTION.host}:${CHAT_CONNECTION.port}/admin`)
-    if (process.env['DEBUG']) console.log(`DEBUG PORT: ${DEBUG_PORT}`);
 
+let str = `\nCONNECT TO ISLAND: http://${CHAT_CONNECTION.host}:${CHAT_CONNECTION.port}
+ADMIN: http://${CHAT_CONNECTION.host}:${CHAT_CONNECTION.port}/admin
+`
+    if (process.env['DEBUG']) str += `DEBUG PORT: ${DEBUG_PORT}`;
+    console.log(str)
+    connectionStringPrintedLast = true;
 }
 
 //Putting it all together
