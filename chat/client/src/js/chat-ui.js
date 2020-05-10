@@ -11,11 +11,10 @@ import { Vault } from "./lib/Vault";
 //import "../css/vendor/toastr.min.css"
 // impor
 import { ChatUtility } from "./lib/ChatUtility"
-
-
 // ---------------------------------------------------------------------------------------------------------------------------
 // CONSTANTS
 const SMALL_WIDTH = 760; // Width screen in pixels considered to be small
+const XSMALL_WIDTH = 400;
 const DAYSOFWEEK = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 let colors = ["#cfeeff", "#ffebcc", "#ccffd4", "#ccfffb", "#e6e6ff", "#f8e6ff", "#ffe6f1", "#ccefff", "#ccf1ff"]
 // ---------------------------------------------------------------------------------------------------------------------------
@@ -52,6 +51,8 @@ let activeTopics
 //Counters for unread messages
 const unreadCounters = {}
 
+let UIInitialized = false;
+
 // ---------------------------------------------------------------------------------------------------------------------------
 // TEST ONLY!
 // Comment out for production!
@@ -60,7 +61,9 @@ window.toastr = toastr;
 window.chat = chat;
 window.spinner = spinner;
 window.chatutil = ChatUtility;
-// ---------------------------------------------------------------------------------------------------------------------------
+window.statusConn = processConnectionStatusChanged;
+// --------------------------------------------------------------------------------------------------------------------------- 
+// 
 // ~END TEST
 
 document.addEventListener('DOMContentLoaded', event =>{
@@ -186,6 +189,7 @@ function initUI(){
 
     util.$("#remove-private").addEventListener("click", removePrivate);
     util.$("#messages-panel-container").onscroll = processChatScroll;
+    UIInitialized = true;
 }
 
 function setupHotkeysHandlers(){
@@ -258,12 +262,14 @@ function renderLayout(){
     let isSidePanelOn = util.hasClass("#menu-button", "menu-on");
     let sidePanel = util.$(".side-panel-container");
     let messagesPanel = util.$(".main-panel-container");
+    let connectionIndicatorLabel = util.$("#connection-indicator-label")
+
 
     if (isSidePanelOn) {
-
         if(window.innerWidth <= SMALL_WIDTH){
             util.flex(sidePanel);
             util.hide(messagesPanel);
+
         } else {
             util.flex(sidePanel);
             util.flex(messagesPanel);
@@ -274,9 +280,12 @@ function renderLayout(){
         util.flex(messagesPanel);
     }
 
-    //messagesPanel.appendChild(util.bake("div", {
-    //    html: `width ${window.innerWidth}`
-    //}))
+    ///////////////////////////////////////////////
+    // window.innerWidth <= XSMALL_WIDTH ?       //
+    //     util.hide(connectionIndicatorLabel) : //
+    //     util.flex(connectionIndicatorLabel)   //
+    ///////////////////////////////////////////////
+
 
 }
 
@@ -636,6 +645,7 @@ function processLoginResult(err){
     } else {
 
         initUI();
+        processConnectionStatusChanged(chat.getConnectionState())
         appendEphemeralMessage("Login successful. Loading data...")
         //playSound("user_online");
     }
@@ -1370,6 +1380,8 @@ function initChat(){
         console.log("Settings updated event from chat");
     })
 
+    chat.on(Events.CONNECTION_STATUS_CHANGED, processConnectionStatusChanged);
+
     chat.on(Events.NEW_CHAT_MESSAGE, (message, topicPkfp)=>{
         console.log(`New incoming chat message received for ${topicPkfp}`)
 
@@ -1468,6 +1480,52 @@ function resetUnreadCounter(pkfp){
     console.log("Resetting unread messages counter");
     unreadCounters[pkfp] = 0
     setUnreadMessagesIndicator(pkfp, unreadCounters[pkfp])
+}
+
+function processConnectionStatusChanged(state){
+    if (!state || state < 1 || state > 5){
+        throw new Error(`Invaled  connection state: ${state}`)
+    }
+    if (!UIInitialized) return;
+    let indicator = util.$("#connection-indicator");
+    let label = util.$("#connection-indicator-label");
+    let reconnectButton = util.$("#reconnect-button");
+    let reconnectSpinner = util.$("#reconnect-spinner");
+    let indicatorClasses = ["unknown", "connected", "dicsonnected", "connecting"];
+
+    const disconnected = ()=>{
+        label.innerText = "Island disconnected..."
+        util.addClass(indicator,"dicsonnected");
+        util.hide(reconnectButton)
+        util.hide(reconnectSpinner)
+
+    }
+    const connected = ()=>{
+        label.innerText = "Connected to island"
+        util.addClass(indicator, "connected");
+        util.hide(reconnectButton)
+        util.hide(reconnectSpinner)
+    }
+
+    const connecting = ()=>{
+        label.innerText = "Connecting..."
+        util.addClass(indicator, "connecting");
+        util.hide(reconnectButton)
+        util.flex(reconnectSpinner)
+    }
+
+
+    for(let c of indicatorClasses){
+        util.removeClass(indicator, c);
+    }
+
+    if(state === 1 || state === 5){
+        disconnected()
+    } else if(state === 2){
+        connected()
+    } else {
+        connecting()
+    }
 }
 
 function setUnreadMessagesIndicator(pkfp, num){

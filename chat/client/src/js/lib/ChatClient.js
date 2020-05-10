@@ -55,6 +55,7 @@ export class ChatClient{
 
                 // Initialize multiplexor socket
                 this.connector = new Connector();
+                this.setConnectorListeners()
 
                 //Initializing arrival hub
                 this.arrivalHub = new ArrivalHub(this.connector);
@@ -117,7 +118,16 @@ export class ChatClient{
         })
     }
 
+    setConnectorListeners(){
+        this.connector.on(Internal.CONNECTION_STATE_CHANGED, state => {
+            console.log(`Island connection state changed: ${state}`);
+            this.emit(Events.CONNECTION_STATUS_CHANGED, state);
+        })
+    }
 
+    getConnectionState(){
+        return this.connector.state;
+    }
 
     // Sends all topic pkfps (ids) to gather metadata and encrypted services
     postLogin(){

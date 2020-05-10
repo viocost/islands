@@ -1,11 +1,25 @@
 import * as io from "socket.io-client";
 import { WildEmitter } from "./WildEmitter";
 import { Internal } from "../../../../common/Events";
+import * as CuteSet from "cute-set";
 
 export class Connector{
     constructor(connectionString){
         WildEmitter.mixin(this);
         this.chatSocket;
+        this.socketInitialized = false;
+
+        //Defining transitions
+        this.possibleTransitions = {}
+        this.possibleTransitions[ConnectionState.DISCONNECTED] = new CuteSet([ConnectionState.CONNECTING, ConnectionState.RECONNECTING])
+        this.possibleTransitions[ConnectionState.CONNECTING] = new CuteSet([ConnectionState.ERROR, ConnectionState.CONNECTED]);
+        this.possibleTransitions[ConnectionState.RECONNECTING] = new CuteSet([ConnectionState.ERROR, ConnectionState.CONNECTED]);
+        this.possibleTransitions[ConnectionState.ERROR] = new CuteSet([ConnectionState.CONNECTING, ConnectionState.RECONNECTING, ConnectionState.DISCONNECTED])
+        this.possibleTransitions[ConnectionState.CONNECTED] = new CuteSet([ConnectionState.ERROR, ConnectionState.DISCONNECTED]);
+
+        //Initial state
+        this.state = ConnectionState.DISCONNECTED;
+
         if (connectionString){
             this.connectionString = connectionString;
         } else {
@@ -13,9 +27,18 @@ export class Connector{
         }
     }
 
-    async establishConnection(vaultId, connectionAttempts = 7, reconnectionDelay = 8000){
+    transitionState(connState){
+        if(!this.possibleTransitions[this.state].has(connState)){
+            throw new Error(`Cannot transition from ${this.state} to ${connState}`)
+        }
+        this.state = connState;
+        this.emit(Internal.CONNECTION_STATE_CHANGED, this.state);
+    }
+
+    async establishConnection(vaultId, connectionAttempts = 7, reconnectionDelay = 5000){
         return new Promise((resolve, reject)=>{
             let self = this;
+
             let upgrade = !!this.upgradeToWebsocket;
             if (self.chatSocket && self.chatSocket.connected){
                 resolve();
@@ -23,10 +46,14 @@ export class Connector{
             }
 
             let attempted = 0;
-
+            let pingPongCount = 0;
+            let maxUnrespondedPings = 10;
             function attemptConnection(){
                 console.log("Attempting island connection: " + attempted);
+
+                self.transitionState(ConnectionState.CONNECTING);
                 self.chatSocket.open()
+
             }
 
             const socketConfig = {
@@ -34,10 +61,10 @@ export class Connector{
                     vaultId: vaultId
                 },
                 reconnection: false,
-                forceNew: true,
+//                forceNew: true,
                 autoConnect: false,
-                pingInterval: 10000,
-                pingTimeout: 5000,
+                //pingInterval: 10000,
+                //pingTimeout: 5000,
                 upgrade: upgrade
             }
 
@@ -56,58 +83,53 @@ export class Connector{
             }
             //End
 
+            self.chatSocket.on("ping", ()=>{
+                console.log("Ping sent to server");
+                pingPongCount++;
+                if (pingPongCount > maxUnrespondedPings){
+                    console.log("chatSocket pings are not responded. Resetting connection");
+                    self.chatSocket.disconnect();
+                    attempted = 0
+                    setTimeout(attemptConnection, reconnectionDelay)
+                }
+            })
+
+            self.chatSocket.on("pong", ()=>{
+                console.log(`Pong. Count: ${pingPongCount}`)
+                pingPongCount = 0;
+            })
 
             self.chatSocket.on('connect', ()=>{
-                //this.finishSocketSetup();
+                self.transitionState(ConnectionState.CONNECTED);
 
-                let pingPongCount = 0
-
-                function ping(){
-                    console.log("pining server");
-                    if(!self.isConnected()){
-                        console.log("socket disconnected. Nothing to ping");
-                        return
-                    }
-
-                    self.chatSocket.send("ping" );
-                    pingPongCount++;
-
-                    if (pingPongCount >= 10){
-                        console.log("Looks like connection is dead. Resetting...");
-
-                        self.chatSocket.disconnect();
-                        attempted = 0
-                        setTimeout(attemptConnection, reconnectionDelay)
-
-                    } else {
-                        setTimeout(ping, 10000)
-                    }
-
+                if(self.socketInitialized){
+                    console.log("Socket reconnected");
+                    return;
                 }
 
-                self.chatSocket.on("pong", ()=>{
-                    console.log(`Pong. Count: ${pingPongCount}`)
-                    pingPongCount = 0;
-                })
-
+                //SOCKET INITIAL SETUP
+                self.socketInitialized = true;
                 console.log("Island connection established");
-                //this.islandConnectionStatus = true;
-                //this.emit("connected_to_island");
-                //
+
                 self.chatSocket.on("*", (event, data)=>{
                     console.log(`Got event: ${event}`);
                     self.emit(event, data);
                 })
 
+                self.chatSocket.on('reconnecting', (attemptNumber)=>{
+                    console.log(`Attempting to reconnect : ${attemptNumber}`)
+                })
+
                 self.chatSocket.on('reconnect', (attemptNumber) => {
-                    console.log("Successfull reconnect client")
-                    self.emit("reconnect");
+                    console.log(`Successfull reconnect client after ${attemptNumber} attempt`)
+                    self.transitionState(ConnectionState.CONNECTED)
                 });
 
                 self.chatSocket.on('error', (err)=>{
+
+                    self.transitionState(ConnectionState.ERROR);
                     console.error(`Socket error: ${err}`)
                     attempted = 0;
-                    self.chatSocket.disconnect();
                     console.log("Resetting connection...")
                     setTimeout(attemptConnection, reconnectionDelay)
                 })
@@ -115,15 +137,15 @@ export class Connector{
             });
 
             self.chatSocket.on("disconnect", ()=>{
+                self.transitionState(ConnectionState.DISCONNECTED);
+
                 console.log("Island disconnected.");
-                self.emit("disconnect");
                 attempted = 0
                 setTimeout(attemptConnection, reconnectionDelay);
-                //this.islandConnectionStatus = false;
-                //this.emit("disconnected_from_island");
             });
 
             self.chatSocket.on('connect_error', (err)=>{
+                self.transitionState(ConnectionState.ERROR);
                 if (attempted < connectionAttempts){
                     console.log("Connection error on attempt: " + attempted + err);
                     attempted += 1;
@@ -136,6 +158,7 @@ export class Connector{
             });
 
             self.chatSocket.on('connect_timeout', (err)=>{
+                self.transitionState(ConnectionState.ERROR);
                 console.log('Chat connection timeout');
                 reject(err);
             });
@@ -144,9 +167,6 @@ export class Connector{
         })
     }
 
-    async reconnect(){
-
-    }
 
     isConnected(){
         return this.chatSocket.connected;
@@ -169,4 +189,12 @@ export class Connector{
         }
 
     }
+}
+
+export const ConnectionState = {
+    DISCONNECTED: 1,
+    CONNECTED: 2,
+    CONNECTING: 3,
+    RECONNECTING: 4,
+    ERROR: 5
 }

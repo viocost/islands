@@ -48,6 +48,7 @@
     "toastr": "^2.1.4",
     "tor-control": "^0.0.3",
     "winston": "^3.1.0",
+    "xstate": "^4.9.1",
     "zip-a-folder": "0.0.12"
   },
   "devDependencies": {
@@ -63,7 +64,7 @@
     "css-loader": "^2.1.1",
     "mini-css-extract-plugin": "^0.9.0",
     "mocha": "^6.2.2",
-    "node-sass": "^4.13.0",
+    "node-sass": "^4.14.1",
     "optimize-css-assets-webpack-plugin": "^5.0.1",
     "postcss-loader": "^3.0.0",
     "sass-loader": "^7.3.1",

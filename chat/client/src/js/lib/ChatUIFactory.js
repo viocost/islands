@@ -583,10 +583,33 @@ export function bakeHeaderLeftSection(menuClickHandler){
                         id: "connection-indicator",
                         class: [ "connection-indicator", "unknown"]
                     }),
-                    util.bake("h6", {
-                        id: "connection-indicator-label",
-                        class: "connection-indicator-label",
-                        text: "Connection status unknown"
+                    util.bake("div", {
+                        id: "connection-indicator-label-wrap",
+                        class: "connection-indicator-label-wrap",
+                        children: [
+                            util.bake("h6", {
+
+                                id: "connection-indicator-label",
+                                class: "connection-indicator-label",
+                                text: "Connection status unknown"
+                            }),
+
+                            util.bake("img", {
+                                src: "/img/spinner.gif",
+                                id: 'reconnect-spinner',
+                                class: 'reconnect-spinner'
+
+                            }),
+
+                            util.bake("div", {
+                                text: "Reconnect",
+                                id: "reconnect-button",
+                                class: "reconnect-button",
+                            })
+
+
+
+                        ]
                     })
                 ]
 

@@ -331,13 +331,32 @@ main
   height: 4rem
   align-items: center
   width: 100%
-  padding: 1rem
-  .connection-indicator-label
-    font-size: 1.3rem
-    color: $text-color
-    font-weight: 100
-    margin-left: 1rem
-   
+  margin: 1rem
+
+  .connection-indicator-label-wrap
+    display: flex
+    flex-direction: row
+    .connection-indicator-label
+      font-size: 1.3rem
+      color: $text-color
+      font-weight: 100
+      margin: 0 1rem
+      align-items: center
+      @media screen and (max-width: 400px)
+        display: none
+    .reconnect-spinner
+      width: 2rem
+      height: 2rem
+      display: none
+    .reconnect-button
+      width: 10rem
+      height: 2rem
+      text-align: center
+      background-color: #ccc
+      color: #000
+      display: none
+      &:hover
+        background-color: #999
 
   .connection-indicator
     border-radius: 50%

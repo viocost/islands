@@ -26,6 +26,7 @@ class ClientConnectionManager extends EventEmitter{
         let self = this;
 
         self.socketHub.on('connection', (socket) => {
+            console.log(`SOCKET HUB CONNECTION: socket id: ${socket.id}`)
             self.emit("client_connected", socket.id);
             socket.on("disconnect", (reason)=>{
                 console.log("Client disconnected: " + socket.id)
@@ -37,8 +38,8 @@ class ClientConnectionManager extends EventEmitter{
             });
 
             socket.on("ping", ()=>{
-                console.log("ping event")
-                socket.send("pong");
+                console.log("RECEIVED PING FROM CLIENT")
+                socket.emit("pong");
             })
 
             socket.on("error", (err)=>{

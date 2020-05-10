@@ -727,6 +727,7 @@ class HistoryManager{
             try{
                 let res = {};
                 //Here we should have the set of all the keys to decrypt messages
+                console.log(`Keys ${JSON.stringify(keys)}`);
                 let metaIDs = new CuteSet(keys);
                 let currentWrup = new WrapupRecord(this.getWrapupBlobSync(pkfp));
                 //Gather all needed encrypted keys
@@ -773,7 +774,7 @@ class HistoryManager{
 
                 if(currentWrup.lastMessageEnd === 0){
                     allLoaded = true;
-                    resolve([ [],  {}, allLoaded ]);
+                    resolve([ [],  keys, allLoaded ]);
                     console.log("No messages! Returning...");
                     return;
                 }

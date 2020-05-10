@@ -121,6 +121,8 @@ class ClientSession extends EventEmitter{
     addConnection(connectionId){
         Logger.debug(`Adding connection ${connectionId} to session ${this.id}`, {cat: "session"})
         this.connections.add(connectionId);
+
+        Logger.debug(`Active connections: ${JSON.stringify(this.connections.toArray())}`)
         this.timeInactive = null;
         this.sendSessionKey(connectionId);
     }
@@ -155,8 +157,9 @@ class ClientSession extends EventEmitter{
 
     //pushes msg to all active sockets as message
     broadcast(msg){
-        Logger.debug(`Broadcasting to all connections. Topics: ${this.topics}`, { cat: "session" })
+        Logger.debug(`Broadcasting to all connections. Topics: ${JSON.stringify(this.topics.toArray())}. Connections: ${JSON.stringify(this.connections.toArray())}`, { cat: "session" })
         for (let connId of this.connections){
+            console.log(`Sending message to ${connId}`)
             this.connectionManager.sendMessage(connId, msg)
         }
     }

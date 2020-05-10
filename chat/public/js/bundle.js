@@ -160,6 +160,10 @@ module.exports.Internal = Object.freeze({
   VAULT_SETTINGS_UPDATED: "vault_settings_updated",
   //END//////////////////////////////////////////////////////////////////////
   CONNECTION_ERROR: "conn_error",
+  CONNECTED: "conn_established",
+  RECONNECT: "reconnect",
+  DISCONNECT: "disconnect",
+  CONNECTION_STATE_CHANGED: "connection_state_changed",
   INIT_TOPIC_GET_TOKEN: "init_topic_get_token",
   INIT_TOPIC_TOKEN: "init_topic_token",
   INIT_TOPIC: "init_topic_finalize",
@@ -248,7 +252,7 @@ function assert(cond, errMsg) {
 /* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(37);
 /* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(17);
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(18);
 /* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(77);
 /* harmony import */ var core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_4__);
@@ -256,7 +260,7 @@ function assert(cond, errMsg) {
 /* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(31);
 /* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(14);
+/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(15);
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_7__);
 /* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(111);
 /* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_8__);
@@ -1866,9 +1870,9 @@ module.exports = {
 /* harmony import */ var core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(39);
 /* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(17);
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(18);
 /* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(14);
+/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(15);
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(4);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_4__);
@@ -1876,7 +1880,7 @@ module.exports = {
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(2);
 /* harmony import */ var _common_IError__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(1);
-/* harmony import */ var cute_set__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(18);
+/* harmony import */ var cute_set__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(14);
 /* harmony import */ var cute_set__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(cute_set__WEBPACK_IMPORTED_MODULE_8__);
 
 
@@ -5013,7 +5017,7 @@ util.estimateCores = function(options, callback) {
   }
 };
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(20), __webpack_require__(64).setImmediate, __webpack_require__(16).Buffer))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(20), __webpack_require__(64).setImmediate, __webpack_require__(17).Buffer))
 
 /***/ }),
 /* 9 */
@@ -5023,9 +5027,9 @@ util.estimateCores = function(options, callback) {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Message; });
 /* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(111);
 /* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(17);
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(18);
 /* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(14);
+/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(15);
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_3__);
@@ -5427,6 +5431,12 @@ $exports.store = store;
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
+module.exports = __webpack_require__(255);
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
 "use strict";
 
 // 19.1.3.6 Object.prototype.toString()
@@ -5441,7 +5451,7 @@ if (test + '' != '[object z]') {
 
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var isObject = __webpack_require__(28);
@@ -5452,7 +5462,7 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7249,7 +7259,7 @@ function isnan (val) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(32)))
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var $iterators = __webpack_require__(136);
@@ -7311,12 +7321,6 @@ for (var collections = getKeys(DOMIterables), i = 0; i < collections.length; i++
   }
 }
 
-
-/***/ }),
-/* 18 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(255);
 
 /***/ }),
 /* 19 */
@@ -7557,10 +7561,10 @@ var asyncToGenerator = __webpack_require__(10);
 var asyncToGenerator_default = /*#__PURE__*/__webpack_require__.n(asyncToGenerator);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/web.dom.iterable.js
-var web_dom_iterable = __webpack_require__(17);
+var web_dom_iterable = __webpack_require__(18);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.object.to-string.js
-var es6_object_to_string = __webpack_require__(14);
+var es6_object_to_string = __webpack_require__(15);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/classCallCheck.js
 var classCallCheck = __webpack_require__(4);
@@ -7856,10 +7860,10 @@ var Metadata_Metadata = /*#__PURE__*/function () {
 var ChatMessage = __webpack_require__(40);
 
 // EXTERNAL MODULE: ./node_modules/cute-set/index.js
-var cute_set = __webpack_require__(18);
+var cute_set = __webpack_require__(14);
 
 // EXTERNAL MODULE: ./node_modules/buffer/index.js
-var buffer = __webpack_require__(16);
+var buffer = __webpack_require__(17);
 
 // CONCATENATED MODULE: ./client/src/js/lib/Topic.js
 
@@ -8773,7 +8777,7 @@ module.exports = __webpack_require__(24) ? function (object, key, value) {
 /* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var anObject = __webpack_require__(15);
+var anObject = __webpack_require__(16);
 var IE8_DOM_DEFINE = __webpack_require__(126);
 var toPrimitive = __webpack_require__(74);
 var dP = Object.defineProperty;
@@ -11618,7 +11622,7 @@ module.exports = function (it, key) {
 
 
 var isRegExp = __webpack_require__(208);
-var anObject = __webpack_require__(15);
+var anObject = __webpack_require__(16);
 var speciesConstructor = __webpack_require__(80);
 var advanceStringIndex = __webpack_require__(106);
 var toLength = __webpack_require__(19);
@@ -11780,7 +11784,7 @@ var wksExt = __webpack_require__(140);
 var wksDefine = __webpack_require__(139);
 var enumKeys = __webpack_require__(213);
 var isArray = __webpack_require__(135);
-var anObject = __webpack_require__(15);
+var anObject = __webpack_require__(16);
 var isObject = __webpack_require__(28);
 var toObject = __webpack_require__(30);
 var toIObject = __webpack_require__(46);
@@ -12021,9 +12025,9 @@ setToStringTag(global.JSON, 'JSON', true);
 /* harmony import */ var core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(39);
 /* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(17);
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(18);
 /* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(14);
+/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(15);
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(4);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_4__);
@@ -17288,7 +17292,7 @@ function objectToString(o) {
   return Object.prototype.toString.call(o);
 }
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(16).Buffer))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(17).Buffer))
 
 /***/ }),
 /* 71 */
@@ -17302,11 +17306,11 @@ function objectToString(o) {
 /* harmony import */ var core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(39);
 /* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(17);
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(18);
 /* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(14);
+/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(15);
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var cute_set__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(18);
+/* harmony import */ var cute_set__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(14);
 /* harmony import */ var cute_set__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(cute_set__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var util__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(67);
 /* harmony import */ var util__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(util__WEBPACK_IMPORTED_MODULE_6__);
@@ -17590,10 +17594,10 @@ var regenerator = __webpack_require__(3);
 var regenerator_default = /*#__PURE__*/__webpack_require__.n(regenerator);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/web.dom.iterable.js
-var web_dom_iterable = __webpack_require__(17);
+var web_dom_iterable = __webpack_require__(18);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.object.to-string.js
-var es6_object_to_string = __webpack_require__(14);
+var es6_object_to_string = __webpack_require__(15);
 
 // EXTERNAL MODULE: ./node_modules/regenerator-runtime/runtime.js
 var runtime = __webpack_require__(29);
@@ -18386,7 +18390,7 @@ module.exports = Object.keys || function keys(O) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.3.20 SpeciesConstructor(O, defaultConstructor)
-var anObject = __webpack_require__(15);
+var anObject = __webpack_require__(16);
 var aFunction = __webpack_require__(58);
 var SPECIES = __webpack_require__(13)('species');
 module.exports = function (O, D) {
@@ -22988,7 +22992,7 @@ exports.Socket = __webpack_require__(172);
 /* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(31);
 /* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(14);
+/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(15);
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(77);
 /* harmony import */ var core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_typed_uint8_array__WEBPACK_IMPORTED_MODULE_5__);
@@ -23569,7 +23573,7 @@ module.exports = function (it) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.2 / 15.2.3.5 Object.create(O [, Properties])
-var anObject = __webpack_require__(15);
+var anObject = __webpack_require__(16);
 var dPs = __webpack_require__(197);
 var enumBugKeys = __webpack_require__(99);
 var IE_PROTO = __webpack_require__(98)('IE_PROTO');
@@ -23769,7 +23773,7 @@ module.exports = patchedExec;
 "use strict";
 
 // 21.2.5.3 get RegExp.prototype.flags
-var anObject = __webpack_require__(15);
+var anObject = __webpack_require__(16);
 module.exports = function () {
   var that = anObject(this);
   var result = '';
@@ -23789,7 +23793,7 @@ module.exports = function () {
 "use strict";
 
 __webpack_require__(211);
-var anObject = __webpack_require__(15);
+var anObject = __webpack_require__(16);
 var $flags = __webpack_require__(108);
 var DESCRIPTORS = __webpack_require__(24);
 var TO_STRING = 'toString';
@@ -24587,7 +24591,7 @@ module.exports = forge.pbkdf2 = pkcs5.pbkdf2 = function(
   outer();
 };
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(16).Buffer))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(17).Buffer))
 
 /***/ }),
 /* 115 */
@@ -29033,7 +29037,7 @@ exports.PassThrough = __webpack_require__(291);
 /***/ (function(module, exports, __webpack_require__) {
 
 /* eslint-disable node/no-deprecated-api */
-var buffer = __webpack_require__(16)
+var buffer = __webpack_require__(17)
 var Buffer = buffer.Buffer
 
 // alternative to using Object.keys for old browsers
@@ -30744,7 +30748,7 @@ exports.f = __webpack_require__(13);
 /***/ (function(module, exports, __webpack_require__) {
 
 // call something on iterator step with safe closing on error
-var anObject = __webpack_require__(15);
+var anObject = __webpack_require__(16);
 module.exports = function (iterator, fn, value, entries) {
   try {
     return entries ? fn(anObject(value)[0], value[1]) : fn(value);
@@ -30876,7 +30880,7 @@ module.exports.f = function (C) {
 /* 144 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var anObject = __webpack_require__(15);
+var anObject = __webpack_require__(16);
 var isObject = __webpack_require__(28);
 var newPromiseCapability = __webpack_require__(143);
 
@@ -30912,7 +30916,7 @@ module.exports = function (object, index, value) {
 "use strict";
 
 
-var anObject = __webpack_require__(15);
+var anObject = __webpack_require__(16);
 var toObject = __webpack_require__(30);
 var toLength = __webpack_require__(19);
 var toInteger = __webpack_require__(45);
@@ -41815,7 +41819,7 @@ function isBuf(obj) {
           (withNativeArrayBuffer && (obj instanceof ArrayBuffer || isView(obj)));
 }
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(16).Buffer))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(17).Buffer))
 
 /***/ }),
 /* 166 */
@@ -42775,7 +42779,7 @@ function hasBinary (obj) {
   return false;
 }
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(16).Buffer))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(17).Buffer))
 
 /***/ }),
 /* 170 */
@@ -45324,9 +45328,9 @@ module.exports = _defineProperty;
 /* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(17);
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(18);
 /* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(14);
+/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(15);
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(29);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_4__);
@@ -45444,7 +45448,10 @@ var ChatClient = /*#__PURE__*/function () {
                 console.log("Got vault. Initializing"); //Initialize vault
                 // Initialize multiplexor socket
 
-                _this.connector = new _Connector__WEBPACK_IMPORTED_MODULE_13__[/* Connector */ "a"](); //Initializing arrival hub
+                _this.connector = new _Connector__WEBPACK_IMPORTED_MODULE_13__[/* Connector */ "a"]();
+
+                _this.setConnectorListeners(); //Initializing arrival hub
+
 
                 _this.arrivalHub = new _ArrivalHub__WEBPACK_IMPORTED_MODULE_15__[/* ArrivalHub */ "a"](_this.connector); //Initialize message queue
 
@@ -45458,19 +45465,19 @@ var ChatClient = /*#__PURE__*/function () {
                 console.log("Vault initialized. Initializing connector...");
                 console.log("Bootstrapping vault..."); //bootstrapping vault
 
-                _context.next = 21;
+                _context.next = 22;
                 return _this.vault.bootstrap(_this.arrivalHub, _this.messageQueue, _this.version);
 
-              case 21:
+              case 22:
                 console.log("Setting listeneres");
 
                 _this.setVaultListeners();
 
                 console.log("Establishing connection");
-                _context.next = 26;
+                _context.next = 27;
                 return _this.connector.establishConnection(vaultId);
 
-              case 26:
+              case 27:
                 console.log("Connection established. Initializing arrival hub..");
                 console.log("Initializing topic listeners...");
                 _this.topics = _this.vault.topics;
@@ -45489,23 +45496,23 @@ var ChatClient = /*#__PURE__*/function () {
 
                 _this.postLogin();
 
-                _context.next = 38;
+                _context.next = 39;
                 break;
 
-              case 34:
-                _context.prev = 34;
+              case 35:
+                _context.prev = 35;
                 _context.t0 = _context["catch"](0);
 
                 _this.emit(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].LOGIN_ERROR, _context.t0);
 
                 console.trace(_context.t0);
 
-              case 38:
+              case 39:
               case "end":
                 return _context.stop();
             }
           }
-        }, _callee, null, [[0, 34]]);
+        }, _callee, null, [[0, 35]]);
       })));
     }
   }, {
@@ -45525,12 +45532,28 @@ var ChatClient = /*#__PURE__*/function () {
       this.vault.on(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Internal"].TOPIC_DELETED, function (pkfp) {
         self.emit(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].TOPIC_DELETED, pkfp);
       });
+    }
+  }, {
+    key: "setConnectorListeners",
+    value: function setConnectorListeners() {
+      var _this3 = this;
+
+      this.connector.on(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Internal"].CONNECTION_STATE_CHANGED, function (state) {
+        console.log("Island connection state changed: ".concat(state));
+
+        _this3.emit(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].CONNECTION_STATUS_CHANGED, state);
+      });
+    }
+  }, {
+    key: "getConnectionState",
+    value: function getConnectionState() {
+      return this.connector.state;
     } // Sends all topic pkfps (ids) to gather metadata and encrypted services
 
   }, {
     key: "postLogin",
     value: function postLogin() {
-      var _this3 = this;
+      var _this4 = this;
 
       //sending post_login request
       var message = new _Message__WEBPACK_IMPORTED_MODULE_17__[/* Message */ "a"](this.version);
@@ -45540,7 +45563,7 @@ var ChatClient = /*#__PURE__*/function () {
       message.body.topics = Object.keys(this.topics);
       message.signMessage(this.vault.privateKey);
       this.vault.once(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Internal"].POST_LOGIN_DECRYPT, function (msg) {
-        _this3.postLoginDecrypt(msg, _this3);
+        _this4.postLoginDecrypt(msg, _this4);
       });
       this.messageQueue.enqueue(message);
     } // Decrypts topic authorities' and hidden services keys
@@ -45630,27 +45653,27 @@ var ChatClient = /*#__PURE__*/function () {
   }, {
     key: "initTopicListeners",
     value: function initTopicListeners(topic) {
-      var _this4 = this;
+      var _this5 = this;
 
       topic.on(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].MESSAGES_LOADED, function (messages) {
-        _this4.emit(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].MESSAGES_LOADED, {
+        _this5.emit(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].MESSAGES_LOADED, {
           pkfp: topic.pkfp,
           messages: messages
         });
       });
       topic.on(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].INVITE_CREATED, function () {
-        _this4.emit(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].INVITE_CREATED, {
+        _this5.emit(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].INVITE_CREATED, {
           pkfp: topic.pkfp
         });
       });
       topic.on(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].NEW_CHAT_MESSAGE, function (msg, pkfp) {
-        _this4.emit(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].NEW_CHAT_MESSAGE, msg, topic.pkfp);
+        _this5.emit(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].NEW_CHAT_MESSAGE, msg, topic.pkfp);
       });
       topic.on(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].METADATA_UPDATED, function () {
-        _this4.emit(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].METADATA_UPDATED, topic.pkfp);
+        _this5.emit(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].METADATA_UPDATED, topic.pkfp);
       });
       topic.on(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].SETTINGS_UPDATED, function () {
-        _this4.emit(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].SETTINGS_UPDATED, topic.pkfp);
+        _this5.emit(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].SETTINGS_UPDATED, topic.pkfp);
       });
     } //END//////////////////////////////////////////////////////////////////////
     // ---------------------------------------------------------------------------------------------------------------------------
@@ -45681,7 +45704,7 @@ var ChatClient = /*#__PURE__*/function () {
   }, {
     key: "initTopic",
     value: function initTopic(nickname, topicName) {
-      var _this5 = this;
+      var _this6 = this;
 
       var self = this;
       setTimeout( /*#__PURE__*/_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_5___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.mark(function _callee2() {
@@ -45741,7 +45764,7 @@ var ChatClient = /*#__PURE__*/function () {
 
                 settings = _Topic__WEBPACK_IMPORTED_MODULE_18__[/* Topic */ "a"].prepareNewTopicSettings(self.version, nickname, topicName, ownerKeyPair.publicKey); // TODO Prepare new topic vault record
 
-                vaultRecord = self.vault.prepareVaultTopicRecord(_this5.version, ownerPkfp, ownerKeyPair.privateKey, topicName); //Preparing request
+                vaultRecord = self.vault.prepareVaultTopicRecord(_this6.version, ownerPkfp, ownerKeyPair.privateKey, topicName); //Preparing request
 
                 request = new _Message__WEBPACK_IMPORTED_MODULE_17__[/* Message */ "a"](self.version);
                 request.headers.command = _common_Events__WEBPACK_IMPORTED_MODULE_9__["Internal"].INIT_TOPIC;
@@ -46174,7 +46197,7 @@ var ChatClient = /*#__PURE__*/function () {
   }, {
     key: "downloadAttachment",
     value: function downloadAttachment(fileInfo, topicPkfp) {
-      var _this6 = this;
+      var _this7 = this;
 
       Object(_common_IError__WEBPACK_IMPORTED_MODULE_10__[/* assert */ "b"])(this.topics[topicPkfp], "Topic is invalid");
       var topic = this.topics[topicPkfp];
@@ -46182,10 +46205,10 @@ var ChatClient = /*#__PURE__*/function () {
       downloadAttachmentAgent.once(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].DOWNLOAD_SUCCESS, function (fileData, fileName) {
         console.log("Download successful event from agent");
 
-        _this6.emit(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].DOWNLOAD_SUCCESS, fileData, fileName);
+        _this7.emit(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].DOWNLOAD_SUCCESS, fileData, fileName);
       });
       downloadAttachmentAgent.once(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].DOWNLOAD_FAIL, function (err) {
-        _this6.emit(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].DOWNLOAD_FAIL, err);
+        _this7.emit(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].DOWNLOAD_FAIL, err);
       });
       downloadAttachmentAgent.download();
     }
@@ -47887,11 +47910,12 @@ function coerce (version, options) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Connector; });
+/* unused harmony export ConnectionState */
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(31);
 /* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(14);
+/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(15);
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(29);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_3__);
@@ -47906,6 +47930,9 @@ function coerce (version, options) {
 /* harmony import */ var _WildEmitter__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(11);
 /* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(0);
 /* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(_common_Events__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var cute_set__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(14);
+/* harmony import */ var cute_set__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(cute_set__WEBPACK_IMPORTED_MODULE_10__);
+
 
 
 
@@ -47922,6 +47949,16 @@ var Connector = /*#__PURE__*/function () {
 
     _WildEmitter__WEBPACK_IMPORTED_MODULE_8__[/* WildEmitter */ "a"].mixin(this);
     this.chatSocket;
+    this.socketInitialized = false; //Defining transitions
+
+    this.possibleTransitions = {};
+    this.possibleTransitions[ConnectionState.DISCONNECTED] = new cute_set__WEBPACK_IMPORTED_MODULE_10__([ConnectionState.CONNECTING, ConnectionState.RECONNECTING]);
+    this.possibleTransitions[ConnectionState.CONNECTING] = new cute_set__WEBPACK_IMPORTED_MODULE_10__([ConnectionState.ERROR, ConnectionState.CONNECTED]);
+    this.possibleTransitions[ConnectionState.RECONNECTING] = new cute_set__WEBPACK_IMPORTED_MODULE_10__([ConnectionState.ERROR, ConnectionState.CONNECTED]);
+    this.possibleTransitions[ConnectionState.ERROR] = new cute_set__WEBPACK_IMPORTED_MODULE_10__([ConnectionState.CONNECTING, ConnectionState.RECONNECTING, ConnectionState.DISCONNECTED]);
+    this.possibleTransitions[ConnectionState.CONNECTED] = new cute_set__WEBPACK_IMPORTED_MODULE_10__([ConnectionState.ERROR, ConnectionState.DISCONNECTED]); //Initial state
+
+    this.state = ConnectionState.DISCONNECTED;
 
     if (connectionString) {
       this.connectionString = connectionString;
@@ -47931,6 +47968,16 @@ var Connector = /*#__PURE__*/function () {
   }
 
   _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_6___default()(Connector, [{
+    key: "transitionState",
+    value: function transitionState(connState) {
+      if (!this.possibleTransitions[this.state].has(connState)) {
+        throw new Error("Cannot transition from ".concat(this.state, " to ").concat(connState));
+      }
+
+      this.state = connState;
+      this.emit(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Internal"].CONNECTION_STATE_CHANGED, this.state);
+    }
+  }, {
     key: "establishConnection",
     value: function () {
       var _establishConnection = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_4___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee(vaultId) {
@@ -47944,7 +47991,7 @@ var Connector = /*#__PURE__*/function () {
             switch (_context.prev = _context.next) {
               case 0:
                 connectionAttempts = _args.length > 1 && _args[1] !== undefined ? _args[1] : 7;
-                reconnectionDelay = _args.length > 2 && _args[2] !== undefined ? _args[2] : 8000;
+                reconnectionDelay = _args.length > 2 && _args[2] !== undefined ? _args[2] : 5000;
                 return _context.abrupt("return", new Promise(function (resolve, reject) {
                   var self = _this;
                   var upgrade = !!_this.upgradeToWebsocket;
@@ -47955,9 +48002,12 @@ var Connector = /*#__PURE__*/function () {
                   }
 
                   var attempted = 0;
+                  var pingPongCount = 0;
+                  var maxUnrespondedPings = 10;
 
                   function attemptConnection() {
                     console.log("Attempting island connection: " + attempted);
+                    self.transitionState(ConnectionState.CONNECTING);
                     self.chatSocket.open();
                   }
 
@@ -47966,10 +48016,10 @@ var Connector = /*#__PURE__*/function () {
                       vaultId: vaultId
                     },
                     reconnection: false,
-                    forceNew: true,
+                    //                forceNew: true,
                     autoConnect: false,
-                    pingInterval: 10000,
-                    pingTimeout: 5000,
+                    //pingInterval: 10000,
+                    //pingTimeout: 5000,
                     upgrade: upgrade
                   };
                   socketConfig.upgrade = self.transport > 0;
@@ -47985,64 +48035,61 @@ var Connector = /*#__PURE__*/function () {
                   }; //End
 
 
-                  self.chatSocket.on('connect', function () {
-                    //this.finishSocketSetup();
-                    var pingPongCount = 0;
+                  self.chatSocket.on("ping", function () {
+                    console.log("Ping sent to server");
+                    pingPongCount++;
 
-                    function ping() {
-                      console.log("pining server");
-
-                      if (!self.isConnected()) {
-                        console.log("socket disconnected. Nothing to ping");
-                        return;
-                      }
-
-                      self.chatSocket.send("ping");
-                      pingPongCount++;
-
-                      if (pingPongCount >= 10) {
-                        console.log("Looks like connection is dead. Resetting...");
-                        self.chatSocket.disconnect();
-                        attempted = 0;
-                        setTimeout(attemptConnection, reconnectionDelay);
-                      } else {
-                        setTimeout(ping, 10000);
-                      }
+                    if (pingPongCount > maxUnrespondedPings) {
+                      console.log("chatSocket pings are not responded. Resetting connection");
+                      self.chatSocket.disconnect();
+                      attempted = 0;
+                      setTimeout(attemptConnection, reconnectionDelay);
                     }
+                  });
+                  self.chatSocket.on("pong", function () {
+                    console.log("Pong. Count: ".concat(pingPongCount));
+                    pingPongCount = 0;
+                  });
+                  self.chatSocket.on('connect', function () {
+                    self.transitionState(ConnectionState.CONNECTED);
 
-                    self.chatSocket.on("pong", function () {
-                      console.log("Pong. Count: ".concat(pingPongCount));
-                      pingPongCount = 0;
-                    });
-                    console.log("Island connection established"); //this.islandConnectionStatus = true;
-                    //this.emit("connected_to_island");
-                    //
+                    if (self.socketInitialized) {
+                      console.log("Socket reconnected");
+                      return;
+                    } //SOCKET INITIAL SETUP
 
+
+                    self.socketInitialized = true;
+                    console.log("Island connection established");
                     self.chatSocket.on("*", function (event, data) {
                       console.log("Got event: ".concat(event));
                       self.emit(event, data);
                     });
+                    self.chatSocket.on('reconnecting', function (attemptNumber) {
+                      console.log("Attempting to reconnect : ".concat(attemptNumber));
+                    });
                     self.chatSocket.on('reconnect', function (attemptNumber) {
-                      console.log("Successfull reconnect client");
-                      self.emit("reconnect");
+                      console.log("Successfull reconnect client after ".concat(attemptNumber, " attempt"));
+                      self.transitionState(ConnectionState.CONNECTED);
                     });
                     self.chatSocket.on('error', function (err) {
+                      self.transitionState(ConnectionState.ERROR);
                       console.error("Socket error: ".concat(err));
                       attempted = 0;
-                      self.chatSocket.disconnect();
                       console.log("Resetting connection...");
                       setTimeout(attemptConnection, reconnectionDelay);
                     });
                     resolve();
                   });
                   self.chatSocket.on("disconnect", function () {
+                    self.transitionState(ConnectionState.DISCONNECTED);
                     console.log("Island disconnected.");
-                    self.emit("disconnect");
                     attempted = 0;
-                    setTimeout(attemptConnection, reconnectionDelay); //this.islandConnectionStatus = false;
-                    //this.emit("disconnected_from_island");
+                    setTimeout(attemptConnection, reconnectionDelay);
                   });
                   self.chatSocket.on('connect_error', function (err) {
+                    self.transitionState(ConnectionState.ERROR);
+
                     if (attempted < connectionAttempts) {
                       console.log("Connection error on attempt: " + attempted + err);
                       attempted += 1;
@@ -48053,6 +48100,7 @@ var Connector = /*#__PURE__*/function () {
                     }
                   });
                   self.chatSocket.on('connect_timeout', function (err) {
+                    self.transitionState(ConnectionState.ERROR);
                     console.log('Chat connection timeout');
                     reject(err);
                   });
@@ -48072,27 +48120,6 @@ var Connector = /*#__PURE__*/function () {
       }
 
       return establishConnection;
-    }()
-  }, {
-    key: "reconnect",
-    value: function () {
-      var _reconnect = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_4___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
-          while (1) {
-            switch (_context2.prev = _context2.next) {
-              case 0:
-              case "end":
-                return _context2.stop();
-            }
-          }
-        }, _callee2);
-      }));
-
-      function reconnect() {
-        return _reconnect.apply(this, arguments);
-      }
-
-      return reconnect;
     }()
   }, {
     key: "isConnected",
@@ -48120,6 +48147,13 @@ var Connector = /*#__PURE__*/function () {
 
   return Connector;
 }();
+var ConnectionState = {
+  DISCONNECTED: 1,
+  CONNECTED: 2,
+  CONNECTING: 3,
+  RECONNECTING: 4,
+  ERROR: 5
+};
 
 /***/ }),
 /* 186 */
@@ -48129,7 +48163,7 @@ var Connector = /*#__PURE__*/function () {
 /* WEBPACK VAR INJECTION */(function(setImmediate) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Lock; });
 /* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(31);
 /* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(14);
+/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(15);
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(4);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_2__);
@@ -48242,7 +48276,7 @@ var ArrivalHub = function ArrivalHub(connector) {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return DownloadAttachmentAgent; });
 /* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(31);
 /* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(14);
+/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(15);
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2__);
@@ -48633,7 +48667,7 @@ var TopicJoinAgent = /*#__PURE__*/function () {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return SendMessageAgent; });
 /* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(31);
 /* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(14);
+/* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(15);
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2__);
@@ -48641,7 +48675,7 @@ var TopicJoinAgent = /*#__PURE__*/function () {
 /* harmony import */ var core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(39);
 /* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(17);
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(18);
 /* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(29);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_6__);
@@ -50089,7 +50123,7 @@ exports[DATA_VIEW] = $DataView;
 /***/ (function(module, exports, __webpack_require__) {
 
 var dP = __webpack_require__(23);
-var anObject = __webpack_require__(15);
+var anObject = __webpack_require__(16);
 var getKeys = __webpack_require__(79);
 
 module.exports = __webpack_require__(24) ? Object.defineProperties : function defineProperties(O, Properties) {
@@ -50332,7 +50366,7 @@ module.exports = [].copyWithin || function copyWithin(target /* = 0 */, start /*
 "use strict";
 
 
-var anObject = __webpack_require__(15);
+var anObject = __webpack_require__(16);
 var toLength = __webpack_require__(19);
 var advanceStringIndex = __webpack_require__(106);
 var regExpExec = __webpack_require__(81);
@@ -50432,7 +50466,7 @@ module.exports = function (it) {
 "use strict";
 
 
-var anObject = __webpack_require__(15);
+var anObject = __webpack_require__(16);
 var sameValue = __webpack_require__(210);
 var regExpExec = __webpack_require__(81);
 
@@ -50597,7 +50631,7 @@ module.exports.f = function getOwnPropertyNames(it) {
 var ctx = __webpack_require__(44);
 var call = __webpack_require__(141);
 var isArrayIter = __webpack_require__(100);
-var anObject = __webpack_require__(15);
+var anObject = __webpack_require__(16);
 var toLength = __webpack_require__(19);
 var getIterFn = __webpack_require__(102);
 var BREAK = {};
@@ -50968,7 +51002,7 @@ $export($export.S, 'Object', {
 // all object keys, includes non-enumerable and symbols
 var gOPN = __webpack_require__(59);
 var gOPS = __webpack_require__(110);
-var anObject = __webpack_require__(15);
+var anObject = __webpack_require__(16);
 var Reflect = __webpack_require__(12).Reflect;
 module.exports = Reflect && Reflect.ownKeys || function ownKeys(it) {
   var keys = gOPN.f(anObject(it));
@@ -51788,7 +51822,7 @@ function _encodeWithByteBuffer(input, alphabet) {
   return output;
 }
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(16).Buffer))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(17).Buffer))
 
 /***/ }),
 /* 241 */
@@ -53099,7 +53133,7 @@ function M(o, a, b) {
   o[15] = t15;
 }
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(16).Buffer))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(17).Buffer))
 
 /***/ }),
 /* 244 */
@@ -60703,7 +60737,7 @@ WS.prototype.check = function () {
   return !!WebSocketImpl && !('__initialize' in WebSocketImpl && this.name === WS.prototype.name);
 };
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(16).Buffer))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(17).Buffer))
 
 /***/ }),
 /* 280 */
@@ -60903,7 +60937,7 @@ exports.createBlobReadStream = function(blob, options) {
   return new BlobReadStream(blob, options);
 };
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(16).Buffer))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(17).Buffer))
 
 /***/ }),
 /* 284 */
@@ -61197,7 +61231,7 @@ Socket.prototype.cleanup = function(id) {
 };
 
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(16).Buffer, __webpack_require__(32)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(17).Buffer, __webpack_require__(32)))
 
 /***/ }),
 /* 285 */
@@ -61386,7 +61420,7 @@ function config (name) {
 /***/ (function(module, exports, __webpack_require__) {
 
 /* eslint-disable node/no-deprecated-api */
-var buffer = __webpack_require__(16)
+var buffer = __webpack_require__(17)
 var Buffer = buffer.Buffer
 
 // alternative to using Object.keys for old browsers
@@ -62080,7 +62114,7 @@ BlobReadStream.prototype._onerror = function(e) {
 };
 
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(16).Buffer))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(17).Buffer))
 
 /***/ }),
 /* 301 */
@@ -62113,7 +62147,7 @@ if(false) {}
 
 exports = module.exports = __webpack_require__(62)(false);
 // Module
-exports.push([module.i, "button{margin:.8rem .8rem .8rem 0;padding:1rem;background-color:#242831;border:none;cursor:pointer;outline:none;font-size:1.6rem;color:#eee}button:hover{background-color:#0c0;transition:.2s}.arrow{border:solid #eee;border-width:0 .3rem .3rem 0;width:1.5rem;position:relative;height:1.5rem;padding:.3rem}.arrow::before,.arrow::after{content:'';position:absolute;width:3rem;height:3rem;cursor:poninter}.arrow.right{transform:rotate(-45deg);-webkit-transform:rotate(-45deg)}.arrow.right::before,.arrow.right::after{transform:rotate(45deg);-webkit-transform:rotate(45deg);left:-1rem;top:-1rem}.arrow.down{transform:rotate(45deg);-webkit-transform:rotate(45deg)}.arrow.down::before,.arrow.down::after{transform:rotate(-45deg);-webkit-transform:rotate(-45deg)}.arrow.up{transform:rotate(-135deg);-webkit-transform:rotate(-135deg)}.arrow.up::before,.arrow.up::after{transform:rotate(135deg);-webkit-transform:rotate(135deg)}.arrow.left{transform:rotate(135deg);-webkit-transform:rotate(135deg)}.arrow.left::before,.arrow.left::after{transform:rotate(-135deg);-webkit-transform:rotate(-135deg)}button{margin:.8rem .8rem .8rem 0;padding:1rem;background-color:#242831;border:none;cursor:pointer;outline:none;font-size:1.6rem;color:#eee}button:hover{background-color:#0c0;transition:.2s}*,*::before,*::after{padding:0;margin:0;box-sizing:border-box}html{font-size:62.5%;font-family:sans-serif}body{font-size:1.5rem;height:100vh;display:flex;flex-direction:column;background-color:#2f3440}main{flex:1}header{display:flex;flex-direction:row;justify-content:space-between;background-color:#1e1f26;color:#ccc}input{margin:1rem 0 1rem 0;height:4rem;font-size:1.9rem;padding:0.6rem;border-radius:0.5rem;border:0.1rem solid #b5b5b5;outline:none}textarea{border:0.1rem solid #b5b5b5;border-radius:0.5rem;outline:none;height:10rem;width:25rem;margin:1rem 0 1rem 0}h1{font-size:4rem}h3{font-size:2rem}select{outline:none;padding:.3rem}.heading{padding:2rem 0 1rem 0}.heading .heading__main{font-weight:100;color:whitesmoke;text-transform:uppercase;font-family:monospace;font-size:3.5rem}.online__heading-icon i.fa{margin-right:1.8rem;color:green}.right-align{display:block;text-align:right}.left-align{display:block;text-align:left}.form-border{padding:3rem;border:1px solid #b5b5b5;border-radius:.5rem}.flex-column{display:flex;flex-direction:column}#help-link{margin-right:.5rem}button{margin:.8rem .8rem .8rem 0;padding:1rem;background-color:#242831;border:none;cursor:pointer;outline:none;font-size:1.6rem;color:#eee}button:hover{background-color:#0c0;transition:.2s}.header-section-left{display:flex;flex-direction:row;align-items:center}.header-section-left img{height:4rem;width:4rem;margin:1rem}.header-section-left #active-title{margin-left:1rem}#menu-button{width:4rem;height:4rem;margin:1rem;background:transparent url(\"/img/menu.svg\") no-repeat 0 50%;background-size:100% 100%}#menu-button:hover{cursor:pointer;-webkit-filter:brightness(70%);filter:birghtness(70%);transition:.2s}.menu-on{-webkit-filter:brightness(70%);filter:birghtness(70%)}.header-section-middle{display:flex;flex-direction:column;align-items:center}.header-section-middle img{margin:1rem;width:4rem;height:4rem;-webkit-filter:brightness(70%);filter:birghtness(70%)}.header-section-middle img:hover{cursor:pointer;-webkit-filter:brightness(100%);filter:birghtness(100%);transition:.2s}@media (max-width: 760px){.header-section-middle{display:none}}.header-section-right{display:flex;flex-direction:row}.header-section-right img{-webkit-filter:brightness(70%);filter:birghtness(70%);width:4rem;height:4rem;margin:1rem}.header-section-right img:hover{cursor:pointer;-webkit-filter:brightness(100%);filter:birghtness(100%);transition:.2s}main{background-color:#2f3440}#main-container{height:calc(100vh - 6rem);width:100%;display:flex;flex-direction:row}.side-panel-container{display:flex;flex-direction:column;width:30%;max-width:40rem;height:100%;align-items:flex-start}@media (max-width: 760px){.side-panel-container{width:100%;max-width:100%}}.carousel-wrap{width:100%;display:flex;flex-direction:row;align-items:center;height:7rem}.carousel-wrap .btn-rotate{display:none;margin:0 2.5rem 0 2.5rem;transition:.2s}.carousel-wrap .btn-rotate:hover{border-color:#0c0;transition:.2s}.carousel-wrap .carousel{flex:1;flex-direction:column;text-align:-webkit-center;padding:1.5rem 1rem 1.5rem 0;color:#eee;font-size:2.5rem;font-weight:bold;border:none;outline:none;background-color:inherit;appearance:none;-webkit-appearance:none;-moz-appearance:none;-ms-appearance:none}.carousel-wrap .carousel:-ms-expand{display:none}.carousel-wrap .carousel option{background-color:#242831;border:none;font-size:1.7rem;outline:none}.carousel-wrap .spin-carousel{width:2.5rem;height:2.4rem;margin:1.5rem 1rem 1.5rem 1rem}.side-panel-wrapper{display:flex;flex-direction:column;flex:1;width:100%}.side-block-wrap{overflow:auto;flex:1}.side-panel-block{display:flex;flex-direction:column;height:100%}.side-block-data-list{list-style-type:none;display:flex;flex:1;flex-direction:column;list-style-type:initial;overflow:auto;scrollbar-color:#0c0 #2f3440;list-style-position:inside;align-items:center}.side-block-data-list::-webkit-scrollbar{width:.5rem;background-color:none}.side-block-data-list::-webkit-scrollbar-track{-webkit-box-shadow:none;background-color:none;border-radius:10px}.side-block-data-list::-webkit-scrollbar-thumb{border-radius:10px;background-color:none;background-image:-webkit-gradient(linear, 40% 0%, 75% 84%, from(#4D9C41), to(#19911D), color-stop(0.6, #54DE5D))}.side-panel-button-row{display:flex;flex-direction:row;width:90%;overflow:hidden;height:6rem;margin-left:1rem;margin-top:1rem}.side-block-data-list-item{flex-direction:column;border-bottom:1px solid #242831;padding:.5rem;display:flex;width:100%}.side-block-data-list-item:hover{background-color:#242831;cursor:pointer}.topic-assets{margin-left:2rem;width:calc(100% - 2rem)}.topic-asset-item-wrap{padding:.5rem}.invite-list-item{display:flex;flex-direction:row;padding:.5rem;color:#eee;list-style:none;overflow:hidden;text-overflow:ellipsis;padding:.5rem;border-bottom:1px solid #242831;cursor:pointer}.invite-list-item:hover{background-color:#242831}.invite-list-item .invite-icon{background:url(\"/img/invite-light.svg\");background-size:cover;width:2rem;height:2rem}.invite-list-item .invite-label{color:#eee;margin-left:1rem;flex:1}.participant-list-item{display:flex;flex-direction:row;padding:.5rem;color:#eee;list-style:none;overflow:hidden;text-overflow:ellipsis;padding:.5rem;border-bottom:1px solid #242831;cursor:pointer}.participant-list-item:hover{background-color:#242831}.participant-list-item .that-is-me{outline:2px red solid}.participant-list-item .participant-icon{background:url(\"/img/user-light.svg\");background-size:cover;width:2rem;height:2rem}.participant-list-item .participant-label{color:#eee;margin-left:1rem;flex:1}.active-asset{background-color:#135384}.active-asset:hover{background-color:#16619a}.topic-row-wrap{display:flex;flex-direction:row}.btn-expand-topic{width:2rem;height:2rem;background:url(\"/img/add-light.svg\");background-size:cover}.btn-collapse-topic{background:url(\"/img/minus-light.svg\");background-size:cover}.btn-top-row{width:100%;margin:0;padding-bottom:1rem;border-bottom:1px solid #242831}.btn-top{flex:1;margin:1rem;padding:0;background-color:#242831}.topic-name{font-size:1.8rem;margin-left:1.2rem;color:#eee;display:flex;flex:1}.unread-messages{font-weight:bold;display:flex;padding:.5rem;background-color:#0a0b0e;font-size:1.4rem;color:#eee;border-radius:40%;margin-right:1rem}.topic-in-focus{background-color:#385841}.topic-in-focus:hover{background-color:#42684d}.ctx-topic-buttons{display:flex;flex-direction:row;margin:2rem 1rem 1rem 1rem;flex-wrap:wrap}.ctx-topic-buttons button{flex:1}.bottom-section{height:40%}@media screen and (max-height: 800px){.bottom-section{display:none}}.connection-indicator-container{display:flex;flex-direction:row;flex-shrink:1;height:4rem;align-items:center;width:100%;padding:1rem}.connection-indicator-container .connection-indicator-label{font-size:1.3rem;color:#eee;font-weight:100;margin-left:1rem}.connection-indicator-container .connection-indicator{border-radius:50%;max-width:1rem;max-height:1rem;width:100%;height:100%}.connection-indicator-container .connected{background-color:green}.connection-indicator-container .dicsonnected{background-color:red}.connection-indicator-container .connecting{background-color:orange}.connection-indicator-container .unknown{background-color:grey}.version-wrapper{display:flex;flex-direction:row;background-color:#242831;align-items:center;padding:1rem;width:100%;border-right:1px solid #2f3440}.version-wrapper img{margin:0 1rem 0 1rem;width:3rem;height:3rem}.version-wrapper h3{color:#e1e1e1;font-size:1.4rem;font-weight:100}.manage-topics-view{color:#eee;display:flex;flex-direction:column;margin:4rem}@media (max-width: 760px){.manage-topics-view{margin:.5rem}}.manage-topics-list{color:#eee;margin:1rem 0 2rem 0}.manage-topics-list div{font-size:1.6rem;padding:1.3rem;border-bottom:1px solid #242831}.manage-topics-list div:hover{background-color:#242831;cursor:pointer}.manage-topics-list .selected{background-color:#385841}.manage-topics-list .selected:hover{background-color:#42684d;cursor:pointer}#new-message-container{max-height:50%;background-color:inherit;display:none;margin:2rem 2rem 1rem 0;flex-direction:row;justify-content:flex-end}.control-col{display:flex;flex-direction:column;margin-left:2rem}.private-label{display:none;flex-direction:row;justify-content:flex-end;color:#eee;margin:.5rem}.private-label img{width:2rem;height:2rem;margin-right:1rem}.private-label span{margin-right:1rem}.select-member-wrap{display:flex;flex-direction:row;justify-content:flex-end;border-bottom:none;margin:0;color:#eee}.select-member-wrap h4{margin:auto 1rem}.select-member-wrap select{color:#eee;background:#2f3440;padding:.8rem;min-width:37%;border:none;border-bottom:1px solid #242831;border-radius:.5rem .5rem 0 0;outline:none}.input-wrap{display:flex;flex-direction:row;width:100%;justify-content:flex-end;margin:0}.input-wrap #new-msg{width:100%;border-radius:.5rem 0 .5rem .5rem;height:3.5rem;margin:0 0 .5rem 0;resize:vertical;background-color:#2f3440;color:#eee;border:none}.input-wrap .button-column{display:flex;flex-direction:column;margin:0}.input-wrap .button-column img{cursor:pointer;border-radius:1rem;margin-right:2rem;width:3rem;height:3rem;transition:filter .2s ease}.input-wrap .button-column img:hover{filter:drop-shadow(1px 1px 2px #898c97)}.input-wrap .button-column .disabled{filter:grayscale(100%)}.new-msg-input{width:100%}.new-message-wrap{display:flex;flex-direction:column;align-items:flex-end}.new-message-wrap *{display:block;margin:1rem 0 1rem 0}.new-message-wrap #new-msg{background-color:#2f3440;min-width:60%;padding:1rem;border-radius:0.5rem;resize:vertical}.new-message-wrap .send-button-wrap{display:flex;flex-direction:row;align-items:center;margin:0}.new-message-wrap .send-button-wrap .hint-wrap{display:flex;flex-direction:column;align-items:flex-end}.new-message-wrap .send-button-wrap .hint-wrap .send-new-message-hint{margin:0 1.5rem 0 1.5rem;color:#9da3ad;font-size:1.2rem;font-style:italic}.btn-send{border:none;margin:0;outline:none;background-color:#2f3440;color:#eee;font-size:1.8rem;padding:.8rem;transition:.2s}.btn-send:hover{background-color:#0c0;transition:.2s}.attach-file-wrap{height:5rem;display:flex;flex-direction:row;justify-content:flex-end;align-items:center;align-self:flex-end;width:60%;min-width:10rem;padding:1rem;border-radius:0.5rem}.new-msg-buttons{width:7rem}.new-msg-buttons label{align-self:center;margin-top:1.5rem;width:4rem;height:4rem;display:flex}#chosen-files{margin-right:1.7rem;display:flex;flex-direction:row}#chosen-files .chosen-file-wrap{background-color:#3a404f;padding:.2rem;border-radius:.5rem;height:inherit;display:flex;align-items:center;font-size:1.6rem;font-weight:bolder;color:#e1e1e1}#chosen-files .chosen-file-wrap img{height:20px;width:20px}#chosen-files .chosen-file-wrap img:hover{filter:drop-shadow(1px 1px 2px #fff)}.inputfile{width:0.1px;height:0.1px;opacity:0;overflow:hidden;position:absolute;z-index:-1}.inputfile+label{display:flex;flex-direction:row}.inputfile+label img{border-radius:1rem;cursor:pointer;width:32px;height:32px;transition:filter .2s ease}.inputfile+label img:hover{filter:drop-shadow(1px 1px 2px #000)}.new-msg-buttons{width:7rem}.new-msg-buttons label{align-self:center;margin-top:1.5rem;width:4rem;height:4rem;display:flex}.form-outer-wrapper{display:block;margin:10% auto;color:#eee}.form-outer-wrapper .form-border{background-color:#111113;border:none;display:flex;flex-direction:column;align-items:flex-start}.form-outer-wrapper .form-border p{margin:1rem 0 1rem 0}.form-input{background-color:#2f3440;color:#eee;border:none;outline:none}.form-button{border-radius:.4rem;background-color:#2f3440;color:#eee;border:none;outline:none;padding:1rem;font-size:1.8rem}.form-button:hover{background-color:#0c0;transition:.2s}.main-panel-container{background-color:#242831;width:70%;height:100%;display:flex;flex-direction:column;flex:1}.main-panel-container .messages-panel-container{width:100%;display:flex;flex:1;background-color:inherit;border-bottom:2px solid #2f3440;overflow-x:hidden;overflow-y:auto;flex-grow:1;border-radius:1rem;padding:1rem 2rem 1rem 2rem;resize:none;height:100%}.messages-window{width:100%;display:flex;flex-direction:column}.message{display:flex;flex-shrink:0;flex-direction:column;width:70%;margin:0.5rem;padding:.3rem;color:#e2e2e2;height:auto;align-self:flex-start}.my_message{display:flex;flex-shrink:0;flex-direction:column;width:70%;margin:0.5rem;padding:.3rem;color:#e2e2e2;height:auto;color:#5bde25}.service-record{display:flex;flex-shrink:0;flex-direction:column;width:70%;margin:0.5rem;padding:.3rem;color:#e2e2e2;height:auto;width:100%;text-align:left;font-size:1.2rem;color:#4c4c4c}.service-record .msg-body{text-align:left}.ephemeral-msg{display:flex;flex-shrink:0;flex-direction:column;width:70%;margin:0.5rem;padding:.3rem;color:#e2e2e2;height:auto;width:100%;text-align:left;font-size:1.2rem;color:#8a8a8a}.ephemeral-msg .msg-body{text-align:left}.private-message{border:.3rem solid #b0afca}.private-mark{font-style:italic;margin:0 .5rem 0 .5rem}.msg-time-stamp{font-style:italic;font-size:1rem;margin:0 .5rem 0 .5rem}.msg-body{height:auto;overflow-wrap:break-word}.m-author-id{display:none}.m-recipient-id{display:none}.message-id{display:none}.attach-file-wrap{height:5rem;display:flex;flex-direction:row;justify-content:flex-end;align-items:center;align-self:flex-end;width:60%;min-width:10rem;padding:1rem;border-radius:0.5rem}.msg-attachments{display:flex;margin-top:.8rem;align-self:flex-start}.att-view{cursor:pointer;margin:1rem}.att-view .att-state{display:none}.att-view .att-state .spinner{width:1.7rem;margin-right:.3rem;display:flex}.att-view .att-name{font-weight:bold;color:#003d77;font-size:1.6rem;margin-right:.4rem}.att-view .att-size{font-size:1.1rem}.att-view .att-icon{width:1.4rem;height:1.4rem}.att-info{display:none}.password-warning-wrap{pagging:2rem 0 2rem 0;display:flex;flex-direction:row;width:26rem}.password-warning-wrap img{height:1.7rem;width:2rem}.password-warning-wrap div{margin-left:1rem;display:flex;flex-direction:column}.password-warning-wrap div p{margin:.5rem 0 1rem 0;color:#777}\n", ""]);
+exports.push([module.i, "button{margin:.8rem .8rem .8rem 0;padding:1rem;background-color:#242831;border:none;cursor:pointer;outline:none;font-size:1.6rem;color:#eee}button:hover{background-color:#0c0;transition:.2s}.arrow{border:solid #eee;border-width:0 .3rem .3rem 0;width:1.5rem;position:relative;height:1.5rem;padding:.3rem}.arrow::before,.arrow::after{content:'';position:absolute;width:3rem;height:3rem;cursor:poninter}.arrow.right{transform:rotate(-45deg);-webkit-transform:rotate(-45deg)}.arrow.right::before,.arrow.right::after{transform:rotate(45deg);-webkit-transform:rotate(45deg);left:-1rem;top:-1rem}.arrow.down{transform:rotate(45deg);-webkit-transform:rotate(45deg)}.arrow.down::before,.arrow.down::after{transform:rotate(-45deg);-webkit-transform:rotate(-45deg)}.arrow.up{transform:rotate(-135deg);-webkit-transform:rotate(-135deg)}.arrow.up::before,.arrow.up::after{transform:rotate(135deg);-webkit-transform:rotate(135deg)}.arrow.left{transform:rotate(135deg);-webkit-transform:rotate(135deg)}.arrow.left::before,.arrow.left::after{transform:rotate(-135deg);-webkit-transform:rotate(-135deg)}button{margin:.8rem .8rem .8rem 0;padding:1rem;background-color:#242831;border:none;cursor:pointer;outline:none;font-size:1.6rem;color:#eee}button:hover{background-color:#0c0;transition:.2s}*,*::before,*::after{padding:0;margin:0;box-sizing:border-box}html{font-size:62.5%;font-family:sans-serif}body{font-size:1.5rem;height:100vh;display:flex;flex-direction:column;background-color:#2f3440}main{flex:1}header{display:flex;flex-direction:row;justify-content:space-between;background-color:#1e1f26;color:#ccc}input{margin:1rem 0 1rem 0;height:4rem;font-size:1.9rem;padding:0.6rem;border-radius:0.5rem;border:0.1rem solid #b5b5b5;outline:none}textarea{border:0.1rem solid #b5b5b5;border-radius:0.5rem;outline:none;height:10rem;width:25rem;margin:1rem 0 1rem 0}h1{font-size:4rem}h3{font-size:2rem}select{outline:none;padding:.3rem}.heading{padding:2rem 0 1rem 0}.heading .heading__main{font-weight:100;color:whitesmoke;text-transform:uppercase;font-family:monospace;font-size:3.5rem}.online__heading-icon i.fa{margin-right:1.8rem;color:green}.right-align{display:block;text-align:right}.left-align{display:block;text-align:left}.form-border{padding:3rem;border:1px solid #b5b5b5;border-radius:.5rem}.flex-column{display:flex;flex-direction:column}#help-link{margin-right:.5rem}button{margin:.8rem .8rem .8rem 0;padding:1rem;background-color:#242831;border:none;cursor:pointer;outline:none;font-size:1.6rem;color:#eee}button:hover{background-color:#0c0;transition:.2s}.header-section-left{display:flex;flex-direction:row;align-items:center}.header-section-left img{height:4rem;width:4rem;margin:1rem}.header-section-left #active-title{margin-left:1rem}#menu-button{width:4rem;height:4rem;margin:1rem;background:transparent url(\"/img/menu.svg\") no-repeat 0 50%;background-size:100% 100%}#menu-button:hover{cursor:pointer;-webkit-filter:brightness(70%);filter:birghtness(70%);transition:.2s}.menu-on{-webkit-filter:brightness(70%);filter:birghtness(70%)}.header-section-middle{display:flex;flex-direction:column;align-items:center}.header-section-middle img{margin:1rem;width:4rem;height:4rem;-webkit-filter:brightness(70%);filter:birghtness(70%)}.header-section-middle img:hover{cursor:pointer;-webkit-filter:brightness(100%);filter:birghtness(100%);transition:.2s}@media (max-width: 760px){.header-section-middle{display:none}}.header-section-right{display:flex;flex-direction:row}.header-section-right img{-webkit-filter:brightness(70%);filter:birghtness(70%);width:4rem;height:4rem;margin:1rem}.header-section-right img:hover{cursor:pointer;-webkit-filter:brightness(100%);filter:birghtness(100%);transition:.2s}main{background-color:#2f3440}#main-container{height:calc(100vh - 6rem);width:100%;display:flex;flex-direction:row}.side-panel-container{display:flex;flex-direction:column;width:30%;max-width:40rem;height:100%;align-items:flex-start}@media (max-width: 760px){.side-panel-container{width:100%;max-width:100%}}.carousel-wrap{width:100%;display:flex;flex-direction:row;align-items:center;height:7rem}.carousel-wrap .btn-rotate{display:none;margin:0 2.5rem 0 2.5rem;transition:.2s}.carousel-wrap .btn-rotate:hover{border-color:#0c0;transition:.2s}.carousel-wrap .carousel{flex:1;flex-direction:column;text-align:-webkit-center;padding:1.5rem 1rem 1.5rem 0;color:#eee;font-size:2.5rem;font-weight:bold;border:none;outline:none;background-color:inherit;appearance:none;-webkit-appearance:none;-moz-appearance:none;-ms-appearance:none}.carousel-wrap .carousel:-ms-expand{display:none}.carousel-wrap .carousel option{background-color:#242831;border:none;font-size:1.7rem;outline:none}.carousel-wrap .spin-carousel{width:2.5rem;height:2.4rem;margin:1.5rem 1rem 1.5rem 1rem}.side-panel-wrapper{display:flex;flex-direction:column;flex:1;width:100%}.side-block-wrap{overflow:auto;flex:1}.side-panel-block{display:flex;flex-direction:column;height:100%}.side-block-data-list{list-style-type:none;display:flex;flex:1;flex-direction:column;list-style-type:initial;overflow:auto;scrollbar-color:#0c0 #2f3440;list-style-position:inside;align-items:center}.side-block-data-list::-webkit-scrollbar{width:.5rem;background-color:none}.side-block-data-list::-webkit-scrollbar-track{-webkit-box-shadow:none;background-color:none;border-radius:10px}.side-block-data-list::-webkit-scrollbar-thumb{border-radius:10px;background-color:none;background-image:-webkit-gradient(linear, 40% 0%, 75% 84%, from(#4D9C41), to(#19911D), color-stop(0.6, #54DE5D))}.side-panel-button-row{display:flex;flex-direction:row;width:90%;overflow:hidden;height:6rem;margin-left:1rem;margin-top:1rem}.side-block-data-list-item{flex-direction:column;border-bottom:1px solid #242831;padding:.5rem;display:flex;width:100%}.side-block-data-list-item:hover{background-color:#242831;cursor:pointer}.topic-assets{margin-left:2rem;width:calc(100% - 2rem)}.topic-asset-item-wrap{padding:.5rem}.invite-list-item{display:flex;flex-direction:row;padding:.5rem;color:#eee;list-style:none;overflow:hidden;text-overflow:ellipsis;padding:.5rem;border-bottom:1px solid #242831;cursor:pointer}.invite-list-item:hover{background-color:#242831}.invite-list-item .invite-icon{background:url(\"/img/invite-light.svg\");background-size:cover;width:2rem;height:2rem}.invite-list-item .invite-label{color:#eee;margin-left:1rem;flex:1}.participant-list-item{display:flex;flex-direction:row;padding:.5rem;color:#eee;list-style:none;overflow:hidden;text-overflow:ellipsis;padding:.5rem;border-bottom:1px solid #242831;cursor:pointer}.participant-list-item:hover{background-color:#242831}.participant-list-item .that-is-me{outline:2px red solid}.participant-list-item .participant-icon{background:url(\"/img/user-light.svg\");background-size:cover;width:2rem;height:2rem}.participant-list-item .participant-label{color:#eee;margin-left:1rem;flex:1}.active-asset{background-color:#135384}.active-asset:hover{background-color:#16619a}.topic-row-wrap{display:flex;flex-direction:row}.btn-expand-topic{width:2rem;height:2rem;background:url(\"/img/add-light.svg\");background-size:cover}.btn-collapse-topic{background:url(\"/img/minus-light.svg\");background-size:cover}.btn-top-row{width:100%;margin:0;padding-bottom:1rem;border-bottom:1px solid #242831}.btn-top{flex:1;margin:1rem;padding:0;background-color:#242831}.topic-name{font-size:1.8rem;margin-left:1.2rem;color:#eee;display:flex;flex:1}.unread-messages{font-weight:bold;display:flex;padding:.5rem;background-color:#0a0b0e;font-size:1.4rem;color:#eee;border-radius:40%;margin-right:1rem}.topic-in-focus{background-color:#385841}.topic-in-focus:hover{background-color:#42684d}.ctx-topic-buttons{display:flex;flex-direction:row;margin:2rem 1rem 1rem 1rem;flex-wrap:wrap}.ctx-topic-buttons button{flex:1}.bottom-section{height:40%}@media screen and (max-height: 800px){.bottom-section{display:none}}.connection-indicator-container{display:flex;flex-direction:row;flex-shrink:1;height:4rem;align-items:center;width:100%;margin:1rem}.connection-indicator-container .connection-indicator-label-wrap{display:flex;flex-direction:row}.connection-indicator-container .connection-indicator-label-wrap .connection-indicator-label{font-size:1.3rem;color:#eee;font-weight:100;margin:0 1rem;align-items:center}@media screen and (max-width: 400px){.connection-indicator-container .connection-indicator-label-wrap .connection-indicator-label{display:none}}.connection-indicator-container .connection-indicator-label-wrap .reconnect-spinner{width:2rem;height:2rem;display:none}.connection-indicator-container .connection-indicator-label-wrap .reconnect-button{width:10rem;height:2rem;text-align:center;background-color:#ccc;color:#000;display:none}.connection-indicator-container .connection-indicator-label-wrap .reconnect-button:hover{background-color:#999}.connection-indicator-container .connection-indicator{border-radius:50%;max-width:1rem;max-height:1rem;width:100%;height:100%}.connection-indicator-container .connected{background-color:green}.connection-indicator-container .dicsonnected{background-color:red}.connection-indicator-container .connecting{background-color:orange}.connection-indicator-container .unknown{background-color:grey}.version-wrapper{display:flex;flex-direction:row;background-color:#242831;align-items:center;padding:1rem;width:100%;border-right:1px solid #2f3440}.version-wrapper img{margin:0 1rem 0 1rem;width:3rem;height:3rem}.version-wrapper h3{color:#e1e1e1;font-size:1.4rem;font-weight:100}.manage-topics-view{color:#eee;display:flex;flex-direction:column;margin:4rem}@media (max-width: 760px){.manage-topics-view{margin:.5rem}}.manage-topics-list{color:#eee;margin:1rem 0 2rem 0}.manage-topics-list div{font-size:1.6rem;padding:1.3rem;border-bottom:1px solid #242831}.manage-topics-list div:hover{background-color:#242831;cursor:pointer}.manage-topics-list .selected{background-color:#385841}.manage-topics-list .selected:hover{background-color:#42684d;cursor:pointer}#new-message-container{max-height:50%;background-color:inherit;display:none;margin:2rem 2rem 1rem 0;flex-direction:row;justify-content:flex-end}.control-col{display:flex;flex-direction:column;margin-left:2rem}.private-label{display:none;flex-direction:row;justify-content:flex-end;color:#eee;margin:.5rem}.private-label img{width:2rem;height:2rem;margin-right:1rem}.private-label span{margin-right:1rem}.select-member-wrap{display:flex;flex-direction:row;justify-content:flex-end;border-bottom:none;margin:0;color:#eee}.select-member-wrap h4{margin:auto 1rem}.select-member-wrap select{color:#eee;background:#2f3440;padding:.8rem;min-width:37%;border:none;border-bottom:1px solid #242831;border-radius:.5rem .5rem 0 0;outline:none}.input-wrap{display:flex;flex-direction:row;width:100%;justify-content:flex-end;margin:0}.input-wrap #new-msg{width:100%;border-radius:.5rem 0 .5rem .5rem;height:3.5rem;margin:0 0 .5rem 0;resize:vertical;background-color:#2f3440;color:#eee;border:none}.input-wrap .button-column{display:flex;flex-direction:column;margin:0}.input-wrap .button-column img{cursor:pointer;border-radius:1rem;margin-right:2rem;width:3rem;height:3rem;transition:filter .2s ease}.input-wrap .button-column img:hover{filter:drop-shadow(1px 1px 2px #898c97)}.input-wrap .button-column .disabled{filter:grayscale(100%)}.new-msg-input{width:100%}.new-message-wrap{display:flex;flex-direction:column;align-items:flex-end}.new-message-wrap *{display:block;margin:1rem 0 1rem 0}.new-message-wrap #new-msg{background-color:#2f3440;min-width:60%;padding:1rem;border-radius:0.5rem;resize:vertical}.new-message-wrap .send-button-wrap{display:flex;flex-direction:row;align-items:center;margin:0}.new-message-wrap .send-button-wrap .hint-wrap{display:flex;flex-direction:column;align-items:flex-end}.new-message-wrap .send-button-wrap .hint-wrap .send-new-message-hint{margin:0 1.5rem 0 1.5rem;color:#9da3ad;font-size:1.2rem;font-style:italic}.btn-send{border:none;margin:0;outline:none;background-color:#2f3440;color:#eee;font-size:1.8rem;padding:.8rem;transition:.2s}.btn-send:hover{background-color:#0c0;transition:.2s}.attach-file-wrap{height:5rem;display:flex;flex-direction:row;justify-content:flex-end;align-items:center;align-self:flex-end;width:60%;min-width:10rem;padding:1rem;border-radius:0.5rem}.new-msg-buttons{width:7rem}.new-msg-buttons label{align-self:center;margin-top:1.5rem;width:4rem;height:4rem;display:flex}#chosen-files{margin-right:1.7rem;display:flex;flex-direction:row}#chosen-files .chosen-file-wrap{background-color:#3a404f;padding:.2rem;border-radius:.5rem;height:inherit;display:flex;align-items:center;font-size:1.6rem;font-weight:bolder;color:#e1e1e1}#chosen-files .chosen-file-wrap img{height:20px;width:20px}#chosen-files .chosen-file-wrap img:hover{filter:drop-shadow(1px 1px 2px #fff)}.inputfile{width:0.1px;height:0.1px;opacity:0;overflow:hidden;position:absolute;z-index:-1}.inputfile+label{display:flex;flex-direction:row}.inputfile+label img{border-radius:1rem;cursor:pointer;width:32px;height:32px;transition:filter .2s ease}.inputfile+label img:hover{filter:drop-shadow(1px 1px 2px #000)}.new-msg-buttons{width:7rem}.new-msg-buttons label{align-self:center;margin-top:1.5rem;width:4rem;height:4rem;display:flex}.form-outer-wrapper{display:block;margin:10% auto;color:#eee}.form-outer-wrapper .form-border{background-color:#111113;border:none;display:flex;flex-direction:column;align-items:flex-start}.form-outer-wrapper .form-border p{margin:1rem 0 1rem 0}.form-input{background-color:#2f3440;color:#eee;border:none;outline:none}.form-button{border-radius:.4rem;background-color:#2f3440;color:#eee;border:none;outline:none;padding:1rem;font-size:1.8rem}.form-button:hover{background-color:#0c0;transition:.2s}.main-panel-container{background-color:#242831;width:70%;height:100%;display:flex;flex-direction:column;flex:1}.main-panel-container .messages-panel-container{width:100%;display:flex;flex:1;background-color:inherit;border-bottom:2px solid #2f3440;overflow-x:hidden;overflow-y:auto;flex-grow:1;border-radius:1rem;padding:1rem 2rem 1rem 2rem;resize:none;height:100%}.messages-window{width:100%;display:flex;flex-direction:column}.message{display:flex;flex-shrink:0;flex-direction:column;width:70%;margin:0.5rem;padding:.3rem;color:#e2e2e2;height:auto;align-self:flex-start}.my_message{display:flex;flex-shrink:0;flex-direction:column;width:70%;margin:0.5rem;padding:.3rem;color:#e2e2e2;height:auto;color:#5bde25}.service-record{display:flex;flex-shrink:0;flex-direction:column;width:70%;margin:0.5rem;padding:.3rem;color:#e2e2e2;height:auto;width:100%;text-align:left;font-size:1.2rem;color:#4c4c4c}.service-record .msg-body{text-align:left}.ephemeral-msg{display:flex;flex-shrink:0;flex-direction:column;width:70%;margin:0.5rem;padding:.3rem;color:#e2e2e2;height:auto;width:100%;text-align:left;font-size:1.2rem;color:#8a8a8a}.ephemeral-msg .msg-body{text-align:left}.private-message{border:.3rem solid #b0afca}.private-mark{font-style:italic;margin:0 .5rem 0 .5rem}.msg-time-stamp{font-style:italic;font-size:1rem;margin:0 .5rem 0 .5rem}.msg-body{height:auto;overflow-wrap:break-word}.m-author-id{display:none}.m-recipient-id{display:none}.message-id{display:none}.attach-file-wrap{height:5rem;display:flex;flex-direction:row;justify-content:flex-end;align-items:center;align-self:flex-end;width:60%;min-width:10rem;padding:1rem;border-radius:0.5rem}.msg-attachments{display:flex;margin-top:.8rem;align-self:flex-start}.att-view{cursor:pointer;margin:1rem}.att-view .att-state{display:none}.att-view .att-state .spinner{width:1.7rem;margin-right:.3rem;display:flex}.att-view .att-name{font-weight:bold;color:#003d77;font-size:1.6rem;margin-right:.4rem}.att-view .att-size{font-size:1.1rem}.att-view .att-icon{width:1.4rem;height:1.4rem}.att-info{display:none}.password-warning-wrap{pagging:2rem 0 2rem 0;display:flex;flex-direction:row;width:26rem}.password-warning-wrap img{height:1.7rem;width:2rem}.password-warning-wrap div{margin-left:1rem;display:flex;flex-direction:column}.password-warning-wrap div p{margin:.5rem 0 1rem 0;color:#777}\n", ""]);
 
 
 
@@ -62228,13 +62262,13 @@ var es7_symbol_async_iterator = __webpack_require__(38);
 var es6_symbol = __webpack_require__(39);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/web.dom.iterable.js
-var web_dom_iterable = __webpack_require__(17);
+var web_dom_iterable = __webpack_require__(18);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.promise.js
 var es6_promise = __webpack_require__(31);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.object.to-string.js
-var es6_object_to_string = __webpack_require__(14);
+var es6_object_to_string = __webpack_require__(15);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es7.promise.finally.js
 var es7_promise_finally = __webpack_require__(220);
@@ -63082,10 +63116,22 @@ function bakeHeaderLeftSection(menuClickHandler) {
       children: [bake("div", {
         id: "connection-indicator",
         class: ["connection-indicator", "unknown"]
-      }), bake("h6", {
-        id: "connection-indicator-label",
-        class: "connection-indicator-label",
-        text: "Connection status unknown"
+      }), bake("div", {
+        id: "connection-indicator-label-wrap",
+        class: "connection-indicator-label-wrap",
+        children: [bake("h6", {
+          id: "connection-indicator-label",
+          class: "connection-indicator-label",
+          text: "Connection status unknown"
+        }), bake("img", {
+          src: "/img/spinner.gif",
+          id: 'reconnect-spinner',
+          class: 'reconnect-spinner'
+        }), bake("div", {
+          text: "Reconnect",
+          id: "reconnect-button",
+          class: "reconnect-button"
+        })]
       })]
     })]
   });
@@ -63560,7 +63606,7 @@ var chat = __webpack_require__(301);
 var loading = __webpack_require__(303);
 
 // EXTERNAL MODULE: ./node_modules/cute-set/index.js
-var cute_set = __webpack_require__(18);
+var cute_set = __webpack_require__(14);
 
 // EXTERNAL MODULE: ./client/src/js/lib/Vault.js + 1 modules
 var Vault = __webpack_require__(72);
@@ -63601,6 +63647,7 @@ var ChatUtility = __webpack_require__(7);
 
 var SMALL_WIDTH = 760; // Width screen in pixels considered to be small
 
+var XSMALL_WIDTH = 400;
 var DAYSOFWEEK = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 var colors = ["#cfeeff", "#ffebcc", "#ccffd4", "#ccfffb", "#e6e6ff", "#f8e6ff", "#ffe6f1", "#ccefff", "#ccf1ff"]; // ---------------------------------------------------------------------------------------------------------------------------
 // Visual Sections and modal forms
@@ -63636,7 +63683,8 @@ window.getTopicInFocus = function () {
 
 var activeTopics; //Counters for unread messages
 
-var unreadCounters = {}; // ---------------------------------------------------------------------------------------------------------------------------
+var unreadCounters = {};
+var UIInitialized = false; // ---------------------------------------------------------------------------------------------------------------------------
 // TEST ONLY!
 // Comment out for production!
 
@@ -63644,7 +63692,9 @@ window.util = dom_util_namespaceObject;
 window.toastr = lib_toastr;
 window.chat = chat_ui_chat;
 window.spinner = spinner;
-window.chatutil = ChatUtility["a" /* ChatUtility */]; // ---------------------------------------------------------------------------------------------------------------------------
+window.chatutil = ChatUtility["a" /* ChatUtility */];
+window.statusConn = processConnectionStatusChanged; // --------------------------------------------------------------------------------------------------------------------------- 
+// 
 // ~END TEST
 
 document.addEventListener('DOMContentLoaded', function (event) {
@@ -63735,6 +63785,7 @@ function initUI() {
 
   $("#remove-private").addEventListener("click", removePrivate);
   $("#messages-panel-container").onscroll = processChatScroll;
+  UIInitialized = true;
 }
 
 function setupHotkeysHandlers() {
@@ -63800,6 +63851,7 @@ function renderLayout() {
   var isSidePanelOn = hasClass("#menu-button", "menu-on");
   var sidePanel = $(".side-panel-container");
   var messagesPanel = $(".main-panel-container");
+  var connectionIndicatorLabel = $("#connection-indicator-label");
 
   if (isSidePanelOn) {
     if (window.innerWidth <= SMALL_WIDTH) {
@@ -63812,9 +63864,11 @@ function renderLayout() {
   } else {
     hide(sidePanel);
     flex(messagesPanel);
-  } //messagesPanel.appendChild(util.bake("div", {
-  //    html: `width ${window.innerWidth}`
-  //}))
+  } ///////////////////////////////////////////////
+  // window.innerWidth <= XSMALL_WIDTH ?       //
+  //     util.hide(connectionIndicatorLabel) : //
+  //     util.flex(connectionIndicatorLabel)   //
+  ///////////////////////////////////////////////
 
 } // ---------------------------------------------------------------------------------------------------------------------------
 //
@@ -64222,6 +64276,7 @@ function processLoginResult(err) {
     lib_toastr.warning("Login error: ".concat(err.message));
   } else {
     initUI();
+    processConnectionStatusChanged(chat_ui_chat.getConnectionState());
     appendEphemeralMessage("Login successful. Loading data..."); //playSound("user_online");
   }
 
@@ -65071,6 +65126,7 @@ function initChat() {
   chat_ui_chat.on(Events["Events"].SETTINGS_UPDATED, function (pkfp) {
     console.log("Settings updated event from chat");
   });
+  chat_ui_chat.on(Events["Events"].CONNECTION_STATUS_CHANGED, processConnectionStatusChanged);
   chat_ui_chat.on(Events["Events"].NEW_CHAT_MESSAGE, function (message, topicPkfp) {
     console.log("New incoming chat message received for ".concat(topicPkfp));
 
@@ -65168,6 +65224,53 @@ function resetUnreadCounter(pkfp) {
   console.log("Resetting unread messages counter");
   unreadCounters[pkfp] = 0;
   setUnreadMessagesIndicator(pkfp, unreadCounters[pkfp]);
+}
+
+function processConnectionStatusChanged(state) {
+  if (!state || state < 1 || state > 5) {
+    throw new Error("Invaled  connection state: ".concat(state));
+  }
+
+  if (!UIInitialized) return;
+  var indicator = $("#connection-indicator");
+  var label = $("#connection-indicator-label");
+  var reconnectButton = $("#reconnect-button");
+  var reconnectSpinner = $("#reconnect-spinner");
+  var indicatorClasses = ["unknown", "connected", "dicsonnected", "connecting"];
+
+  var disconnected = function disconnected() {
+    label.innerText = "Island disconnected...";
+    addClass(indicator, "dicsonnected");
+    hide(reconnectButton);
+    hide(reconnectSpinner);
+  };
+
+  var connected = function connected() {
+    label.innerText = "Connected to island";
+    addClass(indicator, "connected");
+    hide(reconnectButton);
+    hide(reconnectSpinner);
+  };
+
+  var connecting = function connecting() {
+    label.innerText = "Connecting...";
+    addClass(indicator, "connecting");
+    hide(reconnectButton);
+    flex(reconnectSpinner);
+  };
+
+  for (var _i4 = 0, _indicatorClasses = indicatorClasses; _i4 < _indicatorClasses.length; _i4++) {
+    var c = _indicatorClasses[_i4];
+    removeClass(indicator, c);
+  }
+
+  if (state === 1 || state === 5) {
+    disconnected();
+  } else if (state === 2) {
+    connected();
+  } else {
+    connecting();
+  }
 }
 
 function setUnreadMessagesIndicator(pkfp, num) {
