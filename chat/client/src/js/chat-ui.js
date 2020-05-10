@@ -1491,11 +1491,18 @@ function processConnectionStatusChanged(state){
     let label = util.$("#connection-indicator-label");
     let reconnectButton = util.$("#reconnect-button");
     let reconnectSpinner = util.$("#reconnect-spinner");
-    let indicatorClasses = ["unknown", "connected", "dicsonnected", "connecting"];
+    let indicatorClasses = ["unknown", "connected", "error",  "dicsonnected", "connecting"];
 
     const disconnected = ()=>{
         label.innerText = "Island disconnected..."
         util.addClass(indicator,"dicsonnected");
+        util.hide(reconnectButton)
+        util.hide(reconnectSpinner)
+    }
+
+    const error = ()=>{
+        label.innerText = "Island disconnected..."
+        util.addClass(indicator,"error");
         util.hide(reconnectButton)
         util.hide(reconnectSpinner)
 
@@ -1519,8 +1526,10 @@ function processConnectionStatusChanged(state){
         util.removeClass(indicator, c);
     }
 
-    if(state === 1 || state === 5){
+    if(state === 1 ){
         disconnected()
+    } else if(state === 5){
+        error();
     } else if(state === 2){
         connected()
     } else {

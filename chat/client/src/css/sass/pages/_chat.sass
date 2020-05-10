@@ -337,13 +337,12 @@ main
     display: flex
     flex-direction: row
     .connection-indicator-label
+      display: flex
       font-size: 1.3rem
       color: $text-color
       font-weight: 100
       margin: 0 1rem
       align-items: center
-      @media screen and (max-width: 400px)
-        display: none
     .reconnect-spinner
       width: 2rem
       height: 2rem
@@ -368,9 +367,11 @@ main
   .connected
     background-color: green
   .dicsonnected
+    background-color: orange
+  .error
     background-color: red
   .connecting
-    background-color: orange
+    background-color: #b2f2ff
   .unknown
     background-color: grey
 
