@@ -2,6 +2,7 @@
 @import "../abstracts/mixins"
 @import "../abstracts/chat_var"
 
+
 // header
 .header-section-left
   display: flex
@@ -15,7 +16,17 @@
   #active-title
     margin-left: 1rem
 
+//scrollbar
+::-webkit-scrollbar
+  width: 8px
+  margin: 2px
 
+::-webkit-scrollbar-track
+  background: none
+
+::-webkit-scrollbar-thumb
+  background-color: green
+  border-radius: 1rem
 
 #menu-button
     width: 4rem

@@ -9,7 +9,7 @@ const ServiceMessage = require("../objects/ServiceMessage.js");
 const Metadata = require("../objects/Metadata.js");
 const Logger = require("../libs/Logger.js");
 const Coordinator = require("../assistants/AssistantCoordinator.js");
-const { Internal } = require("../../../common/Events.js")
+const { Internal, Events } = require("../../../common/Events.js")
 const assert = require("../libs/assert");
 
 class ServiceAssistant{
@@ -178,17 +178,18 @@ class ServiceAssistant{
         let response = Message.makeResponse(request, "island", Internal.SERVICE_RECORD);
         response.setAttribute("serviceRecord", msg);
         self.sessionManager.broadcastMessage(request.headers.pkfpSource, response);
+
     }
 
 
     async processInviteRequestSuccess(envelope, self){
         let request = envelope.payload;
-        let msg = await self.createSaveServiceRecord(request.headers.pkfpSource, request.headers.command, "Invite created successfully. Code: " + request.body.inviteCode);
+        let msg = await self.createSaveServiceRecord(request.headers.pkfpDest, request.headers.command, "Invite created successfully. Double-click on side panel to copy code to the clipboard" );
         let note = new Message()
-        note.setHeader("pkfpDest", pkfp);
+        note.setHeader("pkfpDest", request.headers.pkfpDest);
         note.setHeader("command", Internal.SERVICE_RECORD);
         note.setAttribute("serviceRecord", msg);
-        self.sessionManager.broadcastMessage(request.headers.pkfpSource, note);
+        self.sessionManager.broadcastMessage(request.headers.pkfpDest, note);
     }
 
     async processInviteRequestReturn(envelope, self){
@@ -456,6 +457,10 @@ class ServiceAssistant{
 
         Coordinator.on("send_metadata_outdated_note", async (data)=>{
             await self.sendMetadataOutdatedNote(data, self);
+        });
+
+        Coordinator.on(Events.INVITE_CREATED, async (envelope)=>{
+            await this.processInviteRequestSuccess(envelope, self);
         });
 
         Coordinator.on("invite_request_timeout", async (envelope)=>{

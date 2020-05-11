@@ -127,6 +127,7 @@ class InviteAssistant{
         } else {
             Logger.warn(`Invite request successful, but no active session found for ${response.headers.pkfpDest}`, {cat: "invite"})
         }
+        Coordinator.notify(Events.INVITE_CREATED, envelope);
 
     }
 

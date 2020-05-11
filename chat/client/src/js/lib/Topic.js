@@ -189,8 +189,8 @@ export class Topic{
         }
         this.handlers[Events.INVITE_CREATED] = (msg)=>{
             console.log("Invite created event");
-            self.processInvitesUpdated(self, msg);
-            self.emit(Events.INVITE_CREATED);
+            let newInvite = self.processInvitesUpdated(self, msg);
+            self.emit(Events.INVITE_CREATED, newInvite);
         }
 
         this.handlers[Internal.DELETE_INVITE_SUCCESS] = (msg)=>{
@@ -695,6 +695,7 @@ export class Topic{
 
         self._metadata.updateInvites(data.userInvites);
         self.saveClientSettings();
+        return data.inviteCode;
     }
 
     getParticipantAlias(pkfp){

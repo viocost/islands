@@ -399,6 +399,7 @@ function processActivateTopicClick(ev){
     }
 
     displayTopicContextButtons("topic")
+
 }
 
 function processExpandTopicClick(ev){
@@ -673,10 +674,11 @@ function processMessagesLoaded(pkfp, messages){
                 attachments: message.attachments
             }, pkfp, windowInFocus, true);
         }
-
+        scrollChatDown()
     } else {
         console.log("Topic is inactive. Ignoring")
     }
+
 }
 
 
@@ -1015,16 +1017,18 @@ function showCodeView(event) {
 
 
 function appendEphemeralMessage(msg){
+    let messagesWindow =  util.$("#messages-window-1")
     if (!msg){
         console.log("Message is empty.")
         return
     }
     try{
         let msgEl = UI.bakeEphemeralMessage(getChatFormatedDate(new Date()), msg);
-        util.$("#messages-window-1").appendChild(msgEl);
+        messagesWindow.appendChild(msgEl);
     }catch(err){
         console.log("EPHEMERAL ERROR: " + err)
     }
+    scrollChatDown()
 }
 //~END MESSAGES RENDERING///////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -1042,6 +1046,11 @@ function processChatScroll(event) {
 
 function getChatWindowInFocus(){
     return util.$("#messages-window-1");
+}
+
+function scrollChatDown(){
+    let el = util.$('#messages-panel-container')
+    el.scrollTop = el.scrollHeight;
 }
 
 function clearMessagesWindow(msgWindow){
@@ -1368,6 +1377,7 @@ function initChat(){
         console.log("Invite created event from chat");
         if (data.pkfp === topicInFocus){
             refreshInvites(data.pkfp);
+            appendEphemeralMessage(`New Invite Code: ${data.inviteCode}`)
         }
     })
 
@@ -1458,7 +1468,7 @@ function copyInviteCode(event) {
     textArea.select();
     try {
         document.execCommand("copy");
-        toastr.info("Invite code was copied to the clipboard");
+        toastr.info("Invite code has been copied to the clipboard");
     } catch (err) {
         toastr.error("Error copying invite code to the clipboard");
     }
@@ -1498,6 +1508,7 @@ function processConnectionStatusChanged(state){
         util.addClass(indicator,"dicsonnected");
         util.hide(reconnectButton)
         util.hide(reconnectSpinner)
+        appendEphemeralMessage("Island disconnected...")
     }
 
     const error = ()=>{
@@ -1505,13 +1516,14 @@ function processConnectionStatusChanged(state){
         util.addClass(indicator,"error");
         util.hide(reconnectButton)
         util.hide(reconnectSpinner)
-
+        appendEphemeralMessage("Island connection error...")
     }
     const connected = ()=>{
         label.innerText = "Connected to island"
         util.addClass(indicator, "connected");
         util.hide(reconnectButton)
         util.hide(reconnectSpinner)
+        appendEphemeralMessage("Connected to island")
     }
 
     const connecting = ()=>{
@@ -1519,6 +1531,7 @@ function processConnectionStatusChanged(state){
         util.addClass(indicator, "connecting");
         util.hide(reconnectButton)
         util.flex(reconnectSpinner)
+        appendEphemeralMessage("Connecting to island....")
     }
 
 
