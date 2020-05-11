@@ -531,6 +531,12 @@ export class ChatClient{
     }
 
 
+    getTopicName(pkfp){
+        if(!this.topics.hasOwnProperty(pkfp)){
+            throw new Error(`Topic ${pkfp} does not exist`)
+        }
+        return this.topics[pkfp].name
+    }
 
     onSuccessfullSettingsUpdate(response, self){
         console.log("Settings successfully updated!");

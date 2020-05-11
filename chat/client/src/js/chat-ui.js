@@ -62,7 +62,7 @@ window.chat = chat;
 window.spinner = spinner;
 window.chatutil = ChatUtility;
 window.statusConn = processConnectionStatusChanged;
-// --------------------------------------------------------------------------------------------------------------------------- 
+// ---------------------------------------------------------------------------------------------------------------------------
 // 
 // ~END TEST
 
@@ -386,7 +386,7 @@ function processActivateTopicClick(ev){
     let topic = chat.topics[pkfp]
     let privatePkfp = topic.getPrivate()
     if (privatePkfp){
-        enablePrivate(privatePkfp, `${topic.getParticipantNickname(privatePkfp)}`);
+        enablePrivate(pkfp, privatePkfp, `${topic.getParticipantNickname(privatePkfp)}`);
     } else {
         removePrivate()
     }
@@ -456,13 +456,17 @@ function processParticipantListItemClick(ev){
 function processParticipantListItemDoubleClick(ev){
 
     let el = ev.currentTarget;
+    let topicPkfp = el.parentNode.previousSibling.getAttribute("pkfp")
     console.log("Double click participant event fired!");
-    enablePrivate(el.getAttribute("pkfp"), el.children[1].innerHTML)
+    enablePrivate(topicPkfp, el.getAttribute("pkfp"), el.children[1].innerHTML)
 
 }
 
-function enablePrivate(pkfp, name){
-
+function enablePrivate(topicPkfp, pkfp, name){
+    if(topicPkfp !== topicInFocus){
+        setTopicInFocus(topicPkfp);
+        refreshMessages();
+    }
     let privateBlock = util.$("#private-label")
     privateBlock.children[2].setAttribute("pkfp", pkfp)
     privateBlock.children[2].innerText = name;
@@ -483,11 +487,14 @@ function setTopicInFocus(pkfp){
         if (el.getAttribute("pkfp") === pkfp){
             util.addClass(el, "topic-in-focus");
             //Here set the name for active topic in header
+
         } else {
             util.removeClass(el, "topic-in-focus");
         }
     }
 
+
+    util.text("#topic-in-focus-label", `Topic: ${chat.getTopicName(pkfp)}`)
     newMessageBlockSetVisible(topicInFocus);
     resetUnreadCounter(pkfp);
 }
@@ -1049,8 +1056,11 @@ function getChatWindowInFocus(){
 }
 
 function scrollChatDown(){
+
     let el = util.$('#messages-panel-container')
-    el.scrollTop = el.scrollHeight;
+    if( el.scrollHeight - el.scrollTop <= 200){
+        el.scrollTop = el.scrollHeight;
+    }
 }
 
 function clearMessagesWindow(msgWindow){

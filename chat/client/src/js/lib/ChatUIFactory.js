@@ -255,10 +255,19 @@ export function bakeMessagesPanel(newMsgBlock){
             util.bake("div", {
                 class: "messages-panel-container",
                 id: "messages-panel-container",
-                children: util.bake("div", {
-                    class: "messages-window",
-                    id: "messages-window-1"
-                })
+                children: [
+                    util.bake("h4", {
+                        id: "topic-in-focus-label",
+                        class: "topic-in-focus-label"
+                    }),
+
+                    util.bake("div", {
+                        class: "messages-window",
+                        id: "messages-window-1"
+                    })
+
+
+                ],
             }),
             newMsgBlock
         ]

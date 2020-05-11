@@ -16,17 +16,6 @@
   #active-title
     margin-left: 1rem
 
-//scrollbar
-::-webkit-scrollbar
-  width: 8px
-  margin: 2px
-
-::-webkit-scrollbar-track
-  background: none
-
-::-webkit-scrollbar-thumb
-  background-color: green
-  border-radius: 1rem
 
 #menu-button
     width: 4rem
@@ -689,6 +678,7 @@ main
   flex-direction: column
   flex: 1
   .messages-panel-container
+    @include scroll-style
     width: 100%
     display: flex
     flex: 1
@@ -806,6 +796,13 @@ main
 
 // ~END MESSAGES
 
+
+.topic-in-focus-label
+  font-size: 2rem
+  position: fixed
+  right: 5rem
+  font-weight: 100
+  color: grey
 
 .password-warning-wrap
   pagging: 2rem 0 2rem 0
