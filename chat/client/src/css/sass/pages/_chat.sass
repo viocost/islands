@@ -559,6 +559,8 @@ main
     background-color: $button-hover
     transition: .2s
 
+.attach-file-dummy
+  display: none
 
 .attach-file-wrap
   height: 5rem
@@ -765,14 +767,20 @@ main
   padding: 1rem
   border-radius: 0.5rem
 
+.uploading-animation
+  display: none
+  width: 4rem
+  height: 4rem
+
 .msg-attachments
   display: flex
-  margin-top: .8rem
   align-self: flex-start
 
 .att-view
   cursor: pointer
-  margin: 1rem
+  margin: .5rem 0
+  background-color: $main-background
+  padding: .5rem
   .att-state
     display: none
     .spinner
@@ -781,14 +789,18 @@ main
       display: flex
   .att-name
     font-weight: bold
-    color: #003d77
+    color: #ff5e5e
     font-size: 1.6rem
-    margin-right: .4rem
+    margin : 0 .4rem
   .att-size
     font-size: 1.1rem
+    color: #ff5e5e
   .att-icon
     width: 1.4rem
     height: 1.4rem
+  &:hover
+    background-color: lighten($main-background, 5%)
+    transition: .2s
 
 .att-info
   display: none

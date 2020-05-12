@@ -7,7 +7,7 @@ import { FileWorker } from "./FileWorker"
 import { AttachmentInfo } from "./AttachmentInfo";
 
 export class SendMessageAgent{
-    constructor(topic, msg, recipient, files){
+    constructor(topic, msg, recipient, files, onFilesUploaded){
         assert(topic instanceof Topic);
         assert(msg);
         this.private = (recipient && recipient !== "ALL");
@@ -15,6 +15,7 @@ export class SendMessageAgent{
         this.topic = topic;
         this.files = files;
         this.version = this.topic.version;
+        this.onFilesUploaded = onFilesUploaded
         this.chatMessage = this.prepareMessage(this.version, msg, recipient);
         recipient ?  this.topic.setPrivate(recipient) : this.topic.resetPrivate();
         console.log(`Message private: ${this.private}. Recipient set to ${this.recipient}`);
@@ -27,10 +28,18 @@ export class SendMessageAgent{
             const metaID = self.topic.getMetadataId();
 
             if (self.files && self.files.length >0){
-                attachmentsInfo = await self.uploadAttachments(self.files, self.chatMessage.header.id, metaID);
-                for (let att of attachmentsInfo) {
-                    self.chatMessage.addAttachmentInfo(att);
+                try{
+
+                    attachmentsInfo = await self.uploadAttachments(self.files, self.chatMessage.header.id, metaID);
+                    for (let att of attachmentsInfo) {
+                        self.chatMessage.addAttachmentInfo(att);
+                    }
+                }catch(err){
+                    console.log(`Error uploading attachments: ${err} `) ;
+                } finally {
+                    if(self.onFilesUploaded) self.onFilesUploaded();
                 }
+
             }
 
             if (self.private){

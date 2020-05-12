@@ -741,14 +741,14 @@ export class ChatClient{
     }
 
     // Sends message
-    sendMessage(msg, topicPkfp, recipient, files){
+    sendMessage(msg, topicPkfp, recipient, files, onFilesUploaded){
         console.log(`Chat client send message called: ${msg} ${topicPkfp} ${recipient}`);
         let topic = this.topics[topicPkfp]
 
         if (!topic){
             throw new Error(`Topic ${topicPkfp} not found`)
         }
-        let sendMessageAgent = new SendMessageAgent(topic, msg, recipient, files)
+        let sendMessageAgent = new SendMessageAgent(topic, msg, recipient, files, onFilesUploaded)
         return sendMessageAgent.send();
     }
 

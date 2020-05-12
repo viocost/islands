@@ -306,6 +306,11 @@ export function bakeNewMessageControl(sendHandler = Err.required("sendMessage ha
                             util.bake("div", {
                                 class: "button-column",
                                 children: [
+                                    util.bake("img", {
+                                        src: "/img/spinner.gif",
+                                        class: "uploading-animation",
+                                        id: "uploading-animation"
+                                    }),
                                     util.bake("label", {
                                         id: "attach-file-button",
                                         attributes: {
@@ -372,6 +377,13 @@ export function bakeNewMessageControl(sendHandler = Err.required("sendMessage ha
                         listeners: {
                             "change": attachmentChosenHandler
                         }
+                    }),
+                    util.bake("input", {
+                        id: "attach-file-dummy",
+                        class: "attach-file-dummy",
+                        attributes: {
+                            type: "file",
+                        },
                     })
                 ]
             })

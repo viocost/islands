@@ -48,6 +48,9 @@ window.getTopicInFocus = ()=>{console.log(topicInFocus)};
 // Topics that are in the split windows and display messages
 let activeTopics
 
+//uploading state to handle concurrent messages sending
+let uploadingState = false;
+
 //Counters for unread messages
 const unreadCounters = {}
 
@@ -62,6 +65,8 @@ window.chat = chat;
 window.spinner = spinner;
 window.chatutil = ChatUtility;
 window.statusConn = processConnectionStatusChanged;
+window.uploadAnim = setUploadingState
+window.clearAttachments = clearAttachments
 // ---------------------------------------------------------------------------------------------------------------------------
 // 
 // ~END TEST
@@ -198,7 +203,7 @@ function setupHotkeysHandlers(){
         if (!e.ctrlKey && e.keyCode === 13) {
             event.preventDefault();
             sendMessage();
-            moveCursor(e.target, "start");
+            //moveCursor(e.target, "start");
             return false;
         } else if (e.ctrlKey && e.keyCode === 13) {
             e.target.value += "\n";
@@ -315,7 +320,7 @@ function sendMessage(){
 
     let msgEl = util.$("#new-msg");
     let msg = msgEl.value
-    let files = util.$('#attach-file').files;
+    let files;
     if (msg.length === 0 && files.length === 0){
         console.log("Empty message");
         return;
@@ -323,9 +328,19 @@ function sendMessage(){
 
     let recipient = util.$("#private-label").children[2].getAttribute("pkfp");
 
-    chat.sendMessage(msg, topicInFocus, recipient, files);
+    if(!uploadingState) {
+        setUploadingState(true)
+        files = util.$('#attach-file').files;
+    } else {
+
+        files = util.$('#attach-file-dummy').files;
+    }
+    chat.sendMessage(msg,
+                     topicInFocus,
+                     recipient,
+                     files,
+                     clearAttachments);
     msgEl.value=""
-    clearAttachments()
 
 
 }
@@ -346,10 +361,20 @@ function processAttachmentChosen(ev) {
 
 
 function clearAttachments() {
+    console.log("Clearing attachments");
     let attachemtsInput = util.$("#attach-file");
     attachemtsInput.value = "";
     let attachemtsWrapper = util.$("#chosen-files");
     attachemtsWrapper.innerHTML = "";
+    setUploadingState(false);
+}
+
+function setUploadingState(uploading){
+    let anim = util.$("#uploading-animation");
+    let attachButton = util.$("#attach-file-button");
+    uploading ? util.flex(anim) : util.hide(anim)
+    uploading ? util.hide(attachButton) : util.flex(attachButton)
+    uploadingState = uploading;
 }
 
 
@@ -870,7 +895,7 @@ function processAttachments(attachments) {
 
         attState.appendChild(spinner);
 
-        iconImage.src = "/img/attachment.png";
+        iconImage.src = "/img/file.svg";
         attSize.classList.add("att-size");
         attView.classList.add("att-view");
         attInfo.classList.add("att-info");
