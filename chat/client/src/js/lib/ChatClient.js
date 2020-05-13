@@ -546,77 +546,6 @@ export class ChatClient{
 
 
 
-    /**
-     * Called initially on topic creation
-     * @param {String} nickname
-     * @param {String} topicName
-     * @returns {Promise<any>}
-     */
-    initTopicBAK(nickname, topicName){
-        let self = this;
-        setImmediate(async ()=>{
-            try{
-                nickname = String(nickname).trim();
-                if (!nickname || !/^.{2,20}$/.test(nickname)){
-                    self.emit(Events.INIT_TOPIC_ERROR,
-                              `Nickname entered is invalid`);
-                    return;
-                }
-                if(!/^.{0,20}$/.test(topicName)){
-                    self.emit(Events.INIT_TOPIC_ERROR,
-                              `Topic name entered is invalid`);
-                    return;
-                }
-
-                //CREATE NEW TOPIC PENDING
-                let ic = new iCrypto();
-                //Generate keypairs one for user, other for topic
-                ic = await ic.asym.asyncCreateKeyPair('owner-keys');
-                ic = await ic.asym.asyncCreateKeyPair('topic-keys');
-                ic.getPublicKeyFingerprint("owner-keys", "owner-pkfp");
-                ic.getPublicKeyFingerprint("topic-keys", "topic-pkfp");
-                let newTopic = {
-                    ownerKeyPair: ic.get("owner-keys"),
-                    topicKeyPair: ic.get("topic-keys"),
-                    ownerPkfp: ic.get("owner-pkfp"),
-                    topicID: ic.get("topic-pkfp"),
-                    ownerNickName: nickname,
-                    topicName: topicName
-                };
-
-                //Request island to init topic creation and get one-time key.
-                let request = new Message(self.version);
-                request.headers.command = Internal.INIT_TOPIC_GET_TOKEN;
-                request.setSource(newTopic.ownerPkfp);
-                let body = {
-                    topicID: newTopic.topicID,
-                    ownerPublicKey: ic.get('owner-keys').publicKey
-                };
-                request.set("body", body);
-
-
-                self.arrivalHub.once(newTopic.ownerPkfp, (data)=>{
-                    switch(data.headers.response){
-                        case Internal.INIT_TOPIC_TOKEN:
-                            self.initTopicContinueAfterTokenReceived(self, data, newTopic);
-                            break;
-                        case Events.INIT_TOPIC_ERROR:
-                            self.processInitTopicError(data, self);
-                            break;
-                        default:
-                            console.error(`Invalid topic init response`)
-                    }
-                })
-                self.messageQueue.enqueue(request);
-                //this.chatSocket.emit("request", request);
-            }catch(err){
-
-                    self.emit(Events.INIT_TOPIC_ERROR,
-                              `Nickname entered is invalid`);
-                throw err;
-            }
-        })
-    }
 
 
     /**
@@ -726,7 +655,13 @@ export class ChatClient{
         }, 50)
     }
 
+    getParticipantNickname(topicPkfp, participantPkfp){
 
+        if (!this.topics[topicPkfp]){
+            throw new Error(`Topic ${topicPkfp} not found`)
+        }
+        return this.topics[topicPkfp].getParticipantNickname(participantPkfp);
+    }
 
     getParticipantAlias(topicPkfp, participantPkfp){
         if (!this.topics[topicPkfp]){
@@ -738,6 +673,17 @@ export class ChatClient{
     setParticipantAlias(topicPkfp, participantPkfp, newAlias){
         assert(this.topics[topicPkfp], `Topic ${topicPkfp}, not found`)
         this.toipcs[topicPkfp].setParticipantAlias(participantPkfp, newAlias)
+    }
+
+    changeNickname(topicPkfp, newNickname){
+        assert(this.topics[topicPkfp], `Topic ${topicPkfp}, not found`)
+        assert(newNickname && 3 < newNickname.length < 35, `New nickname length is invalid`)
+        this.topics[topicPkfp].setParticipantNickname(newNickname, topicPkfp); //here toipcPkfp is the same as particiapnt pkfp
+    }
+
+    setInviteAlias(topicPkfp, inviteCode, alias){
+        assert(this.topics[topicPkfp], `Topic ${topicPkfp}, not found`)
+        this.topics[topicPkfp].setInviteAlias(inviteCode, alias);
     }
 
     // Sends message

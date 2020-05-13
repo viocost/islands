@@ -134,6 +134,12 @@ export class Metadata{
         return this.body.settings.invites.hasOwnProperty(inviteCode);
     }
 
+    setInviteAlias(inviteCode, name){
+        assert(this.hasInvite(inviteCode), "Invite is not found")
+        this.body.settings.invites[inviteCode] =  {
+            name: name
+        }
+    }
 
     updateMetadata(newMetadata){
         //assert(Metadata.isMetadataValid(newMetadata), "Metadata is invalid")

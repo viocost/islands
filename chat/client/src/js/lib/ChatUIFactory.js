@@ -74,7 +74,7 @@ export function bakeSidePanel(version = Err.required("Version")){
                         }
                     }),
                     util.bake("h3", {
-                        text: `Islands Chat v${version}`
+                        text: `Islands Release v${version}`
                     })
                 ]
             })
@@ -212,7 +212,7 @@ export function bakeParticipantListItem(nickname, pkfp, alias, onClick, onDClick
 
             util.bake("div", {
                 class: "participant-label",
-                html: alias ? `${nickname} -- ${alias}` : `${nickname} -- ${nickname.substring(0, 5)}`
+                html: alias ? `${nickname} -- ${alias}` : `${nickname} -- ${nickname}`
             })
         ]
     })
@@ -741,21 +741,27 @@ export function bakeUnreadMessagesElement(num){
 
 export function bakeSetAliasModal(okClick = Err.required("Ok handler required")){
     let clearFields = ()=>{
-        let newAlias = util.$("#new-alias");
+        let newAlias = util.$("#modal-alias-input");
         newAlias.value = "";
     };
 
     let wrap =  util.bake("div", {
         children: [
             util.bake("h2", {
+                id: "modal-alias-title",
                 text: "New alias"
             }),
+
+            util.bake("p", {
+                id: "modal-alias-for-label",
+                class: "modal-alias-for-label"
+            }),
             util.bake("input", {
-                id: "new-alias",
+                id: "modal-alias-input",
                 class: "left-align",
                 attributes:{
                     placeholder: "Enter new alias",
-                maxlength: "255",
+                    maxlength: "40",
                     required: true
                 }
             }),

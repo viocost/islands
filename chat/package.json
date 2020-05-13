@@ -1,6 +1,7 @@
 {
   "name": "chat",
-  "version": "2.0.6",
+  "version": "2.0.13",
+  "chat-version": "2.0.7",
   "description": "",
   "main": "app.js",
   "scripts": {

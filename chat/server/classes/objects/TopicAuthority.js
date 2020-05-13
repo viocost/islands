@@ -192,6 +192,7 @@ class TopicAuthority extends EventEmitter{
         await this.processJoinByInvite(inviteeInfo.publicKey, newMemeberResidence);
         this.issueMetadata({
             recipients: currentMemebers,
+            invite: inviteString,
             event: MetadataIssue.events.newMemberJoin,
             pkfp: inviteeInfo.pkfp
         });

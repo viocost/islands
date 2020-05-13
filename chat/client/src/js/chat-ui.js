@@ -65,8 +65,6 @@ window.chat = chat;
 window.spinner = spinner;
 window.chatutil = ChatUtility;
 window.statusConn = processConnectionStatusChanged;
-window.uploadAnim = setUploadingState
-window.clearAttachments = clearAttachments
 // ---------------------------------------------------------------------------------------------------------------------------
 // 
 // ~END TEST
@@ -183,6 +181,28 @@ function initUI(){
 
     setAliasModal = UI.bakeSetAliasModal(()=>{
         console.log("Ok handler")
+        let newAliasEl = util.$("#modal-alias-input")
+        let newAlias = newAliasEl.value
+        let subject = JSON.parse(newAliasEl.getAttribute("rename-data"))
+        switch(subject.type){
+            case "topic":
+                console.log("Renaming topic")
+                break
+            case "participant":
+                console.log("Renaming participant")
+                if(subject.pkfp === subject.topicPkfp){
+                    //change nickname
+                    chat.changeNickname(subject.topicPkfp, newAlias)
+                }else{
+                    //change alias of another member
+                    chat.setParticipantAlias(subject.topicPkfp, subject.pkfp, newAlias);
+                }
+                break
+            case "invite":
+                console.log("Renaming invite")
+                chat.setInviteAlias(subject.topicPkfp, subject.code, newAlias);
+                break
+        }
         setAliasModal.close();
     })
     // prepare side panel
@@ -320,29 +340,30 @@ function sendMessage(){
 
     let msgEl = util.$("#new-msg");
     let msg = msgEl.value
-    let files;
-    if (msg.length === 0 && files.length === 0){
+    let filesEl = util.$('#attach-file')
+    if (msg.length === 0 && filesEl.files.length === 0){
         console.log("Empty message");
         return;
     }
 
     let recipient = util.$("#private-label").children[2].getAttribute("pkfp");
 
-    if(!uploadingState) {
+    if(!uploadingState && filesEl.files.length > 0 ) {
+        //sending with files
+        console.log("Sending with files");
         setUploadingState(true)
-        files = util.$('#attach-file').files;
+        chat.sendMessage(msg,
+                        topicInFocus,
+                        recipient,
+                        filesEl.files,
+                        clearAttachments);
     } else {
+        //sending text only
 
-        files = util.$('#attach-file-dummy').files;
+        console.log("Sending just text");
+        chat.sendMessage(msg, topicInFocus, recipient)
     }
-    chat.sendMessage(msg,
-                     topicInFocus,
-                     recipient,
-                     files,
-                     clearAttachments);
     msgEl.value=""
-
-
 }
 
 
@@ -607,6 +628,61 @@ function processRefreshInvitesClick() {
 
 function processCtxAliasClick(){
     console.log("Alias button clicked");
+    //Rename topc, or member or invite
+
+    if(!topicInFocus){
+        console.log("Nothing to rename")
+        return;
+    }
+
+    let title = util.$("#modal-alias-title")
+    let forLabel = util.$("#modal-alias-for-label")
+    let aliasInput = util.$("#modal-alias-input")
+
+    let subject = {}
+
+    subject.topicPkfp = topicInFocus;
+    let asset = getActiveTopicAsset()
+    if(asset){
+        // Setting alias either for participant or invite
+        if (util.hasClass(asset, "invite-list-item")){
+            // For invite
+            subject.type = "invite"
+            subject.code = asset.getAttribute("code")
+            util.text(title, "New alias")
+            util.text(forLabel, `For invite: ${asset.getAttribute("code").substring(117, 140)}...`)
+            aliasInput.setAttribute("placeholder", "Enter new alias")
+        }else if(util.hasClass(asset, "participant-list-item")){
+            // For participant
+            let pkfp = asset.getAttribute("pkfp");
+
+            subject.type = "participant"
+            subject.pkfp = pkfp
+            if(pkfp === topicInFocus){
+                //Changing my nickname
+                util.text(title, "Change my nickname")
+                util.text(forLabel, "")
+                aliasInput.setAttribute("placeholder", "Enter new nickname")
+            } else {
+                //Alias for another participant
+                util.text(title, "New alias")
+                util.text(forLabel, `For ${chat.getParticipantNickname(topicInFocus, pkfp)}(${pkfp.substring(0, 32)}...)`)
+                aliasInput.setAttribute("placeholder", "Enter new alias")
+            }
+        }else {
+            //error
+            console.log("Unknown topic asset!")
+            return;
+        }
+    } else {
+        //Renaming topic in vault
+        subject.type = "topic"
+        util.text(title, `Rename topic "${chat.getTopicName(topicInFocus)}"`)
+        util.text(forLabel, `(${topicInFocus.substring(0, 32)}...)`)
+        aliasInput.setAttribute("placeholder", "Enter new topic name")
+    }
+
+    aliasInput.setAttribute("rename-data", JSON.stringify(subject));
     setAliasModal.open();
 }
 
@@ -1196,7 +1272,7 @@ function refreshParticipants(pkfp){
                                                  participant.alias,
                                                  processParticipantListItemClick,
                                                  processParticipantListItemDoubleClick,
-                                                 pkfp === pPkfp
+                                                 pkfp === pPkfp //isSelf
                                                 ))
     }
     util.prependChildren(topicAssets, elements)
@@ -1423,6 +1499,8 @@ function initChat(){
 
     chat.on(Events.SETTINGS_UPDATED, (pkfp)=>{
         console.log("Settings updated event from chat");
+        refreshParticipants(pkfp);
+        refreshInvites(pkfp);
     })
 
     chat.on(Events.CONNECTION_STATUS_CHANGED, processConnectionStatusChanged);

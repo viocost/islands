@@ -209,6 +209,13 @@ export class Topic{
             assert(Message.verifyMessage(self._metadata.getTAPublicKey(), msg), "TA signature is invalid")
             console.log("Signature verified. Loading metadata...");
             self._metadata.updateMetadata(msg.body.metadata);
+            if(msg.body.invite && this._metadata.hasInvite(msg.body.invite)){
+                //Invite was used by new member:
+                this._metadata.deleteInvite(msg.body.invite);
+            }
+            if (msg.body.inviteePkfp){
+                self.nicknameChangeNotifyAll()
+            }
             self.saveClientSettings();
             console.log("Metadata updated");
             self.emit(Events.METADATA_UPDATED);
@@ -228,19 +235,6 @@ export class Topic{
                 self.setParticipantNickname(nickname, senderPkfp);
             }
 
-            let curNickname = self.getCurrentNickname()
-            let sharedKey = self.getSharedKey()
-            console.log(`Sending current nickname: ${curNickname}. Encrypting with: ${sharedKey}`);
-            let response = new Message(self.version);
-            response.setCommand(Internal.NICKNAME_NOTE)
-            response.setSource(self.pkfp);
-            response.setDest(senderPkfp);
-            response.addNonce();
-            response.setAttribute("nickname",
-                                  ChatUtility.symKeyEncrypt(curNickname, sharedKey));
-            response.setAttribute(Internal.METADATA_ID, self._metadata.getId());
-            response.signMessage(self.privateKey);
-            self.messageQueue.enqueue(response);
         }
 
         this.handlers[Internal.NICKNAME_NOTE] = (msg)=>{
@@ -438,12 +432,16 @@ export class Topic{
 
     }
 
+    setInviteAlias(code, alias){
+        this._metadata.setInviteAlias(code, alias)
+        this.saveClientSettings();
+    }
+
     getInvites(){
         return this._metadata.getInvites();
     }
 
     syncInvites(){
-
         let request = new Message(self.version);
         request.headers.command = "sync_invites";
         request.headers.pkfpSource = this.session.publicKeyFingerprint;
@@ -453,11 +451,6 @@ export class Topic{
         this.chatSocket.emit("request", request);
     }
 
-    updateInvite(){
-
-        this.session.settings.invites[inviteID].name = name;
-        this.saveClientSettings()
-    }
 
     deleteInvite(inviteCode){
         console.log("About to delete invite: " + inviteCode);
@@ -528,12 +521,30 @@ export class Topic{
     setParticipantNickname(nickname, pkfp){
         this._metadata.setParticipantNickname(nickname, pkfp);
         this.saveClientSettings();
+        if (pkfp === this.pkfp){
+            this.nicknameChangeNotifyAll()
+        }
     }
-
 
     setParticipantAlias(alias, pkfp){
         this._metadata.setParticipantAlias(alias, pkfp)
         this.saveClientSettings();
+    }
+
+    nicknameChangeNotifyAll(){
+        let curNickname = self.getCurrentNickname()
+        let sharedKey = self.getSharedKey()
+        console.log(`Sending current nickname: ${curNickname}. Encrypting with: ${sharedKey}`);
+        let message = new Message(self.version);
+        message.setCommand(Internal.NICKNAME_NOTE)
+        message.setSource(self.pkfp);
+        message.setDest(msg.body.inviteePkfp);
+        message.addNonce();
+        message.setAttribute("nickname",
+                            ChatUtility.symKeyEncrypt(curNickname, sharedKey));
+        message.setAttribute(Internal.METADATA_ID, self._metadata.getId());
+        message.signMessage(self.privateKey);
+        self.messageQueue.enqueue(message);
     }
 
     requestNickname(pkfp){
