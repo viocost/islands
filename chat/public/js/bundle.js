@@ -7769,6 +7769,14 @@ var Metadata_Metadata = /*#__PURE__*/function () {
       return this.body.settings.invites.hasOwnProperty(inviteCode);
     }
   }, {
+    key: "setInviteAlias",
+    value: function setInviteAlias(inviteCode, name) {
+      Object(IError["b" /* assert */])(this.hasInvite(inviteCode), "Invite is not found");
+      this.body.settings.invites[inviteCode] = {
+        name: name
+      };
+    }
+  }, {
     key: "updateMetadata",
     value: function updateMetadata(newMetadata) {
       //assert(Metadata.isMetadataValid(newMetadata), "Metadata is invalid")
@@ -8116,18 +8124,7 @@ var Topic_Topic = /*#__PURE__*/function () {
         }
 
         if (msg.body.inviteePkfp) {
-          var curNickname = self.getCurrentNickname();
-          var sharedKey = self.getSharedKey();
-          console.log("Sending current nickname: ".concat(curNickname, ". Encrypting with: ").concat(sharedKey));
-          var response = new Message["a" /* Message */](self.version);
-          response.setCommand(Events["Internal"].NICKNAME_NOTE);
-          response.setSource(self.pkfp);
-          response.setDest(msg.body.inviteePkfp);
-          response.addNonce();
-          response.setAttribute("nickname", ChatUtility["a" /* ChatUtility */].symKeyEncrypt(curNickname, sharedKey));
-          response.setAttribute(Events["Internal"].METADATA_ID, self._metadata.getId());
-          response.signMessage(self.privateKey);
-          self.messageQueue.enqueue(response);
+          self.nicknameChangeNotify(msg.body.inviteePkfp);
         }
 
         self.saveClientSettings();
@@ -8352,6 +8349,13 @@ var Topic_Topic = /*#__PURE__*/function () {
       }, 100);
     }
   }, {
+    key: "setInviteAlias",
+    value: function setInviteAlias(code, alias) {
+      this._metadata.setInviteAlias(code, alias);
+
+      this.saveClientSettings();
+    }
+  }, {
     key: "getInvites",
     value: function getInvites() {
       return this._metadata.getInvites();
@@ -8366,12 +8370,6 @@ var Topic_Topic = /*#__PURE__*/function () {
       request.headers.nonce = ic.get("nhex");
       request.signMessage(this.session.privateKey);
       this.chatSocket.emit("request", request);
-    }
-  }, {
-    key: "updateInvite",
-    value: function updateInvite() {
-      this.session.settings.invites[inviteID].name = name;
-      this.saveClientSettings();
     }
   }, {
     key: "deleteInvite",
@@ -8475,6 +8473,10 @@ var Topic_Topic = /*#__PURE__*/function () {
       this._metadata.setParticipantNickname(nickname, pkfp);
 
       this.saveClientSettings();
+
+      if (pkfp === this.pkfp) {
+        this.nicknameChangeNotify();
+      }
     }
   }, {
     key: "setParticipantAlias",
@@ -8482,6 +8484,27 @@ var Topic_Topic = /*#__PURE__*/function () {
       this._metadata.setParticipantAlias(alias, pkfp);
 
       this.saveClientSettings();
+    }
+  }, {
+    key: "nicknameChangeNotify",
+    value: function nicknameChangeNotify(pkfp) {
+      var self = this;
+      var curNickname = self.getCurrentNickname();
+      var sharedKey = self.getSharedKey();
+      console.log("Sending current nickname: ".concat(curNickname, ". Encrypting with: ").concat(sharedKey));
+      var message = new Message["a" /* Message */](self.version);
+      message.setCommand(Events["Internal"].NICKNAME_NOTE);
+      message.setSource(self.pkfp);
+
+      if (pkfp) {
+        message.setDest(pkfp);
+      }
+
+      message.addNonce();
+      message.setAttribute("nickname", ChatUtility["a" /* ChatUtility */].symKeyEncrypt(curNickname, sharedKey));
+      message.setAttribute(Events["Internal"].METADATA_ID, self._metadata.getId());
+      message.signMessage(self.privateKey);
+      self.messageQueue.enqueue(message);
     }
   }, {
     key: "requestNickname",
@@ -8671,19 +8694,23 @@ var Topic_Topic = /*#__PURE__*/function () {
       }
     }
   }, {
+    key: "getParticipants",
+    value: function getParticipants() {
+      var _this3 = this;
+
+      var res = JSON.parse(JSON.stringify(this._metadata.body.participants));
+      Object.keys(res).forEach(function (k) {
+        res[k].alias = _this3._metadata.getParticipantAlias(k);
+        res[k].nickname = _this3._metadata.getParticipantNickname(k);
+      });
+      return res;
+    }
+  }, {
     key: "getParticipantRepr",
     value: function getParticipantRepr(pkfp) {
       if (this.participants[pkfp]) {
         return this.participants[pkfp].alias || this.participants[pkfp].nickname || "Unknown";
       }
-    }
-  }, {
-    key: "setParticipantAlias",
-    value: function setParticipantAlias(pkfp, newAlias) {
-      console.log("Set participant alias called");
-      Object(IError["b" /* assert */])(this.settgins.membersData[pkfp], "Participant ".concat(pkfp, ", not found"));
-      this.settings.membersData[pkfp] = newAlias;
-      this.saveClientSettings();
     }
   }, {
     key: "getPublicKey",
@@ -45998,109 +46025,6 @@ var ChatClient = /*#__PURE__*/function () {
       self.emit("settings_updated");
     }
     /**
-     * Called initially on topic creation
-     * @param {String} nickname
-     * @param {String} topicName
-     * @returns {Promise<any>}
-     */
-
-  }, {
-    key: "initTopicBAK",
-    value: function initTopicBAK(nickname, topicName) {
-      var self = this;
-      setImmediate( /*#__PURE__*/_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_5___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.mark(function _callee4() {
-        var ic, newTopic, request, body;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.wrap(function _callee4$(_context4) {
-          while (1) {
-            switch (_context4.prev = _context4.next) {
-              case 0:
-                _context4.prev = 0;
-                nickname = String(nickname).trim();
-
-                if (!(!nickname || !/^.{2,20}$/.test(nickname))) {
-                  _context4.next = 5;
-                  break;
-                }
-
-                self.emit(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].INIT_TOPIC_ERROR, "Nickname entered is invalid");
-                return _context4.abrupt("return");
-
-              case 5:
-                if (/^.{0,20}$/.test(topicName)) {
-                  _context4.next = 8;
-                  break;
-                }
-
-                self.emit(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].INIT_TOPIC_ERROR, "Topic name entered is invalid");
-                return _context4.abrupt("return");
-
-              case 8:
-                //CREATE NEW TOPIC PENDING
-                ic = new _iCrypto__WEBPACK_IMPORTED_MODULE_20__[/* iCrypto */ "a"](); //Generate keypairs one for user, other for topic
-
-                _context4.next = 11;
-                return ic.asym.asyncCreateKeyPair('owner-keys');
-
-              case 11:
-                ic = _context4.sent;
-                _context4.next = 14;
-                return ic.asym.asyncCreateKeyPair('topic-keys');
-
-              case 14:
-                ic = _context4.sent;
-                ic.getPublicKeyFingerprint("owner-keys", "owner-pkfp");
-                ic.getPublicKeyFingerprint("topic-keys", "topic-pkfp");
-                newTopic = {
-                  ownerKeyPair: ic.get("owner-keys"),
-                  topicKeyPair: ic.get("topic-keys"),
-                  ownerPkfp: ic.get("owner-pkfp"),
-                  topicID: ic.get("topic-pkfp"),
-                  ownerNickName: nickname,
-                  topicName: topicName
-                }; //Request island to init topic creation and get one-time key.
-
-                request = new _Message__WEBPACK_IMPORTED_MODULE_17__[/* Message */ "a"](self.version);
-                request.headers.command = _common_Events__WEBPACK_IMPORTED_MODULE_9__["Internal"].INIT_TOPIC_GET_TOKEN;
-                request.setSource(newTopic.ownerPkfp);
-                body = {
-                  topicID: newTopic.topicID,
-                  ownerPublicKey: ic.get('owner-keys').publicKey
-                };
-                request.set("body", body);
-                self.arrivalHub.once(newTopic.ownerPkfp, function (data) {
-                  switch (data.headers.response) {
-                    case _common_Events__WEBPACK_IMPORTED_MODULE_9__["Internal"].INIT_TOPIC_TOKEN:
-                      self.initTopicContinueAfterTokenReceived(self, data, newTopic);
-                      break;
-
-                    case _common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].INIT_TOPIC_ERROR:
-                      self.processInitTopicError(data, self);
-                      break;
-
-                    default:
-                      console.error("Invalid topic init response");
-                  }
-                });
-                self.messageQueue.enqueue(request); //this.chatSocket.emit("request", request);
-
-                _context4.next = 31;
-                break;
-
-              case 27:
-                _context4.prev = 27;
-                _context4.t0 = _context4["catch"](0);
-                self.emit(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].INIT_TOPIC_ERROR, "Nickname entered is invalid");
-                throw _context4.t0;
-
-              case 31:
-              case "end":
-                return _context4.stop();
-            }
-          }
-        }, _callee4, null, [[0, 27]]);
-      })));
-    }
-    /**
      * New token on init topic received. Proceeding with topic creation
      * @param response
      * @param self
@@ -46205,7 +46129,20 @@ var ChatClient = /*#__PURE__*/function () {
     key: "setParticipantAlias",
     value: function setParticipantAlias(topicPkfp, participantPkfp, newAlias) {
       Object(_common_IError__WEBPACK_IMPORTED_MODULE_10__[/* assert */ "b"])(this.topics[topicPkfp], "Topic ".concat(topicPkfp, ", not found"));
-      this.toipcs[topicPkfp].setParticipantAlias(participantPkfp, newAlias);
+      this.topics[topicPkfp].setParticipantAlias(newAlias, participantPkfp);
+    }
+  }, {
+    key: "changeNickname",
+    value: function changeNickname(topicPkfp, newNickname) {
+      Object(_common_IError__WEBPACK_IMPORTED_MODULE_10__[/* assert */ "b"])(this.topics[topicPkfp], "Topic ".concat(topicPkfp, ", not found"));
+      Object(_common_IError__WEBPACK_IMPORTED_MODULE_10__[/* assert */ "b"])(newNickname && 3 < newNickname.length < 35, "New nickname length is invalid");
+      this.topics[topicPkfp].setParticipantNickname(newNickname, topicPkfp); //here topic is the same as particiapnt pkfp
+    }
+  }, {
+    key: "setInviteAlias",
+    value: function setInviteAlias(topicPkfp, inviteCode, alias) {
+      Object(_common_IError__WEBPACK_IMPORTED_MODULE_10__[/* assert */ "b"])(this.topics[topicPkfp], "Topic ".concat(topicPkfp, ", not found"));
+      this.topics[topicPkfp].setInviteAlias(inviteCode, alias);
     } // Sends message
 
   }, {
@@ -46252,7 +46189,7 @@ var ChatClient = /*#__PURE__*/function () {
     key: "getParticipants",
     value: function getParticipants(topicPkfp) {
       if (this.topics.hasOwnProperty(topicPkfp)) {
-        return this.topics[topicPkfp].participants;
+        return this.topics[topicPkfp].getParticipants();
       }
     }
   }, {
@@ -46272,19 +46209,19 @@ var ChatClient = /*#__PURE__*/function () {
   }, {
     key: "_initMessageQueue",
     value: function () {
-      var _initMessageQueue2 = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_5___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.mark(function _callee5() {
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.wrap(function _callee5$(_context5) {
+      var _initMessageQueue2 = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_5___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.mark(function _callee4() {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.wrap(function _callee4$(_context4) {
           while (1) {
-            switch (_context5.prev = _context5.next) {
+            switch (_context4.prev = _context4.next) {
               case 0:
                 this.messageQueue = new _MessageQueue__WEBPACK_IMPORTED_MODULE_14__[/* MessageQueue */ "a"]();
 
               case 1:
               case "end":
-                return _context5.stop();
+                return _context4.stop();
             }
           }
-        }, _callee5, this);
+        }, _callee4, this);
       }));
 
       function _initMessageQueue() {
@@ -62864,11 +62801,16 @@ function bakeTopicsBlock() {
   });
 }
 
-function bakeParticipantListItem(nickname, pkfp, alias, onClick, onDClick) {
-  var me = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : false;
+function bakeParticipantListItem(data) {
+  var nickname = data.nickname,
+      pkfp = data.pkfp,
+      alias = data.alias,
+      onClick = data.onClick,
+      onDClick = data.onDClick,
+      isSelf = data.isSelf;
   var iconClasses = ["participant-icon"];
 
-  if (me) {
+  if (isSelf) {
     iconClasses.push("that-is-me");
   }
 
@@ -62885,11 +62827,19 @@ function bakeParticipantListItem(nickname, pkfp, alias, onClick, onDClick) {
       class: iconClasses
     }), bake("div", {
       class: "participant-label",
-      html: alias ? "".concat(nickname, " -- ").concat(alias) : "".concat(nickname, " -- ").concat(nickname)
+      children: [bake("span", {
+        text: nickname
+      }), bake("span", {
+        text: "--"
+      }), bake("span", {
+        text: isSelf ? "(me)" : alias ? alias : "".concat(pkfp.substring(0, 16), "...")
+      })] //html: alias ? `${nickname} -- ${alias}` : `${nickname} -- ${nickname}`
+
     })]
   });
 }
 function bakeInviteListItem(inviteCode, onclick, onDoubleClick) {
+  var alias = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : "";
   return bake("div", {
     attributes: {
       "code": inviteCode
@@ -62903,7 +62853,7 @@ function bakeInviteListItem(inviteCode, onclick, onDoubleClick) {
       class: "invite-icon"
     }), bake("div", {
       class: "invite-label",
-      html: "Invite ".concat(inviteCode.substring(117, 123))
+      html: "Invite ".concat(alias ? alias : inviteCode.substring(117, 147))
     })] //////////////////////////
     // listeners: {         //
     //     "click": onclick //
@@ -63838,6 +63788,34 @@ function initUI() {
   });
   setAliasModal = bakeSetAliasModal(function () {
     console.log("Ok handler");
+    var newAliasEl = $("#modal-alias-input");
+    var newAlias = newAliasEl.value;
+    var subject = JSON.parse(newAliasEl.getAttribute("rename-data"));
+
+    switch (subject.type) {
+      case "topic":
+        console.log("Renaming topic");
+        break;
+
+      case "participant":
+        console.log("Renaming participant");
+
+        if (subject.pkfp === subject.topicPkfp) {
+          //change nickname
+          chat_ui_chat.changeNickname(subject.topicPkfp, newAlias);
+        } else {
+          //change alias of another member
+          chat_ui_chat.setParticipantAlias(subject.topicPkfp, subject.pkfp, newAlias);
+        }
+
+        break;
+
+      case "invite":
+        console.log("Renaming invite");
+        chat_ui_chat.setInviteAlias(subject.topicPkfp, subject.code, newAlias);
+        break;
+    }
+
     setAliasModal.close();
   }); // prepare side panel
   //let sidePanel = bakeSidePanel();
@@ -64126,7 +64104,7 @@ function enablePrivate(topicPkfp, pkfp, name) {
 
   var privateBlock = $("#private-label");
   privateBlock.children[2].setAttribute("pkfp", pkfp);
-  privateBlock.children[2].innerText = name;
+  privateBlock.children[2].innerHTML = name;
   flex(privateBlock);
 }
 
@@ -64285,19 +64263,24 @@ function processCtxAliasClick() {
   var title = $("#modal-alias-title");
   var forLabel = $("#modal-alias-for-label");
   var aliasInput = $("#modal-alias-input");
-  var subject;
+  var subject = {};
+  subject.topicPkfp = topicInFocus;
   var asset = getActiveTopicAsset();
 
   if (asset) {
     // Setting alias either for participant or invite
     if (hasClass(asset, "invite-list-item")) {
       // For invite
+      subject.type = "invite";
+      subject.code = asset.getAttribute("code");
       dom_util_text(title, "New alias");
       dom_util_text(forLabel, "For invite: ".concat(asset.getAttribute("code").substring(117, 140), "..."));
       aliasInput.setAttribute("placeholder", "Enter new alias");
     } else if (hasClass(asset, "participant-list-item")) {
       // For participant
       var pkfp = asset.getAttribute("pkfp");
+      subject.type = "participant";
+      subject.pkfp = pkfp;
 
       if (pkfp === topicInFocus) {
         //Changing my nickname
@@ -64307,7 +64290,7 @@ function processCtxAliasClick() {
       } else {
         //Alias for another participant
         dom_util_text(title, "New alias");
-        dom_util_text(forLabel, "For ".concat(chat_ui_chat.getParticipantNickname(topicInFocus, pkfp), "(").concat(pkfp.substring(0, 5), "...)"));
+        dom_util_text(forLabel, "For ".concat(chat_ui_chat.getParticipantNickname(topicInFocus, pkfp), "(").concat(pkfp.substring(0, 32), "...)"));
         aliasInput.setAttribute("placeholder", "Enter new alias");
       }
     } else {
@@ -64317,11 +64300,13 @@ function processCtxAliasClick() {
     }
   } else {
     //Renaming topic in vault
+    subject.type = "topic";
     dom_util_text(title, "Rename topic \"".concat(chat_ui_chat.getTopicName(topicInFocus), "\""));
     dom_util_text(forLabel, "(".concat(topicInFocus.substring(0, 32), "...)"));
     aliasInput.setAttribute("placeholder", "Enter new topic name");
   }
 
+  aliasInput.setAttribute("rename-data", JSON.stringify(subject));
   setAliasModal.open();
 }
 
@@ -64958,7 +64943,7 @@ function refreshInvites(pkfp) {
   var topicAssets = getTopicAssets(pkfp);
   var invites = chat_ui_chat.getInvites(pkfp);
   Object.keys(invites).forEach(function (i) {
-    topicAssets.appendChild(bakeInviteListItem(i, activateTopicAsset, copyInviteCode));
+    topicAssets.appendChild(bakeInviteListItem(i, activateTopicAsset, copyInviteCode, invites[i].name));
   });
 }
 
@@ -65014,8 +64999,14 @@ function refreshParticipants(pkfp) {
   for (var _i2 = 0, _Object$keys = Object.keys(participants); _i2 < _Object$keys.length; _i2++) {
     var pPkfp = _Object$keys[_i2];
     var participant = participants[pPkfp];
-    elements.push(bakeParticipantListItem(participant.nickname, pPkfp, participant.alias, processParticipantListItemClick, processParticipantListItemDoubleClick, pkfp === pPkfp //isSelf
-    ));
+    elements.push(bakeParticipantListItem({
+      nickname: participant.nickname,
+      pkfp: pPkfp,
+      alias: participant.alias,
+      onClick: processParticipantListItemClick,
+      onDClick: processParticipantListItemDoubleClick,
+      isSelf: pkfp === pPkfp
+    }));
   }
 
   prependChildren(topicAssets, elements);

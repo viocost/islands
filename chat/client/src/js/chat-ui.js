@@ -515,7 +515,7 @@ function enablePrivate(topicPkfp, pkfp, name){
     }
     let privateBlock = util.$("#private-label")
     privateBlock.children[2].setAttribute("pkfp", pkfp)
-    privateBlock.children[2].innerText = name;
+    privateBlock.children[2].innerHTML = name;
     util.flex(privateBlock);
 }
 
@@ -1231,7 +1231,7 @@ function refreshInvites(pkfp){
     let invites = chat.getInvites(pkfp);
 
     Object.keys(invites).forEach((i)=>{
-        topicAssets.appendChild(UI.bakeInviteListItem(i, activateTopicAsset, copyInviteCode))
+        topicAssets.appendChild(UI.bakeInviteListItem(i, activateTopicAsset, copyInviteCode, invites[i].name))
     })
 }
 
@@ -1267,13 +1267,14 @@ function refreshParticipants(pkfp){
     for (let pPkfp of Object.keys(participants)){
         let participant = participants[pPkfp]
 
-        elements.push(UI.bakeParticipantListItem(participant.nickname,
-                                                 pPkfp,
-                                                 participant.alias,
-                                                 processParticipantListItemClick,
-                                                 processParticipantListItemDoubleClick,
-                                                 pkfp === pPkfp //isSelf
-                                                ))
+        elements.push(UI.bakeParticipantListItem({
+            nickname: participant.nickname,
+            pkfp: pPkfp,
+            alias: participant.alias,
+            onClick: processParticipantListItemClick,
+            onDClick: processParticipantListItemDoubleClick,
+            isSelf: pkfp === pPkfp
+        }))
     }
     util.prependChildren(topicAssets, elements)
 }

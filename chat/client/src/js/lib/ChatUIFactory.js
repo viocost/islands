@@ -188,11 +188,11 @@ function bakeTopicsBlock(){
 }
 
 
-export function bakeParticipantListItem(nickname, pkfp, alias, onClick, onDClick, me = false){
-
+export function bakeParticipantListItem(data){
+    let { nickname, pkfp, alias, onClick, onDClick, isSelf } = data;
     let iconClasses = ["participant-icon", ]
 
-    if(me){
+    if(isSelf){
         iconClasses.push("that-is-me");
     }
 
@@ -212,13 +212,26 @@ export function bakeParticipantListItem(nickname, pkfp, alias, onClick, onDClick
 
             util.bake("div", {
                 class: "participant-label",
-                html: alias ? `${nickname} -- ${alias}` : `${nickname} -- ${nickname}`
+                children: [
+                    util.bake("span", {
+                        text: nickname
+                    }),
+
+                    util.bake("span", {
+                        text: "--"
+                    }),
+
+                    util.bake("span", {
+                        text: isSelf ? "(me)" : alias ? alias : `${pkfp.substring(0, 16)}...`
+                    }),
+                ]
+                //html: alias ? `${nickname} -- ${alias}` : `${nickname} -- ${nickname}`
             })
         ]
     })
 }
 
-export function bakeInviteListItem(inviteCode, onclick, onDoubleClick){
+export function bakeInviteListItem(inviteCode, onclick, onDoubleClick, alias=""){
     return util.bake("div", {
         attributes: {
             "code": inviteCode
@@ -234,7 +247,7 @@ export function bakeInviteListItem(inviteCode, onclick, onDoubleClick){
             }),
             util.bake("div", {
                 class: "invite-label",
-                html: `Invite ${inviteCode.substring(117, 123)}`
+                html: `Invite ${alias ? alias : inviteCode.substring(117, 147)}`
             })
 
         ],

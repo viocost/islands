@@ -672,13 +672,13 @@ export class ChatClient{
 
     setParticipantAlias(topicPkfp, participantPkfp, newAlias){
         assert(this.topics[topicPkfp], `Topic ${topicPkfp}, not found`)
-        this.toipcs[topicPkfp].setParticipantAlias(participantPkfp, newAlias)
+        this.topics[topicPkfp].setParticipantAlias(newAlias, participantPkfp)
     }
 
     changeNickname(topicPkfp, newNickname){
         assert(this.topics[topicPkfp], `Topic ${topicPkfp}, not found`)
         assert(newNickname && 3 < newNickname.length < 35, `New nickname length is invalid`)
-        this.topics[topicPkfp].setParticipantNickname(newNickname, topicPkfp); //here toipcPkfp is the same as particiapnt pkfp
+        this.topics[topicPkfp].setParticipantNickname(newNickname, topicPkfp); //here topic is the same as particiapnt pkfp
     }
 
     setInviteAlias(topicPkfp, inviteCode, alias){
@@ -725,7 +725,7 @@ export class ChatClient{
 
     getParticipants(topicPkfp){
         if(this.topics.hasOwnProperty(topicPkfp)){
-            return this.topics[topicPkfp].participants;
+            return this.topics[topicPkfp].getParticipants();
         }
     }
 

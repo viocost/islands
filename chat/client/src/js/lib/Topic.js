@@ -214,7 +214,7 @@ export class Topic{
                 this._metadata.deleteInvite(msg.body.invite);
             }
             if (msg.body.inviteePkfp){
-                self.nicknameChangeNotifyAll()
+                self.nicknameChangeNotify(msg.body.inviteePkfp)
             }
             self.saveClientSettings();
             console.log("Metadata updated");
@@ -522,7 +522,7 @@ export class Topic{
         this._metadata.setParticipantNickname(nickname, pkfp);
         this.saveClientSettings();
         if (pkfp === this.pkfp){
-            this.nicknameChangeNotifyAll()
+            this.nicknameChangeNotify()
         }
     }
 
@@ -531,14 +531,17 @@ export class Topic{
         this.saveClientSettings();
     }
 
-    nicknameChangeNotifyAll(){
+    nicknameChangeNotify(pkfp){
+        let self = this;
         let curNickname = self.getCurrentNickname()
         let sharedKey = self.getSharedKey()
         console.log(`Sending current nickname: ${curNickname}. Encrypting with: ${sharedKey}`);
         let message = new Message(self.version);
         message.setCommand(Internal.NICKNAME_NOTE)
         message.setSource(self.pkfp);
-        message.setDest(msg.body.inviteePkfp);
+        if(pkfp){
+            message.setDest(pkfp);
+        }
         message.addNonce();
         message.setAttribute("nickname",
                             ChatUtility.symKeyEncrypt(curNickname, sharedKey));
@@ -722,6 +725,15 @@ export class Topic{
         }
     }
 
+    getParticipants(){
+        let res = JSON.parse(JSON.stringify(this._metadata.body.participants))
+        Object.keys(res).forEach(k =>{
+            res[k].alias = this._metadata.getParticipantAlias(k)
+            res[k].nickname = this._metadata.getParticipantNickname(k)
+        })
+        return res;
+    }
+
     getParticipantRepr(pkfp){
         if (this.participants[pkfp]){
             return this.participants[pkfp].alias || this.participants[pkfp].nickname  || "Unknown";
@@ -729,12 +741,6 @@ export class Topic{
     }
 
 
-    setParticipantAlias(pkfp, newAlias){
-        console.log("Set participant alias called");
-        assert(this.settgins.membersData[pkfp], `Participant ${pkfp}, not found`);
-        this.settings.membersData[pkfp] = newAlias;
-        this.saveClientSettings();
-    }
 
     getPublicKey(){
         if(!this.privateKey) throw new Error("No private key found")
