@@ -17,7 +17,6 @@ export class ArrivalHub{
                     console.error("Unknown destination packet received");
                     return;
                 }
-                console.log(`Emitting for ${dest}, pkfpDest: ${data.headers.pkfpDest}, pkfpSource: ${data.headers.pkfpSource}`);
                 self.emit(dest, data);
             } else {
                 console.log(`MESSAGE WITHOUT HEADERS ARRIVED. Event: ${event}, data: ${JSON.stringify(data)}, `);

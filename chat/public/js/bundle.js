@@ -5027,6 +5027,48 @@ util.estimateCores = function(options, callback) {
 
 /***/ }),
 /* 9 */
+/***/ (function(module, exports) {
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
+  try {
+    var info = gen[key](arg);
+    var value = info.value;
+  } catch (error) {
+    reject(error);
+    return;
+  }
+
+  if (info.done) {
+    resolve(value);
+  } else {
+    Promise.resolve(value).then(_next, _throw);
+  }
+}
+
+function _asyncToGenerator(fn) {
+  return function () {
+    var self = this,
+        args = arguments;
+    return new Promise(function (resolve, reject) {
+      var gen = fn.apply(self, args);
+
+      function _next(value) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
+      }
+
+      function _throw(err) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
+      }
+
+      _next(undefined);
+    });
+  };
+}
+
+module.exports = _asyncToGenerator;
+
+/***/ }),
+/* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5212,48 +5254,6 @@ var Message = /*#__PURE__*/function () {
   return Message;
 }();
 Message.properties = ["headers", "body", "signature"];
-
-/***/ }),
-/* 10 */
-/***/ (function(module, exports) {
-
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
-  try {
-    var info = gen[key](arg);
-    var value = info.value;
-  } catch (error) {
-    reject(error);
-    return;
-  }
-
-  if (info.done) {
-    resolve(value);
-  } else {
-    Promise.resolve(value).then(_next, _throw);
-  }
-}
-
-function _asyncToGenerator(fn) {
-  return function () {
-    var self = this,
-        args = arguments;
-    return new Promise(function (resolve, reject) {
-      var gen = fn.apply(self, args);
-
-      function _next(value) {
-        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
-      }
-
-      function _throw(err) {
-        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
-      }
-
-      _next(undefined);
-    });
-  };
-}
-
-module.exports = _asyncToGenerator;
 
 /***/ }),
 /* 11 */
@@ -7563,7 +7563,7 @@ var regenerator_default = /*#__PURE__*/__webpack_require__.n(regenerator);
 var runtime = __webpack_require__(29);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/asyncToGenerator.js
-var asyncToGenerator = __webpack_require__(10);
+var asyncToGenerator = __webpack_require__(9);
 var asyncToGenerator_default = /*#__PURE__*/__webpack_require__.n(asyncToGenerator);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/web.dom.iterable.js
@@ -7587,7 +7587,7 @@ var Events = __webpack_require__(0);
 var WildEmitter = __webpack_require__(11);
 
 // EXTERNAL MODULE: ./client/src/js/lib/Message.js
-var Message = __webpack_require__(9);
+var Message = __webpack_require__(10);
 
 // EXTERNAL MODULE: ./client/src/js/lib/iCrypto.js
 var iCrypto = __webpack_require__(2);
@@ -8239,9 +8239,9 @@ var Topic_Topic = /*#__PURE__*/function () {
   }, {
     key: "addNewMessage",
     value: function addNewMessage(self, chatMessage) {
-      console.log("Adding new chat message");
-      self.messages.push[chatMessage];
-      console.log("Message added");
+      console.log("!!========ADDING NEW CHAT MESSAGE. msgCount: ".concat(self.messages.length, " \n").concat(chatMessage.body));
+      self.messages.splice(0, 0, chatMessage);
+      console.log("Message added. msgCount: ".concat(self.messages.length));
       self.emit(Events["Events"].NEW_CHAT_MESSAGE, chatMessage, self.pkfp);
     }
   }, {
@@ -8257,7 +8257,42 @@ var Topic_Topic = /*#__PURE__*/function () {
 
         this.initLoad();
       }
-    } // Incoming message
+    }
+  }, {
+    key: "getMessagesAsync",
+    value: function () {
+      var _getMessagesAsync = asyncToGenerator_default()( /*#__PURE__*/regenerator_default.a.mark(function _callee2() {
+        return regenerator_default.a.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                if (!this.initLoaded) {
+                  _context2.next = 4;
+                  break;
+                }
+
+                return _context2.abrupt("return", this.messages);
+
+              case 4:
+                console.log("Messages has not been loaded. Loading...."); //init load and then emit
+
+                this.initLoad();
+                return _context2.abrupt("return", null);
+
+              case 7:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2, this);
+      }));
+
+      function getMessagesAsync() {
+        return _getMessagesAsync.apply(this, arguments);
+      }
+
+      return getMessagesAsync;
+    }() // Incoming message
 
   }, {
     key: "preprocessIncomingMessage",
@@ -8476,13 +8511,6 @@ var Topic_Topic = /*#__PURE__*/function () {
   }, {
     key: "setParticipantNickname",
     value: function setParticipantNickname(nickname, pkfp) {
-      this.emit(Events["Events"].NICKNAME_CHANGED, {
-        topicPkfp: this.pkfp,
-        oldNickname: this._metadata.body.settings.membersData[pkfp].nickname,
-        newNickname: nickname,
-        participantPkfp: pkfp
-      });
-
       this._metadata.setParticipantNickname(nickname, pkfp);
 
       this.saveClientSettings();
@@ -17699,7 +17727,7 @@ var es6_object_to_string = __webpack_require__(15);
 var runtime = __webpack_require__(29);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/asyncToGenerator.js
-var asyncToGenerator = __webpack_require__(10);
+var asyncToGenerator = __webpack_require__(9);
 var asyncToGenerator_default = /*#__PURE__*/__webpack_require__.n(asyncToGenerator);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/classCallCheck.js
@@ -17736,7 +17764,7 @@ var iCrypto = __webpack_require__(2);
 var WildEmitter = __webpack_require__(11);
 
 // EXTERNAL MODULE: ./client/src/js/lib/Message.js
-var Message = __webpack_require__(9);
+var Message = __webpack_require__(10);
 
 // EXTERNAL MODULE: ./common/Events.js
 var Events = __webpack_require__(0);
@@ -23098,7 +23126,7 @@ exports.Socket = __webpack_require__(172);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(29);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(10);
+/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(9);
 /* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(31);
 /* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_3__);
@@ -29930,7 +29958,7 @@ module.exports = _toConsumableArray;
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(29);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(10);
+/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(9);
 /* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_3__);
@@ -29980,35 +30008,31 @@ var MessageQueue = /*#__PURE__*/function () {
                       switch (_context.prev = _context.next) {
                         case 0:
                           _context.prev = 0;
-                          console.log("Aquiring lock");
-                          _context.next = 4;
+                          _context.next = 3;
                           return self.lock.acquire();
 
-                        case 4:
-                          console.log("Lock acquired, enqueueing");
-
+                        case 3:
                           _this.queue.push(msg);
 
-                          _context.next = 11;
+                          _context.next = 9;
                           break;
 
-                        case 8:
-                          _context.prev = 8;
+                        case 6:
+                          _context.prev = 6;
                           _context.t0 = _context["catch"](0);
                           console.error("Enqueue error: ".concat(_context.t0.message, " "));
 
-                        case 11:
-                          _context.prev = 11;
-                          console.log("Releasing lock...");
+                        case 9:
+                          _context.prev = 9;
                           self.lock.release();
-                          return _context.finish(11);
+                          return _context.finish(9);
 
-                        case 15:
+                        case 12:
                         case "end":
                           return _context.stop();
                       }
                     }
-                  }, _callee, null, [[0, 8, 11, 15]]);
+                  }, _callee, null, [[0, 6, 9, 12]]);
                 })));
 
               case 2:
@@ -45444,7 +45468,7 @@ module.exports = _defineProperty;
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(29);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(10);
+/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(9);
 /* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(4);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_6__);
@@ -45460,7 +45484,7 @@ module.exports = _defineProperty;
 /* harmony import */ var _MessageQueue__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(125);
 /* harmony import */ var _ArrivalHub__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(187);
 /* harmony import */ var _ChatUtility__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(7);
-/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(9);
+/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(10);
 /* harmony import */ var _Topic__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(21);
 /* harmony import */ var _DownloadAttachmentAgent__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(188);
 /* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(2);
@@ -45523,7 +45547,7 @@ var ChatClient = /*#__PURE__*/function () {
       var _this = this;
 
       setImmediate( /*#__PURE__*/_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_5___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.mark(function _callee() {
-        var response, vault, vaultId, _i, _Object$keys, pkfp;
+        var response, vault, vaultId, vaultObj, _i, _Object$keys, pkfp, errMsg;
 
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.wrap(function _callee$(_context) {
           while (1) {
@@ -45555,6 +45579,12 @@ var ChatClient = /*#__PURE__*/function () {
                 throw new Error("Vault not found");
 
               case 10:
+                vaultObj = new _Vault__WEBPACK_IMPORTED_MODULE_11__[/* Vault */ "a"]();
+                _context.next = 13;
+                return vaultObj.initSaved(_this.version, vault.vault, password, vault.topics);
+
+              case 13:
+                _this.vault = vaultObj;
                 console.log("Got vault. Initializing"); //Initialize vault
                 // Initialize multiplexor socket
 
@@ -45566,28 +45596,25 @@ var ChatClient = /*#__PURE__*/function () {
                 _this.arrivalHub = new _ArrivalHub__WEBPACK_IMPORTED_MODULE_15__[/* ArrivalHub */ "a"](_this.connector); //Initialize message queue
 
                 _this.messageQueue = new _MessageQueue__WEBPACK_IMPORTED_MODULE_14__[/* MessageQueue */ "a"](_this.connector);
-                _this.vault = new _Vault__WEBPACK_IMPORTED_MODULE_11__[/* Vault */ "a"]();
-
-                _this.vault.initSaved(_this.version, vault.vault, password, vault.topics);
 
                 _this.vault.setId(vaultId);
 
                 console.log("Vault initialized. Initializing connector...");
                 console.log("Bootstrapping vault..."); //bootstrapping vault
 
-                _context.next = 22;
+                _context.next = 24;
                 return _this.vault.bootstrap(_this.arrivalHub, _this.messageQueue, _this.version);
 
-              case 22:
+              case 24:
                 console.log("Setting listeneres");
 
                 _this.setVaultListeners();
 
                 console.log("Establishing connection");
-                _context.next = 27;
+                _context.next = 29;
                 return _this.connector.establishConnection(vaultId);
 
-              case 27:
+              case 29:
                 console.log("Connection established. Initializing arrival hub..");
                 console.log("Initializing topic listeners...");
                 _this.topics = _this.vault.topics;
@@ -45606,23 +45633,25 @@ var ChatClient = /*#__PURE__*/function () {
 
                 _this.postLogin();
 
-                _context.next = 39;
+                _context.next = 43;
                 break;
 
-              case 35:
-                _context.prev = 35;
+              case 37:
+                _context.prev = 37;
                 _context.t0 = _context["catch"](0);
+                errMsg = "Login error: ".concat(_context.t0, ". \nCheck connection and entered password and try again.");
+                console.log(errMsg);
 
-                _this.emit(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].LOGIN_ERROR, _context.t0);
+                _this.emit(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].LOGIN_ERROR, new Error(errMsg));
 
-                console.trace(_context.t0);
+                throw new Error(errMsg);
 
-              case 39:
+              case 43:
               case "end":
                 return _context.stop();
             }
           }
-        }, _callee, null, [[0, 35]]);
+        }, _callee, null, [[0, 37]]);
       })));
     }
   }, {
@@ -46204,6 +46233,31 @@ var ChatClient = /*#__PURE__*/function () {
       }, 50);
     }
   }, {
+    key: "getMessagesAsync",
+    value: function () {
+      var _getMessagesAsync = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_5___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.mark(function _callee4(pkfp) {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                Object(_common_IError__WEBPACK_IMPORTED_MODULE_10__[/* assert */ "b"])(this.topics[pkfp], "Topic ".concat(pkfp, " not found!"));
+                return _context4.abrupt("return", this.topics[pkfp].getMessagesAsync());
+
+              case 2:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4, this);
+      }));
+
+      function getMessagesAsync(_x4) {
+        return _getMessagesAsync.apply(this, arguments);
+      }
+
+      return getMessagesAsync;
+    }()
+  }, {
     key: "getParticipantNickname",
     value: function getParticipantNickname(topicPkfp, participantPkfp) {
       if (!this.topics[topicPkfp]) {
@@ -46305,19 +46359,19 @@ var ChatClient = /*#__PURE__*/function () {
   }, {
     key: "_initMessageQueue",
     value: function () {
-      var _initMessageQueue2 = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_5___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.mark(function _callee4() {
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.wrap(function _callee4$(_context4) {
+      var _initMessageQueue2 = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_5___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.mark(function _callee5() {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_1___default.a.wrap(function _callee5$(_context5) {
           while (1) {
-            switch (_context4.prev = _context4.next) {
+            switch (_context5.prev = _context5.next) {
               case 0:
                 this.messageQueue = new _MessageQueue__WEBPACK_IMPORTED_MODULE_14__[/* MessageQueue */ "a"]();
 
               case 1:
               case "end":
-                return _context4.stop();
+                return _context5.stop();
             }
           }
-        }, _callee4, this);
+        }, _callee5, this);
       }));
 
       function _initMessageQueue() {
@@ -47979,7 +48033,7 @@ function coerce (version, options) {
 /* harmony import */ var core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_to_string__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(29);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(10);
+/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(9);
 /* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(4);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_5__);
@@ -48096,7 +48150,6 @@ var Connector = /*#__PURE__*/function () {
 
 
                   self.chatSocket.on("ping", function () {
-                    console.log("Ping sent to server");
                     pingPongCount++;
 
                     if (pingPongCount > maxUnrespondedPings) {
@@ -48107,7 +48160,6 @@ var Connector = /*#__PURE__*/function () {
                     }
                   });
                   self.chatSocket.on("pong", function () {
-                    console.log("Pong. Count: ".concat(pingPongCount));
                     pingPongCount = 0;
                   });
                   self.chatSocket.on('connect', function () {
@@ -48320,7 +48372,6 @@ var ArrivalHub = function ArrivalHub(connector) {
         return;
       }
 
-      console.log("Emitting for ".concat(dest, ", pkfpDest: ").concat(data.headers.pkfpDest, ", pkfpSource: ").concat(data.headers.pkfpSource));
       self.emit(dest, data);
     } else {
       console.log("MESSAGE WITHOUT HEADERS ARRIVED. Event: ".concat(event, ", data: ").concat(JSON.stringify(data), ", "));
@@ -48342,7 +48393,7 @@ var ArrivalHub = function ArrivalHub(connector) {
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(29);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(10);
+/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(9);
 /* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(4);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_5__);
@@ -48546,7 +48597,7 @@ var DownloadAttachmentAgent = /*#__PURE__*/function () {
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(5);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(2);
-/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(9);
+/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(10);
 /* harmony import */ var _WildEmitter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(11);
 /* harmony import */ var _Topic__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(21);
 /* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(0);
@@ -48739,14 +48790,14 @@ var TopicJoinAgent = /*#__PURE__*/function () {
 /* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(29);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(10);
+/* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(9);
 /* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_7__);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(4);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_8__);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(5);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_9__);
 /* harmony import */ var _ChatMessage__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(40);
-/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(9);
+/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(10);
 /* harmony import */ var _common_IError__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(1);
 /* harmony import */ var _Topic__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(21);
 /* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(0);
@@ -49081,7 +49132,7 @@ var SendMessageAgent = /*#__PURE__*/function () {
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _WildEmitter__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(11);
-/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(9);
+/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(10);
 /* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(0);
 /* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_common_Events__WEBPACK_IMPORTED_MODULE_4__);
 
@@ -62223,7 +62274,7 @@ if(false) {}
 
 exports = module.exports = __webpack_require__(62)(false);
 // Module
-exports.push([module.i, "button{margin:.8rem .8rem .8rem 0;padding:1rem;background-color:#242831;border:none;cursor:pointer;outline:none;font-size:1.6rem;color:#eee}button:hover{background-color:#0c0;transition:.2s}.arrow{border:solid #eee;border-width:0 .3rem .3rem 0;width:1.5rem;position:relative;height:1.5rem;padding:.3rem}.arrow::before,.arrow::after{content:'';position:absolute;width:3rem;height:3rem;cursor:poninter}.arrow.right{transform:rotate(-45deg);-webkit-transform:rotate(-45deg)}.arrow.right::before,.arrow.right::after{transform:rotate(45deg);-webkit-transform:rotate(45deg);left:-1rem;top:-1rem}.arrow.down{transform:rotate(45deg);-webkit-transform:rotate(45deg)}.arrow.down::before,.arrow.down::after{transform:rotate(-45deg);-webkit-transform:rotate(-45deg)}.arrow.up{transform:rotate(-135deg);-webkit-transform:rotate(-135deg)}.arrow.up::before,.arrow.up::after{transform:rotate(135deg);-webkit-transform:rotate(135deg)}.arrow.left{transform:rotate(135deg);-webkit-transform:rotate(135deg)}.arrow.left::before,.arrow.left::after{transform:rotate(-135deg);-webkit-transform:rotate(-135deg)}button{margin:.8rem .8rem .8rem 0;padding:1rem;background-color:#242831;border:none;cursor:pointer;outline:none;font-size:1.6rem;color:#eee}button:hover{background-color:#0c0;transition:.2s}*,*::before,*::after{padding:0;margin:0;box-sizing:border-box}html{font-size:62.5%;font-family:sans-serif}body{font-size:1.5rem;height:100vh;display:flex;flex-direction:column;background-color:#2f3440}main{flex:1}header{display:flex;flex-direction:row;justify-content:space-between;background-color:#1e1f26;color:#ccc}input{margin:1rem 0 1rem 0;height:4rem;font-size:1.9rem;padding:0.6rem;border-radius:0.5rem;border:0.1rem solid #b5b5b5;outline:none}textarea{border:0.1rem solid #b5b5b5;border-radius:0.5rem;outline:none;height:10rem;width:25rem;margin:1rem 0 1rem 0}h1{font-size:4rem}h3{font-size:2rem}select{outline:none;padding:.3rem}.heading{padding:2rem 0 1rem 0}.heading .heading__main{font-weight:100;color:whitesmoke;text-transform:uppercase;font-family:monospace;font-size:3.5rem}.online__heading-icon i.fa{margin-right:1.8rem;color:green}.right-align{display:block;text-align:right}.left-align{display:block;text-align:left}.form-border{padding:3rem;border:1px solid #b5b5b5;border-radius:.5rem}.flex-column{display:flex;flex-direction:column}#help-link{margin-right:.5rem}button{margin:.8rem .8rem .8rem 0;padding:1rem;background-color:#242831;border:none;cursor:pointer;outline:none;font-size:1.6rem;color:#eee}button:hover{background-color:#0c0;transition:.2s}.hljs{display:block;overflow-x:auto;padding:0.5em;background:#2f3440;font-size:1.3rem;color:#aaa;margin:1rem 0}.hljs::-webkit-scrollbar{width:.5rem;height:.5rem;background-color:none}.hljs::-webkit-scrollbar-track{-webkit-box-shadow:none;background-color:none;border-radius:10px}.hljs::-webkit-scrollbar-thumb{border-radius:10px;background-color:none;background-image:-webkit-gradient(linear, 40% 0%, 75% 84%, from(#4D9C41), to(#19911D), color-stop(0.6, #54DE5D))}.hljs-subst{color:#e2e2e2}.hljs-comment{color:#888888}.hljs-keyword,.hljs-attribute,.hljs-selector-tag,.hljs-meta-keyword,.hljs-doctag,.hljs-name{font-weight:bold;color:#468aea}.hljs-type,.hljs-string,.hljs-number,.hljs-selector-id,.hljs-selector-class,.hljs-quote,.hljs-template-tag,.hljs-deletion{color:#ff5e5e}.hljs-title,.hljs-section{color:#ff5e5e;font-weight:bold}.hljs-regexp,.hljs-symbol,.hljs-variable,.hljs-template-variable,.hljs-link,.hljs-selector-attr,.hljs-selector-pseudo{color:#BC6060}.hljs-attr{color:#468aea}.hljs-literal{color:#46ea7d}.hljs-built_in,.hljs-bullet,.hljs-code,.hljs-addition{color:#397300}.hljs-meta{color:#1f7199}.hljs-meta-string{color:#4d99bf}.hljs-emphasis{font-style:italic}.hljs-strong{font-weight:bold}button{margin:.8rem .8rem .8rem 0;padding:1rem;background-color:#242831;border:none;cursor:pointer;outline:none;font-size:1.6rem;color:#eee}button:hover{background-color:#0c0;transition:.2s}.header-section-left{display:flex;flex-direction:row;align-items:center}.header-section-left img{height:4rem;width:4rem;margin:1rem}.header-section-left #active-title{margin-left:1rem}#menu-button{width:4rem;height:4rem;margin:1rem;background:transparent url(\"/img/menu.svg\") no-repeat 0 50%;background-size:100% 100%}#menu-button:hover{cursor:pointer;-webkit-filter:brightness(70%);filter:birghtness(70%);transition:.2s}.menu-on{-webkit-filter:brightness(70%);filter:birghtness(70%)}.header-section-middle{display:flex;flex-direction:column;align-items:center}.header-section-middle img{margin:1rem;width:4rem;height:4rem;-webkit-filter:brightness(70%);filter:birghtness(70%)}.header-section-middle img:hover{cursor:pointer;-webkit-filter:brightness(100%);filter:birghtness(100%);transition:.2s}@media (max-width: 760px){.header-section-middle{display:none}}.header-section-right{display:flex;flex-direction:row}.header-section-right img{-webkit-filter:brightness(70%);filter:birghtness(70%);width:4rem;height:4rem;margin:1rem}.header-section-right img:hover{cursor:pointer;-webkit-filter:brightness(100%);filter:birghtness(100%);transition:.2s}main{background-color:#2f3440}#main-container{height:calc(100vh - 6rem);width:100%;display:flex;flex-direction:row}.side-panel-container{display:flex;flex-direction:column;width:30%;max-width:40rem;height:100%;align-items:flex-start}@media (max-width: 760px){.side-panel-container{width:100%;max-width:100%}}.carousel-wrap{width:100%;display:flex;flex-direction:row;align-items:center;height:7rem}.carousel-wrap .btn-rotate{display:none;margin:0 2.5rem 0 2.5rem;transition:.2s}.carousel-wrap .btn-rotate:hover{border-color:#0c0;transition:.2s}.carousel-wrap .carousel{flex:1;flex-direction:column;text-align:-webkit-center;padding:1.5rem 1rem 1.5rem 0;color:#eee;font-size:2.5rem;font-weight:bold;border:none;outline:none;background-color:inherit;appearance:none;-webkit-appearance:none;-moz-appearance:none;-ms-appearance:none}.carousel-wrap .carousel:-ms-expand{display:none}.carousel-wrap .carousel option{background-color:#242831;border:none;font-size:1.7rem;outline:none}.carousel-wrap .spin-carousel{width:2.5rem;height:2.4rem;margin:1.5rem 1rem 1.5rem 1rem}.side-panel-wrapper{display:flex;flex-direction:column;flex:1;width:100%}.side-block-wrap{overflow:auto;flex:1}.side-panel-block{display:flex;flex-direction:column;height:100%}.side-block-data-list{list-style-type:none;display:flex;flex:1;flex-direction:column;list-style-type:initial;overflow:auto;scrollbar-color:#0c0 #2f3440;list-style-position:inside;align-items:center}.side-block-data-list::-webkit-scrollbar{width:.5rem;height:.5rem;background-color:none}.side-block-data-list::-webkit-scrollbar-track{-webkit-box-shadow:none;background-color:none;border-radius:10px}.side-block-data-list::-webkit-scrollbar-thumb{border-radius:10px;background-color:none;background-image:-webkit-gradient(linear, 40% 0%, 75% 84%, from(#4D9C41), to(#19911D), color-stop(0.6, #54DE5D))}.side-panel-button-row{display:flex;flex-direction:row;width:90%;overflow:hidden;height:6rem;margin-left:1rem;margin-top:1rem}.side-block-data-list-item{flex-direction:column;border-bottom:1px solid #242831;padding:.5rem;display:flex;width:100%}.side-block-data-list-item:hover{background-color:#242831;cursor:pointer}.topic-assets{margin-left:2rem;width:calc(100% - 2rem)}.topic-asset-item-wrap{padding:.5rem}.invite-list-item{display:flex;flex-direction:row;padding:.5rem;color:#eee;list-style:none;overflow:hidden;text-overflow:ellipsis;padding:.5rem;border-bottom:1px solid #242831;white-space:nowrap;cursor:pointer}.invite-list-item:hover{background-color:#242831}.invite-list-item .invite-icon{background:url(\"/img/invite-light.svg\");background-size:cover;width:2rem;height:2rem}.invite-list-item .invite-label{color:#eee;margin-left:1rem;overflow:hidden;text-overflow:ellipsis;flex:1}.participant-list-item{display:flex;flex-direction:row;padding:.5rem;color:#eee;list-style:none;overflow:hidden;text-overflow:ellipsis;padding:.5rem;border-bottom:1px solid #242831;cursor:pointer}.participant-list-item:hover{background-color:#242831}.participant-list-item .that-is-me{outline:2px green solid}.participant-list-item .participant-icon{background:url(\"/img/user-light.svg\");background-size:cover;width:2rem;height:2rem}.participant-list-item .participant-label{color:#eee;margin-left:1rem;overflow:hiddne;text-overflow:ellipsis;white-space:nowrap;flex:1}.participant-list-item .participant-label span{margin-right:.5rem}.active-asset{background-color:#135384}.active-asset:hover{background-color:#16619a}.topic-row-wrap{display:flex;flex-direction:row}.btn-expand-topic{width:2rem;height:2rem;background:url(\"/img/add-light.svg\");background-size:cover}.btn-collapse-topic{background:url(\"/img/minus-light.svg\");background-size:cover}.btn-top-row{width:100%;margin:0;padding-bottom:1rem;border-bottom:1px solid #242831}.btn-top{flex:1;margin:1rem;padding:0;background-color:#242831}.topic-name{font-size:1.8rem;margin-left:1.2rem;color:#eee;display:flex;flex:1}.unread-messages{font-weight:bold;display:flex;padding:.5rem;background-color:#0a0b0e;font-size:1.4rem;color:#eee;border-radius:40%;margin-right:1rem}.topic-in-focus{background-color:#385841}.topic-in-focus:hover{background-color:#42684d}.ctx-topic-buttons{display:flex;flex-direction:row;margin:2rem 1rem 1rem 1rem;flex-wrap:wrap}.ctx-topic-buttons button{flex:1}.bottom-section{height:40%}@media screen and (max-height: 800px){.bottom-section{display:none}}.connection-indicator-container{display:flex;flex-direction:row;flex-shrink:1;height:4rem;align-items:center;width:100%;margin:1rem}.connection-indicator-container .connection-indicator-label-wrap{display:flex;flex-direction:row}.connection-indicator-container .connection-indicator-label-wrap .connection-indicator-label{display:flex;font-size:1.3rem;color:#eee;font-weight:100;margin:0 1rem;align-items:center}.connection-indicator-container .connection-indicator-label-wrap .reconnect-spinner{width:2rem;height:2rem;display:none}.connection-indicator-container .connection-indicator-label-wrap .reconnect-button{width:10rem;height:2rem;text-align:center;background-color:#ccc;color:#000;display:none}.connection-indicator-container .connection-indicator-label-wrap .reconnect-button:hover{background-color:#999}.connection-indicator-container .connection-indicator{border-radius:50%;max-width:1rem;max-height:1rem;width:100%;height:100%}.connection-indicator-container .connected{background-color:green}.connection-indicator-container .dicsonnected{background-color:orange}.connection-indicator-container .error{background-color:red}.connection-indicator-container .connecting{background-color:#b2f2ff}.connection-indicator-container .unknown{background-color:grey}.version-wrapper{display:flex;flex-direction:row;background-color:#242831;align-items:center;padding:1rem;width:100%;border-right:1px solid #2f3440}.version-wrapper img{margin:0 1rem 0 1rem;width:3rem;height:3rem}.version-wrapper h3{color:#e1e1e1;font-size:1.4rem;font-weight:100}.manage-topics-view{color:#eee;display:flex;flex-direction:column;margin:4rem}@media (max-width: 760px){.manage-topics-view{margin:.5rem}}.manage-topics-list{color:#eee;margin:1rem 0 2rem 0}.manage-topics-list div{font-size:1.6rem;padding:1.3rem;border-bottom:1px solid #242831}.manage-topics-list div:hover{background-color:#242831;cursor:pointer}.manage-topics-list .selected{background-color:#385841}.manage-topics-list .selected:hover{background-color:#42684d;cursor:pointer}#new-message-container{max-height:50%;background-color:inherit;display:none;margin:2rem 2rem 1rem 0;flex-direction:row;justify-content:flex-end}.control-col{display:flex;flex-direction:column;margin-left:2rem}.private-label{display:none;flex-direction:row;justify-content:flex-end;color:#eee;margin:.5rem}.private-label img{width:2rem;height:2rem;margin-right:1rem}.private-label span{margin-right:1rem}.select-member-wrap{display:flex;flex-direction:row;justify-content:flex-end;border-bottom:none;margin:0;color:#eee}.select-member-wrap h4{margin:auto 1rem}.select-member-wrap select{color:#eee;background:#2f3440;padding:.8rem;min-width:37%;border:none;border-bottom:1px solid #242831;border-radius:.5rem .5rem 0 0;outline:none}.input-wrap{display:flex;flex-direction:row;width:100%;justify-content:flex-end;margin:0}.input-wrap #new-msg{width:100%;border-radius:.5rem 0 .5rem .5rem;height:3.5rem;margin:0 0 .5rem 0;resize:vertical;background-color:#2f3440;color:#eee;border:none}.input-wrap .button-column{display:flex;flex-direction:column;margin:0}.input-wrap .button-column img{cursor:pointer;border-radius:1rem;margin-right:2rem;width:3rem;height:3rem;transition:filter .2s ease}.input-wrap .button-column img:hover{filter:drop-shadow(1px 1px 2px #898c97)}.input-wrap .button-column .disabled{filter:grayscale(100%)}.new-msg-input{width:100%}.new-message-wrap{display:flex;flex-direction:column;align-items:flex-end}.new-message-wrap *{display:block;margin:1rem 0 1rem 0}.new-message-wrap #new-msg{background-color:#2f3440;min-width:60%;padding:1rem;border-radius:0.5rem;resize:vertical}.new-message-wrap .send-button-wrap{display:flex;flex-direction:row;align-items:center;margin:0}.new-message-wrap .send-button-wrap .hint-wrap{display:flex;flex-direction:column;align-items:flex-end}.new-message-wrap .send-button-wrap .hint-wrap .send-new-message-hint{margin:0 1.5rem 0 1.5rem;color:#9da3ad;font-size:1.2rem;font-style:italic}.btn-send{border:none;margin:0;outline:none;background-color:#2f3440;color:#eee;font-size:1.8rem;padding:.8rem;transition:.2s}.btn-send:hover{background-color:#0c0;transition:.2s}.attach-file-dummy{display:none}.attach-file-wrap{height:5rem;display:flex;flex-direction:row;justify-content:flex-end;align-items:center;align-self:flex-end;width:60%;min-width:10rem;padding:1rem;border-radius:0.5rem}.new-msg-buttons{width:7rem}.new-msg-buttons label{align-self:center;margin-top:1.5rem;width:4rem;height:4rem;display:flex}#chosen-files{margin-right:1.7rem;display:flex;flex-direction:row}#chosen-files .chosen-file-wrap{background-color:#3a404f;padding:.2rem;border-radius:.5rem;height:inherit;display:flex;align-items:center;font-size:1.6rem;font-weight:bolder;color:#e1e1e1}#chosen-files .chosen-file-wrap img{height:20px;width:20px}#chosen-files .chosen-file-wrap img:hover{filter:drop-shadow(1px 1px 2px #fff)}.inputfile{width:0.1px;height:0.1px;opacity:0;overflow:hidden;position:absolute;z-index:-1}.inputfile+label{display:flex;flex-direction:row}.inputfile+label img{border-radius:1rem;cursor:pointer;width:32px;height:32px;transition:filter .2s ease}.inputfile+label img:hover{filter:drop-shadow(1px 1px 2px #000)}.new-msg-buttons{width:7rem}.new-msg-buttons label{align-self:center;margin-top:1.5rem;width:4rem;height:4rem;display:flex}.form-outer-wrapper{display:block;margin:10% auto;color:#eee}.form-outer-wrapper .form-border{background-color:#111113;border:none;display:flex;flex-direction:column;align-items:flex-start}.form-outer-wrapper .form-border p{margin:1rem 0 1rem 0}.form-input{background-color:#2f3440;color:#eee;border:none;outline:none}.form-button{border-radius:.4rem;background-color:#2f3440;color:#eee;border:none;outline:none;padding:1rem;font-size:1.8rem}.form-button:hover{background-color:#0c0;transition:.2s}.main-panel-container{background-color:#242831;width:70%;height:100%;display:flex;flex-direction:column;flex:1;overflow:hidden}.main-panel-container .messages-panel-container{width:100%;display:flex;flex:1;background-color:inherit;border-bottom:2px solid #2f3440;overflow-x:hidden;overflow-y:auto;flex-grow:1;border-radius:1rem;padding:1rem 2rem 1rem 2rem;resize:none;height:100%}.main-panel-container .messages-panel-container::-webkit-scrollbar{width:.5rem;height:.5rem;background-color:none}.main-panel-container .messages-panel-container::-webkit-scrollbar-track{-webkit-box-shadow:none;background-color:none;border-radius:10px}.main-panel-container .messages-panel-container::-webkit-scrollbar-thumb{border-radius:10px;background-color:none;background-image:-webkit-gradient(linear, 40% 0%, 75% 84%, from(#4D9C41), to(#19911D), color-stop(0.6, #54DE5D))}.messages-window{width:100%;display:flex;flex-direction:column}.message{display:flex;flex-shrink:0;flex-direction:column;width:100%;margin:0.5rem;padding:.3rem;color:#e2e2e2;height:auto;align-self:flex-start}.my_message{display:flex;flex-shrink:0;flex-direction:column;width:100%;margin:0.5rem;padding:.3rem;color:#e2e2e2;height:auto;color:#5bde25}.service-record{display:flex;flex-shrink:0;flex-direction:column;width:100%;margin:0.5rem;padding:.3rem;color:#e2e2e2;height:auto;width:100%;text-align:left;font-size:1.2rem;color:#4c4c4c}.service-record .msg-body{text-align:left}.ephemeral-msg{display:flex;flex-shrink:0;flex-direction:column;width:100%;margin:0.5rem;padding:.3rem;color:#e2e2e2;height:auto;width:100%;text-align:left;font-size:1.2rem;color:#8a8a8a}.ephemeral-msg .msg-body{text-align:left}.private-message{border:.3rem solid #b0afca}.private-mark{font-style:italic;margin:0 .5rem 0 .5rem}.msg-time-stamp{font-style:italic;font-size:1rem;margin:0 .5rem 0 .5rem}.msg-body{height:auto;overflow-wrap:break-word}.m-author-id{display:none}.m-recipient-id{display:none}.message-id{display:none}.attach-file-wrap{height:5rem;display:flex;flex-direction:row;justify-content:flex-end;align-items:center;align-self:flex-end;width:60%;min-width:10rem;padding:1rem;border-radius:0.5rem}.uploading-animation{display:none;width:4rem;height:4rem}.msg-attachments{display:flex;align-self:flex-start}.att-view{cursor:pointer;margin:.5rem 0;background-color:#2f3440;padding:.5rem}.att-view .att-state{display:none}.att-view .att-state .spinner{width:1.7rem;margin-right:.3rem;display:flex}.att-view .att-name{font-weight:bold;color:#ff5e5e;font-size:1.6rem;margin:0 .4rem}.att-view .att-size{font-size:1.1rem;color:#ff5e5e}.att-view .att-icon{width:1.4rem;height:1.4rem}.att-view:hover{background-color:#3a404f;transition:.2s}.att-info{display:none}.topic-in-focus-label{font-size:2rem;position:fixed;right:5rem;font-weight:100;color:grey}.password-warning-wrap{pagging:2rem 0 2rem 0;display:flex;flex-direction:row;width:26rem}.password-warning-wrap img{height:1.7rem;width:2rem}.password-warning-wrap div{margin-left:1rem;display:flex;flex-direction:column}.password-warning-wrap div p{margin:.5rem 0 1rem 0;color:#777}\n", ""]);
+exports.push([module.i, "button{margin:.8rem .8rem .8rem 0;padding:1rem;background-color:#242831;border:none;cursor:pointer;outline:none;font-size:1.6rem;color:#eee}button:hover{background-color:#0c0;transition:.2s}.arrow{border:solid #eee;border-width:0 .3rem .3rem 0;width:1.5rem;position:relative;height:1.5rem;padding:.3rem}.arrow::before,.arrow::after{content:'';position:absolute;width:3rem;height:3rem;cursor:poninter}.arrow.right{transform:rotate(-45deg);-webkit-transform:rotate(-45deg)}.arrow.right::before,.arrow.right::after{transform:rotate(45deg);-webkit-transform:rotate(45deg);left:-1rem;top:-1rem}.arrow.down{transform:rotate(45deg);-webkit-transform:rotate(45deg)}.arrow.down::before,.arrow.down::after{transform:rotate(-45deg);-webkit-transform:rotate(-45deg)}.arrow.up{transform:rotate(-135deg);-webkit-transform:rotate(-135deg)}.arrow.up::before,.arrow.up::after{transform:rotate(135deg);-webkit-transform:rotate(135deg)}.arrow.left{transform:rotate(135deg);-webkit-transform:rotate(135deg)}.arrow.left::before,.arrow.left::after{transform:rotate(-135deg);-webkit-transform:rotate(-135deg)}button{margin:.8rem .8rem .8rem 0;padding:1rem;background-color:#242831;border:none;cursor:pointer;outline:none;font-size:1.6rem;color:#eee}button:hover{background-color:#0c0;transition:.2s}*,*::before,*::after{padding:0;margin:0;box-sizing:border-box}html{font-size:62.5%;font-family:sans-serif}body{font-size:1.5rem;height:100vh;display:flex;flex-direction:column;background-color:#2f3440}main{flex:1}header{display:flex;flex-direction:row;justify-content:space-between;background-color:#1e1f26;color:#ccc}input{margin:1rem 0 1rem 0;height:4rem;font-size:1.9rem;padding:0.6rem;border-radius:0.5rem;border:0.1rem solid #b5b5b5;outline:none}textarea{border:0.1rem solid #b5b5b5;border-radius:0.5rem;outline:none;height:10rem;width:25rem;margin:1rem 0 1rem 0}h1{font-size:4rem}h3{font-size:2rem}select{outline:none;padding:.3rem}.heading{padding:2rem 0 1rem 0}.heading .heading__main{font-weight:100;color:whitesmoke;text-transform:uppercase;font-family:monospace;font-size:3.5rem}.online__heading-icon i.fa{margin-right:1.8rem;color:green}.right-align{display:block;text-align:right}.left-align{display:block;text-align:left}.form-border{padding:3rem;border:1px solid #b5b5b5;border-radius:.5rem}.flex-column{display:flex;flex-direction:column}#help-link{margin-right:.5rem}button{margin:.8rem .8rem .8rem 0;padding:1rem;background-color:#242831;border:none;cursor:pointer;outline:none;font-size:1.6rem;color:#eee}button:hover{background-color:#0c0;transition:.2s}.hljs{display:block;overflow-x:auto;padding:0.5em;background:#2f3440;font-size:1.3rem;color:#aaa;margin:1rem 0}.hljs::-webkit-scrollbar{width:.5rem;height:.5rem;background-color:none}.hljs::-webkit-scrollbar-track{-webkit-box-shadow:none;background-color:none;border-radius:10px}.hljs::-webkit-scrollbar-thumb{border-radius:10px;background-color:none;background-image:-webkit-gradient(linear, 40% 0%, 75% 84%, from(#4D9C41), to(#19911D), color-stop(0.6, #54DE5D))}.hljs-subst{color:#e2e2e2}.hljs-comment{color:#888888}.hljs-keyword,.hljs-attribute,.hljs-selector-tag,.hljs-meta-keyword,.hljs-doctag,.hljs-name{font-weight:bold;color:#468aea}.hljs-type,.hljs-string,.hljs-number,.hljs-selector-id,.hljs-selector-class,.hljs-quote,.hljs-template-tag,.hljs-deletion{color:#ff5e5e}.hljs-title,.hljs-section{color:#ff5e5e;font-weight:bold}.hljs-regexp,.hljs-symbol,.hljs-variable,.hljs-template-variable,.hljs-link,.hljs-selector-attr,.hljs-selector-pseudo{color:#BC6060}.hljs-attr{color:#468aea}.hljs-literal{color:#46ea7d}.hljs-built_in,.hljs-bullet,.hljs-code,.hljs-addition{color:#397300}.hljs-meta{color:#1f7199}.hljs-meta-string{color:#4d99bf}.hljs-emphasis{font-style:italic}.hljs-strong{font-weight:bold}button{margin:.8rem .8rem .8rem 0;padding:1rem;background-color:#242831;border:none;cursor:pointer;outline:none;font-size:1.6rem;color:#eee}button:hover{background-color:#0c0;transition:.2s}.header-section-left{display:flex;flex-direction:row;align-items:center}.header-section-left img{height:4rem;width:4rem;margin:1rem}.header-section-left #active-title{margin-left:1rem}#menu-button{width:4rem;height:4rem;margin:1rem;background:transparent url(\"/img/menu.svg\") no-repeat 0 50%;background-size:100% 100%}#menu-button:hover{cursor:pointer;-webkit-filter:brightness(70%);filter:birghtness(70%);transition:.2s}.menu-on{-webkit-filter:brightness(70%);filter:birghtness(70%)}.header-section-middle{display:flex;flex-direction:column;align-items:center}.header-section-middle img{margin:1rem;width:4rem;height:4rem;-webkit-filter:brightness(70%);filter:birghtness(70%)}.header-section-middle img:hover{cursor:pointer;-webkit-filter:brightness(100%);filter:birghtness(100%);transition:.2s}@media (max-width: 760px){.header-section-middle{display:none}}.header-section-right{display:flex;flex-direction:row}.header-section-right img{-webkit-filter:brightness(70%);filter:birghtness(70%);width:4rem;height:4rem;margin:1rem}.header-section-right img:hover{cursor:pointer;-webkit-filter:brightness(100%);filter:birghtness(100%);transition:.2s}main{background-color:#2f3440}#main-container{height:calc(100vh - 6rem);width:100%;display:flex;flex-direction:row}.side-panel-container{display:flex;flex-direction:column;width:30%;max-width:40rem;height:100%;align-items:flex-start}@media (max-width: 760px){.side-panel-container{width:100%;max-width:100%}}.carousel-wrap{width:100%;display:flex;flex-direction:row;align-items:center;height:7rem}.carousel-wrap .btn-rotate{display:none;margin:0 2.5rem 0 2.5rem;transition:.2s}.carousel-wrap .btn-rotate:hover{border-color:#0c0;transition:.2s}.carousel-wrap .carousel{flex:1;flex-direction:column;text-align:-webkit-center;padding:1.5rem 1rem 1.5rem 0;color:#eee;font-size:2.5rem;font-weight:bold;border:none;outline:none;background-color:inherit;appearance:none;-webkit-appearance:none;-moz-appearance:none;-ms-appearance:none}.carousel-wrap .carousel:-ms-expand{display:none}.carousel-wrap .carousel option{background-color:#242831;border:none;font-size:1.7rem;outline:none}.carousel-wrap .spin-carousel{width:2.5rem;height:2.4rem;margin:1.5rem 1rem 1.5rem 1rem}.side-panel-wrapper{display:flex;flex-direction:column;flex:1;width:100%}.side-block-wrap{overflow:auto;flex:1}.side-panel-block{display:flex;flex-direction:column;height:100%}.side-block-data-list{list-style-type:none;display:flex;flex:1;flex-direction:column;list-style-type:initial;overflow:auto;scrollbar-color:#0c0 #2f3440;list-style-position:inside;align-items:center}.side-block-data-list::-webkit-scrollbar{width:.5rem;height:.5rem;background-color:none}.side-block-data-list::-webkit-scrollbar-track{-webkit-box-shadow:none;background-color:none;border-radius:10px}.side-block-data-list::-webkit-scrollbar-thumb{border-radius:10px;background-color:none;background-image:-webkit-gradient(linear, 40% 0%, 75% 84%, from(#4D9C41), to(#19911D), color-stop(0.6, #54DE5D))}.side-panel-button-row{display:flex;flex-direction:row;width:90%;overflow:hidden;height:6rem;margin-left:1rem;margin-top:1rem}.side-block-data-list-item{flex-direction:column;border-bottom:1px solid #242831;padding:.5rem;display:flex;width:100%}.side-block-data-list-item:hover{background-color:#242831;cursor:pointer}.topic-assets{margin-left:2rem;width:calc(100% - 2rem)}.topic-asset-item-wrap{padding:.5rem}.invite-list-item{display:flex;flex-direction:row;padding:.5rem;color:#eee;list-style:none;overflow:hidden;text-overflow:ellipsis;padding:.5rem;border-bottom:1px solid #242831;white-space:nowrap;cursor:pointer}.invite-list-item:hover{background-color:#242831}.invite-list-item .invite-icon{background:url(\"/img/invite-light.svg\");background-size:cover;width:2rem;height:2rem}.invite-list-item .invite-label{color:#eee;margin-left:1rem;overflow:hidden;text-overflow:ellipsis;flex:1}.participant-list-item{display:flex;flex-direction:row;padding:.5rem;color:#eee;list-style:none;overflow:hidden;text-overflow:ellipsis;padding:.5rem;border-bottom:1px solid #242831;cursor:pointer}.participant-list-item:hover{background-color:#242831}.participant-list-item .that-is-me{filter:invert(53%) sepia(95%) saturate(3424%) hue-rotate(88deg) brightness(100%) contrast(112%)}.participant-list-item .participant-icon{background:url(\"/img/user-light.svg\");background-size:cover;width:2rem;height:2rem}.participant-list-item .participant-label{color:#eee;margin-left:1rem;overflow:hiddne;text-overflow:ellipsis;white-space:nowrap;flex:1}.participant-list-item .participant-label span{margin-right:.5rem}.active-asset{background-color:#135384}.active-asset:hover{background-color:#16619a}.topic-row-wrap{display:flex;flex-direction:row}.btn-expand-topic{width:2rem;height:2rem;background:url(\"/img/add-light.svg\");background-size:cover}.btn-collapse-topic{background:url(\"/img/minus-light.svg\");background-size:cover}.btn-top-row{width:100%;margin:0;padding-bottom:1rem;border-bottom:1px solid #242831}.btn-top{flex:1;margin:1rem;padding:0;background-color:#242831}.topic-name{font-size:1.8rem;margin-left:1.2rem;color:#eee;display:flex;flex:1}.unread-messages{font-weight:bold;display:flex;padding:.5rem;background-color:#0a0b0e;font-size:1.4rem;color:#eee;border-radius:40%;margin-right:1rem}.topic-in-focus{background-color:#385841}.topic-in-focus:hover{background-color:#42684d}.ctx-topic-buttons{display:flex;flex-direction:row;margin:2rem 1rem 1rem 1rem;flex-wrap:wrap}.ctx-topic-buttons button{flex:1}.bottom-section{height:40%}@media screen and (max-height: 800px){.bottom-section{display:none}}.connection-indicator-container{display:flex;flex-direction:row;flex-shrink:1;height:4rem;align-items:center;width:100%;margin:1rem}.connection-indicator-container .connection-indicator-label-wrap{display:flex;flex-direction:row}.connection-indicator-container .connection-indicator-label-wrap .connection-indicator-label{display:flex;font-size:1.3rem;color:#eee;font-weight:100;margin:0 1rem;align-items:center}.connection-indicator-container .connection-indicator-label-wrap .reconnect-spinner{width:2rem;height:2rem;display:none}.connection-indicator-container .connection-indicator-label-wrap .reconnect-button{width:10rem;height:2rem;text-align:center;background-color:#ccc;color:#000;display:none}.connection-indicator-container .connection-indicator-label-wrap .reconnect-button:hover{background-color:#999}.connection-indicator-container .connection-indicator{border-radius:50%;max-width:1rem;max-height:1rem;width:100%;height:100%}.connection-indicator-container .connected{background-color:green}.connection-indicator-container .dicsonnected{background-color:orange}.connection-indicator-container .error{background-color:red}.connection-indicator-container .connecting{background-color:#b2f2ff}.connection-indicator-container .unknown{background-color:grey}.version-wrapper{display:flex;flex-direction:row;background-color:#242831;align-items:center;padding:1rem;width:100%;border-right:1px solid #2f3440}.version-wrapper img{margin:0 1rem 0 1rem;width:3rem;height:3rem}.version-wrapper h3{color:#e1e1e1;font-size:1.4rem;font-weight:100}.manage-topics-view{color:#eee;display:flex;flex-direction:column;margin:4rem}@media (max-width: 760px){.manage-topics-view{margin:.5rem}}.manage-topics-list{color:#eee;margin:1rem 0 2rem 0}.manage-topics-list div{font-size:1.6rem;padding:1.3rem;border-bottom:1px solid #242831}.manage-topics-list div:hover{background-color:#242831;cursor:pointer}.manage-topics-list .selected{background-color:#385841}.manage-topics-list .selected:hover{background-color:#42684d;cursor:pointer}#new-message-container{max-height:50%;background-color:inherit;display:none;margin:2rem 2rem 1rem 0;flex-direction:row;justify-content:flex-end}.control-col{display:flex;flex-direction:column;margin-left:2rem}.private-label{display:none;flex-direction:row;justify-content:flex-end;color:#eee;margin:.5rem}.private-label img{width:2rem;height:2rem;margin-right:1rem}.private-label span{margin-right:1rem}.select-member-wrap{display:flex;flex-direction:row;justify-content:flex-end;border-bottom:none;margin:0;color:#eee}.select-member-wrap h4{margin:auto 1rem}.select-member-wrap select{color:#eee;background:#2f3440;padding:.8rem;min-width:37%;border:none;border-bottom:1px solid #242831;border-radius:.5rem .5rem 0 0;outline:none}.input-wrap{display:flex;flex-direction:row;width:100%;justify-content:flex-end;margin:0}.input-wrap #new-msg{width:100%;border-radius:.5rem 0 .5rem .5rem;height:3.5rem;margin:0 0 .5rem 0;resize:vertical;background-color:#2f3440;color:#eee;border:none}.input-wrap .button-column{display:flex;flex-direction:column;margin:0}.input-wrap .button-column img{cursor:pointer;border-radius:1rem;margin-right:2rem;width:3rem;height:3rem;transition:filter .2s ease}.input-wrap .button-column img:hover{filter:drop-shadow(1px 1px 2px #898c97)}.input-wrap .button-column .disabled{filter:grayscale(100%)}.new-msg-input{width:100%}.new-message-wrap{display:flex;flex-direction:column;align-items:flex-end}.new-message-wrap *{display:block;margin:1rem 0 1rem 0}.new-message-wrap #new-msg{background-color:#2f3440;min-width:60%;padding:1rem;border-radius:0.5rem;resize:vertical}.new-message-wrap .send-button-wrap{display:flex;flex-direction:row;align-items:center;margin:0}.new-message-wrap .send-button-wrap .hint-wrap{display:flex;flex-direction:column;align-items:flex-end}.new-message-wrap .send-button-wrap .hint-wrap .send-new-message-hint{margin:0 1.5rem 0 1.5rem;color:#9da3ad;font-size:1.2rem;font-style:italic}.btn-send{border:none;margin:0;outline:none;background-color:#2f3440;color:#eee;font-size:1.8rem;padding:.8rem;transition:.2s}.btn-send:hover{background-color:#0c0;transition:.2s}.attach-file-dummy{display:none}.attach-file-wrap{height:5rem;display:flex;flex-direction:row;justify-content:flex-end;align-items:center;align-self:flex-end;width:60%;min-width:10rem;padding:1rem;border-radius:0.5rem}.new-msg-buttons{width:7rem}.new-msg-buttons label{align-self:center;margin-top:1.5rem;width:4rem;height:4rem;display:flex}#chosen-files{margin-right:1.7rem;display:flex;flex-direction:row}#chosen-files .chosen-file-wrap{background-color:#3a404f;padding:.2rem;border-radius:.5rem;height:inherit;display:flex;align-items:center;font-size:1.6rem;font-weight:bolder;color:#e1e1e1}#chosen-files .chosen-file-wrap img{height:20px;width:20px}#chosen-files .chosen-file-wrap img:hover{filter:drop-shadow(1px 1px 2px #fff)}.inputfile{width:0.1px;height:0.1px;opacity:0;overflow:hidden;position:absolute;z-index:-1}.inputfile+label{display:flex;flex-direction:row}.inputfile+label img{border-radius:1rem;cursor:pointer;width:32px;height:32px;transition:filter .2s ease}.inputfile+label img:hover{filter:drop-shadow(1px 1px 2px #000)}.new-msg-buttons{width:7rem}.new-msg-buttons label{align-self:center;margin-top:1.5rem;width:4rem;height:4rem;display:flex}.form-outer-wrapper{display:block;margin:10% auto;color:#eee}.form-outer-wrapper .form-border{background-color:#111113;border:none;display:flex;flex-direction:column;align-items:flex-start}.form-outer-wrapper .form-border p{margin:1rem 0 1rem 0}.form-input{background-color:#2f3440;color:#eee;border:none;outline:none}.form-button{border-radius:.4rem;background-color:#2f3440;color:#eee;border:none;outline:none;padding:1rem;font-size:1.8rem}.form-button:hover{background-color:#0c0;transition:.2s}.main-panel-container{background-color:#242831;width:70%;height:100%;display:flex;flex-direction:column;flex:1;overflow:hidden}.main-panel-container .messages-panel-container{width:100%;display:flex;flex:1;background-color:inherit;border-bottom:2px solid #2f3440;overflow-x:hidden;overflow-y:auto;flex-grow:1;border-radius:1rem;padding:1rem 2rem 1rem 2rem;resize:none;height:100%}.main-panel-container .messages-panel-container::-webkit-scrollbar{width:.5rem;height:.5rem;background-color:none}.main-panel-container .messages-panel-container::-webkit-scrollbar-track{-webkit-box-shadow:none;background-color:none;border-radius:10px}.main-panel-container .messages-panel-container::-webkit-scrollbar-thumb{border-radius:10px;background-color:none;background-image:-webkit-gradient(linear, 40% 0%, 75% 84%, from(#4D9C41), to(#19911D), color-stop(0.6, #54DE5D))}.messages-window{width:100%;display:flex;flex-direction:column}.message{display:flex;flex-shrink:0;flex-direction:column;width:100%;margin:0.5rem;padding:.3rem;color:#e2e2e2;height:auto;align-self:flex-start}.my_message{display:flex;flex-shrink:0;flex-direction:column;width:100%;margin:0.5rem;padding:.3rem;color:#e2e2e2;height:auto;color:#5bde25}.service-record{display:flex;flex-shrink:0;flex-direction:column;width:100%;margin:0.5rem;padding:.3rem;color:#e2e2e2;height:auto;width:100%;text-align:left;font-size:1.2rem;color:#4c4c4c}.service-record .msg-body{text-align:left}.ephemeral-msg{display:flex;flex-shrink:0;flex-direction:column;width:100%;margin:0.5rem;padding:.3rem;color:#e2e2e2;height:auto;width:100%;text-align:left;font-size:1.2rem;color:#8a8a8a}.ephemeral-msg .msg-body{text-align:left}.private-message{border:.3rem solid #b0afca}.private-mark{font-style:italic;margin:0 .5rem 0 .5rem}.msg-time-stamp{font-style:italic;font-size:1rem;margin:0 .5rem 0 .5rem}.msg-body{height:auto;overflow-wrap:break-word}.m-author-id{display:none}.m-recipient-id{display:none}.message-id{display:none}.attach-file-wrap{height:5rem;display:flex;flex-direction:row;justify-content:flex-end;align-items:center;align-self:flex-end;width:60%;min-width:10rem;padding:1rem;border-radius:0.5rem}.uploading-animation{display:none;width:4rem;height:4rem}.msg-attachments{display:flex;align-self:flex-start}.att-view{cursor:pointer;margin:.5rem 0;background-color:#2f3440;padding:.5rem}.att-view .att-state{display:none}.att-view .att-state .spinner{width:1.7rem;margin-right:.3rem;display:flex}.att-view .att-name{font-weight:bold;color:#ff5e5e;font-size:1.6rem;margin:0 .4rem}.att-view .att-size{font-size:1.1rem;color:#ff5e5e}.att-view .att-icon{width:1.4rem;height:1.4rem}.att-view:hover{background-color:#3a404f;transition:.2s}.att-info{display:none}.topic-in-focus-label{font-size:2rem;position:fixed;right:5rem;font-weight:100;color:grey}.password-warning-wrap{pagging:2rem 0 2rem 0;display:flex;flex-direction:row;width:26rem}.password-warning-wrap img{height:1.7rem;width:2rem}.password-warning-wrap div{margin-left:1rem;display:flex;flex-direction:column}.password-warning-wrap div p{margin:.5rem 0 1rem 0;color:#777}\n", ""]);
 
 
 
@@ -62316,7 +62367,7 @@ var es6_array_sort = __webpack_require__(193);
 var es6_typed_uint8_array = __webpack_require__(77);
 
 // EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/asyncToGenerator.js
-var asyncToGenerator = __webpack_require__(10);
+var asyncToGenerator = __webpack_require__(9);
 var asyncToGenerator_default = /*#__PURE__*/__webpack_require__.n(asyncToGenerator);
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.match.js
@@ -62717,7 +62768,7 @@ function verifyGetElement(element) {
 
   if (!node) {
     throw new Error("Element ".concat(element, " is undefined"));
-  } else if (!(node instanceof Element)) {
+  } else if (!(node instanceof Element) && !(node instanceof Text)) {
     throw new Error("Type of element is invalid");
   }
 
@@ -63935,7 +63986,7 @@ function setupHotkeysHandlers() {
       sendMessage(); //moveCursor(e.target, "start");
 
       return false;
-    } else if (e.ctrlKey && e.keyCode === 13) {
+    } else if (e.ctrlKey && (e.keyCode === 10 || e.keyCode === 13)) {
       e.target.value += "\n";
       moveCursor(e.target, "end");
     }
@@ -64129,7 +64180,22 @@ function processActivateTopicClick(ev) {
   } // load messges in the new window
 
 
-  refreshMessages();
+  refreshMessagesWithCb(pkfp, function (messages) {
+    if (!messages) {
+      console.log("No messages in the topics: ".concat(pkfp));
+      chat_ui_chat.once(Events["Events"].MESSAGES_LOADED, function () {
+        console.log("ONCE HANDLER FIRED");
+        setTimeout(function () {
+          scrollChatDown(true);
+        }, 500);
+      });
+      return;
+    }
+
+    processMessagesLoaded(pkfp, messages, function () {
+      scrollChatDown(true);
+    });
+  });
 
   if (isExpanded(pkfp)) {
     refreshInvites(pkfp);
@@ -64503,7 +64569,7 @@ function processLoginResult(err) {
   chat_ui_loadingOff();
 }
 
-function processMessagesLoaded(pkfp, messages) {
+function processMessagesLoaded(pkfp, messages, cb) {
   if (topicInFocus === pkfp) {
     console.log("Appending messages to view");
     var windowInFocus = getChatWindowInFocus();
@@ -64550,6 +64616,7 @@ function processMessagesLoaded(pkfp, messages) {
     }
 
     scrollChatDown();
+    if (cb) cb();
   } else {
     console.log("Topic is inactive. Ignoring");
   }
@@ -64614,7 +64681,6 @@ function appendMessageToChat(message, topicPkfp, chatWindow) {
     chatWindow.insertBefore(msg, chatWindow.firstChild);
   } else {
     chatWindow.appendChild(msg);
-    chatWindow.scrollTop = chatWindow.scrollHeight;
   }
 }
 
@@ -64790,7 +64856,33 @@ function processMessageBody(text) {
   var endPattern = /__end/; //no code
 
   if (text.search(startPattern) === -1) {
-    result.appendChild(document.createTextNode(text));
+    var pars = [];
+    var _iteratorNormalCompletion6 = true;
+    var _didIteratorError6 = false;
+    var _iteratorError6 = undefined;
+
+    try {
+      for (var _iterator6 = text.split("\n")[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+        var p = _step6.value;
+        result.appendChild(bake("p", {
+          children: document.createTextNode(p)
+        }));
+      }
+    } catch (err) {
+      _didIteratorError6 = true;
+      _iteratorError6 = err;
+    } finally {
+      try {
+        if (!_iteratorNormalCompletion6 && _iterator6.return != null) {
+          _iterator6.return();
+        }
+      } finally {
+        if (_didIteratorError6) {
+          throw _iteratorError6;
+        }
+      }
+    }
+
     return result;
   } //first occurrence of the code
 
@@ -64872,11 +64964,11 @@ function downloadOnClick(_x) {
 }
 
 function _downloadOnClick() {
-  _downloadOnClick = asyncToGenerator_default()( /*#__PURE__*/regenerator_default.a.mark(function _callee(ev) {
+  _downloadOnClick = asyncToGenerator_default()( /*#__PURE__*/regenerator_default.a.mark(function _callee2(ev) {
     var target, fileInfo, fileName;
-    return regenerator_default.a.wrap(function _callee$(_context) {
+    return regenerator_default.a.wrap(function _callee2$(_context2) {
       while (1) {
-        switch (_context.prev = _context.next) {
+        switch (_context2.prev = _context2.next) {
           case 0:
             console.log("Download event triggered!");
             target = ev.target;
@@ -64886,7 +64978,7 @@ function _downloadOnClick() {
             }
 
             if (target) {
-              _context.next = 5;
+              _context2.next = 5;
               break;
             }
 
@@ -64911,10 +65003,10 @@ function _downloadOnClick() {
 
           case 9:
           case "end":
-            return _context.stop();
+            return _context2.stop();
         }
       }
-    }, _callee);
+    }, _callee2);
   }));
   return _downloadOnClick.apply(this, arguments);
 }
@@ -64979,10 +65071,11 @@ function getChatWindowInFocus() {
   return $("#messages-window-1");
 }
 
-function scrollChatDown() {
+function scrollChatDown(force) {
   var el = $('#messages-panel-container');
 
-  if (el.scrollHeight - el.scrollTop <= 200) {
+  if (force || el.scrollHeight - el.scrollTop - el.offsetHeight <= Math.floor(el.offsetHeight / 2)) {
+    console.log("Scrolling down");
     el.scrollTop = el.scrollHeight;
   }
 }
@@ -65045,13 +65138,13 @@ function updateMessagesAliases(topicPkfp) {
     return;
   }
 
-  var _iteratorNormalCompletion6 = true;
-  var _didIteratorError6 = false;
-  var _iteratorError6 = undefined;
+  var _iteratorNormalCompletion7 = true;
+  var _didIteratorError7 = false;
+  var _iteratorError7 = undefined;
 
   try {
-    for (var _iterator6 = $("#messages-window-1").children[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
-      var message = _step6.value;
+    for (var _iterator7 = $("#messages-window-1").children[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
+      var message = _step7.value;
       var authorIdEl = message.firstChild.querySelector(".m-author-id");
       var privateMarkEl = message.firstChild.querySelector(".private-mark");
 
@@ -65073,16 +65166,16 @@ function updateMessagesAliases(topicPkfp) {
       }
     }
   } catch (err) {
-    _didIteratorError6 = true;
-    _iteratorError6 = err;
+    _didIteratorError7 = true;
+    _iteratorError7 = err;
   } finally {
     try {
-      if (!_iteratorNormalCompletion6 && _iterator6.return != null) {
-        _iterator6.return();
+      if (!_iteratorNormalCompletion7 && _iterator7.return != null) {
+        _iterator7.return();
       }
     } finally {
-      if (_didIteratorError6) {
-        throw _iteratorError6;
+      if (_didIteratorError7) {
+        throw _iteratorError7;
       }
     }
   }
@@ -65105,26 +65198,26 @@ function activateTopicAsset(ev) {
   console.error("Activating topic asset");
   var activeItem = ev.currentTarget;
   var assets = activeItem.parentElement;
-  var _iteratorNormalCompletion7 = true;
-  var _didIteratorError7 = false;
-  var _iteratorError7 = undefined;
+  var _iteratorNormalCompletion8 = true;
+  var _didIteratorError8 = false;
+  var _iteratorError8 = undefined;
 
   try {
-    for (var _iterator7 = assets.children[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
-      var child = _step7.value;
+    for (var _iterator8 = assets.children[Symbol.iterator](), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
+      var child = _step8.value;
       removeClass(child, "active-asset");
     }
   } catch (err) {
-    _didIteratorError7 = true;
-    _iteratorError7 = err;
+    _didIteratorError8 = true;
+    _iteratorError8 = err;
   } finally {
     try {
-      if (!_iteratorNormalCompletion7 && _iterator7.return != null) {
-        _iterator7.return();
+      if (!_iteratorNormalCompletion8 && _iterator8.return != null) {
+        _iterator8.return();
       }
     } finally {
-      if (_didIteratorError7) {
-        throw _iteratorError7;
+      if (_didIteratorError8) {
+        throw _iteratorError8;
       }
     }
   }
@@ -65174,6 +65267,29 @@ function refreshMessages() {
   }
 
   chat_ui_chat.getMessages(topicInFocus);
+}
+
+function refreshMessagesWithCb(topicPkfp, cb) {
+  setTimeout( /*#__PURE__*/asyncToGenerator_default()( /*#__PURE__*/regenerator_default.a.mark(function _callee() {
+    var messages;
+    return regenerator_default.a.wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            _context.next = 2;
+            return chat_ui_chat.getMessagesAsync(topicPkfp);
+
+          case 2:
+            messages = _context.sent;
+            cb(messages);
+
+          case 4:
+          case "end":
+            return _context.stop();
+        }
+      }
+    }, _callee);
+  })));
 } // ---------------------------------------------------------------------------------------------------------------------------
 // Topic expanded asset management
 // retruns whether topic assets are expanded
@@ -65228,29 +65344,29 @@ function getActiveTopicAsset() {
   }
 
   var assets = getTopicAssets(topicInFocus);
-  var _iteratorNormalCompletion8 = true;
-  var _didIteratorError8 = false;
-  var _iteratorError8 = undefined;
+  var _iteratorNormalCompletion9 = true;
+  var _didIteratorError9 = false;
+  var _iteratorError9 = undefined;
 
   try {
-    for (var _iterator8 = assets.children[Symbol.iterator](), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
-      var asset = _step8.value;
+    for (var _iterator9 = assets.children[Symbol.iterator](), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
+      var asset = _step9.value;
 
       if (hasClass(asset, "active-asset")) {
         return asset;
       }
     }
   } catch (err) {
-    _didIteratorError8 = true;
-    _iteratorError8 = err;
+    _didIteratorError9 = true;
+    _iteratorError9 = err;
   } finally {
     try {
-      if (!_iteratorNormalCompletion8 && _iterator8.return != null) {
-        _iterator8.return();
+      if (!_iteratorNormalCompletion9 && _iterator9.return != null) {
+        _iterator9.return();
       }
     } finally {
-      if (_didIteratorError8) {
-        throw _iteratorError8;
+      if (_didIteratorError9) {
+        throw _iteratorError9;
       }
     }
   }
@@ -65260,26 +65376,26 @@ function deactivateTopicAsset(pkfp) {
   var topicAssets = getTopicAssets(pkfp);
 
   if (topicAssets) {
-    var _iteratorNormalCompletion9 = true;
-    var _didIteratorError9 = false;
-    var _iteratorError9 = undefined;
+    var _iteratorNormalCompletion10 = true;
+    var _didIteratorError10 = false;
+    var _iteratorError10 = undefined;
 
     try {
-      for (var _iterator9 = topicAssets.children[Symbol.iterator](), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
-        var asset = _step9.value;
+      for (var _iterator10 = topicAssets.children[Symbol.iterator](), _step10; !(_iteratorNormalCompletion10 = (_step10 = _iterator10.next()).done); _iteratorNormalCompletion10 = true) {
+        var asset = _step10.value;
         removeClass(asset, "active-asset");
       }
     } catch (err) {
-      _didIteratorError9 = true;
-      _iteratorError9 = err;
+      _didIteratorError10 = true;
+      _iteratorError10 = err;
     } finally {
       try {
-        if (!_iteratorNormalCompletion9 && _iterator9.return != null) {
-          _iterator9.return();
+        if (!_iteratorNormalCompletion10 && _iterator10.return != null) {
+          _iterator10.return();
         }
       } finally {
-        if (_didIteratorError9) {
-          throw _iteratorError9;
+        if (_didIteratorError10) {
+          throw _iteratorError10;
         }
       }
     }
@@ -65460,8 +65576,8 @@ function initChat() {
       recipient: message.header.recipient,
       attachments: message.attachments
     }, topicInFocus, $("#messages-window-1"));
+    scrollChatDown();
     var messagesWindow = $("#messages-panel-container");
-    messagesWindow.scrollTop = messagesWindow.scrollHeight;
   });
   chat_ui_chat.on(Events["Events"].DOWNLOAD_SUCCESS, function (data, fileName) {
     downloadBuffer(data, fileName);
@@ -65614,13 +65730,13 @@ function processConnectionStatusChanged(state) {
 function setUnreadMessagesIndicator(pkfp, num) {
   console.log("Setting unread messages indicator");
   var topicEl;
-  var _iteratorNormalCompletion10 = true;
-  var _didIteratorError10 = false;
-  var _iteratorError10 = undefined;
+  var _iteratorNormalCompletion11 = true;
+  var _didIteratorError11 = false;
+  var _iteratorError11 = undefined;
 
   try {
-    for (var _iterator10 = $("#topics-list").children[Symbol.iterator](), _step10; !(_iteratorNormalCompletion10 = (_step10 = _iterator10.next()).done); _iteratorNormalCompletion10 = true) {
-      var topic = _step10.value;
+    for (var _iterator11 = $("#topics-list").children[Symbol.iterator](), _step11; !(_iteratorNormalCompletion11 = (_step11 = _iterator11.next()).done); _iteratorNormalCompletion11 = true) {
+      var topic = _step11.value;
 
       if (topic.getAttribute("pkfp") === pkfp) {
         topicEl = topic;
@@ -65628,16 +65744,16 @@ function setUnreadMessagesIndicator(pkfp, num) {
       }
     }
   } catch (err) {
-    _didIteratorError10 = true;
-    _iteratorError10 = err;
+    _didIteratorError11 = true;
+    _iteratorError11 = err;
   } finally {
     try {
-      if (!_iteratorNormalCompletion10 && _iterator10.return != null) {
-        _iterator10.return();
+      if (!_iteratorNormalCompletion11 && _iterator11.return != null) {
+        _iterator11.return();
       }
     } finally {
-      if (_didIteratorError10) {
-        throw _iteratorError10;
+      if (_didIteratorError11) {
+        throw _iteratorError11;
       }
     }
   }
@@ -65650,6 +65766,36 @@ function setUnreadMessagesIndicator(pkfp, num) {
   var unreadCounterLabel = topicEl.firstElementChild.children[2];
   html(unreadCounterLabel, "");
   num ? unreadCounterLabel.appendChild(bakeUnreadMessagesElement(num)) : 1 === 1;
+}
+
+function moveCursor(el, pos) {
+  if (pos === "end") {
+    moveCursorToEnd(el);
+  } else if (pos === "start") {
+    moveCursorToStart(el);
+  }
+}
+
+function moveCursorToEnd(el) {
+  if (typeof el.selectionStart == "number") {
+    el.selectionStart = el.selectionEnd = el.value.length;
+  } else if (typeof el.createTextRange != "undefined") {
+    el.focus();
+    var range = el.createTextRange();
+    range.collapse(false);
+    range.select();
+  }
+}
+
+function moveCursorToStart(el) {
+  if (typeof el.selectionStart == "number") {
+    el.selectionStart = el.selectionEnd = 0;
+  } else if (typeof el.createTextRange != "undefined") {
+    el.focus();
+    var range = el.createTextRange();
+    range.collapse(false);
+    range.select();
+  }
 } // ---------------------------------------------------------------------------------------------------------------------------
 // ~END util
 

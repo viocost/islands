@@ -226,7 +226,7 @@ function setupHotkeysHandlers(){
             sendMessage();
             //moveCursor(e.target, "start");
             return false;
-        } else if (e.ctrlKey && e.keyCode === 13) {
+        } else if (e.ctrlKey && (e.keyCode === 10 || e.keyCode === 13)) {
             e.target.value += "\n";
             moveCursor(e.target, "end");
         }
@@ -439,7 +439,21 @@ function processActivateTopicClick(ev){
     }
     // load messges in the new window
 
-    refreshMessages()
+    refreshMessagesWithCb(pkfp, (messages)=>{
+        if(!messages){
+            console.log(`No messages in the topics: ${pkfp}`);
+            chat.once(Events.MESSAGES_LOADED, ()=>{
+                console.log("ONCE HANDLER FIRED");
+                setTimeout(()=>{
+                    scrollChatDown(true)
+                }, 500);
+            })
+            return;
+        }
+        processMessagesLoaded(pkfp, messages, ()=>{
+            scrollChatDown(true)
+        })
+    })
     if(isExpanded(pkfp)){
         refreshInvites(pkfp);
         refreshParticipants(pkfp);
@@ -763,7 +777,7 @@ function processLoginResult(err){
     loadingOff()
 }
 
-function processMessagesLoaded(pkfp, messages){
+function processMessagesLoaded(pkfp, messages, cb){
     if (topicInFocus === pkfp){
         console.log("Appending messages to view")
         let windowInFocus = getChatWindowInFocus();
@@ -788,6 +802,7 @@ function processMessagesLoaded(pkfp, messages){
             }, pkfp, windowInFocus, true);
         }
         scrollChatDown()
+        if(cb) cb();
     } else {
         console.log("Topic is inactive. Ignoring")
     }
@@ -857,7 +872,6 @@ function appendMessageToChat(message, topicPkfp, chatWindow,  toHead = false) {
         chatWindow.insertBefore(msg, chatWindow.firstChild);
     } else {
         chatWindow.appendChild(msg);
-        chatWindow.scrollTop = chatWindow.scrollHeight;
     }
 }
 
@@ -1011,7 +1025,12 @@ function processMessageBody(text) {
 
     //no code
     if (text.search(startPattern) === -1) {
-        result.appendChild(document.createTextNode(text));
+        let pars = []
+        for (let p of text.split("\n")){
+            result.appendChild(util.bake("p", {
+                children: document.createTextNode(p)
+            }));
+        }
         return result;
     }
     //first occurrence of the code
@@ -1164,10 +1183,11 @@ function getChatWindowInFocus(){
     return util.$("#messages-window-1");
 }
 
-function scrollChatDown(){
+function scrollChatDown(force){
 
     let el = util.$('#messages-panel-container')
-    if( el.scrollHeight - el.scrollTop <= 200){
+    if(force || el.scrollHeight - el.scrollTop - el.offsetHeight <= Math.floor(el.offsetHeight / 2)){
+        console.log("Scrolling down");
         el.scrollTop = el.scrollHeight;
     }
 }
@@ -1325,6 +1345,12 @@ function refreshMessages(){
     chat.getMessages(topicInFocus);
 }
 
+function refreshMessagesWithCb(topicPkfp, cb){
+    setTimeout(async ()=>{
+        let messages = await chat.getMessagesAsync(topicPkfp)
+        cb(messages);
+    })
+}
 // ---------------------------------------------------------------------------------------------------------------------------
 // Topic expanded asset management
 
@@ -1578,8 +1604,9 @@ function initChat(){
             recipient: message.header.recipient,
             attachments: message.attachments
         }, topicInFocus, util.$("#messages-window-1"));
+
+        scrollChatDown()
         let messagesWindow = util.$("#messages-panel-container")
-        messagesWindow.scrollTop = messagesWindow.scrollHeight;
 
     })
 
@@ -1753,5 +1780,36 @@ function setUnreadMessagesIndicator(pkfp, num){
     num ? unreadCounterLabel.appendChild(UI.bakeUnreadMessagesElement(num)) : 1===1;
 }
 
+
+
+function moveCursor(el, pos) {
+    if (pos === "end") {
+        moveCursorToEnd(el);
+    } else if (pos === "start") {
+        moveCursorToStart(el);
+    }
+}
+
+function moveCursorToEnd(el) {
+    if (typeof el.selectionStart == "number") {
+        el.selectionStart = el.selectionEnd = el.value.length;
+    } else if (typeof el.createTextRange != "undefined") {
+        el.focus();
+        let range = el.createTextRange();
+        range.collapse(false);
+        range.select();
+    }
+}
+
+function moveCursorToStart(el) {
+    if (typeof el.selectionStart == "number") {
+        el.selectionStart = el.selectionEnd = 0;
+    } else if (typeof el.createTextRange != "undefined") {
+        el.focus();
+        let range = el.createTextRange();
+        range.collapse(false);
+        range.select();
+    }
+}
 // ---------------------------------------------------------------------------------------------------------------------------
 // ~END util

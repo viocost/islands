@@ -326,7 +326,7 @@ function verifyGetElement(element){
     }
     if (!node){
         throw new Error(`Element ${element} is undefined`);
-    } else if(!(node instanceof Element)){
+    } else if(!(node instanceof Element) && (!(node instanceof Text))){
         throw new Error("Type of element is invalid");
     }
     return node;

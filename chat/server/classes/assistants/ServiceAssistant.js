@@ -184,7 +184,7 @@ class ServiceAssistant{
 
     async processInviteRequestSuccess(envelope, self){
         let request = envelope.payload;
-        let msg = await self.createSaveServiceRecord(request.headers.pkfpDest, request.headers.command, "Invite created successfully. Double-click on side panel to copy code to the clipboard" );
+        let msg = await self.createSaveServiceRecord(request.headers.pkfpDest, request.headers.command, "Invite created successfully. Double-click invite that appeared in side panel to copy it to the clipboard" );
         let note = new Message()
         note.setHeader("pkfpDest", request.headers.pkfpDest);
         note.setHeader("command", Internal.SERVICE_RECORD);

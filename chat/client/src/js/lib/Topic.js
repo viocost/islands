@@ -333,9 +333,10 @@ export class Topic{
     }
 
     addNewMessage(self, chatMessage){
-        console.log("Adding new chat message");
-        self.messages.push[chatMessage];
-        console.log("Message added");
+        console.log(`!!========ADDING NEW CHAT MESSAGE. msgCount: ${self.messages.length} \n${chatMessage.body}`);
+
+        self.messages.splice(0, 0, chatMessage);
+        console.log(`Message added. msgCount: ${self.messages.length}`);
         self.emit(Events.NEW_CHAT_MESSAGE, chatMessage, self.pkfp)
     }
 
@@ -346,6 +347,17 @@ export class Topic{
             console.log("Messages has not been loaded. Loading....");
             //init load and then emit
             this.initLoad()
+        }
+    }
+
+    async getMessagesAsync(){
+        if(this.initLoaded){
+            return this.messages;
+        } else {
+            console.log("Messages has not been loaded. Loading....");
+            //init load and then emit
+            this.initLoad()
+            return null;
         }
     }
 
@@ -520,12 +532,6 @@ export class Topic{
 
     setParticipantNickname(nickname, pkfp){
 
-        this.emit(Events.NICKNAME_CHANGED, {
-            topicPkfp: this.pkfp,
-            oldNickname: this._metadata.body.settings.membersData[pkfp].nickname,
-            newNickname: nickname,
-            participantPkfp: pkfp
-        })
         this._metadata.setParticipantNickname(nickname, pkfp);
         this.saveClientSettings();
         if (pkfp === this.pkfp){

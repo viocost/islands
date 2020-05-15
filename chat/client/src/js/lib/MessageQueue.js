@@ -20,14 +20,11 @@ export class MessageQueue{
         let self = this
         setImmediate(async ()=>{
             try{
-                console.log("Aquiring lock");
                 await self.lock.acquire();
-                console.log("Lock acquired, enqueueing");
                 this.queue.push(msg);
             }catch(err){
                 console.error(`Enqueue error: ${err.message} `);
             }finally{
-                console.log("Releasing lock...");
                 self.lock.release();
             }
 

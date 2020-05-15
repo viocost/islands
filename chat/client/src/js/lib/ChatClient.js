@@ -50,6 +50,9 @@ export class ChatClient{
                     throw new Error("Vault not found")
                 }
 
+                let vaultObj = new Vault()
+                await vaultObj.initSaved(this.version, vault.vault, password, vault.topics)
+                this.vault = vaultObj;
                 console.log("Got vault. Initializing");
                 //Initialize vault
 
@@ -63,9 +66,7 @@ export class ChatClient{
                 //Initialize message queue
                 this.messageQueue = new MessageQueue(this.connector);
 
-                this.vault = new Vault()
 
-                this.vault.initSaved(this.version, vault.vault, password, vault.topics)
                 this.vault.setId(vaultId);
                 console.log("Vault initialized. Initializing connector...");
 
@@ -96,8 +97,10 @@ export class ChatClient{
                 // Post-login
                 this.postLogin();
             } catch (err){
-                this.emit(Events.LOGIN_ERROR, err);
-                console.trace(err)
+                let errMsg = `Login error: ${err}. \nCheck connection and entered password and try again.`
+                console.log(errMsg);
+                this.emit(Events.LOGIN_ERROR, new Error(errMsg));
+                throw new Error(errMsg);
             }
         })
     }
@@ -676,6 +679,11 @@ export class ChatClient{
         setTimeout(()=>{
             self.topics[pkfp].getMessages()
         }, 50)
+    }
+
+    async getMessagesAsync(pkfp){
+        assert(this.topics[pkfp], `Topic ${pkfp} not found!`)
+        return this.topics[pkfp].getMessagesAsync();
     }
 
     getParticipantNickname(topicPkfp, participantPkfp){

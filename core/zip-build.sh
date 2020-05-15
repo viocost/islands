@@ -33,9 +33,18 @@ if [[ ! -d  $OUT ]]; then
     exit 1
 fi
 
-if [[ ! -z $VERSION ]]; then
-    FILENAME=${FILENAME}_${VERSION}.zip
+
+if [[ -z $VERSION ]]; then
+    VERSION=$(python -c "import sys, json
+try:
+    with open('${CURDIR}/apps/chat/package.json', 'r') as fp:
+         print(json.load(fp)['version'])
+except Exception:
+    exit(0)
+")
 fi
+
+FILENAME=${FILENAME}_${VERSION}.zip
 
 DEST=${OUT}/${FILENAME}
 

@@ -84,7 +84,6 @@ export class Connector{
             //End
 
             self.chatSocket.on("ping", ()=>{
-                console.log("Ping sent to server");
                 pingPongCount++;
                 if (pingPongCount > maxUnrespondedPings){
                     console.log("chatSocket pings are not responded. Resetting connection");
@@ -95,7 +94,6 @@ export class Connector{
             })
 
             self.chatSocket.on("pong", ()=>{
-                console.log(`Pong. Count: ${pingPongCount}`)
                 pingPongCount = 0;
             })
 
