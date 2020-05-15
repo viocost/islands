@@ -1,6 +1,8 @@
 const iCrypto = require("../libs/iCrypto.js");
 const Err = require("../libs/IError.js");
+const assert = require("../libs/assert.js");
 const Metadata = require("./Metadata.js");
+const Message = require("./Message.js");
 const EventEmitter = require("events").EventEmitter;
 const MiddlewareManager = require("js-middleware").MiddlewareManager;
 const Util = require("../libs/ChatUtility.js");
@@ -11,7 +13,8 @@ const Invite = require("./Invite.js");
 const CuteSet = require("cute-set");
 const MetadataIssue = require("../enums/MetadataIssueMessages.js");
 const Logger = require("../libs/Logger.js");
-
+const { Internal, Events } = require("../../../common/Events.js");
+const objUtil = require("../../../common/ObjectUtil");
 
 
 class TopicAuthority extends EventEmitter{
@@ -38,20 +41,37 @@ class TopicAuthority extends EventEmitter{
     /****************************************
      * Request handling
      ****************************************/
+    /**
+     * Processes invite request and returns formed response
+     */
     async processInviteRequest(request){
         const participant = this.currentMetadata.body.participants[request.headers.pkfpSource];
-        Request.isRequestValid(request, participant.publicKey);
+        const pubKey = participant.publicKey
+
+        assert(Message.verify(request, pubKey), "Invite request signature is invalid");
+
         const newInviteCode = await this.createNewInvite(participant.pkfp, request.body.nickname, request.body.topicName);
+        Logger.debug("Topic authority created new invite ", {
+            cat: "invite",
+            inviter: participant.pkfp,
+            inviteCode: newInviteCode
+        })
         const userInvites = await this.getUserInvites(participant.pkfp);
-        return {
+        let response = Message.makeResponse(request, this.pkfp, Events.INVITE_CREATED);
+        let rawData = JSON.stringify({
             inviteCode: newInviteCode,
             userInvites: userInvites
-        }
+        })
+        let cipher = Util.encryptStandardMessage(rawData, pubKey);
+        response.setAttribute("data", cipher);
+        this.signMessage(response);
+        return response;
     }
 
     async processDelInviteRequest(request){
         const participant = this.currentMetadata.body.participants[request.headers.pkfpSource];
-        if (!Request.isRequestValid(request, participant.publicKey)){
+        const pubKey = participant.publicKey
+        if (!Request.isRequestValid(request, pubKey)){
             throw new Error("Request is invalid!");
         }
 
@@ -65,8 +85,14 @@ class TopicAuthority extends EventEmitter{
         }
         await this.saveInviteIndex();
         let remainingInvites =  await this.getUserInvites(request.headers.pkfpSource);
-        let response = new Response("del_invite_success", request);
-        response.body.invites = remainingInvites;
+        Logger.debug(`DELETE invite success. taPkfp: ${this.pkfp}`, {cat: "invite"});
+        let response = Message.makeResponse(request, this.pkfp, Internal.DELETE_INVITE_SUCCESS)
+
+        let rawData = JSON.stringify({
+            userInvites: remainingInvites
+        })
+        let cipher = Util.encryptStandardMessage(rawData, pubKey);
+        response.setAttribute("data", cipher);
         this.signMessage(response);
         return response;
     }
@@ -152,6 +178,7 @@ class TopicAuthority extends EventEmitter{
     }
 
     async joinByInvite(inviteString, inviteeInfo, newMemeberResidence){
+        console.log("\n\nCurrent metadata at beginning of joinByInvite:"+ this.getCurrentMetadata().toBlob())
         let invite = await this.getInvite(inviteString);
         await this.verifyInvite(invite);
         let privateKey = this.getTAPrivateKey();
@@ -165,11 +192,16 @@ class TopicAuthority extends EventEmitter{
         await this.processJoinByInvite(inviteeInfo.publicKey, newMemeberResidence);
         this.issueMetadata({
             recipients: currentMemebers,
+            invite: inviteString,
             event: MetadataIssue.events.newMemberJoin,
-            nickname: inviteeInfo.nickname,
             pkfp: inviteeInfo.pkfp
         });
         await this.consumeInvite(inviteString, invite.requesterPkfp);
+
+        Logger.debug("Topic join: ", {
+            cat: "topic_join"
+        })
+
         return {
             metadata: this.getCurrentMetadata().toBlob(),
             inviterNickname: inviterNickname,
@@ -183,10 +215,11 @@ class TopicAuthority extends EventEmitter{
                         newMemeberResidence = Err.required()) {
         const newParticipant = Metadata.createNewParticiapnt(newMemberPublicKey, newMemeberResidence);
         const metadata = this.getCurrentMetadata();
-
+        console.log("Metadata before join: " + metadata.toBlob())
         metadata.addParticipant(newParticipant);
         let newMetadata = this.reKeyMetadata(metadata);
         this.signMetadata(metadata);
+        console.log("Metadata after join: " + newMetadata.toBlob())
         this.setMetadata(newMetadata);
         await this.appendCurrentMetadata()
     }
@@ -214,8 +247,8 @@ class TopicAuthority extends EventEmitter{
         await this.saveInviteIndex();
     }
 
-    async getInvite(inviteStringReceived = Err.required()){
-        const passedInvite = Invite.parse(inviteStringReceived);
+    async getInvite(inviteString = Err.required()){
+        const passedInvite = Invite.parse(inviteString);
         const inviteCipher = await this.hm.taGetInvite(passedInvite.getInviteCode(), this.getPkfp());
         let privateKey = this.getTAPrivateKey();
         let invite =  JSON.parse(Util.decryptStandardMessage(inviteCipher, privateKey));
@@ -229,7 +262,16 @@ class TopicAuthority extends EventEmitter{
         }
     }
 
+    async processTopicLeave(pkfp){
+        await this._excludeParticipant(pkfp);
 
+        let remainingParticipants = new CuteSet(Object.keys(lastMeta.body.participants)).minus(pkfp).toArray();
+        this.issueMetadata({
+            event: Events.PARTICIPANT_LEFT,
+            recipients: remainingParticipants,
+            participantLeft: pkfp
+        })
+    }
 
     async processBootRequest(request){
         let requestorPkfp = request.headers.pkfpSource;
@@ -241,7 +283,7 @@ class TopicAuthority extends EventEmitter{
             //Todo log suspicious request
             throw new Error("requester has not enough rights to boot");
         }
-        await this._bootParticipant(bootCandidate.pkfp);
+        await this._excludeParticipant(bootCandidate.pkfp);
         let noticeToBooted = new ServiceMessage(this.getPkfp(), bootCandidate.pkfp, "u_booted");
         this.emit("send_notice", {notice: noticeToBooted, residence: bootCandidate.residence});
         //issue metadata
@@ -252,7 +294,7 @@ class TopicAuthority extends EventEmitter{
         })
     }
 
-    async _bootParticipant(pkfp){
+    async _excludeParticipant(pkfp){
         let lastMeta = this.getCurrentMetadata();
         lastMeta.removeParticipant(pkfp);
         let newMetadata = this.reKeyMetadata(lastMeta);
@@ -372,7 +414,9 @@ class TopicAuthority extends EventEmitter{
 
     //TODO
     async appendCurrentMetadata(){
-        await this.hm.taAppendMetadata(this.getPkfp(), this.getCurrentMetadata().toBlob());
+        let metadataBlob = this.getCurrentMetadata().toBlob()
+        console.log(`\n\nAppending current metadata: ${metadataBlob}\n\n`)
+        await this.hm.taAppendMetadata(this.getPkfp(), metadataBlob);
     }
 
 
@@ -380,7 +424,7 @@ class TopicAuthority extends EventEmitter{
 
     issueMetadata(data = {}){
         data.metadata = this.getCurrentMetadata();
-        this.emit("metadata_issue", data)
+        this.emit(Internal.METADATA_ISSUE, data)
     }
 
     verifyIsOperational(){
@@ -514,7 +558,7 @@ class TopicAuthority extends EventEmitter{
     }
 
     getCurrentMetadata(){
-        return this.currentMetadata;
+        return  Metadata.parseMetadata(JSON.stringify(this.currentMetadata));
     }
 
     setResidence(residence){

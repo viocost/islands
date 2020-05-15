@@ -1,11 +1,12 @@
-const Err = require("../libs/IError.js");
+const Err = require("../libs/IError");
+const assert = require("../libs/assert");
 const CuteSet = require("cute-set");
 const Envelope = require("../objects/CrossIslandEnvelope.js");
 const Message = require("../objects/ChatMessage.js");
 const ClientError = require("../objects/ClientError.js");
 const Logger = require("../libs/Logger.js");
 const Coordinator = require("../assistants/AssistantCoordinator.js");
-
+const { Internal, Events } = require("../../../common/Events");
 
 class ChatMessageAssistant{
     constructor(connectionManager = Err.required(),
@@ -30,51 +31,34 @@ class ChatMessageAssistant{
 
 
     subscribeToClientRequests(requestEmitter){
-        this.subscribe(requestEmitter, {
-            //HANDLERS
-            // delete_invite: this.deleteInviteOutgoing,
-            broadcast_message: this.broadcastMessage,
-            send_message: this.sendPrivateMessage
-        }, this.clientErrorHandler)
+        console.log("Subscribing to chat events", {cat: "chat"});
+        let handlers = {}
+        handlers[Internal.BROADCAST_MESSAGE] = this.broadcastMessage;
+        handlers[Internal.SEND_MESSAGE] = this.sendPrivateMessage;
+        this.subscribe(requestEmitter, handlers, this.clientErrorHandler)
     }
 
     subscribeToCrossIslandsMessages(ciMessenger){
-        this.subscribe(ciMessenger, {
-            //HANDLERS
-            broadcast_message: this.processIncomingMessage,
-            send_message: this.processIncomingMessage
-        }, this.crossIslandErrorHandler)
+        let handlers = {}
+        handlers[Internal.BROADCAST_MESSAGE] = this.processIncomingMessage;
+        handlers[Internal.SEND_MESSAGE] = this.processIncomingMessage;
+        this.subscribe(ciMessenger, handlers, this.crossIslandErrorHandler)
     }
 
 
     async broadcastMessage(message, connectionId, self){
         let pkfp = message.headers.pkfpSource;
-        if(!self.sessionManager.isSessionActive(pkfp)){
-            Logger.warn("Attempt to send a message without logging in", {
-                pkfp: pkfp
-            });
-            throw new Error("Login required");
-        }
-
         Logger.debug("Broadcasting chat message", {
             pkfp: pkfp,
-            msg: message.body.message
+            msg: message.body.message,
+            cat: "chat"
         });
 
-        if (message.body.message.length > 65535){
-            Logger.warn("Attempt to send message of length more than 65535 bytes. Actual length is " + message.body.message.length);
-            throw new Error("Message is too long");
-        }
-	
+        assert(message.body.message.length < 65535, "Message is too long")
+
         const metadata = JSON.parse(await self.hm.getLastMetadata(pkfp));
         const myPublicKey = metadata.body.participants[pkfp].publicKey;
-        const verified = Message.verifyMessage(myPublicKey, message);
-        if(!verified){
-            Logger.warn("Broadcasting message error: signature is not valid!", {
-                pkfp: pkfp
-            });
-            throw new Error("Broadcasting message error: signature is not valid!") ;
-        }
+        assert(Message.verifyMessage(myPublicKey, message), "Broadcasting message error: signature is not valid!")
 
         //Adding processed timestamp
         let currentTime = new Date().getTime();
@@ -101,34 +85,34 @@ class ChatMessageAssistant{
             })
         }
         Logger.verbose("Message sent",{
-            pkfpSource: pkfp
+            pkfpSource: pkfp,
+            cat: "chat"
         });
-        message.headers.response = "send_success";
-        self.sessionManager.broadcastUserResponse(pkfp, message)
+
+        let receipt  = Message.makeResponse(message, "island", Internal.MESSAGE_SENT);
+        receipt.body.message = message.body.message;
+        let session = self.sessionManager.getSessionByConnectionId(connectionId);
+        if (session){
+            session.broadcast(receipt);
+        }
     }
 
 
     async sendPrivateMessage(message, connectionId, self){
+        Logger.debug("Sending private message", {
+            cat: "chat"
+        })
         const metadata = JSON.parse(await self.hm.getLastMetadata(message.headers.pkfpSource));
         const recipient = metadata.body.participants[message.headers.pkfpDest];
         const sender = metadata.body.participants[message.headers.pkfpSource];
         const myPublicKey = sender.publicKey;
-        if(!self.sessionManager.isSessionActive(message.headers.pkfpSource)){
-            Logger.warn("Attempt to send a message without logging in", {
-                pkfp: message.headers.pkfpSource
-            });
-            throw new Error("Login required");
-        }
 
-	if (message.body.message.length > 65535){
-	    Logger.warn("Attempt to send message of length more than 65535 bytes. Actual length is " + message.body.message.length);
-	    throw new Error("Message is too long");
-	}
+        assert(message.body.message.length < 65535, "Message is too long")
 	
         const verified = Message.verifyMessage(myPublicKey, message);
-        if(!verified){
-            throw new Error("Sending private message error: signature is not valid!");
-        }
+
+        assert(Message.verifyMessage(myPublicKey, message), "Sending private message error: signature is not valid!")
+
         let msgString = JSON.stringify(message);
         Logger.debug("Send message request verified", {
             origMsg: msgString
@@ -137,21 +121,22 @@ class ChatMessageAssistant{
         await self.hm.appendMessage(message.body.message, message.headers.pkfpSource);
         let envelope = new Envelope(recipient.residence, new Message(msgString), sender.residence);
         await self.crossIslandMessenger.send(envelope);
-        message.headers.response = "send_success";
-        self.sessionManager.broadcastUserResponse(sender.pkfp, message);
+
+        let receipt  = Message.makeResponse(message, "island", Internal.MESSAGE_SENT);
+        receipt.body.message = message.body.message;
+        let session = self.sessionManager.getSessionByConnectionId(connectionId);
+        if (session){
+            session.broadcast(receipt);
+        }
     }
 
 
 
     async processIncomingMessage(envelope, self){
         const message = envelope.payload;
-        if(message.body.message.length > 65535){
-            Logger.warn("Incoming message exeeds length limit. Origin: " + evnelope.origin +
-                " Length: " + message.body.message.length);
-            return;
-        }
+        assert(message.body.message.length < 65535, "Incoming message exeeds length limit.")
         const chatMessage = JSON.parse(message.body.message);
-		
+
         Logger.verbose("Received incoming chat message", {
             origResidence: envelope.origin,
             messageID: chatMessage.header.id,
@@ -159,36 +144,22 @@ class ChatMessageAssistant{
             private: message.headers.private,
             pkfpSource: message.headers.pkfpSource,
             pkfpDest: message.headers.pkfpDest,
+            cat: "chat"
         });
 
         let authorPkfp = message.headers.pkfpSource;
         let myPkfp = message.headers.pkfpDest;
         const metadata = JSON.parse(await self.hm.getLastMetadata(myPkfp));
-        if(!metadata.body.participants[authorPkfp]){
-            Logger.warn("Incoming message: Author's pkfp is not registered in this topic.", {
-                origResidence: envelope.origin,
-                destResidence: envelope.destination,
-                messageID: chatMessage.header.id
-            });
-            return
-        }
+        assert(metadata.body.participants[authorPkfp], "Incoming message: Author's pkfp is not registered in this topic.");
 
         let authorPublicKey = metadata.body.participants[authorPkfp].publicKey;
-        if(!message.headers.private){
-            delete message.headers.pkfpDest;
+
+        let msgCopy = JSON.parse(JSON.stringify(message))
+        if(!msgCopy.headers.private){
+            delete msgCopy.headers.pkfpDest;
         }
 
-        if(!Message.verifyMessage(authorPublicKey, message)){
-            Logger.warn("Message signature is invalid.", {
-                origResidence: envelope.origin,
-                destResidence: envelope.destination,
-                messageID: chatMessage.header.id,
-                signature: chatMessage.signature,
-                msg: JSON.stringify(message)
-            });
-            return
-        }
-
+        assert(Message.verifyMessage(authorPublicKey, msgCopy), "Message signature is invalid.")
         await self.incomingMessageProcessAfterVerification(envelope, metadata, myPkfp);
 
     }
@@ -253,7 +224,7 @@ class ChatMessageAssistant{
     }
     async appendBroadcastIncomingMessage(pkfp, message, key){
         await this.hm.appendMessage(message.body.message, pkfp);
-        this.sessionManager.broadcastChatMessage(pkfp, {message:message, key: key})
+        this.sessionManager.broadcastMessage(pkfp, message)
     }
 
 

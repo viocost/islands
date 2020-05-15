@@ -1,10 +1,11 @@
 'use strict';
-import  JSChaCha20  from 'js-chacha20';
-import * as forge from 'node-forge';
-import  sjcl  from "sjcl";
+const forge = require('node-forge');
+const sjcl = require("sjcl");
+const Base32 = require("./Base32.js");
+const JSChaCha20 = require("js-chacha20");
 
 export class iCrypto {
-    constructor(){
+    constructor(settings){
         let self = this;
         self.settings = {};
         self.locked = false;
@@ -507,7 +508,7 @@ export class iCrypto {
         } else if (typeof(blob) === "string"){
             input = iCrypto.stringToArrayBuffer(blob)
         } else{
-            throw("streamCryptorEncrypt: invalid format input");
+            throw new Error("streamCryptorEncrypt: invalid format input");
         }
 
 
@@ -539,7 +540,7 @@ export class iCrypto {
         } else if (typeof(blob) === "string"){
             input = iCrypto.stringToArrayBuffer(blob)
         } else{
-            throw("streamCryptorEncrypt: invalid format input");
+            throw new Error("streamCryptorEncrypt: invalid format input");
         }
         if (encoding === undefined || encoding === "raw"){
             return cryptor.decrypt(input).buffer
@@ -576,13 +577,7 @@ export class iCrypto {
 
     createHash(nameToSave = iCrypto.pRequired("createHash"),
                algorithm = "sha256"){
-        console.log(`Create hash called.`);
-        //console.log(`sjcl is ${typeof sjcl}`)
-        //for (let key of Object.keys(sjcl)){
-         //   console.log(key);
-        //}
         let hash = sjcl.hash.hasOwnProperty(algorithm) ? new sjcl.hash[algorithm](): this.throwError("Wrong hash algorithm");
-
         this.set(nameToSave, hash);
         return this
     }
@@ -933,13 +928,13 @@ export class iCrypto {
     /***#### COMPRESSION ####***/
 
     asyncCompress(target, nameToSave){
-        // return new Promise((resolve, reject)=>{
-        //     try{
-        //         resolve(this.compress(target, nameToSave));
-        //     } catch(err){
-        //         reject(err);
-        //     }
-        // })
+        return new Promise((resolve, reject)=>{
+            try{
+                resolve(this.compress(target, nameToSave));
+            } catch(err){
+                reject(err);
+            }
+        })
     }
 
     /**
@@ -954,19 +949,19 @@ export class iCrypto {
      */
     compress(target = iCrypto.pRequired("compress"), nameToSave = iCrypto.pRequired("compress")){
         //let compressed = LZMA.compress(this.get(target));
-        // this.set(nameToSave, compressed);
-        // return this;
+        //this.set(nameToSave, compressed);
+        return this;
     }
 
     asyncDecompress(target, nameToSave){
-        // return new Promise((resolve, reject)=>{
-        //     try{
-        //         resolve(this.decompress(target, nameToSave));
-        //     } catch(err){
-        //         reject(err);
-        //     }
-        //
-        // })
+        return new Promise((resolve, reject)=>{
+            try{
+                resolve(this.decompress(target, nameToSave));
+            } catch(err){
+                reject(err);
+            }
+
+        })
     }
 
     /**
@@ -981,9 +976,9 @@ export class iCrypto {
      */
     decompress(target = iCrypto.pRequired("decompress"),
                nameToSave = iCrypto.pRequired("decompress")){
-        // let decompressed = LZMA.decompress(this.get(target));
-        // this.set(nameToSave, decompressed);
-        // return this;
+        //let decompressed = LZMA.decompress(this.get(target));
+        //this.set(nameToSave, decompressed);
+        return this;
     }
 
 
@@ -1089,7 +1084,6 @@ export class iCrypto {
 
         if (!this.keysExist(things))
             throw new Error("merge: some or all objects with such keys not found ");
-
         let result = "";
         for (let i= 0; i< things.length; ++i){
             let candidate = this.get(things[i]);
@@ -1182,28 +1176,46 @@ export class iCrypto {
         return forge.util.decode64(blob);
     }
 
+    static onionAddressFromPrivateKey(privateKey){
+        let ic = new iCrypto()
+        ic.setRSAKey("privk", privateKey, "private")
+            .publicFromPrivate("privk", "pubk")
+        let pkraw = forge.pki.publicKeyFromPem(ic.get("pubk"))
+        let pkfp = forge.pki.getPublicKeyFingerprint(pkraw, {encoding: 'hex', md: forge.md.sha1.create()})
+
+        if (pkfp.length % 2 !== 0) {
+            pkfp = '0' + pkfp;
+        }
+        let bytes = [];
+        for (let i = 0; i < pkfp.length/2; i = i + 2) {
+            bytes.push(parseInt(pkfp.slice(i, i + 2), 16));
+        }
+
+        return  Base32.encode(bytes, "RFC4648_HEX").toLowerCase() + ".onion";
+    }
+
     /**
      * Returns random integer
-     * @param a
-     * @param b
+     * @param min
+     * @param max
      */
     static randInt(min, max) {
-        if (max === undefined) {
-            max = min;
-            min = 0;
-        }
+            if (max === undefined) {
+                max = min;
+                min = 0;
+            }
 
-        if (typeof min !== 'number' || typeof max !== 'number') {
-            throw new TypeError('Expected all arguments to be numbers');
-        }
+            if (typeof min !== 'number' || typeof max !== 'number') {
+                throw new TypeError('Expected all arguments to be numbers');
+            }
 
-        return Math.floor(Math.random() * (max - min + 1) + min);
+            return Math.floor(Math.random() * (max - min + 1) + min);
     };
 
     static createRandomHexString(length){
         let bytes = iCrypto.getBytes(length);
         let hex = iCrypto.hexEncode(bytes);
-        let offset = iCrypto.randInt(0, hex.length - length);
+        let offset = iCrypto.randInt(hex.length - length);
         return hex.substring(offset, offset+length);
     }
 
@@ -1239,7 +1251,7 @@ export class iCrypto {
         if(typeof (keys) === "string" || typeof(keys) === "number")
             return this._keyExists(keys);
         if(typeof (keys) !== "object")
-            throw ("keysExist: unsupported type");
+            throw new Error("keysExist: unsupported type");
         if(keys.length<1)
             throw new Error("array must have at least one key");
 
@@ -1259,12 +1271,11 @@ export class iCrypto {
     }
 
     static pRequired(functionName = "iCrypto function"){
-        throw functionName + ": missing required parameter!"
+        throw new Error(functionName + ": missing required parameter!");
     }
 
     throwError(message = "Unknown error"){
-        throw message;
+        throw new Error (message);
     }
 }
-
 

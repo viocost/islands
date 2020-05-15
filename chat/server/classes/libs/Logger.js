@@ -4,6 +4,8 @@ const fs = require("fs-extra");
 const Path = require("path");
 const Err = require("../libs/IError.js");
 const Set = require("cute-set");
+const ConfigParser = require("config-ini-parser").ConfigIniParser;
+const delimiter = "\n";
 
 //Logging categories
 const CONFIG = {
@@ -22,14 +24,23 @@ let filterConfigPath;
 const loadFilterConfig = function(){
     try{
         if (fs.existsSync(filterConfigPath)){
-            let configLoaded = JSON.parse(fs.readFileSync(filterConfigPath, "utf8"));
-            for(let key of Object.keys(CONFIG)){
-                if (key === "categories" && Array.isArray(configLoaded["categories"])){
-                    CONFIG.categories = new Set(configLoaded["categories"]);
-                } else {
-                    CONFIG[key] = configLoaded[key];
+            let parser = new ConfigParser(delimiter);
+            parser.parse(fs.readFileSync(filterConfigPath, "utf8"))
+            CONFIG.console = parser.getBoolean("Main", "Console");
+            CONFIG.consoleFilter = parser.getBoolean("Main", "ConsoleFilter");
+
+            let categories = parser.options("Categories");
+            CONFIG.categories = new Set();
+            for(let key of categories){
+
+                if (parser.getBoolean("Categories", key)){
+                    CONFIG.categories.add(key);
                 }
             }
+        } else {
+            // Write default configuration
+            let defaultConfig = fs.readFileSync(Path.join(__dirname, "../../config/log_console_filter_default.cf"));
+            fs.writeFileSync(filterConfigPath, defaultConfig);
         }
     } catch(err){
         console.log("ERROR LOADING LOGGER CONFIG: " + err)
@@ -62,7 +73,7 @@ class Logger{
 
     static initLogger  (path = Err.required(), level){
         let fullPath = Path.join(path, "logs");
-        filterConfigPath = Path.join(path, "console_filter.json")
+        filterConfigPath = Path.join(path, "console_filter.cf")
 
         if(!fs.existsSync(path)){
             fs.mkdirSync(path);
@@ -156,12 +167,11 @@ class Logger{
 
     //prints log message to console if required
     static _consoleLog(msg, data, level){
-        if (!CONFIG.console){
-            //console turned off
+        if (!global.DEBUG){
             return
         }
 
-        let additionalData = data ? JSON.stringify(data) : "";
+        let additionalData = data ? JSON.stringify(data, null, 4) : "";
         level = level ? level.toUpperCase() : "UNDEFINED";
         if (!CONFIG.consoleFilter){
 

@@ -15,12 +15,12 @@ export function reset(){
  * @param items
  */
 export function bakeDropdownMenu(menuTitle, items){
-    let dropdownContainer = util.bake("div", {classes: ["dropdown-wrap"]});
-    let button = util.bake("button", {classes: "dropdown-button", text: menuTitle});
-    let menuOptions = util.bake("ul", {classes: "dropdown"});
+    let dropdownContainer = util.bake("div", {class: ["dropdown-wrap"]});
+    let button = util.bake("button", {class: "dropdown-button", text: menuTitle});
+    let menuOptions = util.bake("ul", {class: "dropdown"});
 
     Object.keys(items).forEach(key =>{
-        let option = util.bake("li", {classes: "dropdown-item", text: key});
+        let option = util.bake("li", {class: "dropdown-item", text: key});
         option.addEventListener("click", (ev)=>{
             items[key](ev);
         });

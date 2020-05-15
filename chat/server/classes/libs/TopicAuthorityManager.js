@@ -115,9 +115,12 @@ class TopicAuthorityManager{
     }
 
     async sendOutNewMetadata(data, topicAuthority){
-        const metadata = data.metadata;
-        let recipients = data.recipients;
+        //invite is invite string that was used by invitee
+        // pkfp  - refers to invitee's pkfp
+        // This properties applied only for cases when new member joins topic
+        let { metadata, recipients, invite, pkfp } = data
         console.log("***********SENDING OUT NEW METADATA*************");
+
         const taPkfp = metadata.getTopicAuthorityPkfp();
         const metaBlob = metadata.toBlob();
 
@@ -131,7 +134,13 @@ class TopicAuthorityManager{
             let message = new ServiceMessage(taPkfp, participant, "metadata_issue");
             message.headers.event = data.event;
             message.setAttribute("metadata", metaBlob);
-
+            if(invite){
+                //setting invite string
+                message.setAttribute("invite", invite);
+            }
+            if(pkfp){
+                message.setAttribute("inviteePkfp", pkfp);
+            }
             //adding event-specific fields
             message = this._getMetaIssueMessageConstructor(data.event)(message, data);
             message = topicAuthority.signRequestOnMetadataIssue(message);

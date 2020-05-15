@@ -59,6 +59,35 @@ class ChatUtility{
             .privateKeyDecrypt("blobcip", "priv", "blob", encoding);
         return ic.get("blob");
     }
+
+    static sign(data, privateKey){
+        if (typeof data !== "string") throw new Error("Data must be a string");
+        let ic = new iCrypto()
+
+        ic.addBlob("body", data)
+            .setRSAKey("priv", privateKey, "private")
+            .privateKeySign("body", "priv", "sign");
+        return ic.get("sign");
+    }
+
+    static verify(data, publicKey, sign){
+        if (typeof data !== "string") throw new Error("Data must be a string");
+        let ic = new iCrypto();
+        ic.setRSAKey("pubk", publicKey, "public")
+            .addBlob("sign", sign)
+            .hexToBytes('sign', "signraw")
+            .addBlob("b", data);
+        ic.publicKeyVerify("b", "sign", "pubk", "v");
+        return ic.get("v");
+    }
+
+    static getRandomId(length=16){
+        let ic = new iCrypto();
+        ic.createNonce("n", Math.round(length / 2))
+          .bytesToHex("n", "nhex")
+        return ic.get("nhex").substring(0, length);
+    }
+
 }
 
 module.exports = ChatUtility;

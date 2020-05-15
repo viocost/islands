@@ -1,19 +1,9 @@
 {
-  "historyPath": "/islandsData/history/",
-  "updatePath": "/islandsData/update/",
-  "adminKeyPath": "/islandsData/keys/",
-  "vaultsPath": "/islandsData/vaults/",
-  "servicePath": "/islandsData/service/",
-  "hsVaultMap": "/islandsData/hsmap/",
-  "hiddenServicesPath": "/islandsData/hs/",
-  "basePath": "/islandsData/",
-  "torConnector" :{
-    "hiddenServiceHOST": "127.0.0.1",
-    "hiddenServicePORT": 4003,
-    "torListenerPort": 80,
-    "torControlHost": "127.0.0.1",
-    "torControlPort": 9051,
-    "torControlPassword" : "TheP@$sw0rd"
-  },
+  "BASE_PATH": "./islandsData",
+  "TOR_PASSWD": "",
+  "TOR_CONTROL_PORT": 15141,
+  "TOR_CONTROL_HOST": "127.0.0.1",
+  "TOR_PORT": 15140,
+  "TOR_HOST": "127.0.0.1",
   "vaultIdLength": 64
 }

@@ -1,15 +1,16 @@
 const CuteSet = require("cute-set");
+
 const Err = require("../libs/IError.js");
 const Envelope = require("../objects/CrossIslandEnvelope.js");
 const ServiceRecord = require("../objects/ServiceRecord.js");
 const Request = require("../objects/ClientRequest.js");
-const Response = require("../objects/ClientResponse.js");
 const Message = require("../objects/Message.js");
 const ServiceMessage = require("../objects/ServiceMessage.js");
 const Metadata = require("../objects/Metadata.js");
 const Logger = require("../libs/Logger.js");
 const Coordinator = require("../assistants/AssistantCoordinator.js");
-
+const { Internal, Events } = require("../../../common/Events.js")
+const assert = require("../libs/assert");
 
 class ServiceAssistant{
     constructor(connectionManager = Err.required(),
@@ -40,7 +41,14 @@ class ServiceAssistant{
     async metadataIssue(envelope, self){
         Logger.verbose("Metadata issue received");
         let message = envelope.payload;
-        let prevMeta  = Metadata.parseMetadata(await  self.hm.getLastMetadata(message.headers.pkfpDest));
+        let curMetaBlob
+        try{
+            curMetaBlob = await  self.hm.getLastMetadata(message.headers.pkfpDest);
+        } catch (err){
+            Logger.warn(`Error obtaining metadata for ${message.headers.pkfpDest}: ${err}`);
+            return;
+        }
+        let prevMeta  = Metadata.parseMetadata(curMetaBlob);
         let taPublicKey = prevMeta.body.topicAuthority.publicKey;
 
         console.log("\nMetadata issue incoming, event: " + message.headers.event+"\n");
@@ -56,15 +64,17 @@ class ServiceAssistant{
         let newMetadata = Metadata.parseMetadata(message.body.metadata);
         newMetadata.setSettings(prevMeta.body.settings);
         await self.hm.appendMetadata(newMetadata.toBlob(), message.headers.pkfpDest);
-        console.log("Metadata appended");
-        self.sessionManager.broadcastServiceMessage(message.headers.pkfpDest, message);
+        let session = self.sessionManager.getSession(message.headers.pkfpDest);
+        if (session){
+            //this sends the new metadata to first connected client in the session
+            session.send(message)
+        }
         await self.registerMetadataUpdate(message, message.headers.pkfpDest);
-
     }
 
     async requestMetadataSync(pkfp, self){
         if(this.syncInProgress.has(pkfp)){
-            Logger.debug("Sync a;ready in progress. Returning...", {pkfp: pkfp});
+            Logger.debug("Sync already in progress. Returning...", {pkfp: pkfp});
             return
         } else {
             this.syncInProgress.add(pkfp);
@@ -145,40 +155,61 @@ class ServiceAssistant{
         }
 
         response.body.metadata = metadataRecords[metadataRecords.length - 1];
-        self.sessionManager.broadcastServiceMessage(response.headers.pkfpSource, response);
+        self.sessionManager.broadcastMessage(response.headers.pkfpSource, response);
         Logger.info("Resync completed on "+response.headers.pkfpDest);
         self.syncInProgress.delete(response.headers.pkfpSource);
         Coordinator.notify("metadata_synced", response.headers.pkfpSource);
     }
 
 
+    //This just sends service record to all the clients and appends it to history
     async registerMetadataUpdate(message, pkfp){
         let msg = await this.createSaveServiceRecord(pkfp, message.headers.event,
             this.generateMessageOnMetadataIssue(message));
-        this.sessionManager.broadcastServiceRecord(pkfp, msg);
+        let note = new Message();
+        note.setHeader("pkfpDest", pkfp);
+        note.setHeader("command", Internal.SERVICE_RECORD);
+        note.setAttribute("serviceRecord", msg);
+        this.sessionManager.broadcastMessage(pkfp, note);
     }
 
     async registerInviteRequest(request, connectionID, self){
         let msg = await self.createSaveServiceRecord(request.headers.pkfpSource, request.headers.command, "Invite requested");
-        self.sessionManager.broadcastServiceRecord(request.headers.pkfpSource, msg);
+        let response = Message.makeResponse(request, "island", Internal.SERVICE_RECORD);
+        response.setAttribute("serviceRecord", msg);
+        self.sessionManager.broadcastMessage(request.headers.pkfpSource, response);
+
     }
 
 
     async processInviteRequestSuccess(envelope, self){
         let request = envelope.payload;
-        let msg = await self.createSaveServiceRecord(request.headers.pkfpSource, request.headers.command, "Invite created successfully. Code: " + request.body.inviteCode);
-        self.sessionManager.broadcastServiceRecord(request.headers.pkfpSource, msg);
+        let msg = await self.createSaveServiceRecord(request.headers.pkfpDest, request.headers.command, "Invite created successfully. Double-click invite that appeared in side panel to copy it to the clipboard" );
+        let note = new Message()
+        note.setHeader("pkfpDest", request.headers.pkfpDest);
+        note.setHeader("command", Internal.SERVICE_RECORD);
+        note.setAttribute("serviceRecord", msg);
+        self.sessionManager.broadcastMessage(request.headers.pkfpDest, note);
     }
 
-    async serviceRecordOnRequestError(envelope, self){
+    async processInviteRequestReturn(envelope, self){
+        let message = `Invite request error: ${envelope.error}`
+        return self.serviceRecordOnRequestError(envelope, message, self)
+    }
+
+    async serviceRecordOnRequestError(envelope, errMessage, self){
         let request = Envelope.getOriginalPayload(envelope);
-        let msg = await self.createSaveServiceRecord(request.headers.pkfpSource, request.headers.command, envelope.error);
-        self.sessionManager.broadcastServiceRecord(request.headers.pkfpSource, msg);
+        let msg = await self.createSaveServiceRecord(request.headers.pkfpSource, request.headers.command, errMessage);
+        let note = new Message()
+        note.setHeader("pkfpDest", request.headers.pkfpSource);
+        note.setHeader("command", Internal.SERVICE_RECORD);
+        note.setAttribute("serviceRecord", msg);
+        self.sessionManager.broadcastMessage(request.headers.pkfpSource, note);
     }
 
     async registerBootMemberRequest(request, connectionID, self){
         let msg = await self.createSaveServiceRecord(request.headers.pkfpSource, request.headers.command, "Boot requested for user " + request.body.pkfp +  " created successfully");
-        self.sessionManager.broadcastServiceRecord(request.headers.pkfpSource, msg);
+        self.sessionManager.broadcastMessage(request.headers.pkfpSource, msg);
     }
 
     async registerBootNotce(envelope, self){
@@ -189,7 +220,7 @@ class ServiceAssistant{
             return;
         }
         let msg = await self.createSaveServiceRecord(message.headers.pkfpDest, "u_booted", "You have been excluded from this channel");
-        self.sessionManager.broadcastServiceRecord(message.headers.pkfpSource, msg);
+        self.sessionManager.broadcastMessage(message.headers.pkfpSource, msg);
     }
 
     async registerSettingsUpdate(){
@@ -199,7 +230,10 @@ class ServiceAssistant{
 
     generateMessageOnMetadataIssue(message){
         if(message.headers.event === "new_member_joined"){
-            return "Member " + message.body.nickname + " has joined the channel."
+            Logger.debug("Member joined the channel", {
+                cat: "topic_join"
+            })
+            return "New member has joined the channel."
         }else if(message.headers.event === "member_booted"){
             return "Member id: " + message.body.bootedPkfp + " has left the channel."
         } else if(message.headers.response === "meta_sync_success"){
@@ -213,38 +247,53 @@ class ServiceAssistant{
         console.log("Load more messages called");
         let messages, metadataIDs;
 
-        //Getting public key og the owner
+        //Getting public key of the owner
         let publicKey = await self.hm.getOwnerPublicKey(request.headers.pkfpSource)
+        assert(Request.isRequestValid(request, publicKey), "Request was not verified")
 
-        if (!Request.isRequestValid(request, publicKey)){
-            throw new Error("Request was not verified");
-        }
-
-        let data = await self.hm.loadMoreMessages(request.headers.pkfpSource, request.body.lastLoadedMessageID);
+        let messagesToLoad = request.body.quantity ? parseInt(request.body.quantity) : undefined
+        let data = await self.hm.loadMoreMessages(request.headers.pkfpSource,
+                                                  request.body.lastMessageId,
+                                                  messagesToLoad);
         messages = data[0];
         metadataIDs = data[1];
         let allLoaded = data[2];
 
         let gatheredKeys  = await self.hm.getSharedKeysSet(metadataIDs, request.headers.pkfpSource)
 
-        let response = new Response("load_more_messages_success", request );
+        let response = Message.makeResponse(request,  "island", Internal.LOAD_MESSAGES_SUCCESS);
 
         response.body.lastMessages = {
             messages: messages,
             keys: gatheredKeys,
             allLoaded: allLoaded
         };
-        self.sessionManager.broadcastUserResponse(request.headers.pkfpSource, response);
+
+        self.connectionManager.sendMessage(connectionId, response);
     }
 
 
 
     async processIncomingNicknameRequest(envelope, self){
+        Logger.debug("Incoming nickname request received", { cat: "service" })
         return self.verifyAndForwardServiceMessage(envelope, self)
     }
 
-    async processNicknameResponse(envelope, self){
-        return self.verifyAndForwardServiceMessage(envelope, self)
+    async processNicknameNote(envelope, self){
+        //return self.verifyAndForwardServiceMessage(envelope, self)
+        Logger.debug("Processing nickname note.", {cat: "service"})
+        let request = Envelope.getOriginalPayload(envelope);
+        let pkfpDest = request.headers.pkfpDest;
+        let metadata = Metadata.parseMetadata(await self.hm.getMetadata(pkfpDest, request.body[Internal.METADATA_ID]));
+        let senderPublicKey = metadata.body.participants[request.headers.pkfpSource].publicKey;
+        //assert(Request.isRequestValid(request, senderPublicKey), "Nickname change note: signature is invalid");
+        request.sharedKey = metadata.body.participants[pkfpDest].key;
+        let session = self.sessionManager.getSession(pkfpDest);
+        if(session){
+
+            Logger.debug("Nickname note: client session found. Forwarding request...", {cat: "service"})
+            session.send(request);
+        }
     }
 
 
@@ -253,8 +302,9 @@ class ServiceAssistant{
     }
 
     async verifyAndForwardServiceMessage(envelope, self, broadcast = false){
-        Logger.debug("Received service message. Verifying and forwarding to ")
         let request = Envelope.getOriginalPayload(envelope);
+
+        Logger.debug("Received service message. ", { cat: "service", command: request.headers.command })
         let pkfpDest = request.headers.pkfpDest;
         let metadata = Metadata.parseMetadata(await self.hm.getLastMetadata(pkfpDest));
         let senderPublicKey = metadata.body.participants[request.headers.pkfpSource].publicKey;
@@ -269,37 +319,67 @@ class ServiceAssistant{
                 return;
             }
         }
-        if(broadcast){
-            self.sessionManager.broadcastServiceMessage(pkfpDest, request)
-        }else{
-            let destActiveSessions = self.sessionManager.getActiveUserSessions(pkfpDest);
-            if (destActiveSessions.length > 0){
-                self.sessionManager.sendServiceMessage(destActiveSessions[0].getConnectionID(), request)
-            }
+
+        if (request.body[Internal.METADATA_ID]){
+            let metadata = Metadata.parseMetadata(await self.hm.getMetadata(pkfpDest, request.body[Internal.METADATA_ID]))
+            request.sharedKey = metadata.body.participants[pkfpDest].key;
+            request.sharedKeySignature = metadata.body.sharedKeySignature;
+        }
+
+        //TODO This is temporary and must be refactored!
+        request.headers.pkfpDest = pkfpDest
+        let session = self.sessionManager.getSession(pkfpDest);
+
+        if (session){
+            let command = broadcast ? "broadcast" : "send"
+            session[command](request)
         }
     }
 
-    async processStandardNameExchabgeRequest(request, connectionId, self){
+    async sendNicknameNote(request, connectionId, self){
+        Logger.debug("Sending nickname note", {
+            pkfpSource: request.headers.pkfpSource,
+            pkfpDest: request.headers.pkfpDest,
+            cat: "service"
+        });
+        const metadata = JSON.parse(await self.hm.getLastMetadata(request.headers.pkfpSource));
+
+        let recipient = request.headers.pkfpDest ? metadata.body.participants[request.headers.pkfpDest] : null;
+
+        const sender = metadata.body.participants[request.headers.pkfpSource];
+        const myPublicKey = sender.publicKey;
+
+        assert(Request.isRequestValid(request, myPublicKey), "Sending private message error: signature is not valid!")
+
+        if(recipient){
+            Logger.debug(`Sending nickiname exchange request to ${recipient.residence}`, {cat: "service"})
+            await self._sendToSignleRecipient(request, sender.residence, recipient.residence,)
+        } else {
+            Logger.debug(`Sending nickiname exchange request to all`, {cat: "service"})
+            await self._sendToAll(request, metadata)
+        }
+        await self.createServiceRecordOnNameChangeRequest(request)
+    }
+
+    async processStandardNameExchangeRequest(request, connectionId, self){
         Logger.debug("Sending name request", {
             pkfpSource: request.headers.pkfpSource,
-            pkfpDest: request.headers.pkfpDest
+            pkfpDest: request.headers.pkfpDest,
+            cat: "service"
         });
         const metadata = JSON.parse(await self.hm.getLastMetadata(request.headers.pkfpSource));
         const recipient = metadata.body.participants[request.headers.pkfpDest];
         const sender = metadata.body.participants[request.headers.pkfpSource];
         const myPublicKey = sender.publicKey;
-        if(!self.sessionManager.isSessionActive(request.headers.pkfpSource)){
-            Logger.warn("Attempt to send a message without logging in", {
-                pkfp: request.headers.pkfpSource
-            });
-            throw new Error("Login required");
-        }
-        if(!Request.isRequestValid(request, myPublicKey)){
-            throw new Error("Sending private message error: signature is not valid!");
-        }
+
+        assert(Request.isRequestValid(request, myPublicKey), "Sending private message error: signature is not valid!")
+
         if(recipient){
+            Logger.debug(`Sending nickiname exchange request to ${recipient}`, {cat: "service"})
             await self._sendToSignleRecipient(request, sender.residence, recipient.residence,)
         } else {
+
+            Logger.debug(`Sending nickiname exchange request to all`, {cat: "service"})
             await self._sendToAll(request, metadata)
         }
         await self.createServiceRecordOnNameChangeRequest(request)
@@ -309,7 +389,7 @@ class ServiceAssistant{
         if (request.headers.command === "nickname_change_broadcast"){
             let msg = await this.createSaveServiceRecord(request.headers.pkfpSource, request.headers.command,
                 "You have changed your nickname.");
-            this.sessionManager.broadcastServiceRecord(request.headers.pkfpSource, msg);
+            this.sessionManager.broadcastMessage(request.headers.pkfpSource, msg);
         }
     }
 
@@ -324,7 +404,7 @@ class ServiceAssistant{
             request.body.event,
             request.body.message,
             true);
-        self.sessionManager.broadcastServiceRecord(request.headers.pkfpSource, msg);
+        self.sessionManager.broadcastMessage(request.headers.pkfpSource, msg);
 
     }
 
@@ -341,15 +421,19 @@ class ServiceAssistant{
     async _sendToSignleRecipient(request, origin, destination){
         Logger.debug("Sending service message to single participant", {
             origin: origin,
-            destination: destination
+            destination: destination,
+            cat: "service"
         });
         let envelope = new Envelope(destination, request, origin);
-        envelope.setReturnOnFail(true);
+        envelope.setReturnOnFail(false);
         this.ciMessenger.send(envelope);
     }
 
     _sendToAll(request, metadata){
-        Logger.debug("Sending service message to all participants");
+        Logger.debug("Sending service message to all participants", {
+            command: request.headers.command,
+            cat: "chat"
+        });
         let participants = metadata.body.participants;
         const sender = metadata.body.participants[request.headers.pkfpSource];
         let stringifiedRequest = JSON.stringify(request);
@@ -386,46 +470,56 @@ class ServiceAssistant{
             await self.sendMetadataOutdatedNote(data, self);
         });
 
+        Coordinator.on(Events.INVITE_CREATED, async (envelope)=>{
+            await this.processInviteRequestSuccess(envelope, self);
+        });
+
         Coordinator.on("invite_request_timeout", async (envelope)=>{
             Logger.debug("Processing invite request timeout");
-            await self.serviceRecordOnRequestError(envelope, self);
+            await self.serviceRecordOnRequestError(envelope, envelope.error, self);
         });
 
         Coordinator.on("sync_invite_timeout", async(envelope)=>{
             Logger.debug("Processing invite sync request timeout");
-            await self.serviceRecordOnRequestError(envelope, self);
+            await self.serviceRecordOnRequestError(envelope, envelope.error, self);
         })
     }
 
     subscribeToClientRequests(requestEmitter){
+        let handlers = {};
+        handlers[Internal.LOAD_MESSAGES] = this.loadMoreMessages;
+        handlers[Internal.UPDATE_SETTINGS] = this.registerSettingsUpdate;
+        handlers[Internal.NICKNAME_INITAL_EXCHANGE] = this.processStandardNameExchangeRequest;
+        handlers[Internal.NICKNAME_NOTE] = this.sendNicknameNote;
+
         this.subscribe(requestEmitter, {
-            whats_your_name: this.processStandardNameExchabgeRequest,
-            nickname_change_broadcast: this.processStandardNameExchabgeRequest,
-            my_name_response: this.processStandardNameExchabgeRequest,
+            nickname_change_broadcast: this.processStandardNameExchangeRequest,
             request_invite: this.registerInviteRequest,
             boot_participant: this.registerBootMemberRequest,
-            update_settings: this.registerSettingsUpdate,
-            load_more_messages: this.loadMoreMessages,
             register_service_record: this.registerClientServiceRecord
         }, this.clientErrorHandler)
+
+        this.subscribe(requestEmitter, handlers, this.clientErrorHandler)
     }
 
 
     //Subscribes to relevant cross-island requests
     subscribeToCrossIslandsMessages(ciMessenger){
-        this.subscribe(ciMessenger, {
-            //HANDLERS
+        let handlers = {
             whats_your_name: this.processIncomingNicknameRequest,
             nickname_change_broadcast: this.processIncomingNameChangeNote,
-            my_name_response: this.processNicknameResponse,
             u_booted: this.registerBootNotce,
             meta_sync: this.processIncomingResyncRequest,
-            metadata_issue: this.metadataIssue, //new member joined
             meta_sync_success: this.processMetaSyncResponse,
             request_invite_success: this.processInviteRequestSuccess,
             metadata_outdated: this.processMetadataOutdatedNote,
-            return_request_invite: this.processInviteRequestError
-        }, this.crossIslandErrorHandler)
+            return_request_invite: this.processInviteRequestReturn
+        }
+
+        handlers[Internal.NICKNAME_NOTE] = this.processNicknameNote
+        handlers[Internal.NICKNAME_INITAL_EXCHANGE] = this.processIncomingNicknameRequest
+        handlers[Internal.METADATA_ISSUE] = this.metadataIssue;
+        this.subscribe(ciMessenger, handlers, this.crossIslandErrorHandler)
     }
 
     async crossIslandErrorHandler(envelope, self, err){
@@ -480,7 +574,11 @@ class ServiceAssistant{
         try{
             await handlers[command](...args)
         }catch(err){
-            Logger.error(`Service assistant error on command: ${command} : ${err.message}`, {stack: err.stack} )
+            Logger.error(`Service assistant error on command: ${command} : ${err}`, {
+                stack: err.stack,
+                cat: "service"
+            })
+
             args.push(err);
             await errorHandler(...args);
         }

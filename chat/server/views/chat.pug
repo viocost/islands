@@ -1,13 +1,9 @@
-extends partials/layout
-block head
-	include partials/head
-block header
-	include partials/header
-block content
-	include partials/chat-content
-block logs
-	include partials/logs
-block footer
-	include partials/footer
-block scripts
-	include partials/scripts-chat
+doctype html
+html
+    head
+        include partials/head
+    body
+        include partials/chat-content
+        //include partials/logs
+
+    include partials/scripts-chat
