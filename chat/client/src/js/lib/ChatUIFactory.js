@@ -213,8 +213,9 @@ export function bakeParticipantListItem(data){
             util.bake("div", {
                 class: "participant-label",
                 children: [
+
                     util.bake("span", {
-                        text: nickname
+                        text: isSelf ? "(me)" : alias ? alias : `${pkfp.substring(0, 8)}`
                     }),
 
                     util.bake("span", {
@@ -222,7 +223,7 @@ export function bakeParticipantListItem(data){
                     }),
 
                     util.bake("span", {
-                        text: isSelf ? "(me)" : alias ? alias : `${pkfp.substring(0, 16)}...`
+                        text: nickname
                     }),
                 ]
                 //html: alias ? `${nickname} -- ${alias}` : `${nickname} -- ${nickname}`
@@ -709,6 +710,9 @@ export function bakeTopicListItem(topic, topicOnClick, expandOnClick){
         children: [
             util.bake("div", {
                 class: "topic-row-wrap",
+                listeners: {
+                    dblclick: expandOnClick
+                },
                 children: [
                     util.bake("div", {
                         class: "btn-expand-topic",

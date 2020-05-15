@@ -118,6 +118,10 @@ module.exports.Events = Object.freeze({
   INVITE_UPDATE_ERROR: "invite_update_error",
   INVITE_DELETED: "invite_deleted",
   DELETE_INVITE_ERROR: "del_invite_error",
+  //aliases nicknames
+  NICKNAME_CHANGED: "nickname_changed",
+  PARTICIPANT_ALIAS_CHANGED: "p_alias_changed",
+  INVITE_ALIAS_CHANGED: "invite_alias_changed",
   PARTICIPANT_LEFT: "participant_left",
   MEMBER_BOOTED: "member_booted",
   MEMBER_BOOT_ERROR: "member_boot_error",
@@ -158,6 +162,7 @@ module.exports.Internal = Object.freeze({
   TOPIC_ADDED: "topic_added",
   TOPIC_UPDATED: "topic_updated",
   VAULT_SETTINGS_UPDATED: "vault_settings_updated",
+  VAULT_UPDATED: "vault_updated",
   //END//////////////////////////////////////////////////////////////////////
   CONNECTION_ERROR: "conn_error",
   CONNECTED: "conn_established",
@@ -176,6 +181,7 @@ module.exports.Internal = Object.freeze({
   NICKNAME_REQUEST: "whats_your_name",
   NICKNAME_NOTE: "nickname_note",
   NICKNAME_INITAL_EXCHANGE: "nickname_exchange",
+  REGISTER_SERVICE_RECORD: "register_service_record",
   //Response sent by server to client.
   POST_LOGIN_DECRYPT: "post_login_decrypt_services",
   POST_LOGIN_CHECK_SERVICES: "post_login_check_services",
@@ -8149,8 +8155,8 @@ var Topic_Topic = /*#__PURE__*/function () {
       this.handlers[Events["Internal"].NICKNAME_NOTE] = function (msg) {
         console.log("nickname note received: metadataId: ".concat(msg.body[Events["Internal"].METADATA_ID]));
         var senderPkfp = msg.headers.pkfpSource;
-        var senderPublicKey = self.participants[senderPkfp].publicKey;
-        Object(IError["b" /* assert */])(Message["a" /* Message */].verifyMessage(senderPublicKey, msg), "Signature is invalid");
+        var senderPublicKey = self.participants[senderPkfp].publicKey; //assert(Message.verifyMessage(senderPublicKey, msg), "Signature is invalid")
+
         var sharedKey = ChatUtility["a" /* ChatUtility */].privateKeyDecrypt(msg.sharedKey, self.privateKey);
         var currentSharedKey = self.getSharedKey();
         console.log("Current key: ".concat(currentSharedKey, ", received key ").concat(sharedKey));
@@ -8470,6 +8476,13 @@ var Topic_Topic = /*#__PURE__*/function () {
   }, {
     key: "setParticipantNickname",
     value: function setParticipantNickname(nickname, pkfp) {
+      this.emit(Events["Events"].NICKNAME_CHANGED, {
+        topicPkfp: this.pkfp,
+        oldNickname: this._metadata.body.settings.membersData[pkfp].nickname,
+        newNickname: nickname,
+        participantPkfp: pkfp
+      });
+
       this._metadata.setParticipantNickname(nickname, pkfp);
 
       this.saveClientSettings();
@@ -8587,6 +8600,18 @@ var Topic_Topic = /*#__PURE__*/function () {
     } //~END SETTINGS ///////////////////////////////////////////////////////////
 
   }, {
+    key: "createRegisterServiceRecord",
+    value: function createRegisterServiceRecord(event, message) {
+      var request = new Message["a" /* Message */](self.version);
+      request.addNonce();
+      request.setSource(this.session.publicKeyFingerprint);
+      request.setCommand(Events["Internal"].REGISTER_SERVICE_RECORD);
+      request.body.event = event;
+      request.body.message = ChatUtility["a" /* ChatUtility */].encryptStandardMessage(message, this.getPublicKey);
+      request.signMessage(this.privateKey);
+      this.messageQueue.enqueue(request);
+    }
+  }, {
     key: "processMessagesLoaded",
     value: function processMessagesLoaded(msg, self) {
       var data = msg.body.lastMessages;
@@ -8660,7 +8685,43 @@ var Topic_Topic = /*#__PURE__*/function () {
       self.updateParticipants();
       console.log("Settings updated successfully!");
       self.emit(Events["Events"].SETTINGS_UPDATED);
-    } //TODO Cleanup or implememnt
+    } //Notification on alias change. Disable for now
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // detectAliasNicknameChangesOnSettingsUpdate(settingsPlain){                                                  //
+    //     Object.keys(this._metadata.body.settings.membersData).forEach(k=>{                                      //
+    //                                                                                                             //
+    //         if(this._metadata.body.settings.membersData[k].nickname !== settingsPlain.membersData[k].nickname){ //
+    //             this.emit(Events.NICKNAME_CHANGED, {                                                            //
+    //                 topicPkfp: this.pkfp,                                                                       //
+    //                 oldNickname: this._metadata.body.settings.membersData[k].nickname,                          //
+    //                 newNickname: settingsPlain.membersData[k].nickname,                                         //
+    //                 participantPkfp: k                                                                          //
+    //             })                                                                                              //
+    //         }                                                                                                   //
+    //                                                                                                             //
+    //         if(this._metadata.body.settings.membersData[k].alias !== settingsPlain.membersData[k].alias){       //
+    //             this.emit(Events.PARTICIPANT_ALIAS_CHANGED, {                                                   //
+    //                 topicPkfp: this.pkfp,                                                                       //
+    //                 oldAlias: this._metadata.body.settings.membersData[k].alias,                                //
+    //                 newAlias: settingsPlain.membersData[k].alias,                                               //
+    //                 participantPkfp: k                                                                          //
+    //             })                                                                                              //
+    //         }                                                                                                   //
+    //     })                                                                                                      //
+    //                                                                                                             //
+    //     Object.keys(this._metadata.body.settings.invites).forEach(k=>{                                          //
+    //         if (this._metadata.body.settings.invites[k].name !== settingsPlain.invites[k].name){                //
+    //             this.emit(Events.INVITE_ALIAS_CHANGED, {                                                        //
+    //                 topicPkfp: this.pkfp,                                                                       //
+    //                 oldAlias: this._metadata.body.settings.invites[k].name,                                     //
+    //                 newAlias: settingsPlain.invites[k].name,                                                    //
+    //                 invite: k                                                                                   //
+    //             })                                                                                              //
+    //         }                                                                                                   //
+    //     })                                                                                                      //
+    // }                                                                                                           //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //TODO Cleanup or implememnt
 
   }, {
     key: "processInvitesUpdated",
@@ -8685,13 +8746,7 @@ var Topic_Topic = /*#__PURE__*/function () {
         return;
       }
 
-      var participantData = this.participants[pkfp];
-
-      if (participantData && participantData.alias) {
-        return participantData.alias;
-      } else {
-        return pkfp.substring(0, 8);
-      }
+      return this._metadata.getParticipantAlias(pkfp);
     }
   }, {
     key: "getParticipants",
@@ -8767,6 +8822,12 @@ var Topic_Topic = /*#__PURE__*/function () {
     key: "verifyMetadata",
     value: function verifyMetadata() {
       return Metadata_Metadata.isMetadataValid(this._metadata);
+    }
+  }, {
+    key: "setTopicName",
+    value: function setTopicName(name) {
+      Object(IError["b" /* assert */])(2 <= name.length <= 30, "Topic name is invalid");
+      this.name = name;
     }
   }], [{
     key: "prepareNewTopicSettings",
@@ -17709,6 +17770,7 @@ var semver = __webpack_require__(184);
 
 
 
+
 /**
  * Represents key vault
  *
@@ -17781,6 +17843,11 @@ var Vault_Vault = /*#__PURE__*/function () {
         console.log("TOPIC DELETED: ".concat(msg.body.topicPkfp));
         delete self.topics[msg.body.topicPkfp];
         self.emit(Events["Internal"].TOPIC_DELETED, msg.body.topicPkfp);
+      };
+
+      this.handlers[Events["Events"].VAULT_UPDATED] = function () {
+        console.log("Vault updated in vault");
+        self.emit(Events["Events"].VAULT_UPDATED);
       };
 
       this.handlers[Events["Internal"].SESSION_KEY] = function (msg) {
@@ -18024,6 +18091,14 @@ var Vault_Vault = /*#__PURE__*/function () {
 
       return bootstrap;
     }()
+  }, {
+    key: "renameTopic",
+    value: function renameTopic(pkfp, name) {
+      Object(IError["b" /* assert */])(this.topics[pkfp], "Topic ".concat(pkfp, " does not exist"));
+      var topic = this.topics[pkfp];
+      topic.setTopicName(name);
+      this.save(Events["Internal"].TOPIC_UPDATED);
+    }
   }, {
     key: "processIncomingMessage",
     value: function processIncomingMessage(msg, self) {
@@ -45567,6 +45642,10 @@ var ChatClient = /*#__PURE__*/function () {
       this.vault.on(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Internal"].TOPIC_DELETED, function (pkfp) {
         self.emit(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].TOPIC_DELETED, pkfp);
       });
+      this.vault.on(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].VAULT_UPDATED, function () {
+        console.log("Vault updated in chat client");
+        self.emit(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].VAULT_UPDATED);
+      });
     }
   }, {
     key: "setConnectorListeners",
@@ -45710,7 +45789,19 @@ var ChatClient = /*#__PURE__*/function () {
       });
       topic.on(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].SETTINGS_UPDATED, function () {
         _this5.emit(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].SETTINGS_UPDATED, topic.pkfp);
-      });
+      }); ///////////////////////////////////////////////////////////
+      // topic.on(Events.NICKNAME_CHANGED, (data)=>{           //
+      //     this.emit(Events.NICKNAME_CHANGED, data)          //
+      // })                                                    //
+      //                                                       //
+      // topic.on(Events.PARTICIPANT_ALIAS_CHANGED, (data)=>{  //
+      //     this.emit(Events.PARTICIPANT_ALIAS_CHANGED, data) //
+      // })                                                    //
+      //                                                       //
+      // topic.on(Events.INVITE_ALIAS_CHANGED, (data)=>{       //
+      //     this.emit(Events.INVITE_ALIAS_CHANGED, data)      //
+      // })                                                    //
+      ///////////////////////////////////////////////////////////
     } //END//////////////////////////////////////////////////////////////////////
     // ---------------------------------------------------------------------------------------------------------------------------
     // Invite handling
@@ -46092,6 +46183,11 @@ var ChatClient = /*#__PURE__*/function () {
         nickname: pendingTopic.ownerNickName,
         privateKey: pendingTopic.ownerKeyPair.privateKey
       }); //delete self.newTopicPending[request.body.topicID];
+    }
+  }, {
+    key: "renameTopic",
+    value: function renameTopic(topicPkfp, name) {
+      this.vault.renameTopic(topicPkfp, name);
     } //END//////////////////////////////////////////////////////////////////////
     // ---------------------------------------------------------------------------------------------------------------------------
     // Main API methods used by UI
@@ -62127,7 +62223,7 @@ if(false) {}
 
 exports = module.exports = __webpack_require__(62)(false);
 // Module
-exports.push([module.i, "button{margin:.8rem .8rem .8rem 0;padding:1rem;background-color:#242831;border:none;cursor:pointer;outline:none;font-size:1.6rem;color:#eee}button:hover{background-color:#0c0;transition:.2s}.arrow{border:solid #eee;border-width:0 .3rem .3rem 0;width:1.5rem;position:relative;height:1.5rem;padding:.3rem}.arrow::before,.arrow::after{content:'';position:absolute;width:3rem;height:3rem;cursor:poninter}.arrow.right{transform:rotate(-45deg);-webkit-transform:rotate(-45deg)}.arrow.right::before,.arrow.right::after{transform:rotate(45deg);-webkit-transform:rotate(45deg);left:-1rem;top:-1rem}.arrow.down{transform:rotate(45deg);-webkit-transform:rotate(45deg)}.arrow.down::before,.arrow.down::after{transform:rotate(-45deg);-webkit-transform:rotate(-45deg)}.arrow.up{transform:rotate(-135deg);-webkit-transform:rotate(-135deg)}.arrow.up::before,.arrow.up::after{transform:rotate(135deg);-webkit-transform:rotate(135deg)}.arrow.left{transform:rotate(135deg);-webkit-transform:rotate(135deg)}.arrow.left::before,.arrow.left::after{transform:rotate(-135deg);-webkit-transform:rotate(-135deg)}button{margin:.8rem .8rem .8rem 0;padding:1rem;background-color:#242831;border:none;cursor:pointer;outline:none;font-size:1.6rem;color:#eee}button:hover{background-color:#0c0;transition:.2s}*,*::before,*::after{padding:0;margin:0;box-sizing:border-box}html{font-size:62.5%;font-family:sans-serif}body{font-size:1.5rem;height:100vh;display:flex;flex-direction:column;background-color:#2f3440}main{flex:1}header{display:flex;flex-direction:row;justify-content:space-between;background-color:#1e1f26;color:#ccc}input{margin:1rem 0 1rem 0;height:4rem;font-size:1.9rem;padding:0.6rem;border-radius:0.5rem;border:0.1rem solid #b5b5b5;outline:none}textarea{border:0.1rem solid #b5b5b5;border-radius:0.5rem;outline:none;height:10rem;width:25rem;margin:1rem 0 1rem 0}h1{font-size:4rem}h3{font-size:2rem}select{outline:none;padding:.3rem}.heading{padding:2rem 0 1rem 0}.heading .heading__main{font-weight:100;color:whitesmoke;text-transform:uppercase;font-family:monospace;font-size:3.5rem}.online__heading-icon i.fa{margin-right:1.8rem;color:green}.right-align{display:block;text-align:right}.left-align{display:block;text-align:left}.form-border{padding:3rem;border:1px solid #b5b5b5;border-radius:.5rem}.flex-column{display:flex;flex-direction:column}#help-link{margin-right:.5rem}button{margin:.8rem .8rem .8rem 0;padding:1rem;background-color:#242831;border:none;cursor:pointer;outline:none;font-size:1.6rem;color:#eee}button:hover{background-color:#0c0;transition:.2s}.hljs{display:block;overflow-x:auto;padding:0.5em;background:#2f3440;font-size:1.3rem;color:#aaa;margin:1rem 0}.hljs::-webkit-scrollbar{width:.5rem;height:.5rem;background-color:none}.hljs::-webkit-scrollbar-track{-webkit-box-shadow:none;background-color:none;border-radius:10px}.hljs::-webkit-scrollbar-thumb{border-radius:10px;background-color:none;background-image:-webkit-gradient(linear, 40% 0%, 75% 84%, from(#4D9C41), to(#19911D), color-stop(0.6, #54DE5D))}.hljs-subst{color:#e2e2e2}.hljs-comment{color:#888888}.hljs-keyword,.hljs-attribute,.hljs-selector-tag,.hljs-meta-keyword,.hljs-doctag,.hljs-name{font-weight:bold;color:#468aea}.hljs-type,.hljs-string,.hljs-number,.hljs-selector-id,.hljs-selector-class,.hljs-quote,.hljs-template-tag,.hljs-deletion{color:#ff5e5e}.hljs-title,.hljs-section{color:#ff5e5e;font-weight:bold}.hljs-regexp,.hljs-symbol,.hljs-variable,.hljs-template-variable,.hljs-link,.hljs-selector-attr,.hljs-selector-pseudo{color:#BC6060}.hljs-attr{color:#468aea}.hljs-literal{color:#46ea7d}.hljs-built_in,.hljs-bullet,.hljs-code,.hljs-addition{color:#397300}.hljs-meta{color:#1f7199}.hljs-meta-string{color:#4d99bf}.hljs-emphasis{font-style:italic}.hljs-strong{font-weight:bold}button{margin:.8rem .8rem .8rem 0;padding:1rem;background-color:#242831;border:none;cursor:pointer;outline:none;font-size:1.6rem;color:#eee}button:hover{background-color:#0c0;transition:.2s}.header-section-left{display:flex;flex-direction:row;align-items:center}.header-section-left img{height:4rem;width:4rem;margin:1rem}.header-section-left #active-title{margin-left:1rem}#menu-button{width:4rem;height:4rem;margin:1rem;background:transparent url(\"/img/menu.svg\") no-repeat 0 50%;background-size:100% 100%}#menu-button:hover{cursor:pointer;-webkit-filter:brightness(70%);filter:birghtness(70%);transition:.2s}.menu-on{-webkit-filter:brightness(70%);filter:birghtness(70%)}.header-section-middle{display:flex;flex-direction:column;align-items:center}.header-section-middle img{margin:1rem;width:4rem;height:4rem;-webkit-filter:brightness(70%);filter:birghtness(70%)}.header-section-middle img:hover{cursor:pointer;-webkit-filter:brightness(100%);filter:birghtness(100%);transition:.2s}@media (max-width: 760px){.header-section-middle{display:none}}.header-section-right{display:flex;flex-direction:row}.header-section-right img{-webkit-filter:brightness(70%);filter:birghtness(70%);width:4rem;height:4rem;margin:1rem}.header-section-right img:hover{cursor:pointer;-webkit-filter:brightness(100%);filter:birghtness(100%);transition:.2s}main{background-color:#2f3440}#main-container{height:calc(100vh - 6rem);width:100%;display:flex;flex-direction:row}.side-panel-container{display:flex;flex-direction:column;width:30%;max-width:40rem;height:100%;align-items:flex-start}@media (max-width: 760px){.side-panel-container{width:100%;max-width:100%}}.carousel-wrap{width:100%;display:flex;flex-direction:row;align-items:center;height:7rem}.carousel-wrap .btn-rotate{display:none;margin:0 2.5rem 0 2.5rem;transition:.2s}.carousel-wrap .btn-rotate:hover{border-color:#0c0;transition:.2s}.carousel-wrap .carousel{flex:1;flex-direction:column;text-align:-webkit-center;padding:1.5rem 1rem 1.5rem 0;color:#eee;font-size:2.5rem;font-weight:bold;border:none;outline:none;background-color:inherit;appearance:none;-webkit-appearance:none;-moz-appearance:none;-ms-appearance:none}.carousel-wrap .carousel:-ms-expand{display:none}.carousel-wrap .carousel option{background-color:#242831;border:none;font-size:1.7rem;outline:none}.carousel-wrap .spin-carousel{width:2.5rem;height:2.4rem;margin:1.5rem 1rem 1.5rem 1rem}.side-panel-wrapper{display:flex;flex-direction:column;flex:1;width:100%}.side-block-wrap{overflow:auto;flex:1}.side-panel-block{display:flex;flex-direction:column;height:100%}.side-block-data-list{list-style-type:none;display:flex;flex:1;flex-direction:column;list-style-type:initial;overflow:auto;scrollbar-color:#0c0 #2f3440;list-style-position:inside;align-items:center}.side-block-data-list::-webkit-scrollbar{width:.5rem;height:.5rem;background-color:none}.side-block-data-list::-webkit-scrollbar-track{-webkit-box-shadow:none;background-color:none;border-radius:10px}.side-block-data-list::-webkit-scrollbar-thumb{border-radius:10px;background-color:none;background-image:-webkit-gradient(linear, 40% 0%, 75% 84%, from(#4D9C41), to(#19911D), color-stop(0.6, #54DE5D))}.side-panel-button-row{display:flex;flex-direction:row;width:90%;overflow:hidden;height:6rem;margin-left:1rem;margin-top:1rem}.side-block-data-list-item{flex-direction:column;border-bottom:1px solid #242831;padding:.5rem;display:flex;width:100%}.side-block-data-list-item:hover{background-color:#242831;cursor:pointer}.topic-assets{margin-left:2rem;width:calc(100% - 2rem)}.topic-asset-item-wrap{padding:.5rem}.invite-list-item{display:flex;flex-direction:row;padding:.5rem;color:#eee;list-style:none;overflow:hidden;text-overflow:ellipsis;padding:.5rem;border-bottom:1px solid #242831;cursor:pointer}.invite-list-item:hover{background-color:#242831}.invite-list-item .invite-icon{background:url(\"/img/invite-light.svg\");background-size:cover;width:2rem;height:2rem}.invite-list-item .invite-label{color:#eee;margin-left:1rem;flex:1}.participant-list-item{display:flex;flex-direction:row;padding:.5rem;color:#eee;list-style:none;overflow:hidden;text-overflow:ellipsis;padding:.5rem;border-bottom:1px solid #242831;cursor:pointer}.participant-list-item:hover{background-color:#242831}.participant-list-item .that-is-me{outline:2px red solid}.participant-list-item .participant-icon{background:url(\"/img/user-light.svg\");background-size:cover;width:2rem;height:2rem}.participant-list-item .participant-label{color:#eee;margin-left:1rem;flex:1}.active-asset{background-color:#135384}.active-asset:hover{background-color:#16619a}.topic-row-wrap{display:flex;flex-direction:row}.btn-expand-topic{width:2rem;height:2rem;background:url(\"/img/add-light.svg\");background-size:cover}.btn-collapse-topic{background:url(\"/img/minus-light.svg\");background-size:cover}.btn-top-row{width:100%;margin:0;padding-bottom:1rem;border-bottom:1px solid #242831}.btn-top{flex:1;margin:1rem;padding:0;background-color:#242831}.topic-name{font-size:1.8rem;margin-left:1.2rem;color:#eee;display:flex;flex:1}.unread-messages{font-weight:bold;display:flex;padding:.5rem;background-color:#0a0b0e;font-size:1.4rem;color:#eee;border-radius:40%;margin-right:1rem}.topic-in-focus{background-color:#385841}.topic-in-focus:hover{background-color:#42684d}.ctx-topic-buttons{display:flex;flex-direction:row;margin:2rem 1rem 1rem 1rem;flex-wrap:wrap}.ctx-topic-buttons button{flex:1}.bottom-section{height:40%}@media screen and (max-height: 800px){.bottom-section{display:none}}.connection-indicator-container{display:flex;flex-direction:row;flex-shrink:1;height:4rem;align-items:center;width:100%;margin:1rem}.connection-indicator-container .connection-indicator-label-wrap{display:flex;flex-direction:row}.connection-indicator-container .connection-indicator-label-wrap .connection-indicator-label{display:flex;font-size:1.3rem;color:#eee;font-weight:100;margin:0 1rem;align-items:center}.connection-indicator-container .connection-indicator-label-wrap .reconnect-spinner{width:2rem;height:2rem;display:none}.connection-indicator-container .connection-indicator-label-wrap .reconnect-button{width:10rem;height:2rem;text-align:center;background-color:#ccc;color:#000;display:none}.connection-indicator-container .connection-indicator-label-wrap .reconnect-button:hover{background-color:#999}.connection-indicator-container .connection-indicator{border-radius:50%;max-width:1rem;max-height:1rem;width:100%;height:100%}.connection-indicator-container .connected{background-color:green}.connection-indicator-container .dicsonnected{background-color:orange}.connection-indicator-container .error{background-color:red}.connection-indicator-container .connecting{background-color:#b2f2ff}.connection-indicator-container .unknown{background-color:grey}.version-wrapper{display:flex;flex-direction:row;background-color:#242831;align-items:center;padding:1rem;width:100%;border-right:1px solid #2f3440}.version-wrapper img{margin:0 1rem 0 1rem;width:3rem;height:3rem}.version-wrapper h3{color:#e1e1e1;font-size:1.4rem;font-weight:100}.manage-topics-view{color:#eee;display:flex;flex-direction:column;margin:4rem}@media (max-width: 760px){.manage-topics-view{margin:.5rem}}.manage-topics-list{color:#eee;margin:1rem 0 2rem 0}.manage-topics-list div{font-size:1.6rem;padding:1.3rem;border-bottom:1px solid #242831}.manage-topics-list div:hover{background-color:#242831;cursor:pointer}.manage-topics-list .selected{background-color:#385841}.manage-topics-list .selected:hover{background-color:#42684d;cursor:pointer}#new-message-container{max-height:50%;background-color:inherit;display:none;margin:2rem 2rem 1rem 0;flex-direction:row;justify-content:flex-end}.control-col{display:flex;flex-direction:column;margin-left:2rem}.private-label{display:none;flex-direction:row;justify-content:flex-end;color:#eee;margin:.5rem}.private-label img{width:2rem;height:2rem;margin-right:1rem}.private-label span{margin-right:1rem}.select-member-wrap{display:flex;flex-direction:row;justify-content:flex-end;border-bottom:none;margin:0;color:#eee}.select-member-wrap h4{margin:auto 1rem}.select-member-wrap select{color:#eee;background:#2f3440;padding:.8rem;min-width:37%;border:none;border-bottom:1px solid #242831;border-radius:.5rem .5rem 0 0;outline:none}.input-wrap{display:flex;flex-direction:row;width:100%;justify-content:flex-end;margin:0}.input-wrap #new-msg{width:100%;border-radius:.5rem 0 .5rem .5rem;height:3.5rem;margin:0 0 .5rem 0;resize:vertical;background-color:#2f3440;color:#eee;border:none}.input-wrap .button-column{display:flex;flex-direction:column;margin:0}.input-wrap .button-column img{cursor:pointer;border-radius:1rem;margin-right:2rem;width:3rem;height:3rem;transition:filter .2s ease}.input-wrap .button-column img:hover{filter:drop-shadow(1px 1px 2px #898c97)}.input-wrap .button-column .disabled{filter:grayscale(100%)}.new-msg-input{width:100%}.new-message-wrap{display:flex;flex-direction:column;align-items:flex-end}.new-message-wrap *{display:block;margin:1rem 0 1rem 0}.new-message-wrap #new-msg{background-color:#2f3440;min-width:60%;padding:1rem;border-radius:0.5rem;resize:vertical}.new-message-wrap .send-button-wrap{display:flex;flex-direction:row;align-items:center;margin:0}.new-message-wrap .send-button-wrap .hint-wrap{display:flex;flex-direction:column;align-items:flex-end}.new-message-wrap .send-button-wrap .hint-wrap .send-new-message-hint{margin:0 1.5rem 0 1.5rem;color:#9da3ad;font-size:1.2rem;font-style:italic}.btn-send{border:none;margin:0;outline:none;background-color:#2f3440;color:#eee;font-size:1.8rem;padding:.8rem;transition:.2s}.btn-send:hover{background-color:#0c0;transition:.2s}.attach-file-dummy{display:none}.attach-file-wrap{height:5rem;display:flex;flex-direction:row;justify-content:flex-end;align-items:center;align-self:flex-end;width:60%;min-width:10rem;padding:1rem;border-radius:0.5rem}.new-msg-buttons{width:7rem}.new-msg-buttons label{align-self:center;margin-top:1.5rem;width:4rem;height:4rem;display:flex}#chosen-files{margin-right:1.7rem;display:flex;flex-direction:row}#chosen-files .chosen-file-wrap{background-color:#3a404f;padding:.2rem;border-radius:.5rem;height:inherit;display:flex;align-items:center;font-size:1.6rem;font-weight:bolder;color:#e1e1e1}#chosen-files .chosen-file-wrap img{height:20px;width:20px}#chosen-files .chosen-file-wrap img:hover{filter:drop-shadow(1px 1px 2px #fff)}.inputfile{width:0.1px;height:0.1px;opacity:0;overflow:hidden;position:absolute;z-index:-1}.inputfile+label{display:flex;flex-direction:row}.inputfile+label img{border-radius:1rem;cursor:pointer;width:32px;height:32px;transition:filter .2s ease}.inputfile+label img:hover{filter:drop-shadow(1px 1px 2px #000)}.new-msg-buttons{width:7rem}.new-msg-buttons label{align-self:center;margin-top:1.5rem;width:4rem;height:4rem;display:flex}.form-outer-wrapper{display:block;margin:10% auto;color:#eee}.form-outer-wrapper .form-border{background-color:#111113;border:none;display:flex;flex-direction:column;align-items:flex-start}.form-outer-wrapper .form-border p{margin:1rem 0 1rem 0}.form-input{background-color:#2f3440;color:#eee;border:none;outline:none}.form-button{border-radius:.4rem;background-color:#2f3440;color:#eee;border:none;outline:none;padding:1rem;font-size:1.8rem}.form-button:hover{background-color:#0c0;transition:.2s}.main-panel-container{background-color:#242831;width:70%;height:100%;display:flex;flex-direction:column;flex:1;overflow:hidden}.main-panel-container .messages-panel-container{width:100%;display:flex;flex:1;background-color:inherit;border-bottom:2px solid #2f3440;overflow-x:hidden;overflow-y:auto;flex-grow:1;border-radius:1rem;padding:1rem 2rem 1rem 2rem;resize:none;height:100%}.main-panel-container .messages-panel-container::-webkit-scrollbar{width:.5rem;height:.5rem;background-color:none}.main-panel-container .messages-panel-container::-webkit-scrollbar-track{-webkit-box-shadow:none;background-color:none;border-radius:10px}.main-panel-container .messages-panel-container::-webkit-scrollbar-thumb{border-radius:10px;background-color:none;background-image:-webkit-gradient(linear, 40% 0%, 75% 84%, from(#4D9C41), to(#19911D), color-stop(0.6, #54DE5D))}.messages-window{width:100%;display:flex;flex-direction:column}.message{display:flex;flex-shrink:0;flex-direction:column;width:100%;margin:0.5rem;padding:.3rem;color:#e2e2e2;height:auto;align-self:flex-start}.my_message{display:flex;flex-shrink:0;flex-direction:column;width:100%;margin:0.5rem;padding:.3rem;color:#e2e2e2;height:auto;color:#5bde25}.service-record{display:flex;flex-shrink:0;flex-direction:column;width:100%;margin:0.5rem;padding:.3rem;color:#e2e2e2;height:auto;width:100%;text-align:left;font-size:1.2rem;color:#4c4c4c}.service-record .msg-body{text-align:left}.ephemeral-msg{display:flex;flex-shrink:0;flex-direction:column;width:100%;margin:0.5rem;padding:.3rem;color:#e2e2e2;height:auto;width:100%;text-align:left;font-size:1.2rem;color:#8a8a8a}.ephemeral-msg .msg-body{text-align:left}.private-message{border:.3rem solid #b0afca}.private-mark{font-style:italic;margin:0 .5rem 0 .5rem}.msg-time-stamp{font-style:italic;font-size:1rem;margin:0 .5rem 0 .5rem}.msg-body{height:auto;overflow-wrap:break-word}.m-author-id{display:none}.m-recipient-id{display:none}.message-id{display:none}.attach-file-wrap{height:5rem;display:flex;flex-direction:row;justify-content:flex-end;align-items:center;align-self:flex-end;width:60%;min-width:10rem;padding:1rem;border-radius:0.5rem}.uploading-animation{display:none;width:4rem;height:4rem}.msg-attachments{display:flex;align-self:flex-start}.att-view{cursor:pointer;margin:.5rem 0;background-color:#2f3440;padding:.5rem}.att-view .att-state{display:none}.att-view .att-state .spinner{width:1.7rem;margin-right:.3rem;display:flex}.att-view .att-name{font-weight:bold;color:#ff5e5e;font-size:1.6rem;margin:0 .4rem}.att-view .att-size{font-size:1.1rem;color:#ff5e5e}.att-view .att-icon{width:1.4rem;height:1.4rem}.att-view:hover{background-color:#3a404f;transition:.2s}.att-info{display:none}.topic-in-focus-label{font-size:2rem;position:fixed;right:5rem;font-weight:100;color:grey}.password-warning-wrap{pagging:2rem 0 2rem 0;display:flex;flex-direction:row;width:26rem}.password-warning-wrap img{height:1.7rem;width:2rem}.password-warning-wrap div{margin-left:1rem;display:flex;flex-direction:column}.password-warning-wrap div p{margin:.5rem 0 1rem 0;color:#777}\n", ""]);
+exports.push([module.i, "button{margin:.8rem .8rem .8rem 0;padding:1rem;background-color:#242831;border:none;cursor:pointer;outline:none;font-size:1.6rem;color:#eee}button:hover{background-color:#0c0;transition:.2s}.arrow{border:solid #eee;border-width:0 .3rem .3rem 0;width:1.5rem;position:relative;height:1.5rem;padding:.3rem}.arrow::before,.arrow::after{content:'';position:absolute;width:3rem;height:3rem;cursor:poninter}.arrow.right{transform:rotate(-45deg);-webkit-transform:rotate(-45deg)}.arrow.right::before,.arrow.right::after{transform:rotate(45deg);-webkit-transform:rotate(45deg);left:-1rem;top:-1rem}.arrow.down{transform:rotate(45deg);-webkit-transform:rotate(45deg)}.arrow.down::before,.arrow.down::after{transform:rotate(-45deg);-webkit-transform:rotate(-45deg)}.arrow.up{transform:rotate(-135deg);-webkit-transform:rotate(-135deg)}.arrow.up::before,.arrow.up::after{transform:rotate(135deg);-webkit-transform:rotate(135deg)}.arrow.left{transform:rotate(135deg);-webkit-transform:rotate(135deg)}.arrow.left::before,.arrow.left::after{transform:rotate(-135deg);-webkit-transform:rotate(-135deg)}button{margin:.8rem .8rem .8rem 0;padding:1rem;background-color:#242831;border:none;cursor:pointer;outline:none;font-size:1.6rem;color:#eee}button:hover{background-color:#0c0;transition:.2s}*,*::before,*::after{padding:0;margin:0;box-sizing:border-box}html{font-size:62.5%;font-family:sans-serif}body{font-size:1.5rem;height:100vh;display:flex;flex-direction:column;background-color:#2f3440}main{flex:1}header{display:flex;flex-direction:row;justify-content:space-between;background-color:#1e1f26;color:#ccc}input{margin:1rem 0 1rem 0;height:4rem;font-size:1.9rem;padding:0.6rem;border-radius:0.5rem;border:0.1rem solid #b5b5b5;outline:none}textarea{border:0.1rem solid #b5b5b5;border-radius:0.5rem;outline:none;height:10rem;width:25rem;margin:1rem 0 1rem 0}h1{font-size:4rem}h3{font-size:2rem}select{outline:none;padding:.3rem}.heading{padding:2rem 0 1rem 0}.heading .heading__main{font-weight:100;color:whitesmoke;text-transform:uppercase;font-family:monospace;font-size:3.5rem}.online__heading-icon i.fa{margin-right:1.8rem;color:green}.right-align{display:block;text-align:right}.left-align{display:block;text-align:left}.form-border{padding:3rem;border:1px solid #b5b5b5;border-radius:.5rem}.flex-column{display:flex;flex-direction:column}#help-link{margin-right:.5rem}button{margin:.8rem .8rem .8rem 0;padding:1rem;background-color:#242831;border:none;cursor:pointer;outline:none;font-size:1.6rem;color:#eee}button:hover{background-color:#0c0;transition:.2s}.hljs{display:block;overflow-x:auto;padding:0.5em;background:#2f3440;font-size:1.3rem;color:#aaa;margin:1rem 0}.hljs::-webkit-scrollbar{width:.5rem;height:.5rem;background-color:none}.hljs::-webkit-scrollbar-track{-webkit-box-shadow:none;background-color:none;border-radius:10px}.hljs::-webkit-scrollbar-thumb{border-radius:10px;background-color:none;background-image:-webkit-gradient(linear, 40% 0%, 75% 84%, from(#4D9C41), to(#19911D), color-stop(0.6, #54DE5D))}.hljs-subst{color:#e2e2e2}.hljs-comment{color:#888888}.hljs-keyword,.hljs-attribute,.hljs-selector-tag,.hljs-meta-keyword,.hljs-doctag,.hljs-name{font-weight:bold;color:#468aea}.hljs-type,.hljs-string,.hljs-number,.hljs-selector-id,.hljs-selector-class,.hljs-quote,.hljs-template-tag,.hljs-deletion{color:#ff5e5e}.hljs-title,.hljs-section{color:#ff5e5e;font-weight:bold}.hljs-regexp,.hljs-symbol,.hljs-variable,.hljs-template-variable,.hljs-link,.hljs-selector-attr,.hljs-selector-pseudo{color:#BC6060}.hljs-attr{color:#468aea}.hljs-literal{color:#46ea7d}.hljs-built_in,.hljs-bullet,.hljs-code,.hljs-addition{color:#397300}.hljs-meta{color:#1f7199}.hljs-meta-string{color:#4d99bf}.hljs-emphasis{font-style:italic}.hljs-strong{font-weight:bold}button{margin:.8rem .8rem .8rem 0;padding:1rem;background-color:#242831;border:none;cursor:pointer;outline:none;font-size:1.6rem;color:#eee}button:hover{background-color:#0c0;transition:.2s}.header-section-left{display:flex;flex-direction:row;align-items:center}.header-section-left img{height:4rem;width:4rem;margin:1rem}.header-section-left #active-title{margin-left:1rem}#menu-button{width:4rem;height:4rem;margin:1rem;background:transparent url(\"/img/menu.svg\") no-repeat 0 50%;background-size:100% 100%}#menu-button:hover{cursor:pointer;-webkit-filter:brightness(70%);filter:birghtness(70%);transition:.2s}.menu-on{-webkit-filter:brightness(70%);filter:birghtness(70%)}.header-section-middle{display:flex;flex-direction:column;align-items:center}.header-section-middle img{margin:1rem;width:4rem;height:4rem;-webkit-filter:brightness(70%);filter:birghtness(70%)}.header-section-middle img:hover{cursor:pointer;-webkit-filter:brightness(100%);filter:birghtness(100%);transition:.2s}@media (max-width: 760px){.header-section-middle{display:none}}.header-section-right{display:flex;flex-direction:row}.header-section-right img{-webkit-filter:brightness(70%);filter:birghtness(70%);width:4rem;height:4rem;margin:1rem}.header-section-right img:hover{cursor:pointer;-webkit-filter:brightness(100%);filter:birghtness(100%);transition:.2s}main{background-color:#2f3440}#main-container{height:calc(100vh - 6rem);width:100%;display:flex;flex-direction:row}.side-panel-container{display:flex;flex-direction:column;width:30%;max-width:40rem;height:100%;align-items:flex-start}@media (max-width: 760px){.side-panel-container{width:100%;max-width:100%}}.carousel-wrap{width:100%;display:flex;flex-direction:row;align-items:center;height:7rem}.carousel-wrap .btn-rotate{display:none;margin:0 2.5rem 0 2.5rem;transition:.2s}.carousel-wrap .btn-rotate:hover{border-color:#0c0;transition:.2s}.carousel-wrap .carousel{flex:1;flex-direction:column;text-align:-webkit-center;padding:1.5rem 1rem 1.5rem 0;color:#eee;font-size:2.5rem;font-weight:bold;border:none;outline:none;background-color:inherit;appearance:none;-webkit-appearance:none;-moz-appearance:none;-ms-appearance:none}.carousel-wrap .carousel:-ms-expand{display:none}.carousel-wrap .carousel option{background-color:#242831;border:none;font-size:1.7rem;outline:none}.carousel-wrap .spin-carousel{width:2.5rem;height:2.4rem;margin:1.5rem 1rem 1.5rem 1rem}.side-panel-wrapper{display:flex;flex-direction:column;flex:1;width:100%}.side-block-wrap{overflow:auto;flex:1}.side-panel-block{display:flex;flex-direction:column;height:100%}.side-block-data-list{list-style-type:none;display:flex;flex:1;flex-direction:column;list-style-type:initial;overflow:auto;scrollbar-color:#0c0 #2f3440;list-style-position:inside;align-items:center}.side-block-data-list::-webkit-scrollbar{width:.5rem;height:.5rem;background-color:none}.side-block-data-list::-webkit-scrollbar-track{-webkit-box-shadow:none;background-color:none;border-radius:10px}.side-block-data-list::-webkit-scrollbar-thumb{border-radius:10px;background-color:none;background-image:-webkit-gradient(linear, 40% 0%, 75% 84%, from(#4D9C41), to(#19911D), color-stop(0.6, #54DE5D))}.side-panel-button-row{display:flex;flex-direction:row;width:90%;overflow:hidden;height:6rem;margin-left:1rem;margin-top:1rem}.side-block-data-list-item{flex-direction:column;border-bottom:1px solid #242831;padding:.5rem;display:flex;width:100%}.side-block-data-list-item:hover{background-color:#242831;cursor:pointer}.topic-assets{margin-left:2rem;width:calc(100% - 2rem)}.topic-asset-item-wrap{padding:.5rem}.invite-list-item{display:flex;flex-direction:row;padding:.5rem;color:#eee;list-style:none;overflow:hidden;text-overflow:ellipsis;padding:.5rem;border-bottom:1px solid #242831;white-space:nowrap;cursor:pointer}.invite-list-item:hover{background-color:#242831}.invite-list-item .invite-icon{background:url(\"/img/invite-light.svg\");background-size:cover;width:2rem;height:2rem}.invite-list-item .invite-label{color:#eee;margin-left:1rem;overflow:hidden;text-overflow:ellipsis;flex:1}.participant-list-item{display:flex;flex-direction:row;padding:.5rem;color:#eee;list-style:none;overflow:hidden;text-overflow:ellipsis;padding:.5rem;border-bottom:1px solid #242831;cursor:pointer}.participant-list-item:hover{background-color:#242831}.participant-list-item .that-is-me{outline:2px green solid}.participant-list-item .participant-icon{background:url(\"/img/user-light.svg\");background-size:cover;width:2rem;height:2rem}.participant-list-item .participant-label{color:#eee;margin-left:1rem;overflow:hiddne;text-overflow:ellipsis;white-space:nowrap;flex:1}.participant-list-item .participant-label span{margin-right:.5rem}.active-asset{background-color:#135384}.active-asset:hover{background-color:#16619a}.topic-row-wrap{display:flex;flex-direction:row}.btn-expand-topic{width:2rem;height:2rem;background:url(\"/img/add-light.svg\");background-size:cover}.btn-collapse-topic{background:url(\"/img/minus-light.svg\");background-size:cover}.btn-top-row{width:100%;margin:0;padding-bottom:1rem;border-bottom:1px solid #242831}.btn-top{flex:1;margin:1rem;padding:0;background-color:#242831}.topic-name{font-size:1.8rem;margin-left:1.2rem;color:#eee;display:flex;flex:1}.unread-messages{font-weight:bold;display:flex;padding:.5rem;background-color:#0a0b0e;font-size:1.4rem;color:#eee;border-radius:40%;margin-right:1rem}.topic-in-focus{background-color:#385841}.topic-in-focus:hover{background-color:#42684d}.ctx-topic-buttons{display:flex;flex-direction:row;margin:2rem 1rem 1rem 1rem;flex-wrap:wrap}.ctx-topic-buttons button{flex:1}.bottom-section{height:40%}@media screen and (max-height: 800px){.bottom-section{display:none}}.connection-indicator-container{display:flex;flex-direction:row;flex-shrink:1;height:4rem;align-items:center;width:100%;margin:1rem}.connection-indicator-container .connection-indicator-label-wrap{display:flex;flex-direction:row}.connection-indicator-container .connection-indicator-label-wrap .connection-indicator-label{display:flex;font-size:1.3rem;color:#eee;font-weight:100;margin:0 1rem;align-items:center}.connection-indicator-container .connection-indicator-label-wrap .reconnect-spinner{width:2rem;height:2rem;display:none}.connection-indicator-container .connection-indicator-label-wrap .reconnect-button{width:10rem;height:2rem;text-align:center;background-color:#ccc;color:#000;display:none}.connection-indicator-container .connection-indicator-label-wrap .reconnect-button:hover{background-color:#999}.connection-indicator-container .connection-indicator{border-radius:50%;max-width:1rem;max-height:1rem;width:100%;height:100%}.connection-indicator-container .connected{background-color:green}.connection-indicator-container .dicsonnected{background-color:orange}.connection-indicator-container .error{background-color:red}.connection-indicator-container .connecting{background-color:#b2f2ff}.connection-indicator-container .unknown{background-color:grey}.version-wrapper{display:flex;flex-direction:row;background-color:#242831;align-items:center;padding:1rem;width:100%;border-right:1px solid #2f3440}.version-wrapper img{margin:0 1rem 0 1rem;width:3rem;height:3rem}.version-wrapper h3{color:#e1e1e1;font-size:1.4rem;font-weight:100}.manage-topics-view{color:#eee;display:flex;flex-direction:column;margin:4rem}@media (max-width: 760px){.manage-topics-view{margin:.5rem}}.manage-topics-list{color:#eee;margin:1rem 0 2rem 0}.manage-topics-list div{font-size:1.6rem;padding:1.3rem;border-bottom:1px solid #242831}.manage-topics-list div:hover{background-color:#242831;cursor:pointer}.manage-topics-list .selected{background-color:#385841}.manage-topics-list .selected:hover{background-color:#42684d;cursor:pointer}#new-message-container{max-height:50%;background-color:inherit;display:none;margin:2rem 2rem 1rem 0;flex-direction:row;justify-content:flex-end}.control-col{display:flex;flex-direction:column;margin-left:2rem}.private-label{display:none;flex-direction:row;justify-content:flex-end;color:#eee;margin:.5rem}.private-label img{width:2rem;height:2rem;margin-right:1rem}.private-label span{margin-right:1rem}.select-member-wrap{display:flex;flex-direction:row;justify-content:flex-end;border-bottom:none;margin:0;color:#eee}.select-member-wrap h4{margin:auto 1rem}.select-member-wrap select{color:#eee;background:#2f3440;padding:.8rem;min-width:37%;border:none;border-bottom:1px solid #242831;border-radius:.5rem .5rem 0 0;outline:none}.input-wrap{display:flex;flex-direction:row;width:100%;justify-content:flex-end;margin:0}.input-wrap #new-msg{width:100%;border-radius:.5rem 0 .5rem .5rem;height:3.5rem;margin:0 0 .5rem 0;resize:vertical;background-color:#2f3440;color:#eee;border:none}.input-wrap .button-column{display:flex;flex-direction:column;margin:0}.input-wrap .button-column img{cursor:pointer;border-radius:1rem;margin-right:2rem;width:3rem;height:3rem;transition:filter .2s ease}.input-wrap .button-column img:hover{filter:drop-shadow(1px 1px 2px #898c97)}.input-wrap .button-column .disabled{filter:grayscale(100%)}.new-msg-input{width:100%}.new-message-wrap{display:flex;flex-direction:column;align-items:flex-end}.new-message-wrap *{display:block;margin:1rem 0 1rem 0}.new-message-wrap #new-msg{background-color:#2f3440;min-width:60%;padding:1rem;border-radius:0.5rem;resize:vertical}.new-message-wrap .send-button-wrap{display:flex;flex-direction:row;align-items:center;margin:0}.new-message-wrap .send-button-wrap .hint-wrap{display:flex;flex-direction:column;align-items:flex-end}.new-message-wrap .send-button-wrap .hint-wrap .send-new-message-hint{margin:0 1.5rem 0 1.5rem;color:#9da3ad;font-size:1.2rem;font-style:italic}.btn-send{border:none;margin:0;outline:none;background-color:#2f3440;color:#eee;font-size:1.8rem;padding:.8rem;transition:.2s}.btn-send:hover{background-color:#0c0;transition:.2s}.attach-file-dummy{display:none}.attach-file-wrap{height:5rem;display:flex;flex-direction:row;justify-content:flex-end;align-items:center;align-self:flex-end;width:60%;min-width:10rem;padding:1rem;border-radius:0.5rem}.new-msg-buttons{width:7rem}.new-msg-buttons label{align-self:center;margin-top:1.5rem;width:4rem;height:4rem;display:flex}#chosen-files{margin-right:1.7rem;display:flex;flex-direction:row}#chosen-files .chosen-file-wrap{background-color:#3a404f;padding:.2rem;border-radius:.5rem;height:inherit;display:flex;align-items:center;font-size:1.6rem;font-weight:bolder;color:#e1e1e1}#chosen-files .chosen-file-wrap img{height:20px;width:20px}#chosen-files .chosen-file-wrap img:hover{filter:drop-shadow(1px 1px 2px #fff)}.inputfile{width:0.1px;height:0.1px;opacity:0;overflow:hidden;position:absolute;z-index:-1}.inputfile+label{display:flex;flex-direction:row}.inputfile+label img{border-radius:1rem;cursor:pointer;width:32px;height:32px;transition:filter .2s ease}.inputfile+label img:hover{filter:drop-shadow(1px 1px 2px #000)}.new-msg-buttons{width:7rem}.new-msg-buttons label{align-self:center;margin-top:1.5rem;width:4rem;height:4rem;display:flex}.form-outer-wrapper{display:block;margin:10% auto;color:#eee}.form-outer-wrapper .form-border{background-color:#111113;border:none;display:flex;flex-direction:column;align-items:flex-start}.form-outer-wrapper .form-border p{margin:1rem 0 1rem 0}.form-input{background-color:#2f3440;color:#eee;border:none;outline:none}.form-button{border-radius:.4rem;background-color:#2f3440;color:#eee;border:none;outline:none;padding:1rem;font-size:1.8rem}.form-button:hover{background-color:#0c0;transition:.2s}.main-panel-container{background-color:#242831;width:70%;height:100%;display:flex;flex-direction:column;flex:1;overflow:hidden}.main-panel-container .messages-panel-container{width:100%;display:flex;flex:1;background-color:inherit;border-bottom:2px solid #2f3440;overflow-x:hidden;overflow-y:auto;flex-grow:1;border-radius:1rem;padding:1rem 2rem 1rem 2rem;resize:none;height:100%}.main-panel-container .messages-panel-container::-webkit-scrollbar{width:.5rem;height:.5rem;background-color:none}.main-panel-container .messages-panel-container::-webkit-scrollbar-track{-webkit-box-shadow:none;background-color:none;border-radius:10px}.main-panel-container .messages-panel-container::-webkit-scrollbar-thumb{border-radius:10px;background-color:none;background-image:-webkit-gradient(linear, 40% 0%, 75% 84%, from(#4D9C41), to(#19911D), color-stop(0.6, #54DE5D))}.messages-window{width:100%;display:flex;flex-direction:column}.message{display:flex;flex-shrink:0;flex-direction:column;width:100%;margin:0.5rem;padding:.3rem;color:#e2e2e2;height:auto;align-self:flex-start}.my_message{display:flex;flex-shrink:0;flex-direction:column;width:100%;margin:0.5rem;padding:.3rem;color:#e2e2e2;height:auto;color:#5bde25}.service-record{display:flex;flex-shrink:0;flex-direction:column;width:100%;margin:0.5rem;padding:.3rem;color:#e2e2e2;height:auto;width:100%;text-align:left;font-size:1.2rem;color:#4c4c4c}.service-record .msg-body{text-align:left}.ephemeral-msg{display:flex;flex-shrink:0;flex-direction:column;width:100%;margin:0.5rem;padding:.3rem;color:#e2e2e2;height:auto;width:100%;text-align:left;font-size:1.2rem;color:#8a8a8a}.ephemeral-msg .msg-body{text-align:left}.private-message{border:.3rem solid #b0afca}.private-mark{font-style:italic;margin:0 .5rem 0 .5rem}.msg-time-stamp{font-style:italic;font-size:1rem;margin:0 .5rem 0 .5rem}.msg-body{height:auto;overflow-wrap:break-word}.m-author-id{display:none}.m-recipient-id{display:none}.message-id{display:none}.attach-file-wrap{height:5rem;display:flex;flex-direction:row;justify-content:flex-end;align-items:center;align-self:flex-end;width:60%;min-width:10rem;padding:1rem;border-radius:0.5rem}.uploading-animation{display:none;width:4rem;height:4rem}.msg-attachments{display:flex;align-self:flex-start}.att-view{cursor:pointer;margin:.5rem 0;background-color:#2f3440;padding:.5rem}.att-view .att-state{display:none}.att-view .att-state .spinner{width:1.7rem;margin-right:.3rem;display:flex}.att-view .att-name{font-weight:bold;color:#ff5e5e;font-size:1.6rem;margin:0 .4rem}.att-view .att-size{font-size:1.1rem;color:#ff5e5e}.att-view .att-icon{width:1.4rem;height:1.4rem}.att-view:hover{background-color:#3a404f;transition:.2s}.att-info{display:none}.topic-in-focus-label{font-size:2rem;position:fixed;right:5rem;font-weight:100;color:grey}.password-warning-wrap{pagging:2rem 0 2rem 0;display:flex;flex-direction:row;width:26rem}.password-warning-wrap img{height:1.7rem;width:2rem}.password-warning-wrap div{margin-left:1rem;display:flex;flex-direction:column}.password-warning-wrap div p{margin:.5rem 0 1rem 0;color:#777}\n", ""]);
 
 
 
@@ -62828,11 +62924,11 @@ function bakeParticipantListItem(data) {
     }), bake("div", {
       class: "participant-label",
       children: [bake("span", {
-        text: nickname
+        text: isSelf ? "(me)" : alias ? alias : "".concat(pkfp.substring(0, 8))
       }), bake("span", {
         text: "--"
       }), bake("span", {
-        text: isSelf ? "(me)" : alias ? alias : "".concat(pkfp.substring(0, 16), "...")
+        text: nickname
       })] //html: alias ? `${nickname} -- ${alias}` : `${nickname} -- ${nickname}`
 
     })]
@@ -63179,6 +63275,9 @@ function bakeTopicListItem(topic, topicOnClick, expandOnClick) {
     },
     children: [bake("div", {
       class: "topic-row-wrap",
+      listeners: {
+        dblclick: expandOnClick
+      },
       children: [bake("div", {
         class: "btn-expand-topic",
         listeners: {
@@ -63795,6 +63894,7 @@ function initUI() {
     switch (subject.type) {
       case "topic":
         console.log("Renaming topic");
+        chat_ui_chat.renameTopic(subject.topicPkfp, newAlias);
         break;
 
       case "participant":
@@ -64415,7 +64515,12 @@ function processMessagesLoaded(pkfp, messages) {
     try {
       for (var _iterator4 = messages[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
         var message = _step4.value;
-        var alias = chat_ui_chat.getParticipantAlias(pkfp, message.header.author);
+        var alias = "";
+
+        if (message.header.author) {
+          alias = chat_ui_chat.getParticipantAlias(pkfp, message.header.author) || message.header.author.substring(0, 8);
+        }
+
         appendMessageToChat({
           nickname: message.header.nickname,
           alias: alias,
@@ -64488,9 +64593,6 @@ function appendMessageToChat(message, topicPkfp, chatWindow) {
   }
 
   if (message.private) {
-    var isMyMessage = topicPkfp === message.pkfp;
-    var privateMark = preparePrivateMark(message, chat_ui_chat.topics[topicPkfp]);
-    message_heading.appendChild(privateMark);
     msg.classList.add('private-message');
   }
 
@@ -64563,23 +64665,27 @@ function buildMessageHeading(message, topicPkfp) {
     message_heading.appendChild(recipientId);
   }
 
+  if (message.private) {
+    var privateMark = preparePrivateMark(message, chat_ui_chat.topics[topicPkfp]);
+    message_heading.appendChild(privateMark);
+  }
+
   return message_heading;
 }
 
 function preparePrivateMark(message, topic) {
-  var privateMark = document.createElement("span");
-  var isMyMessage = message.pkfp === topic.pkfp;
-  privateMark.classList.add("private-mark");
+  var text = "(private)";
 
-  if (isMyMessage) {
-    privateMark.innerText = "(private to: ";
-    var recipientName = chat_ui_chat.getParticipantRepr(topic.pkfp, message.recipient);
-    privateMark.innerText += recipientName + ")";
-  } else {
-    privateMark.innerText = "(private)";
+  if (message.pkfp === topic.pkfp) {
+    var nickname = chat_ui_chat.getParticipantNickname(topic.pkfp, message.recipient);
+    var alias = chat_ui_chat.getParticipantAlias(topic.pkfp, message.recipient) || message.recipient.substring(0, 8);
+    text = "(private to: ".concat(alias, " -- ").concat(nickname, ")");
   }
 
-  return privateMark;
+  return bake("span", {
+    class: "private-mark",
+    text: text
+  });
 }
 /**
  * Processes all the attachments and returns
@@ -64934,6 +65040,54 @@ function refreshTopics() {
   }
 }
 
+function updateMessagesAliases(topicPkfp) {
+  if (topicPkfp !== topicInFocus) {
+    return;
+  }
+
+  var _iteratorNormalCompletion6 = true;
+  var _didIteratorError6 = false;
+  var _iteratorError6 = undefined;
+
+  try {
+    for (var _iterator6 = $("#messages-window-1").children[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+      var message = _step6.value;
+      var authorIdEl = message.firstChild.querySelector(".m-author-id");
+      var privateMarkEl = message.firstChild.querySelector(".private-mark");
+
+      if (privateMarkEl && !authorIdEl) {
+        var recipientPkfp = message.firstChild.querySelector(".m-recipient-id").innerText;
+        var pAlias = chat_ui_chat.getParticipantAlias(topicPkfp, recipientPkfp);
+        var pNickname = chat_ui_chat.getParticipantNickname(topicPkfp, recipientPkfp);
+        privateMarkEl.innerText = "(private to: ".concat(pAlias ? pAlias : recipientPkfp.substring(0, 8), " -- ").concat(pNickname, ")");
+      }
+
+      ;
+      if (!authorIdEl) continue;
+      var aliasEl = message.firstChild.querySelector(".m-alias");
+      var authorPkfp = authorIdEl.innerText;
+
+      if (aliasEl) {
+        var alias = chat_ui_chat.getParticipantAlias(topicPkfp, authorPkfp);
+        aliasEl.innerText = alias ? alias : authorPkfp.substring(0, 8);
+      }
+    }
+  } catch (err) {
+    _didIteratorError6 = true;
+    _iteratorError6 = err;
+  } finally {
+    try {
+      if (!_iteratorNormalCompletion6 && _iterator6.return != null) {
+        _iterator6.return();
+      }
+    } finally {
+      if (_didIteratorError6) {
+        throw _iteratorError6;
+      }
+    }
+  }
+}
+
 function refreshInvites(pkfp) {
   if (!isExpanded(pkfp)) {
     return;
@@ -64951,26 +65105,26 @@ function activateTopicAsset(ev) {
   console.error("Activating topic asset");
   var activeItem = ev.currentTarget;
   var assets = activeItem.parentElement;
-  var _iteratorNormalCompletion6 = true;
-  var _didIteratorError6 = false;
-  var _iteratorError6 = undefined;
+  var _iteratorNormalCompletion7 = true;
+  var _didIteratorError7 = false;
+  var _iteratorError7 = undefined;
 
   try {
-    for (var _iterator6 = assets.children[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
-      var child = _step6.value;
+    for (var _iterator7 = assets.children[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
+      var child = _step7.value;
       removeClass(child, "active-asset");
     }
   } catch (err) {
-    _didIteratorError6 = true;
-    _iteratorError6 = err;
+    _didIteratorError7 = true;
+    _iteratorError7 = err;
   } finally {
     try {
-      if (!_iteratorNormalCompletion6 && _iterator6.return != null) {
-        _iterator6.return();
+      if (!_iteratorNormalCompletion7 && _iterator7.return != null) {
+        _iterator7.return();
       }
     } finally {
-      if (_didIteratorError6) {
-        throw _iteratorError6;
+      if (_didIteratorError7) {
+        throw _iteratorError7;
       }
     }
   }
@@ -65074,29 +65228,29 @@ function getActiveTopicAsset() {
   }
 
   var assets = getTopicAssets(topicInFocus);
-  var _iteratorNormalCompletion7 = true;
-  var _didIteratorError7 = false;
-  var _iteratorError7 = undefined;
+  var _iteratorNormalCompletion8 = true;
+  var _didIteratorError8 = false;
+  var _iteratorError8 = undefined;
 
   try {
-    for (var _iterator7 = assets.children[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
-      var asset = _step7.value;
+    for (var _iterator8 = assets.children[Symbol.iterator](), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
+      var asset = _step8.value;
 
       if (hasClass(asset, "active-asset")) {
         return asset;
       }
     }
   } catch (err) {
-    _didIteratorError7 = true;
-    _iteratorError7 = err;
+    _didIteratorError8 = true;
+    _iteratorError8 = err;
   } finally {
     try {
-      if (!_iteratorNormalCompletion7 && _iterator7.return != null) {
-        _iterator7.return();
+      if (!_iteratorNormalCompletion8 && _iterator8.return != null) {
+        _iterator8.return();
       }
     } finally {
-      if (_didIteratorError7) {
-        throw _iteratorError7;
+      if (_didIteratorError8) {
+        throw _iteratorError8;
       }
     }
   }
@@ -65106,26 +65260,26 @@ function deactivateTopicAsset(pkfp) {
   var topicAssets = getTopicAssets(pkfp);
 
   if (topicAssets) {
-    var _iteratorNormalCompletion8 = true;
-    var _didIteratorError8 = false;
-    var _iteratorError8 = undefined;
+    var _iteratorNormalCompletion9 = true;
+    var _didIteratorError9 = false;
+    var _iteratorError9 = undefined;
 
     try {
-      for (var _iterator8 = topicAssets.children[Symbol.iterator](), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
-        var asset = _step8.value;
+      for (var _iterator9 = topicAssets.children[Symbol.iterator](), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
+        var asset = _step9.value;
         removeClass(asset, "active-asset");
       }
     } catch (err) {
-      _didIteratorError8 = true;
-      _iteratorError8 = err;
+      _didIteratorError9 = true;
+      _iteratorError9 = err;
     } finally {
       try {
-        if (!_iteratorNormalCompletion8 && _iterator8.return != null) {
-          _iterator8.return();
+        if (!_iteratorNormalCompletion9 && _iterator9.return != null) {
+          _iterator9.return();
         }
       } finally {
-        if (_didIteratorError8) {
-          throw _iteratorError8;
+        if (_didIteratorError9) {
+          throw _iteratorError9;
         }
       }
     }
@@ -65247,6 +65401,12 @@ function initChat() {
     refreshTopics();
     lib_toastr.info("Topic ".concat(pkfp.substring(0, 5), "... has been deleted."));
   });
+  chat_ui_chat.on(Events["Events"].VAULT_UPDATED, function () {
+    console.log("Vault updated in UI");
+    refreshTopics();
+    if (topicInFocus) setTopicInFocus(topicInFocus);
+    lib_toastr.info("Vault updated");
+  });
   chat_ui_chat.on(Events["Events"].INIT_TOPIC_ERROR, function (err) {
     lib_toastr.warning("Init topic error: ".concat(err.message));
   });
@@ -65269,6 +65429,7 @@ function initChat() {
     console.log("Settings updated event from chat");
     refreshParticipants(pkfp);
     refreshInvites(pkfp);
+    updateMessagesAliases(pkfp);
   });
   chat_ui_chat.on(Events["Events"].CONNECTION_STATUS_CHANGED, processConnectionStatusChanged);
   chat_ui_chat.on(Events["Events"].NEW_CHAT_MESSAGE, function (message, topicPkfp) {
@@ -65280,11 +65441,16 @@ function initChat() {
       return;
     }
 
+    var alias = "";
+
+    if (message.header.author) {
+      alias = chat_ui_chat.getParticipantAlias(topicPkfp, message.header.author) || message.header.author.substring(0, 8);
+    }
+
     console.log("Appending message");
     appendMessageToChat({
       nickname: message.header.nickname,
-      alias: "alias",
-      //alias,
+      alias: alias,
       body: message.body,
       timestamp: message.header.timestamp,
       pkfp: message.header.author,
@@ -65303,7 +65469,22 @@ function initChat() {
   chat_ui_chat.on(Events["Events"].DOWNLOAD_FAIL, function (err) {
     console.log("Download error received from chat: ".concat(err));
     appendEphemeralMessage("Download error: ".concat(err));
-  }); //DEBUGGING! Comment out for production;
+  }); ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // chat.on(Events.NICKNAME_CHANGED, (data)=>{                                                                                             //
+  //     appendEphemeralMessage(`Participant ${data.participantPkfp} changed his nickname from ${data.oldNickname} to ${data.newNickname}`) //
+  // })                                                                                                                                     //
+  //                                                                                                                                        //
+  // chat.on(Events.PARTICIPANT_ALIAS_CHANGED, (data)=>{                                                                                    //
+  //                                                                                                                                        //
+  //     appendEphemeralMessage(`Alias changed for participant ${data.participantPkfp} from ${data.oldAlias} to ${data.newAlias}`)          //
+  // })                                                                                                                                     //
+  //                                                                                                                                        //
+  // chat.on(Events.INVITE_ALIAS_CHANGED, (data)=>{                                                                                         //
+  //                                                                                                                                        //
+  //     appendEphemeralMessage(`Alias changed for invite ${data.invite} from ${data.oldAlias} to ${data.newAlias}`)                        //
+  // })                                                                                                                                     //
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //DEBUGGING! Comment out for production;
 
   window.chat = chat_ui_chat;
 }
@@ -65433,13 +65614,13 @@ function processConnectionStatusChanged(state) {
 function setUnreadMessagesIndicator(pkfp, num) {
   console.log("Setting unread messages indicator");
   var topicEl;
-  var _iteratorNormalCompletion9 = true;
-  var _didIteratorError9 = false;
-  var _iteratorError9 = undefined;
+  var _iteratorNormalCompletion10 = true;
+  var _didIteratorError10 = false;
+  var _iteratorError10 = undefined;
 
   try {
-    for (var _iterator9 = $("#topics-list").children[Symbol.iterator](), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
-      var topic = _step9.value;
+    for (var _iterator10 = $("#topics-list").children[Symbol.iterator](), _step10; !(_iteratorNormalCompletion10 = (_step10 = _iterator10.next()).done); _iteratorNormalCompletion10 = true) {
+      var topic = _step10.value;
 
       if (topic.getAttribute("pkfp") === pkfp) {
         topicEl = topic;
@@ -65447,16 +65628,16 @@ function setUnreadMessagesIndicator(pkfp, num) {
       }
     }
   } catch (err) {
-    _didIteratorError9 = true;
-    _iteratorError9 = err;
+    _didIteratorError10 = true;
+    _iteratorError10 = err;
   } finally {
     try {
-      if (!_iteratorNormalCompletion9 && _iterator9.return != null) {
-        _iterator9.return();
+      if (!_iteratorNormalCompletion10 && _iterator10.return != null) {
+        _iterator10.return();
       }
     } finally {
-      if (_didIteratorError9) {
-        throw _iteratorError9;
+      if (_didIteratorError10) {
+        throw _iteratorError10;
       }
     }
   }

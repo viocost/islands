@@ -7,6 +7,7 @@ import { WildEmitter } from "./WildEmitter";
 import { Message } from "./Message";
 import { Events, Internal  } from "../../../../common/Events";
 import { ChatUtility } from "./ChatUtility";
+import { assert } from "../../../../common/IError";
 import { XHR } from "./xhr"
 import * as semver from "semver";
 
@@ -189,6 +190,13 @@ export class Vault{
             delete self.topics[msg.body.topicPkfp];
             self.emit(Internal.TOPIC_DELETED, msg.body.topicPkfp);
         }
+
+        this.handlers[Events.VAULT_UPDATED] = () =>{
+            console.log("Vault updated in vault");
+            self.emit(Events.VAULT_UPDATED);
+
+        }
+
         this.handlers[Internal.SESSION_KEY] = (msg)=>{
             if(!Message.verifyMessage(msg.body.sessionKey, msg)){
                 throw new Error("Session key signature is invalid!")
@@ -349,6 +357,14 @@ export class Vault{
             console.log("Updating vault to new format..");
             await this.versionUpdate();
         }
+    }
+
+
+    renameTopic(pkfp, name){
+        assert(this.topics[pkfp], `Topic ${pkfp} does not exist`)
+        let topic = this.topics[pkfp]
+        topic.setTopicName(name);
+        this.save(Internal.TOPIC_UPDATED);
     }
 
     processIncomingMessage(msg, self){

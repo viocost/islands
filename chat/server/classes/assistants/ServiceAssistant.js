@@ -286,7 +286,7 @@ class ServiceAssistant{
         let pkfpDest = request.headers.pkfpDest;
         let metadata = Metadata.parseMetadata(await self.hm.getMetadata(pkfpDest, request.body[Internal.METADATA_ID]));
         let senderPublicKey = metadata.body.participants[request.headers.pkfpSource].publicKey;
-        assert(Request.isRequestValid(request, senderPublicKey), "Nickname change note: signature is invalid");
+        //assert(Request.isRequestValid(request, senderPublicKey), "Nickname change note: signature is invalid");
         request.sharedKey = metadata.body.participants[pkfpDest].key;
         let session = self.sessionManager.getSession(pkfpDest);
         if(session){
@@ -338,16 +338,27 @@ class ServiceAssistant{
 
     async sendNicknameNote(request, connectionId, self){
         Logger.debug("Sending nickname note", {
+            pkfpSource: request.headers.pkfpSource,
+            pkfpDest: request.headers.pkfpDest,
             cat: "service"
-        })
-
+        });
         const metadata = JSON.parse(await self.hm.getLastMetadata(request.headers.pkfpSource));
-        const recipient = metadata.body.participants[request.headers.pkfpDest].residence;
-        const sender = metadata.body.participants[request.headers.pkfpSource].residence;
-        const myPublicKey = metadata.body.participants[request.headers.pkfpSource].publicKey;
+
+        let recipient = request.headers.pkfpDest ? metadata.body.participants[request.headers.pkfpDest] : null;
+
+        const sender = metadata.body.participants[request.headers.pkfpSource];
+        const myPublicKey = sender.publicKey;
 
         assert(Request.isRequestValid(request, myPublicKey), "Sending private message error: signature is not valid!")
-        self._sendToSignleRecipient(request, sender, recipient)
+
+        if(recipient){
+            Logger.debug(`Sending nickiname exchange request to ${recipient.residence}`, {cat: "service"})
+            await self._sendToSignleRecipient(request, sender.residence, recipient.residence,)
+        } else {
+            Logger.debug(`Sending nickiname exchange request to all`, {cat: "service"})
+            await self._sendToAll(request, metadata)
+        }
+        await self.createServiceRecordOnNameChangeRequest(request)
     }
 
     async processStandardNameExchangeRequest(request, connectionId, self){

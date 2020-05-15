@@ -209,6 +209,7 @@ main
   text-overflow: ellipsis
   padding: .5rem
   border-bottom: 1px solid darken($main-background, 5%)
+  white-space: nowrap
   cursor: pointer
   &:hover
     background-color: darken($main-background, 5%)
@@ -220,6 +221,8 @@ main
   .invite-label
     color: $text-color
     margin-left: 1rem
+    overflow: hidden
+    text-overflow: ellipsis
     flex: 1
 
 .participant-list-item
@@ -239,7 +242,7 @@ main
     background-color: darken($main-background, 5%)
 
   .that-is-me
-    outline: 2px red solid
+    outline: 2px green solid
 
   .participant-icon
     background: url("/img/user-light.svg")
@@ -249,7 +252,12 @@ main
   .participant-label
     color: $text-color
     margin-left: 1rem
+    overflow: hiddne
+    text-overflow: ellipsis
+    white-space: nowrap
     flex: 1
+    span
+      margin-right: .5rem
 
 .active-asset
   background-color: $active-topic-asset
@@ -706,6 +714,7 @@ main
   @include message
   align-self: flex-start
   //background-color: lighten($main-background, 5%)
+
 
 .my_message
   @include message

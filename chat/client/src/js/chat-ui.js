@@ -187,6 +187,7 @@ function initUI(){
         switch(subject.type){
             case "topic":
                 console.log("Renaming topic")
+                chat.renameTopic(subject.topicPkfp, newAlias)
                 break
             case "participant":
                 console.log("Renaming participant")
@@ -768,7 +769,11 @@ function processMessagesLoaded(pkfp, messages){
         let windowInFocus = getChatWindowInFocus();
         clearMessagesWindow(windowInFocus)
         for (let message of messages){
-            let alias  = chat.getParticipantAlias(pkfp, message.header.author)
+            let alias = "";
+            if (message.header.author){
+                alias  = chat.getParticipantAlias(pkfp, message.header.author) ||
+                    message.header.author.substring(0, 8)
+            }
             appendMessageToChat({
                 nickname: message.header.nickname,
                 alias: alias,
@@ -796,6 +801,7 @@ function processMessagesLoaded(pkfp, messages){
 
 // ---------------------------------------------------------------------------------------------------------------------------
 // MESSAGES RENDERING AND APPENDING
+
 
 /**
  * Appends message onto the chat window
@@ -830,9 +836,6 @@ function appendMessageToChat(message, topicPkfp, chatWindow,  toHead = false) {
     }
 
     if (message.private) {
-        let isMyMessage = topicPkfp === message.pkfp
-        let privateMark = preparePrivateMark(message, chat.topics[topicPkfp]);
-        message_heading.appendChild(privateMark);
         msg.classList.add('private-message');
     }
 
@@ -903,22 +906,27 @@ function buildMessageHeading(message, topicPkfp) {
         recipientId.classList.add("m-recipient-id");
         message_heading.appendChild(recipientId);
     }
+
+    if (message.private){
+        let privateMark = preparePrivateMark(message, chat.topics[topicPkfp]);
+        message_heading.appendChild(privateMark);
+    }
+
     return message_heading;
 }
 
 function preparePrivateMark(message, topic) {
-
-    let privateMark = document.createElement("span");
-    let isMyMessage = message.pkfp === topic.pkfp;
-    privateMark.classList.add("private-mark");
-    if (isMyMessage) {
-        privateMark.innerText = "(private to: ";
-        let recipientName = chat.getParticipantRepr(topic.pkfp, message.recipient);
-        privateMark.innerText += recipientName + ")";
-    } else {
-        privateMark.innerText = "(private)";
+    let text = "(private)"
+    if(message.pkfp === topic.pkfp){
+        let nickname = chat.getParticipantNickname(topic.pkfp, message.recipient);
+        let alias = chat.getParticipantAlias(topic.pkfp, message.recipient) || message.recipient.substring(0, 8);
+        text = `(private to: ${alias} -- ${nickname})`;
     }
-    return privateMark;
+
+    return util.bake("span", {
+        class: "private-mark",
+        text: text
+    })
 }
 
 /**
@@ -1218,7 +1226,35 @@ function refreshTopics(){
     }
 }
 
+function updateMessagesAliases(topicPkfp){
+    if (topicPkfp !== topicInFocus){
+        return
+    }
 
+    for(let message of util.$("#messages-window-1").children){
+
+        let authorIdEl = message.firstChild.querySelector(".m-author-id")
+        let privateMarkEl =  message.firstChild.querySelector(".private-mark");
+        if (privateMarkEl  && !authorIdEl){
+            let recipientPkfp =  message.firstChild.querySelector(".m-recipient-id").innerText;
+            let pAlias = chat.getParticipantAlias(topicPkfp, recipientPkfp);
+            let pNickname = chat.getParticipantNickname(topicPkfp, recipientPkfp);
+            privateMarkEl.innerText = `(private to: ${pAlias ? pAlias : recipientPkfp.substring(0, 8)} -- ${pNickname})`
+        };
+
+        if(!authorIdEl) continue;
+
+        let aliasEl = message.firstChild.querySelector(".m-alias");
+        let authorPkfp = authorIdEl.innerText;
+        if (aliasEl){
+            let alias = chat.getParticipantAlias(topicPkfp, authorPkfp);
+            aliasEl.innerText = alias ? alias : authorPkfp.substring(0, 8)
+        }
+
+
+    }
+
+}
 
 function refreshInvites(pkfp){
     if(!isExpanded(pkfp)){
@@ -1477,6 +1513,14 @@ function initChat(){
         toastr.info(`Topic ${pkfp.substring(0, 5)}... has been deleted.`)
     })
 
+
+    chat.on(Events.VAULT_UPDATED, ()=>{
+        console.log("Vault updated in UI");
+        refreshTopics()
+        if (topicInFocus)setTopicInFocus(topicInFocus)
+        toastr.info(`Vault updated`)
+    })
+
     chat.on(Events.INIT_TOPIC_ERROR, (err)=>{
         toastr.warning(`Init topic error: ${err.message}`);
     })
@@ -1502,6 +1546,7 @@ function initChat(){
         console.log("Settings updated event from chat");
         refreshParticipants(pkfp);
         refreshInvites(pkfp);
+        updateMessagesAliases(pkfp)
     })
 
     chat.on(Events.CONNECTION_STATUS_CHANGED, processConnectionStatusChanged);
@@ -1515,10 +1560,15 @@ function initChat(){
             return
         }
 
+        let alias = "";
+        if (message.header.author){
+            alias  = chat.getParticipantAlias(topicPkfp, message.header.author) ||
+                message.header.author.substring(0, 8)
+        }
         console.log("Appending message");
         appendMessageToChat({
             nickname: message.header.nickname,
-            alias: "alias",//alias,
+            alias: alias,
             body: message.body,
             timestamp: message.header.timestamp,
             pkfp: message.header.author,
@@ -1541,6 +1591,24 @@ function initChat(){
         console.log(`Download error received from chat: ${err}`);
         appendEphemeralMessage(`Download error: ${err}`);
     })
+
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // chat.on(Events.NICKNAME_CHANGED, (data)=>{                                                                                             //
+    //     appendEphemeralMessage(`Participant ${data.participantPkfp} changed his nickname from ${data.oldNickname} to ${data.newNickname}`) //
+    // })                                                                                                                                     //
+    //                                                                                                                                        //
+    // chat.on(Events.PARTICIPANT_ALIAS_CHANGED, (data)=>{                                                                                    //
+    //                                                                                                                                        //
+    //     appendEphemeralMessage(`Alias changed for participant ${data.participantPkfp} from ${data.oldAlias} to ${data.newAlias}`)          //
+    // })                                                                                                                                     //
+    //                                                                                                                                        //
+    // chat.on(Events.INVITE_ALIAS_CHANGED, (data)=>{                                                                                         //
+    //                                                                                                                                        //
+    //     appendEphemeralMessage(`Alias changed for invite ${data.invite} from ${data.oldAlias} to ${data.newAlias}`)                        //
+    // })                                                                                                                                     //
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     //DEBUGGING! Comment out for production;
     window.chat = chat;

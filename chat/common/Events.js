@@ -39,6 +39,10 @@ module.exports.Events = Object.freeze({
     INVITE_DELETED: "invite_deleted",
     DELETE_INVITE_ERROR: "del_invite_error",
 
+    //aliases nicknames
+    NICKNAME_CHANGED: "nickname_changed",
+    PARTICIPANT_ALIAS_CHANGED: "p_alias_changed",
+    INVITE_ALIAS_CHANGED: "invite_alias_changed",
 
     PARTICIPANT_LEFT: "participant_left",
     MEMBER_BOOTED: "member_booted",
@@ -94,6 +98,7 @@ module.exports.Internal = Object.freeze({
     TOPIC_ADDED: "topic_added",
     TOPIC_UPDATED: "topic_updated",
     VAULT_SETTINGS_UPDATED: "vault_settings_updated",
+    VAULT_UPDATED: "vault_updated",
     //END//////////////////////////////////////////////////////////////////////
 
     CONNECTION_ERROR: "conn_error",
@@ -119,6 +124,7 @@ module.exports.Internal = Object.freeze({
     NICKNAME_NOTE: "nickname_note",
     NICKNAME_INITAL_EXCHANGE: "nickname_exchange",
 
+    REGISTER_SERVICE_RECORD: "register_service_record",
 
     //Response sent by server to client.
     POST_LOGIN_DECRYPT: "post_login_decrypt_services",

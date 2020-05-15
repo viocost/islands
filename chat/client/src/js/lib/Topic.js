@@ -241,7 +241,7 @@ export class Topic{
             console.log(`nickname note received: metadataId: ${msg.body[Internal.METADATA_ID]}`);
             let senderPkfp = msg.headers.pkfpSource
             let senderPublicKey = self.participants[senderPkfp].publicKey;
-            assert(Message.verifyMessage(senderPublicKey, msg), "Signature is invalid")
+            //assert(Message.verifyMessage(senderPublicKey, msg), "Signature is invalid")
             let sharedKey = ChatUtility.privateKeyDecrypt(msg.sharedKey, self.privateKey)
             let currentSharedKey = self.getSharedKey();
             console.log(`Current key: ${currentSharedKey}, received key ${sharedKey}`);
@@ -519,11 +519,19 @@ export class Topic{
     }
 
     setParticipantNickname(nickname, pkfp){
+
+        this.emit(Events.NICKNAME_CHANGED, {
+            topicPkfp: this.pkfp,
+            oldNickname: this._metadata.body.settings.membersData[pkfp].nickname,
+            newNickname: nickname,
+            participantPkfp: pkfp
+        })
         this._metadata.setParticipantNickname(nickname, pkfp);
         this.saveClientSettings();
         if (pkfp === this.pkfp){
             this.nicknameChangeNotify()
         }
+
     }
 
     setParticipantAlias(alias, pkfp){
@@ -622,6 +630,19 @@ export class Topic{
 
     //~END SETTINGS ///////////////////////////////////////////////////////////
 
+
+    createRegisterServiceRecord(event, message){
+        let request = new Message(self.version);
+        request.addNonce();
+        request.setSource(this.session.publicKeyFingerprint);
+        request.setCommand(Internal.REGISTER_SERVICE_RECORD);
+        request.body.event = event;
+        request.body.message = ChatUtility.encryptStandardMessage(message,
+            this.getPublicKey);
+        request.signMessage(this.privateKey);
+        this.messageQueue.enqueue(request)
+    }
+
     processMessagesLoaded(msg, self){
         let data = msg.body.lastMessages;
         let keys = data.keys;
@@ -671,6 +692,7 @@ export class Topic{
         self.emit(Events.MESSAGES_LOADED, self.messages);
     }
 
+
     processSettingsUpdated(self, msg){
         let settings = msg.body.settings;
         let signature = msg.body.signature;
@@ -696,6 +718,43 @@ export class Topic{
         self.emit(Events.SETTINGS_UPDATED);
     }
 
+    //Notification on alias change. Disable for now
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // detectAliasNicknameChangesOnSettingsUpdate(settingsPlain){                                                  //
+    //     Object.keys(this._metadata.body.settings.membersData).forEach(k=>{                                      //
+    //                                                                                                             //
+    //         if(this._metadata.body.settings.membersData[k].nickname !== settingsPlain.membersData[k].nickname){ //
+    //             this.emit(Events.NICKNAME_CHANGED, {                                                            //
+    //                 topicPkfp: this.pkfp,                                                                       //
+    //                 oldNickname: this._metadata.body.settings.membersData[k].nickname,                          //
+    //                 newNickname: settingsPlain.membersData[k].nickname,                                         //
+    //                 participantPkfp: k                                                                          //
+    //             })                                                                                              //
+    //         }                                                                                                   //
+    //                                                                                                             //
+    //         if(this._metadata.body.settings.membersData[k].alias !== settingsPlain.membersData[k].alias){       //
+    //             this.emit(Events.PARTICIPANT_ALIAS_CHANGED, {                                                   //
+    //                 topicPkfp: this.pkfp,                                                                       //
+    //                 oldAlias: this._metadata.body.settings.membersData[k].alias,                                //
+    //                 newAlias: settingsPlain.membersData[k].alias,                                               //
+    //                 participantPkfp: k                                                                          //
+    //             })                                                                                              //
+    //         }                                                                                                   //
+    //     })                                                                                                      //
+    //                                                                                                             //
+    //     Object.keys(this._metadata.body.settings.invites).forEach(k=>{                                          //
+    //         if (this._metadata.body.settings.invites[k].name !== settingsPlain.invites[k].name){                //
+    //             this.emit(Events.INVITE_ALIAS_CHANGED, {                                                        //
+    //                 topicPkfp: this.pkfp,                                                                       //
+    //                 oldAlias: this._metadata.body.settings.invites[k].name,                                     //
+    //                 newAlias: settingsPlain.invites[k].name,                                                    //
+    //                 invite: k                                                                                   //
+    //             })                                                                                              //
+    //         }                                                                                                   //
+    //     })                                                                                                      //
+    // }                                                                                                           //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     //TODO Cleanup or implememnt
 
     processInvitesUpdated(self, msg){
@@ -716,13 +775,7 @@ export class Topic{
         if(!this.isBootstrapped || !pkfp){
             return
         }
-        let participantData = this.participants[pkfp];
-
-        if (participantData && participantData.alias){
-            return participantData.alias;
-        } else{
-            return pkfp.substring(0, 8);
-        }
+        return this._metadata.getParticipantAlias(pkfp)
     }
 
     getParticipants(){
@@ -785,5 +838,10 @@ export class Topic{
     //Verifies current metadata
     verifyMetadata(){
         return Metadata.isMetadataValid(this._metadata)
+    }
+
+    setTopicName(name){
+        assert(2<=name.length<=30, `Topic name is invalid`)
+        this.name = name;
     }
 }

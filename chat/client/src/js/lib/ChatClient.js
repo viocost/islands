@@ -116,6 +116,12 @@ export class ChatClient{
         this.vault.on(Internal.TOPIC_DELETED, (pkfp)=>{
             self.emit(Events.TOPIC_DELETED, pkfp);
         })
+
+
+        this.vault.on(Events.VAULT_UPDATED, ()=>{
+            console.log("Vault updated in chat client");
+            self.emit(Events.VAULT_UPDATED);
+        })
     }
 
     setConnectorListeners(){
@@ -252,6 +258,20 @@ export class ChatClient{
         topic.on(Events.SETTINGS_UPDATED, ()=>{
             this.emit(Events.SETTINGS_UPDATED, topic.pkfp);
         })
+
+        ///////////////////////////////////////////////////////////
+        // topic.on(Events.NICKNAME_CHANGED, (data)=>{           //
+        //     this.emit(Events.NICKNAME_CHANGED, data)          //
+        // })                                                    //
+        //                                                       //
+        // topic.on(Events.PARTICIPANT_ALIAS_CHANGED, (data)=>{  //
+        //     this.emit(Events.PARTICIPANT_ALIAS_CHANGED, data) //
+        // })                                                    //
+        //                                                       //
+        // topic.on(Events.INVITE_ALIAS_CHANGED, (data)=>{       //
+        //     this.emit(Events.INVITE_ALIAS_CHANGED, data)      //
+        // })                                                    //
+        ///////////////////////////////////////////////////////////
     }
     //END//////////////////////////////////////////////////////////////////////
 
@@ -633,6 +653,9 @@ export class ChatClient{
         //delete self.newTopicPending[request.body.topicID];
     }
 
+    renameTopic(topicPkfp, name){
+        this.vault.renameTopic(topicPkfp, name);
+    }
 
 
 
