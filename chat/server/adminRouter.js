@@ -11,7 +11,10 @@ let VERSION;
 router.get("/vault", (req, res)=>{
    let vault =  adminServer.getAdminVault();
    res.set("Content-Type", "application/json")
-       .status(200).send({"vault": vault})
+      .status(200).send({
+          "vault": vault,
+          "version": version.getVersion()
+      })
 
 });
 
@@ -42,9 +45,9 @@ function isOnion(host){
     return pattern.test(host);
 }
 
-module.exports.init = (app, config, HOST, PORT, VERSION, adminKeyPath, updatePath)=>{
+module.exports.init = (app, config, HOST, PORT, adminKeyPath, updatePath)=>{
     adminServer.setKeyFolder(adminKeyPath, updatePath);
-    adminServer.initAdminEnv(app, config, HOST, PORT, VERSION);
+    adminServer.initAdminEnv(app, config, HOST, PORT);
 };
 
 module.exports.router = router;

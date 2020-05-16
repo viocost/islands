@@ -93,6 +93,10 @@ function assertInit(){
     if(!filePath){
         throw new Error("Hidden Service to vault map has not been initialized");
     }
+
+    if(!fs.existsSync(filePath)){
+        fs.writeFileSync(filePath, "{}")
+    }
 }
 
 

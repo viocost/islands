@@ -1,0 +1,15 @@
+{
+  "name": "engine",
+  "version": "1.0.1",
+  "description": "Engine script that keeps an island running",
+  "main": "engine.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "get-port": "^5.1.1",
+    "hound": "^1.0.5"
+  }
+}

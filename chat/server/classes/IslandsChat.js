@@ -8,12 +8,13 @@ const CrossIslandMessenger = require("./libs/CrossIslandMessenger.js");
 const InviteAssistant = require("./assistants/InviteAssistant.js");
 const TopicJoinAssistant = require("./assistants/TopicJoinAssistant.js");
 const TopicInitAssistant = require("./assistants/TopicInitAssistant.js");
-const TopicLoginAssistant = require("./assistants/TopicLoginAssistant.js");
+const LoginAssistant = require("./assistants/LoginAssistant.js");
 const ServiceAssistant = require("./assistants/ServiceAssistant.js");
-const ChatMessageAssistant = require("./assistants/ChatMessageAssistant");
+const ChatMessageAssistant = require("./assistants/ChatMessageAssistant.js");
 const ClientSettingsAssistant = require("./assistants/ClientSettingsAssistant.js");
 const DataTransferAssistant = require("./assistants/DataTransferAssistant.js");
 const BootLeaveAssistant = require("./assistants/BootLeaveAssistant.js");
+const VaultManager = require("./libs/VaultManager.js");
 const Logger = require("./libs/Logger.js");
 const AssistantCoordinator = require("./assistants/AssistantCoordinator.js");
 
@@ -25,6 +26,7 @@ class IslandsChat{
         this.clientSessionManager = new ClientSessionManager(this.chatConnectionManager);
         this.torConnector = new TorConnector(opts);
         this.crossIslandMessenger = new CrossIslandMessenger(this.torConnector);
+        this.vaultManager = new VaultManager(opts);
         this.hm = new HistoryManager(this.historyPath);
 
         AssistantCoordinator.initialize();
@@ -37,14 +39,17 @@ class IslandsChat{
             this.clientRequestEmitter,
             this.hm,
             this.topicAuthorityManager,
-            this.torConnector);
+            this.torConnector,
+            this.vaultManager,
+            this.clientSessionManager);
 
-        this.topicLoginAssistant = new TopicLoginAssistant(this.chatConnectionManager,
+        this.LoginAssistant = new LoginAssistant(this.chatConnectionManager,
             this.clientRequestEmitter,
             this.hm,
             this.topicAuthorityManager,
             this.torConnector,
-            this.clientSessionManager);
+            this.clientSessionManager,
+            this.vaultManager);
 
         this.inviteAssistant = new InviteAssistant(this.chatConnectionManager,
             this.clientSessionManager,
@@ -61,7 +66,8 @@ class IslandsChat{
             this.hm,
             this.topicAuthorityManager,
             this.crossIslandMessenger,
-            this.torConnector
+            this.torConnector,
+            this.vaultManager
         );
 
         this.serviceAssistant = new ServiceAssistant(
@@ -102,7 +108,9 @@ class IslandsChat{
             this.clientRequestEmitter,
             this.hm,
             this.topicAuthorityManager,
-            this.crossIslandMessenger
+            this.crossIslandMessenger,
+            this.vaultManager,
+            this.torConnector
         );
 
         Logger.verbose("Chat started")

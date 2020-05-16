@@ -1,74 +1,61 @@
 #!/bin/bash
+#
+#This script updates Islands apps and services within a given directory
 
-# This script refreshes islands source code within the running container
-# This allows refresh source without restarting tor and re-launching hidden services
 
-POSITIONAL=()
+declare -a ISLANDS
+
 while [[ $# -gt 0 ]]
-do
-    key="$1"
 
-    case $key in
-        -bf|--build-front)
-            BUILD_FRONT=true
-            shift
-            ;;
-        -c|--container)
-            CONTAINER_NAME="$2"
-            shift
-            shift
-            ;;
-        -ba|--build-admin)
-            BUILD_ADMIN=ture
-            shift
-            ;;
-        -bv|--build-vault)
-            BUILD_VAULT=ture
-            shift
-            ;;
-        -bc|--build-chat)
-            BUILD_CHAT=true
-            shift
-            ;;
-    esac
+do
+key="$1"
+
+case $key in
+    -p|--path)
+    ISLANDS+=(${2})
+    shift
+    shift
+    ;;
+    -bf|--build-front)
+    BUILD_FRONT=true
+    shift
+    ;;
+    -h | --help)
+    HELP=true
+    shift
+    ;;
+esac
 done
 
-if [[ ! ${CONTAINER_NAME} ]]; then
-    echo Container name is required! Exiting...
-    exit 0;
-fi
+[[ $BUILD_FRONT ]] && {
+    echo building front
+    npm run build-front || {
+        echo Unable to compile front end. Exiting...
+        exit 1
+    }
+}
 
 
-if [[ ${BUILD_ADMIN} ]]; then
-    SELECTIVE_BUILD=true;
-    echo Building admin...
-    npm run build-admin;
-fi
-
-if [[ ${BUILD_VAULT} ]]; then
-    SELECTIVE_BUILD=true;
-    echo Building vault...
-    npm run build-vault;
-fi
-
-if [[ ${BUILD_CHAT} ]]; then
-    SELECTIVE_BUILD=true;
-    echo Building chat...
-    npm run build-chat;
-fi
-
-if [[ ${BUILD_FRONT} ]]; then
-    echo Building front...
-    if  [[ ! $SELECTIVE_BUILD ]]; then
-        npm run build-front;
-    else
-        echo Selective build enabled
-    fi
-fi
+CHAT_SOURCE_PATH=$(readlink -f $(pwd))
+ENGINE_PATH=$(readlink -f $(pwd)/../core/services/engine)
+DRIVERS_PATH=$(readlink -f $(pwd)/../core/drivers)
 
 
-docker exec -it ${CONTAINER_NAME} rm -rf *
-docker cp ./ ${CONTAINER_NAME}:/usr/src/app
-docker exec -it ${CONTAINER_NAME} pm2 restart 0
+for IPATH in ${ISLANDS[@]}; do
+    echo Updating island at ${IPATH}...
 
-echo All set!
+
+    [[ -d "$IPATH" ]] && [[ -d ${IPATH}/apps ]] && [[ -d ${IPATH}/apps/chat ]] || {
+        echo Islands distribution is invalid.
+        echo Exiting
+        continue
+    }
+
+    APPS_PATH="${IPATH}/apps"
+
+    cp -r $CHAT_SOURCE_PATH $APPS_PATH
+    cp -r $ENGINE_PATH $APPS_PATH
+    cp -r ${DRIVERS_PATH}/*  $IPATH
+
+    echo Island at ${IPATH} updated.
+done

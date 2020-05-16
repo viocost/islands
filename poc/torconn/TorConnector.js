@@ -22,6 +22,7 @@ class TorConnector{
 
         //Set all the variables
         console.log("Initializing tor connector")
+
         this.httpHOST = 'localhost';
         this.httpPORT = 4003;
 
@@ -45,7 +46,7 @@ class TorConnector{
         });
 
         httpServer.listen(this.httpPORT, this.httpHOST, ()=>{
-            console.log('HTTP server listening on ' + this.getConnectionString());
+            console.log('Onion services are listening on ' + this.getConnectionString());
         });
 
         this.socket = io.listen(httpServer);
