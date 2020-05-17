@@ -1,4 +1,5 @@
 import * as util from "./dom-util";
+import "../../css/vendor/blocking-spinner.min.css"
 
 /**
  * Simple UI blocking loading spinner

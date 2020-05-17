@@ -1,17 +1,18 @@
-import '../css/main.sass';
-import '../css/vendor/toastr.min.css';
+import '../css/admin.sass';
 import { XHR } from "./lib/xhr";
 import toastr from "./lib/toastr";
 window.toastr = toastr;
-import { iCrypto } from "./lib/iCrypto";
 import { Vault } from "./lib/Vault";
 import * as CuteSet from "cute-set";
 import * as dropdown from "./lib/dropdown";
 import * as editableField from "./lib/editable_field";
-import { ChatUtility } from "./chat/ChatUtility";
+import { ChatUtility } from "./lib/ChatUtility";
 import { BlockingSpinner } from "./lib/BlockingSpinner"
 import { verifyPassword } from "./lib/PasswordVerify";
 import * as util from "./lib/dom-util";
+import { iCrypto } from "./lib/iCrypto"
+import * as semver from "semver"
+window.semver = semver;
 let adminSession;
 let filterFieldSelector;
 let logTableBody;
@@ -19,6 +20,46 @@ let logTableBody;
 let spinner = new BlockingSpinner()
 window.util = util;
 
+window.iCrypto = iCrypto
+
+
+let VERSION;
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// window.testCrypto = ()=>{                                                            //
+//                                                                                      //
+//     let passwd = "hfgkhsdjf"                                                         //
+//     let stuff = "kljfgljsdkfgkdjgfdjlkfgjljgewjrkgjegjdjfgjdsgjsdfgdssdljvdcvjdcjv"; //
+//     let ic = new iCrypto();                                                          //
+//     ic.createNonce("salt", 128)                                                      //
+//         .encode("salt","hex", "salt-hex")                                            //
+//         .createPasswordBasedSymKey("key", passwd, "salt-hex")                        //
+//         .addBlob("vault", stuff)                                                     //
+//         .AESEncrypt("vault", "key", "cipher")                                        //
+//         .encode("cipher","hex",  "cip-hex")                                          //
+//         .merge(["salt-hex", "cip-hex"], "res")                                       //
+//                                                                                      //
+//     let vault_encrypted = ic.get("res");                                             //
+//                                                                                      //
+//     let icn = new iCrypto()                                                          //
+//     icn.addBlob("s16", vault_encrypted.substring(0, 256))                            //
+//         .addBlob("v_cip", vault_encrypted.substr(256))                               //
+//         .hexToBytes("s16", "salt")                                                   //
+//         .createPasswordBasedSymKey("sym", passwd, "s16")                             //
+//                                                                                      //
+//     console.log(ic.get("cip-hex") === v_cip);                                        //
+//     icn.AESDecrypt("v_cip", "sym", "vault_raw", true);                               //
+// }                                                                                    //
+//                                                                                      //
+// window.testVault = ()=>{                                                             //
+//     let v = new Vault()                                                              //
+//     let pass = "jhdfgdslhglsdhgljhghdsfgh"                                           //
+//     v.init(pass)                                                                     //
+//     let cip = v.pack()                                                               //
+//     let dec = new Vault()                                                            //
+//     dec.initSaved(cip.vault, pass)                                                   //
+// }                                                                                    //
+//////////////////////////////////////////////////////////////////////////////////////////
 
 /**
  * Closure for processing admin requests while admin logged in
@@ -33,6 +74,10 @@ let processAdminRequest = ()=>{
 
 
 document.addEventListener('DOMContentLoaded', event => {
+    if(!getVersion){
+        throw new Error("getVersion is not defined!")
+    }
+    VERSION = getVersion();
     document.title = "Islands | Admin login";
     util.$("main").classList.add("main-admin");
     util.$("header").style.minWidth = "111rem";
@@ -60,12 +105,12 @@ document.addEventListener('DOMContentLoaded', event => {
     util.$('#add-guest-service').onclick = createGuest;
 
 
-    util.$('#to-chat').onclick = returnToChat;
-    util.$('#admin-logout-button').onclick = adminLogout;
+    //util.$('#to-chat').onclick = returnToChat;
+    //util.$('#admin-logout-button').onclick = adminLogout;
 
     util.$('#clear-logs').onclick = clearLogs;
-
-    util.displayFlex('#admin-login--wrapper');
+//
+    //util.displayFlex('#admin-login--wrapper');
 
 
 
@@ -307,16 +352,16 @@ function onHiddenServiceUpdate(data) {
     for (let key of Object.keys(hiddenServices)){
         let isEnabled = hiddenServices[key].enabled;
         let row = util.bake("tr");
-        let enumEl = util.bake("td", {classes: "hs-enum", text: enumer});
-        let link = util.bake("td", {classes: "hs-link", text: key + ".onion"});
+        let enumEl = util.bake("td", {class: "hs-enum", text: enumer});
+        let link = util.bake("td", {class: "hs-link", text: key + ".onion"});
 
         let description = extractDescription(hiddenServices[key].description)
 
-        let hsDesc = bakeDescriptionElement(util.bake("td", {classes: "hs-desc"}), description);
-        let hsType = util.bake("td", {classes: "hs-type", text: hiddenServices[key].admin ? "Admin" : "User"});
-        let status = util.bake("td", {classes: ["hs-status", isEnabled ? "hs-status-enabled" : "hs-status-disabled" ],
+        let hsDesc = bakeDescriptionElement(util.bake("td", {class: "hs-desc"}), description);
+        let hsType = util.bake("td", {class: "hs-type", text: hiddenServices[key].admin ? "Admin" : "User"});
+        let status = util.bake("td", {class: ["hs-status", isEnabled ? "hs-status-enabled" : "hs-status-disabled" ],
             text: isEnabled ? "Enabled" : "Disabled"});
-        let actions = bakeHsRecordActionsMenu(util.bake("td", {classes: "hs-actions"}),
+        let actions = bakeHsRecordActionsMenu(util.bake("td", {class: "hs-actions"}),
             hiddenServices[key].admin);
         util.appendChildren(row, [enumEl, link, hsDesc, hsType, status, actions]);
         tableBody.appendChild(row);
@@ -454,7 +499,8 @@ function adminLogin() {
         url: "/admin/vault",
         success: async res =>{
             try{
-                let decryptedVault = await decryptVault(res.vault, password);
+                console.log("Decryptting admin vault");
+                let decryptedVault = await decryptVault(res.vault.vault, password);
                 await requestAdminLogin(decryptedVault.adminKey);
             }catch(err){
                 loadingOff();
@@ -477,11 +523,11 @@ function adminLogin() {
  * @param password
  * @returns {Promise<void>}
  */
-function decryptVault(vaultCipher, password){
+function decryptVault(vaultEnc, password){
     return new Promise((resolve, reject)=>{
         try{
             let vault = new Vault();
-            vault.initSaved(vaultCipher, password);
+            vault.initSaved(VERSION, vaultEnc, password);
             if(!vault.admin || !vault.adminKey){
                 reject("Admin vault is invalid, or doesn't have a private key")
             }
@@ -547,6 +593,7 @@ function processLoginData(res) {
 
 function setupIslandAdmin() {
 
+    console.log("Setting up admin");
     util.addClass('#island-setup', 'btn-loading');
 
     let password = util.$('#new-admin-password').value;
@@ -566,6 +613,7 @@ function setupIslandAdmin() {
 }
 
 function setupAdminContinue(password) {
+    console.log("Setup admin continue called");
     return new Promise((resolve, reject) => {
         loadingOn();
         let ic = new iCrypto();
@@ -576,12 +624,15 @@ function setupAdminContinue(password) {
 
 
         let vault = new Vault();
-        vault.initAdmin(password, ic.get("adminkp").privateKey);
+        vault.initAdmin(password, ic.get("adminkp").privateKey, version);
 
 
         let vaultEncData = vault.pack();
         let vaultPublicKey = vault.publicKey;
         let adminPublicKey = ic.get("adminkp").publicKey;
+
+        console.log(`sending register request. Hash: ${vaultEncData.hash}`);
+
 
         XHR({
             type: "POST",
@@ -590,6 +641,7 @@ function setupAdminContinue(password) {
             data: {
                 action: "admin_setup",
                 adminPublickKey: adminPublicKey,
+                hash: vaultEncData.hash,
                 nonce: ic.get('nhex'),
                 sign: ic.get("sign"),
                 vault: vaultEncData.vault,
@@ -597,6 +649,7 @@ function setupAdminContinue(password) {
                 vaultSign: vaultEncData.sign
             },
             success: () => {
+                console.log("Success admin register");
                 loadingOff();
                 adminSession = {
                     publicKey: ic.get('adminkp').publicKey,
@@ -611,8 +664,9 @@ function setupAdminContinue(password) {
             },
             error: err => {
                 loadingOff();
+                console.log(err.message);
                 reject("Fail!" + err);
-                util.removeClass('#island-setup', 'btn-loading');
+                UTIL.REMOVECLASS('#ISLAND-SETUP', 'BTN-LOADING');
             }
         });
     });
@@ -639,7 +693,7 @@ function adminLogout() {
 }
 
 function displayAdminMenu(on) {
-    on ? util.displayFlex("#admin-menu") : util.displayNone("#admin-menu")
+    //on ? util.displayFlex("#admin-menu") : util.displayNone("#admin-menu")
 }
 
 function prepareAdminMenuListeners() {
@@ -794,7 +848,7 @@ function processLogsLoaded(res) {
         row.append(msg);
         let additionalValues = new CuteSet(Object.keys(parsed)).minus(["level", "message", "timestamp"]);
         if (additionalValues.length() > 0) {
-            let addCell = util.bake("td", {classes: "add-value-cell"});
+            let addCell = util.bake("td", {class: "add-value-cell"});
             for (let key of additionalValues) {
                 let wrap = document.createElement("div");
                 wrap.classList.add("log-add-value");

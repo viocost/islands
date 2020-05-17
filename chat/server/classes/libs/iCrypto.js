@@ -186,6 +186,29 @@ class iCrypto {
         return this;
     }
 
+
+    /**
+     * Given a password and a salt computes SYM key and saves it under given name in base64 format
+     * @param nameToSave
+     * @param password
+     * @param salt Must be previously sotre within the current iCrypto instance
+     *        Must be hex-encoded
+     * @param numIterations
+     * @param keyLength
+     */
+    createPasswordBasedSymKey(nameToSave = iCrypto.pRequired("createSYMKey"),
+                              password = iCrypto.pRequired("createSYMKey"),
+                              salt = iCrypto.pRequired("createSYMKey"),
+                              numIterations = 20000,
+                              keyLength = 32){
+        let self = this;
+        let sRaw = forge.util.hexToBytes(this.get(salt));
+        let key = forge.pkcs5.pbkdf2(password, sRaw, numIterations, keyLength);
+        let res = forge.util.bytesToHex(key);
+        self.set(nameToSave, res);
+        return self;
+    }
+
     /**
      * requires object of similar structure for key as being created by createSYMKey
      * @param target

@@ -1,6 +1,7 @@
 const fs = require("fs-extra");
 const iCrypto = require("./iCrypto");
 const Logger = require("./Logger");
+const path = require("path")
 
 let adminKeyPath;
 let cachePkfp;
@@ -17,7 +18,7 @@ module.exports.init = (config)=>{
 module.exports.get = ()=>{
     ensureInitialized();
 
-    let pubKey = fs.readFileSync(adminKeyPath + fs.readdirSync(adminKeyPath)[0], "utf8");
+    let pubKey = fs.readFileSync(path.join(adminKeyPath , fs.readdirSync(adminKeyPath)[0]), "utf8");
     if (!pubKey){
         throw new Error("Error: public key not found.");
     }
@@ -27,7 +28,7 @@ module.exports.get = ()=>{
 
 module.exports.getPkfp = ()=>{
     ensureInitialized();
-    let pubKey = fs.readFileSync(adminKeyPath + fs.readdirSync(adminKeyPath)[0], "utf8");
+    let pubKey = fs.readFileSync(path.join(adminKeyPath , fs.readdirSync(adminKeyPath)[0]), "utf8");
 
     let ic = new iCrypto();
     ic.setRSAKey("pub", pubKey, "public")

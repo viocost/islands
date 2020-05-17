@@ -1,38 +1,94 @@
 const ClientSession = require("../objects/ClientSession.js");
 const Err = require("./IError.js");
 const Logger = require("../libs/Logger.js");
+const { Internal, Events } = require("../../../common/Events")
 
 
 
 class ClientSessionManager{
     constructor(connectionManager = Err.required()){
+
+        // Sessions are stored by vaultID
         this.sessions = {};
         this.connectionManager = connectionManager;
+        this.topicToSessionMap = {};
         this.registerConnectionManager(connectionManager);
     }
 
     registerConnectionManager(connectionManager){
+        let self = this;
+        connectionManager.on("client_connected", connectionId=>{
+
+            let socket = connectionManager.getSocketById(connectionId);
+            let vaultId = socket.handshake.query.vaultId;
+            if(!vaultId){
+                Logger.warn("Warning: no vaultID provided at the connection.", {cat: "connection"})
+                return;
+            }
+            if(this.sessions.hasOwnProperty(vaultId)){
+                console.log(`Session exists. Adding connection...`);
+                self.sessions[vaultId].addConnection(connectionId);
+            } else {
+                console.log(`Session does not exist. Creating...`);
+                let newSession = new ClientSession(vaultId, connectionId, connectionManager);
+                this.sessions[vaultId] = newSession;
+
+                newSession.on(Internal.KILL_SESSION, (session)=>{
+                    Logger.debug(`Killing session ${session.id} on timeout`)
+                    for(let pkfp of Object.keys(session.topics)){
+                        delete self.topicToSessionMap[pkfp];
+                    }
+                    delete this.sessions[session.id]
+                })
+
+                newSession.on(Internal.TOPIC_ADDED, (pkfp)=>{
+                    Logger.debug(`Topic ${pkfp} added for session ${newSession.id}`, {
+                        cat: "session"
+                    })
+                    self.topicToSessionMap[pkfp] = newSession;
+                })
+
+                newSession.on(Internal.TOPIC_DELETED, (pkfp)=>{
+                    Logger.debug(`Topic ${pkfp} deleted for session ${newSession.id}`, {
+                        cat: "session"
+                    })
+                    delete self.topicToSessionMap[pkfp];
+                })
+            }
+        })
 
         connectionManager.on("client_disconnected", connectionId=>{
-            console.log("processing client disconnect!");
-            this.processSocketDisconnected(connectionId);
+            let session = self.getSessionByConnectionId(connectionId)
+            if(session === undefined) return;
+            session.removeConnection(connectionId);
+
         });
+
     }
 
-    getActiveUserSessions(pkfp){
-        return Object.values(this.sessions).filter(val =>{
-            return val.getClientPkfp() === pkfp;
-        });
+    //Given participant's pkfp returns active session if exists
+    getSession(pkfp){
+        return this.topicToSessionMap[pkfp];
     }
 
-    getSessionByConnectionId(connectionID = Err.required()){
-        return this.sessions[connectionID];
+    getSessionByConnectionId(connectionId = Err.required()){
+        for(let session of Object.keys(this.sessions)){
+            if (this.sessions[session].hasConnection(connectionId)){
+                return this.sessions[session];
+            }
+        }
     }
 
     getSessionBySessionID(sessionID){
-        return Object.values(this.sessions).filter((val)=>{
-            return val.sessionID === sessionID;
-        });
+        return this.sessions[sessionID];
+    }
+
+    getSessionByTopicPkfp(pkfp){
+        if (this.topicToSessionMap.hasOwnProperty(pkfp)){
+            return this.topicToSessionMap[pkfp]
+        } else {
+            console.log(`No active sessions found for ${pkfp}` );
+        }
     }
 
 
@@ -65,31 +121,22 @@ class ClientSessionManager{
         this.sessions[session.getConnectionID()] = session;
     }
 
-    processSocketDisconnected(connectionId){
-        if (this.sessions.hasOwnProperty(connectionId)){
-            delete this.sessions[connectionId];
-        }
-        console.log("\nProcessing disconnect. ConnectionId: " + connectionId)
-        console.log("Sockets: " )
-        Object.keys(this.connectionManager.socketHub.sockets).forEach(socketId=>{
-            console.log("Key: "+ socketId + " Val: " + this.connectionManager.socketHub.sockets[socketId].id);
-        })
-        console.log("\n")
-    }
 
 
     broadcastUserResponse(pkfp, response){
-        const activeConnections = this.getActiveUserSessions(pkfp);
+        const activeConnections = this.getSession(pkfp);
         activeConnections.forEach((session)=>{
             this.connectionManager.sendResponse(session.getConnectionID(), response)
         })
     }
 
     broadcastServiceMessage(pkfp, message){
-        const activeConnections = this.getActiveUserSessions(pkfp);
-        activeConnections.forEach((session)=>{
-            this.connectionManager.sendServiceMessage(session.getConnectionID(), message)
-        })
+        const session = this.getSession(pkfp);
+        if (session && session.activeConnectionsCount() > 0){
+            session.broadcast(message)
+        } else {
+            Logger.debug(`No active connections found for ${pkfp}`, { cat: "session" });
+        }
     }
 
     sendServiceMessage(connectionId, message){
@@ -97,27 +144,28 @@ class ClientSessionManager{
     }
 
     broadcastServiceRecord(pkfp, record){
-        const activeConnections = this.getActiveUserSessions(pkfp);
+        const activeConnections = this.getSession(pkfp);
         activeConnections.forEach((session)=>{
             this.connectionManager.sendServiceRecord(session.getConnectionID(), record)
         })
     }
 
-    broadcastChatMessage(pkfp, message){
-        const activeConnections = this.getActiveUserSessions(pkfp);
+    broadcastMessage(pkfp, message){
+        let session = this.topicToSessionMap[pkfp];
+        if(!(session instanceof ClientSession)){
+            Logger.debug(`No active sessions found for topic ${pkfp}`, {
+                cat: "chat"
+            })
+            return;
+        }
+
         Logger.verbose("Broadcasting chat message",{
             pkfp: pkfp,
-            activeConnections: JSON.stringify(activeConnections)
+            cat: "session"
         });
-        activeConnections.forEach((session)=>{
-            this.connectionManager.sendChatMessage(session.getConnectionID(), message)
-        })
+        session.broadcast(message);
     }
 
-    isSessionActive(pkfp){
-        const sessions = this.getActiveUserSessions(pkfp);
-        return sessions.length > 0;
-    }
 
 }
 

@@ -1,48 +1,46 @@
 #!/bin/bash
+#
+# This script is for development work only
+#
+
+
 
 USAGE="
+This script is for dev work only
+It replaces chat source and engine source in core directory
+provided as -p argument and launches linux.sh.
 
-    ISLANDS RUN OPTIONS:
+USAGE:
+./run.sh -p <path/to/core> [ OPTIONS ]
 
-    -p | --port
-    Port number your island will be listening on
+-p, --p Path to islands core. This parameter is required.
 
-    -df | --data-folder
-    Path to Island data store directory
-    If not specified -
-    script will create islandsData
-    directory in-place
+-db, --debug Run in debug mode
 
-    -db | --debug
-    Debug mode
+-bf, --build-front Run build front script before running to recompile front-end
 
-    -dp | --debug-port
-    Port number for attaching local debugger
-
-    -bf | --build-front
-    Run npm script to re-build front end
+-h, --help print this message
 "
 
 
-POSITIONAL=()
 while [[ $# -gt 0 ]]
 
 do
 key="$1"
 
 case $key in
-    -p|--port)
-    PORT="$2"
+    -p|--path)
+    CORE_PATH="$2"
     shift
     shift
     ;;
-    -dp|--debug-port)
-    DEBUGPORT="$2"
+    --chat-port)
+    CHAT_PORT="$2"
     shift
     shift
     ;;
-    -df|--data-folder)
-    DATAFOLDER="$2"
+    --prompt)
+    export PROMPT="$2"
     shift
     shift
     ;;
@@ -54,11 +52,6 @@ case $key in
     BUILD_FRONT=true
     shift
     ;;
-    -ip)
-    IPADDR="$2"
-    shift
-    shift
-    ;;
     -h | --help)
     HELP=true
     shift
@@ -67,44 +60,54 @@ case $key in
 esac
 done
 
-if [[ ${HELP} ]]; then
-    echo "$USAGE";
-    exit 0;
+if [[ $HELP ]]; then
+    echo $USAGE
+    exit 0
 fi
 
-if [[ ${BUILD_FRONT} ]]; then 
-    echo building front
-    npm run build-front;
+# Assuming new core structure
+# CORE_PATH is path to islands root
+# Setting other paths
+
+
+RUN=${CORE_PATH}/linux.sh
+if [[ ! -f ${RUN} ]]; then
+    echo "Run file not found inside the core"
+    exit 1
+fi
+[[ ! -z $CHAT_PORT  ]] && RUN="${RUN} -p ${CHAT_PORT}" && echo RUN COMMAND IS ${RUN}
+[[ ! -z $DEBUG ]] && RUN="${RUN} -d"  && echo RUN COMMAND IS ${RUN}
+APPS_PATH=${CORE_PATH}/apps
+CHAT_PATH=${APPS_PATH}/chat
+ENGINE_PATH=${APPS_PATH}/engine
+CHAT_SOURCE_PATH=$(readlink -f .)
+
+ENGINE_SOURCE_PATH=${CHAT_SOURCE_PATH}/../core/services/engine
+DRIVERS_SOURCE_PATH=${CHAT_SOURCE_PATH}/../core/drivers
+
+
+
+
+if [[ ! -d ${CORE_PATH} ]]; then
+    echo "Islands core path not found"
+    exit 1
 fi
 
-RUNCOMMAND="docker container run --rm -it "
 
-if [ [ -z ${IPADDR} ] ]; then
-    IPADDR="localhost"
-else
-    RUNCOMMAND= "$RUNCOMMAND -ip ${IPADDR} "
-fi
-
-if [[ -z ${PORT+x} ]]; then
-    PORT=4001;
-fi
-RUNCOMMAND="$RUNCOMMAND -p ${PORT}:4000 "
-
-if [[ ! -z  ${DEBUG+x} ]]; then
-    if [[ -z ${DEBUGPORT+x} ]]; then
-        DEBUGPORT=9229;
-    fi
-    RUNCOMMAND=" $RUNCOMMAND -p ${DEBUGPORT}:9229 ";
+if [[ ! -d  ${APPS_PATH} ]]; then
+    echo "Apps path not found instde the core"
+    exit 1
 fi
 
 
-if [[ -z  ${DATAFOLDER+x} ]]; then
-    mkdir -p islandsData ;
-    DATAFOLDER="${PWD}/islandsData" ;
+if [[ $BUILD_FRONT ]]; then
+    npm run build-front
+    # npm prune --production
 fi
 
-RUNCOMMAND="$RUNCOMMAND  --mount type=bind,source=${DATAFOLDER},target=/islandsData  islands:chat"
+cp -r $CHAT_SOURCE_PATH $APPS_PATH
+cp -r $ENGINE_SOURCE_PATH $APPS_PATH
+cp -r ${DRIVERS_SOURCE_PATH}/*  $CORE_PATH
 
-
-docker build -f Dockerfile -t islands:chat .
-eval "$RUNCOMMAND"
+cd $CORE_PATH
+${RUN}
