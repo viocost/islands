@@ -213,7 +213,7 @@ class TorController extends TorControl{
                     let messages = response.messages;
                     hsid = new RegExp(hsid.substring(0, 16));
                     for (let i=0; i<messages.length; ++i){
-                        console.log("Testing " + hsid + " against " + messages[i]);
+                        //console.log("Testing " + hsid + " against " + messages[i]);
                         if(hsid.test(messages[i])){
                             console.log("Service "+messages[i] + " is already up!");
                             resolve(true);

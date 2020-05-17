@@ -16,6 +16,7 @@ html
 body
   font-size: 1.5rem
   height: 100vh
+  min-height: 500px
   display: flex
   flex-direction: column
 
@@ -67,7 +68,12 @@ select
   outline: none
   padding: .3rem
 
-
+button
+  outline: none !important
+  &::-moz-focus-inner
+    border: 0
+  &:focus
+    outline: none !important
 
 .header_wrap
   display: flex

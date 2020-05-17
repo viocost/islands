@@ -6,7 +6,7 @@ export function bakeEditableField(placeholder, userClasses){
         classes = classes.concat(userClasses)
     }
 
-    return  util.bake("input", {classes: classes, attributes:{
+    return  util.bake("input", {class: classes, attributes:{
             type: "text",
             placeholder: placeholder ? placeholder : ""
         }});

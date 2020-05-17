@@ -2,10 +2,11 @@ const Envelope = require("../objects/CrossIslandEnvelope.js");
 const ClientError = require("../objects/ClientError.js");
 const Err = require("../libs/IError.js");
 const Request = require("../objects/ClientRequest.js");
-const Response = require("../objects/ClientResponse.js");
+const Message = require("../objects/Message.js")
 const Logger = require("../libs/Logger.js");
 const Metadata = require("../objects/Metadata.js");
 const Coordinator = require("./AssistantCoordinator.js");
+const { Events, Internal } = require("../../../common/Events.js");
 
 class InviteAssistant{
     constructor(connectionManager = Err.required(),
@@ -34,10 +35,11 @@ class InviteAssistant{
     /**
      * Verifies and sends to topic authority on some other island
      */
-    async requestInviteOutgoing(request, connectionID, self){
+    async requestInviteOutgoing(request, connectionId, self){
 
         Logger.debug("Outgoing invite request from client", {
-            source: request.headers.pkfpSource
+            source: request.headers.pkfpSource,
+            cat: "invite"
         });
         const metadata = Metadata.parseMetadata(await self.hm.getLastMetadata(request.headers.pkfpSource));
 
@@ -53,10 +55,11 @@ class InviteAssistant{
         const envelope = new Envelope(residenceDest, request, residenceOrigin);
         envelope.setReturnOnFail(true);
 
-        await self.crossIslandMessenger.send(envelope, 4000, (envelope)=>{
+        Logger.debug("Sending invite request to TA...", {cat: "invite"})
+        await self.crossIslandMessenger.send(envelope, 20000, (envelope)=>{
             Logger.info("INVITE REQUEST TIMEOUT: dest: " + envelope.destination)
             envelope.error = "Invite request timeout. If you have just created the topic, allow some time for invite hidden service to be published and try again. That ususally takes 20sec - 2min.";
-            Coordinator.notify("invite_request_timeout", envelope);
+            Coordinator.notify(Internal.INVITE_REQUEST_TIMEOUT, envelope);
             self._processStandardClientError(envelope, self);
         });
     }
@@ -74,15 +77,8 @@ class InviteAssistant{
         console.log("invite request incoming! Processing");
         const request =  Request.parse(envelope.payload);
         const ta = self.topicAuthorityManager.getTopicAuthority(request.headers.pkfpDest);
-        const data = await ta.processInviteRequest(request);
-        const inviteCode = data.inviteCode;
-        const userInvites = data.userInvites;
-        const response = new Response("request_invite_success", request);
-        response.body.inviteCode = inviteCode;
-        response.body.userInvites = userInvites;
-        console.log("About to send success invite code: " + inviteCode);
+        const response = await ta.processInviteRequest(request);
         const responseEnvelope = new Envelope(envelope.origin, response, envelope.destination);
-        responseEnvelope.setResponse();
         await self.crossIslandMessenger.send(responseEnvelope);
     }
 
@@ -112,18 +108,30 @@ class InviteAssistant{
     }
 
     syncInvitesSuccess(envelope, self){
+        if(!envelope.errorToken){
+            Logger.error("No error token found!")
+            return
+        }
         let response = envelope.payload;
         self.sessionManager.broadcastUserResponse(response.headers.pkfpSource,
             response);
     }
 
-    requestInviteSuccess(envelope, self){
+    async requestInviteSuccess(envelope, self){
+        Logger.debug("Invite success received!", {cat: "invite"})
+
         const response = envelope.payload;
-        self.sessionManager.broadcastUserResponse(response.headers.pkfpSource,
-            response);
+        let session = self.sessionManager.getSessionByTopicPkfp(response.headers.pkfpDest)
+        if (session){
+            session.broadcast(response);
+        } else {
+            Logger.warn(`Invite request successful, but no active session found for ${response.headers.pkfpDest}`, {cat: "invite"})
+        }
+        Coordinator.notify(Events.INVITE_CREATED, envelope);
+
     }
 
-    async deleteInviteOutgoing(request, connectionID, self){
+    async deleteInviteOutgoing(request, connectionId, self){
         await self.validateOutgoingUserRequest(request);
         const metadata = Metadata.parseMetadata(await self.hm.getLastMetadata(request.headers.pkfpSource));
         const residenceOrigin = metadata.getParticipantResidence(request.headers.pkfpSource);
@@ -134,44 +142,66 @@ class InviteAssistant{
     }
 
     async deleteInviteIncoming(envelope, self){
+        Logger.debug("Delete invite incoming", {cat: "invite"})
         let request = envelope.payload;
         let ta = self.topicAuthorityManager.getTopicAuthority(request.headers.pkfpDest);
         let response = await ta.processDelInviteRequest(request);
-        let responseEnvelope = new Envelope(envelope.origin, response, envelope.destination)
-        responseEnvelope.setResponse();
+        let dest = envelope.origin;
+        let orig = envelope.destination
+        let responseEnvelope = new Envelope(dest, response, orig)
         await self.crossIslandMessenger.send(responseEnvelope)
     }
 
-    deleteInviteSuccess(envelope, self){
+    async deleteInviteSuccess(envelope, self){
+        Logger.debug("Invite assistant, delete invite success received", {cat: "invite"})
         const response = envelope.payload;
-        self.sessionManager.broadcastUserResponse(response.headers.pkfpSource,
+
+        await self.sessionManager.broadcastMessage(response.headers.pkfpDest,
             response);
     }
 
-    requestInviteError(envelope, self){
+    async requestInviteError(envelope, self){
         Logger.debug("Request invite error received.",{
-            error: envelope.error
+            error: envelope.error,
+            cat: "service"
         } ) ;
-        self._processStandardClientError(envelope, self)
+        await self._processStandardClientError(envelope, self)
     }
 
 
-    deleteInviteError(envelope, self){
+    async deleteInviteError(envelope, self){
         Logger.debug("Del invite error")
-        self._processStandardClientError(envelope, self)
+        await self._processStandardClientError(envelope, self)
     }
 
-    syncInvitesError(envelope, self){
+    async syncInvitesError(envelope, self){
         Logger.debug("Sync invites error")
-        self._processStandardClientError(envelope, self)
+        await self._processStandardClientError(envelope, self)
     }
 
-    _processStandardClientError(envelope, self){
-        const originalRequest = Envelope.getOriginalPayload(envelope);
-        const error = new ClientError(originalRequest,
-            self.getClientErrorType(originalRequest.headers.command),
-            envelope.error);
-        self.sessionManager.broadcastUserResponse(originalRequest.headers.pkfpSource, error);
+    async _processStandardClientError(envelope, self){
+
+        const originalRequest = Envelope.getOriginalPayload(envelope);                        //
+        const pkfpSource = originalRequest.headers.pkfpSource;
+        let msg = new Message()
+        msg.setCommand(Internal.INVITE_REQUEST_FAIL);
+        msg.setSource("island")
+        msg.setDest(pkfpSource);
+        msg.body.errorMsg = envelope.error;
+        let session = self.sessionManager.getSessionByTopicPkfp(pkfpSource);
+        if (!session){
+            Logger.warn(`Session ${pkfpSource} is not found`)
+            return;
+        }
+        await session.signMessage(msg);
+        session.broadcast(msg);
+        ///////////////////////////////////////////////////////////////////////////////////////////
+        // const originalRequest = Envelope.getOriginalPayload(envelope);                        //
+        // const error = new ClientError(originalRequest,                                        //
+        //     self.getClientErrorType(originalRequest.headers.command),                         //
+        //     envelope.error);                                                                  //
+        // self.sessionManager.broadcastUserResponse(originalRequest.headers.pkfpSource, error); //
+        ///////////////////////////////////////////////////////////////////////////////////////////
     }
 
 
@@ -200,11 +230,11 @@ class InviteAssistant{
      * HELPERS
      *****************************************************/
     getClientErrorType(command){
-        const errorTypes = {
-            request_invite: "request_invite_error",
-            delete_invite: "delete_invite_error",
-            sync_invites: "sync_invites_error"
-        };
+        const errorTypes = {}
+        errorTypes[Internal.REQUEST_INVITE] = Internal.INVITE_REQUEST_FAIL;
+        errorTypes[Internal.DELETE_INVITE] = Internal.DELETE_INVITE_ERROR;
+        errorTypes[Internal.SYNC_INVITES] = Internal.SYNC_INVITES_ERROR;
+
         if (!errorTypes.hasOwnProperty(command)){
             throw new Error("invalid error type");
         }
@@ -213,25 +243,30 @@ class InviteAssistant{
 
 
     subscribeToClientRequests(requestEmitter){
-        this.subscribe(requestEmitter, {
-            request_invite: this.requestInviteOutgoing,
-            del_invite: this.deleteInviteOutgoing,
-            sync_invites: this.syncInvitesOutgoing
-        }, this.clientErrorHandler)
+        let handlers = {}
+        handlers[Internal.REQUEST_INVITE] = this.requestInviteOutgoing;
+        handlers[Internal.DELETE_INVITE] = this.deleteInviteOutgoing;
+        handlers[Internal.SYNC_INVITES] = this.syncInvitesOutgoing;
+        this.subscribe(requestEmitter, handlers, this.clientErrorHandler)
     }
 
     subscribeToCrossIslandsMessages(ciMessenger){
-        this.subscribe(ciMessenger, {
+        let handlers = {
+
             request_invite: this.requestInviteIncoming,
-            del_invite: this.deleteInviteIncoming,
-            request_invite_success: this.requestInviteSuccess,
-            del_invite_success: this.deleteInviteSuccess,
-            return_request_invite: this.requestInviteError,
+            sync_invites: this.syncInvitesIncoming,
+            sync_invites_success: this.syncInvitesSuccess,
             return_delete_invite: this.deleteInviteError,
             return_sync_invites: this.syncInvitesError,
-            sync_invites: this.syncInvitesIncoming,
-            sync_invites_success: this.syncInvitesSuccess
-        }, this.crossIslandErrorHandler)
+            return_request_invite: this.requestInviteError
+        }
+        handlers[Events.INVITE_CREATED] = this.requestInviteSuccess;
+        handlers[Internal.DELETE_INVITE] = this.deleteInviteIncoming;
+        handlers[Internal.DELETE_INVITE_SUCCESS] = this.deleteInviteSuccess;
+
+
+        this.subscribe(ciMessenger, handlers, this.crossIslandErrorHandler)
+
     }
 
 
@@ -243,6 +278,7 @@ class InviteAssistant{
     async clientErrorHandler(request, connectionID, self, err){
         console.trace(err);
         try{
+            Logger.error(`Client error: ${err.message}`, {cat: "invite"})
             let error = new ClientError(request, self.getClientErrorType(request.headers.command) , "Internal server error")
             self.connectionManager.sendResponse(connectionID, error);
         }catch(fatalError){
@@ -251,17 +287,18 @@ class InviteAssistant{
         }
     }
 
+
     async crossIslandErrorHandler(envelope, self, err){
         try{
             console.log("Error while handling incoming request");
-            console.trace(err);
+            let errMsg = err.message || err || "Unknown error";
+            Logger.warn(errMsg, {cat: "invite"})
             if(!envelope.return){
-                await self.crossIslandMessenger.returnEnvelope(envelope, err);
+                await self.crossIslandMessenger.returnEnvelope(envelope, errMsg);
             }
         }catch(fatalError){
             console.trace("FATAL: Could nod handle the error " + fatalError);
         }
-
     }
 
     /***** END Error handlers *****/
@@ -291,9 +328,10 @@ class InviteAssistant{
         }catch(err){
             args.push(err);
             await errorHandler(...args);
-            Logger.error(`Invite assistant error on command: ${command} : ${err.message}`, {stack: err.stack} )
+            Logger.error(`Invite assistant error on command: ${command} : ${err.message}`, {stack: err.stack, cat: "invite"} )
         }
     }
+
 
     /*****************************************************
      * ~END HELPERS

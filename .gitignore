@@ -4,6 +4,7 @@
 .tern-port
 *.idea/
 *node_modules/
+*cache./
 *TAGS
 *venv/
 *env/

@@ -15,19 +15,22 @@ class Message{
         }
         let res = new Message();
         res.headers = data.headers;
-	res.body = data.body;
+        res.body = data.body;
         res.signature = data.signature;
         return res;
-    }
-
-    verify(message, publicKey){
-        const ic = new iCrypto();
-        res.body = data.body;
     }
 
     static getCommand(message){
         const m = Message.parse(message);
         return m.headers.command;
+    }
+
+    static makeResponse(origMessage, pkfpSource, command){
+        let message = new Message();
+        message.setDest(origMessage.headers.pkfpSource);
+        message.setSource(pkfpSource)
+        message.setCommand(command);
+        return message;
     }
 
 
@@ -61,6 +64,34 @@ class Message{
 
     hasHeader(header){
         return this.headers[header];
+    }
+
+    setSource(pkfp){
+        this.headers.pkfpSource = pkfp;
+    }
+
+    setDest(pkfp){
+        this.headers.pkfpDest = pkfp;
+    }
+
+    setCommand(command){
+        this.headers.command = command
+    }
+
+    addNonce(){
+        let ic = new iCrypto();
+        ic.createNonce("n")
+            .bytesToHex("n", "nhex");
+        this.headers.nonce = ic.get("nhex");
+    }
+
+    signMessage(privateKey){
+        let ic = new iCrypto();
+        let requestString = JSON.stringify(this.headers) + JSON.stringify(this.body);
+        ic.addBlob("body", requestString)
+            .setRSAKey("priv", privateKey, "private")
+            .privateKeySign("body", "priv", "sign");
+        this.signature = ic.get("sign");
     }
 
     static verify(message, publicKey){

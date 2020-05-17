@@ -35,14 +35,17 @@ class HistoryManager{
         }
     }
 
-    setHistoryDirectroryPath(path){
-        path = path ? path: "../history/";
-        if (!fs.existsSync(path)){
+    setHistoryDirectroryPath(hPath){
+        hPath = hPath ? hPath: "../history/";
+        if (!fs.existsSync(hPath)){
             console.log("Path does not exist. Creating...");
-            fs.mkdirSync(path);
+            fs.mkdirSync(hPath);
         }
-        console.log("Setting path to " + path);
-        this.historyDirectory = path;
+        this.historyDirectory = hPath;
+    }
+
+    getHistoryDirectory(){
+        return this.historyDirectory;
     }
 
     setCommonPaths(){
@@ -88,7 +91,7 @@ class HistoryManager{
 			 
             let self = this;
             try{
-                let topicPath = self.historyDirectory + pkfp;
+                let topicPath = path.join(self.historyDirectory , pkfp);
                 if (fs.existsSync(topicPath)) {
                     reject("Topic with such id already exists!");
                     return;
@@ -347,20 +350,20 @@ class HistoryManager{
     }
 
 
-    taGetInvite(inviteId = Err.required(), pkfp = Err.required()){
-        return new Promise(async (resolve, reject)=>{
-            let invitePath = this.pathToInvites(pkfp) + inviteId;
-            if (! await fs.exists(invitePath)  ){
-                console.log("INVITE COULD NOT BE FOUND: " + invitePath);
-                reject("Invite does not exist");
-            }
-            let data = await fs.readFile(invitePath);
-            resolve(data.toString());
-        })
+    async taGetInvite(inviteId = Err.required(), pkfp = Err.required()){
+        let invitePath = path.join(this.pathToInvites(pkfp) , inviteId);
+        if (! await fs.exists(invitePath)  ){
+            Logger.warn("INVITE COULD NOT BE FOUND: " + invitePath, {
+                cat: "topic_join"
+            });
+            throw new Error("Invite does not exist");
+        }
+        let data = await fs.readFile(invitePath);
+        return data.toString();
     }
 
     async taDelInvite(inviteId = Err.required(), pkfp = Err.required()){
-        let invitePath = this.pathToInvites(pkfp) + inviteId;
+        let invitePath = path.join(this.pathToInvites(pkfp) , inviteId);
         if (! await fs.exists(invitePath)  ){
             return
         }
@@ -374,7 +377,7 @@ class HistoryManager{
             if (!fs.existsSync(invitePath)){
                 fs.mkdirSync(invitePath);
             }
-            fs.writeFile(invitePath + inviteID, blob, (err)=>{
+            fs.writeFile(path.join(invitePath , inviteID), blob, (err)=>{
                 if (err) {
                     console.log("Error saving the invite: " + err);
                     reject(err);
@@ -398,8 +401,8 @@ class HistoryManager{
                   inviteCode = Err.required("consumeInvite")){
         return new Promise((resolve, reject)=>{
             try{
-                let invitePath = this.pathToInvites(pkfp);
-                fs.unlink(invitePath + inviteCode, (err)=>{
+                let invitePath = path.join(this.pathToInvites(pkfp), inviteCode);
+                fs.unlink(invitePath, (err)=>{
                     if (err) reject(err);
                     resolve();
                 })
@@ -509,15 +512,15 @@ class HistoryManager{
         if(!self.fileExists(pkfp, name)){
             throw new Error("history manager getFileStat: file does not exist");
         }
-        let path = this.getPath(pkfp, "files");
-        let stat = fs.fstatSync(path + name);
+        let fPath = this.getPath(pkfp, "files");
+        let stat = fs.fstatSync(path.join(fPath , name));
         return stat
     }
 
     deleteFileOnTransferFail(pkfp, name){
-        let path = this.getPath(pkfp, "files");
-        if(fs.existsSync(path + name)){
-            fs.unlinkSync(path + name)
+        let fPath = path.join(this.getPath(pkfp, "files"), name);
+        if(fs.existsSync(fPath)){
+            fs.unlinkSync(fPath  + name)
         }
     }
 
@@ -531,9 +534,9 @@ class HistoryManager{
     renameTempUpload(pkfp, tempName, name){
         return new Promise((resolve, reject)=>{
             let self = this;
-            let path = this.getPath(pkfp, "files");
-            let oldName = path + tempName;
-            let newName = path+name;
+            let fPath  = this.getPath(pkfp, "files");
+            let oldName = path.join(fPath  , tempName);
+            let newName = path.join(fPath , name);
             let maxAttempts = 4;
             let timeout = 1000;
             let attempted = 0;
@@ -549,7 +552,7 @@ class HistoryManager{
                         }else {
                             Logger.error("Error renaming file: " + err, {cat: "files"})
                             console.log("ERROR renaming file: " + err);
-                            reject("renameTempUpload error: " + err);
+                            reject(new Error("renameTempUpload error: " + err));
                         }
                     } else {
                         //success
@@ -574,7 +577,7 @@ class HistoryManager{
         return new Promise((resolve, reject)=>{
             endPos = endPos ? endPos - 64 : undefined;
             if (endPos < 0) {
-                reject("Invalid start position for the history element");
+                reject(new Error("Invalid start position for the history element"));
                 return;
             }
             this.getHistoryElement(64, endPos, pkfp, type)
@@ -620,7 +623,7 @@ class HistoryManager{
                     return;
                 }
                 else if(!stats) {
-                    reject("History file does not exist");
+                    reject( new Error("History file does not exist"));
                     return;
                 }
 
@@ -724,6 +727,7 @@ class HistoryManager{
             try{
                 let res = {};
                 //Here we should have the set of all the keys to decrypt messages
+                console.log(`Keys ${JSON.stringify(keys)}`);
                 let metaIDs = new CuteSet(keys);
                 let currentWrup = new WrapupRecord(this.getWrapupBlobSync(pkfp));
                 //Gather all needed encrypted keys
@@ -770,7 +774,7 @@ class HistoryManager{
 
                 if(currentWrup.lastMessageEnd === 0){
                     allLoaded = true;
-                    resolve([ [],  {}, allLoaded ]);
+                    resolve([ [],  keys, allLoaded ]);
                     console.log("No messages! Returning...");
                     return;
                 }
@@ -919,7 +923,7 @@ class HistoryManager{
                 let result = {};
                 fs.readdir(invitePath, (err, files)=>{
                     for(let file of files){
-                        result[file] = fs.readFileSync(invitePath + file, 'utf8')
+                        result[file] = fs.readFileSync(path.join(invitePath , file), 'utf8')
                     }
                     resolve(JSON.stringify(result));
                 })
@@ -1069,14 +1073,7 @@ class HistoryManager{
     //TODO
     /***** REFACTORING NEEDED!!! *******************/
     pathToHistory(pkfp = Err.required("Path to history")){
-
-        if (this.historyDirectory.slice(-1) !== "/"){
-            this.historyDirectory += "/";
-        }
-
-        this.historyDirectory.replace(/\/+$/, "/");
-
-        return this.historyDirectory + pkfp + "/history_store";
+        return path.join(this.historyDirectory , pkfp , "history_store");
     }
 
     pathToInvites(pkfp = Err.required("pkfp - pathToInvites")){
@@ -1086,27 +1083,15 @@ class HistoryManager{
 
 
     pathToHSPrivateKey(pkfp = Err.required("Path to history")){
-        if (this.historyDirectory.slice(-1) !== "/"){
-            this.historyDirectory += "/";
-        }
-        this.historyDirectory.replace(/\/+$/, "/");
-        return this.historyDirectory + pkfp + "/owner_hs_private_key";
+        return path.join(this.historyDirectory , pkfp , "owner_hs_private_key");
     }
 
     pathToOwnerPublicKey(pkfp = Err.required("Path to history")){
-        if (this.historyDirectory.slice(-1) !== "/"){
-            this.historyDirectory += "/";
-        }
-        this.historyDirectory.replace(/\/+$/, "/");
-        return this.historyDirectory + pkfp + "/owner_public_key";
+        return path.join(this.historyDirectory , pkfp , "owner_public_key");
     }
 
     pathToAttachments(pkfp = Err.required(('pathToAttachments'))){
-        if (this.historyDirectory.slice(-1) !== "/"){
-            this.historyDirectory += "/";
-        }
-        this.historyDirectory.replace(/\/+$/, "/");
-        return this.historyDirectory + pkfp + "/files/";
+        return path.join(this.historyDirectory , pkfp , "files");
     }
 
     /**
@@ -1122,11 +1107,7 @@ class HistoryManager{
             throw("error getPath: invalid history object: "  + pathTo)
         }
 
-        if (this.historyDirectory.slice(-1) !== "/"){
-            this.historyDirectory += "/";
-        }
-        this.historyDirectory.replace(/\/+$/, "/");
-        return this.historyDirectory + pkfp + this.commonPaths[pathTo]
+        return path.join(this.historyDirectory , pkfp , this.commonPaths[pathTo])
     }
 
     getKeyPath(pkfp = Err.required('getPath: pkfp'),
@@ -1135,23 +1116,19 @@ class HistoryManager{
             throw("error getPath: invalid history object: "  + pathTo)
         }
 
-        if (this.historyDirectory.slice(-1) !== "/"){
-            this.historyDirectory += "/";
-        }
-        this.historyDirectory.replace(/\/+$/, "/");
-        return this.historyDirectory + pkfp + this.topicKeyPaths[pathTo]
+        return path.join(this.historyDirectory , pkfp , this.topicKeyPaths[pathTo])
     }
 
     isTopicExist(pkfp){
-        return fs.existsSync(this.historyDirectory + pkfp);
+        return fs.existsSync(path.join(this.historyDirectory , pkfp));
     }
 
     isHistoryExist(pkfp){
-        return fs.existsSync(this.historyDirectory + pkfp + "/history_store");
+        return fs.existsSync(path.join(this.historyDirectory , pkfp , "history_store"));
     }
 
     async fixHistory(pkfp){
-        let historyFixer = new HistoryFixer("this.historyDirectory" + pkfp,  "/history_store")
+        let historyFixer = new HistoryFixer("this.historyDirectory" + pkfp,  "history_store")
         await historyFixer.fixHistory();
         await historyFixer.finalize();
     }

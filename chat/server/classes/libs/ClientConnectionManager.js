@@ -25,14 +25,9 @@ class ClientConnectionManager extends EventEmitter{
      */
     setListeners(){
         let self = this;
-        //TEST
-        self.iosSocket.on('connection', (socket)=>{
-            console.log("client connected on ios test endpoint!")
-            socket.emit("hello")
-        })
-        //TEST
 
         self.socketHub.on('connection', (socket) => {
+            console.log(`SOCKET HUB CONNECTION: socket id: ${socket.id}`)
             self.emit("client_connected", socket.id);
             socket.on("disconnect", (reason)=>{
                 console.log("Client disconnected: " + socket.id)
@@ -42,7 +37,18 @@ class ClientConnectionManager extends EventEmitter{
             socket.on('reconnect', (attemptNumber) => {
                 self.emit("client_reconnected", socket.id)
             });
+
+            socket.on("ping", ()=>{
+                console.log("RECEIVED PING FROM CLIENT")
+                socket.emit("pong");
+            })
+
+            socket.on("error", (err)=>{
+                Logger.error(`Client socket error: ${err.message}`, {stack: err.stack});
+            })
+
         });
+
         self.dataSocketHub.on('connection', (socket)=>{
             console.log("File socket connected");
             self.emit("data_channel_opened", socket);
@@ -62,15 +68,13 @@ class ClientConnectionManager extends EventEmitter{
         })
     }
 
-
-
-
-    isSoskcetConnected(id){
-        return (this.socketHub.sockets[id] && self.socketHub.sockets[id].connected);
+    isAlive(socketId){
+        return (this.socketHub.sockets[socketId] && this.socketHub.sockets[socketId].connected);
     }
 
     getSocketById(id){
         if(!this.socketHub.sockets[id]){
+            Logger.error(`Socket not found: ${id}, \nExisting sockets: ${JSON.stringify(Object.keys(this.socketHub.sockets))}`, {cat: "connection"})
             throw new Error("Socket does not exist: " + id);
         }
         return this.socketHub.sockets[id];
@@ -83,31 +87,7 @@ class ClientConnectionManager extends EventEmitter{
         return this.dataSocketHub.sockets[id];
     }
 
-
-
-
-    sendError(connectionId, errMessage){
-        this.send(connectionId, "error", errMessage);
-    }
-
-    sendResponse(connectionId, response){
-        this.send(connectionId, "response", response);
-    }
-
-    sendRequest(connectionId, request){
-        this.send(connectionId, "request", request);
-    }
-
-    sendServiceMessage(connectionId, message){
-        this.send(connectionId, "service", message);
-    }
-
-    sendServiceRecord(connectionId, record){
-        console.log("Sending service record");
-        this.send(connectionId, "service_record", record);
-    }
-
-    sendChatMessage(connectionId, message){
+    sendMessage(connectionId, message){
         this.send(connectionId, "message", message);
     }
 

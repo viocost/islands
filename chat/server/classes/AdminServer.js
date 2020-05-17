@@ -1,5 +1,6 @@
 const iCrypto = require('./libs/iCrypto');
 const fs = require('fs');
+const path = require('path');
 const Logger = require("./libs/Logger.js");
 const VaultManager = require("./libs/VaultManager");
 const HiddenServiceManager = require("./libs/HiddenServiceManager");
@@ -14,11 +15,10 @@ let appPort;
 let appHost;
 let islandHiddenServiceManager;
 let vaultManager;
-let VERSION;
 
 
 
-module.exports.initAdminEnv = function(app, config, host, port, version, hsManager){
+module.exports.initAdminEnv = function(app, config, host, port, hsManager){
     AdminKey.init(config)
     Logger.debug("initAdminEnv called");
     islandConfig = config;
@@ -28,7 +28,6 @@ module.exports.initAdminEnv = function(app, config, host, port, version, hsManag
     islandHiddenServiceManager  = new HiddenServiceManager(config, host, port);
     islandHiddenServiceManager.init();
     vaultManager = new VaultManager(config);
-    VERSION = version
 };
 
 
@@ -423,7 +422,7 @@ async function updateHSDescription(req, res){
 function verifyRequest(pkfp, nonce, sign, dehexify = true){
     let publicKey;
     try{
-        publicKey = fs.readFileSync(keysFolderPath + pkfp, "utf8");
+        publicKey = fs.readFileSync(path.join(keysFolderPath, pkfp), "utf8");
     }catch(err){
         console.log("Error: public ket not found. pkfp: " + pkfp + "\nError: " + err);
         return false;
@@ -465,7 +464,7 @@ function adminLogin(req, res){
 }
 
 function adminSetup(req, res){
-
+    Logger.debug("Admin setup called", {cat: "admin"});
     // make sure there is no keys or
     console.log("Setting admin");
 
@@ -488,21 +487,22 @@ function adminSetup(req, res){
 
     //Check vault
     let vaultBlob = data.vault;
+    let hash = data.hash;
     let signature = data.vaultSign;
     let publicKey = data.vaultPublicKey;
     ic.getPublicKeyFingerprint("pubk", "pkfp");
-    let vaultID = vaultManager.saveNewVault(vaultBlob, signature, publicKey, ic.get("pkfp"));
+    let vaultID = vaultManager.saveNewVault(vaultBlob, hash, signature, publicKey, ic.get("pkfp"));
 
     try{
 
-        let path = keysFolderPath + ic.get('pkfp');
-        fs.writeFileSync(path, ic.get('pubk'));
+        let kPath = path.join(keysFolderPath , ic.get('pkfp'));
+        fs.writeFileSync(kPath, ic.get('pubk'));
         res.set('Content-Type', 'application/json')
             .status(200)
             .send({vaultID: vaultID});
-            Logger.debug("Admin vault registered successfully!")
+        Logger.debug("Admin vault registered successfully!", {cat: "admin"})
     }catch(err) {
-        Logger.error("Error setting admin: " + err)
+        Logger.error("Error setting admin: " + err, {cat: "admin"})
     }
 }
 
@@ -550,7 +550,7 @@ function islandUpdateFromGithub(req, res){
 function islandUpdateFromFile(req, res){
     let data = req.body;
     let file = req.files.file;
-    let key = fs.readFileSync(keysFolderPath + data.pkfp, "utf8");
+    let key = fs.readFileSync(path.join(keysFolderPath, data.pkfp), "utf8");
     let ic = new iCrypto();
     ic.addBlob("f", file.data.toString('binary'))
         .setRSAKey("pubk", key, "public")
@@ -610,7 +610,7 @@ function isRequestValid(req){
     let nonce = req.body.nonce;
     let pkfp = req.body.pkfp;
     let sign = req.body.sign;
-    let publicKey = fs.readFileSync(keysFolderPath + pkfp, "utf8");
+    let publicKey = fs.readFileSync(path.join(keysFolderPath, pkfp), "utf8");
     let ic = new iCrypto();
     ic.addBlob("nhex", nonce)
         .hexToBytes("nhex", "n")
@@ -636,7 +636,7 @@ module.exports.isSecured = function(){
 
 
 module.exports.getAdminVault = function(){
-    let pubKey = fs.readFileSync(keysFolderPath + fs.readdirSync(keysFolderPath)[0], "utf8");
+    let pubKey = fs.readFileSync(path.join(keysFolderPath, fs.readdirSync(keysFolderPath)[0]), "utf8");
     if (!pubKey){
         throw new Error("Error: public key not found.");
     }
@@ -645,6 +645,7 @@ module.exports.getAdminVault = function(){
     ic.setRSAKey("pubk", pubKey, "public")
         .getPublicKeyFingerprint("pubk", "pkfp");
     Logger.debug("Searching for vault with id: " + ic.get("pkfp"));
+    console.log("Searching for vault with id: " + ic.get("pkfp"));
     return vaultManager.getVault(ic.get("pkfp"));
 };
 
