@@ -67,8 +67,3 @@ DFSA.mixin = function(constructor, param = {}){
 
 DFSA.mixin(DFSA);
 
-if (typeof module !== "undefined"){
-    module.exports.DFSA = DFSA;
-}else {
-    export DFSA;
-}
