@@ -1,12 +1,6 @@
-<<<<<<< HEAD
-import { iCrypto } from "./iCrypto";
-import * as io from "socket.io-client";
-import { WildEmitter } from "../chat/WildEmitter";
-=======
 import { iCrypto } from "./iCrypto"
 import * as io from "socket.io-client";
 import { WildEmitter } from "./WildEmitter";
->>>>>>> dev
 import * as ss from "socket.io-stream";
 
 export class FileWorker{

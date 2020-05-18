@@ -48,34 +48,6 @@ class ChatMessageAssistant{
 
     async broadcastMessage(message, connectionId, self){
         let pkfp = message.headers.pkfpSource;
-<<<<<<< HEAD
-        if(!self.sessionManager.isSessionActive(pkfp)){
-            Logger.warn("Attempt to send a message without logging in", {
-                pkfp: pkfp
-            });
-            throw new Error("Login required");
-        }
-
-        Logger.debug("Broadcasting chat message", {
-            pkfp: pkfp,
-            msg: message.body.message
-        });
-
-        if (message.body.message.length > 65535){
-            Logger.warn("Attempt to send message of length more than 65535 bytes. Actual length is " + message.body.message.length);
-            throw new Error("Message is too long");
-        }
-	
-        const metadata = JSON.parse(await self.hm.getLastMetadata(pkfp));
-        const myPublicKey = metadata.body.participants[pkfp].publicKey;
-        const verified = Message.verifyMessage(myPublicKey, message);
-        if(!verified){
-            Logger.warn("Broadcasting message error: signature is not valid!", {
-                pkfp: pkfp
-            });
-            throw new Error("Broadcasting message error: signature is not valid!") ;
-        }
-=======
         Logger.debug("Broadcasting chat message", {
             pkfp: pkfp,
             msg: message.body.message,
@@ -87,12 +59,6 @@ class ChatMessageAssistant{
         const metadata = JSON.parse(await self.hm.getLastMetadata(pkfp));
         const myPublicKey = metadata.body.participants[pkfp].publicKey;
         assert(Message.verifyMessage(myPublicKey, message), "Broadcasting message error: signature is not valid!")
-
-        //Adding processed timestamp
-        let currentTime = new Date().getTime();
-        message.travelLog[currentTime] = "Outgoing processed on server";
-
->>>>>>> dev
 
         //Adding processed timestamp
         let currentTime = new Date().getTime();

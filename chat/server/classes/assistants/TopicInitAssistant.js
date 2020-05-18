@@ -41,47 +41,6 @@ class TopicInitAssistant{
      * Handlers
      *********************************************/
 
-<<<<<<< HEAD
-    /**
-     * This is the first step to initialize a new topic
-     * Client requests to generate 1-time-key to pass along new topic data
-     * this function generates the token, saves it RAM
-     * for future processing and responses with new token
-     * @param request
-     * @param socket
-     * @param self
-     */
-    createToken(request, connectionId, self){
-        //Create token
-        console.log("TopicInit: create token called");
-        request = Request.parse(request);
-
-        //Error check
-        if(!request.hasAttribute("topicID")){
-            throw new Error("Topic id is required");
-        } else if(!request.hasAttribute("ownerPublicKey")){
-            throw new Error("Owner public key is required");
-        }
-
-        //Creating token
-        let ic = new iCrypto();
-        ic.asym.createKeyPair("rsa-key", 1024);
-
-        //Saving pending request
-        let pendingTopic = {
-            topicID: request.body.topicID,
-            ownerPublicKey: request.body.ownerPublicKey,
-            token: ic.get("rsa-key")
-        };
-
-        self.setNewTopicPending(pendingTopic);
-
-        let response = new Response("init_topic_get_token_success", request);
-        response.setAttribute("token",  ic.get("rsa-key").publicKey);
-        self.connectionManager.sendResponse(connectionId, response);
-    }
-=======
->>>>>>> dev
 
     /**
      * Client request to initialize the topic

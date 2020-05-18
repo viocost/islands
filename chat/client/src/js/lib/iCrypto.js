@@ -1,14 +1,8 @@
 'use strict';
-<<<<<<< HEAD
-import  JSChaCha20  from 'js-chacha20';
-import * as forge from 'node-forge';
-import  sjcl  from "sjcl";
-=======
 const forge = require('node-forge');
 const sjcl = require("sjcl");
 const Base32 = require("./Base32.js");
 const JSChaCha20 = require("js-chacha20");
->>>>>>> dev
 
 export class iCrypto {
     constructor(settings){
