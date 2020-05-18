@@ -16,7 +16,6 @@ class ClientConnectionManager extends EventEmitter{
         this.io = SocketIO.listen(server);
         this.socketHub = this.io.of("/chat");
         this.dataSocketHub = this.io.of("/file");
-        this.iosSocket = this.io.of("ios");
         this.setListeners();
     }
 
