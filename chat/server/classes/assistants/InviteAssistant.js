@@ -291,7 +291,7 @@ class InviteAssistant{
     async crossIslandErrorHandler(envelope, self, err){
         try{
             console.log("Error while handling incoming request");
-            let errMsg = err.message || err || "Unknown error";
+            let errMsg = err instanceof Error ? err.message : typeof err === "string" ? err : "Unknown error";
             Logger.warn(errMsg, {cat: "invite"})
             if(!envelope.return){
                 await self.crossIslandMessenger.returnEnvelope(envelope, errMsg);

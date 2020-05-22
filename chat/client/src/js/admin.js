@@ -950,15 +950,9 @@ function reverseLogList() {
 }
 
 function filterLogs(ev) {
-    let filter;
-    try {
-        filter = new RegExp(ev.target.value);
-        if (!filter || filter.length === 0) {
-            return;
-        }
-    } catch (err) {
-        return;
-    }
+
+    if (ev.target.value.length === 0) return
+    let filter = new RegExp(ev.target.value);
 
     for (let i = 0; i < logTableBody.childNodes.length; i++) {
 

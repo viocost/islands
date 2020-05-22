@@ -61,7 +61,7 @@ export class Participant{
 
 
     readyForExport(){
-        for (let i=0; i<Participant.properties; ++i){
+        for (let i=0; i<Participant.properties.length; ++i){
             if (!this[Participant.properties[i]]){
                 return false;
             }

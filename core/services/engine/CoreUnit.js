@@ -77,7 +77,7 @@ class CoreUnit{
         }
     }
 
-    switchOuput(onOff){
+    switchOutput(onOff){
         this.output = !!onOff;
     }
 

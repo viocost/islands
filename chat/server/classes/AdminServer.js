@@ -560,8 +560,8 @@ function islandUpdateFromFile(req, res){
         //Key was not verified
         return res.status(500).end('"error": "Update file was not verified"')
     }
-    let path = updatePath + "chat.zip";
-    console.log("Moving to " + path);
+    let fullUpdatePath = updatePath + "chat.zip";
+    console.log("Moving to " + fullUpdatePath);
     if(!fs.existsSync(updatePath)){
         fs.mkdirSync(updatePath)
     }

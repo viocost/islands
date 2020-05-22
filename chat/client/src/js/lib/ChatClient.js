@@ -1,5 +1,6 @@
 import { WildEmitter } from "./WildEmitter";
 import { Events, Internal } from "../../../../common/Events";
+import { inRange } from "../../../../common/Util";
 import { assert } from "../../../../common/IError";
 import { Vault } from "./Vault"
 import { XHR } from "./xhr";
@@ -708,7 +709,7 @@ export class ChatClient{
 
     changeNickname(topicPkfp, newNickname){
         assert(this.topics[topicPkfp], `Topic ${topicPkfp}, not found`)
-        assert(newNickname && 3 < newNickname.length < 35, `New nickname length is invalid`)
+        assert(newNickname && inRange(newNickname, 3, 30), `New nickname length is invalid`)
         this.topics[topicPkfp].setParticipantNickname(newNickname, topicPkfp); //here topic is the same as particiapnt pkfp
     }
 

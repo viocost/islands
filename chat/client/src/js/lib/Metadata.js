@@ -55,12 +55,6 @@ export class Metadata{
         return ChatUtility.encryptStandardMessage(settings, publicKey);
     }
 
-    getSharedKey(privateKey){
-
-        return ChatUtility.privateKeyDecrypt(this.body.participants[this.pkfp].key, this.privateKey);
-    }
-
-
     constructor(){
         this.body = {
             id: "",

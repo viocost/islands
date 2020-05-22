@@ -1,4 +1,5 @@
 import { Events, Internal } from "../../../../common/Events";
+import { inRange } from "../../../../common/Util";
 import { WildEmitter } from "./WildEmitter";
 import { Message } from "./Message";
 import { Metadata } from  "./Metadata";
@@ -847,7 +848,7 @@ export class Topic{
     }
 
     setTopicName(name){
-        assert(2<=name.length<=30, `Topic name is invalid`)
+        assert(inRange(name.length, 2, 30) , `Topic name is invalid`)
         this.name = name;
     }
 }

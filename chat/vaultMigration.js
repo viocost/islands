@@ -44,7 +44,7 @@ OPTIONS:
 
 -a
     Import vault as admin vault. When migrating a guest vault,
-    it must be modified in order to be recognized as admin's vault
+    it must be modified in order to be recognized as admin's vault on the new island
 
 -p
     Vault password. Mandatory for import

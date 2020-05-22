@@ -362,8 +362,10 @@ class TopicJoinAssistant {
         try {
             let errMsg = "Unknown error";
 
-            if(err){
-                errMsg = err.message || err;
+            if(err && err instanceof Error){
+                errMsg = err.message;
+            } else if (typeof err === "string"){
+                errMsg = err;
             }
 
             if (envelope.return) {

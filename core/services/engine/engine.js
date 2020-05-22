@@ -9,6 +9,7 @@ const { readdirSync } = require("fs");
 const crypto = require("crypto");
 const hound = require('hound');  //Filewatcher for debug mode. Restarts when something is changed
 const getPort = require('get-port');
+const LoggerSingleton = require("./Logger")
 
 const USAGE = `ISLANDS ENGINE
 
@@ -26,6 +27,12 @@ OPTIONS:
 
 
 `
+
+const LOG_FILENAME = "islands.log"
+let LOGS_SWITCH;
+let OUTPUT;
+let Logger;
+
 
 //output handling
 let lastOutput = new Date();
@@ -126,7 +133,7 @@ function launchTor(){
     let torCmdArgs = ["-f", torConfig.torrcPath];
     tor = new CoreUnit(process.env["TOR"], torCmdArgs, true);
     tor.launch();
-    tor.onoutput = outputHandler;
+    tor.onoutput = data=>{ outputHandler(data, "TOR") };
 }
 
 
@@ -158,7 +165,7 @@ async function launchChat(){
 
     chat = new CoreUnit(process.env["NODEJS"], chatCmdArgs, true)
     chat.launch();
-    chat.onoutput = outputHandler;
+    chat.onoutput = data=>{ outputHandler(data, "ISLANDS")};
 
     if (process.env["DEBUG"]){
         console.log("Enabling chat debug source watcher")
@@ -185,7 +192,9 @@ console.log("Done. Launching apps.");
 
 
 
-function outputHandler(){
+function outputHandler(data, label){
+    if (LOGS_SWITCH) Logger.info(data, label);
+    if (!OUTPUT) return;
     //resetting timestamp
     connectionStringPrintedLast = false;
     lastOutput = new Date();
@@ -207,10 +216,26 @@ ADMIN: http://${CHAT_CONNECTION.host}:${CHAT_CONNECTION.port}/admin
     connectionStringPrintedLast = true;
 }
 
+
+function prepareLogger(){
+    process.env["ISLANDS_LOGS"] = path.join(process.env["ISLANDS_DATA"], "logs")
+    if(!fs.existsSync(process.env["ISLANDS_LOGS"])) fs.mkdirSync(process.env["ISLANDS_LOGS"]);
+    let level = process.env["DEBUG"] ? 3 : 1;
+    LoggerSingleton.init(path.join(process.env["ISLANDS_LOGS"], LOG_FILENAME), level);
+    Logger = LoggerSingleton.getLogger();
+}
+
+function clearLogs(){
+    console.log("Clearing logs...");
+    fs.unlinkSync(path.join(process.env["ISLANDS_LOGS"], LOG_FILENAME))
+    console.log("done");
+}
+
 //Putting it all together
 async function main(){
     parseArgs();
     initEnv();
+    prepareLogger()
     console.log("Parsing configuration...");
     await parseTorConfig();
     prepareTorDataDirectory();
@@ -218,6 +243,7 @@ async function main(){
     generateTorrc();
     launchTor();
     await launchChat();
+    createCli();
 }
 
 
@@ -235,32 +261,57 @@ function createCli(){
         rl.setPrompt(process.env["PROMPT"] ? `${process.env["PROMPT"]}:>` : "island:> ")
 
         const usage = `
-            help - print this message
-            rc   - restart chat
-            exit - exit
+help
+   print this message
+
+logs-on
+   enable logging into file
+
+logs-off
+   disable logging into file
+
+clear-logs
+   remove logs file
+
+output-on
+   enable output to terminal
+
+output-off
+   disable output to terminal
+
+Ctrl-c
+   Kill island
         `
 
         rl.on('line', (line)=>{
-            console.log("processing command");
+            console.log(`processing command: ${line}`);
             switch(line.trim()){
                 case 'help':
+                    printConnectionString();
                     console.log(usage);
                     break;
-                case "rc":
-                    console.log("Restarting chat...")
-                    chat.restart()
+                case 'logs-on':
+                    LOGS_SWITCH = true
+                    OUTPUT = true
+                    break
+                case 'logs-off':
+                    LOGS_SWITCH = false
+                    break
+
+                case 'clear-logs':
+                    clearLogs()
                     break;
-                case 'start':
-                    console.log("Starting services")
+                case 'output-on':
+                    tor.switchOutput(true)
+                    chat.switchOutput(true)
+                    OUTPUT = true
                     break
-                case 'stop':
-                    console.log("Stopping services");
+                case 'output-off':
+                    tor.switchOutput(false)
+                    chat.switchOutput(false)
+                    OUTPUT = false
                     break
-                case 'exit':
-                    console.log('Killing core services')
-                    tor.kill()
-                    console.log('Exiting...');
-                    process.exit(0)
+
             }
             rl.prompt();
 
@@ -320,6 +371,7 @@ function parseArgs(){
         switch(val){
             case "-d":
                 process.env["DEBUG"] = true;
+                LOGS_SWITCH = true
                 break;
             case "-p":
                 process.env["CHAT_PORT"] = arr[index+1];

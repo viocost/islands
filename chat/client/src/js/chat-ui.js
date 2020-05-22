@@ -16,7 +16,7 @@ import { ChatUtility } from "./lib/ChatUtility"
 const SMALL_WIDTH = 760; // Width screen in pixels considered to be small
 const XSMALL_WIDTH = 400;
 const DAYSOFWEEK = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-let colors = ["#cfeeff", "#ffebcc", "#ccffd4", "#ccfffb", "#e6e6ff", "#f8e6ff", "#ffe6f1", "#ccefff", "#ccf1ff"]
+let colors = ["#cfeeff", "#ffcc7f", "#b5ffc0", "#ccfffb", "#67fcf0", "#f8e6ff", "#ffe6f1", "#ccefff", "#ccf1ff"]
 // ---------------------------------------------------------------------------------------------------------------------------
 // Visual Sections and modal forms
 let spinner = new BlockingSpinner();

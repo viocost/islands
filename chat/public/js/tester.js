@@ -575,53 +575,55 @@ function testHashString (txt){
 ////DEBUG TESTING////
 
 
-function fileUploadTester(file){
-    return new Promise((resolve, reject)=>{
-        let self = chat;
-        self.establishIslandConnection("file")
-            .then(()=>{
-                let reader = new FileReader()
-                reader.readAsArrayBuffer(file);
-
-                reader.onload = (ev)=>{
-                    let bufferSize = 65536;
-                    let offset = 0;
-                    console.log("Connection established. Creating stream..");
-                    let stream = ss.createStream();
-                    ss(self.fileSocket).emit('file', stream, {
-                        name: file.name,
-                        size: file.size,
-                        pkfp: self.session.publicKeyFingerprint
-                    })
-
-                    let ic = new iCrypto;
-                    ic.addBlob("b", reader.result.toString())
-                        .hash("b", "bh");
-
-                    ic.createHash("h2")
-                        .setSYMKey("sym", self.session.metadata.sharedKey);
-
-
-                    while(offset < reader.result.byteLength){
-
-                        console.log("Writing to stream bytes " + offset + ", " + offset + bufferSize);
-                        let chunk = reader.result.slice(offset, offset+bufferSize)
-                        let b = new ss.Buffer(chunk);
-                        ic.updateHash("h2", chunk.toString());
-                        stream.write(b);
-                        offset += bufferSize
-                    }
-                    ic.digestHash("h2", "h2res");
-                    console.log("Hash of whole file: " + ic.get("bh") + "\nHash of chunks: " + ic.get("h2res"));
-                    console.log("Done writing buffer");
-                    resolve()
-                };
-
-
-                //ss.createBlobReadStream(file).pipe(stream)
-            })
-    })
-}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// function fileUploadTester(file){                                                                                 //
+//     return new Promise((resolve, reject)=>{                                                                      //
+//         let self = chat;                                                                                         //
+//         self.establishIslandConnection("file")                                                                   //
+//             .then(()=>{                                                                                          //
+//                 let reader = new FileReader()                                                                    //
+//                 reader.readAsArrayBuffer(file);                                                                  //
+//                                                                                                                  //
+//                 reader.onload = (ev)=>{                                                                          //
+//                     let bufferSize = 65536;                                                                      //
+//                     let offset = 0;                                                                              //
+//                     console.log("Connection established. Creating stream..");                                    //
+//                     let stream = ss.createStream();                                                              //
+//                     ss(self.fileSocket).emit('file', stream, {                                                   //
+//                         name: file.name,                                                                         //
+//                         size: file.size,                                                                         //
+//                         pkfp: self.session.publicKeyFingerprint                                                  //
+//                     })                                                                                           //
+//                                                                                                                  //
+//                     let ic = new iCrypto;                                                                        //
+//                     ic.addBlob("b", reader.result.toString())                                                    //
+//                         .hash("b", "bh");                                                                        //
+//                                                                                                                  //
+//                     ic.createHash("h2")                                                                          //
+//                         .setSYMKey("sym", self.session.metadata.sharedKey);                                      //
+//                                                                                                                  //
+//                                                                                                                  //
+//                     while(offset < reader.result.byteLength){                                                    //
+//                                                                                                                  //
+//                         console.log("Writing to stream bytes " + offset + ", " + offset + bufferSize);           //
+//                         let chunk = reader.result.slice(offset, offset+bufferSize)                               //
+//                         let b = new ss.Buffer(chunk);                                                            //
+//                         ic.updateHash("h2", chunk.toString());                                                   //
+//                         stream.write(b);                                                                         //
+//                         offset += bufferSize                                                                     //
+//                     }                                                                                            //
+//                     ic.digestHash("h2", "h2res");                                                                //
+//                     console.log("Hash of whole file: " + ic.get("bh") + "\nHash of chunks: " + ic.get("h2res")); //
+//                     console.log("Done writing buffer");                                                          //
+//                     resolve()                                                                                    //
+//                 };                                                                                               //
+//                                                                                                                  //
+//                                                                                                                  //
+//                 //ss.createBlobReadStream(file).pipe(stream)                                                     //
+//             })                                                                                                   //
+//     })                                                                                                           //
+// }                                                                                                                //
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
