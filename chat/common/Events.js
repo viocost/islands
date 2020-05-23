@@ -115,9 +115,13 @@ module.exports.Internal = Object.freeze({
     //Sent by client to server after establishing the connection
     POST_LOGIN: "post_login",
 
-    //Metadata updates
+    //Metadata
     METADATA_ISSUE: "metadata_issue",
     METADATA_ID: "metadata_id",
+    METADATA_SYNC: "sync_metadata",
+    METADATA_SYNC_SUCCESS: "sync_metadata_success",
+    METADATA_SYNC_FAIL: "sync_metadata_fail",
+    METADATA_OUTDATED: "metadata_outdated",
 
     //Nickname exchange
     NICKNAME_REQUEST: "whats_your_name",
@@ -125,6 +129,8 @@ module.exports.Internal = Object.freeze({
     NICKNAME_INITAL_EXCHANGE: "nickname_exchange",
 
     REGISTER_SERVICE_RECORD: "register_service_record",
+
+
 
     //Response sent by server to client.
     POST_LOGIN_DECRYPT: "post_login_decrypt_services",

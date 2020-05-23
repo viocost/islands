@@ -71,7 +71,10 @@ class LoginAssistant{
 
                 Logger.debug(`Getting services data for ${pkfp}`, {cat: "login"});
                 let metadata = JSON.parse(await self.hm.getLastMetadata(pkfp));
-
+                if(!metadata){
+                    Logger.error(`Metadata not found for ${pkfp}`)
+                    continue;
+                }
 
                 topicsData[pkfp] = await self.getDataForDecryption(pkfp, metadata);
                 topicsData[pkfp].metadata = metadata;

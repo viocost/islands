@@ -79,20 +79,19 @@ class ServiceAssistant{
         } else {
             this.syncInProgress.add(pkfp);
         }
-        Logger.debug("Received metadata sync signal. Launching...", {pkfp: pkfp});
-        self = self ? self : this;
+        Logger.debug("Received metadata sync command. Launching...", {cat: "service", pkfp: pkfp});
+       
         let metadata = JSON.parse(await self.hm.getLastMetadata(pkfp));
         let participant = metadata.body.participants[pkfp];
         let topicAuthority = metadata.body.topicAuthority;
         let request = new Request();
-        request.setHeader("command", "meta_sync");
+        request.setHeader("command", Internal.METADATA_SYNC);
         request.setHeader("pkfpSource", participant.pkfp);
         request.setHeader("pkfpDest", topicAuthority.pkfp);
         request.body.lastMetaID = metadata.body.id;
         let envelope = new Envelope(topicAuthority.residence, request, participant.residence);
         envelope.setReturnOnFail(true);
         self.ciMessenger.send(envelope);
-        Logger.silly("Sync request sent...", {pkfp: pkfp});
     }
 
     async sendMetadataOutdatedNote(data, self){
@@ -103,12 +102,12 @@ class ServiceAssistant{
 
 
     async runGlobalResync(){
-        Logger.verbose("Starting global resync");
+        Logger.verbose("Starting global resync", {cat: service});
         let self = this;
         let historyIDs = await self.hm.getAllhistoryIDs();
         const promises = [];
         historyIDs.forEach(id =>{
-            promises.push(self.requestMetadataSync(id))
+            promises.push(self.requestMetadataSync(id, self))
         });
         await Promise.all(promises);
         Logger.verbose("Global resync initiated.")
@@ -117,14 +116,26 @@ class ServiceAssistant{
     async processMetadataOutdatedNote(envelope, self){
         let serviceMessage = envelope.payload;
         Logger.debug("Processing metadata outdated note");
-        await self.requestMetadataSync(serviceMessage.headers.pkfpDest);
+        await self.requestMetadataSync(serviceMessage.headers.pkfpDest, self);
     }
 
     async processIncomingResyncRequest(envelope, self){
         console.log("received incoming metadata resync request");
         let request = envelope.payload;
         const topicAuthority = self.topicAuthorityManager.getTopicAuthority(request.headers.pkfpDest);
-        let response = await topicAuthority.metadataSyncRequest(request)
+        let response = new Message()
+        response.setSource(this.pkfp);
+        response.setDest(request.headers.pkfpSource);
+
+        if(!topicAuthority){
+            response.setCommand(Internal.METADATA_SYNC_FAIL);
+            response.setAttribute("error", "Topic authority is not available");
+
+        } else{
+            let metadataRecords = await topicAuthority.metadataSyncRequest(request);
+            response.setCommand(Internal.METADATA_SYNC_SUCCESS);
+            response.setAttribute("metadata", metadataRecords);
+        }
         let responseEnvelope = new Envelope(envelope.origin, response, envelope.destination);
         responseEnvelope.setResponse();
         await self.ciMessenger.send(responseEnvelope);
@@ -132,7 +143,7 @@ class ServiceAssistant{
 
 
     async processMetaSyncResponse(envelope, self){
-        Logger.verbose("Received metadata sync response");
+        Logger.debug("Received metadata sync response", {cat: "service"});
         let response = envelope.payload;
         let lastMeta = JSON.parse(await self.hm.getLastMetadata(response.headers.pkfpSource));
         let publicKey = lastMeta.body.topicAuthority.publicKey;
@@ -509,13 +520,14 @@ class ServiceAssistant{
             whats_your_name: this.processIncomingNicknameRequest,
             nickname_change_broadcast: this.processIncomingNameChangeNote,
             u_booted: this.registerBootNotce,
-            meta_sync: this.processIncomingResyncRequest,
-            meta_sync_success: this.processMetaSyncResponse,
             request_invite_success: this.processInviteRequestSuccess,
             metadata_outdated: this.processMetadataOutdatedNote,
             return_request_invite: this.processInviteRequestReturn
         }
 
+        handlers[Internal.METADATA_SYNC] = this.processIncomingResyncRequest
+        handlers[Internal.METADATA_SYNC_SUCCESS] = this.processMetaSyncResponse
+        handlers[Internal.METADATA_SYNC_FAIL] = this.processMetaSyncResponse
         handlers[Internal.NICKNAME_NOTE] = this.processNicknameNote
         handlers[Internal.NICKNAME_INITAL_EXCHANGE] = this.processIncomingNicknameRequest
         handlers[Internal.METADATA_ISSUE] = this.metadataIssue;

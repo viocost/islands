@@ -307,7 +307,8 @@ class TopicAuthority extends EventEmitter{
 
     async metadataSyncRequest(request){
         Logger.debug("Topic authority: processing metadata sync request", {
-            pkfp: request.headers.pkfpSource
+            pkfp: request.headers.pkfpSource,
+            cat: "service"
         })
         let self = this;
         let curMembers = new CuteSet(Object.keys(this.getCurrentMetadata().body.participants));

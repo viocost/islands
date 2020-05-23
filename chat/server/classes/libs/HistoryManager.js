@@ -425,8 +425,9 @@ class HistoryManager{
      * @param {String} pkfp
      */
     async getLastMetadata(pkfp){
-        console.log("getLastMetadata pkfp: " + pkfp);
-        //get last wrapup record - last 64 bytes of a file
+        Logger.debug(`Get last metadata called. pkfp: {pkfp}`)
+        if (!pkfp) return null;
+        // get last wrapup record - last 64 bytes of a file
         let wrapupBlob = await this.getWrapupBlob(pkfp)
         let wrup = new WrapupRecord(wrapupBlob);
         let mStart = wrup.lastMetadataStart;
