@@ -10,16 +10,24 @@ const crypto = require("crypto");
 const hound = require('hound');  //Filewatcher for debug mode. Restarts when something is changed
 const getPort = require('get-port');
 const LoggerSingleton = require("./Logger")
+const Updater = require("./Updater");
 
 const USAGE = `ISLANDS ENGINE
 
 OPTIONS:
+
+-u islands_update_x.x.xxx.zip
+    Update islands with update file and exit
 
 -p
     Chat port. Default port is ephemeral.
 
 -d
     Debug mode.
+
+--tor-password somepassword
+    When running in debug mode - set specific tor password
+    This will not work in production mode.
 
 -h
     Print this message
@@ -31,6 +39,8 @@ OPTIONS:
 const LOG_FILENAME = "islands.log"
 let LOGS_SWITCH;
 let OUTPUT;
+let UPDATE_FILE;
+
 let Logger;
 
 let torDebugPassword;
@@ -192,7 +202,6 @@ async function launchChat(){
     }
 }
 
-console.log("Done. Launching apps.");
 
 
 
@@ -239,6 +248,7 @@ function clearLogs(){
 async function main(){
     parseArgs();
     initEnv();
+    await checkUpdate();
     prepareLogger()
     console.log("Parsing configuration...");
     await parseTorConfig();
@@ -334,6 +344,7 @@ function initEnv(){
     process.env["APPS"] = path.join(process.env["BASE"], "apps");
     process.env["CONFIG"] = path.join(process.env["BASE"], "config");
     process.env["ISLANDS_DATA"] = path.join(process.env["BASE"], "data");
+    process.env["UPDATE_DIR"] = path.join(process.env["BASE"], "update")
 
     const p = platform()
     if (p === "linux"){
@@ -348,6 +359,16 @@ function initEnv(){
         console.log("ERROR: UNKNONWN PLATFORM");
         process.exit(1);
     }
+}
+
+async function checkUpdate(){
+    if (!UPDATE_FILE) return;
+
+    let updater = new Updater(UPDATE_FILE);
+    await updater.runUpdate()
+    console.log("Update completed!")
+    process.exit(0);
+
 }
 
 function initLinux(){
@@ -373,6 +394,9 @@ function parseArgs(){
 
     args.forEach((val, index, arr)=>{
         switch(val){
+            case "-u":
+                UPDATE_FILE = arr[index+1]
+                break;
             case "-d":
                 process.env["DEBUG"] = true;
                 LOGS_SWITCH = true
