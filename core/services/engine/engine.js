@@ -33,6 +33,7 @@ let LOGS_SWITCH;
 let OUTPUT;
 let Logger;
 
+let torDebugPassword;
 
 //output handling
 let lastOutput = new Date();
@@ -99,7 +100,10 @@ function generateTorrc(){
 
 function initializeTorEnv(){
     //gen dynamic tor password
-    process.env["TOR_PASSWD"] = crypto.randomBytes(20).toString('hex');
+    process.env["TOR_PASSWD"] = process.env["DEBUG"] && !!torDebugPassword ?
+        torDebugPassword : crypto.randomBytes(20).toString('hex');
+
+
 
     //get tor hash
     let hashCmdArgs = ["--hash-password", process.env["TOR_PASSWD"], "--quiet"]
@@ -377,6 +381,9 @@ function parseArgs(){
                 process.env["CHAT_PORT"] = arr[index+1];
                 break;
 
+            case "--tor-password":
+                torDebugPassword = arr[index+1]
+                break;
             case "-h":
                 console.log(USAGE);
                 process.exit(0);

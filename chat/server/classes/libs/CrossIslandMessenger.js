@@ -32,7 +32,7 @@ class CrossIslandMessenger extends EventEmitter{
         Logger.debug("Crossisland messenger: sending envelope")
         await this._crossIslandMessageQueue.enqueue(envelope.destination, envelope, timeout, onTimeout);
 
-        Logger.debug("Calling hidden peer to send the message. Dest: " + envelope.destination)
+        Logger.debug("Calling hidden peer to send the message. Dest: " + envelope.destination, {cat: "service"})
         this._checkConnection(envelope.destination, envelope.origin);
     }
 
@@ -155,7 +155,7 @@ class CrossIslandMessenger extends EventEmitter{
             && originalEnvelope.payload.headers.command){
             logmsg += (" command: " + originalEnvelope.payload.headers.command);
         }
-        Logger.warn(logmsg);
+        Logger.warn(logmsg, {cat: "service"});
         const envelope = Envelope.makeReturnEnvelope(originalEnvelope, err);
         await this.send(envelope);
     }

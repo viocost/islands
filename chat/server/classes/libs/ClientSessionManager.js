@@ -6,23 +6,33 @@ const { Internal, Events } = require("../../../common/Events")
 
 
 class ClientSessionManager{
-    constructor(connectionManager = Err.required()){
+    constructor(connectionManager = Err.required(),
+                vaultManager = Err.required()){
 
         // Sessions are stored by vaultID
         this.sessions = {};
         this.connectionManager = connectionManager;
         this.topicToSessionMap = {};
+        this.vaultManager = vaultManager;
         this.registerConnectionManager(connectionManager);
     }
 
     registerConnectionManager(connectionManager){
         let self = this;
+
+        //Initializing new client connection
         connectionManager.on("client_connected", connectionId=>{
+            //Executed when new client connects
 
             let socket = connectionManager.getSocketById(connectionId);
+
+            // this must be provided to indentify session
+            // Session is identified by Vault id
             let vaultId = socket.handshake.query.vaultId;
+
+            console.log(`Vault id on client_connected: ${vaultId}`);
             if(!vaultId){
-                Logger.warn("Warning: no vaultID provided at the connection.", {cat: "connection"})
+                Logger.warn("Warning: no vaultID provided at the connection.", {cat: "session"})
                 return;
             }
             if(this.sessions.hasOwnProperty(vaultId)){
@@ -30,11 +40,18 @@ class ClientSessionManager{
                 self.sessions[vaultId].addConnection(connectionId);
             } else {
                 console.log(`Session does not exist. Creating...`);
-                let newSession = new ClientSession(vaultId, connectionId, connectionManager);
+                let topicsIds = self.vaultManager.getTopicsIds(vaultId);
+                let newSession = new ClientSession(vaultId, connectionId, connectionManager, topicsIds);
                 this.sessions[vaultId] = newSession;
+
+                //Adding topic to session mapping
+                for(let pkfp of newSession.topics){
+                    self.topicToSessionMap[pkfp] = newSession;
+                }
 
                 newSession.on(Internal.KILL_SESSION, (session)=>{
                     Logger.debug(`Killing session ${session.id} on timeout`)
+                    //Clearing topic to session mapping
                     for(let pkfp of Object.keys(session.topics)){
                         delete self.topicToSessionMap[pkfp];
                     }
@@ -152,6 +169,7 @@ class ClientSessionManager{
 
     broadcastMessage(pkfp, message){
         let session = this.topicToSessionMap[pkfp];
+        console.log(`Session ${session}`);
         if(!(session instanceof ClientSession)){
             Logger.debug(`No active sessions found for topic ${pkfp}`, {
                 cat: "chat"

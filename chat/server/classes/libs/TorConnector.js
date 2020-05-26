@@ -424,6 +424,9 @@ class TorConnector extends EventEmitter{
     setSocketListeners(socket){
         socket.on('disconnect', ()=>{
             console.log("Socket " + socket.id + " hanged up.");
+            //this.connectionsIncoming.print()
+            //this.connectionsOutgoing.print()
+
             this.processDisconnect(socket);
         });
 
@@ -469,7 +472,7 @@ class TorConnector extends EventEmitter{
     }
 
     _checkIncomingConnections(destination){
-        console.log("Incoming connections: ");
+        //console.log("Incoming connections: ");
         //this.connectionsIncoming.print(); //DEBUG ONLY
         if(this.connectionsIncoming.hasKey(destination)){
             let connectedSockets = this.connectionsIncoming.key(destination);
@@ -484,7 +487,7 @@ class TorConnector extends EventEmitter{
     }
 
     _checkOutgoingConnections(destination){
-        console.log("Outgoing connections: ");
+        //console.log("Outgoing connections: ");
         //this.connectionsOutgoing.print();// DEBUG only
         if(this.connectionsOutgoing.hasKey(destination)){
             let connectedSockets = this.connectionsOutgoing.key(destination);

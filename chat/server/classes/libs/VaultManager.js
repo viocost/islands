@@ -184,6 +184,14 @@ class VaultManager{
         return res
     }
 
+    getTopicsIds(id){
+        if(!this.isVaultExist(id)) return null;
+        let topicsPath = this.getTopicsPath(id);
+        let ids = fs.readdirSync(topicsPath);
+        console.log(`topic ids: ${ids}`)
+        return ids
+    }
+
     isRegistrationPending(vaultID){
         Logger.debug("Registration pending called but not implemented!");
         return  fs.existsSync(path.join(this.vaultsPath,  vaultID)) &&
@@ -295,31 +303,6 @@ class VaultManager{
     generateID(){
         return new RandExp(new RegExp("[a-f0-9]{" + this.vaultIdLength + "}")).gen();
     }
-
-
-    // ---------------------------------------------------------------------------------------------------------------------------
-    // GARBAGE
-
-    ///////////////////////////////////////////////////////////////////////////////
-    // deleteTopicBAK(vaultBlob, vaultId, pkfp, signature, publicKey = null){    //
-    //     if(!publicKey){                                                       //
-    //         publicKey = this.getVaultPublicKey(vaultId);                      //
-    //     }                                                                     //
-    //     if(!this.isOwnerVerified(vaultBlob, signature, publicKey)){           //
-    //         throw("Owner's signature is invalid");                            //
-    //     }                                                                     //
-    //     if(this.isRegistrationPending(vaultId)){                              //
-    //         throw("The vault registration is pending. Updates are disabled"); //
-    //     }                                                                     //
-    //                                                                           //
-    //     //updating vault                                                      //
-    //     this._updateVault(vaultId, vaultBlob, publicKey);                     //
-    //                                                                           //
-    //                                                                           //
-    // }                                                                         //
-    ///////////////////////////////////////////////////////////////////////////////
-
-
 }
 
 module.exports = VaultManager;

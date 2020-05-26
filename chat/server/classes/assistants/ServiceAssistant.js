@@ -74,7 +74,7 @@ class ServiceAssistant{
 
     async requestMetadataSync(pkfp, self){
         if(this.syncInProgress.has(pkfp)){
-            Logger.debug("Sync already in progress. Returning...", {pkfp: pkfp});
+            Logger.debug("Sync already in progress. Returning...", {pkfp: pkfp, cat: "service"});
             return
         } else {
             this.syncInProgress.add(pkfp);
@@ -102,7 +102,7 @@ class ServiceAssistant{
 
 
     async runGlobalResync(){
-        Logger.verbose("Starting global resync", {cat: service});
+        Logger.verbose("Starting global resync", {cat: "service"});
         let self = this;
         let historyIDs = await self.hm.getAllhistoryIDs();
         const promises = [];
@@ -138,6 +138,7 @@ class ServiceAssistant{
         }
         let responseEnvelope = new Envelope(envelope.origin, response, envelope.destination);
         responseEnvelope.setResponse();
+        Logger.debug("Sending metadata sync success", {cat: "service"})
         await self.ciMessenger.send(responseEnvelope);
     }
 

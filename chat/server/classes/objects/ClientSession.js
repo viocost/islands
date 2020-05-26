@@ -24,7 +24,8 @@ class ClientSession extends EventEmitter{
 
     constructor(vaultId = Err.required("Missing required parameter vaultId"),
                 connectionId = Err.required("Missing required parameter socketId"),
-                connectionManager = Err.required("Missing connection manager")) {
+                connectionManager = Err.required("Missing connection manager"),
+                topicsIds) {
         super();
         this.pending = true;
         this.connectionManager = connectionManager;
@@ -32,7 +33,7 @@ class ClientSession extends EventEmitter{
         this.timeInactive = null;
         this.id = vaultId;
         this.connections = new CuteSet([connectionId]);
-        this.topics = new CuteSet();
+        this.topics = new CuteSet(topicsIds);
         this.publicKey;
         this.privateKey;
         this.pkfp;
@@ -121,8 +122,7 @@ class ClientSession extends EventEmitter{
     addConnection(connectionId){
         Logger.debug(`Adding connection ${connectionId} to session ${this.id}`, {cat: "session"})
         this.connections.add(connectionId);
-
-        Logger.debug(`Active connections: ${JSON.stringify(this.connections.toArray())}`)
+        console.log(`Printing all sockets id after socket ${connectionId} added: ${this.connections.toString("\n")}`)
         this.timeInactive = null;
         this.sendSessionKey(connectionId);
     }
@@ -159,7 +159,7 @@ class ClientSession extends EventEmitter{
     broadcast(msg){
         Logger.debug(`Broadcasting to all connections. Topics: ${JSON.stringify(this.topics.toArray())}. Connections: ${JSON.stringify(this.connections.toArray())}`, { cat: "session" })
         for (let connId of this.connections){
-            console.log(`Sending message to ${connId}`)
+            console.log(`Sending message to browser connection id: ${connId}`)
             this.connectionManager.sendMessage(connId, msg)
         }
     }

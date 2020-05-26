@@ -29,16 +29,16 @@ class ClientConnectionManager extends EventEmitter{
             console.log(`SOCKET HUB CONNECTION: socket id: ${socket.id}`)
             self.emit("client_connected", socket.id);
             socket.on("disconnect", (reason)=>{
-                console.log("Client disconnected: " + socket.id)
+                Logger.verbose("Client disconnected: " + socket.id)
                 self.emit("client_disconnected", socket.id)
             });
 
             socket.on('reconnect', (attemptNumber) => {
+                console.log(`Client reconnected: ${socket.id}`);
                 self.emit("client_reconnected", socket.id)
             });
 
             socket.on("ping", ()=>{
-                console.log("RECEIVED PING FROM CLIENT")
                 socket.emit("pong");
             })
 

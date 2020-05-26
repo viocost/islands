@@ -66,9 +66,6 @@ class LoginAssistant{
         if(request.body.topics){
             for (let pkfp of request.body.topics){
 
-                //Adding topic to the session;
-                session.addTopic(pkfp);
-
                 Logger.debug(`Getting services data for ${pkfp}`, {cat: "login"});
                 let metadata = JSON.parse(await self.hm.getLastMetadata(pkfp));
                 if(!metadata){

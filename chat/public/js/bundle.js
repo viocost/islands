@@ -174,9 +174,13 @@ module.exports.Internal = Object.freeze({
   INIT_TOPIC: "init_topic_finalize",
   //Sent by client to server after establishing the connection
   POST_LOGIN: "post_login",
-  //Metadata updates
+  //Metadata
   METADATA_ISSUE: "metadata_issue",
   METADATA_ID: "metadata_id",
+  METADATA_SYNC: "sync_metadata",
+  METADATA_SYNC_SUCCESS: "sync_metadata_success",
+  METADATA_SYNC_FAIL: "sync_metadata_fail",
+  METADATA_OUTDATED: "metadata_outdated",
   //Nickname exchange
   NICKNAME_REQUEST: "whats_your_name",
   NICKNAME_NOTE: "nickname_note",
@@ -63737,7 +63741,7 @@ var SMALL_WIDTH = 760; // Width screen in pixels considered to be small
 
 var XSMALL_WIDTH = 400;
 var DAYSOFWEEK = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-var colors = ["#cfeeff", "#ffebcc", "#ccffd4", "#ccfffb", "#e6e6ff", "#f8e6ff", "#ffe6f1", "#ccefff", "#ccf1ff"]; // ---------------------------------------------------------------------------------------------------------------------------
+var colors = ["#cfeeff", "#ffcc7f", "#b5ffc0", "#ccfffb", "#67fcf0", "#f8e6ff", "#ffe6f1", "#ccefff", "#ccf1ff"]; // ---------------------------------------------------------------------------------------------------------------------------
 // Visual Sections and modal forms
 
 var spinner = new BlockingSpinner_BlockingSpinner();
