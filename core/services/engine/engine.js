@@ -207,12 +207,11 @@ async function launchChat(){
 
 function outputHandler(data, label){
     if (LOGS_SWITCH) Logger.info(data, label);
-    if (!OUTPUT) return;
     //resetting timestamp
     connectionStringPrintedLast = false;
     lastOutput = new Date();
     setTimeout(()=>{
-        if (new Date() - lastOutput >= CONNECTION_STRING_SHOW_TIMEOUT - 20 && !connectionStringPrintedLast){
+        if (new Date() - lastOutput >= CONNECTION_STRING_SHOW_TIMEOUT - 5 && !connectionStringPrintedLast){
             printConnectionString();
         }
     }, CONNECTION_STRING_SHOW_TIMEOUT)
@@ -367,8 +366,8 @@ async function checkUpdate(){
 
     let updater = new Updater(UPDATE_FILE);
     await updater.runUpdate()
-    console.log("Update completed!")
-    process.exit(0);
+    PRINT_VERSION = true
+    printVersion();
 
 }
 

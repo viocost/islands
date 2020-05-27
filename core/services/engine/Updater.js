@@ -59,7 +59,7 @@ class Updater{
                 }
             })
 
-            console.log("Update completed.");
+            console.log("Update completed!");
         }catch(err){
             console.log(err)
         }finally{

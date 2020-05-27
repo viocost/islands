@@ -1,6 +1,6 @@
 {
   "name": "engine",
-  "version": "1.0.12",
+  "version": "1.0.15",
   "description": "Engine script that keeps an island running",
   "main": "engine.js",
   "scripts": {
