@@ -2,8 +2,10 @@
 # this script will zip up current version of islands omitting any data
 
 OUT=$(readlink -f "..")
-FILENAME="islands"
+FILENAME="islands_update"
 CURDIR=$(pwd)
+FULL_PACKAGE=false
+EXCLUSIONS="-I data -I islands -I core -I update -I config"
 
 while [[ $# -gt 0 ]]; do
     key="$1"
@@ -19,10 +21,17 @@ while [[ $# -gt 0 ]]; do
             shift
             shift
             ;;
+        -f|--full-package)
+            FULL_PACKAGE=true
+            FILENAME="islands"
+            EXCLUSIONS="-I data -I islands"
+            shift
+            ;;
         -h|--help)
             echo "$USAGE"
             exit 0
             ;;
+
         *)
             break
     esac
@@ -53,7 +62,7 @@ if [[ -f $DEST ]]; then
 fi
 
 mkdir ./islands
-cp -r $(ls -I data -I islands) ./islands
+cp -r $(ls ${EXCLUSIONS} ) ./islands
 mkdir ./islands/data
 
 

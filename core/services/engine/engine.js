@@ -29,10 +29,10 @@ OPTIONS:
     When running in debug mode - set specific tor password
     This will not work in production mode.
 
+-v
+    Print version and exit
 -h
-    Print this message
-
-
+    Print this message and exit
 
 `
 
@@ -40,7 +40,7 @@ const LOG_FILENAME = "islands.log"
 let LOGS_SWITCH;
 let OUTPUT;
 let UPDATE_FILE;
-
+let PRINT_VERSION = false;
 let Logger;
 
 let torDebugPassword;
@@ -249,6 +249,7 @@ async function main(){
     parseArgs();
     initEnv();
     await checkUpdate();
+    printVersion()
     prepareLogger()
     console.log("Parsing configuration...");
     await parseTorConfig();
@@ -389,6 +390,27 @@ function initWin(){
     process.env["NODEJS"] = path.join(process.env["BASE"], "core", winPath, "node", "node.exe");
 }
 
+//prints version and exits
+function printVersion(){
+    if(!PRINT_VERSION) return;
+
+    console.log("\nPrinting islands version...\n");
+    let pkgJson = JSON.parse(fs.readFileSync(path.join(process.env["APPS"], "chat", "package.json")))
+    let coreVersion = fs.readFileSync(path.join(process.env["BASE"], "core", "core.version"), "utf8")
+
+    let pkgJsonEngine = JSON.parse(fs.readFileSync(path.join(process.env["APPS"], "engine", "package.json")))
+
+    let versionString = `ISLANDS RELEASE ${pkgJson["version"]}
+Chat version: ${pkgJson["chat-version"]}
+Engine version: ${pkgJsonEngine["version"]}
+${coreVersion}
+`
+    console.log(versionString)
+    console.log("Exiting...")
+    process.exit(0)
+
+}
+
 function parseArgs(){
     const args = process.argv.slice(2);
 
@@ -405,6 +427,9 @@ function parseArgs(){
                 process.env["CHAT_PORT"] = arr[index+1];
                 break;
 
+            case "-v":
+                PRINT_VERSION = true
+                break;
             case "--tor-password":
                 torDebugPassword = arr[index+1]
                 break;
