@@ -162,6 +162,10 @@ function initUI(){
         console.log("Creating topic")
         let nickname = util.$("#new-topic-nickname").value;
         let topicName = util.$("#new-topic-name").value;
+        if(!nickname || !topicName){
+            toastr.warning("All fields are required");
+            return;
+        }
         chat.initTopic(nickname, topicName);
         toastr.info("Topic is being created")
         topicCreateModal.close()
@@ -173,6 +177,10 @@ function initUI(){
         let nickname = util.$("#join-topic-nickname").value;
         let topicName = util.$("#join-topic-name").value;
         let inviteCode = util.$("#join-topic-invite-code").value;
+        if(!nickname || !topicName || !inviteCode){
+            toastr.warning("All fields are required");
+            return;
+        }
         chat.joinTopic(nickname, topicName, inviteCode);
         toastr.info("Attempting to join topic");
         topicJoinModal.close();
@@ -765,6 +773,9 @@ function backToChat(){
 // Chat Event handlers
 function processLoginResult(err){
     if (err){
+
+        let loginBtn = util.$("#vault-login-btn")
+        loginBtn.removeAttribute("disabled");
         toastr.warning(`Login error: ${err.message}`)
     } else {
 
@@ -1644,12 +1655,16 @@ function initChat(){
 
 
 function initSession(){
+    loadingOn()
+    let loginBtn = util.$("#vault-login-btn")
+    loginBtn.setAttribute("disabled", true);
     let passwordEl = util.$("#vault-password");
     if (!passwordEl){
         throw new Error("Vault password element is not found.");
     }
+
     console.log("Chat created. Starting session...");
-    loadingOn();
+
     chat.initSession(passwordEl.value)
 }
 

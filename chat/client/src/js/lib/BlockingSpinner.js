@@ -1,5 +1,5 @@
 import * as util from "./dom-util";
-import "../../css/vendor/blocking-spinner.min.css"
+import "../../css/vendor/blocking-spinner.min.css";
 
 /**
  * Simple UI blocking loading spinner
@@ -15,7 +15,8 @@ export class BlockingSpinner{
     }
 
     loadingOn(){
-        let overlayDiv = util.bake('div', {classes: ['freeze-ui'], id: this.id})
+        console.log("Loading on");
+        let overlayDiv = util.bake('div', {class: 'freeze-ui', id: this.id})
         let parent = util.$(this.selector);
         overlayDiv.setAttribute("data-text", this.text)
         overlayDiv.style.position = 'absolute';
