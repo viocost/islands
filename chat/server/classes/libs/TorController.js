@@ -36,6 +36,10 @@ class TorController extends TorControl{
      */
     createHiddenService(params){
         return new Promise(async (resolve, reject)=>{
+            if(process.env["DEBUG"]){
+                console.log("Launching hidden service with parameters: ");
+                console.dir(params);
+            }
             let serviceID;
             let KEYTYPES = ["NEW", "RSA1024", "ED25519-V3"];
             let portPattern =/(6553[0-5]|655[0-2][0-9]\d|65[0-4](\d){2}|6[0-4](\d){3}|[1-5](\d){4}|[1-9](\d){0,3}),\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b(:(6553[0-5]|655[0-2][0-9]\d|65[0-4](\d){2}|6[0-4](\d){3}|[1-5](\d){4}|[1-9](\d){0,3}))?/;

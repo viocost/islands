@@ -45,10 +45,12 @@ class HiddenServiceManager{
 
 
     async launchIslandHiddenService(permanent=true, hsPrivateKey, onion, port=80){
+        //For now it is only localhost
+        let host = "127.0.0.1"
         let self = this;
         let keyType = hsPrivateKey ? "RSA1024" : "NEW";
         let keyContent = hsPrivateKey;
-        port = port.toString().trim() + "," + self.appHost + ":" + self.appPort.toString();
+        port = `${port.toString().trim()},${host}:${self.appPort.toString()}`;
 
         if (hsPrivateKey && await this.torCon.isHSUp(onion)){
             return({
@@ -223,7 +225,7 @@ class HiddenServiceManager{
 
                 let response = await self.torCon.createHiddenService({
                     detached: true,
-                    port: "80" + "," + self.appHost + ":" + self.appPort.toString(),
+                    port: "80" + "," + "127.0.0.1" + ":" + self.appPort.toString(),
                     keyType: "RSA1024",
                     keyContent: keyContent,
                 });

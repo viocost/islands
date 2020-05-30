@@ -82,7 +82,6 @@ class TorConnector extends EventEmitter{
         this.initServer();
         this.initCleanupWorker()
 
-        //init listening server for accepting incoming connections
     }
 
 
