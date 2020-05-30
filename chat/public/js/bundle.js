@@ -131,6 +131,8 @@ module.exports.Events = Object.freeze({
   SEND_ERROR: "send_fail",
   MESSAGES_UPDATED: "messages_updated",
   NEW_SERVICE_RECORD: "new_service_record",
+  //Sound
+  SOUND_STATUS: "sound_status",
   //Connection
   CONNECTION_STATUS_CHANGED: "connection_status_changed",
   //Messages
@@ -17980,7 +17982,15 @@ var Vault_Vault = /*#__PURE__*/function () {
                 this.admin = data.admin;
                 this.publicKey = data.publicKey;
                 this.privateKey = data.privateKey;
-                this.password = password;
+                this.password = password; //settings
+
+                if (data.settings) {
+                  this.settings = JSON.parse(JSON.stringify(data.settings));
+                } else {
+                  this.settings = {
+                    sound: true
+                  };
+                }
 
                 if (!data.pkfp) {
                   ic.setRSAKey("pub", data.publicKey, "public").getPublicKeyFingerprint("pub", "pkfp");
@@ -18024,7 +18034,7 @@ var Vault_Vault = /*#__PURE__*/function () {
 
                 this.initialized = true;
 
-              case 17:
+              case 18:
               case "end":
                 return _context2.stop();
             }
@@ -18284,6 +18294,20 @@ var Vault_Vault = /*#__PURE__*/function () {
         hash: ic.get("vault-hash"),
         sign: ic.get("sign")
       };
+    }
+  }, {
+    key: "toggleSound",
+    value: function toggleSound() {
+      if (!this.settings) {
+        this.settings = {
+          sound: true
+        };
+      } else {
+        this.settings.sound = !this.settings.sound;
+      }
+
+      this.save(Events["Events"].SOUND_STATUS);
+      return this.settings.sound;
     }
   }, {
     key: "processNewTopicEvent",
@@ -45975,6 +45999,13 @@ var ChatClient = /*#__PURE__*/function () {
       })), 50);
     } //~END INIT TOPIC//////////////////////////////////////////////////////////
     // ---------------------------------------------------------------------------------------------------------------------------
+    // Sound
+
+  }, {
+    key: "toggleSound",
+    value: function toggleSound() {
+      this.emit(_common_Events__WEBPACK_IMPORTED_MODULE_9__["Events"].SOUND_STATUS, this.vault.toggleSound());
+    } // ---------------------------------------------------------------------------------------------------------------------------
     // DELETE TOPIC, LEAVE
 
   }, {
@@ -63225,13 +63256,13 @@ function bakeHeaderLeftSection(menuClickHandler) {
     })]
   });
 }
-function bakeHeaderRightSection(isAdmin, isMute, infoHandler, muteHandler, settingsHandler, logoutHandler, adminLoginHandler) {
+function bakeHeaderRightSection(isAdmin, isSoundOn, infoHandler, muteHandler, settingsHandler, logoutHandler, adminLoginHandler) {
   var rightSection = bake("div", {
     class: "header-section-right"
   });
   appendChildren(rightSection, [bake("img", {
     id: "sound-control",
-    src: isMute ? "/img/sound-off.svg" : "/img/sound-on.svg",
+    src: isSoundOn ? "/img/sound-on.svg" : "/img/sound-off.svg",
     listeners: {
       "click": muteHandler
     }
@@ -63836,11 +63867,12 @@ function initLoginUI() {
 function initUI() {
   // let form = isRegistration() ? bakeRegistrationBlock() : bakeLoginBlock();
   var header = $("header");
+  var isSoundOn = !chat_ui_chat.vault.hasOwnProperty("settings") || !chat_ui_chat.vault.settings.hasOwnProperty("sound") || chat_ui_chat.vault.settings.sound;
   removeAllChildren(header);
   appendChildren(header, [bakeHeaderLeftSection(function (menuButton) {
     toggleClass(menuButton, "menu-on");
     renderLayout();
-  }), bakeHeaderRightSection(false, false, processInfoClick, processMuteClick, processSettingsClick, processLogoutClick)]);
+  }), bakeHeaderRightSection(false, isSoundOn, processInfoClick, processMuteClick, processSettingsClick, processLogoutClick)]);
   var main = $("main");
   removeAllChildren(main);
   var mainContainer = bakeMainContainer();
@@ -64269,6 +64301,7 @@ function setTopicInFocus(pkfp) {
 
 function processMuteClick() {
   console.log("Mute clicked");
+  chat_ui_chat.toggleSound();
 }
 
 function processSettingsClick() {
@@ -65438,8 +65471,11 @@ function loadSounds() {
 }
 
 function playSound(sound) {
-  //if (chat.session.settings.soundsOn) {
-  sounds[sound].play(); // }
+  var soundOn = !chat_ui_chat.vault.hasOwnProperty("settings") || !chat_ui_chat.vault.settings.hasOwnProperty("sound") || chat_ui_chat.vault.settings.sound;
+
+  if (soundOn) {
+    sounds[sound].play();
+  }
 } //END SOUNDS///////////////////////////////////////////////////////////////////
 // ---------------------------------------------------------------------------------------------------------------------------
 // Util
@@ -65454,6 +65490,11 @@ function initChat() {
   chat_ui_chat.on(Events["Events"].LOGIN_SUCCESS, processLoginResult);
   chat_ui_chat.on(Events["Events"].POST_LOGIN_SUCCESS, function () {
     appendEphemeralMessage("Topics have been loaded and decrypted successfully.");
+    playSound("user_online");
+  });
+  chat_ui_chat.on(Events["Events"].SOUND_STATUS, function (status) {
+    var src = status ? "/img/sound-on.svg" : "/img/sound-off.svg";
+    $("#sound-control").setAttribute("src", src);
   });
   chat_ui_chat.on(Events["Events"].TOPIC_CREATED, function () {
     refreshTopics();
@@ -65472,7 +65513,6 @@ function initChat() {
     console.log("Vault updated in UI");
     refreshTopics();
     if (topicInFocus) setTopicInFocus(topicInFocus);
-    lib_toastr.info("Vault updated");
   });
   chat_ui_chat.on(Events["Events"].INIT_TOPIC_ERROR, function (err) {
     lib_toastr.warning("Init topic error: ".concat(err.message));
@@ -65501,6 +65541,14 @@ function initChat() {
   chat_ui_chat.on(Events["Events"].CONNECTION_STATUS_CHANGED, processConnectionStatusChanged);
   chat_ui_chat.on(Events["Events"].NEW_CHAT_MESSAGE, function (message, topicPkfp) {
     console.log("New incoming chat message received for ".concat(topicPkfp));
+
+    if (!message.header.service) {
+      if (message.header.author === topicPkfp) {
+        playSound("message_sent");
+      } else {
+        playSound("incoming_message");
+      }
+    }
 
     if (topicInFocus !== topicPkfp) {
       console.log("Topic not in focus");

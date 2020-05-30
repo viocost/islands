@@ -655,7 +655,7 @@ export function bakeHeaderLeftSection(menuClickHandler){
 
 export function bakeHeaderRightSection(
     isAdmin,
-    isMute,
+    isSoundOn,
     infoHandler,
     muteHandler,
     settingsHandler,
@@ -670,7 +670,7 @@ export function bakeHeaderRightSection(
 
         util.bake("img", {
             id: "sound-control",
-            src: isMute ? "/img/sound-off.svg" : "/img/sound-on.svg",
+            src: isSoundOn ? "/img/sound-on.svg" : "/img/sound-off.svg",
             listeners: {
                 "click": muteHandler
             }

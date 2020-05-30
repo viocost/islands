@@ -275,6 +275,16 @@ export class Vault{
         this.privateKey = data.privateKey;
         this.password = password;
 
+        //settings
+        if(data.settings){
+            this.settings = JSON.parse(JSON.stringify(data.settings));
+        } else {
+            this.settings = {
+                sound: true
+            }
+        }
+
+
         if(!data.pkfp){
             ic.setRSAKey("pub", data.publicKey, "public")
               .getPublicKeyFingerprint("pub", "pkfp");
@@ -526,8 +536,19 @@ export class Vault{
             hash : ic.get("vault-hash"),
             sign :  ic.get("sign")
         }
+    }
 
+    toggleSound(){
+        if(!this.settings){
+            this.settings = {
+                sound: true
+            }
+        } else {
+            this.settings.sound = !this.settings.sound;
+        }
 
+        this.save(Events.SOUND_STATUS);
+        return this.settings.sound
     }
 
     processNewTopicEvent(self, data){

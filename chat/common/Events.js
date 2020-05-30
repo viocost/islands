@@ -56,6 +56,9 @@ module.exports.Events = Object.freeze({
 
     NEW_SERVICE_RECORD: "new_service_record",
 
+    //Sound
+    SOUND_STATUS: "sound_status",
+
     //Connection
     CONNECTION_STATUS_CHANGED: "connection_status_changed",
 

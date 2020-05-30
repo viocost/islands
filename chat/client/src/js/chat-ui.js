@@ -122,13 +122,18 @@ function initUI(){
 
     // let form = isRegistration() ? bakeRegistrationBlock() : bakeLoginBlock();
     let header = util.$("header")
+
+    let isSoundOn = !chat.vault.hasOwnProperty("settings") ||
+        !chat.vault.settings.hasOwnProperty("sound") ||
+        chat.vault.settings.sound;
     util.removeAllChildren(header);
+
     util.appendChildren(header, [
         UI.bakeHeaderLeftSection((menuButton)=>{
             util.toggleClass(menuButton, "menu-on");
             renderLayout()
         }),
-        UI.bakeHeaderRightSection(false, false, processInfoClick, processMuteClick, processSettingsClick, processLogoutClick)
+        UI.bakeHeaderRightSection(false, isSoundOn, processInfoClick, processMuteClick, processSettingsClick, processLogoutClick)
     ])
 
     let main = util.$("main")
@@ -569,8 +574,8 @@ function setTopicInFocus(pkfp){
 }
 
 function processMuteClick(){
-
     console.log("Mute clicked");
+    chat.toggleSound();
 }
 
 function processSettingsClick(){
@@ -1515,9 +1520,13 @@ function loadSounds() {
 }
 
 function playSound(sound) {
-    //if (chat.session.settings.soundsOn) {
-    sounds[sound].play();
-   // }
+    let soundOn = !chat.vault.hasOwnProperty("settings") ||
+        !chat.vault.settings.hasOwnProperty("sound") ||
+        chat.vault.settings.sound
+
+    if (soundOn){
+        sounds[sound].play();
+    }
 }
 
 //END SOUNDS///////////////////////////////////////////////////////////////////
@@ -1533,6 +1542,12 @@ function initChat(){
     chat.on(Events.LOGIN_SUCCESS, processLoginResult)
     chat.on(Events.POST_LOGIN_SUCCESS, ()=>{
         appendEphemeralMessage("Topics have been loaded and decrypted successfully.")
+        playSound("user_online")
+    })
+
+    chat.on(Events.SOUND_STATUS, (status)=>{
+        let src = status ? "/img/sound-on.svg" : "/img/sound-off.svg";
+        util.$("#sound-control").setAttribute("src", src)
     })
     chat.on(Events.TOPIC_CREATED, ()=>{
         refreshTopics()
@@ -1555,7 +1570,6 @@ function initChat(){
         console.log("Vault updated in UI");
         refreshTopics()
         if (topicInFocus)setTopicInFocus(topicInFocus)
-        toastr.info(`Vault updated`)
     })
 
     chat.on(Events.INIT_TOPIC_ERROR, (err)=>{
@@ -1590,6 +1604,15 @@ function initChat(){
 
     chat.on(Events.NEW_CHAT_MESSAGE, (message, topicPkfp)=>{
         console.log(`New incoming chat message received for ${topicPkfp}`)
+
+        if(!message.header.service){
+            if(message.header.author === topicPkfp){
+                playSound("message_sent")
+            } else {
+
+                playSound("incoming_message")
+            }
+        }
 
         if (topicInFocus !== topicPkfp){
             console.log("Topic not in focus")
