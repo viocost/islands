@@ -186,7 +186,12 @@ export class Topic{
         }
 
         this.handlers[Internal.MESSAGES_SYNC] = msg =>{
-            console.log(`Message sync received: ${msg}`);
+            console.log("Got messages sync");
+            console.dir(msg)
+            if(!msg.body.lastMessages || !msg.body.lastMessages.messages) return;
+            for(let chatMsg of msg.body.lastMessages.messages.reverse()){
+                self.processIncomingMessage(self, JSON.parse(chatMsg))
+            }
         }
 
 
@@ -317,6 +322,29 @@ export class Topic{
 
     // ---------------------------------------------------------------------------------------------------------------------------
     // MESSAGE HANDLING
+
+    processIncomingMessage(self, msg){
+        let message = new ChatMessage(msg)
+        if(message.header.service){
+            message.decryptServiceRecord(self.privateKey)
+        } else if (message.header.private){
+            message.decryptPrivateMessage(self.privateKey)
+        } else {
+            message.decryptMessage(self.getSharedKey())
+        }
+
+        if(!message.header.service){
+            if(message.header.nickname !== self.getParticipantNickname(msg.header.author)){
+                console.log(`Member's nickname has changed from ${self.getParticipantNickname(msg.header.author)} to ${message.header.nickname}`);
+                self.setParticipantNickname(message.header.nickname, msg.header.author);
+            }
+        }
+
+        self.addNewMessage(self, message);
+    }
+
+
+
 
     processMessageSent(self, msg){
         let sentMessage = new ChatMessage(msg.body.message);

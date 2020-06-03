@@ -270,12 +270,13 @@ class ServiceAssistant{
     // explicitly request by client.
     async onReconnectSyncMessages(query, connId){
         //query is just a k=>v object where
-        //k is topic pkfp and v is the id of last messages seen
+        //k is topic pkfp and v is the id of last messages seen or null
         //It expected to be a string
         let self = this;
         console.log(`On reconnect sync messages called. query: ${query}`);
         let queryData = JSON.parse(query);
         for(let pkfp in queryData){
+            if (queryData[pkfp] == null) continue;
 
             let { messages, keys, allLoaded } = await self.hm.getMessagesSince(pkfp, queryData[pkfp])
             //keys here are metadata IDs
@@ -313,7 +314,7 @@ class ServiceAssistant{
         let response = Message.makeResponse(request,  "island", Internal.LOAD_MESSAGES_SUCCESS);
 
         let messagesToLoad = request.body.quantity ? parseInt(request.body.quantity) : DEFAULT_LOADED_MSGS_QTY
-        response.body.lastMessages = await self.hm.loadMessagesAndKeys(
+        response.body.lastMessages = await self.hm.getMessagesAndKeys(
             messagesToLoad,
             request.headers.pkfpSource,
             request.body.lastMessageId

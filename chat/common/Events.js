@@ -89,6 +89,7 @@ module.exports.Internal = Object.freeze({
     SEND_MESSAGE: "send_message",
     MESSAGE_SENT: "send_success",
     MESSAGES_SYNC: "messages_sync",
+    UNVERIFIED_MESSAGE: "unverified_message",
 
     // ---------------------------------------------------------------------------------------------------------------------------
     // Vault update notifications
