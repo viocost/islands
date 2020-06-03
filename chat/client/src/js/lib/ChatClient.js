@@ -4,7 +4,7 @@ import { inRange } from "../../../../common/Util";
 import { assert } from "../../../../common/IError";
 import { Vault } from "./Vault"
 import { XHR } from "./xhr";
-import { Connector } from "./Connector";
+import { Connector, ConnectionState } from "./Connector";
 import { MessageQueue } from  "./MessageQueue";
 import { ArrivalHub } from "./ArrivalHub";
 import  { ChatUtility }  from "./ChatUtility";
@@ -129,9 +129,19 @@ export class ChatClient{
     }
 
     setConnectorListeners(){
+        let self = this;
         this.connector.on(Internal.CONNECTION_STATE_CHANGED, state => {
             console.log(`Island connection state changed: ${state}`);
             this.emit(Events.CONNECTION_STATUS_CHANGED, state);
+            if(state === ConnectionState.DISCONNECTED || state === ConnectionState.ERROR){
+                let lastMessagesIds = {}
+                Object.values(self.vault.topics).forEach(topic =>{
+                    lastMessagesIds[topic.pkfp] =  topic.getLastMessageId();
+                })
+
+                console.log("Setting last messages ids for reconnect");
+                self.connector.setConnectionQueryProperty("lastMessagesIds", lastMessagesIds);
+            }
         })
     }
 

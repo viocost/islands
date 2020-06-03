@@ -851,4 +851,13 @@ export class Topic{
         assert(inRange(name.length, 2, 30) , `Topic name is invalid`)
         this.name = name;
     }
+
+    getLastMessageId(){
+        for (let msg of this.messages){
+            if (msg.header && msg.header.id) return msg.header.id
+        }
+
+        return null;
+
+    }
 }

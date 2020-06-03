@@ -30,7 +30,7 @@ class ClientSessionManager{
             // Session is identified by Vault id
             let vaultId = socket.handshake.query.vaultId;
 
-            console.log(`Vault id on client_connected: ${vaultId}`);
+            console.log(`Vault id on client_connected: ${vaultId}, `, socket.handshake.query);
             if(!vaultId){
                 Logger.warn("Warning: no vaultID provided at the connection.", {cat: "session"})
                 return;

@@ -35,6 +35,11 @@ export class Connector{
         this.emit(Internal.CONNECTION_STATE_CHANGED, this.state);
     }
 
+    setConnectionQueryProperty(k, v){
+        if (!this.socketInitialized) throw new Error("Socket uninitialized.")
+        this.chatSocket.io.opts.query[k] = typeof v === "object" ? JSON.stringify(v) : v;
+    }
+
     async establishConnection(vaultId, connectionAttempts = 7, reconnectionDelay = 5000){
         return new Promise((resolve, reject)=>{
             let self = this;
