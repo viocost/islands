@@ -46697,7 +46697,7 @@ var ChatClient = /*#__PURE__*/function () {
     key: "changeNickname",
     value: function changeNickname(topicPkfp, newNickname) {
       Object(_common_IError__WEBPACK_IMPORTED_MODULE_12__[/* assert */ "b"])(this.topics[topicPkfp], "Topic ".concat(topicPkfp, ", not found"));
-      Object(_common_IError__WEBPACK_IMPORTED_MODULE_12__[/* assert */ "b"])(newNickname && Object(_common_Util__WEBPACK_IMPORTED_MODULE_11__["inRange"])(newNickname, 3, 30), "New nickname length is invalid");
+      Object(_common_IError__WEBPACK_IMPORTED_MODULE_12__[/* assert */ "b"])(newNickname && Object(_common_Util__WEBPACK_IMPORTED_MODULE_11__["inRange"])(newNickname.length, 3, 30), "New nickname length is invalid");
       this.topics[topicPkfp].setParticipantNickname(newNickname, topicPkfp); //here topic is the same as particiapnt pkfp
     }
   }, {
