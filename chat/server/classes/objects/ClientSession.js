@@ -8,6 +8,7 @@ const Logger = require("../libs/Logger.js");
 const Utility = require("../libs/ChatUtility.js");
 
 const SESSION_ID_LENGTH = 7;
+const SELF_DESTRUCT_TIMEOUT = 240000
 /**
  * Session is an object that represents act of communication between client and server.
  * Client is identified by vault ID.
@@ -184,7 +185,7 @@ class ClientSession extends EventEmitter{
         Logger.debug(`Unicasting. Topics: ${this.topics}`, { cat: "session" })
         let connectionId = connId;
         if (!connId){
-            if (this.connections.length === 0){
+            if (this.connections.length() === 0){
                 return;
             } else {
                 connectionId = this.connections.toArray()[0];
@@ -195,25 +196,25 @@ class ClientSession extends EventEmitter{
     }
 
     isActive(){
+        console.log(`Checking if session is active. Num connections: ${this.connections.length()}`);
         this.cleanZombies()
-        return this.connections.length > 0;
+        return this.connections.length() > 0;
     }
 
     activeConnectionsCount(){
-        return this.connections.length;
+        return this.connections.length();
     }
 
     startSelfDestructionTimer(){
 
         Logger.debug("Self destruction timer started", {cat: "session"})
         let self = this;
-        let timeout = 240000; //timeout for 4 minutes
         let tick = ()=>{
             if (self.timeInactive === null){
                 Logger.debug("Session is active again. Stopping timer...", {cat: "session"})
                 return;
             }
-            if (new Date() - self.timeInactive >= timeout){
+            if (new Date() - self.timeInactive >= SELF_DESTRUCT_TIMEOUT){
                 Logger.debug("Timeout reached. Destructing...", {cat: "session"})
                 self.emit(Internal.KILL_SESSION, this);
             } else {
