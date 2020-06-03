@@ -2,13 +2,13 @@ const ClientSession = require("../objects/ClientSession.js");
 const Err = require("./IError.js");
 const Logger = require("../libs/Logger.js");
 const { Internal, Events } = require("../../../common/Events")
+const { EventEmitter } = require("events")
 
 
-
-class ClientSessionManager{
+class ClientSessionManager extends EventEmitter{
     constructor(connectionManager = Err.required(),
                 vaultManager = Err.required()){
-
+        super()
         // Sessions are stored by vaultID
         this.sessions = {};
         this.connectionManager = connectionManager;
@@ -31,6 +31,8 @@ class ClientSessionManager{
             let vaultId = socket.handshake.query.vaultId;
 
             console.log(`Vault id on client_connected: ${vaultId}, `, socket.handshake.query);
+
+
             if(!vaultId){
                 Logger.warn("Warning: no vaultID provided at the connection.", {cat: "session"})
                 return;
@@ -72,6 +74,16 @@ class ClientSessionManager{
                     delete self.topicToSessionMap[pkfp];
                 })
             }
+
+            // Checking if reconnect. If last seen messages Ids provided, assuming reconnect
+            let lastMsgIds = socket.handshake.query.lastMessagesIds;
+
+            if(lastMsgIds){
+                //And emiting it for service manager
+                console.log("Assuming reconnect");
+                this.emit(Internal.MESSAGES_SYNC, lastMsgIds, connectionId)
+            }
+
         })
 
         connectionManager.on("client_disconnected", connectionId=>{

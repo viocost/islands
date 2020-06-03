@@ -12,6 +12,10 @@ const Coordinator = require("../assistants/AssistantCoordinator.js");
 const { Internal, Events } = require("../../../common/Events.js")
 const assert = require("../libs/assert");
 
+
+// number of messages loaded initially by default
+const DEFAULT_LOADED_MSGS_QTY = 30
+
 class ServiceAssistant{
     constructor(connectionManager = Err.required(),
                 sessionManager = Err.required(),
@@ -31,6 +35,12 @@ class ServiceAssistant{
         this.subscribeToClientRequests(requestEmitter);
         this.subscribeToCoordinatorEvents();
         this.subscribeToCrossIslandsMessages(this.ciMessenger);
+
+        this.sessionManager.on(Internal.MESSAGES_SYNC, (query, connId)=>{
+            console.log("Service assistant received messages sync request");
+            this.onReconnectSyncMessages(query, connId)
+
+        })
     }
 
 
@@ -254,32 +264,60 @@ class ServiceAssistant{
 
     }
 
+    //This function is called after client reconnected and provided
+    // last messages' IDs
+    // It differs from other handlers, because this action  is not
+    // explicitly request by client.
+    async onReconnectSyncMessages(query, connId){
+        //query is just a k=>v object where
+        //k is topic pkfp and v is the id of last messages seen
+        //It expected to be a string
+        let self = this;
+        console.log(`On reconnect sync messages called. query: ${query}`);
+        let queryData = JSON.parse(query);
+        for(let pkfp in queryData){
+
+            let { messages, keys, allLoaded } = await self.hm.getMessagesSince(pkfp, queryData[pkfp])
+            //keys here are metadata IDs
+            let gatheredKeys  = await self.hm.getSharedKeysSet(keys, pkfp)
+
+            let msg = new Message()
+            msg.setDest(pkfp)
+            msg.setSource("island")
+            msg.setCommand(Internal.MESSAGES_SYNC);
+
+
+            msg.setAttribute("lastMessages", {
+                messages: messages,
+                keys: gatheredKeys,
+                allLoaded: allLoaded
+            }) ;
+
+            let session = self.sessionManager.getSessionByConnectionId(connId)
+
+            console.log("Sending message sync response");
+            if(session) session.send(msg, connId);
+        }
+
+        console.log("Messages sync processed");
+
+    }
 
     async loadMoreMessages(request, connectionId, self){
         console.log("Load more messages called");
-        let messages, metadataIDs;
 
         //Getting public key of the owner
         let publicKey = await self.hm.getOwnerPublicKey(request.headers.pkfpSource)
         assert(Request.isRequestValid(request, publicKey), "Request was not verified")
 
-        let messagesToLoad = request.body.quantity ? parseInt(request.body.quantity) : undefined
-        let data = await self.hm.loadMoreMessages(request.headers.pkfpSource,
-                                                  request.body.lastMessageId,
-                                                  messagesToLoad);
-        messages = data[0];
-        metadataIDs = data[1];
-        let allLoaded = data[2];
-
-        let gatheredKeys  = await self.hm.getSharedKeysSet(metadataIDs, request.headers.pkfpSource)
-
         let response = Message.makeResponse(request,  "island", Internal.LOAD_MESSAGES_SUCCESS);
 
-        response.body.lastMessages = {
-            messages: messages,
-            keys: gatheredKeys,
-            allLoaded: allLoaded
-        };
+        let messagesToLoad = request.body.quantity ? parseInt(request.body.quantity) : DEFAULT_LOADED_MSGS_QTY
+        response.body.lastMessages = await self.hm.loadMessagesAndKeys(
+            messagesToLoad,
+            request.headers.pkfpSource,
+            request.body.lastMessageId
+        );
 
         self.connectionManager.sendMessage(connectionId, response);
     }

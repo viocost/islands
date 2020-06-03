@@ -11,7 +11,8 @@ const Events = require("../../../common/Events").Events;
 const Internal = require("../../../common/Events").Internal;
 
 
-
+// number of messages loaded initially by default
+const DEFAULT_LOADED_MSGS_QTY = 30
 
 
 
@@ -191,7 +192,7 @@ class LoginAssistant{
     }
 
     async getLastMessages(pkfp){
-        return await this.hm.getLastMessagesAndKeys(30, pkfp)
+        return await this.hm.getMessagesAndKeys(DEFAULT_LOADED_MSGS_QTY, pkfp)
     }
 
     isTopicOwner(clientPkfp, metadata){

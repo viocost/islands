@@ -674,34 +674,18 @@ class HistoryManager{
         return res;
     }
 
-    getLastMessagesAndKeys(numberOfLastMessages, pkfp) {
-        return new Promise((resolve, reject)=>{
-            try{
+    async getMessagesAndKeys(numberOfLastMessages, pkfp, lastMessageId) {
 
-                let messages, keys;
-                let allLoaded = false;
+        //let { messages, metaIds, allLoaded } = await this.loadMoreMessages(pkfp, undefined, numberOfLastMessages);
+        let res = await this.loadMoreMessages(pkfp, lastMessageId, numberOfLastMessages);
+        res.keys = {};
+        if(res.messages.length === 0){
+            return res;
+        }
 
-                this.loadMoreMessages(pkfp, undefined, numberOfLastMessages)
-                    .then((data)=>{
-                        messages = data[0];
-                        keys = data[1];
-                        allLoaded = data[2];
-                        if(messages.length === 0){
-                            resolve({messages: [], keys: {}, allLoaded: allLoaded});
-                            return;
-                        }
-
-                        //Get all shared keys from previous tas
-                        return this.getSharedKeysSet(keys, pkfp)
-                    })
-                    .then(gatheredKeys =>{
-                        resolve({messages: messages, keys: gatheredKeys, allLoaded: allLoaded})
-                    })
-            }catch(err){
-                reject(err)
-            }
-
-        })
+        //Get all shared keys from previous tas
+        res.keys = await this.getSharedKeysSet(res.metaIds, pkfp)
+        return res
     }
 
     getAllhistoryIDs(includingTAMetadata = false){
@@ -761,85 +745,106 @@ class HistoryManager{
 
     }
 
-    loadMoreMessages(pkfp = Err.required(), lastLoadedMessageID, numberOfMessages = 10){
-        return new Promise((resolve, reject)=>{
-            try{
-                let messages = [];
-                let keys = new CuteSet();
-                //      console.log("Initializing wrup");
-                let currentWrup = new WrapupRecord(this.getWrapupBlobSync(pkfp));
-                //       console.log("Done Initializing wrup: " + currentWrup.lastMetadataEnd);
-                let currentEndWrup;
+    //Loads new messages until finds a message with id msgId.
+    // Return all loaded not including message with id msgId
+    async getMessagesSince(pkfp = Err.required(), msgId = Err.required()){
+        console.log(`Loading new messages until ${msgId} for ${pkfp}`);
+        let res =  await this.loadMoreMessages(pkfp, undefined, Infinity, msgId)
+        console.log(JSON.stringify(res));
+        return res
 
-                let allLoaded = false; // Flag whether all messages have been loaded already
+    }
 
-                if(currentWrup.lastMessageEnd === 0){
-                    allLoaded = true;
-                    resolve([ [],  keys, allLoaded ]);
-                    console.log("No messages! Returning...");
-                    return;
+    //Loads messages and corresponding metadata ids
+    async loadMoreMessages(pkfp = Err.required(), lastLoadedMessageID, numberOfMessages = 10, until = null){
+        try{
+            let messages = [];
+            let metaIds = new CuteSet();
+            //      console.log("Initializing wrup");
+            let currentWrup = new WrapupRecord(this.getWrapupBlobSync(pkfp));
+            //       console.log("Done Initializing wrup: " + currentWrup.lastMetadataEnd);
+            let currentEndWrup;
+
+            let allLoaded = false; // Flag whether all messages have been loaded already
+
+            if(currentWrup.lastMessageEnd === 0){
+                allLoaded = true;
+                console.log("No messages! Returning...");
+                return {
+                    messages: messages,
+                    metaIds: metaIds,
+                    allLoaded: allLoaded
                 }
+            }
 
-                let lastMessageSeen = false; //Flag whether last message has been seen already
+            let lastMessageSeen = false; //Flag whether last message has been seen already
 
-                for(let i=0; i<numberOfMessages; ++i){
-                    let message = this.getHistoryElementSync(currentWrup.getLastMessageSize(),
-                        currentWrup.lastMessageStart, pkfp).toString();
-                    //Gathering all the metadata ids to get the keys later
-                    //console.log("Got a message " + message + " \nwrup " + currentWrup.toBlob());
+            for(let i=0; i<numberOfMessages; ++i){
+                let message = this.getHistoryElementSync(currentWrup.getLastMessageSize(),
+                    currentWrup.lastMessageStart, pkfp).toString();
+                //Gathering all the metadata ids to get the metaIds later
+                //console.log("Got a message " + message + " \nwrup " + currentWrup.toBlob());
 
-                    let parsedMessage = JSON.parse(message);
+                let parsedMessage = JSON.parse(message);
 
+                //If need to load new messages until some old one
+                if(until && parsedMessage.header.id === until) break;
 
-                    if(parsedMessage.header.service){
-                        messages.push(message);
-                        currentEndWrup = currentWrup.lastMessageStart;
-                        currentWrup = new WrapupRecord(this.getWrapupBlobSync(pkfp, currentEndWrup));
-                        if (currentWrup.lastMessageStart === 0 && currentWrup.lastMessageEnd === 0){
-                            allLoaded = true;
-                            break;
-                        }
-                        continue;
-                    }
-
-                    //If need to load messages after the last loaded message:
-                    if (lastLoadedMessageID && !lastMessageSeen){
-
-                        if (lastLoadedMessageID === parsedMessage.header.id){
-                            lastMessageSeen = true;
-                        }
-                        //Set wrapup record to next message, reset counters, continue looping until find last loaded message
-                        currentEndWrup = currentWrup.lastMessageStart;
-                        currentWrup = new WrapupRecord(this.getWrapupBlobSync(pkfp, currentEndWrup));
-                        i=0;
-                        if (currentWrup.lastMessageStart === 0 && currentWrup.lastMessageEnd === 0){
-                            allLoaded = true;
-                            break;
-                        }
-                        continue;
-
-                    }
-                    let metadataID =parsedMessage.header.metadataID;
-                    if(metadataID){
-                        keys.add(metadataID);
-                    }
+                if(parsedMessage.header.service){
                     messages.push(message);
-
                     currentEndWrup = currentWrup.lastMessageStart;
                     currentWrup = new WrapupRecord(this.getWrapupBlobSync(pkfp, currentEndWrup));
                     if (currentWrup.lastMessageStart === 0 && currentWrup.lastMessageEnd === 0){
                         allLoaded = true;
                         break;
                     }
+                    continue;
+                }
+
+                //If need to load messages after the last loaded message:
+                if (lastLoadedMessageID && !lastMessageSeen){
+
+                    if (lastLoadedMessageID === parsedMessage.header.id){
+                        lastMessageSeen = true;
+                    }
+                    //Set wrapup record to next message, reset counters, continue looping until find last loaded message
+                    currentEndWrup = currentWrup.lastMessageStart;
+                    currentWrup = new WrapupRecord(this.getWrapupBlobSync(pkfp, currentEndWrup));
+                    i=0;
+                    if (currentWrup.lastMessageStart === 0 && currentWrup.lastMessageEnd === 0){
+                        allLoaded = true;
+                        break;
+                    }
+                    continue;
 
                 }
-                resolve([messages, keys, allLoaded]);
-            }catch(err){
-                console.trace("Error getting last messages: " + err);
-                reject(err)
+                let metadataID =parsedMessage.header.metadataID;
+                if(metadataID){
+                    metaIds.add(metadataID);
+                }
+                messages.push(message);
+
+                currentEndWrup = currentWrup.lastMessageStart;
+                currentWrup = new WrapupRecord(this.getWrapupBlobSync(pkfp, currentEndWrup));
+                if (currentWrup.lastMessageStart === 0 && currentWrup.lastMessageEnd === 0){
+                    allLoaded = true;
+                    break;
+                }
+
             }
 
-        })
+
+            //Returning the result
+            return {
+                messages: messages,
+                metaIds: metaIds,
+                allLoaded: allLoaded
+            };
+        }catch(err){
+            console.trace("Error getting last messages: " + err);
+            throw(err)
+        }
+
     }
 
 

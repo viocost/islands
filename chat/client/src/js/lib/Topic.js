@@ -185,6 +185,11 @@ export class Topic{
             console.log("Invite request timeout");
         }
 
+        this.handlers[Internal.MESSAGES_SYNC] = msg =>{
+            console.log(`Message sync received: ${msg}`);
+        }
+
+
         this.handlers[Internal.INVITE_REQUEST_FAIL] = (msg)=>{
             console.log(`Invite request failed: ${msg.body.errorMsg}`);
         }

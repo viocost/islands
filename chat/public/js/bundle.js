@@ -154,6 +154,7 @@ module.exports.Internal = Object.freeze({
   BROADCAST_MESSAGE: "broadcast_message",
   SEND_MESSAGE: "send_message",
   MESSAGE_SENT: "send_success",
+  MESSAGES_SYNC: "messages_sync",
   // ---------------------------------------------------------------------------------------------------------------------------
   // Vault update notifications
   SAVE_VAULT: "save_vault",
@@ -8113,6 +8114,10 @@ var Topic_Topic = /*#__PURE__*/function () {
 
       this.handlers[Events["Internal"].INVITE_REQUEST_TIMEOUT] = function () {
         console.log("Invite request timeout");
+      };
+
+      this.handlers[Events["Internal"].MESSAGES_SYNC] = function (msg) {
+        console.log("Message sync received: ".concat(msg));
       };
 
       this.handlers[Events["Internal"].INVITE_REQUEST_FAIL] = function (msg) {
