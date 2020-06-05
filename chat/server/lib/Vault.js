@@ -3,7 +3,7 @@ const path = require("path");
 
 class Vault extends EventEmitter{
 
-    constructor(id, vaultPath){
+    constructor(id, vaultPath, isOwner, port){
         super();
         this.vaultPath = vaultPath;
         this.id = id;
