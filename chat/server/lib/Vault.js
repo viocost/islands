@@ -1,13 +1,18 @@
 const { EventEmitter } = require('events');
 const path = require("path");
+const fs = require("fs-extra");
+
 
 class Vault extends EventEmitter{
 
-    constructor(id, vaultPath, isOwner, port){
+    constructor(id, vaultPath, webService){
         super();
         this.vaultPath = vaultPath;
+        this.webService = webService;
         this.id = id;
         this.state = VaultState.UNINITIALIZED;
+        this.onions = []
+
     }
 
 

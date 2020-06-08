@@ -1,18 +1,18 @@
 const { EventEmitter } = require('events');
 
 class Session extends EventEmitter{
-    constructor(socket){
+    constructor(webService){
         super()
-        this.socket = socket
+        this.webService = webService
 
-        this.socket.on("message", msg=>{
+        this.webService.on("message", msg=>{
             this.emit("message" ,msg);
         })
 
-        this.socket.on("disconnect", ()=>{
-            this.emit("disconnect");
-        })
 
+        this.webService.on("disconnect", msg=>{
+            this.emit("disconnect")
+        })
     }
 }
 
