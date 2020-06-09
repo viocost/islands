@@ -8,7 +8,7 @@ const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 
 
 module.exports = {
-    entry: "./client/src/js/chat-ui.js",
+    entry: "./client/src/js/islands.js",
     output: {
         path: path.resolve(__dirname, "public/js"),
         filename: "bundle.js"

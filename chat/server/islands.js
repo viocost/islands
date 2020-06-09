@@ -6,7 +6,8 @@ const getPort = require('get-port');
 
 
 let basePath
-let HOST = "127.0.0.1"
+let HOST = "127.0.0.1";
+let PORT = 4000;
 let vaults;
 
 
@@ -16,9 +17,8 @@ async function initIslands(){
 
     vaults = Promise.all(vaultsPaths.map(async vPath =>{
         let id = vPath.split(path.sep).reverse()[0]
-        let port = await getPort();
-        let webService = new WebService(HOST, port)
-        webService.start()
+        let webService = new WebService(HOST, PORT)
+        await webService.start()
         console.log(`Initializing vault with id: ${id}, and path: ${vPath} `);
         return new Vault(id, vPath, webService)
     }))

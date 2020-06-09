@@ -27,11 +27,11 @@ class WebService extends EventEmitter{
 
         this.port = this.port ? this.port : await getPort();
         //views engine
-        this.app.set('views', path.join(__dirname, '../views'));
+        this.app.set('views', path.join(__dirname, '..', 'views'));
         this.app.set('view engine', 'pug');
 
         //static dir
-        this.app.use(express.static(path.join(__dirname, '../public')));
+        this.app.use(express.static(path.join(__dirname, '..', '..', 'public')));
 
         this.app.get("/", (req, res)=>{
 
