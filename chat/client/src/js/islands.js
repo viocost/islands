@@ -5,6 +5,8 @@ import toastr from "./lib/toastr";
 import "../css/chat.sass"
 import "../css/vendor/loading.css";
 import * as CuteSet from "cute-set";
+import * as io from "socket.io-client";
+import { StateMachine } from "./lib/StateMachine";
 
 
 
@@ -43,6 +45,8 @@ function initLoginUI(){
 }
 
 
+
 function initSession(){
+
     console.log("init session called");
 }
