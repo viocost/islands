@@ -2,7 +2,7 @@ import * as util  from "./lib/dom-util";
 import * as UI from "./lib/ChatUIFactory";
 import { BlockingSpinner } from "./lib/BlockingSpinner";
 import toastr from "./lib/toastr";
-import { ChatClient as Chat } from "./lib/ChatClient";
+import { ChatClient as Chat, ChatClient } from "./lib/ChatClient";
 import { Events } from "../../../common/Events";
 import "../css/chat.sass"
 import "../css/vendor/loading.css";
@@ -29,8 +29,12 @@ let sidePanel;
 // ---------------------------------------------------------------------------------------------------------------------------
 // Objects
 
-//Chast client instance
-let chat;
+//Top tier objects
+let chat = new ChatClient();
+let vault = new Vault();
+let topics = {};
+let metadata = {};
+
 
 // Sounds will be loaded here
 let sounds = {}

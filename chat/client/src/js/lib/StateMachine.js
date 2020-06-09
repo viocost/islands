@@ -28,13 +28,23 @@ export class StateMachine {
     static Warn = (prop)=> ()=> console.warn(`Property ${prop} does not exist in current state`);
     static Die  = (prop) => ()=>{ throw new PropertyNotExist(prop)  };
 
-    constructor(stateMap, startStateName='start',  msgNotExistMode=StateMachine.Discard) {
+    constructor(stateMap={}, startStateName='start',  msgNotExistMode=StateMachine.Discard) {
         // we need to expose the state object based on a variable
-        if(!stateMap ) throw new StateMapInvalid();
-        if(!stateMap.hasOwnProperty(startStateName)) throw new  StartStateNotFound(startStateName);
+
+        if(!stateMap.hasOwnProperty(startStateName)) {
+            stateMap[startStateName] = {};
+        }
 
         this.msgNotExistMode = msgNotExistMode;
-        this.stateMap = stateMap;
+        this.stateMap = new Proxy(stateMap, {
+            get(target, prop){
+                if(!(prop in target)) throw new StateNotExist(prop)
+                return target[prop];
+            }
+
+        });
+
+
         this.state = startStateName;
 
 
@@ -50,34 +60,89 @@ export class StateMachine {
                 return target.msgNotExistMode(prop)
             }
         });
+    }
 
+    addStates(states){
+        for(let s of states){
+            this.addState(s);
+        }
     }
 
 
-    getNotExistHandler(prop)  {
-
-        let handlers = [
-
-             // silently discard messages not handled
-            ()=>{  },
-            ()=>{ throw new PropertyNotExist(prop)  },
-
-        ]
-
-        return handlers[this.mode];
-    
+    addState(name){
+        if(!this.stateMap.hasOwnProperty(name)) this.stateMap[name] = {};
     }
 
+    addMessageHandler(state, name, lambda){
+        this.stateMap[state][name] = lambda;
+    }
+
+    addMessageHandlers(state, handlers){
+        for (let msg in handlers){
+            this.addMessageHandler(state, msg, handlers[msg]);
+        }
+    }
+}
+
+
+class PropertyNotExist extends Error{constructor(msg){super(`Message ${msg} does not exist in current state`)}}
+class StateNotExist extends Error{constructor(msg){super(`State ${msg} does not exist.`)}}
+
+function test2(){
+    let sm = new StateMachine({}, "disconnected", StateMachine.Warn)
+    sm.addStates(["disconnected", "session_pending", "session_active"])
+
+    sm.addMessageHandlers("disconnected", {
+        handleConnection: ()=>{
+            console.log("Handling connection");
+            return "session_pending";
+        }
+    })
+    sm.addMessageHandlers("session_pending", {
+        generateKey: ()=>{
+            console.log("Key generated");
+        },
+
+        getVault: ()=>{
+            console.log("Getting vault");
+        },
+
+        disconnect: ()=>{
+            console.log("Disconnected");
+            return "disconnected"
+        },
+
+        authenticationSuccessful: ()=>{
+            console.log("Authenticated");
+            return "session_active"
+        }
+
+    })
+
+    sm.addMessageHandlers("session_active", {
+        handleMessage: ()=>{console.log("Handling message")},
+        disconnect: ()=>{ console.log("Disconnnected"); return "disconnected" }
+    })
+
+
+    sm.handle.handleConnection()
+    sm.handle.getVault()
+    sm.handle.generateKey()
+    sm.handle.authenticationSuccessful()
+    sm.handle.authenticationSuccessful()
+
+    sm.handle.handleMessage()
+    sm.handle.handleMessage()
+    sm.handle.handleMessage()
+    sm.handle.disconnect()
+    sm.handle.handleMessage()
+    sm.handle.handleMessage()
+    sm.handle.handleMessage()
 
 
 }
 
-
-class StartStateNotFound extends Error{constructor(msg){super(msg)}}
-class StateMapInvalid extends Error{constructor(msg){super(msg)}}
-class PropertyNotExist extends Error{constructor(msg){super(msg)}}
-
-function test(){
+kfunction test(){
 
     let f1 = ()=>{console.log("f1")}
     let f2 = ()=>{console.log("f2")}
