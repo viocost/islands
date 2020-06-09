@@ -24,24 +24,30 @@
    If message is not found it is ignored
  */
 export class StateMachine {
-    constructor(stateMap, mode=0) {
+    static Discard = ()=> ()=> undefined;
+    static Warn = (prop)=> ()=> console.warn(`Property ${prop} does not exist in current state`);
+    static Die  = (prop) => ()=>{ throw new PropertyNotExist(prop)  };
+
+    constructor(stateMap, startStateName='start',  msgNotExistMode=StateMachine.Discard) {
         // we need to expose the state object based on a variable
-        let self = this;
-        this.mode = mode;
+        if(!stateMap ) throw new StateMapInvalid();
+        if(!stateMap.hasOwnProperty(startStateName)) throw new  StartStateNotFound(startStateName);
+
+        this.msgNotExistMode = msgNotExistMode;
         this.stateMap = stateMap;
-        this.state = this.stateMap.start;
+        this.state = startStateName;
 
 
         this.handle = new Proxy(this, {
             get(target, prop) {
 
-                if(prop in target.state)
+                if(prop in target.stateMap[target.state])
                     return (arg) => {
-                        let ret = target.state[prop](arg);
-                        if(ret) self.state = self.stateMap[ret];
+                        let ret = target.stateMap[target.state][prop](arg);
+                        if(ret) target.state = ret;
                     };
 
-                return self.getNotExistHandler(prop)
+                return target.msgNotExistMode(prop)
             }
         });
 
@@ -52,8 +58,8 @@ export class StateMachine {
 
         let handlers = [
 
-            ()=> undefined,  // silently discard messages not handled
-            ()=>{ console.warn(`Property ${prop} does not exist in current state`) },
+             // silently discard messages not handled
+            ()=>{  },
             ()=>{ throw new PropertyNotExist(prop)  },
 
         ]
@@ -64,10 +70,11 @@ export class StateMachine {
 
 
 
-};
+}
 
 
 class StartStateNotFound extends Error{constructor(msg){super(msg)}}
+class StateMapInvalid extends Error{constructor(msg){super(msg)}}
 class PropertyNotExist extends Error{constructor(msg){super(msg)}}
 
 function test(){
@@ -98,6 +105,76 @@ function test(){
         }
         }
 
-    }, 2)
+    }, 'start', StateMachine.Warn)
+
+    sm.handle.start()
+    sm.handle.msg_k()
+    sm.handle.msg_k()
+    sm.handle.msg_r()
+    sm.handle.msg_nonexistant()
+
+
+    sm = new StateMachine({
+        start: {start(){return "A"}},
+        'A':{
+        msg_k(msg){
+            f1();
+            return 'B';
+        },
+        msg_r(msg){
+            f4();
+        }
+        },
+        'B':{
+        msg_k(msg){
+            f2();
+        },
+        msg_r(msg){
+            f3();
+            return 'A';
+        }
+        }
+
+    }, 'start', StateMachine.Die)
+
+    console.log(`Current state: ${sm.state}`);
+    try{
+
+        sm.handle.sadfljhsafh()
+    } catch(err){ console.log(`Expected Error thrown ${err}`) }
+
+
+
+    sm = new StateMachine({
+        start: {start(){return "A"}},
+        'A':{
+        msg_k(msg){
+            f1();
+            return 'B';
+        },
+        msg_r(msg){
+            f4();
+        }
+        },
+        'B':{
+        msg_k(msg){
+            f2();
+        },
+        msg_r(msg){
+            f3();
+            return 'A';
+        }
+        }
+
+    }, 'start', StateMachine.Discard)
+
+    sm.handle.start()
+    sm.handle.sadf()
+    sm.handle.asdf()
+    sm.handle.msg_k()
+    sm.handle.msg_k()
+    sm.handle.msg_r()
+    sm.handle.msg_r()
+    sm.handle.msg_r()
 
 }

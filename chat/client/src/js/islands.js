@@ -10,6 +10,11 @@ import { StateMachine } from "./lib/StateMachine";
 
 
 
+let vault;
+let topics;
+
+
+
 document.addEventListener('DOMContentLoaded', event =>{
     //console.log(`Initializing page. Registration: ${isRegistration()}, Version: ${version}`);
 

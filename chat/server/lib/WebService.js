@@ -53,7 +53,7 @@ class WebService extends EventEmitter{
         this.chatSocket.on("connect", socket=>{
             this.emit("connect")
             socket.on("message", msg=>{
-                this.emit("message")
+                this.emit("message", msg)
             })
 
         })
