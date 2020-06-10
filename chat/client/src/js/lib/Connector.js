@@ -4,7 +4,7 @@ import { Internal } from "../../../../common/Events";
 import * as CuteSet from "cute-set";
 import { StateMachine } from "./StateMachine";
 
-export class Connector extends StateMachine{
+export class Connector{
     constructor(connectionString=""){
         super({}, "disconnected", StateMachine.Warn);
         WildEmitter.mixin(this);
@@ -16,25 +16,41 @@ export class Connector extends StateMachine{
         this.connectionAttempts = 0;
         this.maxConnectionAttempts = 0;
 
-        this.reconnectionDelay = 1500;
+        this.reconnectionDelay = 4000;
 
+
+        //states:
+        //  disconnected,
+        this.stateMachine = new StateMachine({
+            disconnected: {
+                connect: ()=>{
+                    console.log("Establishing connection");
+                    setTimeout(()=>{ this.attemptConnection() }, 100)
+                    return "connecting"
+                },
+            }
+        }, 'disconnected', StateMachine.Warn);
+
+        this.handle = new Proxy(this.stateMachine, {
+
+        })
 
         //defining states
-        this.addStates[
+        this.addStates([
             "disconnected",
             "connecting",
             "reconnecting",
             "error",
             "connected"
-        ]
+        ])
 
         //message handlers
         this.addMessageHandlers("disconnected", {
-            connect: this.connect,
         })
 
         this.addMessageHandlers("connecting", {
             connectionEstablished: ()=>{
+                console.log("Connected to island");
                 this.connectionEstablished()
                 this.emit("connected");
                 return "connected"
@@ -50,7 +66,6 @@ export class Connector extends StateMachine{
         })
 
         this.addMessageHandlers("connected", {
-
             handleMessage: ()=>{console.log("processing message")},
             handleDisconnect: this.handleDisconnect
         })
@@ -65,6 +80,8 @@ export class Connector extends StateMachine{
             //pingInterval: 10000,
             //pingTimeout: 5000,
         });
+
+        this.configureSocket()
 
     }
 
@@ -81,12 +98,12 @@ export class Connector extends StateMachine{
         //End
 
         this.chatSocket.on("ping", ()=>{
-            pingPongCount++;
+            this.pingPongCount++;
             if (this.pingPongCount > maxUnrespondedPings){
                 console.log("chatSocket pings are not responded. Resetting connection");
                 this.chatSocket.disconnect();
                 this.connectionAttempts = 0
-                setTimeout(attemptConnection, reconnectionDelay)
+                setTimeout(this.attemptConnection, reconnectionDelay)
             }
         })
 
@@ -103,7 +120,7 @@ export class Connector extends StateMachine{
 
             console.log("Island disconnected.");
             this.connectionAttempts = 0
-            setTimeout(attemptConnection, reconnectionDelay);
+            setTimeout(this.attemptConnection, reconnectionDelay);
         });
 
         this.chatSocket.on('connect_error', (err)=>{
@@ -131,8 +148,7 @@ export class Connector extends StateMachine{
     }
 
     connect(){
-        setTimeout(this.establishConnection, 100)
-        return "connecting"
+        console.log("Connecting to island");
     }
 
     handleDisconnect(){
@@ -171,54 +187,16 @@ export class Connector extends StateMachine{
             console.error(`Socket error: ${err}`)
             attempted = 0;
             console.log("Resetting connection...")
-            setTimeout(attemptConnection, reconnectionDelay)
+            setTimeout(this.attemptConnection, reconnectionDelay)
         })
 
     }
 
     attemptConnection(){
-                    console.log("Attempting island connection: " + attempted);
-
-                    self.transitionState(ConnectionState.CONNECTING);
-                    self.chatSocket.open()
-
+        console.log("Attempting to open socket");
+        this.chatSocket.open()
     }
 
-    establishConnection(vaultId, connectionAttempts = 7, reconnectionDelay = 5000){
-        return new Promise((resolve, reject)=>{
-            let self = this;
-
-            let upgrade = !!this.upgradeToWebsocket;
-            if (self.chatSocket && self.chatSocket.connected){
-                resolve();
-                return;
-            }
-
-            let attempted = 0;
-            let pingPongCount = 0;
-            let maxUnrespondedPings = 10;
-
-            const socketConfig = {
-                query: {
-                    vaultId: vaultId
-                },
-                reconnection: false,
-//                forceNew: true,
-                autoConnect: false,
-                upgrade: upgrade
-            }
-
-
-            socketConfig.upgrade = self.transport > 0;
-
-            self.chatSocket = io(`${this.connectionString}/chat`, socketConfig);
-
-            //Wildcard fix
-
-
-            attemptConnection();
-        })
-    }
 
 
     isConnected(){

@@ -8,6 +8,7 @@ import "../css/chat.sass"
 import "../css/vendor/loading.css";
 import * as CuteSet from "cute-set";
 import { Vault } from "./lib/Vault";
+import { runConnectorTest } from "./test/connector"
 //import "../css/vendor/toastr.min.css"
 // impor
 import { ChatUtility } from "./lib/ChatUtility"
@@ -30,8 +31,8 @@ let sidePanel;
 // Objects
 
 //Top tier objects
-let chat = new ChatClient();
-let vault = new Vault();
+let chat = null//new ChatClient();
+let vault = null//new Vault();
 let topics = {};
 let metadata = {};
 
@@ -63,6 +64,7 @@ let UIInitialized = false;
 // ---------------------------------------------------------------------------------------------------------------------------
 // TEST ONLY!
 // Comment out for production!
+window.connectorTest = runConnectorTest;
 window.util = util;
 window.toastr = toastr;
 window.chat = chat;
@@ -1542,6 +1544,8 @@ function initChat(){
     //chat = new Chat({version: version})
 
     chat = new Chat({version: util.$("#islands-version").value})
+    //chat = new Chat({version: "2.0.28"})
+
     chat.on(Events.LOGIN_ERROR, processLoginResult)
     chat.on(Events.LOGIN_SUCCESS, processLoginResult)
     chat.on(Events.POST_LOGIN_SUCCESS, ()=>{

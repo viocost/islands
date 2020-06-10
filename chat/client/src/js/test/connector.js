@@ -7,9 +7,5 @@ export function runConnectorTest(){
     c.on("connecting", ()=>{console.log("connecting")})
     c.on("error", ()=>{console.log("error")})
     c.on("reconnecting", ()=>{console.log("reconnecting")})
-    c.handle.connect();
-
-
-
-
+    return c;
 }

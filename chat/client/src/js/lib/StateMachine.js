@@ -24,9 +24,9 @@
    If message is not found it is ignored
  */
 export class StateMachine {
-    static Discard = ()=> ()=> undefined;
-    static Warn = (prop)=> ()=> console.warn(`Property ${prop} does not exist in current state`);
-    static Die  = (prop) => ()=>{ throw new PropertyNotExist(prop)  };
+    static Discard () { return ()=> undefined } ;
+    static Warn(prop) { return ()=> console.warn(`Property ${prop} does not exist in current state`) };
+    static Die   (prop) { return ()=>{ throw new PropertyNotExist(prop)  }; }
 
     constructor(stateMap={}, startStateName='start',  msgNotExistMode=StateMachine.Discard) {
         // we need to expose the state object based on a variable
@@ -141,7 +141,7 @@ function test2(){
 
 }
 
-kfunction test(){
+function test(){
 
     let f1 = ()=>{console.log("f1")}
     let f2 = ()=>{console.log("f2")}

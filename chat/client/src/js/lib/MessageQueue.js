@@ -16,19 +16,20 @@ export class MessageQueue{
         this.launchQueueWorker();
     }
 
-    async enqueue(msg){
-        let self = this
-        setImmediate(async ()=>{
-            try{
-                await self.lock.acquire();
-                this.queue.push(msg);
-            }catch(err){
-                console.error(`Enqueue error: ${err.message} `);
-            }finally{
-                self.lock.release();
+    enqueue(msg){
+        this.queue.push(msg);
+        setImmediate(()=>{
+            let outbound = this.queue;
+            this.queue = [];
+
+            let msg
+            while(msg = outbound.shift(0)){
+                self.connector.send(msg);
             }
 
         })
+
+
     }
 
     //Processes the queue: dequeues each message one by one and send it down the wire
