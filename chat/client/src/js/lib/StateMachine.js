@@ -47,7 +47,6 @@ export class StateMachine {
 
         this.state = startStateName;
 
-
         this.handle = new Proxy(this, {
             get(target, prop) {
 

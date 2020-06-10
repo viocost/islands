@@ -10,17 +10,18 @@ import { ChatUtility } from "./ChatUtility";
 import { assert } from "../../../../common/IError";
 import { XHR } from "./xhr"
 import * as semver from "semver";
-import { StateMachine } from "./StateMachine";
+
 /**
  * Represents key vault
  *
  *
  */
-export class Vault extends StateMachine{
+export class Vault{
     constructor(){
         WildEmitter.mixin(this);
         this.id = null;
         this.pkfp;
+        this.initialized = false;
         this.admin = null;
         this.adminKey = null;
         this.topics = {};
@@ -229,6 +230,7 @@ export class Vault extends StateMachine{
         this.publicKey = ic.get("kp").publicKey;
         this.pkfp = ic.get("pkfp");
         this.version = version;
+        this.initialized = true;
         this.getPrivateKey = ()=>{ return ic.get("kp").privateKey }
     }
 
