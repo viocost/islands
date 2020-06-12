@@ -37,7 +37,14 @@ export class ChatClient{
 
     // ---------------------------------------------------------------------------------------------------------------------------
     // Login and session initialization
+
+    processVault(err, data){
+
+
+    }
     initSession(password){
+
+        Vault.fetchVault(this.processVault);
         setImmediate(async ()=>{
             try{
                 if (!password){
@@ -105,6 +112,8 @@ export class ChatClient{
             }
         })
     }
+
+
 
     setVaultListeners(){
         let self = this

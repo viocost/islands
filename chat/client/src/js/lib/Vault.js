@@ -146,6 +146,25 @@ export class Vault{
         })
     }
 
+
+    static fetchVault(cb){
+        let url = "/";
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+        .then(response => {
+            if(!response.ok) throw new Error(`${response.status}: ${response.statusText}`)
+            return response.json()
+        })
+        .then(data => cb(null, data))
+        .catch(err=>{ cb(err) })
+    }
+
+
     // Given raw topic data as arguments encrytps with password and returns cipher
     prepareVaultTopicRecord(version = Err.required("Version"),
                             pkfp = Err.required("pkfp"),
