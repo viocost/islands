@@ -176,7 +176,7 @@ class ClientSession extends EventEmitter{
             this.connections.minus(connections) :
             connections;
         for (connId of connIds){
-            this.connectionManager.sendMesssage(connId, msg)
+            this.connectionManager.sendMessage(connId, msg)
         }
     }
 
