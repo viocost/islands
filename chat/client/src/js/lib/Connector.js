@@ -32,7 +32,7 @@ export class Connector{
 
     prepareStateMachine(){
         return new StateMachine({
-            disconnectd: {
+            disconnected: {
                 connecting: ()=>{
                     console.log("Changing state to conecting");
                     return ConnectionState.CONNECTING;
