@@ -26,7 +26,7 @@ router.get('/', (req, res)=>{
 
 // Posting to root path interpreted as a login attempt
 // processing login
-router.post("/", (req, res)=>{
+router.get("/vault", (req, res)=>{
     try{
         let id = getVaultId(req.headers["host"]);
         if(!id){
@@ -36,6 +36,27 @@ router.post("/", (req, res)=>{
             let vault = vaultManager.getVault(id);
             res.set("Content-Type", "application/json")
                .status(200).send({"vault": vault, "vaultId": id, "version": global.VERSION})
+        }
+    }catch(err){
+        Logger.warn(err.message, {stack: err.stack, cat: "login"});
+        res.set("Content-Type", "application/json")
+        res.status(400).send("Vault login error.");
+    }
+});
+
+
+// Posting to root path interpreted as a login attempt
+// processing login
+router.get("/topics", (req, res)=>{
+    try{
+        let id = getVaultId(req.headers["host"]);
+        if(!id){
+            res.set("Content-Type", "application/json")
+            res.status(401).send("Vault login error: vault not found");
+        } else {
+            let topics = vaultManager.getTopics(id);
+            res.set("Content-Type", "application/json")
+               .status(200).send({"topics": topics, "vaultId": id, "version": global.VERSION})
         }
     }catch(err){
         Logger.warn(err.message, {stack: err.stack, cat: "login"});

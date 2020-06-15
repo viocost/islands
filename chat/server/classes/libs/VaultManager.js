@@ -168,21 +168,31 @@ class VaultManager{
         if(!this.isVaultExist(id)){
             throw new Error("Vault not found");
         }
+
         let vaultPath = this.getVaultPath(id);
-        let topicsPath = this.getTopicsPath(id);
+        let vault =  fs.readFileSync(vaultPath, 'utf8');
+        return vault
+    }
+
+    getTopics(vaultId){
+        if(!this.isVaultExist(vaultId)){
+            return null
+        }
+
+        let res = {}
+        let topicsPath = this.getTopicsPath(vaultId);
+
         if (!fs.existsSync(topicsPath)){
             console.log("Topics path does not exist. Probably vault is in v1 format. Creating...")
             fs.mkdirSync(topicsPath)
         }
         let topicsFiles = fs.readdirSync(topicsPath)
-        let res = {}
-        res.vault = fs.readFileSync(vaultPath, 'utf8');
-        res.topics = {}
+
         for (let topic of topicsFiles){
-            res.topics[topic] = fs.readFileSync(path.join(topicsPath,  topic), "utf8")
+            res[topic] = fs.readFileSync(path.join(topicsPath,  topic), "utf8")
         }
-        return res
     }
+
 
     getTopicsIds(id){
         if(!this.isVaultExist(id)) return null;

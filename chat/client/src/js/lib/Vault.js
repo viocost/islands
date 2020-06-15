@@ -82,7 +82,7 @@ export class Vault{
                     return 'fetchingVault'
                 }
             }
-        })
+        }, "uninitialized", StateMachine.Warn)
     }
 
     static registerVault(password, confirm, version){
@@ -196,32 +196,43 @@ export class Vault{
         })
     }
 
+
+
+    load(){
+        console.log("Loading vault");
+        this.stateMachine.handle.fetchVault()
+    }
+
     processVault(data){
         let self = this;
         setTimeout(()=>{
             console.log("Processing vault");
-            this.initSaved()
+            self.initSaved(data)
         })
     }
 
 
-    fetchVault(cb){
+    fetchVault(){
         let self = this;
+        console.log("Fetching vault");
         setTimeout(()=>{
-            let url = "/";
+            let url = "/vault";
             fetch(url, {
-                method: 'POST',
+                method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
                 },
             })
             .then(response => {
                 if(!response.ok) throw new Error(`${response.status}: ${response.statusText}`)
+
+                console.log("Vault received. ");
                 return response.json()
             })
             .then(data => {
-                console.log("Vault fetched");
-                self.stateMachine.handle.
+
+                console.log("Vault parsed. ");
+                self.stateMachine.handle.processVault(data)
             })
             .catch(err=>{
                 console.log(`Error fetching vault: ${err}`);
@@ -336,10 +347,7 @@ export class Vault{
     }
 
 
-    async initSaved(version = Err.required("Current chat version"),
-                    vault_encrypted = Err.required("Vault parse: data parameter missing"),
-                    password = Err.required("Vault parse: password parameter missing"),
-                    topics={}){
+    async initSaved(vault_encrypted = Err.required("Vault parse: data parameter missing")){
         let ic = new iCrypto();
         //console.log(`Salt: ${vault_encrypted.substring(0, 256)}`)
         //console.log(`Vault: ${vault_encrypted.substr(256)}`)
@@ -357,7 +365,6 @@ export class Vault{
 
         this.publicKey = data.publicKey;
         this.privateKey = data.privateKey;
-        this.password = password;
 
         //settings
         if(data.settings){
@@ -377,20 +384,22 @@ export class Vault{
             this.pkfp = data.pkfp;
         }
 
-        let unpackedTopics = this.unpackTopics(topics, password)
-
-        if (unpackedTopics){
-            for(let pkfp of Object.keys(unpackedTopics)){
-                console.log(`INITIALIZING TOPIC ${pkfp}`);
-                this.topics[pkfp] = new Topic(
-                    this.version,
-                    pkfp,
-                    unpackedTopics[pkfp].name,
-                    unpackedTopics[pkfp].key,
-                    unpackedTopics[pkfp].comment
-                )
-            }
-        }
+        //////////////////////////////////////////////////////////////
+        // let unpackedTopics = this.unpackTopics(topics, password) //
+        //                                                          //
+        // if (unpackedTopics){                                     //
+        //     for(let pkfp of Object.keys(unpackedTopics)){        //
+        //         console.log(`INITIALIZING TOPIC ${pkfp}`);       //
+        //         this.topics[pkfp] = new Topic(                   //
+        //             this.version,                                //
+        //             pkfp,                                        //
+        //             unpackedTopics[pkfp].name,                   //
+        //             unpackedTopics[pkfp].key,                    //
+        //             unpackedTopics[pkfp].comment                 //
+        //         )                                                //
+        //     }                                                    //
+        // }                                                        //
+        //////////////////////////////////////////////////////////////
 
         if (!data.version || semver.lt(data.version, "2.0.0")){
             // TODO format update required!

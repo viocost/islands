@@ -1702,8 +1702,15 @@ function initSession(){
     }
 
     console.log("Chat created. Starting session...");
+    vault = new Vault(passwordEl.value);
 
-    chat.initSession(passwordEl.value)
+    vault.once("active", loadTopics)
+    vault.load()
+}
+
+function loadTopics(){
+    console.log("Loading topics...");
+
 }
 
 function loadingOn() {
