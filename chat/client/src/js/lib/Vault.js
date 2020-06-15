@@ -64,6 +64,10 @@ export class Vault{
 
             processingVault: {
                 setActive: ()=>{
+                    console.log("Vault is now active");
+
+                    this.initialized = true;
+                    this.emit("active")
                     return 'active'
                 },
 
@@ -232,7 +236,7 @@ export class Vault{
             .then(data => {
 
                 console.log("Vault parsed. ");
-                self.stateMachine.handle.processVault(data)
+                self.stateMachine.handle.processVault(data.vault)
             })
             .catch(err=>{
                 console.log(`Error fetching vault: ${err}`);
@@ -347,14 +351,15 @@ export class Vault{
     }
 
 
-    async initSaved(vault_encrypted = Err.required("Vault parse: data parameter missing")){
+    async initSaved(vaultEncrypted = Err.required("Vault parse: data parameter missing")){
+        console.log(`Initializing vault`);
         let ic = new iCrypto();
-        //console.log(`Salt: ${vault_encrypted.substring(0, 256)}`)
-        //console.log(`Vault: ${vault_encrypted.substr(256)}`)
-        ic.addBlob("s16", vault_encrypted.substring(0, 256))
-            .addBlob("v_cip", vault_encrypted.substr(256))
+        //console.log(`Salt: ${vaultEncrypted.substring(0, 256)}`)
+        //console.log(`Vault: ${vaultEncrypted.substr(256)}`)
+        ic.addBlob("s16", vaultEncrypted.substring(0, 256))
+            .addBlob("v_cip", vaultEncrypted.substr(256))
             .hexToBytes("s16", "salt")
-            .createPasswordBasedSymKey("sym", password, "s16")
+            .createPasswordBasedSymKey("sym", this.password, "s16")
             .AESDecrypt("v_cip", "sym", "vault_raw", true);
 
         //Populating new object
@@ -414,7 +419,7 @@ export class Vault{
 
 
 
-        this.initialized = true;
+        this.stateMachine.handle.setActive()
     }
 
 

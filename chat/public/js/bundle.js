@@ -5411,7 +5411,7 @@ var $iterators = __webpack_require__(138);
 var getKeys = __webpack_require__(64);
 var redefine = __webpack_require__(25);
 var global = __webpack_require__(7);
-var hide = __webpack_require__(23);
+var hide = __webpack_require__(22);
 var Iterators = __webpack_require__(52);
 var wks = __webpack_require__(8);
 var ITERATOR = wks('iterator');
@@ -7270,7 +7270,7 @@ function isnan (val) {
 
 var global = __webpack_require__(7);
 var core = __webpack_require__(40);
-var hide = __webpack_require__(23);
+var hide = __webpack_require__(22);
 var redefine = __webpack_require__(25);
 var ctx = __webpack_require__(26);
 var PROTOTYPE = 'prototype';
@@ -7562,6 +7562,217 @@ process.umask = function() { return 0; };
 
 /***/ }),
 /* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var dP = __webpack_require__(19);
+var createDesc = __webpack_require__(49);
+module.exports = __webpack_require__(17) ? function (object, key, value) {
+  return dP.f(object, key, createDesc(1, value));
+} : function (object, key, value) {
+  object[key] = value;
+  return object;
+};
+
+
+/***/ }),
+/* 23 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/**
+ * An API for getting cryptographically-secure random bytes. The bytes are
+ * generated using the Fortuna algorithm devised by Bruce Schneier and
+ * Niels Ferguson.
+ *
+ * Getting strong random bytes is not yet easy to do in javascript. The only
+ * truish random entropy that can be collected is from the mouse, keyboard, or
+ * from timing with respect to page loads, etc. This generator makes a poor
+ * attempt at providing random bytes when those sources haven't yet provided
+ * enough entropy to initially seed or to reseed the PRNG.
+ *
+ * @author Dave Longley
+ *
+ * Copyright (c) 2009-2014 Digital Bazaar, Inc.
+ */
+var forge = __webpack_require__(3);
+__webpack_require__(45);
+__webpack_require__(157);
+__webpack_require__(158);
+__webpack_require__(5);
+
+(function() {
+
+// forge.random already defined
+if(forge.random && forge.random.getBytes) {
+  module.exports = forge.random;
+  return;
+}
+
+(function(jQuery) {
+
+// the default prng plugin, uses AES-128
+var prng_aes = {};
+var _prng_aes_output = new Array(4);
+var _prng_aes_buffer = forge.util.createBuffer();
+prng_aes.formatKey = function(key) {
+  // convert the key into 32-bit integers
+  var tmp = forge.util.createBuffer(key);
+  key = new Array(4);
+  key[0] = tmp.getInt32();
+  key[1] = tmp.getInt32();
+  key[2] = tmp.getInt32();
+  key[3] = tmp.getInt32();
+
+  // return the expanded key
+  return forge.aes._expandKey(key, false);
+};
+prng_aes.formatSeed = function(seed) {
+  // convert seed into 32-bit integers
+  var tmp = forge.util.createBuffer(seed);
+  seed = new Array(4);
+  seed[0] = tmp.getInt32();
+  seed[1] = tmp.getInt32();
+  seed[2] = tmp.getInt32();
+  seed[3] = tmp.getInt32();
+  return seed;
+};
+prng_aes.cipher = function(key, seed) {
+  forge.aes._updateBlock(key, seed, _prng_aes_output, false);
+  _prng_aes_buffer.putInt32(_prng_aes_output[0]);
+  _prng_aes_buffer.putInt32(_prng_aes_output[1]);
+  _prng_aes_buffer.putInt32(_prng_aes_output[2]);
+  _prng_aes_buffer.putInt32(_prng_aes_output[3]);
+  return _prng_aes_buffer.getBytes();
+};
+prng_aes.increment = function(seed) {
+  // FIXME: do we care about carry or signed issues?
+  ++seed[3];
+  return seed;
+};
+prng_aes.md = forge.md.sha256;
+
+/**
+ * Creates a new PRNG.
+ */
+function spawnPrng() {
+  var ctx = forge.prng.create(prng_aes);
+
+  /**
+   * Gets random bytes. If a native secure crypto API is unavailable, this
+   * method tries to make the bytes more unpredictable by drawing from data that
+   * can be collected from the user of the browser, eg: mouse movement.
+   *
+   * If a callback is given, this method will be called asynchronously.
+   *
+   * @param count the number of random bytes to get.
+   * @param [callback(err, bytes)] called once the operation completes.
+   *
+   * @return the random bytes in a string.
+   */
+  ctx.getBytes = function(count, callback) {
+    return ctx.generate(count, callback);
+  };
+
+  /**
+   * Gets random bytes asynchronously. If a native secure crypto API is
+   * unavailable, this method tries to make the bytes more unpredictable by
+   * drawing from data that can be collected from the user of the browser,
+   * eg: mouse movement.
+   *
+   * @param count the number of random bytes to get.
+   *
+   * @return the random bytes in a string.
+   */
+  ctx.getBytesSync = function(count) {
+    return ctx.generate(count);
+  };
+
+  return ctx;
+}
+
+// create default prng context
+var _ctx = spawnPrng();
+
+// add other sources of entropy only if window.crypto.getRandomValues is not
+// available -- otherwise this source will be automatically used by the prng
+var getRandomValues = null;
+if(typeof window !== 'undefined') {
+  var _crypto = window.crypto || window.msCrypto;
+  if(_crypto && _crypto.getRandomValues) {
+    getRandomValues = function(arr) {
+      return _crypto.getRandomValues(arr);
+    };
+  }
+}
+if(forge.options.usePureJavaScript ||
+  (!forge.util.isNodejs && !getRandomValues)) {
+  // if this is a web worker, do not use weak entropy, instead register to
+  // receive strong entropy asynchronously from the main thread
+  if(typeof window === 'undefined' || window.document === undefined) {
+    // FIXME:
+  }
+
+  // get load time entropy
+  _ctx.collectInt(+new Date(), 32);
+
+  // add some entropy from navigator object
+  if(typeof(navigator) !== 'undefined') {
+    var _navBytes = '';
+    for(var key in navigator) {
+      try {
+        if(typeof(navigator[key]) == 'string') {
+          _navBytes += navigator[key];
+        }
+      } catch(e) {
+        /* Some navigator keys might not be accessible, e.g. the geolocation
+          attribute throws an exception if touched in Mozilla chrome://
+          context.
+
+          Silently ignore this and just don't use this as a source of
+          entropy. */
+      }
+    }
+    _ctx.collect(_navBytes);
+    _navBytes = null;
+  }
+
+  // add mouse and keyboard collectors if jquery is available
+  if(jQuery) {
+    // set up mouse entropy capture
+    jQuery().mousemove(function(e) {
+      // add mouse coords
+      _ctx.collectInt(e.clientX, 16);
+      _ctx.collectInt(e.clientY, 16);
+    });
+
+    // set up keyboard entropy capture
+    jQuery().keypress(function(e) {
+      _ctx.collectInt(e.charCode, 8);
+    });
+  }
+}
+
+/* Random API */
+if(!forge.random) {
+  forge.random = _ctx;
+} else {
+  // extend forge.random with _ctx
+  for(var key in _ctx) {
+    forge.random[key] = _ctx[key];
+  }
+}
+
+// expose spawn PRNG
+forge.random.createInstance = spawnPrng;
+
+module.exports = forge.random;
+
+})(typeof(jQuery) !== 'undefined' ? jQuery : null);
+
+})();
+
+
+/***/ }),
+/* 24 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -9004,222 +9215,11 @@ var Topic_Topic = /*#__PURE__*/function () {
 }();
 
 /***/ }),
-/* 23 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var dP = __webpack_require__(19);
-var createDesc = __webpack_require__(49);
-module.exports = __webpack_require__(17) ? function (object, key, value) {
-  return dP.f(object, key, createDesc(1, value));
-} : function (object, key, value) {
-  object[key] = value;
-  return object;
-};
-
-
-/***/ }),
-/* 24 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/**
- * An API for getting cryptographically-secure random bytes. The bytes are
- * generated using the Fortuna algorithm devised by Bruce Schneier and
- * Niels Ferguson.
- *
- * Getting strong random bytes is not yet easy to do in javascript. The only
- * truish random entropy that can be collected is from the mouse, keyboard, or
- * from timing with respect to page loads, etc. This generator makes a poor
- * attempt at providing random bytes when those sources haven't yet provided
- * enough entropy to initially seed or to reseed the PRNG.
- *
- * @author Dave Longley
- *
- * Copyright (c) 2009-2014 Digital Bazaar, Inc.
- */
-var forge = __webpack_require__(3);
-__webpack_require__(45);
-__webpack_require__(157);
-__webpack_require__(158);
-__webpack_require__(5);
-
-(function() {
-
-// forge.random already defined
-if(forge.random && forge.random.getBytes) {
-  module.exports = forge.random;
-  return;
-}
-
-(function(jQuery) {
-
-// the default prng plugin, uses AES-128
-var prng_aes = {};
-var _prng_aes_output = new Array(4);
-var _prng_aes_buffer = forge.util.createBuffer();
-prng_aes.formatKey = function(key) {
-  // convert the key into 32-bit integers
-  var tmp = forge.util.createBuffer(key);
-  key = new Array(4);
-  key[0] = tmp.getInt32();
-  key[1] = tmp.getInt32();
-  key[2] = tmp.getInt32();
-  key[3] = tmp.getInt32();
-
-  // return the expanded key
-  return forge.aes._expandKey(key, false);
-};
-prng_aes.formatSeed = function(seed) {
-  // convert seed into 32-bit integers
-  var tmp = forge.util.createBuffer(seed);
-  seed = new Array(4);
-  seed[0] = tmp.getInt32();
-  seed[1] = tmp.getInt32();
-  seed[2] = tmp.getInt32();
-  seed[3] = tmp.getInt32();
-  return seed;
-};
-prng_aes.cipher = function(key, seed) {
-  forge.aes._updateBlock(key, seed, _prng_aes_output, false);
-  _prng_aes_buffer.putInt32(_prng_aes_output[0]);
-  _prng_aes_buffer.putInt32(_prng_aes_output[1]);
-  _prng_aes_buffer.putInt32(_prng_aes_output[2]);
-  _prng_aes_buffer.putInt32(_prng_aes_output[3]);
-  return _prng_aes_buffer.getBytes();
-};
-prng_aes.increment = function(seed) {
-  // FIXME: do we care about carry or signed issues?
-  ++seed[3];
-  return seed;
-};
-prng_aes.md = forge.md.sha256;
-
-/**
- * Creates a new PRNG.
- */
-function spawnPrng() {
-  var ctx = forge.prng.create(prng_aes);
-
-  /**
-   * Gets random bytes. If a native secure crypto API is unavailable, this
-   * method tries to make the bytes more unpredictable by drawing from data that
-   * can be collected from the user of the browser, eg: mouse movement.
-   *
-   * If a callback is given, this method will be called asynchronously.
-   *
-   * @param count the number of random bytes to get.
-   * @param [callback(err, bytes)] called once the operation completes.
-   *
-   * @return the random bytes in a string.
-   */
-  ctx.getBytes = function(count, callback) {
-    return ctx.generate(count, callback);
-  };
-
-  /**
-   * Gets random bytes asynchronously. If a native secure crypto API is
-   * unavailable, this method tries to make the bytes more unpredictable by
-   * drawing from data that can be collected from the user of the browser,
-   * eg: mouse movement.
-   *
-   * @param count the number of random bytes to get.
-   *
-   * @return the random bytes in a string.
-   */
-  ctx.getBytesSync = function(count) {
-    return ctx.generate(count);
-  };
-
-  return ctx;
-}
-
-// create default prng context
-var _ctx = spawnPrng();
-
-// add other sources of entropy only if window.crypto.getRandomValues is not
-// available -- otherwise this source will be automatically used by the prng
-var getRandomValues = null;
-if(typeof window !== 'undefined') {
-  var _crypto = window.crypto || window.msCrypto;
-  if(_crypto && _crypto.getRandomValues) {
-    getRandomValues = function(arr) {
-      return _crypto.getRandomValues(arr);
-    };
-  }
-}
-if(forge.options.usePureJavaScript ||
-  (!forge.util.isNodejs && !getRandomValues)) {
-  // if this is a web worker, do not use weak entropy, instead register to
-  // receive strong entropy asynchronously from the main thread
-  if(typeof window === 'undefined' || window.document === undefined) {
-    // FIXME:
-  }
-
-  // get load time entropy
-  _ctx.collectInt(+new Date(), 32);
-
-  // add some entropy from navigator object
-  if(typeof(navigator) !== 'undefined') {
-    var _navBytes = '';
-    for(var key in navigator) {
-      try {
-        if(typeof(navigator[key]) == 'string') {
-          _navBytes += navigator[key];
-        }
-      } catch(e) {
-        /* Some navigator keys might not be accessible, e.g. the geolocation
-          attribute throws an exception if touched in Mozilla chrome://
-          context.
-
-          Silently ignore this and just don't use this as a source of
-          entropy. */
-      }
-    }
-    _ctx.collect(_navBytes);
-    _navBytes = null;
-  }
-
-  // add mouse and keyboard collectors if jquery is available
-  if(jQuery) {
-    // set up mouse entropy capture
-    jQuery().mousemove(function(e) {
-      // add mouse coords
-      _ctx.collectInt(e.clientX, 16);
-      _ctx.collectInt(e.clientY, 16);
-    });
-
-    // set up keyboard entropy capture
-    jQuery().keypress(function(e) {
-      _ctx.collectInt(e.charCode, 8);
-    });
-  }
-}
-
-/* Random API */
-if(!forge.random) {
-  forge.random = _ctx;
-} else {
-  // extend forge.random with _ctx
-  for(var key in _ctx) {
-    forge.random[key] = _ctx[key];
-  }
-}
-
-// expose spawn PRNG
-forge.random.createInstance = spawnPrng;
-
-module.exports = forge.random;
-
-})(typeof(jQuery) !== 'undefined' ? jQuery : null);
-
-})();
-
-
-/***/ }),
 /* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var global = __webpack_require__(7);
-var hide = __webpack_require__(23);
+var hide = __webpack_require__(22);
 var has = __webpack_require__(36);
 var SRC = __webpack_require__(41)('src');
 var $toString = __webpack_require__(195);
@@ -9539,7 +9539,7 @@ $JSON && $export($export.S + $export.F * (!USE_NATIVE || $fails(function () {
 });
 
 // 19.4.3.4 Symbol.prototype[@@toPrimitive](hint)
-$Symbol[PROTOTYPE][TO_PRIMITIVE] || __webpack_require__(23)($Symbol[PROTOTYPE], TO_PRIMITIVE, $Symbol[PROTOTYPE].valueOf);
+$Symbol[PROTOTYPE][TO_PRIMITIVE] || __webpack_require__(22)($Symbol[PROTOTYPE], TO_PRIMITIVE, $Symbol[PROTOTYPE].valueOf);
 // 19.4.3.5 Symbol.prototype[@@toStringTag]
 setToStringTag($Symbol, 'Symbol');
 // 20.2.1.9 Math[@@toStringTag]
@@ -15768,7 +15768,7 @@ function verifyPassword(password, confirm) {
   }
 }
 // EXTERNAL MODULE: ./client/src/js/lib/Topic.js + 1 modules
-var Topic = __webpack_require__(22);
+var Topic = __webpack_require__(24);
 
 // EXTERNAL MODULE: ./client/src/js/lib/ClientSettings.js
 var ClientSettings = __webpack_require__(56);
@@ -15858,6 +15858,8 @@ var Vault_Vault = /*#__PURE__*/function () {
   _createClass(Vault, [{
     key: "prepareStateMachine",
     value: function prepareStateMachine() {
+      var _this = this;
+
       var self = this;
       return new StateMachine["a" /* StateMachine */]({
         uninitialized: {
@@ -15878,6 +15880,11 @@ var Vault_Vault = /*#__PURE__*/function () {
         },
         processingVault: {
           setActive: function setActive() {
+            console.log("Vault is now active");
+            _this.initialized = true;
+
+            _this.emit("active");
+
             return 'active';
           },
           error: function error(data) {
@@ -15906,7 +15913,7 @@ var Vault_Vault = /*#__PURE__*/function () {
       var self = this;
       setTimeout(function () {
         console.log("Processing vault");
-        self.initSaved();
+        self.initSaved(data);
       });
     }
   }, {
@@ -15927,7 +15934,7 @@ var Vault_Vault = /*#__PURE__*/function () {
           return response.json();
         }).then(function (data) {
           console.log("Vault parsed. ");
-          self.stateMachine.handle.processVault(data);
+          self.stateMachine.handle.processVault(data.vault);
         }).catch(function (err) {
           console.log("Error fetching vault: ".concat(err));
         });
@@ -16049,38 +16056,27 @@ var Vault_Vault = /*#__PURE__*/function () {
     key: "initSaved",
     value: function () {
       var _initSaved = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-        var version,
-            vault_encrypted,
-            password,
-            topics,
+        var vaultEncrypted,
             ic,
             data,
-            unpackedTopics,
-            _i,
-            _Object$keys,
-            pkfp,
             self,
             _args2 = arguments;
-
         return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                version = _args2.length > 0 && _args2[0] !== undefined ? _args2[0] : IError["a" /* IError */].required("Current chat version");
-                vault_encrypted = _args2.length > 1 && _args2[1] !== undefined ? _args2[1] : IError["a" /* IError */].required("Vault parse: data parameter missing");
-                password = _args2.length > 2 && _args2[2] !== undefined ? _args2[2] : IError["a" /* IError */].required("Vault parse: password parameter missing");
-                topics = _args2.length > 3 && _args2[3] !== undefined ? _args2[3] : {};
-                ic = new iCrypto["a" /* iCrypto */](); //console.log(`Salt: ${vault_encrypted.substring(0, 256)}`)
-                //console.log(`Vault: ${vault_encrypted.substr(256)}`)
+                vaultEncrypted = _args2.length > 0 && _args2[0] !== undefined ? _args2[0] : IError["a" /* IError */].required("Vault parse: data parameter missing");
+                console.log("Initializing vault");
+                ic = new iCrypto["a" /* iCrypto */](); //console.log(`Salt: ${vaultEncrypted.substring(0, 256)}`)
+                //console.log(`Vault: ${vaultEncrypted.substr(256)}`)
 
-                ic.addBlob("s16", vault_encrypted.substring(0, 256)).addBlob("v_cip", vault_encrypted.substr(256)).hexToBytes("s16", "salt").createPasswordBasedSymKey("sym", password, "s16").AESDecrypt("v_cip", "sym", "vault_raw", true); //Populating new object
+                ic.addBlob("s16", vaultEncrypted.substring(0, 256)).addBlob("v_cip", vaultEncrypted.substr(256)).hexToBytes("s16", "salt").createPasswordBasedSymKey("sym", this.password, "s16").AESDecrypt("v_cip", "sym", "vault_raw", true); //Populating new object
 
                 data = JSON.parse(ic.get("vault_raw"));
                 this.adminKey = data.adminKey;
                 this.admin = data.admin;
                 this.publicKey = data.publicKey;
-                this.privateKey = data.privateKey;
-                this.password = password; //settings
+                this.privateKey = data.privateKey; //settings
 
                 if (data.settings) {
                   this.settings = JSON.parse(JSON.stringify(data.settings));
@@ -16095,17 +16091,23 @@ var Vault_Vault = /*#__PURE__*/function () {
                   this.pkfp = ic.get("pkfp");
                 } else {
                   this.pkfp = data.pkfp;
-                }
+                } //////////////////////////////////////////////////////////////
+                // let unpackedTopics = this.unpackTopics(topics, password) //
+                //                                                          //
+                // if (unpackedTopics){                                     //
+                //     for(let pkfp of Object.keys(unpackedTopics)){        //
+                //         console.log(`INITIALIZING TOPIC ${pkfp}`);       //
+                //         this.topics[pkfp] = new Topic(                   //
+                //             this.version,                                //
+                //             pkfp,                                        //
+                //             unpackedTopics[pkfp].name,                   //
+                //             unpackedTopics[pkfp].key,                    //
+                //             unpackedTopics[pkfp].comment                 //
+                //         )                                                //
+                //     }                                                    //
+                // }                                                        //
+                //////////////////////////////////////////////////////////////
 
-                unpackedTopics = this.unpackTopics(topics, password);
-
-                if (unpackedTopics) {
-                  for (_i = 0, _Object$keys = Object.keys(unpackedTopics); _i < _Object$keys.length; _i++) {
-                    pkfp = _Object$keys[_i];
-                    console.log("INITIALIZING TOPIC ".concat(pkfp));
-                    this.topics[pkfp] = new Topic["a" /* Topic */](this.version, pkfp, unpackedTopics[pkfp].name, unpackedTopics[pkfp].key, unpackedTopics[pkfp].comment);
-                  }
-                }
 
                 if (!data.version || semver["lt"](data.version, "2.0.0")) {
                   // TODO format update required!
@@ -16130,9 +16132,9 @@ var Vault_Vault = /*#__PURE__*/function () {
                   }));
                 }
 
-                this.initialized = true;
+                this.stateMachine.handle.setActive();
 
-              case 18:
+              case 13:
               case "end":
                 return _context2.stop();
             }
@@ -16150,7 +16152,7 @@ var Vault_Vault = /*#__PURE__*/function () {
     key: "updateVaultFormat",
     value: function () {
       var _updateVaultFormat = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(data) {
-        var _this = this;
+        var _this2 = this;
 
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
@@ -16158,7 +16160,7 @@ var Vault_Vault = /*#__PURE__*/function () {
               case 0:
                 if (typeof data.topics === "object") {
                   Object.keys(data.topics).forEach(function (pkfp) {
-                    _this.topics[pkfp] = new Topic["a" /* Topic */](_this.version, pkfp, data.topics[pkfp].name, data.topics[pkfp].key, data.topics[pkfp].comment);
+                    _this2.topics[pkfp] = new Topic["a" /* Topic */](_this2.version, pkfp, data.topics[pkfp].name, data.topics[pkfp].key, data.topics[pkfp].comment);
                   });
                 }
 
@@ -16306,8 +16308,8 @@ var Vault_Vault = /*#__PURE__*/function () {
     value: function packTopics() {
       var res = {};
 
-      for (var _i2 = 0, _Object$keys2 = Object.keys(this.topics); _i2 < _Object$keys2.length; _i2++) {
-        var pkfp = _Object$keys2[_i2];
+      for (var _i = 0, _Object$keys = Object.keys(this.topics); _i < _Object$keys.length; _i++) {
+        var pkfp = _Object$keys[_i];
         var topic = this.topics[pkfp];
         res[pkfp] = this.prepareVaultTopicRecord(this.version, topic.pkfp, topic.privateKey, topic.name, topic.settings, topic.comment);
       }
@@ -16322,8 +16324,8 @@ var Vault_Vault = /*#__PURE__*/function () {
     value: function unpackTopics(topics) {
       var res = {};
 
-      for (var _i3 = 0, _Object$keys3 = Object.keys(topics); _i3 < _Object$keys3.length; _i3++) {
-        var pkfp = _Object$keys3[_i3];
+      for (var _i2 = 0, _Object$keys2 = Object.keys(topics); _i2 < _Object$keys2.length; _i2++) {
+        var pkfp = _Object$keys2[_i2];
         res[pkfp] = this.decryptTopic(topics[pkfp], this.password);
       }
 
@@ -19501,7 +19503,7 @@ module.exports = function (R, S) {
 
 __webpack_require__(206);
 var redefine = __webpack_require__(25);
-var hide = __webpack_require__(23);
+var hide = __webpack_require__(22);
 var fails = __webpack_require__(18);
 var defined = __webpack_require__(78);
 var wks = __webpack_require__(8);
@@ -20202,7 +20204,7 @@ __webpack_require__(90);
 __webpack_require__(46);
 __webpack_require__(160);
 __webpack_require__(161);
-__webpack_require__(24);
+__webpack_require__(23);
 __webpack_require__(5);
 
 if(typeof BigInteger === 'undefined') {
@@ -29059,7 +29061,7 @@ pki.verifyCertificateChain = function(caStore, chain, verify) {
  * Copyright (c) 2012 Stefan Siegl <stesie@brokenpipe.de>
  */
 var forge = __webpack_require__(3);
-__webpack_require__(24);
+__webpack_require__(23);
 __webpack_require__(5);
 
 // shortcut for PSS API
@@ -30996,7 +30998,7 @@ if (__webpack_require__(17)) {
   var ctx = __webpack_require__(26);
   var anInstance = __webpack_require__(60);
   var propertyDesc = __webpack_require__(49);
-  var hide = __webpack_require__(23);
+  var hide = __webpack_require__(22);
   var redefineAll = __webpack_require__(59);
   var toInteger = __webpack_require__(44);
   var toLength = __webpack_require__(20);
@@ -31472,7 +31474,7 @@ if (__webpack_require__(17)) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var global = __webpack_require__(7);
-var hide = __webpack_require__(23);
+var hide = __webpack_require__(22);
 var uid = __webpack_require__(41);
 var TYPED = uid('typed_array');
 var VIEW = uid('view');
@@ -31660,7 +31662,7 @@ addToUnscopables('entries');
 // 22.1.3.31 Array.prototype[@@unscopables]
 var UNSCOPABLES = __webpack_require__(8)('unscopables');
 var ArrayProto = Array.prototype;
-if (ArrayProto[UNSCOPABLES] == undefined) __webpack_require__(23)(ArrayProto, UNSCOPABLES, {});
+if (ArrayProto[UNSCOPABLES] == undefined) __webpack_require__(22)(ArrayProto, UNSCOPABLES, {});
 module.exports = function (key) {
   ArrayProto[UNSCOPABLES][key] = true;
 };
@@ -31684,7 +31686,7 @@ module.exports = function (done, value) {
 var LIBRARY = __webpack_require__(42);
 var $export = __webpack_require__(16);
 var redefine = __webpack_require__(25);
-var hide = __webpack_require__(23);
+var hide = __webpack_require__(22);
 var Iterators = __webpack_require__(52);
 var $iterCreate = __webpack_require__(202);
 var setToStringTag = __webpack_require__(51);
@@ -33365,7 +33367,7 @@ __webpack_require__(67);
 __webpack_require__(117);
 __webpack_require__(53);
 __webpack_require__(154);
-__webpack_require__(24);
+__webpack_require__(23);
 __webpack_require__(68);
 __webpack_require__(5);
 
@@ -37537,7 +37539,7 @@ __webpack_require__(33);
 __webpack_require__(46);
 __webpack_require__(118);
 __webpack_require__(53);
-__webpack_require__(24);
+__webpack_require__(23);
 __webpack_require__(159);
 __webpack_require__(89);
 __webpack_require__(5);
@@ -39768,7 +39770,7 @@ forge.rc2.createDecryptionCipher = function(key, bits) {
  */
 var forge = __webpack_require__(3);
 __webpack_require__(5);
-__webpack_require__(24);
+__webpack_require__(23);
 __webpack_require__(68);
 
 // shortcut for PKCS#1 API
@@ -40013,7 +40015,7 @@ function rsa_mgf1(seed, maskLength, hash) {
 var forge = __webpack_require__(3);
 __webpack_require__(5);
 __webpack_require__(90);
-__webpack_require__(24);
+__webpack_require__(23);
 
 (function() {
 
@@ -40407,7 +40409,7 @@ __webpack_require__(67);
 __webpack_require__(46);
 __webpack_require__(163);
 __webpack_require__(155);
-__webpack_require__(24);
+__webpack_require__(23);
 __webpack_require__(89);
 __webpack_require__(68);
 __webpack_require__(5);
@@ -46433,7 +46435,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;!function(t,o)
 /* harmony import */ var _ArrivalHub__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(99);
 /* harmony import */ var _ChatUtility__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(4);
 /* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(6);
-/* harmony import */ var _Topic__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(22);
+/* harmony import */ var _Topic__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(24);
 /* harmony import */ var _DownloadAttachmentAgent__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(190);
 /* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(2);
 /* harmony import */ var _TopicJoinAgent__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(191);
@@ -49259,7 +49261,7 @@ var DownloadAttachmentAgent = /*#__PURE__*/function () {
 /* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
 /* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(6);
 /* harmony import */ var _WildEmitter__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(10);
-/* harmony import */ var _Topic__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(22);
+/* harmony import */ var _Topic__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(24);
 /* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(0);
 /* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_common_Events__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var _ChatUtility__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(4);
@@ -49456,7 +49458,7 @@ var TopicJoinAgent = /*#__PURE__*/function () {
 /* harmony import */ var _ChatMessage__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(34);
 /* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(6);
 /* harmony import */ var _common_IError__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(1);
-/* harmony import */ var _Topic__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(22);
+/* harmony import */ var _Topic__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(24);
 /* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(0);
 /* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(_common_Events__WEBPACK_IMPORTED_MODULE_10__);
 /* harmony import */ var _FileWorker__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(100);
@@ -49901,7 +49903,7 @@ var global = __webpack_require__(7);
 var DESCRIPTORS = __webpack_require__(17);
 var LIBRARY = __webpack_require__(42);
 var $typed = __webpack_require__(130);
-var hide = __webpack_require__(23);
+var hide = __webpack_require__(22);
 var redefineAll = __webpack_require__(59);
 var fails = __webpack_require__(18);
 var anInstance = __webpack_require__(60);
@@ -50289,7 +50291,7 @@ var setToStringTag = __webpack_require__(51);
 var IteratorPrototype = {};
 
 // 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
-__webpack_require__(23)(IteratorPrototype, __webpack_require__(8)('iterator'), function () { return this; });
+__webpack_require__(22)(IteratorPrototype, __webpack_require__(8)('iterator'), function () { return this; });
 
 module.exports = function (Constructor, NAME, next) {
   Constructor.prototype = create(IteratorPrototype, { next: descriptor(1, next) });
@@ -51184,7 +51186,7 @@ __webpack_require__(154);
 __webpack_require__(161);
 __webpack_require__(158);
 __webpack_require__(120);
-__webpack_require__(24);
+__webpack_require__(23);
 __webpack_require__(159);
 __webpack_require__(241);
 __webpack_require__(242);
@@ -51969,7 +51971,7 @@ forge.mgf.mgf1 = forge.mgf1;
  */
 var forge = __webpack_require__(3);
 __webpack_require__(90);
-__webpack_require__(24);
+__webpack_require__(23);
 __webpack_require__(166);
 __webpack_require__(5);
 
@@ -52971,7 +52973,7 @@ function M(o, a, b) {
  */
 var forge = __webpack_require__(3);
 __webpack_require__(5);
-__webpack_require__(24);
+__webpack_require__(23);
 __webpack_require__(90);
 
 module.exports = forge.kem = forge.kem || {};
@@ -53178,7 +53180,7 @@ __webpack_require__(88);
 __webpack_require__(46);
 __webpack_require__(53);
 __webpack_require__(163);
-__webpack_require__(24);
+__webpack_require__(23);
 __webpack_require__(5);
 __webpack_require__(119);
 
