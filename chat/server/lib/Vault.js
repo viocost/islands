@@ -31,10 +31,5 @@ class Vault extends EventEmitter{
 }
 
 
-const VaultState = {
-    UNINITIALIZED: Symbol("Uninitialized"),
-    INITIALIZED: Symbol("Initialized")
-}
-
 
 module.exports = Vault;

@@ -8,6 +8,10 @@ import "../css/chat.sass"
 import "../css/vendor/loading.css";
 import * as CuteSet from "cute-set";
 import { Vault } from "./lib/Vault";
+import { MessageQueue } from "./lib/MessageQueue"
+import { ArrivalHub } from "./lib/ArrivalHub"
+import { Connector } from "./lib/Connector"
+
 import { runConnectorTest } from "./test/connector"
 //import "../css/vendor/toastr.min.css"
 // impor
@@ -31,6 +35,9 @@ let sidePanel;
 // Objects
 
 //Top tier objects
+let connector = new Connector()
+let messageQueue = new MessageQueue(connector)
+let arrivalHub = new ArrivalHub(connector)
 let chat = null//new ChatClient();
 let vault = null//new Vault();
 let topics = {};

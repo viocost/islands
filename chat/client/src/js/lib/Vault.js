@@ -10,6 +10,7 @@ import { ChatUtility } from "./ChatUtility";
 import { assert } from "../../../../common/IError";
 import { XHR } from "./xhr"
 import * as semver from "semver";
+import { StateMachine } from "./StateMachine"
 
 /**
  * Represents key vault
@@ -17,7 +18,7 @@ import * as semver from "semver";
  *
  */
 export class Vault{
-    constructor(){
+    constructor(password){
         WildEmitter.mixin(this);
         this.id = null;
         this.pkfp;
@@ -25,14 +26,63 @@ export class Vault{
         this.admin = null;
         this.adminKey = null;
         this.topics = {};
-        this.password = null;
+        this.stateMachine = this.prepareStateMachine();
+        this.password = password;
         this.publicKey = null;
         this.privateKey = null;
         this.handlers;
         this.messageQueue;
         this.version;
         this.pendingInvites = {}
+        this.error = null;
         this.initHandlers();
+    }
+
+
+    prepareStateMachine(){
+        let self = this;
+        return new StateMachine({
+            uninitialized: {
+                fetchVault: ()=>{
+                    self.fetchVault()
+                    return 'fetchingVault'
+                }
+            },
+
+            fetchingVault: {
+                processVault: (data)=>{
+                    self.processVault(data)
+                    return 'processingVault'
+                },
+
+                error: (data)=>{
+                    self.error = data;
+                    return 'error'
+                }
+
+            },
+
+            processingVault: {
+                setActive: ()=>{
+                    return 'active'
+                },
+
+                error: (data)=>{
+                    self.error = data;
+                    return 'error'
+                }
+
+            },
+
+            active: {},
+
+            error: {
+                fetchVault: ()=>{
+                    self.fetchVault()
+                    return 'fetchingVault'
+                }
+            }
+        })
     }
 
     static registerVault(password, confirm, version){
@@ -146,22 +196,37 @@ export class Vault{
         })
     }
 
-
-    static fetchVault(cb){
-        let url = "/";
-
-        fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+    processVault(data){
+        let self = this;
+        setTimeout(()=>{
+            console.log("Processing vault");
+            this.initSaved()
         })
-        .then(response => {
-            if(!response.ok) throw new Error(`${response.status}: ${response.statusText}`)
-            return response.json()
-        })
-        .then(data => cb(null, data))
-        .catch(err=>{ cb(err) })
+    }
+
+
+    fetchVault(cb){
+        let self = this;
+        setTimeout(()=>{
+            let url = "/";
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            })
+            .then(response => {
+                if(!response.ok) throw new Error(`${response.status}: ${response.statusText}`)
+                return response.json()
+            })
+            .then(data => {
+                console.log("Vault fetched");
+                self.stateMachine.handle.
+            })
+            .catch(err=>{
+                console.log(`Error fetching vault: ${err}`);
+            })
+        }, 300)
     }
 
 

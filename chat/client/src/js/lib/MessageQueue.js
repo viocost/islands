@@ -7,7 +7,7 @@ export class MessageQueue{
 
     constructor(connector){
         this.queueWorkerInterval = 300 //300ms
-        this.queueWorkerIntervalId;
+        this.workerHandle;
         this.connector = connector;
         this.queue = [];
         this.stop = false;
@@ -33,13 +33,13 @@ export class MessageQueue{
 
     startQueueWorker(){
         console.log("Starting queue worker");
-        this.queueWorkerIntervalId = setInterval(()=>{
+        this.workerHandle = setInterval(()=>{
             this.processQueue(this)
         }, this.queueWorkerInterval);
     }
 
     stop(){
         console.log("Stpping queue worker...");
-        clearInterval(this.queueWorkerIntervalId)
+        clearInterval(this.workerHandle)
     }
 }

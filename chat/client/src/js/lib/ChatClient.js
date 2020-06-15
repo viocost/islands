@@ -38,13 +38,27 @@ export class ChatClient{
     // ---------------------------------------------------------------------------------------------------------------------------
     // Login and session initialization
 
+
+    static async fetchVault(){
+        let url = "/";
+        let response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+
+        if(!response.ok) throw new Error(`${response.status}: ${response.statusText}`)
+        return await response.json()
+    }
+
     processVault(err, data){
 
 
     }
     initSession(password){
 
-        Vault.fetchVault(this.processVault);
+
         setImmediate(async ()=>{
             try{
                 if (!password){
@@ -58,7 +72,7 @@ export class ChatClient{
                     throw new Error("Vault not found")
                 }
 
-                let vaultObj = new Vault()
+                let vaultObj = new Vault(password)
                 await vaultObj.initSaved(this.version, vault.vault, password, vault.topics)
                 this.vault = vaultObj;
                 console.log("Got vault. Initializing");
