@@ -11,7 +11,7 @@ import { assert } from "../../../../common/IError";
 import { XHR } from "./xhr"
 import * as semver from "semver";
 import { StateMachine } from "./StateMachine"
-import { FetchJSON } from "./FetchJSON";
+import { fetchJSON } from "./FetchJSON";
 
 /**
  * Represents key vault
@@ -44,40 +44,29 @@ export class Vault{
         let self = this;
         return new StateMachine({
             uninitialized: {
-                fetchVault: [self.fetchVault, "fetchingVault"],
+                fetchVault: [this.fetchVault(), "fetchingVault"],
             },
 
             fetchingVault: {
-                processVault: [(data)=>{
-                    self.processVault(data)
-                },  'processingVault'],
-
-                error: [(data)=>{
-                    self.error = data;
-                }, "error"]
-
+                JSONReceived: [ this.processVault(), 'processingVault'],
+                fetchJSONError: [ this.processJSONError(), "error"]
             },
 
             processingVault: {
                 setActive: [()=>{
-                    console.log("Vault is now active");
                     this.initialized = true;
                     this.emit("active")
                 }, "active"],
 
-                error: [(data)=>{ self.error = data;}, "error"]
 
             },
 
             active: {},
 
             error: {
-                fetchVault: [this.fetchVault, "fetchingVault"]
+                fetchVault: [this.fetchVault(), "fetchingVault"]
             },
 
-            fetchJSONError: {
-                fetchVault: [this.fetchVault, "fetchingVault"]
-            }
         }, "uninitialized", StateMachine.Warn, true)
     }
 
@@ -199,18 +188,26 @@ export class Vault{
         this.stateMachine.handle.fetchVault()
     }
 
-    processVault(data){
-        let self = this;
-        setTimeout(()=>{
-            console.log("Processing vault");
-            self.initSaved(data)
-        })
+    processVault(){
+        return (data)=>{
+            setTimeout(()=>{
+                console.log(`Processing vault. Data: ${data.vault}`);
+                this.initSaved(data.vault)
+            })
+        }
     }
 
+    processJSONError(){
+        console.log("Processing json error");
+        return (err)=>{ this.emit("vault_init_error", err)}
+
+
+    }
 
     fetchVault(){
-        let self = this;
-        console.log("Fetching vault");
+        return ()=>{
+            fetchJSON("/vault", this.stateMachine);
+        }
     }
 
 

@@ -52,7 +52,6 @@ export class Connector{
             },
 
             error:{
-
                 connecting: [()=>undefined, ConnectionState.CONNECTING]
             },
 

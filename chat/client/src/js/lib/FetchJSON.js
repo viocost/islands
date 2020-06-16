@@ -6,18 +6,21 @@ export function fetchJSON(url, stateMachine){
 
     setImmediate(async ()=>{
         try{
-            let response = fetch(url, {
+            let response = await fetch(url, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
                 },
             })
 
-            if(!response.ok) stateMachine.handle.fetchJSONError(`${response.status}: ${response.statusText}`)
-
+            if(!response.ok){
+                console.log(`Fetch error: ${response.status}: ${response.statusText}`);
+                stateMachine.handle.fetchJSONError(`${response.status}: ${response.statusText}`)
+                return;
+            }
             let parsedResponse = await response.json()
 
-            stasteMachine.handle.JSONReceived(parsedResponse);
+            stateMachine.handle.JSONReceived(parsedResponse);
 
         }catch (err){
 
