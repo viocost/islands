@@ -11,6 +11,7 @@ import { assert } from "../../../../common/IError";
 import { XHR } from "./xhr"
 import * as semver from "semver";
 import { StateMachine } from "./StateMachine"
+import { FetchJSON } from "./FetchJSON";
 
 /**
  * Represents key vault
@@ -43,50 +44,41 @@ export class Vault{
         let self = this;
         return new StateMachine({
             uninitialized: {
-                fetchVault: ()=>{
-                    self.fetchVault()
-                    return 'fetchingVault'
-                }
+                fetchVault: [self.fetchVault, "fetchingVault"],
             },
 
             fetchingVault: {
-                processVault: (data)=>{
+                processVault: [(data)=>{
                     self.processVault(data)
-                    return 'processingVault'
-                },
+                },  'processingVault'],
 
-                error: (data)=>{
+                error: [(data)=>{
                     self.error = data;
-                    return 'error'
-                }
+                }, "error"]
 
             },
 
             processingVault: {
-                setActive: ()=>{
+                setActive: [()=>{
                     console.log("Vault is now active");
-
                     this.initialized = true;
                     this.emit("active")
-                    return 'active'
-                },
+                }, "active"],
 
-                error: (data)=>{
-                    self.error = data;
-                    return 'error'
-                }
+                error: [(data)=>{ self.error = data;}, "error"]
 
             },
 
             active: {},
 
             error: {
-                fetchVault: ()=>{
-                    self.fetchVault()
-                    return 'fetchingVault'
-                }
+                fetchVault: [this.fetchVault, "fetchingVault"]
+            },
+
+            fetchJSONError: {
+                fetchVault: [this.fetchVault, "fetchingVault"]
             }
-        }, "uninitialized", StateMachine.Warn)
+        }, "uninitialized", StateMachine.Warn, true)
     }
 
     static registerVault(password, confirm, version){
@@ -219,29 +211,6 @@ export class Vault{
     fetchVault(){
         let self = this;
         console.log("Fetching vault");
-        setTimeout(()=>{
-            let url = "/vault";
-            fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-            })
-            .then(response => {
-                if(!response.ok) throw new Error(`${response.status}: ${response.statusText}`)
-
-                console.log("Vault received. ");
-                return response.json()
-            })
-            .then(data => {
-
-                console.log("Vault parsed. ");
-                self.stateMachine.handle.processVault(data.vault)
-            })
-            .catch(err=>{
-                console.log(`Error fetching vault: ${err}`);
-            })
-        }, 300)
     }
 
 

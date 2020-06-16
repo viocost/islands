@@ -33,59 +33,30 @@ export class Connector{
     prepareStateMachine(){
         return new StateMachine({
             disconnected: {
-                connecting: ()=>{
-                    console.log("Changing state to conecting");
-                    return ConnectionState.CONNECTING;
-                }
-
-
+                connecting: [ ()=>undefined,   ConnectionState.CONNECTING ]
             },
 
             connecting:{
-                connected: ()=>{
-                    console.log("Changing state to connected");
-                    return ConnectionState.CONNECTED;
-                },
-
-                error: ()=>{
-                    console.log("Changing state to error");
-                    return ConnectionState.ERROR;
-                }
+                connected: [()=>undefined, ConnectionState.CONNECTED],
+                error: [()=>undefined, ConnectionState.ERROr]
 
             },
 
             reconnecting:{
-
-                connected: ()=>{
-                    console.log("Changing state to connected");
-                    return ConnectionState.CONNECTED;
-                },
-
-                error: ()=>{
-                    console.log("Changing state to error");
-                    return ConnectionState.ERROR;
-                }
-
+                connected: [()=>undefined, ConnectionState.CONNECTED],
+                error: [()=>undefined, ConnectionState.ERROR]
             },
 
             connected:{
-                disconnect: ()=>{
-
-                    console.log("Changing state to disconnected");
-                    return ConnectionState.DISCONNECTED;
-                }
-
+                disconnect: [()=>undefined, ConnectionState.DISCONNECTED]
             },
 
             error:{
 
-                connecting: ()=>{
-                    console.log("Changing state to conected");
-                    return "connecting"
-                }
+                connecting: [()=>undefined, ConnectionState.CONNECTING]
             },
 
-        }, ConnectionState.DISCONNECTED, StateMachine.Warn);
+        }, ConnectionState.DISCONNECTED, StateMachine.Warn, true);
     }
 
     transitionState(){

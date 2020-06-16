@@ -28,13 +28,14 @@ export class StateMachine {
     static Warn(prop) { return ()=> console.warn(`Property ${prop} does not exist in current state`) };
     static Die   (prop) { return ()=>{ throw new PropertyNotExist(prop)  }; }
 
-    constructor(stateMap={}, startStateName='start',  msgNotExistMode=StateMachine.Discard) {
+    constructor(stateMap={}, startStateName='start',  msgNotExistMode=StateMachine.Discard, trace=false) {
         // we need to expose the state object based on a variable
 
         if(!stateMap.hasOwnProperty(startStateName)) {
             stateMap[startStateName] = {};
         }
 
+        this.trace = trace;
         this.msgNotExistMode = msgNotExistMode;
         this.stateMap = new Proxy(stateMap, {
             get(target, prop){
@@ -52,8 +53,13 @@ export class StateMachine {
 
                 if(prop in target.stateMap[target.state])
                     return (arg) => {
-                        let ret = target.stateMap[target.state][prop](arg);
-                        if(ret) target.state = ret;
+                        if(target.trace) console.log(`Current state: ${target.state}. Calling ${prop}. Arguments: ${arg}`)
+                        target.stateMap[target.state][prop][0](arg);
+                        let newState = target.stateMap[target.state][prop][1]
+                        if(newState) {
+                            if (target.trace) console.log(`Transitioning to state ${newState}`);
+                            target.state = newState;
+                        }
                     };
 
                 return target.msgNotExistMode(prop)
