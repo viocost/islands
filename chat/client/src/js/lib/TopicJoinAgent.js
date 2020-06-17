@@ -130,7 +130,7 @@ export class TopicJoinAgent{
     }
 
     onJoinTopicSuccess(self, msg){
-        let topic = new Topic(self.version, self.pkfp, self.topicName, self.privateKey);
+        let topic = new Topic(self.pkfp, self.topicName, self.privateKey);
         if (!msg.body.metadata){
             console.log("Error. No metadata.");
         }

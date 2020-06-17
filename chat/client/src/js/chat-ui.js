@@ -8,10 +8,11 @@ import "../css/chat.sass"
 import "../css/vendor/loading.css";
 import * as CuteSet from "cute-set";
 import { Vault } from "./lib/Vault";
+import { Topic } from "./lib/Topic";
 import { MessageQueue } from "./lib/MessageQueue"
 import { ArrivalHub } from "./lib/ArrivalHub"
 import { Connector } from "./lib/Connector"
-
+import { TopicRetriever } from "./lib/TopicRetriever";
 import { runConnectorTest } from "./test/connector"
 //import "../css/vendor/toastr.min.css"
 // impor
@@ -1691,6 +1692,9 @@ function initChat(){
 }
 
 
+// ---------------------------------------------------------------------------------------------------------------------------
+// REFACTORING LOGIN
+
 
 function initSession(){
     loadingOn()
@@ -1705,13 +1709,49 @@ function initSession(){
     vault = new Vault(passwordEl.value);
 
     vault.once("active", loadTopics)
-    vault.load()
+    vault.once("error", ()=>{
+        console.log("Vault init error");
+    })
+    vault.load();
 }
 
 function loadTopics(){
     console.log("Loading topics...");
+    let retriever = new TopicRetriever();
+    retriever.fetchTopics();
+    retriever.once("finished", initTopics)
+    retriever.once("error", (err)=>{ console.log(err)})
+}
+
+function initTopics(data){
+    console.log("Initializing topics...");
+
+    if(!data.topics) return
+
+    for(let pkfp in data.topics){
+        console.log(`Initializing topics ${pkfp}`);
+
+        // TODO fix version!
+        let topic = data.topics[pkfp]
+        topics.pkfp = new Topic(pkfp, topic.name, topic.key, topic.comment)
+    }
 
 }
+
+function initializeConnector(){
+
+    connector = new Connector();
+
+    //Initializing arrival hub
+    arrivalHub = new ArrivalHub(connector);
+
+    //Initialize message queue
+    messageQueue = new MessageQueue(connector);
+
+
+}
+
+//END REFACTORING CODE/////////////////////////////////////////////////////////
 
 function loadingOn() {
     spinner.loadingOn()

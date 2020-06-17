@@ -184,7 +184,6 @@ export class Vault{
 
 
     load(){
-        console.log("Loading vault");
         this.stateMachine.handle.fetchVault()
     }
 
@@ -198,10 +197,10 @@ export class Vault{
     }
 
     processJSONError(){
-        console.log("Processing json error");
-        return (err)=>{ this.emit("vault_init_error", err)}
-
-
+        return (err)=>{
+            console.log("Processing json error");
+            this.emit("error", err)
+        }
     }
 
     fetchVault(){
@@ -395,7 +394,6 @@ export class Vault{
 
             Object.keys(data.topics).forEach((pkfp)=>{
                 this.topics[pkfp] = new Topic(
-                    this.version,
                     pkfp,
                     data.topics[pkfp].name,
                     data.topics[pkfp].key,
@@ -546,7 +544,6 @@ export class Vault{
         let topicData = self.decryptTopic(vaultRecord, self.password);
         let pkfp = topicData.pkfp;
         let newTopic = new Topic(
-            this.version,
             pkfp,
             topicData.name,
             topicData.key,
@@ -623,7 +620,7 @@ export class Vault{
 
     addTopic(pkfp, name, privateKey, comment){
         if (this.topics.hasOwnProperty(pkfp)) throw new Error("Topic with such id already exists");
-        let newTopic = new Topic(this.version, pkfp, name, privateKey, comment)
+        let newTopic = new Topic(pkfp, name, privateKey, comment)
         this.topics[pkfp] = newTopic;
         return newTopic
     }

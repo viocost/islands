@@ -15,7 +15,7 @@ import { assert } from "../../../../common/IError";
 const INITIAL_NUM_MESSAGES = 25
 
 export class Topic{
-    constructor(version, pkfp, name, key, comment){
+    constructor(pkfp, name, key, comment){
         WildEmitter.mixin(this);
         this.pkfp = pkfp;
         this.name = name; // Topic alias. Not shared.
@@ -32,7 +32,6 @@ export class Topic{
         this.messages = [];
         this.settings = {};
         this.invites = {};
-        this.version  = version;
         this.getPrivateKey = ()=>{ return key }
 
         // Meaning event listeners are set for arrivalHub

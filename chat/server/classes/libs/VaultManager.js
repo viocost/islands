@@ -191,6 +191,8 @@ class VaultManager{
         for (let topic of topicsFiles){
             res[topic] = fs.readFileSync(path.join(topicsPath,  topic), "utf8")
         }
+
+        return res
     }
 
 
