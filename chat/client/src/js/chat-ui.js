@@ -1736,9 +1736,10 @@ function initTopics(data){
         topics.pkfp = new Topic(pkfp, topic.name, topic.key, topic.comment)
     }
 
+    createSession()
 }
 
-function initializeConnector(){
+function createSession(){
 
     connector = new Connector();
 
@@ -1748,6 +1749,7 @@ function initializeConnector(){
     //Initialize message queue
     messageQueue = new MessageQueue(connector);
 
+    connector.etsablishConnection()
 
 }
 
