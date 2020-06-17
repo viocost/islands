@@ -36,7 +36,7 @@ let sidePanel;
 // Objects
 
 //Top tier objects
-let connector = new Connector()
+let connector = new Connector('/chat');
 let messageQueue = new MessageQueue(connector)
 let arrivalHub = new ArrivalHub(connector)
 let chat = null//new ChatClient();
@@ -73,6 +73,7 @@ let UIInitialized = false;
 // TEST ONLY!
 // Comment out for production!
 window.connectorTest = runConnectorTest;
+window.connector = connector;
 window.util = util;
 window.toastr = toastr;
 window.chat = chat;
@@ -1740,17 +1741,7 @@ function initTopics(data){
 }
 
 function createSession(){
-
-    connector = new Connector();
-
-    //Initializing arrival hub
-    arrivalHub = new ArrivalHub(connector);
-
-    //Initialize message queue
-    messageQueue = new MessageQueue(connector);
-
-    connector.etsablishConnection()
-
+    connector.establishConnection()
 }
 
 //END REFACTORING CODE/////////////////////////////////////////////////////////

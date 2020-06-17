@@ -24,6 +24,17 @@
    to send message to state machine simply smInstance.handle.msg where msg is some lambda in current state
    If message is not found it is ignored
  */
+
+
+function asArray(arg){
+    if (arg === null || arg === undefined)
+        return []
+    else if (Array.isArray(arg))
+        return arg
+    else
+        return [arg]
+}
+
 export class StateMachine {
     static Discard () { return ()=> undefined } ;
     static Warn(prop) { return ()=> console.warn(`Property ${prop} does not exist in current state`) };
@@ -53,18 +64,19 @@ export class StateMachine {
             get(target, prop) {
 
                 if(prop in target.stateMap[target.state])
-                    return (onArgs, afterArgs) => {
+                    return (onArgs = [], afterArgs = []) => {
                         if(target.trace) console.log(`Current state: ${target.state}.`)
 
-                        //Checking "on" handler
                         let on =  target.stateMap[target.state][prop]["on"];
+                        let after = target.stateMap[target.state][prop]["after"];
+                        let newState = target.stateMap[target.state][prop]["state"]
+
                         if (typeof on === "function") {
-                            if(target.trace) console.log(`Calling ${prop} with arguments ${JSON.stringify(arg)}.`)
-                            on(...onArgs);
+                            if(target.trace) console.log(`Calling ${prop} with arguments ${JSON.stringify(onArgs)}.`)
+                            on(...asArray(onArgs));
                         }
 
                         //Setting new state
-                        let newState = target.stateMap[target.state][prop]["state"]
                         if(newState) {
                             if (target.trace) console.log(`Transitioning to state ${newState}`);
                             if ( ! (newState in target.stateMap)) throw new StateNotExist(newState);
@@ -75,10 +87,9 @@ export class StateMachine {
 
 
                         //checking "after" handler
-                        let after = target.stateMap[target.state][prop]["after"];
-                        if (typeof on === "function") {
-                            if(target.trace) console.log(`Calling ${prop} with arguments ${JSON.stringify(arg)}.`)
-                            after(...afterArgs);
+                        if (typeof after === "function") {
+                            if(target.trace) console.log(`Calling ${prop} with arguments ${JSON.stringify(afterArgs)}.`)
+                            after(...asArray(afterArgs));
                         }
                     };
 
