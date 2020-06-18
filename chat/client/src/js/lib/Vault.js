@@ -190,8 +190,10 @@ export class Vault{
     processVault(){
         return (data)=>{
             setTimeout(()=>{
-                console.log(`Processing vault. Data: ${data.vault}`);
+                const { vault, vaultId } = data
+                console.log(`Processing vault. Data: ${vault}`);
                 this.initSaved(data.vault)
+                this.setId(vaultId)
             })
         }
     }
@@ -417,18 +419,20 @@ export class Vault{
         return this.admin;
     }
 
-    async bootstrap(arrivalHub, messageQueue ,version){
-        let self = this;
+    bootstrap(arrivalHub, messageQueue){
         this.version = version;
         this.arrivalHub = arrivalHub;
         this.messageQueue = messageQueue;
         this.arrivalHub.on(this.id, (msg)=>{
-            self.processIncomingMessage(msg, self);
+            this.processIncomingMessage(msg, self);
         })
-        if(this.versionUpdate){
-            console.log("Updating vault to new format..");
-            await this.versionUpdate();
-        }
+
+        ////////////////////////////////////////////////////////
+        // if(this.versionUpdate){                            //
+        //     console.log("Updating vault to new format.."); //
+        //     await this.versionUpdate();                    //
+        // }                                                  //
+        ////////////////////////////////////////////////////////
     }
 
 

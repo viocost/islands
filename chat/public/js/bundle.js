@@ -12045,16 +12045,16 @@ var StateMachine = /*#__PURE__*/function () {
     }
   }, {
     key: "Warn",
-    value: function Warn(prop) {
+    value: function Warn(prop, smName) {
       return function () {
-        return console.warn("Property ".concat(prop, " does not exist in current state"));
+        return console.warn("".concat(smName, ": property ").concat(prop, " does not exist in current state"));
       };
     }
   }, {
     key: "Die",
-    value: function Die(prop) {
+    value: function Die(prop, smName) {
       return function () {
-        throw new PropertyNotExist(prop);
+        throw new PropertyNotExist("".concat(smName, ", ").concat(prop));
       };
     }
   }]);
@@ -12112,7 +12112,7 @@ var StateMachine = /*#__PURE__*/function () {
             after.apply(void 0, _toConsumableArray(asArray(afterArgs)));
           }
         };
-        return target.msgNotExistMode(prop);
+        return target.msgNotExistMode(prop, target.name);
       }
 
     });
@@ -12822,8 +12822,8 @@ var Connector = /*#__PURE__*/function () {
   }, {
     key: "setConnectionQueryProperty",
     value: function setConnectionQueryProperty(k, v) {
-      if (!this.socketInitialized) throw new Error("Socket uninitialized.");
-      this.socket.io.opts.query[k] = typeof v === "object" ? JSON.stringify(v) : v;
+      if (!this.socket.io.opts.query) this.socket.io.opts.query = {};
+      this.socket.io.opts.query[k] = typeof v !== "string" ? JSON.stringify(v) : v;
     }
   }, {
     key: "connectLambda",
@@ -15733,9 +15733,13 @@ var Vault_Vault = /*#__PURE__*/function () {
 
       return function (data) {
         setTimeout(function () {
-          console.log("Processing vault. Data: ".concat(data.vault));
+          var vault = data.vault,
+              vaultId = data.vaultId;
+          console.log("Processing vault. Data: ".concat(vault));
 
           _this2.initSaved(data.vault);
+
+          _this2.setId(vaultId);
         });
       };
     }
@@ -23951,15 +23955,16 @@ function fetchJSON(url, stateMachine) {
           case 10:
             parsedResponse = _context.sent;
             stateMachine.handle.JSONReceived(null, parsedResponse);
-            _context.next = 17;
+            _context.next = 18;
             break;
 
           case 14:
             _context.prev = 14;
             _context.t0 = _context["catch"](0);
+            console.log("Fetch error: ".concat(_context.t0));
             stateMachine.handle.fetchJSONError(null, _context.t0);
 
-          case 17:
+          case 18:
           case "end":
             return _context.stop();
         }
@@ -65382,6 +65387,7 @@ function initTopics(data) {
 }
 
 function createSession() {
+  connector.setConnectionQueryProperty("vaultId", vault.id);
   connector.establishConnection();
 } //END REFACTORING CODE/////////////////////////////////////////////////////////
 

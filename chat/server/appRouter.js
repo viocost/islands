@@ -35,7 +35,7 @@ router.get("/vault", (req, res)=>{
         } else {
             let vault = vaultManager.getVault(id);
             res.set("Content-Type", "application/json")
-               .status(200).send({"vault": vault, "vaultId": id, "version": global.VERSION})
+               .status(200).send({"vault": vault, "vaultId": id })
         }
     }catch(err){
         Logger.warn(err.message, {stack: err.stack, cat: "login"});

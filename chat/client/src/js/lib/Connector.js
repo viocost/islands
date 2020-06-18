@@ -177,8 +177,8 @@ export class Connector{
     }
 
     setConnectionQueryProperty(k, v){
-        if (!this.socketInitialized) throw new Error("Socket uninitialized.")
-        this.socket.io.opts.query[k] = typeof v === "object" ? JSON.stringify(v) : v;
+        if(!this.socket.io.opts.query) this.socket.io.opts.query = {};
+        this.socket.io.opts.query[k] = typeof v !== "string" ? JSON.stringify(v) : v;
     }
 
 

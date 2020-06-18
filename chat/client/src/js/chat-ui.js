@@ -1593,73 +1593,9 @@ function initChat(){
         toastr.warning(`Init topic error: ${err.message}`);
     })
 
-    chat.on(Events.MESSAGES_LOADED, (data)=>{
-        processMessagesLoaded(data.pkfp, data.messages)
-    })
-
-    chat.on(Events.INVITE_CREATED, (data)=>{
-        console.log("Invite created event from chat");
-        if (data.pkfp === topicInFocus){
-            refreshInvites(data.pkfp);
-            appendEphemeralMessage(`New Invite Code: ${data.inviteCode}`)
-        }
-    })
-
-    chat.on(Events.METADATA_UPDATED, (pkfp)=>{
-        console.log("Metadata updated event from chat");
-        refreshTopics();
-    })
-
-    chat.on(Events.SETTINGS_UPDATED, (pkfp)=>{
-        console.log("Settings updated event from chat");
-        refreshParticipants(pkfp);
-        refreshInvites(pkfp);
-        updateMessagesAliases(pkfp)
-    })
 
     chat.on(Events.CONNECTION_STATUS_CHANGED, processConnectionStatusChanged);
 
-    chat.on(Events.NEW_CHAT_MESSAGE, (message, topicPkfp)=>{
-        console.log(`New incoming chat message received for ${topicPkfp}`)
-
-        if(!message.header.service){
-            if(message.header.author === topicPkfp){
-                playSound("message_sent")
-            } else {
-
-                playSound("incoming_message")
-            }
-        }
-
-        if (topicInFocus !== topicPkfp){
-            console.log("Topic not in focus")
-            incrementUnreadCounter(topicPkfp)
-            return
-        }
-
-        let alias = "";
-        if (message.header.author){
-            alias  = chat.getParticipantAlias(topicPkfp, message.header.author) ||
-                message.header.author.substring(0, 8)
-        }
-        console.log("Appending message");
-        appendMessageToChat({
-            nickname: message.header.nickname,
-            alias: alias,
-            body: message.body,
-            timestamp: message.header.timestamp,
-            pkfp: message.header.author,
-            messageID: message.header.id,
-            service: message.header.service,
-            private: message.header.private,
-            recipient: message.header.recipient,
-            attachments: message.attachments
-        }, topicInFocus, util.$("#messages-window-1"));
-
-        scrollChatDown()
-        let messagesWindow = util.$("#messages-panel-container")
-
-    })
 
     chat.on(Events.DOWNLOAD_SUCCESS, (data, fileName)=>{
         downloadBuffer(data, fileName);
@@ -1717,6 +1653,8 @@ function initSession(){
 }
 
 function loadTopics(){
+    setVaultListeners();
+    vault.bootstrap(arrivalHub, messageQueue);
     console.log("Loading topics...");
     let retriever = new TopicRetriever();
     retriever.fetchTopics();
@@ -1734,16 +1672,108 @@ function initTopics(data){
 
         // TODO fix version!
         let topic = data.topics[pkfp]
-        topics.pkfp = new Topic(pkfp, topic.name, topic.key, topic.comment)
+        topics[pkfp] = new Topic(pkfp, topic.name, topic.key, topic.comment)
+        setTopicListeners(topics[pkfp])
     }
 
     createSession()
 }
 
 function createSession(){
+    connector.setConnectionQueryProperty("vaultId", vault.id);
     connector.establishConnection()
 }
 
+
+function setVaultListeners(){
+    vault.on(Internal.SESSION_KEY, (message)=>{
+        sessionKey = message.body.sessionKey;
+        console.log("Session key is set!")
+    })
+    vault.on(Events.TOPIC_CREATED, (pkfp)=>{
+        refreshTopics()
+        toastr.success("New topic has been initialized!")
+    })
+
+    vault.on(Internal.TOPIC_DELETED, (pkfp)=>{
+        refreshTopics()
+        toastr.info(`Topic ${pkfp.substring(0, 5)}... has been deleted.`)
+    })
+
+
+    vault.on(Events.VAULT_UPDATED, ()=>{
+        console.log("Vault updated in chat client");
+        refreshTopics()
+        if (topicInFocus)setTopicInFocus(topicInFocus)
+    })
+}
+
+function setTopicListeners(topic){
+        topic.on(Events.MESSAGES_LOADED, (messages)=>{
+            processMessagesLoaded(topic.pkfp, messages)
+        })
+
+        topic.on(Events.INVITE_CREATED, (inviteCode)=>{
+
+            console.log("Invite created event from chat");
+            if (topic.pkfp === topicInFocus){
+                refreshInvites(topic.pkfp);
+                appendEphemeralMessage(`New Invite Code: ${inviteCode}`)
+            }
+        })
+
+        topic.on(Events.NEW_CHAT_MESSAGE, (message)=>{
+
+            console.log(`New incoming chat message received for ${topic.pkfp}`)
+
+            if(!message.header.service){
+                if(message.header.author === topic.pkfp){
+                    playSound("message_sent")
+                } else {
+
+                    playSound("incoming_message")
+                }
+            }
+
+            if (topicInFocus !== topic.pkfp){
+                console.log("Topic not in focus")
+                incrementUnreadCounter(topic.pkfp)
+                return
+            }
+
+            let alias = "";
+            if (message.header.author){
+                alias  = chat.getParticipantAlias(topic.pkfp, message.header.author) ||
+                    message.header.author.substring(0, 8)
+            }
+            console.log("Appending message");
+            appendMessageToChat({
+                nickname: message.header.nickname,
+                alias: alias,
+                body: message.body,
+                timestamp: message.header.timestamp,
+                pkfp: message.header.author,
+                messageID: message.header.id,
+                service: message.header.service,
+                private: message.header.private,
+                recipient: message.header.recipient,
+                attachments: message.attachments
+            }, topicInFocus, util.$("#messages-window-1"));
+
+            scrollChatDown()
+        })
+
+        topic.on(Events.METADATA_UPDATED, ()=>{
+            refreshTopics();
+        })
+
+        topic.on(Events.SETTINGS_UPDATED, ()=>{
+            console.log("Settings updated event from chat");
+            refreshParticipants(topic.pkfp);
+            refreshInvites(topic.pkfp);
+            updateMessagesAliases(topic.pkfp)
+        })
+}
 //END REFACTORING CODE/////////////////////////////////////////////////////////
 
 function loadingOn() {

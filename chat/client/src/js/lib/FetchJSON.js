@@ -22,7 +22,7 @@ export function fetchJSON(url, stateMachine){
             stateMachine.handle.JSONReceived(null, parsedResponse);
 
         }catch (err){
-
+            console.log(`Fetch error: ${err}`);
             stateMachine.handle.fetchJSONError(null, err)
 
         }

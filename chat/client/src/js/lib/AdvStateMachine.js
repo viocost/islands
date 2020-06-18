@@ -38,8 +38,8 @@ function asArray(arg){
 
 export class StateMachine {
     static Discard () { return ()=> undefined } ;
-    static Warn(prop) { return ()=> console.warn(`Property ${prop} does not exist in current state`) };
-    static Die   (prop) { return ()=>{ throw new PropertyNotExist(prop)  }; }
+    static Warn(prop, smName) { return ()=> console.warn(`${smName}: property ${prop} does not exist in current state`) };
+    static Die   (prop, smName) { return ()=>{ throw new PropertyNotExist(`${smName}, ${prop}`)  }; }
 
     constructor(stateMap={}, startStateName='start',  msgNotExistMode=StateMachine.Discard, trace=false, name="State Machine") {
         // we need to expose the state object based on a variable
@@ -96,7 +96,7 @@ export class StateMachine {
                         }
                     };
 
-                return target.msgNotExistMode(prop)
+                return target.msgNotExistMode(prop, target.name)
             }
         });
     }

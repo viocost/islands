@@ -370,7 +370,7 @@ export class Topic{
 
         self.messages.splice(0, 0, chatMessage);
         console.log(`Message added. msgCount: ${self.messages.length}`);
-        self.emit(Events.NEW_CHAT_MESSAGE, chatMessage, self.pkfp)
+        self.emit(Events.NEW_CHAT_MESSAGE, chatMessage)
     }
 
     getMessages(messagesToLoad=INITIAL_NUM_MESSAGES, lastMessageId){
