@@ -1,4 +1,4 @@
-import { StateMachine } from "./StateMachine";
+import { StateMachine } from "./AdvStateMachine";
 import { fetchJSON } from "./FetchJSON";
 import { WildEmitter } from "./WildEmitter"
 
@@ -14,21 +14,21 @@ export class TopicRetriever{
     prepareStateMachine(){
         return new StateMachine({
             ready: {
-                fetchTopics: [this.fetchTopicsLambda(), 'fetchingTopics']
+                fetchTopics: { after: this.fetchTopicsLambda(), state: 'fetchingTopics' }
             },
 
             error: {
-                fetchTopics: [this.fetchTopicsLambda(), 'fetchingTopics']
+                fetchTopics: { after: this.fetchTopicsLambda(), state: 'fetchingTopics' }
             },
 
             fetchingTopics: {
-                JSONReceived: [ this.processTopicsLambda(), 'finished' ],
-                fetchJSONError: [ this.processErrorLambda(),  'error']
+                JSONReceived: { after: this.processTopicsLambda(), state: 'finished' },
+                fetchJSONError: { after: this.processErrorLambda(),  state: 'error' }
             },
 
             finished: { /*Once finished - nothing more to do*/ }
 
-        }, 'ready', StateMachine.Warn, true)
+        }, 'ready', StateMachine.Warn, true, "TOPIC RETRIEVER SM")
     }
 
 

@@ -14,16 +14,16 @@ export function fetchJSON(url, stateMachine){
 
             if(!response.ok){
                 console.log(`Fetch error: ${response.status}: ${response.statusText}`);
-                stateMachine.handle.fetchJSONError(`${response.status}: ${response.statusText}`)
+                stateMachine.handle.fetchJSONError(null, `${response.status}: ${response.statusText}`)
                 return;
             }
             let parsedResponse = await response.json()
 
-            stateMachine.handle.JSONReceived(parsedResponse);
+            stateMachine.handle.JSONReceived(null, parsedResponse);
 
         }catch (err){
 
-            stateMachine.handle.fetchJSONError(err)
+            stateMachine.handle.fetchJSONError(null, err)
 
         }
     })

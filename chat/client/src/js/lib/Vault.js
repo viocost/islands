@@ -10,7 +10,7 @@ import { ChatUtility } from "./ChatUtility";
 import { assert } from "../../../../common/IError";
 import { XHR } from "./xhr"
 import * as semver from "semver";
-import { StateMachine } from "./StateMachine"
+import { StateMachine } from "./AdvStateMachine"
 import { fetchJSON } from "./FetchJSON";
 
 /**
@@ -44,19 +44,19 @@ export class Vault{
         let self = this;
         return new StateMachine({
             uninitialized: {
-                fetchVault: [this.fetchVault(), "fetchingVault"],
+                fetchVault: { after: this.fetchVault(), state: "fetchingVault" },
             },
 
             fetchingVault: {
-                JSONReceived: [ this.processVault(), 'processingVault'],
-                fetchJSONError: [ this.processJSONError(), "error"]
+                JSONReceived: { after: this.processVault(), state: 'processingVault'},
+                fetchJSONError: { after: this.processJSONError(), state: "error" }
             },
 
             processingVault: {
-                setActive: [()=>{
+                setActive: { on: ()=>{
                     this.initialized = true;
                     this.emit("active")
-                }, "active"],
+                }, state: "active" },
 
 
             },
@@ -64,10 +64,10 @@ export class Vault{
             active: {},
 
             error: {
-                fetchVault: [this.fetchVault(), "fetchingVault"]
+                fetchVault: { after: this.fetchVault(), state: "fetchingVault" }
             },
 
-        }, "uninitialized", StateMachine.Warn, true)
+        }, "uninitialized", StateMachine.Warn, true, "VAULT SM")
     }
 
     static registerVault(password, confirm, version){

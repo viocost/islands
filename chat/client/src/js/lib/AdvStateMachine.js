@@ -35,12 +35,13 @@ function asArray(arg){
         return [arg]
 }
 
+
 export class StateMachine {
     static Discard () { return ()=> undefined } ;
     static Warn(prop) { return ()=> console.warn(`Property ${prop} does not exist in current state`) };
     static Die   (prop) { return ()=>{ throw new PropertyNotExist(prop)  }; }
 
-    constructor(stateMap={}, startStateName='start',  msgNotExistMode=StateMachine.Discard, trace=false) {
+    constructor(stateMap={}, startStateName='start',  msgNotExistMode=StateMachine.Discard, trace=false, name="State Machine") {
         // we need to expose the state object based on a variable
 
         if(!stateMap.hasOwnProperty(startStateName)) {
@@ -48,6 +49,7 @@ export class StateMachine {
         }
 
         this.trace = trace;
+        this.name = name;
         this.msgNotExistMode = msgNotExistMode;
         this.stateMap = new Proxy(stateMap, {
             get(target, prop){
@@ -65,20 +67,21 @@ export class StateMachine {
 
                 if(prop in target.stateMap[target.state])
                     return (onArgs = [], afterArgs = []) => {
-                        if(target.trace) console.log(`Current state: ${target.state}.`)
+                        if(target.trace) console.log(`${target.name}: Current state: ${target.state}.`)
 
                         let on =  target.stateMap[target.state][prop]["on"];
                         let after = target.stateMap[target.state][prop]["after"];
                         let newState = target.stateMap[target.state][prop]["state"]
 
                         if (typeof on === "function") {
-                            if(target.trace) console.log(`Calling ${prop} with arguments ${JSON.stringify(onArgs)}.`)
+                            if(target.trace) console.log(`${target.name}: Calling ${prop} with arguments ${JSON.stringify(onArgs)}.`)
                             on(...asArray(onArgs));
                         }
 
                         //Setting new state
                         if(newState) {
-                            if (target.trace) console.log(`Transitioning to state ${newState}`);
+                            if (target.trace) console.log(`%c ${target.name}: TRANSITIONING TO "${newState}"`, 'color: #c45f01; font-size: 13px; font-weight: 600; ');
+
                             if ( ! (newState in target.stateMap)) throw new StateNotExist(newState);
 
                             target.state = newState;
@@ -88,7 +91,7 @@ export class StateMachine {
 
                         //checking "after" handler
                         if (typeof after === "function") {
-                            if(target.trace) console.log(`Calling ${prop} with arguments ${JSON.stringify(afterArgs)}.`)
+                            if(target.trace) console.log(`${target.name}: Calling ${prop} with arguments ${JSON.stringify(afterArgs)}.`)
                             after(...asArray(afterArgs));
                         }
                     };

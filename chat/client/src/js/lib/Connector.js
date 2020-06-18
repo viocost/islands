@@ -89,17 +89,14 @@ export class Connector{
         })
 
         socket.on("disconnect", ()=>{
-            this.stateMachine.handle.disconnect();
-            console.log("Island disconnected.");
-            connectionAttempts = 0
-            setTimeout(attemptConnection, reconnectionDelay);
+            this.stateMachine.handle.processDisconnect();
         });
 
         socket.on('connect_error', (err)=>{
 
             this.stateMachine.handle.error();
             if (this.connectionAttempts < this.maxConnectionAttempts){
-                console.log("Connection error on attempt: " + connectionAttempts + err);
+                console.log("Connection error on attempt: " + this.connectionAttempts + err);
                 this.connectionAttempts += 1;
                 setTimeout(this.attemptConnection, reconnectionDelay);
             } else {
@@ -143,7 +140,7 @@ export class Connector{
             },
 
             connected:{
-                handleDisconnect: {
+                processDisconnect: {
                     state: ConnectionState.DISCONNECTED,
                     after: ()=>{
                         this.emit(Internal.CONNECTION_STATE_CHANGED)
@@ -172,7 +169,7 @@ export class Connector{
                 }
             },
 
-        }, ConnectionState.DISCONNECTED, StateMachine.Warn, true);
+        }, ConnectionState.DISCONNECTED, StateMachine.Warn, true, "CONNECTOR SM");
     }
 
     transitionState(){
