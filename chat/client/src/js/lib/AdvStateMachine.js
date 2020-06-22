@@ -27,11 +27,17 @@ export class StateMachine {
     static Warn(prop, smName) { return ()=> console.warn(`${smName}: property ${prop} does not exist in current state`) };
     static Die   (prop, smName) { return ()=>{ throw new PropertyNotExist(`${smName}, ${prop}`)  }; }
 
-    constructor(stateMap={}, startStateName='start',  msgNotExistMode=StateMachine.Discard, trace=false, name="State Machine") {
+    constructor({ stateMap = {},
+                  initialState = 'start',
+                  msgNotExistMode = StateMachine.Discard,
+                  trace = false,
+                  name = "State Machine",
+                  guards = {}
+                }) {
         // we need to expose the state object based on a variable
 
-        if(!stateMap.hasOwnProperty(startStateName)) {
-            stateMap[startStateName] = {};
+        if(!stateMap.hasOwnProperty(initialState)) {
+            stateMap[initialState] = {};
         }
 
         this.trace = trace;
@@ -46,11 +52,11 @@ export class StateMachine {
         });
 
 
-        this.state = startStateName;
+        this.state = initialState;
 
-        let entryNewState = this.stateMap[startStateName].entry;
+        let entryNewState = this.stateMap[initialState].entry;
         if (typeof entryNewState === "function") {
-            if(this.trace) console.log(`%c ${this.name}: Calling entry action for "${startStateName}"`,  'color: #009933;  font-weight: 600; ');
+            if(this.trace) console.log(`%c ${this.name}: Calling entry action for "${initialState}"`,  'color: #009933;  font-weight: 600; ');
             entryNewState();
         }
 
@@ -124,7 +130,7 @@ export class StateMachine {
 
 
 function getLightBulbSM(){
-    return new StateMachine({
+    return new StateMachine({stateMap: {
         off: {
             entry: ()=>{ console.log("I am entry action for off state") },
             exit:  ()=>{ console.log("I am exit action for off state") },
@@ -148,7 +154,7 @@ function getLightBulbSM(){
         }
 
 
-    }, "off", StateMachine.Warn, true, "Light bulb")
+    }, trace: true, initialState: "off", name: "Light Bulb"})
 }
 
 
