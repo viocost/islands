@@ -121,7 +121,8 @@ export class Connector{
                 connect: {
                     state: ConnectionState.CONNECTING,
                     after: this.connectLambda()
-                }
+                },
+
             },
 
             connecting:{
