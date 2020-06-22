@@ -2,7 +2,7 @@ const  { StateMachine } = require("../client/src/js/lib/AdvStateMachine.js");
 
 
 function getLightBulbSM(){
-    return new StateMachine({
+    return new StateMachine(undefined, {
         trace: true,
         initialState: "off",
         name: "Light Bulb",
@@ -31,6 +31,57 @@ function getLightBulbSM(){
     },})
 }
 
+class Lamp{
+    constructor(){
+        this.sm = new StateMachine(this, {
+
+            trace: true,
+            name: "Lamp sm",
+            initialState: "off",
+
+            stateMap: {
+                on:{
+                    transitions: {
+                        toggle: {
+                            actions: this.turnOff,
+                            state: "off"
+                        }
+                    }
+                },
+
+                off: {
+                    transitions: {
+                        toggle: {
+                            actions: this.turnOn,
+                            state: "on"
+                        }
+                    }
+                }
+            }
+        })
+    }
+
+    turnOn(){
+        console.log("turnOn call");
+        console.log(this);
+    }
+
+    turnOff(){
+        console.log("turnOff call");
+    }
+
+    toggle(){
+        this.sm.handle.toggle()
+    }
+}
+
+function testLamp(){
+    let lamp = new Lamp()
+    lamp.toggle()
+    lamp.toggle()
+    lamp.toggle()
+
+}
 
 function testLightBulb(){
     let sm = getLightBulbSM();
@@ -41,3 +92,5 @@ function testLightBulb(){
 }
 
 testLightBulb();
+
+testLamp()

@@ -27,7 +27,7 @@ class StateMachine {
     static Warn(prop, smName) { return ()=> console.warn(`${smName}: property ${prop} does not exist in current state`) };
     static Die   (prop, smName) { return ()=>{ throw new PropertyNotExist(`${smName}, ${prop}`)  }; }
 
-    constructor({ stateMap,
+    constructor(obj, { stateMap,
                   initialState = 'start',
                   msgNotExistMode = StateMachine.Discard,
                   trace = false,
@@ -39,6 +39,7 @@ class StateMachine {
 
         if(!stateMap.hasOwnProperty(initialState)) throw new Error("Initial state not in state map");
 
+        this.obj = obj;
         this.error = false;
         this.trace = trace;
         this.name = name;
@@ -63,7 +64,8 @@ class StateMachine {
         // }                                                                                                                                      //
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        this.performActions(this.stateMap[initialState].entry, "Initial entry");
+        let initialEntryActions =  this.stateMap[initialState].entry;
+        if(initialEntryActions)  this.performActions(initialEntryActions, "Initial entry", undefined, undefined);
 
 
         this.handle = new Proxy(this, {
@@ -118,11 +120,11 @@ class StateMachine {
 
             let exitActions = this.stateMap[this.state].exit;
 
-            if(exitActions) this.performActions(exitActions, "exit");
+            if(exitActions) this.performActions(exitActions, "exit", eventName, eventArgs);
 
         }
 
-        if (actions) this.performActions(actions, "transition");
+        if (actions) this.performActions(actions, "transition", eventName, eventArgs);
 
         //Setting new state
         if (newState) {
@@ -130,11 +132,13 @@ class StateMachine {
             let entryActions = this.stateMap[newState].entry;
             this.state = newState;
             if(this.trace) console.log(`State is now set to ${this.state}`);
-            if (entryActions) this.performActions(entryActions, "entry");
+            if (entryActions) this.performActions(entryActions, "entry", eventName, eventArgs);
+
         }
     }
 
-    performActions(actions, context){
+    performActions(actions, context, eventName, eventArgs){
+
 
         if (this.trace) console.log(`%c ${this.name}: Calling actions for ${context}`, 'color: #c45f01; font-size: 13px; font-weight: 600; ');
 
@@ -147,7 +151,7 @@ class StateMachine {
                 this.error = true;
                 throw new TypeError("Action is not a function");
             }
-            action();
+            action.call(this.obj, this, eventName, eventArgs);
         }
 
     }
