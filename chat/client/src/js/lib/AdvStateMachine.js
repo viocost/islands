@@ -22,24 +22,24 @@
  */
 
 
-export class StateMachine {
+class StateMachine {
     static Discard () { return ()=> undefined } ;
     static Warn(prop, smName) { return ()=> console.warn(`${smName}: property ${prop} does not exist in current state`) };
     static Die   (prop, smName) { return ()=>{ throw new PropertyNotExist(`${smName}, ${prop}`)  }; }
 
-    constructor({ stateMap = {},
+    constructor({ stateMap,
                   initialState = 'start',
                   msgNotExistMode = StateMachine.Discard,
                   trace = false,
-                  name = "State Machine",
-                  guards = {}
+                  name = "State Machine"
                 }) {
         // we need to expose the state object based on a variable
 
-        if(!stateMap.hasOwnProperty(initialState)) {
-            stateMap[initialState] = {};
-        }
+        if( stateMap === undefined) throw new Error("No state map provided");
 
+        if(!stateMap.hasOwnProperty(initialState)) throw new Error("Initial state not in state map");
+
+        this.error = false;
         this.trace = trace;
         this.name = name;
         this.msgNotExistMode = msgNotExistMode;
@@ -51,117 +51,127 @@ export class StateMachine {
 
         });
 
+        this.legalEvents = this.generateEventNames();
 
         this.state = initialState;
 
-        let entryNewState = this.stateMap[initialState].entry;
-        if (typeof entryNewState === "function") {
-            if(this.trace) console.log(`%c ${this.name}: Calling entry action for "${initialState}"`,  'color: #009933;  font-weight: 600; ');
-            entryNewState();
-        }
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // let entryNewState = this.stateMap[initialState].entry;                                                                                 //
+        // if (typeof entryNewState === "function") {                                                                                             //
+        //     if(this.trace) console.log(`%c ${this.name}: Calling entry action for "${initialState}"`,  'color: #009933;  font-weight: 600; '); //
+        //     entryNewState();                                                                                                                   //
+        // }                                                                                                                                      //
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        this.performActions(this.stateMap[initialState].entry, "Initial entry");
+
 
         this.handle = new Proxy(this, {
             get(target, prop) {
 
-                if(prop in target.stateMap[target.state])
+                if(target.error) throw new Error("The state machine is blown");
+
+                if( target.legalEvents.has(prop))
                     return (args) => {
-                        if(target.trace) console.log(`${target.name}: Current state: ${target.state}.`)
-
-                        let on =  target.stateMap[target.state][prop]["on"];
-                        let newState = target.stateMap[target.state][prop]["state"]
-
-                        if (typeof on === "function") {
-                            setTimeout(()=>{
-                                if(target.trace) console.log(`${target.name}: Calling ${prop} with arguments ${JSON.stringify(args)}.`)
-                                on(args);
-                            }, 0)
-                        }
-
-                        //Setting new state
-                        if(newState) {
-                            if ( ! (newState in target.stateMap)) throw new StateNotExist(newState);
-                            if (target.trace) console.log(`%c ${target.name}: TRANSITIONING TO "${newState}"`, 'color: #c45f01; font-size: 13px; font-weight: 600; ');
-
-                            let oldState = target.state;
-                            let exitOldState = target.stateMap[oldState].exit;
-                            let entryNewState = target.stateMap[newState].entry;
-                            if (typeof exitOldState === "function") {
-                                if(target.trace) console.log(`%c ${target.name}: Calling exit action for "${oldState}"`,  'color: #ff0000;  font-weight: 600; ');
-                                exitOldState();
-                            }
-                            //calling exit of old state
-
-                            target.state = newState;
-
-                            if (typeof entryNewState === "function") {
-                                if(target.trace) console.log(`%c ${target.name}: Calling entry action for "${newState}"`,  'color: #009933 ;  font-weight: 600; ');
-                                entryNewState();
-                            }
-
-                        }
+                        setImmediate(()=>target.processEvent(prop, args))
                     };
 
-                return target.msgNotExistMode(prop, target.name)
+                throw new Error(`Illegal event name ${prop}`)
             }
         });
     }
 
-    addStates(states){
-        for(let s of states){
-            this.addState(s);
+
+    processEvent(eventName, eventArgs) {
+
+        ///////////////////////////////////////
+        // if I will change state            //
+        //   call exit actions               //
+        // call transition actions           //
+        // if  I will change state           //
+        //   change state                    //
+        //   call entry actions on new state //
+        ///////////////////////////////////////
+
+
+
+        if (this.trace){
+            console.log(`${this.name}: Current state: ${this.state}. `)
+            console.log(`   Processing event ${eventName}(${JSON.stringify(eventArgs)})`);
+        }
+
+        if (!(eventName in this.stateMap[this.state].transitions)){
+            this.msgNotExistMode(eventName, this.name);
+            return;
+        }
+
+
+
+        let actions = this.stateMap[this.state].transitions[eventName]["actions"];
+        let newState = this.stateMap[this.state].transitions[eventName]["state"]
+
+        if (newState) {
+            if (!(newState in this.stateMap)){
+                this.error = true;
+                throw new StateNotExist(newState);
+            }
+
+            let exitActions = this.stateMap[this.state].exit;
+
+            if(exitActions) this.performActions(exitActions, "exit");
+
+        }
+
+        if (actions) this.performActions(actions, "transition");
+
+        //Setting new state
+        if (newState) {
+
+            let entryActions = this.stateMap[newState].entry;
+            this.state = newState;
+            if(this.trace) console.log(`State is now set to ${this.state}`);
+            if (entryActions) this.performActions(entryActions, "entry");
         }
     }
 
+    performActions(actions, context){
 
-    addState(name){
-        if(!this.stateMap.hasOwnProperty(name)) this.stateMap[name] = {};
-    }
+        if (this.trace) console.log(`%c ${this.name}: Calling actions for ${context}`, 'color: #c45f01; font-size: 13px; font-weight: 600; ');
 
-    addMessageHandler(state, name, lambda){
-        this.stateMap[state][name] = lambda;
-    }
-
-    addMessageHandlers(state, handlers){
-        for (let msg in handlers){
-            this.addMessageHandler(state, msg, handlers[msg]);
+        if (!Array.isArray(actions)){
+            actions = [actions]
         }
+
+        for( let action of actions ){
+            if(typeof action !== "function") {
+                this.error = true;
+                throw new TypeError("Action is not a function");
+            }
+            action();
+        }
+
     }
+
+    generateEventNames(){
+        let res = new Set();
+
+        for( let state in this.stateMap){
+            for(let event in this.stateMap[state].transitions){
+                res.add(event)
+            }
+        }
+        if(this.trace) console.log(`${this.name} recognizes events ${JSON.stringify(Array.from(res))}`)
+        return res;
+    }
+
 }
 
 
-function getLightBulbSM(){
-    return new StateMachine({stateMap: {
-        off: {
-            entry: ()=>{ console.log("I am entry action for off state") },
-            exit:  ()=>{ console.log("I am exit action for off state") },
-
-            toggle: {
-                on: ()=>{ console.log("I am toggle event handler for state ON") },
-                state: "on"
-            }
-        },
-
-        on: {
-
-            entry: ()=>{ console.log("I am entry action for off state") },
-            exit:  ()=>{ console.log("I am exit action for off state") },
-
-            toggle: {
-
-                on: ()=>{ console.log("I am toggle event handler for state OFF") },
-                state: "off"
-            }
-        }
+class PropertyNotExist extends Error{constructor(msg){super(`Message ${msg} does not exist in current state`)}}
+class StateNotExist extends Error{constructor(msg){super(`State ${msg} does not exist.`)}}
 
 
-    }, trace: true, initialState: "off", name: "Light Bulb"})
-}
 
-
-function testLightBulb(){
-    let sm = getLightBulbSM();
-    sm.handle.toggle()
-    sm.handle.toggle()
-    sm.handle.toggle()
-    sm.handle.toggle()
+module.exports = {
+    StateMachine: StateMachine
 }
