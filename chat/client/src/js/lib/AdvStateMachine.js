@@ -1,3 +1,4 @@
+const { createDerivedErrorClasses } = require("../../../../common/DynamicError");
 /**
  * This is implementation of state machine.
  *
@@ -5,7 +6,9 @@
  * {
  *    start: lambdaStart(){},
  *    <state1>: {
+ actionTypeInvalid:
  *        lambda1: ()={...}args,
+ actionTypeInvalid:
  *        lambda2: ()={...},
  *        lambda3: ()={...},
  *
@@ -25,19 +28,19 @@
 class StateMachine {
     static Discard () { return ()=> undefined } ;
     static Warn(prop, smName) { return ()=> console.warn(`${smName}: property ${prop} does not exist in current state`) };
-    static Die   (prop, smName) { return ()=>{ throw new PropertyNotExist(`${smName}, ${prop}`)  }; }
+    static Die   (prop, smName) { return ()=>{ throw new err.msgNotExist(`${smName}, ${prop}`)  }; }
 
     constructor(obj, { stateMap,
-                  initialState = 'start',
+                  initialState,
                   msgNotExistMode = StateMachine.Discard,
                   trace = false,
                   name = "State Machine"
                 }) {
         // we need to expose the state object based on a variable
 
-        if( stateMap === undefined) throw new Error("No state map provided");
+        if( stateMap === undefined) throw new err.illegal.noStateMap();
 
-        if(!stateMap.hasOwnProperty(initialState)) throw new Error("Initial state not in state map");
+        if(!stateMap.hasOwnProperty(initialState)) throw new err.initStateNotInMap(`Initial state provided: ${initialState} || States: ${JSON.stringify(Object.keys(stateMap))}`);
 
         this.obj = obj;
         this.error = false;
@@ -46,7 +49,7 @@ class StateMachine {
         this.msgNotExistMode = msgNotExistMode;
         this.stateMap = new Proxy(stateMap, {
             get(target, prop){
-                if(!(prop in target)) throw new StateNotExist(prop)
+                if(!(prop in target)) throw new err.stateNotExist(prop)
                 return target[prop];
             }
 
@@ -71,14 +74,14 @@ class StateMachine {
         this.handle = new Proxy(this, {
             get(target, prop) {
 
-                if(target.error) throw new Error("The state machine is blown");
+                if(target.error) throw new err.blown();
 
                 if( target.legalEvents.has(prop))
                     return (args) => {
                         setImmediate(()=>target.processEvent(prop, args))
                     };
 
-                throw new Error(`Illegal event name ${prop}`)
+                throw new err.illegalEventName(`${prop}`)
             }
         });
     }
@@ -115,7 +118,7 @@ class StateMachine {
         if (newState) {
             if (!(newState in this.stateMap)){
                 this.error = true;
-                throw new StateNotExist(newState);
+                throw new err.stateNotExist(newState);
             }
 
             let exitActions = this.stateMap[this.state].exit;
@@ -140,7 +143,7 @@ class StateMachine {
     performActions(actions, context, eventName, eventArgs){
 
 
-        if (this.trace) console.log(`%c ${this.name}: Calling actions for ${context}`, 'color: #c45f01; font-size: 13px; font-weight: 600; ');
+        if (this.trace) console.log(`%c ${this.name}: Calling actions for ${context} || Event name: ${eventName} || Event args: ${JSON.stringify(eventArgs)}`, 'color: #c45f01; font-size: 13px; font-weight: 600; ');
 
         if (!Array.isArray(actions)){
             actions = [actions]
@@ -149,7 +152,7 @@ class StateMachine {
         for( let action of actions ){
             if(typeof action !== "function") {
                 this.error = true;
-                throw new TypeError("Action is not a function");
+                throw new err.actionTypeInvalid(typeof action);
             }
             action.call(this.obj, this, eventName, eventArgs);
         }
@@ -171,8 +174,20 @@ class StateMachine {
 }
 
 
-class PropertyNotExist extends Error{constructor(msg){super(`Message ${msg} does not exist in current state`)}}
-class StateNotExist extends Error{constructor(msg){super(`State ${msg} does not exist.`)}}
+
+
+class StateMachineError extends Error{ constructor(details) { super(details); this.name = "StateMachineError" } }
+
+const err = createDerivedErrorClasses(StateMachineError, {
+    msgNotExist: "MessageNotExist",
+    noStateMap: "MissingStateMap",
+    initStateNotInMap: "InitialStateNotFoundInMap",
+    stateNotExist: "StateNotExist",
+    blown: "StateMachineIsBlown",
+    illegalEventName: "IllegalEventName",
+    actionTypeInvalid: "ActionTypeInvalid"
+})
+
 
 
 

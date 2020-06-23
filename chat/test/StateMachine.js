@@ -1,10 +1,10 @@
 const  { StateMachine } = require("../client/src/js/lib/AdvStateMachine.js");
 
 
-function getLightBulbSM(){
+function getLightBulbSM(initState){
     return new StateMachine(undefined, {
         trace: true,
-        initialState: "off",
+        initialState: initState,
         name: "Light Bulb",
         stateMap: {
             off: {
@@ -32,7 +32,10 @@ function getLightBulbSM(){
 }
 
 class Lamp{
-    constructor(){
+    constructor(initState){
+
+        this.name = 'Lamp'
+
         this.sm = new StateMachine(this, {
 
             trace: true,
@@ -52,7 +55,7 @@ class Lamp{
                 off: {
                     transitions: {
                         toggle: {
-                            actions: this.turnOn,
+                            actions: [ this.turnOn, this.beep, this.sayName ],
                             state: "on"
                         }
                     }
@@ -73,10 +76,18 @@ class Lamp{
     toggle(){
         this.sm.handle.toggle()
     }
+
+    beep(){
+        console.log("BEEP");
+    }
+
+    sayName(){
+        console.log(`My name is ${this.name}`);
+    }
 }
 
 function testLamp(){
-    let lamp = new Lamp()
+    let lamp = new Lamp("off")
     lamp.toggle()
     lamp.toggle()
     lamp.toggle()
@@ -84,13 +95,13 @@ function testLamp(){
 }
 
 function testLightBulb(){
-    let sm = getLightBulbSM();
+    let sm = getLightBulbSM("off");
     sm.handle.toggle()
     sm.handle.toggle()
-    sm.handle.toggle()
-    sm.handle.toggle()
+    sm.handle.toggle("Hey", 123, "boo")
+    sm.handle.toggle('asdf', "foo")
 }
 
 testLightBulb();
 
-testLamp()
+//testLamp()
