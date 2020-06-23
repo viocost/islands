@@ -1,27 +1,11 @@
 const { createDerivedErrorClasses } = require("../../../../common/DynamicError");
+
 /**
- * This is implementation of state machine.
  *
- * Constructor accepts object such as:
- * {
- *    start: lambdaStart(){},
- *    <state1>: {
- actionTypeInvalid:
- *        lambda1: ()={...}args,
- actionTypeInvalid:
- *        lambda2: ()={...},
- *        lambda3: ()={...},
- *
-
- *    <state2>: {
- *        lambda4: ()={...},
- setImmediate(()=>{
- *        lambda2: ()={...},
- *        lambda5: ()={...args}
- })
-
-   to send message to state machine simply smInstance.handle.msg where msg is some lambda in current state
-   If message is not found it is ignored
+ * Actions
+ *   array of lambdas passed to the transitions
+ *   Each will be called with
+ *     StateMachine, EventName, EventArgs
  */
 
 
@@ -29,11 +13,17 @@ class StateMachine {
     static Discard () { return ()=> undefined } ;
     static Warn(prop, smName) { return ()=> console.warn(`${smName}: property ${prop} does not exist in current state`) };
     static Die   (prop, smName) { return ()=>{ throw new err.msgNotExist(`${smName}, ${prop}`)  }; }
+    static TraceLevel = {
+        INFO: Symbol("info"),
+        DEBUG: Symbol("debug")
+    }
+
 
     constructor(obj, { stateMap,
                   initialState,
                   msgNotExistMode = StateMachine.Discard,
                   trace = false,
+                  traceLevel = StateMachine.TraceLevel.INFO,
                   name = "State Machine"
                 }) {
         // we need to expose the state object based on a variable
@@ -43,8 +33,10 @@ class StateMachine {
         if(!stateMap.hasOwnProperty(initialState)) throw new err.initStateNotInMap(`Initial state provided: ${initialState} || States: ${JSON.stringify(Object.keys(stateMap))}`);
 
         this.obj = obj;
+
         this.error = false;
         this.trace = trace;
+        this.traceLevel = traceLevel;
         this.name = name;
         this.msgNotExistMode = msgNotExistMode;
         this.stateMap = new Proxy(stateMap, {
@@ -77,7 +69,7 @@ class StateMachine {
                 if(target.error) throw new err.blown();
 
                 if( target.legalEvents.has(prop))
-                    return (args) => {
+                    return (...args) => {
                         setImmediate(()=>target.processEvent(prop, args))
                     };
 
@@ -98,19 +90,16 @@ class StateMachine {
         //   call entry actions on new state //
         ///////////////////////////////////////
 
-
-
         if (this.trace){
             console.log(`${this.name}: Current state: ${this.state}. `)
-            console.log(`   Processing event ${eventName}(${JSON.stringify(eventArgs)})`);
+            if(this.traceLevel === StateMachine.TraceLevel.DEBUG)
+                console.log(`   Processing event ${eventName}(${JSON.stringify(eventArgs)})`);
         }
 
         if (!(eventName in this.stateMap[this.state].transitions)){
             this.msgNotExistMode(eventName, this.name);
             return;
         }
-
-
 
         let actions = this.stateMap[this.state].transitions[eventName]["actions"];
         let newState = this.stateMap[this.state].transitions[eventName]["state"]
@@ -143,7 +132,7 @@ class StateMachine {
     performActions(actions, context, eventName, eventArgs){
 
 
-        if (this.trace) console.log(`%c ${this.name}: Calling actions for ${context} || Event name: ${eventName} || Event args: ${JSON.stringify(eventArgs)}`, 'color: #c45f01; font-size: 13px; font-weight: 600; ');
+        if (this.trace && this.traceLevel === StateMachine.TraceLevel.DEBUG) console.log(`%c ${this.name}: Calling actions for ${context} || Event name: ${eventName} || Event args: ${JSON.stringify(eventArgs)}`, 'color: #c45f01; font-size: 13px; font-weight: 600; ');
 
         if (!Array.isArray(actions)){
             actions = [actions]
@@ -170,6 +159,7 @@ class StateMachine {
         if(this.trace) console.log(`${this.name} recognizes events ${JSON.stringify(Array.from(res))}`)
         return res;
     }
+
 
 }
 

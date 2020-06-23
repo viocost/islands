@@ -4,6 +4,7 @@ const  { StateMachine } = require("../client/src/js/lib/AdvStateMachine.js");
 function getLightBulbSM(initState){
     return new StateMachine(undefined, {
         trace: true,
+        traceLevel: StateMachine.TraceLevel.DEBUG,
         initialState: initState,
         name: "Light Bulb",
         stateMap: {
@@ -32,7 +33,7 @@ function getLightBulbSM(initState){
 }
 
 class Lamp{
-    constructor(initState){
+    constructor(){
 
         this.name = 'Lamp'
 
@@ -41,6 +42,7 @@ class Lamp{
             trace: true,
             name: "Lamp sm",
             initialState: "off",
+            traceLevel: StateMachine.TraceLevel.DEBUG,
 
             stateMap: {
                 on:{
@@ -73,35 +75,35 @@ class Lamp{
         console.log("turnOff call");
     }
 
-    toggle(){
-        this.sm.handle.toggle()
+    toggle(a, b, c){
+        this.sm.handle.toggle(a, b, c)
     }
 
-    beep(){
-        console.log("BEEP");
+    beep(a, b, c){
+        console.log(`BEEP! Args: ${a} ${b} ${c} ` );
     }
 
-    sayName(){
-        console.log(`My name is ${this.name}`);
+    sayName(a, b, c){
+        console.log(`My name is ${this.name} Args: a:  ${a} b: ${b} c: ${c}`);
     }
 }
 
 function testLamp(){
     let lamp = new Lamp("off")
-    lamp.toggle()
-    lamp.toggle()
-    lamp.toggle()
+    lamp.toggle(1, 2, 3)
+    lamp.toggle(4, 5, 6)
+    lamp.toggle(7, 8, 9)
 
 }
 
 function testLightBulb(){
     let sm = getLightBulbSM("off");
-    sm.handle.toggle()
-    sm.handle.toggle()
+    sm.handle.toggle(1, 2, 3)
+    sm.handle.toggle(4, 5, 6)
     sm.handle.toggle("Hey", 123, "boo")
     sm.handle.toggle('asdf', "foo")
 }
 
-testLightBulb();
+//testLightBulb();
 
-//testLamp()
+testLamp()
