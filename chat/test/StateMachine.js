@@ -12,10 +12,12 @@ function getLightBulbSM(initState){
                 entry: ()=>{ console.log("I am entry action for off state") },
                 exit:  ()=>{ console.log("I am exit action for off state") },
                 transitions: {
-                    toggle: {
-                        actions: ()=>{ console.log("I am toggle event handler for state OFF") },
-                        state: "on",
-                    }
+                    toggle: [
+                        {
+                            actions: ()=>{ console.log("I am toggle event handler for state OFF") },
+                            state: "on",
+                        }
+                    ]
                 }
             },
 
@@ -49,8 +51,30 @@ class Lamp{
                     transitions: {
                         toggle: {
                             actions: this.turnOff,
-                            state: "off"
-                        }
+                            state: "off",
+                            guards: [Guards.t, Guards.t]
+                        },
+
+                        whistle: {
+                            actions: [ this.sayName, this.whistle ],
+                            guards: [ Guards.t, Guards.t ]
+
+                        },
+
+                        dieWithError: [
+                            {
+                                actions: [ this.sayName ],
+                                guards: [Guards.t, Guards.t]
+                            },
+
+
+                            {
+                                actions: [ this.whistle ],
+                                guards: [Guards.t, Guards.t]
+                            }
+                        ]
+
+                       
                     }
                 },
 
@@ -58,12 +82,45 @@ class Lamp{
                     transitions: {
                         toggle: {
                             actions: [ this.turnOn, this.beep, this.sayName ],
-                            state: "on"
-                        }
+                            state: "on",
+                            guards: [Guards.t, Guards.t]
+                        },
+
+                        whistle: {
+                            actions: [ this.sayName, this.whistle ],
+                            guards: [ Guards.t, Guards.f ]
+
+                        },
+
+                        testArray: [
+                            {
+
+                                actions: [ this.sayArray ],
+                                guards: [ Guards.t, Guards.t ]
+                            },
+
+                            {
+
+                                actions: [ this.sayName, this.whistle ],
+                                guards: [ Guards.t, Guards.f ]
+                            }
+                        ]
+
+
+
+
                     }
                 }
             }
         })
+    }
+
+    sayArray(){
+        console.log("ARRAY");
+    }
+
+    whistle(){
+        console.log("whsshshshshs");
     }
 
     turnOn(){
@@ -73,6 +130,10 @@ class Lamp{
 
     turnOff(){
         console.log("turnOff call");
+    }
+
+    handleWhistle(){
+        this.sm.handle.whistle();
     }
 
     toggle(a, b, c){
@@ -86,15 +147,43 @@ class Lamp{
     sayName(a, b, c){
         console.log(`My name is ${this.name} Args: a:  ${a} b: ${b} c: ${c}`);
     }
+
+    testArray(){
+        this.sm.handle.testArray();
+    }
+
+    dieWithError(){
+        this.sm.handle.dieWithError();
+    }
+}
+
+const Guards = {
+    t: ()=>true,
+    f: ()=>false,
 }
 
 function testLamp(){
     let lamp = new Lamp("off")
     lamp.toggle(1, 2, 3)
+    lamp.handleWhistle()
     lamp.toggle(4, 5, 6)
+
+    lamp.handleWhistle()
+    lamp.testArray()
     lamp.toggle(7, 8, 9)
 
+    lamp.handleWhistle()
+
+    try{
+      lamp.dieWithError()
+    } catch(err){}
+
+    lamp.toggle(1, 2, 3)
+    lamp.toggle(1, 2, 3)
+    lamp.toggle(1, 2, 3)
+
 }
+
 
 function testLightBulb(){
     let sm = getLightBulbSM("off");
@@ -103,6 +192,7 @@ function testLightBulb(){
     sm.handle.toggle("Hey", 123, "boo")
     sm.handle.toggle('asdf', "foo")
 }
+
 
 //testLightBulb();
 

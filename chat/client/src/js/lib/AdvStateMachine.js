@@ -79,6 +79,41 @@ class StateMachine {
     }
 
 
+    getEventDescription(eventName){
+        let descriptions = this.stateMap[this.state].transitions[eventName];
+
+        if(!Array.isArray(descriptions)){
+            return this.areGuardsPassed(descriptions) ? descriptions : undefined;
+        }
+
+        let res = []
+
+        for (let desc of descriptions){
+            if(this.areGuardsPassed(desc)) res.push(desc)
+        }
+
+        if(res.length > 1 ){
+            this.error = true;
+            throw new err.cannotDetermineAction(`For ${eventName}. Multiple actions' guards passed`)
+        }
+
+        return res[0];
+
+    }
+
+    areGuardsPassed(evDescription){
+        let res = true;
+
+        if( undefined === evDescription.guards) return res;
+
+        for(let guard of evDescription.guards){
+            res = (res && guard());
+        }
+
+        if(this.isDebug()) console.log(`   Guards evaluated to ${res} `);
+        return res;
+    }
+
     processEvent(eventName, eventArgs) {
 
         ///////////////////////////////////////
@@ -101,8 +136,15 @@ class StateMachine {
             return;
         }
 
-        let actions = this.stateMap[this.state].transitions[eventName]["actions"];
-        let newState = this.stateMap[this.state].transitions[eventName]["state"]
+        let eventDescription = this.getEventDescription(eventName);
+
+        if(undefined === eventDescription){
+            if(this.trace) console.log(`  NO VALID ACTION FOUND for ${eventName}`);
+            return
+        }
+
+        let actions =  eventDescription["actions"];
+        let newState = eventDescription["state"]
 
         if (newState) {
             if (!(newState in this.stateMap)){
@@ -160,6 +202,9 @@ class StateMachine {
         return res;
     }
 
+    isDebug(){
+        return this.trace && this.traceLevel === StateMachine.TraceLevel.DEBUG;
+    }
 
 }
 
@@ -175,7 +220,8 @@ const err = createDerivedErrorClasses(StateMachineError, {
     stateNotExist: "StateNotExist",
     blown: "StateMachineIsBlown",
     illegalEventName: "IllegalEventName",
-    actionTypeInvalid: "ActionTypeInvalid"
+    actionTypeInvalid: "ActionTypeInvalid",
+    cannotDetermineAction: "CannotDetermineValidAction",
 })
 
 
