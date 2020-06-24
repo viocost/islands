@@ -1,5 +1,19 @@
 const { createDerivedErrorClasses } = require("../../../../common/DynamicError");
 
+
+class StateMachineError extends Error{ constructor(details) { super(details); this.name = "StateMachineError" } }
+
+const err = createDerivedErrorClasses(StateMachineError, {
+    msgNotExist: "MessageNotExist",
+    noStateMap: "MissingStateMap",
+    initStateNotInMap: "InitialStateNotFoundInMap",
+    stateNotExist: "StateNotExist",
+    blown: "StateMachineIsBlown",
+    illegalEventName: "IllegalEventName",
+    actionTypeInvalid: "ActionTypeInvalid",
+    cannotDetermineAction: "CannotDetermineValidAction",
+})
+
 /**
  *
  * Actions
@@ -14,28 +28,23 @@ class StateMachine {
     static Warn(prop, smName) { return ()=> console.warn(`${smName}: property ${prop} does not exist in current state`) };
     static Die   (prop, smName) { return ()=>{ throw new err.msgNotExist(`${smName}, ${prop}`)  }; }
     static TraceLevel = {
+        NONE: Symbol("none"),
         INFO: Symbol("info"),
         DEBUG: Symbol("debug")
     }
 
 
-    constructor(obj, { stateMap,
-                  initialState,
-                  msgNotExistMode = StateMachine.Discard,
-                  trace = false,
-                  traceLevel = StateMachine.TraceLevel.INFO,
-                  name = "State Machine"
-                }) {
-        // we need to expose the state object based on a variable
+    constructor(obj, { stateMap, initialState, name = "State Machine" },
+        { msgNotExistMode = StateMachine.Discard, traceLevel = StateMachine.TraceLevel.INFO}){
 
-        if( stateMap === undefined) throw new err.illegal.noStateMap();
+        if( stateMap === undefined) throw new err.noStateMap();
 
         if(!stateMap.hasOwnProperty(initialState)) throw new err.initStateNotInMap(`Initial state provided: ${initialState} || States: ${JSON.stringify(Object.keys(stateMap))}`);
 
+        console.log(`traceLevel ${traceLevel.toString()}`);
         this.obj = obj;
 
         this.error = false;
-        this.trace = trace;
         this.traceLevel = traceLevel;
         this.name = name;
         this.msgNotExistMode = msgNotExistMode;
@@ -66,11 +75,18 @@ class StateMachine {
         this.handle = new Proxy(this, {
             get(target, prop) {
 
-                if(target.error) throw new err.blown();
+                if(target.error) throw new err.blown(target.error);
 
                 if( target.legalEvents.has(prop))
                     return (...args) => {
-                        setImmediate(()=>target.processEvent(prop, args))
+                        setImmediate(()=>{
+                            if(target.error) return;
+                            try{
+                                target.processEvent(prop, args);
+                            }catch(err){
+                                target.error = err;
+                            }
+                        })
                     };
 
                 throw new err.illegalEventName(`${prop}`)
@@ -79,17 +95,17 @@ class StateMachine {
     }
 
 
-    getEventDescription(eventName){
+    getEventDescription(eventName, eventArgs){
         let descriptions = this.stateMap[this.state].transitions[eventName];
 
         if(!Array.isArray(descriptions)){
-            return this.areGuardsPassed(descriptions) ? descriptions : undefined;
+            descriptions = [ descriptions ]
         }
 
         let res = []
 
         for (let desc of descriptions){
-            if(this.areGuardsPassed(desc)) res.push(desc)
+            if(this.areGuardsPassed(desc, eventName, eventArgs)) res.push(desc)
         }
 
         if(res.length > 1 ){
@@ -101,13 +117,17 @@ class StateMachine {
 
     }
 
-    areGuardsPassed(evDescription){
+    areGuardsPassed(evDescription, eventName, eventArgs){
         let res = true;
-
         if( undefined === evDescription.guards) return res;
 
-        for(let guard of evDescription.guards){
-            res = (res && guard());
+        let guards = Array.isArray(evDescription.guards) ? evDescription.guards : [ evDescription.guards ];
+
+        for(let guard of guards){
+            if(!guard.call(this.obj, this, eventName, eventArgs)) {
+                res = false;
+                break;
+            }
         }
 
         if(this.isDebug()) console.log(`   Guards evaluated to ${res} `);
@@ -125,9 +145,9 @@ class StateMachine {
         //   call entry actions on new state //
         ///////////////////////////////////////
 
-        if (this.trace){
+        if (this.isInfo()){
             console.log(`${this.name}: Current state: ${this.state}. `)
-            if(this.traceLevel === StateMachine.TraceLevel.DEBUG)
+            if(this.isDebug())
                 console.log(`   Processing event ${eventName}(${JSON.stringify(eventArgs)})`);
         }
 
@@ -136,10 +156,10 @@ class StateMachine {
             return;
         }
 
-        let eventDescription = this.getEventDescription(eventName);
+        let eventDescription = this.getEventDescription(eventName, eventArgs);
 
         if(undefined === eventDescription){
-            if(this.trace) console.log(`  NO VALID ACTION FOUND for ${eventName}`);
+            if(this.isInfo()) console.log(`  NO VALID ACTION FOUND for ${eventName}`);
             return
         }
 
@@ -148,6 +168,7 @@ class StateMachine {
 
         if (newState) {
             if (!(newState in this.stateMap)){
+
                 this.error = true;
                 throw new err.stateNotExist(newState);
             }
@@ -165,7 +186,7 @@ class StateMachine {
 
             let entryActions = this.stateMap[newState].entry;
             this.state = newState;
-            if(this.trace) console.log(`State is now set to ${this.state}`);
+            if(this.isInfo()) console.log(`State is now set to ${this.state}`);
             if (entryActions) this.performActions(entryActions, "entry", eventName, eventArgs);
 
         }
@@ -173,8 +194,7 @@ class StateMachine {
 
     performActions(actions, context, eventName, eventArgs){
 
-
-        if (this.trace && this.traceLevel === StateMachine.TraceLevel.DEBUG) console.log(`%c ${this.name}: Calling actions for ${context} || Event name: ${eventName} || Event args: ${JSON.stringify(eventArgs)}`, 'color: #c45f01; font-size: 13px; font-weight: 600; ');
+        if (this.isDebug()) console.log(`%c ${this.name}: Calling actions for ${context} || Event name: ${eventName} || Event args: ${JSON.stringify(eventArgs)}`, 'color: #c45f01; font-size: 13px; font-weight: 600; ');
 
         if (!Array.isArray(actions)){
             actions = [actions]
@@ -198,31 +218,21 @@ class StateMachine {
                 res.add(event)
             }
         }
-        if(this.trace) console.log(`${this.name} recognizes events ${JSON.stringify(Array.from(res))}`)
+        if(this.isInfo()) console.log(`${this.name} recognizes events ${JSON.stringify(Array.from(res))}`)
         return res;
     }
 
     isDebug(){
-        return this.trace && this.traceLevel === StateMachine.TraceLevel.DEBUG;
+        return this.traceLevel === StateMachine.TraceLevel.DEBUG;
+    }
+
+    isInfo(){
+        return this.traceLevel === StateMachine.TraceLevel.DEBUG || this.traceLevel === StateMachine.TraceLevel.INFO;
     }
 
 }
 
 
-
-
-class StateMachineError extends Error{ constructor(details) { super(details); this.name = "StateMachineError" } }
-
-const err = createDerivedErrorClasses(StateMachineError, {
-    msgNotExist: "MessageNotExist",
-    noStateMap: "MissingStateMap",
-    initStateNotInMap: "InitialStateNotFoundInMap",
-    stateNotExist: "StateNotExist",
-    blown: "StateMachineIsBlown",
-    illegalEventName: "IllegalEventName",
-    actionTypeInvalid: "ActionTypeInvalid",
-    cannotDetermineAction: "CannotDetermineValidAction",
-})
 
 
 

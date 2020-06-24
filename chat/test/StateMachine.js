@@ -1,5 +1,9 @@
 const  { StateMachine } = require("../client/src/js/lib/AdvStateMachine.js");
 
+const Guards = {
+    t: ()=>true,
+    f: ()=>false,
+}
 
 function getLightBulbSM(initState){
     return new StateMachine(undefined, {
@@ -35,84 +39,14 @@ function getLightBulbSM(initState){
 }
 
 class Lamp{
-    constructor(){
 
+
+    constructor(machine = this.getProductionSM(), machineControlMode = {
+        traceLevel:  StateMachine.TraceLevel.DEBUG,
+        msgNotExistMode: StateMachine.Warn
+    }){
         this.name = 'Lamp'
-
-        this.sm = new StateMachine(this, {
-
-            trace: true,
-            name: "Lamp sm",
-            initialState: "off",
-            traceLevel: StateMachine.TraceLevel.DEBUG,
-
-            stateMap: {
-                on:{
-                    transitions: {
-                        toggle: {
-                            actions: this.turnOff,
-                            state: "off",
-                            guards: [Guards.t, Guards.t]
-                        },
-
-                        whistle: {
-                            actions: [ this.sayName, this.whistle ],
-                            guards: [ Guards.t, Guards.t ]
-
-                        },
-
-                        dieWithError: [
-                            {
-                                actions: [ this.sayName ],
-                                guards: [Guards.t, Guards.t]
-                            },
-
-
-                            {
-                                actions: [ this.whistle ],
-                                guards: [Guards.t, Guards.t]
-                            }
-                        ]
-
-                       
-                    }
-                },
-
-                off: {
-                    transitions: {
-                        toggle: {
-                            actions: [ this.turnOn, this.beep, this.sayName ],
-                            state: "on",
-                            guards: [Guards.t, Guards.t]
-                        },
-
-                        whistle: {
-                            actions: [ this.sayName, this.whistle ],
-                            guards: [ Guards.t, Guards.f ]
-
-                        },
-
-                        testArray: [
-                            {
-
-                                actions: [ this.sayArray ],
-                                guards: [ Guards.t, Guards.t ]
-                            },
-
-                            {
-
-                                actions: [ this.sayName, this.whistle ],
-                                guards: [ Guards.t, Guards.f ]
-                            }
-                        ]
-
-
-
-
-                    }
-                }
-            }
-        })
+        this.sm = new StateMachine(this, machine, machineControlMode);
     }
 
     sayArray(){
@@ -125,7 +59,6 @@ class Lamp{
 
     turnOn(){
         console.log("turnOn call");
-        console.log(this);
     }
 
     turnOff(){
@@ -155,32 +88,95 @@ class Lamp{
     dieWithError(){
         this.sm.handle.dieWithError();
     }
+
+    getProductionSM(){
+        return {
+            name: "Production lamp SM",
+            initialState: "off",
+            stateMap: {
+                on:{
+                    transitions: {
+                        toggle: {
+                            actions: this.turnOff,
+                            state: "off",
+                            guards: [Guards.t, Guards.t]
+                        },
+
+                        whistle: {
+                            actions: [ this.sayName, this.whistle ],
+                            guards: [ Guards.t, Guards.t ]
+
+                        },
+
+                        dieWithError: [
+                            {
+                                actions: [ this.sayName ],
+                                guards: [Guards.t, Guards.t]
+                            },
+
+                            {
+                                actions: [ this.whistle ],
+                                guards: [Guards.t, Guards.t]
+                            }
+                        ]
+
+
+                    }
+                },
+
+                off: {
+                    transitions: {
+                        toggle: {
+                            actions: [ this.turnOn, this.beep, this.sayName ],
+                            state: "on",
+                            guards: [Guards.t, Guards.t]
+                        },
+
+                        whistle: {
+                            actions: [ this.sayName, this.whistle ],
+
+                        },
+
+                        testArray: [
+                            {
+
+                                actions: [ this.sayArray ],
+                                guards: [ Guards.t, Guards.t ]
+                            },
+
+                            {
+
+                                actions: [ this.sayName, this.whistle ],
+                                guards: [ Guards.t, Guards.f ]
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+
+    }
 }
 
-const Guards = {
-    t: ()=>true,
-    f: ()=>false,
-}
 
 function testLamp(){
-    let lamp = new Lamp("off")
+    let lamp = new Lamp()
+
+
     lamp.toggle(1, 2, 3)
     lamp.handleWhistle()
     lamp.toggle(4, 5, 6)
-
     lamp.handleWhistle()
     lamp.testArray()
     lamp.toggle(7, 8, 9)
-
     lamp.handleWhistle()
 
-    try{
-      lamp.dieWithError()
-    } catch(err){}
+    lamp.dieWithError()
+
 
     lamp.toggle(1, 2, 3)
     lamp.toggle(1, 2, 3)
-    lamp.toggle(1, 2, 3)
+
 
 }
 

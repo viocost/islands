@@ -87,6 +87,11 @@ window.statusConn = processConnectionStatusChanged;
 document.addEventListener('DOMContentLoaded', event =>{
     //console.log(`Initializing page. Registration: ${isRegistration()}, Version: ${version}`);
 
+    //Establish connection,
+    // get vault
+    // password handling state machine
+    //
+
     loadSounds();
     initChat();
     initLoginUI();
