@@ -35,10 +35,10 @@ class StateMachine {
     }
 
 
-    constructor(obj, { stateMap, initialState, name = "State Machine" },
+    constructor(obj, { stateMap, name = "State Machine" },
         { msgNotExistMode = StateMachine.Discard, traceLevel = StateMachine.TraceLevel.INFO}){
 
-        this.verifyStateMap(stateMap, initialState)
+        this.verifyStateMap(stateMap)
 
 
         console.log(`traceLevel ${traceLevel.toString()}`);
@@ -58,7 +58,8 @@ class StateMachine {
 
         this.legalEvents = this.generateEventNames();
 
-        this.state = initialState;
+        this.state = this.getInitialState();
+
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // let entryNewState = this.stateMap[initialState].entry;                                                                                 //
@@ -68,7 +69,7 @@ class StateMachine {
         // }                                                                                                                                      //
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        let initialEntryActions =  this.stateMap[initialState].entry;
+        let initialEntryActions =  this.stateMap[this.getInitialState()].entry;
         if(initialEntryActions)  this.performActions(initialEntryActions, "Initial entry", undefined, undefined);
 
 
@@ -243,6 +244,12 @@ class StateMachine {
         //Verify state map
         if(initialState.length === 0) throw new err.initStateNotInMap(`Initial state provided: ${initialState} || States: ${JSON.stringify(Object.keys(stateMap))}`);
         if(initialState.length > 1) throw new err.multipleInitialStates(JSON.stringify(initialState));
+    }
+
+    getInitialState(){
+        for (let state in this.stateMap){
+            if(this.stateMap[state].initial) return state;
+        }
     }
 }
 

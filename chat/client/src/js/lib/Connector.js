@@ -121,6 +121,7 @@ export class Connector {
             stateMap: {
                 disconnected: {
                     entry: ()=>{ console.log("Connector disconnected")},
+                    initial: true,
 
                     transitions: {
                         connect: {
@@ -171,9 +172,11 @@ export class Connector {
                 },
 
                 error: {
-                    connect: {
-                        state: ConnectionState.CONNECTING,
-                        after: this.connectLambda()
+                    transitions: {
+                        connect: {
+                            state: ConnectionState.CONNECTING,
+                            actions: this.connect
+                        }
                     }
                 },
 

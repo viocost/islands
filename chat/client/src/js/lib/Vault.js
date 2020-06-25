@@ -45,6 +45,7 @@ export class Vault{
             name: "Vault SM",
             stateMap: {
             uninitialized: {
+                initial: true,
                 transitions: {
                     fetchVault: { actions: this.fetchVault, state: "fetchingVault" },
                 }
