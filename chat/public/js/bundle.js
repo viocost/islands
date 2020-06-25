@@ -15478,9 +15478,8 @@ var Vault_Vault = /*#__PURE__*/function () {
         var vaultEncrypted,
             ic,
             data,
-            _self,
+            self,
             _args2 = arguments;
-
         return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
@@ -15532,7 +15531,7 @@ var Vault_Vault = /*#__PURE__*/function () {
                 if (!data.version || semver["lt"](data.version, "2.0.0")) {
                   // TODO format update required!
                   console.log("vault format update required to version ".concat(version));
-                  _self = this;
+                  self = this;
                   this.version = version;
                   this.versionUpdate = /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
                     return regeneratorRuntime.wrap(function _callee$(_context) {
@@ -15541,7 +15540,7 @@ var Vault_Vault = /*#__PURE__*/function () {
                           case 0:
                             console.log("!!!Version update lambda");
                             _context.next = 3;
-                            return _self.updateVaultFormat(data);
+                            return self.updateVaultFormat(data);
 
                           case 3:
                           case "end":
@@ -15624,7 +15623,7 @@ var Vault_Vault = /*#__PURE__*/function () {
       this.arrivalHub = arrivalHub;
       this.messageQueue = messageQueue;
       this.arrivalHub.on(this.id, function (msg) {
-        _this3.processIncomingMessage(msg, self);
+        _this3.processIncomingMessage(msg, _this3);
       }); ////////////////////////////////////////////////////////
       // if(this.versionUpdate){                            //
       //     console.log("Updating vault to new format.."); //

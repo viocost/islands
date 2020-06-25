@@ -431,7 +431,7 @@ export class Vault{
         this.arrivalHub = arrivalHub;
         this.messageQueue = messageQueue;
         this.arrivalHub.on(this.id, (msg)=>{
-            this.processIncomingMessage(msg, self);
+            this.processIncomingMessage(msg, this);
         })
 
         ////////////////////////////////////////////////////////
