@@ -19,6 +19,7 @@ export function fetchJSON(url, stateMachine){
             }
             let parsedResponse = await response.json()
 
+            console.log("%c Calling state machine", "color: green; font-size: 15px");
             stateMachine.handle.JSONReceived(parsedResponse);
 
         }catch (err){

@@ -25,9 +25,9 @@ const err = createDerivedErrorClasses(StateMachineError, {
 
 
 class StateMachine {
-    static Discard () { return ()=> undefined } ;
-    static Warn(prop, smName) { return ()=> console.warn(`${smName}: property ${prop} does not exist in current state`) };
-    static Die   (prop, smName) { return ()=>{ throw new err.msgNotExist(`${smName}, ${prop}`)  }; }
+    static  Discard () {}  ;
+    static  Warn  (smName, prop) { console.warn(`${smName}: property ${prop} does not exist in current state`) };
+    static Die   (prop, smName) { throw new err.msgNotExist(`${smName}, ${prop}`)   };
     static TraceLevel = {
         NONE: Symbol("none"),
         INFO: Symbol("info"),
@@ -38,10 +38,8 @@ class StateMachine {
     constructor(obj, { stateMap, name = "State Machine" },
         { msgNotExistMode = StateMachine.Discard, traceLevel = StateMachine.TraceLevel.INFO}){
 
-        this.verifyStateMap(stateMap)
+        this.validateStateMap(stateMap)
 
-
-        console.log(`traceLevel ${traceLevel.toString()}`);
         this.obj = obj;
 
         this.error = false;
@@ -178,6 +176,7 @@ class StateMachine {
 
             if(exitActions) this.performActions(exitActions, "exit", eventName, eventArgs);
 
+
         }
 
         if (actions) this.performActions(actions, "transition", eventName, eventArgs);
@@ -187,7 +186,7 @@ class StateMachine {
 
             let entryActions = this.stateMap[newState].entry;
             this.state = newState;
-            if(this.isInfo()) console.log(`State is now set to ${this.state}`);
+            if(this.isInfo()) console.log(`%c ${this.name}: State is now set to ${this.state}`, 'color: #3502ff; font-size: 10px; font-weight: 600; ');
             if (entryActions) this.performActions(entryActions, "entry", eventName, eventArgs);
 
         }
@@ -195,7 +194,9 @@ class StateMachine {
 
     performActions(actions, context, eventName, eventArgs){
 
-        if (this.isDebug()) console.log(`%c ${this.name}: Calling actions for ${context} || Event name: ${eventName} || Event args: ${JSON.stringify(eventArgs)}`, 'color: #c45f01; font-size: 13px; font-weight: 600; ');
+        if (this.isDebug()) {
+            console.log(`%c ${this.name}: Calling actions for ${context} || Event name: ${eventName} `, 'color: #c45f01; font-size: 13px; font-weight: 600; ');
+        }
 
         if (!Array.isArray(actions)){
             actions = [actions]
@@ -231,7 +232,7 @@ class StateMachine {
         return this.traceLevel === StateMachine.TraceLevel.DEBUG || this.traceLevel === StateMachine.TraceLevel.INFO;
     }
 
-    verifyStateMap(stateMap){
+    validateStateMap(stateMap){
         //Verify there is state map
         if( stateMap === undefined) throw new err.noStateMap();
 
@@ -239,6 +240,11 @@ class StateMachine {
         let initialState = [];
         for (let state in stateMap){
             if (stateMap[state].initial) initialState.push(state)
+
+            //transitions must be at least an empty object
+            if (!stateMap[state].hasOwnProperty("transitions")){
+                stateMap[state].transitions = {}
+            }
         }
 
         //Verify state map

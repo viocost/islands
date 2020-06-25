@@ -1,12 +1,10 @@
 import { IError as Err }  from "../../../../common/IError";
 import { verifyPassword } from "./PasswordVerify";
 import { Topic } from "../lib/Topic";
-import { ClientSettings } from "./ClientSettings";
 import { iCrypto } from "./iCrypto";
 import { WildEmitter } from "./WildEmitter";
 import { Message } from "./Message";
 import { Events, Internal  } from "../../../../common/Events";
-import { ChatUtility } from "./ChatUtility";
 import { assert } from "../../../../common/IError";
 import { XHR } from "./xhr"
 import * as semver from "semver";
@@ -69,8 +67,8 @@ export class Vault{
 
             active: {
                 entry: ()=>{
+                    console.log("%c Vault initialized", 'color: red');
                     this.initialized = true;
-                    this.emit("active")
                 },
                 exit: ()=>{ this.emit("inactive") }
             },
@@ -201,13 +199,14 @@ export class Vault{
 
 
     load(){
+        console.log(`%c Scheduling fetchVault`, "color: red; font-size: 16px");
         this.stateMachine.handle.fetchVault()
     }
 
-    processVault(data){
-        const { vault, vaultId } = data
-        console.log(`Processing vault. Data: ${vault}`);
-        this.initSaved(data.vault)
+    processVault(stateMachine, eventName, args){
+        const { vault, vaultId } = args[0]
+        console.log(`Processing vault. `);
+        this.initSaved(vault)
         this.setId(vaultId)
     }
 
