@@ -3,56 +3,65 @@ import { fetchJSON } from "./FetchJSON";
 import { WildEmitter } from "./WildEmitter"
 
 
-export class TopicRetriever{
-    constructor(){
+export class TopicRetriever {
+    constructor() {
         WildEmitter.mixin(this)
         this.stateMachine = this.prepareStateMachine();
         this.toipcs;
         this.error;
     }
 
-    prepareStateMachine(){
-        return new StateMachine({
-            ready: {
-                fetchTopics: { after: this.fetchTopicsLambda(), state: 'fetchingTopics' }
-            },
+    prepareStateMachine() {
+        return new StateMachine(this, {
+            name: "Topic Retriever SM",
+            stateMap: {
+                ready: {
+                    initial: true,
+                    transitions: {
+                        fetchTopics: { actions: this.fetchTopics, state: 'fetchingTopics' }
+                    }
+                },
 
-            error: {
-                fetchTopics: { after: this.fetchTopicsLambda(), state: 'fetchingTopics' }
-            },
+                error: {
+                    transitions: {
+                        fetchTopics: { actions: this.fetchTopics, state: 'fetchingTopics' }
+                    }
+                },
 
-            fetchingTopics: {
-                JSONReceived: { after: this.processTopicsLambda(), state: 'finished' },
-                fetchJSONError: { after: this.processErrorLambda(),  state: 'error' }
-            },
+                fetchingTopics: {
+                    transitions: {
+                        JSONReceived: { actions: this.processTopics, state: 'finished' },
+                        fetchJSONError: { actions: this.processError, state: 'error' }
 
-            finished: { /*Once finished - nothing more to do*/ }
+                    }
+                },
 
-        }, 'ready', StateMachine.Warn, true, "TOPIC RETRIEVER SM")
+                finished: {
+                    final: true
+                }
+
+            }
+
+        }, { msgNotExistMode: StateMachine.Warn, traceLevel: StateMachine.TraceLevel.DEBUG })
     }
 
 
-    fetchTopicsLambda(){
-        return ()=>{
-            fetchJSON("/topics", this.stateMachine)
-        }
+    fetchTopics() {
+        fetchJSON("/topics", this.stateMachine)
     }
 
-    processErrorLambda(){
-        return (err)=>{
-            this.error = err;
-            this.emit("error", err);
-        }
+    processError(err) {
+        this.error = err;
+        this.emit("error", err);
     }
 
-    processTopicsLambda(){
-        return (data)=>{
-            this.topics = data;
-            this.emit("finished", this.topics);
-        }
+    processTopics(stateMachine, eventName, args) {
+        let data = args[0]
+        this.topics = data;
+        this.emit("finished", this.topics);
     }
 
-    fetchTopics(){
+    run() {
         this.stateMachine.handle.fetchTopics();
     }
 }

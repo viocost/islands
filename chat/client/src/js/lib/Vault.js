@@ -68,6 +68,7 @@ export class Vault{
                 entry: ()=>{
                     console.log("%c Vault initialized", 'color: red');
                     this.initialized = true;
+                    this.emit("active")
                 },
                 exit: ()=>{ this.emit("inactive") }
             },
@@ -427,7 +428,6 @@ export class Vault{
     }
 
     bootstrap(arrivalHub, messageQueue){
-        this.version = version;
         this.arrivalHub = arrivalHub;
         this.messageQueue = messageQueue;
         this.arrivalHub.on(this.id, (msg)=>{

@@ -3,7 +3,7 @@ import * as UI from "./lib/ChatUIFactory";
 import { BlockingSpinner } from "./lib/BlockingSpinner";
 import toastr from "./lib/toastr";
 import { ChatClient as Chat, ChatClient } from "./lib/ChatClient";
-import { Events } from "../../../common/Events";
+import { Events, Internal } from "../../../common/Events";
 import "../css/chat.sass"
 import "../css/vendor/loading.css";
 import * as CuteSet from "cute-set";
@@ -1649,6 +1649,7 @@ function initSession(){
 
     console.log("Chat created. Starting session...");
     vault = new Vault(passwordEl.value);
+    window.vault = vault
 
     vault.once("active", loadTopics)
     vault.once("error", ()=>{
@@ -1658,13 +1659,13 @@ function initSession(){
 }
 
 function loadTopics(){
+    console.log("Loading topics...");
     setVaultListeners();
     vault.bootstrap(arrivalHub, messageQueue);
-    console.log("Loading topics...");
     let retriever = new TopicRetriever();
-    retriever.fetchTopics();
     retriever.once("finished", initTopics)
     retriever.once("error", (err)=>{ console.log(err)})
+    retriever.run();
 }
 
 function initTopics(data){

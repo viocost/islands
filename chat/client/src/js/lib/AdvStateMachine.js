@@ -68,7 +68,10 @@ class StateMachine {
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         let initialEntryActions =  this.stateMap[this.getInitialState()].entry;
-        if(initialEntryActions)  this.performActions(initialEntryActions, "Initial entry", undefined, undefined);
+        if(initialEntryActions) {
+            this.performActions(initialEntryActions, "Initial entry", undefined, undefined);
+
+        } 
 
 
         this.handle = new Proxy(this, {
@@ -84,6 +87,7 @@ class StateMachine {
                                 target.processEvent(prop, args);
                             }catch(err){
                                 target.error = err;
+                                if(target.isDebug()) throw err
                             }
                         })
                     };
