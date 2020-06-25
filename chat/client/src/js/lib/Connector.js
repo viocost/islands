@@ -4,10 +4,10 @@ import { Internal } from "../../../../common/Events";
 import * as CuteSet from "cute-set";
 import { StateMachine } from "./AdvStateMachine";
 
-export class Connector{
+export class Connector {
 
 
-    constructor(connectionString=""){
+    constructor(connectionString = "") {
         WildEmitter.mixin(this);
         this.socket = this.createSocket(connectionString);
         this.socketInitialized = false;
@@ -25,7 +25,7 @@ export class Connector{
     }
 
 
-    createSocket(connectionString){
+    createSocket(connectionString) {
         let socketConfig = {
             reconnection: false,
             autoConnect: false,
@@ -38,7 +38,7 @@ export class Connector{
 
         //Wildcard fix
         let onevent = socket.onevent;
-        socket.onevent = function(packet){
+        socket.onevent = function(packet) {
             let args = packet.data || [];
             onevent.call(this, packet);
             packet.data = ["*"].concat(args);
@@ -46,9 +46,9 @@ export class Connector{
         }
         //End
 
-        socket.on("ping", ()=>{
+        socket.on("ping", () => {
             this.pingPongCount++;
-            if (this.pingPongCount > this.maxUnrespondedPings){
+            if (this.pingPongCount > this.maxUnrespondedPings) {
                 console.log("socket pings are not responded. Resetting connection");
                 socket.disconnect();
                 attempted = 0
@@ -56,22 +56,22 @@ export class Connector{
             }
         })
 
-        socket.on("pong", ()=>{
+        socket.on("pong", () => {
             this.pingPongCount = 0;
         })
 
-        socket.on('connect', ()=>{
+        socket.on('connect', () => {
             console.log("Island connection established");
             this.stateMachine.handle.connected()
         });
 
 
-        socket.on("*", (event, data)=>{
+        socket.on("*", (event, data) => {
             console.log(`Got event: ${event}`);
             this.emit(event, data);
         })
 
-        socket.on('reconnecting', (attemptNumber)=>{
+        socket.on('reconnecting', (attemptNumber) => {
             this.stateMachine.handle.reconnecting()
             console.log(`Attempting to reconnect : ${attemptNumber}`)
         })
@@ -81,21 +81,21 @@ export class Connector{
             this.stateMachine.handle.connected();
         });
 
-        socket.on('error', (err)=>{
+        socket.on('error', (err) => {
             this.stateMachine.handle.error();
             console.error(`Socket error: ${err}`)
             this.connectionAttempts = 0;
             console.log("Resetting connection...")
         })
 
-        socket.on("disconnect", ()=>{
+        socket.on("disconnect", () => {
             this.stateMachine.handle.processDisconnect();
         });
 
-        socket.on('connect_error', (err)=>{
+        socket.on('connect_error', (err) => {
 
             this.stateMachine.handle.error();
-            if (this.connectionAttempts < this.maxConnectionAttempts){
+            if (this.connectionAttempts < this.maxConnectionAttempts) {
                 console.log("Connection error on attempt: " + this.connectionAttempts + err);
                 this.connectionAttempts += 1;
                 setTimeout(this.attemptConnection, reconnectionDelay);
@@ -106,7 +106,7 @@ export class Connector{
         });
 
 
-        socket.on('connect_timeout', (err)=>{
+        socket.on('connect_timeout', (err) => {
             this.stateMachine.handle.error();
             console.log('Chat connection timeout');
         });
@@ -115,103 +115,117 @@ export class Connector{
         return socket;
     }
 
-    prepareStateMachine(){
-        return new StateMachine({
-            disconnected: {
-                connect: {
-                    state: ConnectionState.CONNECTING,
-                    after: this.connectLambda()
-                },
+    prepareStateMachine() {
+        return new StateMachine(this, {
+            name: "Connector SM",
+            stateMap: {
+                disconnected: {
+                    entry: ()=>{ console.log("Connector disconnected")},
 
-            },
-
-            connecting:{
-                connected: {
-                    state:  ConnectionState.CONNECTED,
-                    after: ()=>{ this.emit(Internal.CONNECTION_STATE_CHANGED) }
-                },
-                error: {
-                    state: ConnectionState.ERROR
-                },
-            },
-
-            reconnecting:{
-                connected: { state: ConnectionState.CONNECTED },
-                error: { state: ConnectionState.ERROR }
-            },
-
-            connected:{
-                processDisconnect: {
-                    state: ConnectionState.DISCONNECTED,
-                    after: ()=>{
-                        this.emit(Internal.CONNECTION_STATE_CHANGED)
-                        setTimeout(()=>{
-                            this.stateMachine.handle.connect()
-                        }, this.reconnectionDelay);
+                    transitions: {
+                        connect: {
+                            state: ConnectionState.CONNECTING,
+                            actions: this.connect
+                        },
                     }
                 },
 
-                disconnectSocket: {
-                    on: ()=>{ this.killSocket }
+                connecting: {
+                    entry:  this.emitState,
+                    transitions: {
+                        connected: {
+                            state: ConnectionState.CONNECTED,
+                        },
+                        error: {
+                            state: ConnectionState.ERROR
+                        },
+
+                    }
                 },
 
-                sendMessage: {
-
-
+                reconnecting: {
+                    entry: this.emitState,
+                    transitions: {
+                        connected: { state: ConnectionState.CONNECTED },
+                        error: { state: ConnectionState.ERROR }
+                    }
                 },
 
-                error: { state: ConnectionState.ERROR }
-            },
+                connected: {
+                    entry: this.emitState,
 
-            error:{
-                connect: {
-                    state: ConnectionState.CONNECTING,
-                    after: this.connectLambda()
-                }
-            },
+                    transitions: {
+                        processDisconnect: {
+                            state: ConnectionState.DISCONNECTED,
+                            actions: this.scheduleReconnect
+                        },
 
-        }, ConnectionState.DISCONNECTED, StateMachine.Warn, true, "CONNECTOR SM");
+                        disconnectSocket: {
+                            actions:  this.killSocket
+                        },
+
+
+                        error: { state: ConnectionState.ERROR }
+
+                    }
+                },
+
+                error: {
+                    connect: {
+                        state: ConnectionState.CONNECTING,
+                        after: this.connectLambda()
+                    }
+                },
+
+            }
+        }, { msgNotExistMode: StateMachine.Warn, traceLevel: StateMachine.TraceLevel.DEBUG })
     }
 
-    transitionState(){
+
+
+    emitState() {
+        console.log(`Emitting state ${this.stateMachine.state}`);
         this.emit(Internal.CONNECTION_STATE_CHANGED, this.stateMachine.state);
     }
 
-    setConnectionQueryProperty(k, v){
-        if(!this.socket.io.opts.query) this.socket.io.opts.query = {};
+    setConnectionQueryProperty(k, v) {
+        if (!this.socket.io.opts.query) this.socket.io.opts.query = {};
         this.socket.io.opts.query[k] = typeof v !== "string" ? JSON.stringify(v) : v;
     }
 
 
-    connectLambda(){
-        return ()=>{
-            this.connectionAttempts++;
-            this.socket.open();
-        }
+
+    connect(){
+        this.connectionAttempts++;
+        this.socket.open();
     }
 
-    establishConnection(){
+    scheduleReconnect(){
+        setTimeout(this.connect, this.reconnectionDelay)
+    }
+
+    establishConnection() {
         this.stateMachine.handle.connect();
     }
 
-    isConnected(){
+    isConnected() {
         return this.socket.connected;
     }
 
-    send(msg){
+    send(msg) {
         this.stateMachine.handle.sendMessage(msg);
 
-        if(!this.isConnected()){
+        if (!this.isConnected()) {
             console.error("Socket disconnected. Unbale to send message.");
             this.emit(Internal.CONNECTION_ERROR, msg);
             return
         }
 
 
-        try{
+        try {
             this.socket.send(msg);
             console.log("Message sent!");
-        }catch (err){
+        } catch (err) {
             console.error(`Internal error sending message: ${err.message}`);
             this.emit(Internal.CONNECTION_ERROR, msg);
         }
@@ -219,12 +233,12 @@ export class Connector{
     }
 
     //TODO Refactor
-    async establishConnectionBAK(connectionAttempts = 7, reconnectionDelay = 5000){
-        return new Promise((resolve, reject)=>{
+    async establishConnectionBAK(connectionAttempts = 7, reconnectionDelay = 5000) {
+        return new Promise((resolve, reject) => {
             let self = this;
 
             let upgrade = !!this.upgradeToWebsocket;
-            if (self.socket && self.socket.connected){
+            if (self.socket && self.socket.connected) {
                 resolve();
                 return;
             }
@@ -232,7 +246,7 @@ export class Connector{
             let attempted = 0;
             let pingPongCount = 0;
             let maxUnrespondedPings = 10;
-            function attemptConnection(){
+            function attemptConnection() {
                 console.log("Attempting island connection: " + attempted);
 
 
@@ -245,7 +259,7 @@ export class Connector{
                     vaultId: vaultId
                 },
                 reconnection: false,
-//                forceNew: true,
+                //                forceNew: true,
                 autoConnect: false,
                 //pingInterval: 10000,
                 //pingTimeout: 5000,
