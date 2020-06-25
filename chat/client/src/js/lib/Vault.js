@@ -50,7 +50,6 @@ export class Vault{
             },
 
             fetchingVault: {
-                entry: this.fetchVault,
                 transitions: {
                     JSONReceived: { actions: this.processVault, state: 'processingVault'},
                     fetchJSONError: { actions: this.processJSONError, state: "error" }
