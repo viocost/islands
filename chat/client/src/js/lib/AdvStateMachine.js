@@ -7,6 +7,7 @@ const err = createDerivedErrorClasses(StateMachineError, {
     msgNotExist: "MessageNotExist",
     noStateMap: "MissingStateMap",
     initStateNotInMap: "InitialStateNotFoundInMap",
+    multipleInitialStates: "MultipleInitialStates",
     stateNotExist: "StateNotExist",
     blown: "StateMachineIsBlown",
     illegalEventName: "IllegalEventName",
@@ -37,9 +38,8 @@ class StateMachine {
     constructor(obj, { stateMap, initialState, name = "State Machine" },
         { msgNotExistMode = StateMachine.Discard, traceLevel = StateMachine.TraceLevel.INFO}){
 
-        if( stateMap === undefined) throw new err.noStateMap();
+        this.verifyStateMap(stateMap, initialState)
 
-        if(!stateMap.hasOwnProperty(initialState)) throw new err.initStateNotInMap(`Initial state provided: ${initialState} || States: ${JSON.stringify(Object.keys(stateMap))}`);
 
         console.log(`traceLevel ${traceLevel.toString()}`);
         this.obj = obj;
@@ -230,6 +230,20 @@ class StateMachine {
         return this.traceLevel === StateMachine.TraceLevel.DEBUG || this.traceLevel === StateMachine.TraceLevel.INFO;
     }
 
+    verifyStateMap(stateMap){
+        //Verify there is state map
+        if( stateMap === undefined) throw new err.noStateMap();
+
+        //Verify there is initial state
+        let initialState = [];
+        for (let state in stateMap){
+            if (stateMap[state].initial) initialState.push(state)
+        }
+
+        //Verify state map
+        if(initialState.length === 0) throw new err.initStateNotInMap(`Initial state provided: ${initialState} || States: ${JSON.stringify(Object.keys(stateMap))}`);
+        if(initialState.length > 1) throw new err.multipleInitialStates(JSON.stringify(initialState));
+    }
 }
 
 

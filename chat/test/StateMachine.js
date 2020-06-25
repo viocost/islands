@@ -5,14 +5,14 @@ const Guards = {
     f: ()=>false,
 }
 
-function getLightBulbSM(initState){
+function getLightBulbSM(){
     return new StateMachine(undefined, {
         trace: true,
         traceLevel: StateMachine.TraceLevel.DEBUG,
-        initialState: initState,
         name: "Light Bulb",
         stateMap: {
             off: {
+                initial: true,
                 entry: ()=>{ console.log("I am entry action for off state") },
                 exit:  ()=>{ console.log("I am exit action for off state") },
                 transitions: {
@@ -125,6 +125,7 @@ class Lamp{
                 },
 
                 off: {
+                    initial: true,
                     transitions: {
                         toggle: {
                             actions: [ this.turnOn, this.beep, this.sayName ],
@@ -158,6 +159,67 @@ class Lamp{
     }
 }
 
+
+function getHeirarchicalSM(){
+    return new StateMachine({}, { stateMap: {
+        red: {
+            entry: ()=>{ console.log("Entered RED") },
+            exit: ()=>{ console.log("Leaving RED") },
+
+            transitions: {
+                "next": {
+                    actions: ()=>{ console.log("Going green!") },
+                    state: "green"
+                }
+            }
+        },
+
+        green: {
+            entry: ()=>{ console.log("Entered GREEN") },
+            exit: ()=>{ console.log("Leaving GREEN") },
+
+            transitions: {
+                "next": {
+                    actions: ()=>{ console.log("Going green!") },
+                    state: "yellow"
+                },
+
+                "run":{
+
+                }
+            }
+        },
+
+        yellow: {
+            entry: ()=>{ console.log("Entered YELLOW") },
+            exit: ()=>{ console.log("Leaving YELLOW") },
+
+            transitions: {
+                "next": {
+                    actions: ()=>{ console.log("Going yellow!") },
+                    state: "red"
+                }
+            }
+        },
+
+        walking: {
+            entry: ()=>{ console.log("Started walking!") },
+            exit: ()=>{ console.log("Stopped walking!") },
+            parent: "green"
+
+        },
+
+        running: {
+
+            entry: ()=>{ console.log("Started running!") },
+            exit: ()=>{ console.log("Stopped running!") },
+            parent: "green"
+        }
+
+
+
+    } })
+}
 
 function testLamp(){
     let lamp = new Lamp()

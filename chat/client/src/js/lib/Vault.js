@@ -41,33 +41,49 @@ export class Vault{
 
 
     prepareStateMachine(){
-        let self = this;
-        return new StateMachine({
+        return new StateMachine(this, {
+            name: "Vault SM",
+            stateMap: {
             uninitialized: {
-                fetchVault: { after: this.fetchVault(), state: "fetchingVault" },
+                transitions: {
+                    fetchVault: { actions: this.fetchVault, state: "fetchingVault" },
+                }
             },
 
             fetchingVault: {
-                JSONReceived: { after: this.processVault(), state: 'processingVault'},
-                fetchJSONError: { after: this.processJSONError(), state: "error" }
+                entry: this.fetchVault,
+                transitions: {
+                    JSONReceived: { actions: this.processVault, state: 'processingVault'},
+                    fetchJSONError: { actions: this.processJSONError, state: "error" }
+                }
             },
 
             processingVault: {
-                setActive: { on: ()=>{
+                transitions: {
+                    setActive: {  state: "active" },
+                }
+
+
+            },
+
+            active: {
+                entry: ()=>{
                     this.initialized = true;
                     this.emit("active")
-                }, state: "active" },
-
-
+                },
+                exit: ()=>{ this.emit("inactive") }
             },
-
-            active: {},
 
             error: {
-                fetchVault: { after: this.fetchVault(), state: "fetchingVault" }
-            },
+                transitions: {
+                    fetchVault: { state: "fetchingVault" }
+                },
+            }
+        },
 
-        }, "uninitialized", StateMachine.Warn, true, "VAULT SM")
+
+
+        }, { msgNotExistMode: StateMachine.Warn, traceLevel: StateMachine.TraceLevel.DEBUG } )
     }
 
     static registerVault(password, confirm, version){
@@ -187,28 +203,20 @@ export class Vault{
         this.stateMachine.handle.fetchVault()
     }
 
-    processVault(){
-        return (data)=>{
-            setTimeout(()=>{
-                const { vault, vaultId } = data
-                console.log(`Processing vault. Data: ${vault}`);
-                this.initSaved(data.vault)
-                this.setId(vaultId)
-            })
-        }
+    processVault(data){
+        const { vault, vaultId } = data
+        console.log(`Processing vault. Data: ${vault}`);
+        this.initSaved(data.vault)
+        this.setId(vaultId)
     }
 
-    processJSONError(){
-        return (err)=>{
-            console.log("Processing json error");
-            this.emit("error", err)
-        }
+    processJSONError(err){
+        console.log("Processing json error");
+        this.emit("error", err)
     }
 
     fetchVault(){
-        return ()=>{
-            fetchJSON("/vault", this.stateMachine);
-        }
+        fetchJSON("/vault", this.stateMachine);
     }
 
 
