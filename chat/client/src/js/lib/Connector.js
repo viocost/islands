@@ -165,9 +165,10 @@ export class Connector {
                             actions:  this.killSocket
                         },
 
-
-                        error: { state: ConnectionState.ERROR }
-
+                        sendMessage: {
+                            actions: this.perfromSendMessage
+                        },
+                        error: { state: ConnectionState.ERROR },
                     }
                 },
 
@@ -218,21 +219,28 @@ export class Connector {
     send(msg) {
         this.stateMachine.handle.sendMessage(msg);
 
-        if (!this.isConnected()) {
-            console.error("Socket disconnected. Unbale to send message.");
-            this.emit(Internal.CONNECTION_ERROR, msg);
-            return
-        }
+        //////////////////////////////////////////////////////////////////////////
+        // if (!this.isConnected()) {                                           //
+        //     console.error("Socket disconnected. Unbale to send message.");   //
+        //     this.emit(Internal.CONNECTION_ERROR, msg);                       //
+        //     return                                                           //
+        // }                                                                    //
+        //                                                                      //
+        //                                                                      //
+        // try {                                                                //
+        //     this.socket.send(msg);                                           //
+        //     console.log("Message sent!");                                    //
+        // } catch (err) {                                                      //
+        //     console.error(`Internal error sending message: ${err.message}`); //
+        //     this.emit(Internal.CONNECTION_ERROR, msg);                       //
+        // }                                                                    //
+        //////////////////////////////////////////////////////////////////////////
 
+    }
 
-        try {
-            this.socket.send(msg);
-            console.log("Message sent!");
-        } catch (err) {
-            console.error(`Internal error sending message: ${err.message}`);
-            this.emit(Internal.CONNECTION_ERROR, msg);
-        }
-
+    perfromSendMessage(stateMachine, evName, args){
+        let msg = args[0]
+        this.socket.send(msg);
     }
 
     //TODO Refactor

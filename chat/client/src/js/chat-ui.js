@@ -14,9 +14,12 @@ import { ArrivalHub } from "./lib/ArrivalHub"
 import { Connector } from "./lib/Connector"
 import { TopicRetriever } from "./lib/TopicRetriever";
 import { runConnectorTest } from "./test/connector"
-//import "../css/vendor/toastr.min.css"
-// impor
 import { ChatUtility } from "./lib/ChatUtility"
+
+// TEMP IMPORTS FOR FURTHER REFACTORING
+import { iCrypto } from "./lib/iCrypto";
+import { Message } from "./lib/Message";
+
 // ---------------------------------------------------------------------------------------------------------------------------
 // CONSTANTS
 const SMALL_WIDTH = 760; // Width screen in pixels considered to be small
@@ -143,9 +146,9 @@ function initUI(){
     // let form = isRegistration() ? bakeRegistrationBlock() : bakeLoginBlock();
     let header = util.$("header")
 
-    let isSoundOn = !chat.vault.hasOwnProperty("settings") ||
-        !chat.vault.settings.hasOwnProperty("sound") ||
-        chat.vault.settings.sound;
+    let isSoundOn = !vault.hasOwnProperty("settings") ||
+        !vault.settings.hasOwnProperty("sound") ||
+        vault.settings.sound;
     util.removeAllChildren(header);
 
     util.appendChildren(header, [
@@ -463,7 +466,7 @@ function processActivateTopicClick(ev){
     console.log(`Setting topic in focus: ${pkfp}`);
 
     setTopicInFocus(pkfp)
-    let topic = chat.topics[pkfp]
+    let topic = topics[pkfp]
     let privatePkfp = topic.getPrivate()
     if (privatePkfp){
         enablePrivate(pkfp, privatePkfp, `${topic.getParticipantNickname(privatePkfp)}`);
@@ -588,7 +591,7 @@ function setTopicInFocus(pkfp){
     }
 
 
-    util.text("#topic-in-focus-label", `Topic: ${chat.getTopicName(pkfp)}`)
+    util.text("#topic-in-focus-label", `Topic: ${topics[pkfp].name}`)
     newMessageBlockSetVisible(topicInFocus);
     resetUnreadCounter(pkfp);
 }
@@ -643,7 +646,7 @@ function processDeleteTopicClick(){
         return;
     }
 
-    if (confirm(`All topic data will be deleted beyond recover for ${chat.topics[pkfp].name}!\n\nProceed?`)){
+    if (confirm(`All topic data will be deleted beyond recover for ${topics[pkfp].name}!\n\nProceed?`)){
         chat.deleteTopic(pkfp);
     }
 }
@@ -805,7 +808,7 @@ function processLoginResult(err){
     } else {
 
         initUI();
-        processConnectionStatusChanged(chat.getConnectionState())
+        //processConnectionStatusChanged(chat.getConnectionState())
         appendEphemeralMessage("Login successful. Loading data...")
         //playSound("user_online");
     }
@@ -881,7 +884,7 @@ function appendMessageToChat(message, topicPkfp, chatWindow,  toHead = false) {
         let author = document.createElement('div');
         author.classList.add("m-author-id");
         author.innerHTML = message.pkfp;
-        let participantIndex = Object.keys(chat.topics[topicPkfp].participants).indexOf(message.pkfp)
+        let participantIndex = Object.keys(topics[topicPkfp].participants).indexOf(message.pkfp)
         msg.style.color = colors[participantIndex % colors.length];
         message_heading.appendChild(author);
     }
@@ -958,7 +961,7 @@ function buildMessageHeading(message, topicPkfp) {
     }
 
     if (message.private){
-        let privateMark = preparePrivateMark(message, chat.topics[topicPkfp]);
+        let privateMark = preparePrivateMark(message, topics[topicPkfp]);
         message_heading.appendChild(privateMark);
     }
 
@@ -1254,7 +1257,6 @@ function refreshSidePanel(){
 
 
 function refreshTopics(){
-    let topics = chat.getTopics();
     let topicsList = util.$("#topics-list")
     let topicsListItems = topicsList.querySelector("li");
     let expandedTopics = topicsListItems ?  new CuteSet(Array.prototype.map.call(topicsListItems,
@@ -1540,9 +1542,9 @@ function loadSounds() {
 }
 
 function playSound(sound) {
-    let soundOn = !chat.vault.hasOwnProperty("settings") ||
-        !chat.vault.settings.hasOwnProperty("sound") ||
-        chat.vault.settings.sound
+    let soundOn = !vault.hasOwnProperty("settings") ||
+        !vault.settings.hasOwnProperty("sound") ||
+        vault.settings.sound
 
     if (soundOn){
         sounds[sound].play();
@@ -1677,7 +1679,7 @@ function initTopics(data){
         console.log(`Initializing topics ${pkfp}`);
 
         // TODO fix version!
-        let topic = data.topics[pkfp]
+        let topic = vault.decryptTopic(data.topics[pkfp], vault.password)
         topics[pkfp] = new Topic(pkfp, topic.name, topic.key, topic.comment)
         setTopicListeners(topics[pkfp])
     }
@@ -1693,8 +1695,10 @@ function createSession(){
 
 function setVaultListeners(){
     vault.on(Internal.SESSION_KEY, (message)=>{
-        sessionKey = message.body.sessionKey;
+        vault.sessionKey = message.body.sessionKey;
+
         console.log("Session key is set!")
+        postLogin()
     })
     vault.on(Events.TOPIC_CREATED, (pkfp)=>{
         refreshTopics()
@@ -1779,8 +1783,113 @@ function setTopicListeners(topic){
             refreshInvites(topic.pkfp);
             updateMessagesAliases(topic.pkfp)
         })
+
 }
+
+function postLogin(){
+    //sending post_login request
+    let message = new Message(chat.version);
+    message.setSource(vault.id);
+    message.setCommand(Internal.POST_LOGIN);
+    message.addNonce();
+    message.body.topics = Object.keys(topics);
+    message.signMessage(vault.privateKey);
+    vault.once(Internal.POST_LOGIN_DECRYPT, (msg)=>{
+        postLoginDecrypt(msg);
+    })
+    messageQueue.enqueue(message);
+}
+
+    // Decrypts topic authorities' and hidden services keys
+    // and re-encrypts them with session key, so island can poke all services
+function postLoginDecrypt(msg){
+    console.log(`Got decrypt command from server.`)
+    //decrypting and sending data back
+
+    let decryptBlob = (privateKey, blob, lengthChars = 4)=>{
+        let icn = new iCrypto();
+        let symLength = parseInt(blob.substr(-lengthChars))
+        let blobLength = blob.length;
+        let symk = blob.substring(blobLength- symLength - lengthChars, blobLength-lengthChars );
+        let cipher = blob.substring(0, blobLength- symLength - lengthChars);
+        icn.addBlob("symcip", symk)
+            .addBlob("cipher", cipher)
+            .asym.setKey("priv", privateKey, "private")
+            .asym.decrypt("symcip", "priv", "sym", "hex")
+            .sym.decrypt("cipher", "sym", "blob-raw", true)
+        return icn.get("blob-raw")
+    };
+
+    let encryptBlob = (publicKey, blob, lengthChars = 4)=>{
+        let icn = new iCrypto();
+        icn.createSYMKey("sym")
+            .asym.setKey("pub", publicKey, "public")
+            .addBlob("blob-raw", blob)
+            .sym.encrypt("blob-raw", "sym", "blob-cip", true)
+            .asym.encrypt("sym", "pub", "symcip", "hex")
+            .encodeBlobLength("symcip", 4, "0", "symcipl")
+            .merge(["blob-cip", "symcip", "symcipl"], "res")
+        return icn.get("res");
+    };
+
+    let services = msg.body.services;
+    let sessionKey = msg.body.sessionKey;
+    let res = {}
+    for (let pkfp of Object.keys(services)){
+        let topicData = services[pkfp];
+        let topicPrivateKey = topics[pkfp].privateKey;
+
+        let clientHSPrivateKey, taHSPrivateKey, taPrivateKey;
+
+        if (topicData.clientHSPrivateKey){
+            clientHSPrivateKey = decryptBlob(topicPrivateKey, topicData.clientHSPrivateKey)
+        }
+
+        if (topicData.topicAuthority && topicData.topicAuthority.taPrivateKey){
+            taPrivateKey = decryptBlob(topicPrivateKey, topicData.topicAuthority.taPrivateKey )
+        }
+
+        if (topicData.topicAuthority && topicData.topicAuthority.taHSPrivateKey){
+            taHSPrivateKey = decryptBlob(topicPrivateKey, topicData.topicAuthority.taHSPrivateKey)
+        }
+
+        topics[pkfp].loadMetadata(topicData.metadata);
+
+        let preDecrypted = {};
+
+        if (clientHSPrivateKey){
+            preDecrypted.clientHSPrivateKey = encryptBlob(sessionKey, clientHSPrivateKey)
+        }
+        if (taPrivateKey || taHSPrivateKey){
+            preDecrypted.topicAuthority = {}
+        }
+        if (taPrivateKey){
+            preDecrypted.topicAuthority.taPrivateKey = encryptBlob(sessionKey, taPrivateKey)
+        }
+        if (taHSPrivateKey){
+            preDecrypted.topicAuthority.taHSPrivateKey = encryptBlob(sessionKey, taHSPrivateKey)
+        }
+
+        res[pkfp] = preDecrypted
+    }
+
+    console.log("Decryption is successfull.");
+    let message = new Message(chat.version);
+    message.setCommand(Internal.POST_LOGIN_CHECK_SERVICES)
+    message.setSource(vault.getId());
+    message.body.services = res;
+    message.signMessage(vault.privateKey);
+    vault.once(Events.POST_LOGIN_SUCCESS, processLoginResult);
+    vault.once(Events.POST_LOGIN_ERROR, processLoginResult);
+    vault.once(Events.LOGIN_ERROR, processLoginResult);
+
+    messageQueue.enqueue(message);
+
+}
+
+
 //END REFACTORING CODE/////////////////////////////////////////////////////////
+
 
 function loadingOn() {
     spinner.loadingOn()
@@ -1831,6 +1940,7 @@ function resetUnreadCounter(pkfp){
 }
 
 function processConnectionStatusChanged(state){
+    return
     if (!state || state < 1 || state > 5){
         throw new Error(`Invaled  connection state: ${state}`)
     }

@@ -5028,19 +5028,6 @@ util.estimateCores = function(options, callback) {
 
 /***/ }),
 /* 9 */
-/***/ (function(module, exports) {
-
-module.exports = function (exec) {
-  try {
-    return !!exec();
-  } catch (e) {
-    return true;
-  }
-};
-
-
-/***/ }),
-/* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5219,6 +5206,19 @@ var Message = /*#__PURE__*/function () {
 Message.properties = ["headers", "body", "signature"];
 
 /***/ }),
+/* 10 */
+/***/ (function(module, exports) {
+
+module.exports = function (exec) {
+  try {
+    return !!exec();
+  } catch (e) {
+    return true;
+  }
+};
+
+
+/***/ }),
 /* 11 */
 /***/ (function(module, exports) {
 
@@ -5261,7 +5261,7 @@ module.exports = function (it) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // Thank's IE8 for his funny defineProperty
-module.exports = !__webpack_require__(9)(function () {
+module.exports = !__webpack_require__(10)(function () {
   return Object.defineProperty({}, 'a', { get: function () { return 7; } }).a != 7;
 });
 
@@ -7314,7 +7314,7 @@ __webpack_require__(32).inspectSource = function (it) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var $export = __webpack_require__(1);
-var fails = __webpack_require__(9);
+var fails = __webpack_require__(10);
 var defined = __webpack_require__(39);
 var quot = /"/g;
 // B.2.3.2.1 CreateHTML(string, tag, attribute, value)
@@ -7353,7 +7353,7 @@ var Util = __webpack_require__(114);
 var WildEmitter = __webpack_require__(17);
 
 // EXTERNAL MODULE: ./client/src/js/lib/Message.js
-var Message = __webpack_require__(10);
+var Message = __webpack_require__(9);
 
 // EXTERNAL MODULE: ./client/src/js/lib/iCrypto.js
 var iCrypto = __webpack_require__(3);
@@ -9524,7 +9524,7 @@ module.exports = function (it) {
 
 "use strict";
 
-var fails = __webpack_require__(9);
+var fails = __webpack_require__(10);
 
 module.exports = function (method, arg) {
   return !!method && fails(function () {
@@ -9767,7 +9767,7 @@ module.exports = function (it) {
 // most Object methods by ES6 should accept primitives
 var $export = __webpack_require__(1);
 var core = __webpack_require__(32);
-var fails = __webpack_require__(9);
+var fails = __webpack_require__(10);
 module.exports = function (KEY, exec) {
   var fn = (core.Object || {})[KEY] || Object[KEY];
   var exp = {};
@@ -9835,7 +9835,7 @@ module.exports = function (TYPE, $create) {
 if (__webpack_require__(14)) {
   var LIBRARY = __webpack_require__(47);
   var global = __webpack_require__(6);
-  var fails = __webpack_require__(9);
+  var fails = __webpack_require__(10);
   var $export = __webpack_require__(1);
   var $typed = __webpack_require__(101);
   var $buffer = __webpack_require__(145);
@@ -9850,7 +9850,7 @@ if (__webpack_require__(14)) {
   var toAbsoluteIndex = __webpack_require__(54);
   var toPrimitive = __webpack_require__(38);
   var has = __webpack_require__(25);
-  var classof = __webpack_require__(67);
+  var classof = __webpack_require__(68);
   var isObject = __webpack_require__(11);
   var toObject = __webpack_require__(16);
   var isArrayIter = __webpack_require__(134);
@@ -9864,7 +9864,7 @@ if (__webpack_require__(14)) {
   var createArrayIncludes = __webpack_require__(91);
   var speciesConstructor = __webpack_require__(78);
   var ArrayIterators = __webpack_require__(139);
-  var Iterators = __webpack_require__(69);
+  var Iterators = __webpack_require__(70);
   var $iterDetect = __webpack_require__(96);
   var setSpecies = __webpack_require__(57);
   var arrayFill = __webpack_require__(138);
@@ -12051,7 +12051,7 @@ var id = 0;
 var isExtensible = Object.isExtensible || function () {
   return true;
 };
-var FREEZE = !__webpack_require__(9)(function () {
+var FREEZE = !__webpack_require__(10)(function () {
   return isExtensible(Object.preventExtensions({}));
 });
 var setMeta = function (it) {
@@ -12295,6 +12295,9 @@ var Connector = /*#__PURE__*/function () {
               disconnectSocket: {
                 actions: this.killSocket
               },
+              sendMessage: {
+                actions: this.perfromSendMessage
+              },
               error: {
                 state: ConnectionState.ERROR
               }
@@ -12350,21 +12353,28 @@ var Connector = /*#__PURE__*/function () {
   }, {
     key: "send",
     value: function send(msg) {
-      this.stateMachine.handle.sendMessage(msg);
-
-      if (!this.isConnected()) {
-        console.error("Socket disconnected. Unbale to send message.");
-        this.emit(_common_Events__WEBPACK_IMPORTED_MODULE_2__["Internal"].CONNECTION_ERROR, msg);
-        return;
-      }
-
-      try {
-        this.socket.send(msg);
-        console.log("Message sent!");
-      } catch (err) {
-        console.error("Internal error sending message: ".concat(err.message));
-        this.emit(_common_Events__WEBPACK_IMPORTED_MODULE_2__["Internal"].CONNECTION_ERROR, msg);
-      }
+      this.stateMachine.handle.sendMessage(msg); //////////////////////////////////////////////////////////////////////////
+      // if (!this.isConnected()) {                                           //
+      //     console.error("Socket disconnected. Unbale to send message.");   //
+      //     this.emit(Internal.CONNECTION_ERROR, msg);                       //
+      //     return                                                           //
+      // }                                                                    //
+      //                                                                      //
+      //                                                                      //
+      // try {                                                                //
+      //     this.socket.send(msg);                                           //
+      //     console.log("Message sent!");                                    //
+      // } catch (err) {                                                      //
+      //     console.error(`Internal error sending message: ${err.message}`); //
+      //     this.emit(Internal.CONNECTION_ERROR, msg);                       //
+      // }                                                                    //
+      //////////////////////////////////////////////////////////////////////////
+    }
+  }, {
+    key: "perfromSendMessage",
+    value: function perfromSendMessage(stateMachine, evName, args) {
+      var msg = args[0];
+      this.socket.send(msg);
     } //TODO Refactor
 
   }, {
@@ -14070,1107 +14080,6 @@ Duplex.prototype._destroy = function (err, cb) {
 
 /***/ }),
 /* 66 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var def = __webpack_require__(15).f;
-var has = __webpack_require__(25);
-var TAG = __webpack_require__(12)('toStringTag');
-
-module.exports = function (it, tag, stat) {
-  if (it && !has(it = stat ? it : it.prototype, TAG)) def(it, TAG, { configurable: true, value: tag });
-};
-
-
-/***/ }),
-/* 67 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// getting tag from 19.1.3.6 Object.prototype.toString()
-var cof = __webpack_require__(34);
-var TAG = __webpack_require__(12)('toStringTag');
-// ES3 wrong here
-var ARG = cof(function () { return arguments; }()) == 'Arguments';
-
-// fallback for IE11 Script Access Denied error
-var tryGet = function (it, key) {
-  try {
-    return it[key];
-  } catch (e) { /* empty */ }
-};
-
-module.exports = function (it) {
-  var O, T, B;
-  return it === undefined ? 'Undefined' : it === null ? 'Null'
-    // @@toStringTag case
-    : typeof (T = tryGet(O = Object(it), TAG)) == 'string' ? T
-    // builtinTag case
-    : ARG ? cof(O)
-    // ES3 arguments fallback
-    : (B = cof(O)) == 'Object' && typeof O.callee == 'function' ? 'Arguments' : B;
-};
-
-
-/***/ }),
-/* 68 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var $export = __webpack_require__(1);
-var defined = __webpack_require__(39);
-var fails = __webpack_require__(9);
-var spaces = __webpack_require__(125);
-var space = '[' + spaces + ']';
-var non = '\u200b\u0085';
-var ltrim = RegExp('^' + space + space + '*');
-var rtrim = RegExp(space + space + '*$');
-
-var exporter = function (KEY, exec, ALIAS) {
-  var exp = {};
-  var FORCE = fails(function () {
-    return !!spaces[KEY]() || non[KEY]() != non;
-  });
-  var fn = exp[KEY] = FORCE ? exec(trim) : spaces[KEY];
-  if (ALIAS) exp[ALIAS] = fn;
-  $export($export.P + $export.F * FORCE, 'String', exp);
-};
-
-// 1 -> String#trimLeft
-// 2 -> String#trimRight
-// 3 -> String#trim
-var trim = exporter.trim = function (string, TYPE) {
-  string = String(defined(string));
-  if (TYPE & 1) string = string.replace(ltrim, '');
-  if (TYPE & 2) string = string.replace(rtrim, '');
-  return string;
-};
-
-module.exports = exporter;
-
-
-/***/ }),
-/* 69 */
-/***/ (function(module, exports) {
-
-module.exports = {};
-
-
-/***/ }),
-/* 70 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/**
- * Javascript implementation of basic PEM (Privacy Enhanced Mail) algorithms.
- *
- * See: RFC 1421.
- *
- * @author Dave Longley
- *
- * Copyright (c) 2013-2014 Digital Bazaar, Inc.
- *
- * A Forge PEM object has the following fields:
- *
- * type: identifies the type of message (eg: "RSA PRIVATE KEY").
- *
- * procType: identifies the type of processing performed on the message,
- *   it has two subfields: version and type, eg: 4,ENCRYPTED.
- *
- * contentDomain: identifies the type of content in the message, typically
- *   only uses the value: "RFC822".
- *
- * dekInfo: identifies the message encryption algorithm and mode and includes
- *   any parameters for the algorithm, it has two subfields: algorithm and
- *   parameters, eg: DES-CBC,F8143EDE5960C597.
- *
- * headers: contains all other PEM encapsulated headers -- where order is
- *   significant (for pairing data like recipient ID + key info).
- *
- * body: the binary-encoded body.
- */
-var forge = __webpack_require__(5);
-__webpack_require__(8);
-
-// shortcut for pem API
-var pem = module.exports = forge.pem = forge.pem || {};
-
-/**
- * Encodes (serializes) the given PEM object.
- *
- * @param msg the PEM message object to encode.
- * @param options the options to use:
- *          maxline the maximum characters per line for the body, (default: 64).
- *
- * @return the PEM-formatted string.
- */
-pem.encode = function(msg, options) {
-  options = options || {};
-  var rval = '-----BEGIN ' + msg.type + '-----\r\n';
-
-  // encode special headers
-  var header;
-  if(msg.procType) {
-    header = {
-      name: 'Proc-Type',
-      values: [String(msg.procType.version), msg.procType.type]
-    };
-    rval += foldHeader(header);
-  }
-  if(msg.contentDomain) {
-    header = {name: 'Content-Domain', values: [msg.contentDomain]};
-    rval += foldHeader(header);
-  }
-  if(msg.dekInfo) {
-    header = {name: 'DEK-Info', values: [msg.dekInfo.algorithm]};
-    if(msg.dekInfo.parameters) {
-      header.values.push(msg.dekInfo.parameters);
-    }
-    rval += foldHeader(header);
-  }
-
-  if(msg.headers) {
-    // encode all other headers
-    for(var i = 0; i < msg.headers.length; ++i) {
-      rval += foldHeader(msg.headers[i]);
-    }
-  }
-
-  // terminate header
-  if(msg.procType) {
-    rval += '\r\n';
-  }
-
-  // add body
-  rval += forge.util.encode64(msg.body, options.maxline || 64) + '\r\n';
-
-  rval += '-----END ' + msg.type + '-----\r\n';
-  return rval;
-};
-
-/**
- * Decodes (deserializes) all PEM messages found in the given string.
- *
- * @param str the PEM-formatted string to decode.
- *
- * @return the PEM message objects in an array.
- */
-pem.decode = function(str) {
-  var rval = [];
-
-  // split string into PEM messages (be lenient w/EOF on BEGIN line)
-  var rMessage = /\s*-----BEGIN ([A-Z0-9- ]+)-----\r?\n?([\x21-\x7e\s]+?(?:\r?\n\r?\n))?([:A-Za-z0-9+\/=\s]+?)-----END \1-----/g;
-  var rHeader = /([\x21-\x7e]+):\s*([\x21-\x7e\s^:]+)/;
-  var rCRLF = /\r?\n/;
-  var match;
-  while(true) {
-    match = rMessage.exec(str);
-    if(!match) {
-      break;
-    }
-
-    var msg = {
-      type: match[1],
-      procType: null,
-      contentDomain: null,
-      dekInfo: null,
-      headers: [],
-      body: forge.util.decode64(match[3])
-    };
-    rval.push(msg);
-
-    // no headers
-    if(!match[2]) {
-      continue;
-    }
-
-    // parse headers
-    var lines = match[2].split(rCRLF);
-    var li = 0;
-    while(match && li < lines.length) {
-      // get line, trim any rhs whitespace
-      var line = lines[li].replace(/\s+$/, '');
-
-      // RFC2822 unfold any following folded lines
-      for(var nl = li + 1; nl < lines.length; ++nl) {
-        var next = lines[nl];
-        if(!/\s/.test(next[0])) {
-          break;
-        }
-        line += next;
-        li = nl;
-      }
-
-      // parse header
-      match = line.match(rHeader);
-      if(match) {
-        var header = {name: match[1], values: []};
-        var values = match[2].split(',');
-        for(var vi = 0; vi < values.length; ++vi) {
-          header.values.push(ltrim(values[vi]));
-        }
-
-        // Proc-Type must be the first header
-        if(!msg.procType) {
-          if(header.name !== 'Proc-Type') {
-            throw new Error('Invalid PEM formatted message. The first ' +
-              'encapsulated header must be "Proc-Type".');
-          } else if(header.values.length !== 2) {
-            throw new Error('Invalid PEM formatted message. The "Proc-Type" ' +
-              'header must have two subfields.');
-          }
-          msg.procType = {version: values[0], type: values[1]};
-        } else if(!msg.contentDomain && header.name === 'Content-Domain') {
-          // special-case Content-Domain
-          msg.contentDomain = values[0] || '';
-        } else if(!msg.dekInfo && header.name === 'DEK-Info') {
-          // special-case DEK-Info
-          if(header.values.length === 0) {
-            throw new Error('Invalid PEM formatted message. The "DEK-Info" ' +
-              'header must have at least one subfield.');
-          }
-          msg.dekInfo = {algorithm: values[0], parameters: values[1] || null};
-        } else {
-          msg.headers.push(header);
-        }
-      }
-
-      ++li;
-    }
-
-    if(msg.procType === 'ENCRYPTED' && !msg.dekInfo) {
-      throw new Error('Invalid PEM formatted message. The "DEK-Info" ' +
-        'header must be present if "Proc-Type" is "ENCRYPTED".');
-    }
-  }
-
-  if(rval.length === 0) {
-    throw new Error('Invalid PEM formatted message.');
-  }
-
-  return rval;
-};
-
-function foldHeader(header) {
-  var rval = header.name + ': ';
-
-  // ensure values with CRLF are folded
-  var values = [];
-  var insertSpace = function(match, $1) {
-    return ' ' + $1;
-  };
-  for(var i = 0; i < header.values.length; ++i) {
-    values.push(header.values[i].replace(/^(\S+\r\n)/, insertSpace));
-  }
-  rval += values.join(',') + '\r\n';
-
-  // do folding
-  var length = 0;
-  var candidate = -1;
-  for(var i = 0; i < rval.length; ++i, ++length) {
-    if(length > 65 && candidate !== -1) {
-      var insert = rval[candidate];
-      if(insert === ',') {
-        ++candidate;
-        rval = rval.substr(0, candidate) + '\r\n ' + rval.substr(candidate);
-      } else {
-        rval = rval.substr(0, candidate) +
-          '\r\n' + insert + rval.substr(candidate + 1);
-      }
-      length = (i - candidate - 1);
-      candidate = -1;
-      ++i;
-    } else if(rval[i] === ' ' || rval[i] === '\t' || rval[i] === ',') {
-      candidate = i;
-    }
-  }
-
-  return rval;
-}
-
-function ltrim(str) {
-  return str.replace(/^\s+/, '');
-}
-
-
-/***/ }),
-/* 71 */
-/***/ (function(module, exports, __webpack_require__) {
-
-
-/**
- * Expose `Emitter`.
- */
-
-if (true) {
-  module.exports = Emitter;
-}
-
-/**
- * Initialize a new `Emitter`.
- *
- * @api public
- */
-
-function Emitter(obj) {
-  if (obj) return mixin(obj);
-};
-
-/**
- * Mixin the emitter properties.
- *
- * @param {Object} obj
- * @return {Object}
- * @api private
- */
-
-function mixin(obj) {
-  for (var key in Emitter.prototype) {
-    obj[key] = Emitter.prototype[key];
-  }
-  return obj;
-}
-
-/**
- * Listen on the given `event` with `fn`.
- *
- * @param {String} event
- * @param {Function} fn
- * @return {Emitter}
- * @api public
- */
-
-Emitter.prototype.on =
-Emitter.prototype.addEventListener = function(event, fn){
-  this._callbacks = this._callbacks || {};
-  (this._callbacks['$' + event] = this._callbacks['$' + event] || [])
-    .push(fn);
-  return this;
-};
-
-/**
- * Adds an `event` listener that will be invoked a single
- * time then automatically removed.
- *
- * @param {String} event
- * @param {Function} fn
- * @return {Emitter}
- * @api public
- */
-
-Emitter.prototype.once = function(event, fn){
-  function on() {
-    this.off(event, on);
-    fn.apply(this, arguments);
-  }
-
-  on.fn = fn;
-  this.on(event, on);
-  return this;
-};
-
-/**
- * Remove the given callback for `event` or all
- * registered callbacks.
- *
- * @param {String} event
- * @param {Function} fn
- * @return {Emitter}
- * @api public
- */
-
-Emitter.prototype.off =
-Emitter.prototype.removeListener =
-Emitter.prototype.removeAllListeners =
-Emitter.prototype.removeEventListener = function(event, fn){
-  this._callbacks = this._callbacks || {};
-
-  // all
-  if (0 == arguments.length) {
-    this._callbacks = {};
-    return this;
-  }
-
-  // specific event
-  var callbacks = this._callbacks['$' + event];
-  if (!callbacks) return this;
-
-  // remove all handlers
-  if (1 == arguments.length) {
-    delete this._callbacks['$' + event];
-    return this;
-  }
-
-  // remove specific handler
-  var cb;
-  for (var i = 0; i < callbacks.length; i++) {
-    cb = callbacks[i];
-    if (cb === fn || cb.fn === fn) {
-      callbacks.splice(i, 1);
-      break;
-    }
-  }
-  return this;
-};
-
-/**
- * Emit `event` with the given args.
- *
- * @param {String} event
- * @param {Mixed} ...
- * @return {Emitter}
- */
-
-Emitter.prototype.emit = function(event){
-  this._callbacks = this._callbacks || {};
-  var args = [].slice.call(arguments, 1)
-    , callbacks = this._callbacks['$' + event];
-
-  if (callbacks) {
-    callbacks = callbacks.slice(0);
-    for (var i = 0, len = callbacks.length; i < len; ++i) {
-      callbacks[i].apply(this, args);
-    }
-  }
-
-  return this;
-};
-
-/**
- * Return array of callbacks for `event`.
- *
- * @param {String} event
- * @return {Array}
- * @api public
- */
-
-Emitter.prototype.listeners = function(event){
-  this._callbacks = this._callbacks || {};
-  return this._callbacks['$' + event] || [];
-};
-
-/**
- * Check if this emitter has `event` handlers.
- *
- * @param {String} event
- * @return {Boolean}
- * @api public
- */
-
-Emitter.prototype.hasListeners = function(event){
-  return !! this.listeners(event).length;
-};
-
-
-/***/ }),
-/* 72 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/**
- * Module dependencies.
- */
-
-var keys = __webpack_require__(479);
-var hasBinary = __webpack_require__(217);
-var sliceBuffer = __webpack_require__(481);
-var after = __webpack_require__(482);
-var utf8 = __webpack_require__(483);
-
-var base64encoder;
-if (typeof ArrayBuffer !== 'undefined') {
-  base64encoder = __webpack_require__(484);
-}
-
-/**
- * Check if we are running an android browser. That requires us to use
- * ArrayBuffer with polling transports...
- *
- * http://ghinda.net/jpeg-blob-ajax-android/
- */
-
-var isAndroid = typeof navigator !== 'undefined' && /Android/i.test(navigator.userAgent);
-
-/**
- * Check if we are running in PhantomJS.
- * Uploading a Blob with PhantomJS does not work correctly, as reported here:
- * https://github.com/ariya/phantomjs/issues/11395
- * @type boolean
- */
-var isPhantomJS = typeof navigator !== 'undefined' && /PhantomJS/i.test(navigator.userAgent);
-
-/**
- * When true, avoids using Blobs to encode payloads.
- * @type boolean
- */
-var dontSendBlobs = isAndroid || isPhantomJS;
-
-/**
- * Current protocol version.
- */
-
-exports.protocol = 3;
-
-/**
- * Packet types.
- */
-
-var packets = exports.packets = {
-    open:     0    // non-ws
-  , close:    1    // non-ws
-  , ping:     2
-  , pong:     3
-  , message:  4
-  , upgrade:  5
-  , noop:     6
-};
-
-var packetslist = keys(packets);
-
-/**
- * Premade error packet.
- */
-
-var err = { type: 'error', data: 'parser error' };
-
-/**
- * Create a blob api even for blob builder when vendor prefixes exist
- */
-
-var Blob = __webpack_require__(485);
-
-/**
- * Encodes a packet.
- *
- *     <packet type id> [ <data> ]
- *
- * Example:
- *
- *     5hello world
- *     3
- *     4
- *
- * Binary is encoded in an identical principle
- *
- * @api private
- */
-
-exports.encodePacket = function (packet, supportsBinary, utf8encode, callback) {
-  if (typeof supportsBinary === 'function') {
-    callback = supportsBinary;
-    supportsBinary = false;
-  }
-
-  if (typeof utf8encode === 'function') {
-    callback = utf8encode;
-    utf8encode = null;
-  }
-
-  var data = (packet.data === undefined)
-    ? undefined
-    : packet.data.buffer || packet.data;
-
-  if (typeof ArrayBuffer !== 'undefined' && data instanceof ArrayBuffer) {
-    return encodeArrayBuffer(packet, supportsBinary, callback);
-  } else if (typeof Blob !== 'undefined' && data instanceof Blob) {
-    return encodeBlob(packet, supportsBinary, callback);
-  }
-
-  // might be an object with { base64: true, data: dataAsBase64String }
-  if (data && data.base64) {
-    return encodeBase64Object(packet, callback);
-  }
-
-  // Sending data as a utf-8 string
-  var encoded = packets[packet.type];
-
-  // data fragment is optional
-  if (undefined !== packet.data) {
-    encoded += utf8encode ? utf8.encode(String(packet.data), { strict: false }) : String(packet.data);
-  }
-
-  return callback('' + encoded);
-
-};
-
-function encodeBase64Object(packet, callback) {
-  // packet data is an object { base64: true, data: dataAsBase64String }
-  var message = 'b' + exports.packets[packet.type] + packet.data.data;
-  return callback(message);
-}
-
-/**
- * Encode packet helpers for binary types
- */
-
-function encodeArrayBuffer(packet, supportsBinary, callback) {
-  if (!supportsBinary) {
-    return exports.encodeBase64Packet(packet, callback);
-  }
-
-  var data = packet.data;
-  var contentArray = new Uint8Array(data);
-  var resultBuffer = new Uint8Array(1 + data.byteLength);
-
-  resultBuffer[0] = packets[packet.type];
-  for (var i = 0; i < contentArray.length; i++) {
-    resultBuffer[i+1] = contentArray[i];
-  }
-
-  return callback(resultBuffer.buffer);
-}
-
-function encodeBlobAsArrayBuffer(packet, supportsBinary, callback) {
-  if (!supportsBinary) {
-    return exports.encodeBase64Packet(packet, callback);
-  }
-
-  var fr = new FileReader();
-  fr.onload = function() {
-    exports.encodePacket({ type: packet.type, data: fr.result }, supportsBinary, true, callback);
-  };
-  return fr.readAsArrayBuffer(packet.data);
-}
-
-function encodeBlob(packet, supportsBinary, callback) {
-  if (!supportsBinary) {
-    return exports.encodeBase64Packet(packet, callback);
-  }
-
-  if (dontSendBlobs) {
-    return encodeBlobAsArrayBuffer(packet, supportsBinary, callback);
-  }
-
-  var length = new Uint8Array(1);
-  length[0] = packets[packet.type];
-  var blob = new Blob([length.buffer, packet.data]);
-
-  return callback(blob);
-}
-
-/**
- * Encodes a packet with binary data in a base64 string
- *
- * @param {Object} packet, has `type` and `data`
- * @return {String} base64 encoded message
- */
-
-exports.encodeBase64Packet = function(packet, callback) {
-  var message = 'b' + exports.packets[packet.type];
-  if (typeof Blob !== 'undefined' && packet.data instanceof Blob) {
-    var fr = new FileReader();
-    fr.onload = function() {
-      var b64 = fr.result.split(',')[1];
-      callback(message + b64);
-    };
-    return fr.readAsDataURL(packet.data);
-  }
-
-  var b64data;
-  try {
-    b64data = String.fromCharCode.apply(null, new Uint8Array(packet.data));
-  } catch (e) {
-    // iPhone Safari doesn't let you apply with typed arrays
-    var typed = new Uint8Array(packet.data);
-    var basic = new Array(typed.length);
-    for (var i = 0; i < typed.length; i++) {
-      basic[i] = typed[i];
-    }
-    b64data = String.fromCharCode.apply(null, basic);
-  }
-  message += btoa(b64data);
-  return callback(message);
-};
-
-/**
- * Decodes a packet. Changes format to Blob if requested.
- *
- * @return {Object} with `type` and `data` (if any)
- * @api private
- */
-
-exports.decodePacket = function (data, binaryType, utf8decode) {
-  if (data === undefined) {
-    return err;
-  }
-  // String data
-  if (typeof data === 'string') {
-    if (data.charAt(0) === 'b') {
-      return exports.decodeBase64Packet(data.substr(1), binaryType);
-    }
-
-    if (utf8decode) {
-      data = tryDecode(data);
-      if (data === false) {
-        return err;
-      }
-    }
-    var type = data.charAt(0);
-
-    if (Number(type) != type || !packetslist[type]) {
-      return err;
-    }
-
-    if (data.length > 1) {
-      return { type: packetslist[type], data: data.substring(1) };
-    } else {
-      return { type: packetslist[type] };
-    }
-  }
-
-  var asArray = new Uint8Array(data);
-  var type = asArray[0];
-  var rest = sliceBuffer(data, 1);
-  if (Blob && binaryType === 'blob') {
-    rest = new Blob([rest]);
-  }
-  return { type: packetslist[type], data: rest };
-};
-
-function tryDecode(data) {
-  try {
-    data = utf8.decode(data, { strict: false });
-  } catch (e) {
-    return false;
-  }
-  return data;
-}
-
-/**
- * Decodes a packet encoded in a base64 string
- *
- * @param {String} base64 encoded message
- * @return {Object} with `type` and `data` (if any)
- */
-
-exports.decodeBase64Packet = function(msg, binaryType) {
-  var type = packetslist[msg.charAt(0)];
-  if (!base64encoder) {
-    return { type: type, data: { base64: true, data: msg.substr(1) } };
-  }
-
-  var data = base64encoder.decode(msg.substr(1));
-
-  if (binaryType === 'blob' && Blob) {
-    data = new Blob([data]);
-  }
-
-  return { type: type, data: data };
-};
-
-/**
- * Encodes multiple messages (payload).
- *
- *     <length>:data
- *
- * Example:
- *
- *     11:hello world2:hi
- *
- * If any contents are binary, they will be encoded as base64 strings. Base64
- * encoded strings are marked with a b before the length specifier
- *
- * @param {Array} packets
- * @api private
- */
-
-exports.encodePayload = function (packets, supportsBinary, callback) {
-  if (typeof supportsBinary === 'function') {
-    callback = supportsBinary;
-    supportsBinary = null;
-  }
-
-  var isBinary = hasBinary(packets);
-
-  if (supportsBinary && isBinary) {
-    if (Blob && !dontSendBlobs) {
-      return exports.encodePayloadAsBlob(packets, callback);
-    }
-
-    return exports.encodePayloadAsArrayBuffer(packets, callback);
-  }
-
-  if (!packets.length) {
-    return callback('0:');
-  }
-
-  function setLengthHeader(message) {
-    return message.length + ':' + message;
-  }
-
-  function encodeOne(packet, doneCallback) {
-    exports.encodePacket(packet, !isBinary ? false : supportsBinary, false, function(message) {
-      doneCallback(null, setLengthHeader(message));
-    });
-  }
-
-  map(packets, encodeOne, function(err, results) {
-    return callback(results.join(''));
-  });
-};
-
-/**
- * Async array map using after
- */
-
-function map(ary, each, done) {
-  var result = new Array(ary.length);
-  var next = after(ary.length, done);
-
-  var eachWithIndex = function(i, el, cb) {
-    each(el, function(error, msg) {
-      result[i] = msg;
-      cb(error, result);
-    });
-  };
-
-  for (var i = 0; i < ary.length; i++) {
-    eachWithIndex(i, ary[i], next);
-  }
-}
-
-/*
- * Decodes data when a payload is maybe expected. Possible binary contents are
- * decoded from their base64 representation
- *
- * @param {String} data, callback method
- * @api public
- */
-
-exports.decodePayload = function (data, binaryType, callback) {
-  if (typeof data !== 'string') {
-    return exports.decodePayloadAsBinary(data, binaryType, callback);
-  }
-
-  if (typeof binaryType === 'function') {
-    callback = binaryType;
-    binaryType = null;
-  }
-
-  var packet;
-  if (data === '') {
-    // parser error - ignoring payload
-    return callback(err, 0, 1);
-  }
-
-  var length = '', n, msg;
-
-  for (var i = 0, l = data.length; i < l; i++) {
-    var chr = data.charAt(i);
-
-    if (chr !== ':') {
-      length += chr;
-      continue;
-    }
-
-    if (length === '' || (length != (n = Number(length)))) {
-      // parser error - ignoring payload
-      return callback(err, 0, 1);
-    }
-
-    msg = data.substr(i + 1, n);
-
-    if (length != msg.length) {
-      // parser error - ignoring payload
-      return callback(err, 0, 1);
-    }
-
-    if (msg.length) {
-      packet = exports.decodePacket(msg, binaryType, false);
-
-      if (err.type === packet.type && err.data === packet.data) {
-        // parser error in individual packet - ignoring payload
-        return callback(err, 0, 1);
-      }
-
-      var ret = callback(packet, i + n, l);
-      if (false === ret) return;
-    }
-
-    // advance cursor
-    i += n;
-    length = '';
-  }
-
-  if (length !== '') {
-    // parser error - ignoring payload
-    return callback(err, 0, 1);
-  }
-
-};
-
-/**
- * Encodes multiple messages (payload) as binary.
- *
- * <1 = binary, 0 = string><number from 0-9><number from 0-9>[...]<number
- * 255><data>
- *
- * Example:
- * 1 3 255 1 2 3, if the binary contents are interpreted as 8 bit integers
- *
- * @param {Array} packets
- * @return {ArrayBuffer} encoded payload
- * @api private
- */
-
-exports.encodePayloadAsArrayBuffer = function(packets, callback) {
-  if (!packets.length) {
-    return callback(new ArrayBuffer(0));
-  }
-
-  function encodeOne(packet, doneCallback) {
-    exports.encodePacket(packet, true, true, function(data) {
-      return doneCallback(null, data);
-    });
-  }
-
-  map(packets, encodeOne, function(err, encodedPackets) {
-    var totalLength = encodedPackets.reduce(function(acc, p) {
-      var len;
-      if (typeof p === 'string'){
-        len = p.length;
-      } else {
-        len = p.byteLength;
-      }
-      return acc + len.toString().length + len + 2; // string/binary identifier + separator = 2
-    }, 0);
-
-    var resultArray = new Uint8Array(totalLength);
-
-    var bufferIndex = 0;
-    encodedPackets.forEach(function(p) {
-      var isString = typeof p === 'string';
-      var ab = p;
-      if (isString) {
-        var view = new Uint8Array(p.length);
-        for (var i = 0; i < p.length; i++) {
-          view[i] = p.charCodeAt(i);
-        }
-        ab = view.buffer;
-      }
-
-      if (isString) { // not true binary
-        resultArray[bufferIndex++] = 0;
-      } else { // true binary
-        resultArray[bufferIndex++] = 1;
-      }
-
-      var lenStr = ab.byteLength.toString();
-      for (var i = 0; i < lenStr.length; i++) {
-        resultArray[bufferIndex++] = parseInt(lenStr[i]);
-      }
-      resultArray[bufferIndex++] = 255;
-
-      var view = new Uint8Array(ab);
-      for (var i = 0; i < view.length; i++) {
-        resultArray[bufferIndex++] = view[i];
-      }
-    });
-
-    return callback(resultArray.buffer);
-  });
-};
-
-/**
- * Encode as Blob
- */
-
-exports.encodePayloadAsBlob = function(packets, callback) {
-  function encodeOne(packet, doneCallback) {
-    exports.encodePacket(packet, true, true, function(encoded) {
-      var binaryIdentifier = new Uint8Array(1);
-      binaryIdentifier[0] = 1;
-      if (typeof encoded === 'string') {
-        var view = new Uint8Array(encoded.length);
-        for (var i = 0; i < encoded.length; i++) {
-          view[i] = encoded.charCodeAt(i);
-        }
-        encoded = view.buffer;
-        binaryIdentifier[0] = 0;
-      }
-
-      var len = (encoded instanceof ArrayBuffer)
-        ? encoded.byteLength
-        : encoded.size;
-
-      var lenStr = len.toString();
-      var lengthAry = new Uint8Array(lenStr.length + 1);
-      for (var i = 0; i < lenStr.length; i++) {
-        lengthAry[i] = parseInt(lenStr[i]);
-      }
-      lengthAry[lenStr.length] = 255;
-
-      if (Blob) {
-        var blob = new Blob([binaryIdentifier.buffer, lengthAry.buffer, encoded]);
-        doneCallback(null, blob);
-      }
-    });
-  }
-
-  map(packets, encodeOne, function(err, results) {
-    return callback(new Blob(results));
-  });
-};
-
-/*
- * Decodes data when a payload is maybe expected. Strings are decoded by
- * interpreting each byte as a key code for entries marked to start with 0. See
- * description of encodePayloadAsBinary
- *
- * @param {ArrayBuffer} data, callback method
- * @api public
- */
-
-exports.decodePayloadAsBinary = function (data, binaryType, callback) {
-  if (typeof binaryType === 'function') {
-    callback = binaryType;
-    binaryType = null;
-  }
-
-  var bufferTail = data;
-  var buffers = [];
-
-  while (bufferTail.byteLength > 0) {
-    var tailArray = new Uint8Array(bufferTail);
-    var isString = tailArray[0] === 0;
-    var msgLength = '';
-
-    for (var i = 1; ; i++) {
-      if (tailArray[i] === 255) break;
-
-      // 310 = char length of Number.MAX_VALUE
-      if (msgLength.length > 310) {
-        return callback(err, 0, 1);
-      }
-
-      msgLength += tailArray[i];
-    }
-
-    bufferTail = sliceBuffer(bufferTail, 2 + msgLength.length);
-    msgLength = parseInt(msgLength);
-
-    var msg = sliceBuffer(bufferTail, 0, msgLength);
-    if (isString) {
-      try {
-        msg = String.fromCharCode.apply(null, new Uint8Array(msg));
-      } catch (e) {
-        // iPhone Safari doesn't let you apply to typed arrays
-        var typed = new Uint8Array(msg);
-        msg = '';
-        for (var i = 0; i < typed.length; i++) {
-          msg += String.fromCharCode(typed[i]);
-        }
-      }
-    }
-
-    buffers.push(msg);
-    bufferTail = sliceBuffer(bufferTail, msgLength);
-  }
-
-  var total = buffers.length;
-  buffers.forEach(function(buffer, i) {
-    callback(exports.decodePacket(buffer, binaryType, true), i, total);
-  });
-};
-
-
-/***/ }),
-/* 73 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -15201,7 +14110,7 @@ var iCrypto = __webpack_require__(3);
 var WildEmitter = __webpack_require__(17);
 
 // EXTERNAL MODULE: ./client/src/js/lib/Message.js
-var Message = __webpack_require__(10);
+var Message = __webpack_require__(9);
 
 // EXTERNAL MODULE: ./common/Events.js
 var Events = __webpack_require__(0);
@@ -15955,6 +14864,1107 @@ var Vault_Vault = /*#__PURE__*/function () {
 //     }
 //
 // };
+
+/***/ }),
+/* 67 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var def = __webpack_require__(15).f;
+var has = __webpack_require__(25);
+var TAG = __webpack_require__(12)('toStringTag');
+
+module.exports = function (it, tag, stat) {
+  if (it && !has(it = stat ? it : it.prototype, TAG)) def(it, TAG, { configurable: true, value: tag });
+};
+
+
+/***/ }),
+/* 68 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// getting tag from 19.1.3.6 Object.prototype.toString()
+var cof = __webpack_require__(34);
+var TAG = __webpack_require__(12)('toStringTag');
+// ES3 wrong here
+var ARG = cof(function () { return arguments; }()) == 'Arguments';
+
+// fallback for IE11 Script Access Denied error
+var tryGet = function (it, key) {
+  try {
+    return it[key];
+  } catch (e) { /* empty */ }
+};
+
+module.exports = function (it) {
+  var O, T, B;
+  return it === undefined ? 'Undefined' : it === null ? 'Null'
+    // @@toStringTag case
+    : typeof (T = tryGet(O = Object(it), TAG)) == 'string' ? T
+    // builtinTag case
+    : ARG ? cof(O)
+    // ES3 arguments fallback
+    : (B = cof(O)) == 'Object' && typeof O.callee == 'function' ? 'Arguments' : B;
+};
+
+
+/***/ }),
+/* 69 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var $export = __webpack_require__(1);
+var defined = __webpack_require__(39);
+var fails = __webpack_require__(10);
+var spaces = __webpack_require__(125);
+var space = '[' + spaces + ']';
+var non = '\u200b\u0085';
+var ltrim = RegExp('^' + space + space + '*');
+var rtrim = RegExp(space + space + '*$');
+
+var exporter = function (KEY, exec, ALIAS) {
+  var exp = {};
+  var FORCE = fails(function () {
+    return !!spaces[KEY]() || non[KEY]() != non;
+  });
+  var fn = exp[KEY] = FORCE ? exec(trim) : spaces[KEY];
+  if (ALIAS) exp[ALIAS] = fn;
+  $export($export.P + $export.F * FORCE, 'String', exp);
+};
+
+// 1 -> String#trimLeft
+// 2 -> String#trimRight
+// 3 -> String#trim
+var trim = exporter.trim = function (string, TYPE) {
+  string = String(defined(string));
+  if (TYPE & 1) string = string.replace(ltrim, '');
+  if (TYPE & 2) string = string.replace(rtrim, '');
+  return string;
+};
+
+module.exports = exporter;
+
+
+/***/ }),
+/* 70 */
+/***/ (function(module, exports) {
+
+module.exports = {};
+
+
+/***/ }),
+/* 71 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/**
+ * Javascript implementation of basic PEM (Privacy Enhanced Mail) algorithms.
+ *
+ * See: RFC 1421.
+ *
+ * @author Dave Longley
+ *
+ * Copyright (c) 2013-2014 Digital Bazaar, Inc.
+ *
+ * A Forge PEM object has the following fields:
+ *
+ * type: identifies the type of message (eg: "RSA PRIVATE KEY").
+ *
+ * procType: identifies the type of processing performed on the message,
+ *   it has two subfields: version and type, eg: 4,ENCRYPTED.
+ *
+ * contentDomain: identifies the type of content in the message, typically
+ *   only uses the value: "RFC822".
+ *
+ * dekInfo: identifies the message encryption algorithm and mode and includes
+ *   any parameters for the algorithm, it has two subfields: algorithm and
+ *   parameters, eg: DES-CBC,F8143EDE5960C597.
+ *
+ * headers: contains all other PEM encapsulated headers -- where order is
+ *   significant (for pairing data like recipient ID + key info).
+ *
+ * body: the binary-encoded body.
+ */
+var forge = __webpack_require__(5);
+__webpack_require__(8);
+
+// shortcut for pem API
+var pem = module.exports = forge.pem = forge.pem || {};
+
+/**
+ * Encodes (serializes) the given PEM object.
+ *
+ * @param msg the PEM message object to encode.
+ * @param options the options to use:
+ *          maxline the maximum characters per line for the body, (default: 64).
+ *
+ * @return the PEM-formatted string.
+ */
+pem.encode = function(msg, options) {
+  options = options || {};
+  var rval = '-----BEGIN ' + msg.type + '-----\r\n';
+
+  // encode special headers
+  var header;
+  if(msg.procType) {
+    header = {
+      name: 'Proc-Type',
+      values: [String(msg.procType.version), msg.procType.type]
+    };
+    rval += foldHeader(header);
+  }
+  if(msg.contentDomain) {
+    header = {name: 'Content-Domain', values: [msg.contentDomain]};
+    rval += foldHeader(header);
+  }
+  if(msg.dekInfo) {
+    header = {name: 'DEK-Info', values: [msg.dekInfo.algorithm]};
+    if(msg.dekInfo.parameters) {
+      header.values.push(msg.dekInfo.parameters);
+    }
+    rval += foldHeader(header);
+  }
+
+  if(msg.headers) {
+    // encode all other headers
+    for(var i = 0; i < msg.headers.length; ++i) {
+      rval += foldHeader(msg.headers[i]);
+    }
+  }
+
+  // terminate header
+  if(msg.procType) {
+    rval += '\r\n';
+  }
+
+  // add body
+  rval += forge.util.encode64(msg.body, options.maxline || 64) + '\r\n';
+
+  rval += '-----END ' + msg.type + '-----\r\n';
+  return rval;
+};
+
+/**
+ * Decodes (deserializes) all PEM messages found in the given string.
+ *
+ * @param str the PEM-formatted string to decode.
+ *
+ * @return the PEM message objects in an array.
+ */
+pem.decode = function(str) {
+  var rval = [];
+
+  // split string into PEM messages (be lenient w/EOF on BEGIN line)
+  var rMessage = /\s*-----BEGIN ([A-Z0-9- ]+)-----\r?\n?([\x21-\x7e\s]+?(?:\r?\n\r?\n))?([:A-Za-z0-9+\/=\s]+?)-----END \1-----/g;
+  var rHeader = /([\x21-\x7e]+):\s*([\x21-\x7e\s^:]+)/;
+  var rCRLF = /\r?\n/;
+  var match;
+  while(true) {
+    match = rMessage.exec(str);
+    if(!match) {
+      break;
+    }
+
+    var msg = {
+      type: match[1],
+      procType: null,
+      contentDomain: null,
+      dekInfo: null,
+      headers: [],
+      body: forge.util.decode64(match[3])
+    };
+    rval.push(msg);
+
+    // no headers
+    if(!match[2]) {
+      continue;
+    }
+
+    // parse headers
+    var lines = match[2].split(rCRLF);
+    var li = 0;
+    while(match && li < lines.length) {
+      // get line, trim any rhs whitespace
+      var line = lines[li].replace(/\s+$/, '');
+
+      // RFC2822 unfold any following folded lines
+      for(var nl = li + 1; nl < lines.length; ++nl) {
+        var next = lines[nl];
+        if(!/\s/.test(next[0])) {
+          break;
+        }
+        line += next;
+        li = nl;
+      }
+
+      // parse header
+      match = line.match(rHeader);
+      if(match) {
+        var header = {name: match[1], values: []};
+        var values = match[2].split(',');
+        for(var vi = 0; vi < values.length; ++vi) {
+          header.values.push(ltrim(values[vi]));
+        }
+
+        // Proc-Type must be the first header
+        if(!msg.procType) {
+          if(header.name !== 'Proc-Type') {
+            throw new Error('Invalid PEM formatted message. The first ' +
+              'encapsulated header must be "Proc-Type".');
+          } else if(header.values.length !== 2) {
+            throw new Error('Invalid PEM formatted message. The "Proc-Type" ' +
+              'header must have two subfields.');
+          }
+          msg.procType = {version: values[0], type: values[1]};
+        } else if(!msg.contentDomain && header.name === 'Content-Domain') {
+          // special-case Content-Domain
+          msg.contentDomain = values[0] || '';
+        } else if(!msg.dekInfo && header.name === 'DEK-Info') {
+          // special-case DEK-Info
+          if(header.values.length === 0) {
+            throw new Error('Invalid PEM formatted message. The "DEK-Info" ' +
+              'header must have at least one subfield.');
+          }
+          msg.dekInfo = {algorithm: values[0], parameters: values[1] || null};
+        } else {
+          msg.headers.push(header);
+        }
+      }
+
+      ++li;
+    }
+
+    if(msg.procType === 'ENCRYPTED' && !msg.dekInfo) {
+      throw new Error('Invalid PEM formatted message. The "DEK-Info" ' +
+        'header must be present if "Proc-Type" is "ENCRYPTED".');
+    }
+  }
+
+  if(rval.length === 0) {
+    throw new Error('Invalid PEM formatted message.');
+  }
+
+  return rval;
+};
+
+function foldHeader(header) {
+  var rval = header.name + ': ';
+
+  // ensure values with CRLF are folded
+  var values = [];
+  var insertSpace = function(match, $1) {
+    return ' ' + $1;
+  };
+  for(var i = 0; i < header.values.length; ++i) {
+    values.push(header.values[i].replace(/^(\S+\r\n)/, insertSpace));
+  }
+  rval += values.join(',') + '\r\n';
+
+  // do folding
+  var length = 0;
+  var candidate = -1;
+  for(var i = 0; i < rval.length; ++i, ++length) {
+    if(length > 65 && candidate !== -1) {
+      var insert = rval[candidate];
+      if(insert === ',') {
+        ++candidate;
+        rval = rval.substr(0, candidate) + '\r\n ' + rval.substr(candidate);
+      } else {
+        rval = rval.substr(0, candidate) +
+          '\r\n' + insert + rval.substr(candidate + 1);
+      }
+      length = (i - candidate - 1);
+      candidate = -1;
+      ++i;
+    } else if(rval[i] === ' ' || rval[i] === '\t' || rval[i] === ',') {
+      candidate = i;
+    }
+  }
+
+  return rval;
+}
+
+function ltrim(str) {
+  return str.replace(/^\s+/, '');
+}
+
+
+/***/ }),
+/* 72 */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+/**
+ * Expose `Emitter`.
+ */
+
+if (true) {
+  module.exports = Emitter;
+}
+
+/**
+ * Initialize a new `Emitter`.
+ *
+ * @api public
+ */
+
+function Emitter(obj) {
+  if (obj) return mixin(obj);
+};
+
+/**
+ * Mixin the emitter properties.
+ *
+ * @param {Object} obj
+ * @return {Object}
+ * @api private
+ */
+
+function mixin(obj) {
+  for (var key in Emitter.prototype) {
+    obj[key] = Emitter.prototype[key];
+  }
+  return obj;
+}
+
+/**
+ * Listen on the given `event` with `fn`.
+ *
+ * @param {String} event
+ * @param {Function} fn
+ * @return {Emitter}
+ * @api public
+ */
+
+Emitter.prototype.on =
+Emitter.prototype.addEventListener = function(event, fn){
+  this._callbacks = this._callbacks || {};
+  (this._callbacks['$' + event] = this._callbacks['$' + event] || [])
+    .push(fn);
+  return this;
+};
+
+/**
+ * Adds an `event` listener that will be invoked a single
+ * time then automatically removed.
+ *
+ * @param {String} event
+ * @param {Function} fn
+ * @return {Emitter}
+ * @api public
+ */
+
+Emitter.prototype.once = function(event, fn){
+  function on() {
+    this.off(event, on);
+    fn.apply(this, arguments);
+  }
+
+  on.fn = fn;
+  this.on(event, on);
+  return this;
+};
+
+/**
+ * Remove the given callback for `event` or all
+ * registered callbacks.
+ *
+ * @param {String} event
+ * @param {Function} fn
+ * @return {Emitter}
+ * @api public
+ */
+
+Emitter.prototype.off =
+Emitter.prototype.removeListener =
+Emitter.prototype.removeAllListeners =
+Emitter.prototype.removeEventListener = function(event, fn){
+  this._callbacks = this._callbacks || {};
+
+  // all
+  if (0 == arguments.length) {
+    this._callbacks = {};
+    return this;
+  }
+
+  // specific event
+  var callbacks = this._callbacks['$' + event];
+  if (!callbacks) return this;
+
+  // remove all handlers
+  if (1 == arguments.length) {
+    delete this._callbacks['$' + event];
+    return this;
+  }
+
+  // remove specific handler
+  var cb;
+  for (var i = 0; i < callbacks.length; i++) {
+    cb = callbacks[i];
+    if (cb === fn || cb.fn === fn) {
+      callbacks.splice(i, 1);
+      break;
+    }
+  }
+  return this;
+};
+
+/**
+ * Emit `event` with the given args.
+ *
+ * @param {String} event
+ * @param {Mixed} ...
+ * @return {Emitter}
+ */
+
+Emitter.prototype.emit = function(event){
+  this._callbacks = this._callbacks || {};
+  var args = [].slice.call(arguments, 1)
+    , callbacks = this._callbacks['$' + event];
+
+  if (callbacks) {
+    callbacks = callbacks.slice(0);
+    for (var i = 0, len = callbacks.length; i < len; ++i) {
+      callbacks[i].apply(this, args);
+    }
+  }
+
+  return this;
+};
+
+/**
+ * Return array of callbacks for `event`.
+ *
+ * @param {String} event
+ * @return {Array}
+ * @api public
+ */
+
+Emitter.prototype.listeners = function(event){
+  this._callbacks = this._callbacks || {};
+  return this._callbacks['$' + event] || [];
+};
+
+/**
+ * Check if this emitter has `event` handlers.
+ *
+ * @param {String} event
+ * @return {Boolean}
+ * @api public
+ */
+
+Emitter.prototype.hasListeners = function(event){
+  return !! this.listeners(event).length;
+};
+
+
+/***/ }),
+/* 73 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/**
+ * Module dependencies.
+ */
+
+var keys = __webpack_require__(479);
+var hasBinary = __webpack_require__(217);
+var sliceBuffer = __webpack_require__(481);
+var after = __webpack_require__(482);
+var utf8 = __webpack_require__(483);
+
+var base64encoder;
+if (typeof ArrayBuffer !== 'undefined') {
+  base64encoder = __webpack_require__(484);
+}
+
+/**
+ * Check if we are running an android browser. That requires us to use
+ * ArrayBuffer with polling transports...
+ *
+ * http://ghinda.net/jpeg-blob-ajax-android/
+ */
+
+var isAndroid = typeof navigator !== 'undefined' && /Android/i.test(navigator.userAgent);
+
+/**
+ * Check if we are running in PhantomJS.
+ * Uploading a Blob with PhantomJS does not work correctly, as reported here:
+ * https://github.com/ariya/phantomjs/issues/11395
+ * @type boolean
+ */
+var isPhantomJS = typeof navigator !== 'undefined' && /PhantomJS/i.test(navigator.userAgent);
+
+/**
+ * When true, avoids using Blobs to encode payloads.
+ * @type boolean
+ */
+var dontSendBlobs = isAndroid || isPhantomJS;
+
+/**
+ * Current protocol version.
+ */
+
+exports.protocol = 3;
+
+/**
+ * Packet types.
+ */
+
+var packets = exports.packets = {
+    open:     0    // non-ws
+  , close:    1    // non-ws
+  , ping:     2
+  , pong:     3
+  , message:  4
+  , upgrade:  5
+  , noop:     6
+};
+
+var packetslist = keys(packets);
+
+/**
+ * Premade error packet.
+ */
+
+var err = { type: 'error', data: 'parser error' };
+
+/**
+ * Create a blob api even for blob builder when vendor prefixes exist
+ */
+
+var Blob = __webpack_require__(485);
+
+/**
+ * Encodes a packet.
+ *
+ *     <packet type id> [ <data> ]
+ *
+ * Example:
+ *
+ *     5hello world
+ *     3
+ *     4
+ *
+ * Binary is encoded in an identical principle
+ *
+ * @api private
+ */
+
+exports.encodePacket = function (packet, supportsBinary, utf8encode, callback) {
+  if (typeof supportsBinary === 'function') {
+    callback = supportsBinary;
+    supportsBinary = false;
+  }
+
+  if (typeof utf8encode === 'function') {
+    callback = utf8encode;
+    utf8encode = null;
+  }
+
+  var data = (packet.data === undefined)
+    ? undefined
+    : packet.data.buffer || packet.data;
+
+  if (typeof ArrayBuffer !== 'undefined' && data instanceof ArrayBuffer) {
+    return encodeArrayBuffer(packet, supportsBinary, callback);
+  } else if (typeof Blob !== 'undefined' && data instanceof Blob) {
+    return encodeBlob(packet, supportsBinary, callback);
+  }
+
+  // might be an object with { base64: true, data: dataAsBase64String }
+  if (data && data.base64) {
+    return encodeBase64Object(packet, callback);
+  }
+
+  // Sending data as a utf-8 string
+  var encoded = packets[packet.type];
+
+  // data fragment is optional
+  if (undefined !== packet.data) {
+    encoded += utf8encode ? utf8.encode(String(packet.data), { strict: false }) : String(packet.data);
+  }
+
+  return callback('' + encoded);
+
+};
+
+function encodeBase64Object(packet, callback) {
+  // packet data is an object { base64: true, data: dataAsBase64String }
+  var message = 'b' + exports.packets[packet.type] + packet.data.data;
+  return callback(message);
+}
+
+/**
+ * Encode packet helpers for binary types
+ */
+
+function encodeArrayBuffer(packet, supportsBinary, callback) {
+  if (!supportsBinary) {
+    return exports.encodeBase64Packet(packet, callback);
+  }
+
+  var data = packet.data;
+  var contentArray = new Uint8Array(data);
+  var resultBuffer = new Uint8Array(1 + data.byteLength);
+
+  resultBuffer[0] = packets[packet.type];
+  for (var i = 0; i < contentArray.length; i++) {
+    resultBuffer[i+1] = contentArray[i];
+  }
+
+  return callback(resultBuffer.buffer);
+}
+
+function encodeBlobAsArrayBuffer(packet, supportsBinary, callback) {
+  if (!supportsBinary) {
+    return exports.encodeBase64Packet(packet, callback);
+  }
+
+  var fr = new FileReader();
+  fr.onload = function() {
+    exports.encodePacket({ type: packet.type, data: fr.result }, supportsBinary, true, callback);
+  };
+  return fr.readAsArrayBuffer(packet.data);
+}
+
+function encodeBlob(packet, supportsBinary, callback) {
+  if (!supportsBinary) {
+    return exports.encodeBase64Packet(packet, callback);
+  }
+
+  if (dontSendBlobs) {
+    return encodeBlobAsArrayBuffer(packet, supportsBinary, callback);
+  }
+
+  var length = new Uint8Array(1);
+  length[0] = packets[packet.type];
+  var blob = new Blob([length.buffer, packet.data]);
+
+  return callback(blob);
+}
+
+/**
+ * Encodes a packet with binary data in a base64 string
+ *
+ * @param {Object} packet, has `type` and `data`
+ * @return {String} base64 encoded message
+ */
+
+exports.encodeBase64Packet = function(packet, callback) {
+  var message = 'b' + exports.packets[packet.type];
+  if (typeof Blob !== 'undefined' && packet.data instanceof Blob) {
+    var fr = new FileReader();
+    fr.onload = function() {
+      var b64 = fr.result.split(',')[1];
+      callback(message + b64);
+    };
+    return fr.readAsDataURL(packet.data);
+  }
+
+  var b64data;
+  try {
+    b64data = String.fromCharCode.apply(null, new Uint8Array(packet.data));
+  } catch (e) {
+    // iPhone Safari doesn't let you apply with typed arrays
+    var typed = new Uint8Array(packet.data);
+    var basic = new Array(typed.length);
+    for (var i = 0; i < typed.length; i++) {
+      basic[i] = typed[i];
+    }
+    b64data = String.fromCharCode.apply(null, basic);
+  }
+  message += btoa(b64data);
+  return callback(message);
+};
+
+/**
+ * Decodes a packet. Changes format to Blob if requested.
+ *
+ * @return {Object} with `type` and `data` (if any)
+ * @api private
+ */
+
+exports.decodePacket = function (data, binaryType, utf8decode) {
+  if (data === undefined) {
+    return err;
+  }
+  // String data
+  if (typeof data === 'string') {
+    if (data.charAt(0) === 'b') {
+      return exports.decodeBase64Packet(data.substr(1), binaryType);
+    }
+
+    if (utf8decode) {
+      data = tryDecode(data);
+      if (data === false) {
+        return err;
+      }
+    }
+    var type = data.charAt(0);
+
+    if (Number(type) != type || !packetslist[type]) {
+      return err;
+    }
+
+    if (data.length > 1) {
+      return { type: packetslist[type], data: data.substring(1) };
+    } else {
+      return { type: packetslist[type] };
+    }
+  }
+
+  var asArray = new Uint8Array(data);
+  var type = asArray[0];
+  var rest = sliceBuffer(data, 1);
+  if (Blob && binaryType === 'blob') {
+    rest = new Blob([rest]);
+  }
+  return { type: packetslist[type], data: rest };
+};
+
+function tryDecode(data) {
+  try {
+    data = utf8.decode(data, { strict: false });
+  } catch (e) {
+    return false;
+  }
+  return data;
+}
+
+/**
+ * Decodes a packet encoded in a base64 string
+ *
+ * @param {String} base64 encoded message
+ * @return {Object} with `type` and `data` (if any)
+ */
+
+exports.decodeBase64Packet = function(msg, binaryType) {
+  var type = packetslist[msg.charAt(0)];
+  if (!base64encoder) {
+    return { type: type, data: { base64: true, data: msg.substr(1) } };
+  }
+
+  var data = base64encoder.decode(msg.substr(1));
+
+  if (binaryType === 'blob' && Blob) {
+    data = new Blob([data]);
+  }
+
+  return { type: type, data: data };
+};
+
+/**
+ * Encodes multiple messages (payload).
+ *
+ *     <length>:data
+ *
+ * Example:
+ *
+ *     11:hello world2:hi
+ *
+ * If any contents are binary, they will be encoded as base64 strings. Base64
+ * encoded strings are marked with a b before the length specifier
+ *
+ * @param {Array} packets
+ * @api private
+ */
+
+exports.encodePayload = function (packets, supportsBinary, callback) {
+  if (typeof supportsBinary === 'function') {
+    callback = supportsBinary;
+    supportsBinary = null;
+  }
+
+  var isBinary = hasBinary(packets);
+
+  if (supportsBinary && isBinary) {
+    if (Blob && !dontSendBlobs) {
+      return exports.encodePayloadAsBlob(packets, callback);
+    }
+
+    return exports.encodePayloadAsArrayBuffer(packets, callback);
+  }
+
+  if (!packets.length) {
+    return callback('0:');
+  }
+
+  function setLengthHeader(message) {
+    return message.length + ':' + message;
+  }
+
+  function encodeOne(packet, doneCallback) {
+    exports.encodePacket(packet, !isBinary ? false : supportsBinary, false, function(message) {
+      doneCallback(null, setLengthHeader(message));
+    });
+  }
+
+  map(packets, encodeOne, function(err, results) {
+    return callback(results.join(''));
+  });
+};
+
+/**
+ * Async array map using after
+ */
+
+function map(ary, each, done) {
+  var result = new Array(ary.length);
+  var next = after(ary.length, done);
+
+  var eachWithIndex = function(i, el, cb) {
+    each(el, function(error, msg) {
+      result[i] = msg;
+      cb(error, result);
+    });
+  };
+
+  for (var i = 0; i < ary.length; i++) {
+    eachWithIndex(i, ary[i], next);
+  }
+}
+
+/*
+ * Decodes data when a payload is maybe expected. Possible binary contents are
+ * decoded from their base64 representation
+ *
+ * @param {String} data, callback method
+ * @api public
+ */
+
+exports.decodePayload = function (data, binaryType, callback) {
+  if (typeof data !== 'string') {
+    return exports.decodePayloadAsBinary(data, binaryType, callback);
+  }
+
+  if (typeof binaryType === 'function') {
+    callback = binaryType;
+    binaryType = null;
+  }
+
+  var packet;
+  if (data === '') {
+    // parser error - ignoring payload
+    return callback(err, 0, 1);
+  }
+
+  var length = '', n, msg;
+
+  for (var i = 0, l = data.length; i < l; i++) {
+    var chr = data.charAt(i);
+
+    if (chr !== ':') {
+      length += chr;
+      continue;
+    }
+
+    if (length === '' || (length != (n = Number(length)))) {
+      // parser error - ignoring payload
+      return callback(err, 0, 1);
+    }
+
+    msg = data.substr(i + 1, n);
+
+    if (length != msg.length) {
+      // parser error - ignoring payload
+      return callback(err, 0, 1);
+    }
+
+    if (msg.length) {
+      packet = exports.decodePacket(msg, binaryType, false);
+
+      if (err.type === packet.type && err.data === packet.data) {
+        // parser error in individual packet - ignoring payload
+        return callback(err, 0, 1);
+      }
+
+      var ret = callback(packet, i + n, l);
+      if (false === ret) return;
+    }
+
+    // advance cursor
+    i += n;
+    length = '';
+  }
+
+  if (length !== '') {
+    // parser error - ignoring payload
+    return callback(err, 0, 1);
+  }
+
+};
+
+/**
+ * Encodes multiple messages (payload) as binary.
+ *
+ * <1 = binary, 0 = string><number from 0-9><number from 0-9>[...]<number
+ * 255><data>
+ *
+ * Example:
+ * 1 3 255 1 2 3, if the binary contents are interpreted as 8 bit integers
+ *
+ * @param {Array} packets
+ * @return {ArrayBuffer} encoded payload
+ * @api private
+ */
+
+exports.encodePayloadAsArrayBuffer = function(packets, callback) {
+  if (!packets.length) {
+    return callback(new ArrayBuffer(0));
+  }
+
+  function encodeOne(packet, doneCallback) {
+    exports.encodePacket(packet, true, true, function(data) {
+      return doneCallback(null, data);
+    });
+  }
+
+  map(packets, encodeOne, function(err, encodedPackets) {
+    var totalLength = encodedPackets.reduce(function(acc, p) {
+      var len;
+      if (typeof p === 'string'){
+        len = p.length;
+      } else {
+        len = p.byteLength;
+      }
+      return acc + len.toString().length + len + 2; // string/binary identifier + separator = 2
+    }, 0);
+
+    var resultArray = new Uint8Array(totalLength);
+
+    var bufferIndex = 0;
+    encodedPackets.forEach(function(p) {
+      var isString = typeof p === 'string';
+      var ab = p;
+      if (isString) {
+        var view = new Uint8Array(p.length);
+        for (var i = 0; i < p.length; i++) {
+          view[i] = p.charCodeAt(i);
+        }
+        ab = view.buffer;
+      }
+
+      if (isString) { // not true binary
+        resultArray[bufferIndex++] = 0;
+      } else { // true binary
+        resultArray[bufferIndex++] = 1;
+      }
+
+      var lenStr = ab.byteLength.toString();
+      for (var i = 0; i < lenStr.length; i++) {
+        resultArray[bufferIndex++] = parseInt(lenStr[i]);
+      }
+      resultArray[bufferIndex++] = 255;
+
+      var view = new Uint8Array(ab);
+      for (var i = 0; i < view.length; i++) {
+        resultArray[bufferIndex++] = view[i];
+      }
+    });
+
+    return callback(resultArray.buffer);
+  });
+};
+
+/**
+ * Encode as Blob
+ */
+
+exports.encodePayloadAsBlob = function(packets, callback) {
+  function encodeOne(packet, doneCallback) {
+    exports.encodePacket(packet, true, true, function(encoded) {
+      var binaryIdentifier = new Uint8Array(1);
+      binaryIdentifier[0] = 1;
+      if (typeof encoded === 'string') {
+        var view = new Uint8Array(encoded.length);
+        for (var i = 0; i < encoded.length; i++) {
+          view[i] = encoded.charCodeAt(i);
+        }
+        encoded = view.buffer;
+        binaryIdentifier[0] = 0;
+      }
+
+      var len = (encoded instanceof ArrayBuffer)
+        ? encoded.byteLength
+        : encoded.size;
+
+      var lenStr = len.toString();
+      var lengthAry = new Uint8Array(lenStr.length + 1);
+      for (var i = 0; i < lenStr.length; i++) {
+        lengthAry[i] = parseInt(lenStr[i]);
+      }
+      lengthAry[lenStr.length] = 255;
+
+      if (Blob) {
+        var blob = new Blob([binaryIdentifier.buffer, lengthAry.buffer, encoded]);
+        doneCallback(null, blob);
+      }
+    });
+  }
+
+  map(packets, encodeOne, function(err, results) {
+    return callback(new Blob(results));
+  });
+};
+
+/*
+ * Decodes data when a payload is maybe expected. Strings are decoded by
+ * interpreting each byte as a key code for entries marked to start with 0. See
+ * description of encodePayloadAsBinary
+ *
+ * @param {ArrayBuffer} data, callback method
+ * @api public
+ */
+
+exports.decodePayloadAsBinary = function (data, binaryType, callback) {
+  if (typeof binaryType === 'function') {
+    callback = binaryType;
+    binaryType = null;
+  }
+
+  var bufferTail = data;
+  var buffers = [];
+
+  while (bufferTail.byteLength > 0) {
+    var tailArray = new Uint8Array(bufferTail);
+    var isString = tailArray[0] === 0;
+    var msgLength = '';
+
+    for (var i = 1; ; i++) {
+      if (tailArray[i] === 255) break;
+
+      // 310 = char length of Number.MAX_VALUE
+      if (msgLength.length > 310) {
+        return callback(err, 0, 1);
+      }
+
+      msgLength += tailArray[i];
+    }
+
+    bufferTail = sliceBuffer(bufferTail, 2 + msgLength.length);
+    msgLength = parseInt(msgLength);
+
+    var msg = sliceBuffer(bufferTail, 0, msgLength);
+    if (isString) {
+      try {
+        msg = String.fromCharCode.apply(null, new Uint8Array(msg));
+      } catch (e) {
+        // iPhone Safari doesn't let you apply to typed arrays
+        var typed = new Uint8Array(msg);
+        msg = '';
+        for (var i = 0; i < typed.length; i++) {
+          msg += String.fromCharCode(typed[i]);
+        }
+      }
+    }
+
+    buffers.push(msg);
+    bufferTail = sliceBuffer(bufferTail, msgLength);
+  }
+
+  var total = buffers.length;
+  buffers.forEach(function(buffer, i) {
+    callback(exports.decodePacket(buffer, binaryType, true), i, total);
+  });
+};
+
 
 /***/ }),
 /* 74 */
@@ -18873,7 +18883,7 @@ module.exports = function (exec, skipClosing) {
 "use strict";
 
 
-var classof = __webpack_require__(67);
+var classof = __webpack_require__(68);
 var builtinExec = RegExp.prototype.exec;
 
  // `RegExpExec` abstract operation
@@ -18903,7 +18913,7 @@ module.exports = function (R, S) {
 __webpack_require__(177);
 var redefine = __webpack_require__(22);
 var hide = __webpack_require__(21);
-var fails = __webpack_require__(9);
+var fails = __webpack_require__(10);
 var defined = __webpack_require__(39);
 var wks = __webpack_require__(12);
 var regexpExec = __webpack_require__(140);
@@ -19021,9 +19031,9 @@ var meta = __webpack_require__(48);
 var forOf = __webpack_require__(59);
 var anInstance = __webpack_require__(58);
 var isObject = __webpack_require__(11);
-var fails = __webpack_require__(9);
+var fails = __webpack_require__(10);
 var $iterDetect = __webpack_require__(96);
-var setToStringTag = __webpack_require__(66);
+var setToStringTag = __webpack_require__(67);
 var inheritIfRequired = __webpack_require__(126);
 
 module.exports = function (NAME, wrapper, methods, common, IS_MAP, IS_WEAK) {
@@ -19140,7 +19150,7 @@ module.exports = {
 "use strict";
 
 // Forced replacement prototype accessors methods
-module.exports = __webpack_require__(47) || !__webpack_require__(9)(function () {
+module.exports = __webpack_require__(47) || !__webpack_require__(10)(function () {
   var K = Math.random();
   // In FF throws only define methods
   // eslint-disable-next-line no-undef, no-useless-call
@@ -24447,9 +24457,9 @@ var LIBRARY = __webpack_require__(47);
 var $export = __webpack_require__(1);
 var redefine = __webpack_require__(22);
 var hide = __webpack_require__(21);
-var Iterators = __webpack_require__(69);
+var Iterators = __webpack_require__(70);
 var $iterCreate = __webpack_require__(131);
-var setToStringTag = __webpack_require__(66);
+var setToStringTag = __webpack_require__(67);
 var getPrototypeOf = __webpack_require__(28);
 var ITERATOR = __webpack_require__(12)('iterator');
 var BUGGY = !([].keys && 'next' in [].keys()); // Safari has buggy iterators w/o `next`
@@ -24521,7 +24531,7 @@ module.exports = function (Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCE
 
 var create = __webpack_require__(55);
 var descriptor = __webpack_require__(51);
-var setToStringTag = __webpack_require__(66);
+var setToStringTag = __webpack_require__(67);
 var IteratorPrototype = {};
 
 // 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
@@ -24570,7 +24580,7 @@ module.exports = function (KEY) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // check on default Array iterator
-var Iterators = __webpack_require__(69);
+var Iterators = __webpack_require__(70);
 var ITERATOR = __webpack_require__(12)('iterator');
 var ArrayProto = Array.prototype;
 
@@ -24598,9 +24608,9 @@ module.exports = function (object, index, value) {
 /* 136 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var classof = __webpack_require__(67);
+var classof = __webpack_require__(68);
 var ITERATOR = __webpack_require__(12)('iterator');
-var Iterators = __webpack_require__(69);
+var Iterators = __webpack_require__(70);
 module.exports = __webpack_require__(32).getIteratorMethod = function (it) {
   if (it != undefined) return it[ITERATOR]
     || it['@@iterator']
@@ -24650,7 +24660,7 @@ module.exports = function fill(value /* , start = 0, end = @length */) {
 
 var addToUnscopables = __webpack_require__(49);
 var step = __webpack_require__(176);
-var Iterators = __webpack_require__(69);
+var Iterators = __webpack_require__(70);
 var toIObject = __webpack_require__(26);
 
 // 22.1.3.4 Array.prototype.entries()
@@ -24965,7 +24975,7 @@ var LIBRARY = __webpack_require__(47);
 var $typed = __webpack_require__(101);
 var hide = __webpack_require__(21);
 var redefineAll = __webpack_require__(60);
-var fails = __webpack_require__(9);
+var fails = __webpack_require__(10);
 var anInstance = __webpack_require__(58);
 var toInteger = __webpack_require__(35);
 var toLength = __webpack_require__(13);
@@ -24973,7 +24983,7 @@ var toIndex = __webpack_require__(186);
 var gOPN = __webpack_require__(56).f;
 var dP = __webpack_require__(15).f;
 var arrayFill = __webpack_require__(138);
-var setToStringTag = __webpack_require__(66);
+var setToStringTag = __webpack_require__(67);
 var ARRAY_BUFFER = 'ArrayBuffer';
 var DATA_VIEW = 'DataView';
 var PROTOTYPE = 'prototype';
@@ -26105,7 +26115,7 @@ __webpack_require__(106);
 __webpack_require__(45);
 __webpack_require__(453);
 __webpack_require__(63);
-__webpack_require__(70);
+__webpack_require__(71);
 __webpack_require__(150);
 __webpack_require__(107);
 __webpack_require__(8);
@@ -29519,7 +29529,7 @@ pss.create = function(options) {
  */
 
 var debug = __webpack_require__(471)('socket.io-parser');
-var Emitter = __webpack_require__(71);
+var Emitter = __webpack_require__(72);
 var binary = __webpack_require__(474);
 var isArray = __webpack_require__(212);
 var isBuf = __webpack_require__(213);
@@ -29981,8 +29991,8 @@ module.exports = function (opts) {
  * Module dependencies.
  */
 
-var parser = __webpack_require__(72);
-var Emitter = __webpack_require__(71);
+var parser = __webpack_require__(73);
+var Emitter = __webpack_require__(72);
 
 /**
  * Module exports.
@@ -31190,7 +31200,7 @@ Writable.prototype._destroy = function (err, cb) {
 /* 158 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = !__webpack_require__(14) && !__webpack_require__(9)(function () {
+module.exports = !__webpack_require__(14) && !__webpack_require__(10)(function () {
   return Object.defineProperty(__webpack_require__(119)('div'), 'a', { get: function () { return 7; } }).a != 7;
 });
 
@@ -31285,7 +31295,7 @@ var IObject = __webpack_require__(75);
 var $assign = Object.assign;
 
 // should work with symbols and should have deterministic property order (V8 bug)
-module.exports = !$assign || __webpack_require__(9)(function () {
+module.exports = !$assign || __webpack_require__(10)(function () {
   var A = {};
   var B = {};
   // eslint-disable-next-line no-undef
@@ -31384,7 +31394,7 @@ module.exports = function (fn, args, that) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var $parseInt = __webpack_require__(6).parseInt;
-var $trim = __webpack_require__(68).trim;
+var $trim = __webpack_require__(69).trim;
 var ws = __webpack_require__(125);
 var hex = /^[-+]?0[xX]/;
 
@@ -31399,7 +31409,7 @@ module.exports = $parseInt(ws + '08') !== 8 || $parseInt(ws + '0x16') !== 22 ? f
 /***/ (function(module, exports, __webpack_require__) {
 
 var $parseFloat = __webpack_require__(6).parseFloat;
-var $trim = __webpack_require__(68).trim;
+var $trim = __webpack_require__(69).trim;
 
 module.exports = 1 / $parseFloat(__webpack_require__(125) + '-0') !== -Infinity ? function parseFloat(str) {
   var string = $trim(String(str), 3);
@@ -32111,7 +32121,7 @@ module.exports = function (isEntries) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://github.com/DavidBruant/Map-Set.prototype.toJSON
-var classof = __webpack_require__(67);
+var classof = __webpack_require__(68);
 var from = __webpack_require__(192);
 module.exports = function (NAME) {
   return function toJSON() {
@@ -33391,7 +33401,7 @@ var forge = __webpack_require__(5);
 __webpack_require__(44);
 __webpack_require__(81);
 __webpack_require__(147);
-__webpack_require__(70);
+__webpack_require__(71);
 __webpack_require__(196);
 __webpack_require__(37);
 __webpack_require__(82);
@@ -37442,7 +37452,7 @@ var forge = __webpack_require__(5);
 __webpack_require__(44);
 __webpack_require__(63);
 __webpack_require__(197);
-__webpack_require__(70);
+__webpack_require__(71);
 __webpack_require__(148);
 __webpack_require__(204);
 __webpack_require__(150);
@@ -37564,7 +37574,7 @@ __webpack_require__(106);
 __webpack_require__(45);
 __webpack_require__(63);
 __webpack_require__(148);
-__webpack_require__(70);
+__webpack_require__(71);
 __webpack_require__(37);
 __webpack_require__(201);
 __webpack_require__(107);
@@ -42984,7 +42994,7 @@ function isBuf(obj) {
 
 var eio = __webpack_require__(475);
 var Socket = __webpack_require__(220);
-var Emitter = __webpack_require__(71);
+var Emitter = __webpack_require__(72);
 var parser = __webpack_require__(151);
 var on = __webpack_require__(221);
 var bind = __webpack_require__(84);
@@ -43621,7 +43631,7 @@ function polling (opts) {
 
 var Transport = __webpack_require__(153);
 var parseqs = __webpack_require__(110);
-var parser = __webpack_require__(72);
+var parser = __webpack_require__(73);
 var inherit = __webpack_require__(111);
 var yeast = __webpack_require__(218);
 var debug = __webpack_require__(112)('engine.io-client:polling');
@@ -44033,7 +44043,7 @@ module.exports = function(arr, obj){
  */
 
 var parser = __webpack_require__(151);
-var Emitter = __webpack_require__(71);
+var Emitter = __webpack_require__(72);
 var toArray = __webpack_require__(491);
 var on = __webpack_require__(221);
 var bind = __webpack_require__(84);
@@ -46461,13 +46471,13 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;!function(t,o)
 /* harmony import */ var _common_Util__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(114);
 /* harmony import */ var _common_Util__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_common_Util__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _common_IError__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(2);
-/* harmony import */ var _Vault__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(73);
+/* harmony import */ var _Vault__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(66);
 /* harmony import */ var _xhr__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(87);
 /* harmony import */ var _Connector__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(50);
 /* harmony import */ var _MessageQueue__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(89);
 /* harmony import */ var _ArrivalHub__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(117);
 /* harmony import */ var _ChatUtility__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(7);
-/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(10);
+/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(9);
 /* harmony import */ var _Topic__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(24);
 /* harmony import */ var _DownloadAttachmentAgent__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(232);
 /* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(3);
@@ -46535,6 +46545,7 @@ var ChatClient = /*#__PURE__*/function () {
     value: function initSession(password) {
       var _this = this;
 
+      _Vault__WEBPACK_IMPORTED_MODULE_4__[/* Vault */ "a"].fetchVault(this.processVault);
       setImmediate( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
         var response, vault, vaultId, vaultObj, _i, _Object$keys, pkfp, errMsg;
 
@@ -46568,7 +46579,7 @@ var ChatClient = /*#__PURE__*/function () {
                 throw new Error("Vault not found");
 
               case 10:
-                vaultObj = new _Vault__WEBPACK_IMPORTED_MODULE_4__[/* Vault */ "a"](password);
+                vaultObj = new _Vault__WEBPACK_IMPORTED_MODULE_4__[/* Vault */ "a"]();
                 _context.next = 13;
                 return vaultObj.initSaved(_this.version, vault.vault, password, vault.topics);
 
@@ -46693,130 +46704,30 @@ var ChatClient = /*#__PURE__*/function () {
     } // Sends all topic pkfps (ids) to gather metadata and encrypted services
 
   }, {
-    key: "postLogin",
-    value: function postLogin() {
-      var _this4 = this;
-
-      //sending post_login request
-      var message = new _Message__WEBPACK_IMPORTED_MODULE_10__[/* Message */ "a"](this.version);
-      message.setSource(this.vault.id);
-      message.setCommand(_common_Events__WEBPACK_IMPORTED_MODULE_1__["Internal"].POST_LOGIN);
-      message.addNonce();
-      message.body.topics = Object.keys(this.topics);
-      message.signMessage(this.vault.privateKey);
-      this.vault.once(_common_Events__WEBPACK_IMPORTED_MODULE_1__["Internal"].POST_LOGIN_DECRYPT, function (msg) {
-        _this4.postLoginDecrypt(msg, _this4);
-      });
-      this.messageQueue.enqueue(message);
-    } // Decrypts topic authorities' and hidden services keys
-    // and re-encrypts them with session key, so island can poke all services
-
-  }, {
-    key: "postLoginDecrypt",
-    value: function postLoginDecrypt(msg, self) {
-      console.log("Got decrypt command from server."); //decrypting and sending data back
-
-      var decryptBlob = function decryptBlob(privateKey, blob) {
-        var lengthChars = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 4;
-        var icn = new _iCrypto__WEBPACK_IMPORTED_MODULE_13__[/* iCrypto */ "a"]();
-        var symLength = parseInt(blob.substr(-lengthChars));
-        var blobLength = blob.length;
-        var symk = blob.substring(blobLength - symLength - lengthChars, blobLength - lengthChars);
-        var cipher = blob.substring(0, blobLength - symLength - lengthChars);
-        icn.addBlob("symcip", symk).addBlob("cipher", cipher).asym.setKey("priv", privateKey, "private").asym.decrypt("symcip", "priv", "sym", "hex").sym.decrypt("cipher", "sym", "blob-raw", true);
-        return icn.get("blob-raw");
-      };
-
-      var encryptBlob = function encryptBlob(publicKey, blob) {
-        var lengthChars = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 4;
-        var icn = new _iCrypto__WEBPACK_IMPORTED_MODULE_13__[/* iCrypto */ "a"]();
-        icn.createSYMKey("sym").asym.setKey("pub", publicKey, "public").addBlob("blob-raw", blob).sym.encrypt("blob-raw", "sym", "blob-cip", true).asym.encrypt("sym", "pub", "symcip", "hex").encodeBlobLength("symcip", 4, "0", "symcipl").merge(["blob-cip", "symcip", "symcipl"], "res");
-        return icn.get("res");
-      };
-
-      var services = msg.body.services;
-      var sessionKey = msg.body.sessionKey;
-      var res = {};
-
-      for (var _i2 = 0, _Object$keys2 = Object.keys(services); _i2 < _Object$keys2.length; _i2++) {
-        var pkfp = _Object$keys2[_i2];
-        var topicData = services[pkfp];
-        var topicPrivateKey = self.topics[pkfp].privateKey;
-        var clientHSPrivateKey = void 0,
-            taHSPrivateKey = void 0,
-            taPrivateKey = void 0;
-
-        if (topicData.clientHSPrivateKey) {
-          clientHSPrivateKey = decryptBlob(topicPrivateKey, topicData.clientHSPrivateKey);
-        }
-
-        if (topicData.topicAuthority && topicData.topicAuthority.taPrivateKey) {
-          taPrivateKey = decryptBlob(topicPrivateKey, topicData.topicAuthority.taPrivateKey);
-        }
-
-        if (topicData.topicAuthority && topicData.topicAuthority.taHSPrivateKey) {
-          taHSPrivateKey = decryptBlob(topicPrivateKey, topicData.topicAuthority.taHSPrivateKey);
-        }
-
-        self.topics[pkfp].loadMetadata(topicData.metadata);
-        var preDecrypted = {};
-
-        if (clientHSPrivateKey) {
-          preDecrypted.clientHSPrivateKey = encryptBlob(sessionKey, clientHSPrivateKey);
-        }
-
-        if (taPrivateKey || taHSPrivateKey) {
-          preDecrypted.topicAuthority = {};
-        }
-
-        if (taPrivateKey) {
-          preDecrypted.topicAuthority.taPrivateKey = encryptBlob(sessionKey, taPrivateKey);
-        }
-
-        if (taHSPrivateKey) {
-          preDecrypted.topicAuthority.taHSPrivateKey = encryptBlob(sessionKey, taHSPrivateKey);
-        }
-
-        res[pkfp] = preDecrypted;
-      }
-
-      console.log("Decryption is successfull.");
-      var message = new _Message__WEBPACK_IMPORTED_MODULE_10__[/* Message */ "a"](self.version);
-      message.setCommand(_common_Events__WEBPACK_IMPORTED_MODULE_1__["Internal"].POST_LOGIN_CHECK_SERVICES);
-      message.setSource(self.vault.getId());
-      message.body.services = res;
-      message.signMessage(self.vault.privateKey);
-      self.vault.once(_common_Events__WEBPACK_IMPORTED_MODULE_1__["Events"].POST_LOGIN_SUCCESS, function () {
-        console.log("Post login success!");
-        self.emit(_common_Events__WEBPACK_IMPORTED_MODULE_1__["Events"].POST_LOGIN_SUCCESS);
-      });
-      this.messageQueue.enqueue(message);
-    }
-  }, {
     key: "initTopicListeners",
     value: function initTopicListeners(topic) {
-      var _this5 = this;
+      var _this4 = this;
 
       topic.on(_common_Events__WEBPACK_IMPORTED_MODULE_1__["Events"].MESSAGES_LOADED, function (messages) {
-        _this5.emit(_common_Events__WEBPACK_IMPORTED_MODULE_1__["Events"].MESSAGES_LOADED, {
+        _this4.emit(_common_Events__WEBPACK_IMPORTED_MODULE_1__["Events"].MESSAGES_LOADED, {
           pkfp: topic.pkfp,
           messages: messages
         });
       });
       topic.on(_common_Events__WEBPACK_IMPORTED_MODULE_1__["Events"].INVITE_CREATED, function (inviteCode) {
-        _this5.emit(_common_Events__WEBPACK_IMPORTED_MODULE_1__["Events"].INVITE_CREATED, {
+        _this4.emit(_common_Events__WEBPACK_IMPORTED_MODULE_1__["Events"].INVITE_CREATED, {
           pkfp: topic.pkfp,
           inviteCode: inviteCode
         });
       });
       topic.on(_common_Events__WEBPACK_IMPORTED_MODULE_1__["Events"].NEW_CHAT_MESSAGE, function (msg, pkfp) {
-        _this5.emit(_common_Events__WEBPACK_IMPORTED_MODULE_1__["Events"].NEW_CHAT_MESSAGE, msg, topic.pkfp);
+        _this4.emit(_common_Events__WEBPACK_IMPORTED_MODULE_1__["Events"].NEW_CHAT_MESSAGE, msg, topic.pkfp);
       });
       topic.on(_common_Events__WEBPACK_IMPORTED_MODULE_1__["Events"].METADATA_UPDATED, function () {
-        _this5.emit(_common_Events__WEBPACK_IMPORTED_MODULE_1__["Events"].METADATA_UPDATED, topic.pkfp);
+        _this4.emit(_common_Events__WEBPACK_IMPORTED_MODULE_1__["Events"].METADATA_UPDATED, topic.pkfp);
       });
       topic.on(_common_Events__WEBPACK_IMPORTED_MODULE_1__["Events"].SETTINGS_UPDATED, function () {
-        _this5.emit(_common_Events__WEBPACK_IMPORTED_MODULE_1__["Events"].SETTINGS_UPDATED, topic.pkfp);
+        _this4.emit(_common_Events__WEBPACK_IMPORTED_MODULE_1__["Events"].SETTINGS_UPDATED, topic.pkfp);
       }); ///////////////////////////////////////////////////////////
       // topic.on(Events.NICKNAME_CHANGED, (data)=>{           //
       //     this.emit(Events.NICKNAME_CHANGED, data)          //
@@ -46859,7 +46770,7 @@ var ChatClient = /*#__PURE__*/function () {
   }, {
     key: "initTopic",
     value: function initTopic(nickname, topicName) {
-      var _this6 = this;
+      var _this5 = this;
 
       var self = this;
       setTimeout( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
@@ -46919,7 +46830,7 @@ var ChatClient = /*#__PURE__*/function () {
 
                 settings = _Topic__WEBPACK_IMPORTED_MODULE_11__[/* Topic */ "a"].prepareNewTopicSettings(self.version, nickname, topicName, ownerKeyPair.publicKey); // TODO Prepare new topic vault record
 
-                vaultRecord = self.vault.prepareVaultTopicRecord(_this6.version, ownerPkfp, ownerKeyPair.privateKey, topicName); //Preparing request
+                vaultRecord = self.vault.prepareVaultTopicRecord(_this5.version, ownerPkfp, ownerKeyPair.privateKey, topicName); //Preparing request
 
                 request = new _Message__WEBPACK_IMPORTED_MODULE_10__[/* Message */ "a"](self.version);
                 request.headers.command = _common_Events__WEBPACK_IMPORTED_MODULE_1__["Internal"].INIT_TOPIC;
@@ -47317,7 +47228,7 @@ var ChatClient = /*#__PURE__*/function () {
   }, {
     key: "downloadAttachment",
     value: function downloadAttachment(fileInfo, topicPkfp) {
-      var _this7 = this;
+      var _this6 = this;
 
       Object(_common_IError__WEBPACK_IMPORTED_MODULE_3__[/* assert */ "b"])(this.topics[topicPkfp], "Topic is invalid");
       var topic = this.topics[topicPkfp];
@@ -47325,10 +47236,10 @@ var ChatClient = /*#__PURE__*/function () {
       downloadAttachmentAgent.once(_common_Events__WEBPACK_IMPORTED_MODULE_1__["Events"].DOWNLOAD_SUCCESS, function (fileData, fileName) {
         console.log("Download successful event from agent");
 
-        _this7.emit(_common_Events__WEBPACK_IMPORTED_MODULE_1__["Events"].DOWNLOAD_SUCCESS, fileData, fileName);
+        _this6.emit(_common_Events__WEBPACK_IMPORTED_MODULE_1__["Events"].DOWNLOAD_SUCCESS, fileData, fileName);
       });
       downloadAttachmentAgent.once(_common_Events__WEBPACK_IMPORTED_MODULE_1__["Events"].DOWNLOAD_FAIL, function (err) {
-        _this7.emit(_common_Events__WEBPACK_IMPORTED_MODULE_1__["Events"].DOWNLOAD_FAIL, err);
+        _this6.emit(_common_Events__WEBPACK_IMPORTED_MODULE_1__["Events"].DOWNLOAD_FAIL, err);
       });
       downloadAttachmentAgent.download();
     }
@@ -49274,7 +49185,7 @@ var DownloadAttachmentAgent = /*#__PURE__*/function () {
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return TopicJoinAgent; });
 /* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3);
-/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(10);
+/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(9);
 /* harmony import */ var _WildEmitter__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(17);
 /* harmony import */ var _Topic__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(24);
 /* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(0);
@@ -49457,7 +49368,7 @@ var TopicJoinAgent = /*#__PURE__*/function () {
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return SendMessageAgent; });
 /* harmony import */ var _ChatMessage__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(46);
-/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(10);
+/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(9);
 /* harmony import */ var _common_IError__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2);
 /* harmony import */ var _Topic__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(24);
 /* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(0);
@@ -49788,7 +49699,7 @@ var SendMessageAgent = /*#__PURE__*/function () {
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return BootParticipantAgent; });
 /* harmony import */ var _WildEmitter__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(17);
-/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(10);
+/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(9);
 /* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(0);
 /* harmony import */ var _common_Events__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_common_Events__WEBPACK_IMPORTED_MODULE_2__);
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -50094,9 +50005,9 @@ var DESCRIPTORS = __webpack_require__(14);
 var $export = __webpack_require__(1);
 var redefine = __webpack_require__(22);
 var META = __webpack_require__(48).KEY;
-var $fails = __webpack_require__(9);
+var $fails = __webpack_require__(10);
 var shared = __webpack_require__(74);
-var setToStringTag = __webpack_require__(66);
+var setToStringTag = __webpack_require__(67);
 var uid = __webpack_require__(52);
 var wks = __webpack_require__(12);
 var wksExt = __webpack_require__(159);
@@ -50566,7 +50477,7 @@ $export($export.S, 'Object', { setPrototypeOf: __webpack_require__(124).set });
 "use strict";
 
 // 19.1.3.6 Object.prototype.toString()
-var classof = __webpack_require__(67);
+var classof = __webpack_require__(68);
 var test = {};
 test[__webpack_require__(12)('toStringTag')] = 'z';
 if (test + '' != '[object z]') {
@@ -50659,11 +50570,11 @@ var has = __webpack_require__(25);
 var cof = __webpack_require__(34);
 var inheritIfRequired = __webpack_require__(126);
 var toPrimitive = __webpack_require__(38);
-var fails = __webpack_require__(9);
+var fails = __webpack_require__(10);
 var gOPN = __webpack_require__(56).f;
 var gOPD = __webpack_require__(27).f;
 var dP = __webpack_require__(15).f;
-var $trim = __webpack_require__(68).trim;
+var $trim = __webpack_require__(69).trim;
 var NUMBER = 'Number';
 var $Number = global[NUMBER];
 var Base = $Number;
@@ -50789,7 +50700,7 @@ $export($export.P + $export.F * (!!$toFixed && (
   0.9.toFixed(0) !== '1' ||
   1.255.toFixed(2) !== '1.25' ||
   1000000000000000128.0.toFixed(0) !== '1000000000000000128'
-) || !__webpack_require__(9)(function () {
+) || !__webpack_require__(10)(function () {
   // V8 ~ Android 4.3-
   $toFixed.call({});
 })), 'Number', {
@@ -50852,7 +50763,7 @@ $export($export.P + $export.F * (!!$toFixed && (
 "use strict";
 
 var $export = __webpack_require__(1);
-var $fails = __webpack_require__(9);
+var $fails = __webpack_require__(10);
 var aNumberValue = __webpack_require__(169);
 var $toPrecision = 1.0.toPrecision;
 
@@ -51137,7 +51048,7 @@ var $export = __webpack_require__(1);
 var $imul = Math.imul;
 
 // some WebKit versions fails with big numbers, some has wrong arity
-$export($export.S + $export.F * __webpack_require__(9)(function () {
+$export($export.S + $export.F * __webpack_require__(10)(function () {
   return $imul(0xffffffff, 5) != -5 || $imul.length != 2;
 }), 'Math', {
   imul: function imul(x, y) {
@@ -51209,7 +51120,7 @@ var expm1 = __webpack_require__(129);
 var exp = Math.exp;
 
 // V8 near Chromium 38 has a problem with very small numbers
-$export($export.S + $export.F * __webpack_require__(9)(function () {
+$export($export.S + $export.F * __webpack_require__(10)(function () {
   return !Math.sinh(-2e-17) != -2e-17;
 }), 'Math', {
   sinh: function sinh(x) {
@@ -51312,7 +51223,7 @@ $export($export.S, 'String', {
 "use strict";
 
 // 21.1.3.25 String.prototype.trim()
-__webpack_require__(68)('trim', function ($trim) {
+__webpack_require__(69)('trim', function ($trim) {
   return function trim() {
     return $trim(this, 3);
   };
@@ -51644,7 +51555,7 @@ var $export = __webpack_require__(1);
 var toObject = __webpack_require__(16);
 var toPrimitive = __webpack_require__(38);
 
-$export($export.P + $export.F * __webpack_require__(9)(function () {
+$export($export.P + $export.F * __webpack_require__(10)(function () {
   return new Date(NaN).toJSON() !== null
     || Date.prototype.toJSON.call({ toISOString: function () { return 1; } }) !== 1;
 }), 'Date', {
@@ -51678,7 +51589,7 @@ $export($export.P + $export.F * (Date.prototype.toISOString !== toISOString), 'D
 "use strict";
 
 // 20.3.4.36 / 15.9.5.43 Date.prototype.toISOString()
-var fails = __webpack_require__(9);
+var fails = __webpack_require__(10);
 var getTime = Date.prototype.getTime;
 var $toISOString = Date.prototype.toISOString;
 
@@ -51812,7 +51723,7 @@ var $export = __webpack_require__(1);
 var createProperty = __webpack_require__(135);
 
 // WebKit Array.of isn't generic
-$export($export.S + $export.F * __webpack_require__(9)(function () {
+$export($export.S + $export.F * __webpack_require__(10)(function () {
   function F() { /* empty */ }
   return !(Array.of.call(F) instanceof F);
 }), 'Array', {
@@ -51861,7 +51772,7 @@ var toLength = __webpack_require__(13);
 var arraySlice = [].slice;
 
 // fallback for not array-like ES3 strings and DOM objects
-$export($export.P + $export.F * __webpack_require__(9)(function () {
+$export($export.P + $export.F * __webpack_require__(10)(function () {
   if (html) arraySlice.call(html);
 }), 'Array', {
   slice: function slice(begin, end) {
@@ -51891,7 +51802,7 @@ $export($export.P + $export.F * __webpack_require__(9)(function () {
 var $export = __webpack_require__(1);
 var aFunction = __webpack_require__(18);
 var toObject = __webpack_require__(16);
-var fails = __webpack_require__(9);
+var fails = __webpack_require__(10);
 var $sort = [].sort;
 var test = [1, 2, 3];
 
@@ -52196,7 +52107,7 @@ var re2 = /a/g;
 // "new" creates a new object, old webkit buggy here
 var CORRECT_NEW = new $RegExp(re1) !== re1;
 
-if (__webpack_require__(14) && (!CORRECT_NEW || __webpack_require__(9)(function () {
+if (__webpack_require__(14) && (!CORRECT_NEW || __webpack_require__(10)(function () {
   re2[__webpack_require__(12)('match')] = false;
   // RegExp constructor can alter flags and IsRegExp works correct with @@match
   return $RegExp(re1) != re1 || $RegExp(re2) == re2 || $RegExp(re1, 'i') != '/a/i';
@@ -52245,7 +52156,7 @@ var define = function (fn) {
 };
 
 // 21.2.5.14 RegExp.prototype.toString()
-if (__webpack_require__(9)(function () { return $toString.call({ source: 'a', flags: 'b' }) != '/a/b'; })) {
+if (__webpack_require__(10)(function () { return $toString.call({ source: 'a', flags: 'b' }) != '/a/b'; })) {
   define(function toString() {
     var R = anObject(this);
     return '/'.concat(R.source, '/',
@@ -52483,7 +52394,7 @@ var advanceStringIndex = __webpack_require__(141);
 var toLength = __webpack_require__(13);
 var callRegExpExec = __webpack_require__(97);
 var regexpExec = __webpack_require__(140);
-var fails = __webpack_require__(9);
+var fails = __webpack_require__(10);
 var $min = Math.min;
 var $push = [].push;
 var $SPLIT = 'split';
@@ -52619,7 +52530,7 @@ __webpack_require__(98)('split', 2, function (defined, SPLIT, $split, maybeCallN
 var LIBRARY = __webpack_require__(47);
 var global = __webpack_require__(6);
 var ctx = __webpack_require__(33);
-var classof = __webpack_require__(67);
+var classof = __webpack_require__(68);
 var $export = __webpack_require__(1);
 var isObject = __webpack_require__(11);
 var aFunction = __webpack_require__(18);
@@ -52837,7 +52748,7 @@ if (!USE_NATIVE) {
 }
 
 $export($export.G + $export.W + $export.F * !USE_NATIVE, { Promise: $Promise });
-__webpack_require__(66)($Promise, PROMISE);
+__webpack_require__(67)($Promise, PROMISE);
 __webpack_require__(57)(PROMISE);
 Wrapper = __webpack_require__(32)[PROMISE];
 
@@ -52955,7 +52866,7 @@ $export($export.S + $export.F * !$typed.CONSTR, ARRAY_BUFFER, {
   }
 });
 
-$export($export.P + $export.U + $export.F * __webpack_require__(9)(function () {
+$export($export.P + $export.U + $export.F * __webpack_require__(10)(function () {
   return !new $ArrayBuffer(2).slice(1, undefined).byteLength;
 }), ARRAY_BUFFER, {
   // 24.1.4.3 ArrayBuffer.prototype.slice(start, end)
@@ -53097,7 +53008,7 @@ var anObject = __webpack_require__(4);
 var rApply = (__webpack_require__(6).Reflect || {}).apply;
 var fApply = Function.apply;
 // MS Edge argumentsList argument is optional
-$export($export.S + $export.F * !__webpack_require__(9)(function () {
+$export($export.S + $export.F * !__webpack_require__(10)(function () {
   rApply(function () { /* empty */ });
 }), 'Reflect', {
   apply: function apply(target, thisArgument, argumentsList) {
@@ -53118,7 +53029,7 @@ var create = __webpack_require__(55);
 var aFunction = __webpack_require__(18);
 var anObject = __webpack_require__(4);
 var isObject = __webpack_require__(11);
-var fails = __webpack_require__(9);
+var fails = __webpack_require__(10);
 var bind = __webpack_require__(165);
 var rConstruct = (__webpack_require__(6).Reflect || {}).construct;
 
@@ -53172,7 +53083,7 @@ var anObject = __webpack_require__(4);
 var toPrimitive = __webpack_require__(38);
 
 // MS Edge has broken Reflect.defineProperty - throwing instead of returning false
-$export($export.S + $export.F * __webpack_require__(9)(function () {
+$export($export.S + $export.F * __webpack_require__(10)(function () {
   // eslint-disable-next-line no-undef
   Reflect.defineProperty(dP.f({}, 1, { value: 1 }), 1, { value: 2 });
 }), 'Reflect', {
@@ -53564,7 +53475,7 @@ $export($export.P + $export.F * WEBKIT_BUG, 'String', {
 "use strict";
 
 // https://github.com/sebmarkbage/ecmascript-string-left-right-trim
-__webpack_require__(68)('trimLeft', function ($trim) {
+__webpack_require__(69)('trimLeft', function ($trim) {
   return function trimLeft() {
     return $trim(this, 1);
   };
@@ -53578,7 +53489,7 @@ __webpack_require__(68)('trimLeft', function ($trim) {
 "use strict";
 
 // https://github.com/sebmarkbage/ecmascript-string-left-right-trim
-__webpack_require__(68)('trimRight', function ($trim) {
+__webpack_require__(69)('trimRight', function ($trim) {
   return function trimRight() {
     return $trim(this, 2);
   };
@@ -54569,7 +54480,7 @@ var getKeys = __webpack_require__(53);
 var redefine = __webpack_require__(22);
 var global = __webpack_require__(6);
 var hide = __webpack_require__(21);
-var Iterators = __webpack_require__(69);
+var Iterators = __webpack_require__(70);
 var wks = __webpack_require__(12);
 var ITERATOR = wks('iterator');
 var TO_STRING_TAG = wks('toStringTag');
@@ -55818,7 +55729,7 @@ __webpack_require__(209);
 __webpack_require__(456);
 __webpack_require__(206);
 __webpack_require__(148);
-__webpack_require__(70);
+__webpack_require__(71);
 __webpack_require__(202);
 __webpack_require__(204);
 __webpack_require__(457);
@@ -57818,7 +57729,7 @@ __webpack_require__(62);
 __webpack_require__(44);
 __webpack_require__(106);
 __webpack_require__(63);
-__webpack_require__(70);
+__webpack_require__(71);
 __webpack_require__(205);
 __webpack_require__(37);
 __webpack_require__(8);
@@ -62468,7 +62379,7 @@ module.exports = __webpack_require__(476);
  * @api public
  *
  */
-module.exports.parser = __webpack_require__(72);
+module.exports.parser = __webpack_require__(73);
 
 
 /***/ }),
@@ -62480,10 +62391,10 @@ module.exports.parser = __webpack_require__(72);
  */
 
 var transports = __webpack_require__(215);
-var Emitter = __webpack_require__(71);
+var Emitter = __webpack_require__(72);
 var debug = __webpack_require__(112)('engine.io-client:socket');
 var index = __webpack_require__(219);
-var parser = __webpack_require__(72);
+var parser = __webpack_require__(73);
 var parseuri = __webpack_require__(211);
 var parseqs = __webpack_require__(110);
 
@@ -62623,7 +62534,7 @@ Socket.protocol = parser.protocol; // this is an int
 Socket.Socket = Socket;
 Socket.Transport = __webpack_require__(153);
 Socket.transports = __webpack_require__(215);
-Socket.parser = __webpack_require__(72);
+Socket.parser = __webpack_require__(73);
 
 /**
  * Creates transport of the given type.
@@ -63260,7 +63171,7 @@ try {
 
 var XMLHttpRequest = __webpack_require__(152);
 var Polling = __webpack_require__(216);
-var Emitter = __webpack_require__(71);
+var Emitter = __webpack_require__(72);
 var inherit = __webpack_require__(111);
 var debug = __webpack_require__(112)('engine.io-client:polling-xhr');
 
@@ -64866,7 +64777,7 @@ JSONPPolling.prototype.doWrite = function (data, fn) {
  */
 
 var Transport = __webpack_require__(153);
-var parser = __webpack_require__(72);
+var parser = __webpack_require__(73);
 var parseqs = __webpack_require__(110);
 var inherit = __webpack_require__(111);
 var yeast = __webpack_require__(218);
@@ -67962,7 +67873,7 @@ var loading = __webpack_require__(513);
 var cute_set = __webpack_require__(20);
 
 // EXTERNAL MODULE: ./client/src/js/lib/Vault.js + 1 modules
-var Vault = __webpack_require__(73);
+var Vault = __webpack_require__(66);
 
 // EXTERNAL MODULE: ./client/src/js/lib/Topic.js + 2 modules
 var Topic = __webpack_require__(24);
@@ -68100,6 +68011,12 @@ function runConnectorTest() {
 // EXTERNAL MODULE: ./client/src/js/lib/ChatUtility.js
 var ChatUtility = __webpack_require__(7);
 
+// EXTERNAL MODULE: ./client/src/js/lib/iCrypto.js
+var iCrypto = __webpack_require__(3);
+
+// EXTERNAL MODULE: ./client/src/js/lib/Message.js
+var Message = __webpack_require__(9);
+
 // CONCATENATED MODULE: ./client/src/js/chat-ui.js
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
@@ -68120,8 +68037,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 
- //import "../css/vendor/toastr.min.css"
-// impor
+
+ // TEMP IMPORTS FOR FURTHER REFACTORING
+
 
  // ---------------------------------------------------------------------------------------------------------------------------
 // CONSTANTS
@@ -68152,7 +68070,7 @@ var chat_ui_chat = null; //new ChatClient();
 
 var vault = null; //new Vault();
 
-var chat_ui_topics = {};
+var topics = {};
 var metadata = {}; // Sounds will be loaded here
 
 var sounds = {}; //Opened views stack for navigation
@@ -68234,7 +68152,7 @@ function initLoginUI() {
 function initUI() {
   // let form = isRegistration() ? bakeRegistrationBlock() : bakeLoginBlock();
   var header = $("header");
-  var isSoundOn = !chat_ui_chat.vault.hasOwnProperty("settings") || !chat_ui_chat.vault.settings.hasOwnProperty("sound") || chat_ui_chat.vault.settings.sound;
+  var isSoundOn = !vault.hasOwnProperty("settings") || !vault.settings.hasOwnProperty("sound") || vault.settings.sound;
   removeAllChildren(header);
   appendChildren(header, [bakeHeaderLeftSection(function (menuButton) {
     toggleClass(menuButton, "menu-on");
@@ -68518,7 +68436,7 @@ function processActivateTopicClick(ev) {
 
   console.log("Setting topic in focus: ".concat(pkfp));
   setTopicInFocus(pkfp);
-  var topic = chat_ui_chat.topics[pkfp];
+  var topic = topics[pkfp];
   var privatePkfp = topic.getPrivate();
 
   if (privatePkfp) {
@@ -68661,7 +68579,7 @@ function setTopicInFocus(pkfp) {
     }
   }
 
-  dom_util_text("#topic-in-focus-label", "Topic: ".concat(chat_ui_chat.getTopicName(pkfp)));
+  dom_util_text("#topic-in-focus-label", "Topic: ".concat(topics[pkfp].name));
   newMessageBlockSetVisible(topicInFocus);
   resetUnreadCounter(pkfp);
 }
@@ -68738,7 +68656,7 @@ function processDeleteTopicClick() {
     return;
   }
 
-  if (confirm("All topic data will be deleted beyond recover for ".concat(chat_ui_chat.topics[pkfp].name, "!\n\nProceed?"))) {
+  if (confirm("All topic data will be deleted beyond recover for ".concat(topics[pkfp].name, "!\n\nProceed?"))) {
     chat_ui_chat.deleteTopic(pkfp);
   }
 }
@@ -68912,8 +68830,8 @@ function processLoginResult(err) {
     loginBtn.removeAttribute("disabled");
     lib_toastr.warning("Login error: ".concat(err.message));
   } else {
-    initUI();
-    processConnectionStatusChanged(chat_ui_chat.getConnectionState());
+    initUI(); //processConnectionStatusChanged(chat.getConnectionState())
+
     appendEphemeralMessage("Login successful. Loading data..."); //playSound("user_online");
   }
 
@@ -69005,7 +68923,7 @@ function appendMessageToChat(message, topicPkfp, chatWindow) {
     var author = document.createElement('div');
     author.classList.add("m-author-id");
     author.innerHTML = message.pkfp;
-    var participantIndex = Object.keys(chat_ui_chat.topics[topicPkfp].participants).indexOf(message.pkfp);
+    var participantIndex = Object.keys(topics[topicPkfp].participants).indexOf(message.pkfp);
     msg.style.color = colors[participantIndex % colors.length];
     message_heading.appendChild(author);
   }
@@ -69083,7 +69001,7 @@ function buildMessageHeading(message, topicPkfp) {
   }
 
   if (message["private"]) {
-    var privateMark = preparePrivateMark(message, chat_ui_chat.topics[topicPkfp]);
+    var privateMark = preparePrivateMark(message, topics[topicPkfp]);
     message_heading.appendChild(privateMark);
   }
 
@@ -69453,7 +69371,6 @@ function refreshSidePanel() {//get active topic
 }
 
 function refreshTopics() {
-  var topics = chat_ui_chat.getTopics();
   var topicsList = $("#topics-list");
   var topicsListItems = topicsList.querySelector("li");
   var expandedTopics = topicsListItems ? new cute_set(Array.prototype.map.call(topicsListItems, function (el) {
@@ -69838,7 +69755,7 @@ function loadSounds() {
 }
 
 function playSound(sound) {
-  var soundOn = !chat_ui_chat.vault.hasOwnProperty("settings") || !chat_ui_chat.vault.settings.hasOwnProperty("sound") || chat_ui_chat.vault.settings.sound;
+  var soundOn = !vault.hasOwnProperty("settings") || !vault.settings.hasOwnProperty("sound") || vault.settings.sound;
 
   if (soundOn) {
     sounds[sound].play();
@@ -69953,9 +69870,9 @@ function initTopics(data) {
   for (var pkfp in data.topics) {
     console.log("Initializing topics ".concat(pkfp)); // TODO fix version!
 
-    var topic = data.topics[pkfp];
-    chat_ui_topics[pkfp] = new Topic["a" /* Topic */](pkfp, topic.name, topic.key, topic.comment);
-    setTopicListeners(chat_ui_topics[pkfp]);
+    var topic = vault.decryptTopic(data.topics[pkfp], vault.password);
+    topics[pkfp] = new Topic["a" /* Topic */](pkfp, topic.name, topic.key, topic.comment);
+    setTopicListeners(topics[pkfp]);
   }
 
   createSession();
@@ -69968,8 +69885,9 @@ function createSession() {
 
 function setVaultListeners() {
   vault.on(Events["Internal"].SESSION_KEY, function (message) {
-    sessionKey = message.body.sessionKey;
+    vault.sessionKey = message.body.sessionKey;
     console.log("Session key is set!");
+    postLogin();
   });
   vault.on(Events["Events"].TOPIC_CREATED, function (pkfp) {
     refreshTopics();
@@ -70045,6 +69963,101 @@ function setTopicListeners(topic) {
     refreshInvites(topic.pkfp);
     updateMessagesAliases(topic.pkfp);
   });
+}
+
+function postLogin() {
+  //sending post_login request
+  var message = new Message["a" /* Message */](chat_ui_chat.version);
+  message.setSource(vault.id);
+  message.setCommand(Events["Internal"].POST_LOGIN);
+  message.addNonce();
+  message.body.topics = Object.keys(topics);
+  message.signMessage(vault.privateKey);
+  vault.once(Events["Internal"].POST_LOGIN_DECRYPT, function (msg) {
+    postLoginDecrypt(msg);
+  });
+  messageQueue.enqueue(message);
+} // Decrypts topic authorities' and hidden services keys
+// and re-encrypts them with session key, so island can poke all services
+
+
+function postLoginDecrypt(msg) {
+  console.log("Got decrypt command from server."); //decrypting and sending data back
+
+  var decryptBlob = function decryptBlob(privateKey, blob) {
+    var lengthChars = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 4;
+    var icn = new iCrypto["a" /* iCrypto */]();
+    var symLength = parseInt(blob.substr(-lengthChars));
+    var blobLength = blob.length;
+    var symk = blob.substring(blobLength - symLength - lengthChars, blobLength - lengthChars);
+    var cipher = blob.substring(0, blobLength - symLength - lengthChars);
+    icn.addBlob("symcip", symk).addBlob("cipher", cipher).asym.setKey("priv", privateKey, "private").asym.decrypt("symcip", "priv", "sym", "hex").sym.decrypt("cipher", "sym", "blob-raw", true);
+    return icn.get("blob-raw");
+  };
+
+  var encryptBlob = function encryptBlob(publicKey, blob) {
+    var lengthChars = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 4;
+    var icn = new iCrypto["a" /* iCrypto */]();
+    icn.createSYMKey("sym").asym.setKey("pub", publicKey, "public").addBlob("blob-raw", blob).sym.encrypt("blob-raw", "sym", "blob-cip", true).asym.encrypt("sym", "pub", "symcip", "hex").encodeBlobLength("symcip", 4, "0", "symcipl").merge(["blob-cip", "symcip", "symcipl"], "res");
+    return icn.get("res");
+  };
+
+  var services = msg.body.services;
+  var sessionKey = msg.body.sessionKey;
+  var res = {};
+
+  for (var _i4 = 0, _Object$keys3 = Object.keys(services); _i4 < _Object$keys3.length; _i4++) {
+    var pkfp = _Object$keys3[_i4];
+    var topicData = services[pkfp];
+    var topicPrivateKey = topics[pkfp].privateKey;
+    var clientHSPrivateKey = void 0,
+        taHSPrivateKey = void 0,
+        taPrivateKey = void 0;
+
+    if (topicData.clientHSPrivateKey) {
+      clientHSPrivateKey = decryptBlob(topicPrivateKey, topicData.clientHSPrivateKey);
+    }
+
+    if (topicData.topicAuthority && topicData.topicAuthority.taPrivateKey) {
+      taPrivateKey = decryptBlob(topicPrivateKey, topicData.topicAuthority.taPrivateKey);
+    }
+
+    if (topicData.topicAuthority && topicData.topicAuthority.taHSPrivateKey) {
+      taHSPrivateKey = decryptBlob(topicPrivateKey, topicData.topicAuthority.taHSPrivateKey);
+    }
+
+    topics[pkfp].loadMetadata(topicData.metadata);
+    var preDecrypted = {};
+
+    if (clientHSPrivateKey) {
+      preDecrypted.clientHSPrivateKey = encryptBlob(sessionKey, clientHSPrivateKey);
+    }
+
+    if (taPrivateKey || taHSPrivateKey) {
+      preDecrypted.topicAuthority = {};
+    }
+
+    if (taPrivateKey) {
+      preDecrypted.topicAuthority.taPrivateKey = encryptBlob(sessionKey, taPrivateKey);
+    }
+
+    if (taHSPrivateKey) {
+      preDecrypted.topicAuthority.taHSPrivateKey = encryptBlob(sessionKey, taHSPrivateKey);
+    }
+
+    res[pkfp] = preDecrypted;
+  }
+
+  console.log("Decryption is successfull.");
+  var message = new Message["a" /* Message */](chat_ui_chat.version);
+  message.setCommand(Events["Internal"].POST_LOGIN_CHECK_SERVICES);
+  message.setSource(vault.getId());
+  message.body.services = res;
+  message.signMessage(vault.privateKey);
+  vault.once(Events["Events"].POST_LOGIN_SUCCESS, processLoginResult);
+  vault.once(Events["Events"].POST_LOGIN_ERROR, processLoginResult);
+  vault.once(Events["Events"].LOGIN_ERROR, processLoginResult);
+  messageQueue.enqueue(message);
 } //END REFACTORING CODE/////////////////////////////////////////////////////////
 
 
@@ -70099,6 +70112,8 @@ function resetUnreadCounter(pkfp) {
 }
 
 function processConnectionStatusChanged(state) {
+  return;
+
   if (!state || state < 1 || state > 5) {
     throw new Error("Invaled  connection state: ".concat(state));
   }
@@ -70142,8 +70157,8 @@ function processConnectionStatusChanged(state) {
     appendEphemeralMessage("Connecting to island....");
   };
 
-  for (var _i4 = 0, _indicatorClasses = indicatorClasses; _i4 < _indicatorClasses.length; _i4++) {
-    var c = _indicatorClasses[_i4];
+  for (var _i5 = 0, _indicatorClasses = indicatorClasses; _i5 < _indicatorClasses.length; _i5++) {
+    var c = _indicatorClasses[_i5];
     removeClass(indicator, c);
   }
 
