@@ -7,14 +7,15 @@ import { Events, Internal } from "../../../common/Events";
 import "../css/chat.sass"
 import "../css/vendor/loading.css";
 import * as CuteSet from "cute-set";
-import { Vault } from "./lib/Vault";
 import { Topic } from "./lib/Topic";
 import { MessageQueue } from "./lib/MessageQueue"
 import { ArrivalHub } from "./lib/ArrivalHub"
 import { Connector } from "./lib/Connector"
 import { TopicRetriever } from "./lib/TopicRetriever";
 import { runConnectorTest } from "./test/connector"
-import { ChatUtility } from "./lib/ChatUtility"
+import { ChatUtility } from "./lib/ChatUtility";
+import { VaultRetriever } from "./lib/VaultRetriever";
+import { VaultHolder } from './lib/VaultHolder';
 
 // TEMP IMPORTS FOR FURTHER REFACTORING
 import { iCrypto } from "./lib/iCrypto";
@@ -44,6 +45,7 @@ let messageQueue = new MessageQueue(connector)
 let arrivalHub = new ArrivalHub(connector)
 let chat = null//new ChatClient();
 let vault = null//new Vault();
+let vaultHolder = null;
 let topics = {};
 let metadata = {};
 
@@ -1565,8 +1567,6 @@ function initChat(){
     chat.on(Events.LOGIN_ERROR, processLoginResult)
     chat.on(Events.LOGIN_SUCCESS, processLoginResult)
     chat.on(Events.POST_LOGIN_SUCCESS, ()=>{
-        appendEphemeralMessage("Topics have been loaded and decrypted successfully.")
-        playSound("user_online")
     })
 
     chat.on(Events.SOUND_STATUS, (status)=>{
@@ -1649,28 +1649,28 @@ function initSession(){
         throw new Error("Vault password element is not found.");
     }
 
-    console.log("Chat created. Starting session...");
-    vault = new Vault(passwordEl.value);
-    window.vault = vault
+    let vaultData = getVaultData();
+    vaultHolder = new VaultHolder(vaultData.vault, vaultData.id, passwordEl.value);
+    if(!vaultHolder.unlock()){
+        processLoginResult(new Error("Error decrypting vault.\nCheck password and try again!"))
+        return;
+    }
 
-    vault.once("active", loadTopics)
-    vault.once("error", ()=>{
-        console.log("Vault init error");
-    })
-    vault.load();
+    loadTopics(vaultHolder.getVault())
+
 }
 
-function loadTopics(){
+function loadTopics(vault){
     console.log("Loading topics...");
-    setVaultListeners();
+    setVaultListeners(vault);
     vault.bootstrap(arrivalHub, messageQueue);
     let retriever = new TopicRetriever();
-    retriever.once("finished", initTopics)
+    retriever.once("finished", (data)=> initTopics(data, vault))
     retriever.once("error", (err)=>{ console.log(err)})
     retriever.run();
 }
 
-function initTopics(data){
+function initTopics(data, vault){
     console.log("Initializing topics...");
 
     if(!data.topics) return
@@ -1684,21 +1684,21 @@ function initTopics(data){
         setTopicListeners(topics[pkfp])
     }
 
-    createSession()
+    createSession(vault)
 }
 
-function createSession(){
+function createSession(vault){
     connector.setConnectionQueryProperty("vaultId", vault.id);
     connector.establishConnection()
 }
 
 
-function setVaultListeners(){
+function setVaultListeners(vault){
     vault.on(Internal.SESSION_KEY, (message)=>{
         vault.sessionKey = message.body.sessionKey;
 
         console.log("Session key is set!")
-        postLogin()
+        postLogin(vault)
     })
     vault.on(Events.TOPIC_CREATED, (pkfp)=>{
         refreshTopics()
@@ -1786,7 +1786,7 @@ function setTopicListeners(topic){
 
 }
 
-function postLogin(){
+function postLogin(vault){
     //sending post_login request
     let message = new Message(chat.version);
     message.setSource(vault.id);
@@ -1795,14 +1795,14 @@ function postLogin(){
     message.body.topics = Object.keys(topics);
     message.signMessage(vault.privateKey);
     vault.once(Internal.POST_LOGIN_DECRYPT, (msg)=>{
-        postLoginDecrypt(msg);
+        postLoginDecrypt(msg, vault);
     })
     messageQueue.enqueue(message);
 }
 
     // Decrypts topic authorities' and hidden services keys
     // and re-encrypts them with session key, so island can poke all services
-function postLoginDecrypt(msg){
+function postLoginDecrypt(msg, vault){
     console.log(`Got decrypt command from server.`)
     //decrypting and sending data back
 

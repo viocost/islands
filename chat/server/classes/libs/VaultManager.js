@@ -166,7 +166,8 @@ class VaultManager{
     getVault(id){
         //Get vault
         if(!this.isVaultExist(id)){
-            throw new Error("Vault not found");
+            Logger.debug(`Vault not found for id: {id}`, {cat: "vault"})
+            return undefined;
         }
 
         let vaultPath = this.getVaultPath(id);

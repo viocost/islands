@@ -15,9 +15,13 @@ module.exports.init = function(config) {
 
 router.get('/', (req, res)=>{
     console.log(`GET chat. Version ${global.VERSION}`);
+    let id = getVaultId(req.headers["host"]);
+    let vault = vaultManager.getVault(id);
+
     res.render("chat", {
         title:"Islands chat",
         version: global.VERSION,
+        vault: { id: id, vault: vault },
         registration: isVaultAwaitingRegistration(req.headers["host"]),
 
     });

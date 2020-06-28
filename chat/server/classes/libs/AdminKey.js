@@ -27,7 +27,7 @@ module.exports.get = ()=>{
 };
 
 module.exports.getPkfp = ()=>{
-    ensureInitialized();
+    if(!ensureInitialized()) return;
     let pubKey = fs.readFileSync(path.join(adminKeyPath , fs.readdirSync(adminKeyPath)[0]), "utf8");
 
     let ic = new iCrypto();
@@ -37,5 +37,5 @@ module.exports.getPkfp = ()=>{
 };
 
 function ensureInitialized(){
-    if (!adminKeyPath) throw new Error("Admin Key module has not been initialized");
+     return !!adminKeyPath
 }
