@@ -17,7 +17,7 @@ import { fetchJSON } from "./FetchJSON";
  *
  */
 export class Vault{
-    constructor(password){
+    constructor(){
         WildEmitter.mixin(this);
         this.id = null;
         this.pkfp;
@@ -26,7 +26,6 @@ export class Vault{
         this.adminKey = null;
         this.topics = {};
         this.stateMachine = this.prepareStateMachine();
-        this.password = password;
         this.publicKey = null;
         this.privateKey = null;
         this.handlers;
