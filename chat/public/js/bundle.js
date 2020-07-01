@@ -68398,9 +68398,7 @@ var messageQueue = new MessageQueue["a" /* MessageQueue */](connector);
 var arrivalHub = new ArrivalHub["a" /* ArrivalHub */](connector);
 var chat_ui_chat = null; //new ChatClient();
 
-var chat_ui_vault = null; //new Vault();
-
-var vaultHolder = null;
+var chat_ui_vaultHolder = null;
 var topics = {};
 var metadata = {}; // Sounds will be loaded here
 
@@ -68448,8 +68446,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
   loadSounds();
   initChat();
   initLoginUI();
-  vaultHolder = new VaultHolder["a" /* VaultHolder */]();
-  vaultHolder.fetchVault(); //util.$("#print-dpi").onclick = ()=>{alert(window.devicePixelRatio)}
+  chat_ui_vaultHolder = new VaultHolder["a" /* VaultHolder */]();
+  chat_ui_vaultHolder.fetchVault(); //util.$("#print-dpi").onclick = ()=>{alert(window.devicePixelRatio)}
   //util.$("#print-max").onclick = ()=>{alert(window.innerWidth)}
 });
 
@@ -68482,10 +68480,11 @@ function initLoginUI() {
 } //Called after successful login
 
 
-function initUI() {
+function initUI(vaultHolder) {
   // let form = isRegistration() ? bakeRegistrationBlock() : bakeLoginBlock();
+  var vault = vaultHolder.getVault();
   var header = $("header");
-  var isSoundOn = !chat_ui_vault.hasOwnProperty("settings") || !chat_ui_vault.settings.hasOwnProperty("sound") || chat_ui_vault.settings.sound;
+  var isSoundOn = !vault.hasOwnProperty("settings") || !vault.settings.hasOwnProperty("sound") || vault.settings.sound;
   removeAllChildren(header);
   appendChildren(header, [bakeHeaderLeftSection(function (menuButton) {
     toggleClass(menuButton, "menu-on");
@@ -68504,7 +68503,7 @@ function initUI() {
   refreshTopics(); // add listener to the menu button
 
   window.onresize = renderLayout;
-  renderLayout(); //modals
+  renderLayout(); // modals
 
   topicCreateModal = bakeTopicCreateModal(function () {
     console.log("Creating topic");
@@ -69157,13 +69156,13 @@ function backToChat() {
 // Chat Event handlers
 
 
-function processLoginResult(err) {
+function processLoginResult(vaultHolder, err) {
   if (err) {
     var loginBtn = $("#vault-login-btn");
     loginBtn.removeAttribute("disabled");
     lib_toastr.warning("Login error: ".concat(err.message));
   } else {
-    initUI(); //processConnectionStatusChanged(chat.getConnectionState())
+    initUI(vaultHolder); //processConnectionStatusChanged(chat.getConnectionState())
 
     appendEphemeralMessage("Login successful. Loading data..."); //playSound("user_online");
   }
@@ -70088,7 +70087,7 @@ function loadSounds() {
 }
 
 function playSound(sound) {
-  var soundOn = !chat_ui_vault.hasOwnProperty("settings") || !chat_ui_vault.settings.hasOwnProperty("sound") || chat_ui_vault.settings.sound;
+  var soundOn = !vault.hasOwnProperty("settings") || !vault.settings.hasOwnProperty("sound") || vault.settings.sound;
 
   if (soundOn) {
     sounds[sound].play();
@@ -70171,12 +70170,12 @@ function initSession() {
     throw new Error("Vault password element is not found.");
   }
 
-  if (!vaultHolder.unlock(passwordEl.value)) {
-    processLoginResult(new Error("Error decrypting vault: ".concat(vaultHolder.error, " \nCheck password and try again!")));
+  if (!chat_ui_vaultHolder.unlock(passwordEl.value)) {
+    processLoginResult(new Error("Error decrypting vault: ".concat(chat_ui_vaultHolder.error, " \nCheck password and try again!")));
     return;
   }
 
-  loadTopics(vaultHolder.getVault());
+  loadTopics(chat_ui_vaultHolder.getVault());
 }
 
 function loadTopics(vault) {
@@ -70384,9 +70383,9 @@ function postLoginDecrypt(msg, vault) {
   message.setSource(vault.getId());
   message.body.services = res;
   message.signMessage(vault.privateKey);
-  vault.once(Events["Events"].POST_LOGIN_SUCCESS, processLoginResult);
-  vault.once(Events["Events"].POST_LOGIN_ERROR, processLoginResult);
-  vault.once(Events["Events"].LOGIN_ERROR, processLoginResult);
+  vault.once(Events["Events"].POST_LOGIN_SUCCESS, processLoginResult.bind(null, chat_ui_vaultHolder));
+  vault.once(Events["Events"].POST_LOGIN_ERROR, processLoginResult.bind(null, chat_ui_vaultHolder));
+  vault.once(Events["Events"].LOGIN_ERROR, processLoginResult.bind(null, chat_ui_vaultHolder));
   messageQueue.enqueue(message);
 } //END REFACTORING CODE/////////////////////////////////////////////////////////
 

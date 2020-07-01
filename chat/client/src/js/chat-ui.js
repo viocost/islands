@@ -44,7 +44,6 @@ let connector = new Connector('/chat');
 let messageQueue = new MessageQueue(connector)
 let arrivalHub = new ArrivalHub(connector)
 let chat = null//new ChatClient();
-let vault = null//new Vault();
 let vaultHolder = null;
 let topics = {};
 let metadata = {};
@@ -146,9 +145,9 @@ function initLoginUI(){
 
 
 //Called after successful login
-function initUI(){
-
+function initUI(vaultHolder){
     // let form = isRegistration() ? bakeRegistrationBlock() : bakeLoginBlock();
+    let vault = vaultHolder.getVault();
     let header = util.$("header")
 
     let isSoundOn = !vault.hasOwnProperty("settings") ||
@@ -169,28 +168,18 @@ function initUI(){
 
     let mainContainer = UI.bakeMainContainer()
     util.appendChildren(main, mainContainer)
-
-
-
     sidePanel = UI.bakeSidePanel(chat.version);
-
     newMessageBlock = UI.bakeNewMessageControl(sendMessage, processAttachmentChosen);
-
     messagesPanel = UI.bakeMessagesPanel(newMessageBlock)
-
     util.appendChildren(mainContainer, [sidePanel, messagesPanel]);
-
     setupSidePanelListeners()
-
     setupHotkeysHandlers()
-
     refreshTopics();
     // add listener to the menu button
-
     window.onresize = renderLayout;
     renderLayout()
-
-    //modals
+   
+    // modals
     topicCreateModal = UI.bakeTopicCreateModal(()=>{
         console.log("Creating topic")
         let nickname = util.$("#new-topic-nickname").value;
@@ -804,7 +793,8 @@ function backToChat(){
 
 // ---------------------------------------------------------------------------------------------------------------------------
 // Chat Event handlers
-function processLoginResult(err){
+function processLoginResult(vaultHolder, err){
+
     if (err){
 
         let loginBtn = util.$("#vault-login-btn")
@@ -812,7 +802,7 @@ function processLoginResult(err){
         toastr.warning(`Login error: ${err.message}`)
     } else {
 
-        initUI();
+        initUI(vaultHolder);
         //processConnectionStatusChanged(chat.getConnectionState())
         appendEphemeralMessage("Login successful. Loading data...")
         //playSound("user_online");
@@ -1880,9 +1870,9 @@ function postLoginDecrypt(msg, vault){
     message.setSource(vault.getId());
     message.body.services = res;
     message.signMessage(vault.privateKey);
-    vault.once(Events.POST_LOGIN_SUCCESS, processLoginResult);
-    vault.once(Events.POST_LOGIN_ERROR, processLoginResult);
-    vault.once(Events.LOGIN_ERROR, processLoginResult);
+    vault.once(Events.POST_LOGIN_SUCCESS, processLoginResult.bind(null, vaultHolder));
+    vault.once(Events.POST_LOGIN_ERROR, processLoginResult.bind(null, vaultHolder));
+    vault.once(Events.LOGIN_ERROR, processLoginResult.bind(null, vaultHolder));
 
     messageQueue.enqueue(message);
 
