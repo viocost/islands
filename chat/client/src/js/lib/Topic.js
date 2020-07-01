@@ -167,13 +167,15 @@ export class Topic{
      * Loads topic's last n messsages
      * If wait for completion function will return only after load is completed
      */
-    async initLoad(messagesToLoad=INITIAL_NUM_MESSAGES, waitCompletion=false){
-        let self = this
-        self.ensureBootstrapped(self);
-        setTimeout(()=>{
-            self._loadMessages(self, messagesToLoad)
-            self.awaitingMessages = true;
-        })
+    initLoad(cb){
+        this.ensureBootstrapped();
+        this.awaitingMessages = true;
+
+        if(cb){
+            this.once(Internal.MESSAGES_LOADED, ()=>{ cb(this.messages)})
+        }
+
+        this.requestMessages()
     }
 
 
@@ -373,17 +375,18 @@ export class Topic{
         self.emit(Events.NEW_CHAT_MESSAGE, chatMessage)
     }
 
-    getMessages(messagesToLoad=INITIAL_NUM_MESSAGES, lastMessageId){
+    getMessages(cb){
         if(this.initLoaded){
-            this.emit(Events.MESSAGES_LOADED, this.messages)
+            cb(this.messages)
         } else {
             console.log("Messages has not been loaded. Loading....");
-            //init load and then emit
-            this.initLoad()
+            this.initLoad(cb)
         }
     }
 
-    async getMessagesAsync(){
+
+
+    getMessagesAsync(){
         if(this.initLoaded){
             return this.messages;
         } else {
@@ -435,21 +438,21 @@ export class Topic{
         this.awaitingMessages = true;
         let lastMessageId = this.messages.length > 0 ?
             this.messages[this.messages.length-1].header.id : undefined;
-        this._loadMessages(this, 25, lastMessageId);
+        this.requestMessages(25, lastMessageId);
     }
 
-    _loadMessages(self, quantity=25, lastMessageId){
-        let request = new Message(self.version);
+    requestMessages(quantity=INITIAL_NUM_MESSAGES, lastMessageId){
+        let request = new Message(this.version);
         request.headers.command = Internal.LOAD_MESSAGES;
-        request.headers.pkfpSource = self.pkfp;
+        request.headers.pkfpSource = this.pkfp;
 
         request.body.quantity = quantity;
         if (lastMessageId){
             request.body.lastMessageId = lastMessageId;
         }
         request.addNonce();
-        request.signMessage(self.privateKey);
-        self.messageQueue.enqueue(request)
+        request.signMessage(this.privateKey);
+        this.messageQueue.enqueue(request)
     }
 
 
@@ -851,8 +854,8 @@ export class Topic{
         }
     }
 
-    ensureBootstrapped(self){
-        if(!self.isBootstrapped || !self.messageQueue || !self.arrivalHub){
+    ensureBootstrapped(){
+        if(!this.isBootstrapped || !this.messageQueue || !this.arrivalHub){
             throw new Error("Topic is not bootstrapped!");
         }
     }

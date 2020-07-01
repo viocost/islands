@@ -426,9 +426,10 @@ export class Vault{
         return this.admin;
     }
 
-    bootstrap(arrivalHub, messageQueue){
+    bootstrap(arrivalHub, messageQueue, version){
         this.arrivalHub = arrivalHub;
         this.messageQueue = messageQueue;
+        this.version = version;
         this.arrivalHub.on(this.id, (msg)=>{
             this.processIncomingMessage(msg, this);
         })

@@ -52,6 +52,9 @@ let metadata = {};
 // Sounds will be loaded here
 let sounds = {}
 
+//version
+let version;
+
 //Opened views stack for navigation
 const viewStack = []
 // Topic that is in the focused window
@@ -102,6 +105,7 @@ document.addEventListener('DOMContentLoaded', event =>{
     vaultHolder = new VaultHolder();
     vaultHolder.fetchVault()
 
+    version = islandsVersion()
 
     //util.$("#print-dpi").onclick = ()=>{alert(window.devicePixelRatio)}
     //util.$("#print-max").onclick = ()=>{alert(window.innerWidth)}
@@ -711,7 +715,7 @@ function processCtxAliasClick(){
             } else {
                 //Alias for another participant
                 util.text(title, "New alias")
-                util.text(forLabel, `For ${chat.getParticipantNickname(topicInFocus, pkfp)}(${pkfp.substring(0, 32)}...)`)
+                util.text(forLabel, `For ${topics[topicInFocus].getParticipantNickname(pkfp)}(${pkfp.substring(0, 32)}...)`)
                 aliasInput.setAttribute("placeholder", "Enter new alias")
             }
         }else {
@@ -812,34 +816,36 @@ function processLoginResult(vaultHolder, err){
 }
 
 function processMessagesLoaded(pkfp, messages, cb){
-    if (topicInFocus === pkfp){
-        console.log("Appending messages to view")
-        let windowInFocus = getChatWindowInFocus();
-        clearMessagesWindow(windowInFocus)
-        for (let message of messages){
-            let alias = "";
-            if (message.header.author){
-                alias  = chat.getParticipantAlias(pkfp, message.header.author) ||
-                    message.header.author.substring(0, 8)
-            }
-            appendMessageToChat({
-                nickname: message.header.nickname,
-                alias: alias,
-                body: message.body,
-                timestamp: message.header.timestamp,
-                pkfp: message.header.author,
-                messageID: message.header.id,
-                service: message.header.service,
-                private: message.header.private,
-                recipient: message.header.recipient,
-                attachments: message.attachments
-            }, pkfp, windowInFocus, true);
-        }
-        scrollChatDown()
-        if(cb) cb();
-    } else {
+
+    if (topicInFocus !== pkfp){
         console.log("Topic is inactive. Ignoring")
+        return;
     }
+
+    console.log("Appending messages to view")
+    let windowInFocus = getChatWindowInFocus();
+    clearMessagesWindow(windowInFocus)
+    for (let message of messages){
+        let alias = "";
+        if (message.header.author){
+            alias  = topics[pkfp].getParticipantAlias(message.header.author) ||
+                message.header.author.substring(0, 8)
+        }
+        appendMessageToChat({
+            nickname: message.header.nickname,
+            alias: alias,
+            body: message.body,
+            timestamp: message.header.timestamp,
+            pkfp: message.header.author,
+            messageID: message.header.id,
+            service: message.header.service,
+            private: message.header.private,
+            recipient: message.header.recipient,
+            attachments: message.attachments
+        }, pkfp, windowInFocus, true);
+    }
+    scrollChatDown()
+    if(cb) cb();
 
 }
 
@@ -966,8 +972,8 @@ function buildMessageHeading(message, topicPkfp) {
 function preparePrivateMark(message, topic) {
     let text = "(private)"
     if(message.pkfp === topic.pkfp){
-        let nickname = chat.getParticipantNickname(topic.pkfp, message.recipient);
-        let alias = chat.getParticipantAlias(topic.pkfp, message.recipient) || message.recipient.substring(0, 8);
+        let nickname = topics[pkfp].getParticipantNickname(message.recipient);
+        let alias = topics[pkfp].getParticipantAlias(message.recipient) || message.recipient.substring(0, 8);
         text = `(private to: ${alias} -- ${nickname})`;
     }
 
@@ -1290,8 +1296,8 @@ function updateMessagesAliases(topicPkfp){
         let privateMarkEl =  message.firstChild.querySelector(".private-mark");
         if (privateMarkEl  && !authorIdEl){
             let recipientPkfp =  message.firstChild.querySelector(".m-recipient-id").innerText;
-            let pAlias = chat.getParticipantAlias(topicPkfp, recipientPkfp);
-            let pNickname = chat.getParticipantNickname(topicPkfp, recipientPkfp);
+            let pAlias = topics[topicPkfp].getParticipantAlias(recipientPkfp);
+            let pNickname = topics[topicPkfp].getParticipantNickname(recipientPkfp);
             privateMarkEl.innerText = `(private to: ${pAlias ? pAlias : recipientPkfp.substring(0, 8)} -- ${pNickname})`
         };
 
@@ -1300,7 +1306,7 @@ function updateMessagesAliases(topicPkfp){
         let aliasEl = message.firstChild.querySelector(".m-alias");
         let authorPkfp = authorIdEl.innerText;
         if (aliasEl){
-            let alias = chat.getParticipantAlias(topicPkfp, authorPkfp);
+            let alias = topics[topicPkfp].getParticipantAlias(authorPkfp);
             aliasEl.innerText = alias ? alias : authorPkfp.substring(0, 8)
         }
 
@@ -1317,7 +1323,7 @@ function refreshInvites(pkfp){
 
     let topicAssets = getTopicAssets(pkfp)
 
-    let invites = chat.getInvites(pkfp);
+    let invites = topics[pkfp].getInvites();
 
     Object.keys(invites).forEach((i)=>{
         topicAssets.appendChild(UI.bakeInviteListItem(i, activateTopicAsset, copyInviteCode, invites[i].name))
@@ -1350,7 +1356,7 @@ function refreshParticipants(pkfp){
     }
     clearExpandedParticipants(pkfp);
     let topicAssets = getTopicAssets(pkfp)
-    let participants = chat.getParticipants(pkfp);
+    let participants = topics[pkfp].getParticipants(pkfp);
 
     let elements = []
     for (let pPkfp of Object.keys(participants)){
@@ -1375,14 +1381,12 @@ function refreshMessages(){
     if (!topicInFocus){
         return
     }
-    chat.getMessages(topicInFocus);
+
+    topics[topicInFocus].getMessages(processMessagesLoaded.bind(null, topicInFocus))
 }
 
 function refreshMessagesWithCb(topicPkfp, cb){
-    setTimeout(async ()=>{
-        let messages = await chat.getMessagesAsync(topicPkfp)
-        cb(messages);
-    })
+    topics[topicPkfp].getMessages(cb)
 }
 // ---------------------------------------------------------------------------------------------------------------------------
 // Topic expanded asset management
@@ -1654,7 +1658,7 @@ function initSession(){
 function loadTopics(vault){
     console.log("Loading topics...");
     setVaultListeners(vault);
-    vault.bootstrap(arrivalHub, messageQueue);
+    vault.bootstrap(arrivalHub, messageQueue, version);
     let retriever = new TopicRetriever();
     retriever.once("finished", (data)=> initTopics(data, vault))
     retriever.once("error", (err)=>{ console.log(err)})
@@ -1673,6 +1677,7 @@ function initTopics(data, vault){
         let topic = vault.decryptTopic(data.topics[pkfp], vault.password)
         topics[pkfp] = new Topic(pkfp, topic.name, topic.key, topic.comment)
         setTopicListeners(topics[pkfp])
+        topics[pkfp].bootstrap(messageQueue, arrivalHub, version);
     }
 
     createSession(vault)
@@ -1744,7 +1749,7 @@ function setTopicListeners(topic){
 
             let alias = "";
             if (message.header.author){
-                alias  = chat.getParticipantAlias(topic.pkfp, message.header.author) ||
+                alias  = topic.getParticipantAlias(message.header.author) ||
                     message.header.author.substring(0, 8)
             }
             console.log("Appending message");

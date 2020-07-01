@@ -7717,10 +7717,6 @@ function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
 
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
 function Topic_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function Topic_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -7885,44 +7881,24 @@ var Topic_Topic = /*#__PURE__*/function () {
 
   }, {
     key: "initLoad",
-    value: function () {
-      var _initLoad = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-        var messagesToLoad,
-            waitCompletion,
-            self,
-            _args = arguments;
-        return regeneratorRuntime.wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                messagesToLoad = _args.length > 0 && _args[0] !== undefined ? _args[0] : INITIAL_NUM_MESSAGES;
-                waitCompletion = _args.length > 1 && _args[1] !== undefined ? _args[1] : false;
-                self = this;
-                self.ensureBootstrapped(self);
-                setTimeout(function () {
-                  self._loadMessages(self, messagesToLoad);
+    value: function initLoad(cb) {
+      var _this2 = this;
 
-                  self.awaitingMessages = true;
-                });
+      this.ensureBootstrapped();
+      this.awaitingMessages = true;
 
-              case 5:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee, this);
-      }));
-
-      function initLoad() {
-        return _initLoad.apply(this, arguments);
+      if (cb) {
+        this.once(Events["Internal"].MESSAGES_LOADED, function () {
+          cb(_this2.messages);
+        });
       }
 
-      return initLoad;
-    }()
+      this.requestMessages();
+    }
   }, {
     key: "setHandlers",
     value: function setHandlers() {
-      var _this2 = this;
+      var _this3 = this;
 
       var self = this;
       this.handlers[Events["Internal"].LOAD_MESSAGES_SUCCESS] = this.processMessagesLoaded;
@@ -7988,9 +7964,9 @@ var Topic_Topic = /*#__PURE__*/function () {
 
         self._metadata.updateMetadata(msg.body.metadata);
 
-        if (msg.body.invite && _this2._metadata.hasInvite(msg.body.invite)) {
+        if (msg.body.invite && _this3._metadata.hasInvite(msg.body.invite)) {
           //Invite was used by new member:
-          _this2._metadata.deleteInvite(msg.body.invite);
+          _this3._metadata.deleteInvite(msg.body.invite);
         }
 
         if (msg.body.inviteePkfp) {
@@ -8074,7 +8050,7 @@ var Topic_Topic = /*#__PURE__*/function () {
       this.handlers[Events["Internal"].MESSAGE_SENT] = function (msg) {
         console.log("Message sent received. Message: ".concat(msg.body.message));
 
-        _this2.processMessageSent(_this2, msg);
+        _this3.processMessageSent(_this3, msg);
       };
     } //End//////////////////////////////////////////////////////////////////////
     // ---------------------------------------------------------------------------------------------------------------------------
@@ -8132,53 +8108,26 @@ var Topic_Topic = /*#__PURE__*/function () {
     }
   }, {
     key: "getMessages",
-    value: function getMessages() {
-      var messagesToLoad = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : INITIAL_NUM_MESSAGES;
-      var lastMessageId = arguments.length > 1 ? arguments[1] : undefined;
-
+    value: function getMessages(cb) {
       if (this.initLoaded) {
-        this.emit(Events["Events"].MESSAGES_LOADED, this.messages);
+        cb(this.messages);
       } else {
-        console.log("Messages has not been loaded. Loading...."); //init load and then emit
-
-        this.initLoad();
+        console.log("Messages has not been loaded. Loading....");
+        this.initLoad(cb);
       }
     }
   }, {
     key: "getMessagesAsync",
-    value: function () {
-      var _getMessagesAsync = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-        return regeneratorRuntime.wrap(function _callee2$(_context2) {
-          while (1) {
-            switch (_context2.prev = _context2.next) {
-              case 0:
-                if (!this.initLoaded) {
-                  _context2.next = 4;
-                  break;
-                }
+    value: function getMessagesAsync() {
+      if (this.initLoaded) {
+        return this.messages;
+      } else {
+        console.log("Messages has not been loaded. Loading...."); //init load and then emit
 
-                return _context2.abrupt("return", this.messages);
-
-              case 4:
-                console.log("Messages has not been loaded. Loading...."); //init load and then emit
-
-                this.initLoad();
-                return _context2.abrupt("return", null);
-
-              case 7:
-              case "end":
-                return _context2.stop();
-            }
-          }
-        }, _callee2, this);
-      }));
-
-      function getMessagesAsync() {
-        return _getMessagesAsync.apply(this, arguments);
+        this.initLoad();
+        return null;
       }
-
-      return getMessagesAsync;
-    }() // Incoming message
+    } // Incoming message
 
   }, {
     key: "preprocessIncomingMessage",
@@ -8227,17 +8176,16 @@ var Topic_Topic = /*#__PURE__*/function () {
       console.log("Loading more messages");
       this.awaitingMessages = true;
       var lastMessageId = this.messages.length > 0 ? this.messages[this.messages.length - 1].header.id : undefined;
-
-      this._loadMessages(this, 25, lastMessageId);
+      this.requestMessages(25, lastMessageId);
     }
   }, {
-    key: "_loadMessages",
-    value: function _loadMessages(self) {
-      var quantity = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 25;
-      var lastMessageId = arguments.length > 2 ? arguments[2] : undefined;
-      var request = new Message["a" /* Message */](self.version);
+    key: "requestMessages",
+    value: function requestMessages() {
+      var quantity = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : INITIAL_NUM_MESSAGES;
+      var lastMessageId = arguments.length > 1 ? arguments[1] : undefined;
+      var request = new Message["a" /* Message */](this.version);
       request.headers.command = Events["Internal"].LOAD_MESSAGES;
-      request.headers.pkfpSource = self.pkfp;
+      request.headers.pkfpSource = this.pkfp;
       request.body.quantity = quantity;
 
       if (lastMessageId) {
@@ -8245,8 +8193,8 @@ var Topic_Topic = /*#__PURE__*/function () {
       }
 
       request.addNonce();
-      request.signMessage(self.privateKey);
-      self.messageQueue.enqueue(request);
+      request.signMessage(this.privateKey);
+      this.messageQueue.enqueue(request);
     } // ---------------------------------------------------------------------------------------------------------------------------
     // INVITES HANDLING
 
@@ -8665,12 +8613,12 @@ var Topic_Topic = /*#__PURE__*/function () {
   }, {
     key: "getParticipants",
     value: function getParticipants() {
-      var _this3 = this;
+      var _this4 = this;
 
       var res = JSON.parse(JSON.stringify(this._metadata.body.participants));
       Object.keys(res).forEach(function (k) {
-        res[k].alias = _this3._metadata.getParticipantAlias(k);
-        res[k].nickname = _this3._metadata.getParticipantNickname(k);
+        res[k].alias = _this4._metadata.getParticipantAlias(k);
+        res[k].nickname = _this4._metadata.getParticipantNickname(k);
       });
       return res;
     }
@@ -8705,8 +8653,8 @@ var Topic_Topic = /*#__PURE__*/function () {
     }
   }, {
     key: "ensureBootstrapped",
-    value: function ensureBootstrapped(self) {
-      if (!self.isBootstrapped || !self.messageQueue || !self.arrivalHub) {
+    value: function ensureBootstrapped() {
+      if (!this.isBootstrapped || !this.messageQueue || !this.arrivalHub) {
         throw new Error("Topic is not bootstrapped!");
       }
     }
@@ -15696,11 +15644,12 @@ var Vault_Vault = /*#__PURE__*/function () {
     }
   }, {
     key: "bootstrap",
-    value: function bootstrap(arrivalHub, messageQueue) {
+    value: function bootstrap(arrivalHub, messageQueue, version) {
       var _this3 = this;
 
       this.arrivalHub = arrivalHub;
       this.messageQueue = messageQueue;
+      this.version = version;
       this.arrivalHub.on(this.id, function (msg) {
         _this3.processIncomingMessage(msg, _this3);
       }); ////////////////////////////////////////////////////////
@@ -68402,7 +68351,9 @@ var chat_ui_vaultHolder = null;
 var topics = {};
 var metadata = {}; // Sounds will be loaded here
 
-var sounds = {}; //Opened views stack for navigation
+var sounds = {}; //version
+
+var chat_ui_version; //Opened views stack for navigation
 
 var viewStack = []; // Topic that is in the focused window
 // New messages are sent in context of this topic
@@ -68447,7 +68398,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
   initChat();
   initLoginUI();
   chat_ui_vaultHolder = new VaultHolder["a" /* VaultHolder */]();
-  chat_ui_vaultHolder.fetchVault(); //util.$("#print-dpi").onclick = ()=>{alert(window.devicePixelRatio)}
+  chat_ui_vaultHolder.fetchVault();
+  chat_ui_version = islandsVersion(); //util.$("#print-dpi").onclick = ()=>{alert(window.devicePixelRatio)}
   //util.$("#print-max").onclick = ()=>{alert(window.innerWidth)}
 });
 
@@ -69043,11 +68995,12 @@ function processCtxAliasClick() {
       aliasInput.setAttribute("placeholder", "Enter new alias");
     } else if (hasClass(asset, "participant-list-item")) {
       // For participant
-      var pkfp = asset.getAttribute("pkfp");
-      subject.type = "participant";
-      subject.pkfp = pkfp;
+      var _pkfp = asset.getAttribute("pkfp");
 
-      if (pkfp === topicInFocus) {
+      subject.type = "participant";
+      subject.pkfp = _pkfp;
+
+      if (_pkfp === topicInFocus) {
         //Changing my nickname
         dom_util_text(title, "Change my nickname");
         dom_util_text(forLabel, "");
@@ -69055,7 +69008,7 @@ function processCtxAliasClick() {
       } else {
         //Alias for another participant
         dom_util_text(title, "New alias");
-        dom_util_text(forLabel, "For ".concat(chat_ui_chat.getParticipantNickname(topicInFocus, pkfp), "(").concat(pkfp.substring(0, 32), "...)"));
+        dom_util_text(forLabel, "For ".concat(topics[topicInFocus].getParticipantNickname(_pkfp), "(").concat(_pkfp.substring(0, 32), "...)"));
         aliasInput.setAttribute("placeholder", "Enter new alias");
       }
     } else {
@@ -69171,56 +69124,57 @@ function processLoginResult(vaultHolder, err) {
 }
 
 function processMessagesLoaded(pkfp, messages, cb) {
-  if (topicInFocus === pkfp) {
-    console.log("Appending messages to view");
-    var windowInFocus = getChatWindowInFocus();
-    clearMessagesWindow(windowInFocus);
-    var _iteratorNormalCompletion4 = true;
-    var _didIteratorError4 = false;
-    var _iteratorError4 = undefined;
+  if (topicInFocus !== pkfp) {
+    console.log("Topic is inactive. Ignoring");
+    return;
+  }
 
-    try {
-      for (var _iterator4 = messages[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-        var message = _step4.value;
-        var alias = "";
+  console.log("Appending messages to view");
+  var windowInFocus = getChatWindowInFocus();
+  clearMessagesWindow(windowInFocus);
+  var _iteratorNormalCompletion4 = true;
+  var _didIteratorError4 = false;
+  var _iteratorError4 = undefined;
 
-        if (message.header.author) {
-          alias = chat_ui_chat.getParticipantAlias(pkfp, message.header.author) || message.header.author.substring(0, 8);
-        }
+  try {
+    for (var _iterator4 = messages[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+      var message = _step4.value;
+      var alias = "";
 
-        appendMessageToChat({
-          nickname: message.header.nickname,
-          alias: alias,
-          body: message.body,
-          timestamp: message.header.timestamp,
-          pkfp: message.header.author,
-          messageID: message.header.id,
-          service: message.header.service,
-          "private": message.header["private"],
-          recipient: message.header.recipient,
-          attachments: message.attachments
-        }, pkfp, windowInFocus, true);
+      if (message.header.author) {
+        alias = topics[pkfp].getParticipantAlias(message.header.author) || message.header.author.substring(0, 8);
       }
-    } catch (err) {
-      _didIteratorError4 = true;
-      _iteratorError4 = err;
+
+      appendMessageToChat({
+        nickname: message.header.nickname,
+        alias: alias,
+        body: message.body,
+        timestamp: message.header.timestamp,
+        pkfp: message.header.author,
+        messageID: message.header.id,
+        service: message.header.service,
+        "private": message.header["private"],
+        recipient: message.header.recipient,
+        attachments: message.attachments
+      }, pkfp, windowInFocus, true);
+    }
+  } catch (err) {
+    _didIteratorError4 = true;
+    _iteratorError4 = err;
+  } finally {
+    try {
+      if (!_iteratorNormalCompletion4 && _iterator4["return"] != null) {
+        _iterator4["return"]();
+      }
     } finally {
-      try {
-        if (!_iteratorNormalCompletion4 && _iterator4["return"] != null) {
-          _iterator4["return"]();
-        }
-      } finally {
-        if (_didIteratorError4) {
-          throw _iteratorError4;
-        }
+      if (_didIteratorError4) {
+        throw _iteratorError4;
       }
     }
-
-    scrollChatDown();
-    if (cb) cb();
-  } else {
-    console.log("Topic is inactive. Ignoring");
   }
+
+  scrollChatDown();
+  if (cb) cb();
 } // ---------------------------------------------------------------------------------------------------------------------------
 // ~END Chat Event handlers
 // ---------------------------------------------------------------------------------------------------------------------------
@@ -69344,8 +69298,8 @@ function preparePrivateMark(message, topic) {
   var text = "(private)";
 
   if (message.pkfp === topic.pkfp) {
-    var nickname = chat_ui_chat.getParticipantNickname(topic.pkfp, message.recipient);
-    var alias = chat_ui_chat.getParticipantAlias(topic.pkfp, message.recipient) || message.recipient.substring(0, 8);
+    var nickname = topics[pkfp].getParticipantNickname(message.recipient);
+    var alias = topics[pkfp].getParticipantAlias(message.recipient) || message.recipient.substring(0, 8);
     text = "(private to: ".concat(alias, " -- ").concat(nickname, ")");
   }
 
@@ -69565,11 +69519,11 @@ function downloadOnClick(_x) {
 }
 
 function _downloadOnClick() {
-  _downloadOnClick = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(ev) {
+  _downloadOnClick = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(ev) {
     var target, fileInfo, fileName;
-    return regeneratorRuntime.wrap(function _callee2$(_context2) {
+    return regeneratorRuntime.wrap(function _callee$(_context) {
       while (1) {
-        switch (_context2.prev = _context2.next) {
+        switch (_context.prev = _context.next) {
           case 0:
             console.log("Download event triggered!");
             target = ev.target;
@@ -69579,7 +69533,7 @@ function _downloadOnClick() {
             }
 
             if (target) {
-              _context2.next = 5;
+              _context.next = 5;
               break;
             }
 
@@ -69604,10 +69558,10 @@ function _downloadOnClick() {
 
           case 9:
           case "end":
-            return _context2.stop();
+            return _context.stop();
         }
       }
-    }, _callee2);
+    }, _callee);
   }));
   return _downloadOnClick.apply(this, arguments);
 }
@@ -69750,8 +69704,8 @@ function updateMessagesAliases(topicPkfp) {
 
       if (privateMarkEl && !authorIdEl) {
         var recipientPkfp = message.firstChild.querySelector(".m-recipient-id").innerText;
-        var pAlias = chat_ui_chat.getParticipantAlias(topicPkfp, recipientPkfp);
-        var pNickname = chat_ui_chat.getParticipantNickname(topicPkfp, recipientPkfp);
+        var pAlias = topics[topicPkfp].getParticipantAlias(recipientPkfp);
+        var pNickname = topics[topicPkfp].getParticipantNickname(recipientPkfp);
         privateMarkEl.innerText = "(private to: ".concat(pAlias ? pAlias : recipientPkfp.substring(0, 8), " -- ").concat(pNickname, ")");
       }
 
@@ -69761,7 +69715,7 @@ function updateMessagesAliases(topicPkfp) {
       var authorPkfp = authorIdEl.innerText;
 
       if (aliasEl) {
-        var alias = chat_ui_chat.getParticipantAlias(topicPkfp, authorPkfp);
+        var alias = topics[topicPkfp].getParticipantAlias(authorPkfp);
         aliasEl.innerText = alias ? alias : authorPkfp.substring(0, 8);
       }
     }
@@ -69788,7 +69742,7 @@ function refreshInvites(pkfp) {
 
   clearExpandedInvites(pkfp);
   var topicAssets = getTopicAssets(pkfp);
-  var invites = chat_ui_chat.getInvites(pkfp);
+  var invites = topics[pkfp].getInvites();
   Object.keys(invites).forEach(function (i) {
     topicAssets.appendChild(bakeInviteListItem(i, activateTopicAsset, copyInviteCode, invites[i].name));
   });
@@ -69840,7 +69794,7 @@ function refreshParticipants(pkfp) {
 
   clearExpandedParticipants(pkfp);
   var topicAssets = getTopicAssets(pkfp);
-  var participants = chat_ui_chat.getParticipants(pkfp);
+  var participants = topics[pkfp].getParticipants(pkfp);
   var elements = [];
 
   for (var _i2 = 0, _Object$keys = Object.keys(participants); _i2 < _Object$keys.length; _i2++) {
@@ -69866,30 +69820,11 @@ function refreshMessages() {
     return;
   }
 
-  chat_ui_chat.getMessages(topicInFocus);
+  topics[topicInFocus].getMessages(processMessagesLoaded.bind(null, topicInFocus));
 }
 
 function refreshMessagesWithCb(topicPkfp, cb) {
-  setTimeout( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-    var messages;
-    return regeneratorRuntime.wrap(function _callee$(_context) {
-      while (1) {
-        switch (_context.prev = _context.next) {
-          case 0:
-            _context.next = 2;
-            return chat_ui_chat.getMessagesAsync(topicPkfp);
-
-          case 2:
-            messages = _context.sent;
-            cb(messages);
-
-          case 4:
-          case "end":
-            return _context.stop();
-        }
-      }
-    }, _callee);
-  })));
+  topics[topicPkfp].getMessages(cb);
 } // ---------------------------------------------------------------------------------------------------------------------------
 // Topic expanded asset management
 // retruns whether topic assets are expanded
@@ -70181,7 +70116,7 @@ function initSession() {
 function loadTopics(vault) {
   console.log("Loading topics...");
   setVaultListeners(vault);
-  vault.bootstrap(arrivalHub, messageQueue);
+  vault.bootstrap(arrivalHub, messageQueue, chat_ui_version);
   var retriever = new TopicRetriever_TopicRetriever();
   retriever.once("finished", function (data) {
     return initTopics(data, vault);
@@ -70196,12 +70131,14 @@ function initTopics(data, vault) {
   console.log("Initializing topics...");
   if (!data.topics) return;
 
-  for (var pkfp in data.topics) {
-    console.log("Initializing topics ".concat(pkfp)); // TODO fix version!
+  for (var _pkfp2 in data.topics) {
+    console.log("Initializing topics ".concat(_pkfp2)); // TODO fix version!
 
-    var topic = vault.decryptTopic(data.topics[pkfp], vault.password);
-    topics[pkfp] = new Topic["a" /* Topic */](pkfp, topic.name, topic.key, topic.comment);
-    setTopicListeners(topics[pkfp]);
+    var topic = vault.decryptTopic(data.topics[_pkfp2], vault.password);
+    topics[_pkfp2] = new Topic["a" /* Topic */](_pkfp2, topic.name, topic.key, topic.comment);
+    setTopicListeners(topics[_pkfp2]);
+
+    topics[_pkfp2].bootstrap(messageQueue, arrivalHub, chat_ui_version);
   }
 
   createSession(vault);
@@ -70265,7 +70202,7 @@ function setTopicListeners(topic) {
     var alias = "";
 
     if (message.header.author) {
-      alias = chat_ui_chat.getParticipantAlias(topic.pkfp, message.header.author) || message.header.author.substring(0, 8);
+      alias = topic.getParticipantAlias(message.header.author) || message.header.author.substring(0, 8);
     }
 
     console.log("Appending message");
@@ -70336,9 +70273,9 @@ function postLoginDecrypt(msg, vault) {
   var res = {};
 
   for (var _i4 = 0, _Object$keys3 = Object.keys(services); _i4 < _Object$keys3.length; _i4++) {
-    var pkfp = _Object$keys3[_i4];
-    var topicData = services[pkfp];
-    var topicPrivateKey = topics[pkfp].privateKey;
+    var _pkfp3 = _Object$keys3[_i4];
+    var topicData = services[_pkfp3];
+    var topicPrivateKey = topics[_pkfp3].privateKey;
     var clientHSPrivateKey = void 0,
         taHSPrivateKey = void 0,
         taPrivateKey = void 0;
@@ -70355,7 +70292,8 @@ function postLoginDecrypt(msg, vault) {
       taHSPrivateKey = decryptBlob(topicPrivateKey, topicData.topicAuthority.taHSPrivateKey);
     }
 
-    topics[pkfp].loadMetadata(topicData.metadata);
+    topics[_pkfp3].loadMetadata(topicData.metadata);
+
     var preDecrypted = {};
 
     if (clientHSPrivateKey) {
@@ -70374,7 +70312,7 @@ function postLoginDecrypt(msg, vault) {
       preDecrypted.topicAuthority.taHSPrivateKey = encryptBlob(sessionKey, taHSPrivateKey);
     }
 
-    res[pkfp] = preDecrypted;
+    res[_pkfp3] = preDecrypted;
   }
 
   console.log("Decryption is successfull.");
