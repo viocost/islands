@@ -1,5 +1,5 @@
-import * as util  from "./lib/dom-util";
-import * as UI from "./lib/ChatUIFactory";
+import * as util  from "../lib/dom-util";
+import * as UI from "../lib/ChatUIFactory";
 import { BlockingSpinner } from "./lib/BlockingSpinner";
 import toastr from "./lib/toastr";
 import { ChatClient as Chat, ChatClient } from "./lib/ChatClient";
@@ -64,7 +64,7 @@ let topicInFocus;
 window.getTopicInFocus = ()=>{console.log(topicInFocus)};
 
 // Topics that are in the split windows and display messages
-let activeTopics;
+let activeTopics
 
 //uploading state to handle concurrent messages sending
 let uploadingState = false;
@@ -86,7 +86,7 @@ window.spinner = spinner;
 window.chatutil = ChatUtility;
 window.statusConn = processConnectionStatusChanged;
 // ---------------------------------------------------------------------------------------------------------------------------
-// 
+//
 // ~END TEST
 
 document.addEventListener('DOMContentLoaded', event =>{
@@ -100,9 +100,6 @@ document.addEventListener('DOMContentLoaded', event =>{
     loadSounds();
     initChat();
     initLoginUI();
-    vaultHolder = new VaultHolder();
-    vaultHolder.fetchVault()
-
 
     //util.$("#print-dpi").onclick = ()=>{alert(window.devicePixelRatio)}
     //util.$("#print-max").onclick = ()=>{alert(window.innerWidth)}
@@ -1652,8 +1649,10 @@ function initSession(){
         throw new Error("Vault password element is not found.");
     }
 
-    if(!vaultHolder.unlock(passwordEl.value)){
-        processLoginResult(new Error(`Error decrypting vault: ${vaultHolder.error} \nCheck password and try again!`))
+    let vaultData = getVaultData();
+    vaultHolder = new VaultHolder(vaultData.vault, vaultData.id, passwordEl.value);
+    if(!vaultHolder.unlock()){
+        processLoginResult(new Error("Error decrypting vault.\nCheck password and try again!"))
         return;
     }
 

@@ -12,7 +12,7 @@ const err = createDerivedErrorClasses(VaultRetrieverError, {
 
 export class VaultRetriever{
 
-    constructor(url){
+    constructor(url = "/vault"){
         WildEmitter.mixin(this);
         this.url = url;
         this.vaultData = null;
@@ -36,7 +36,7 @@ export class VaultRetriever{
     }
 
     async fetchVault(){
-        let response = await fetch(url, {
+        let response = await fetch(this.url, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
