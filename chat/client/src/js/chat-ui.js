@@ -40,9 +40,9 @@ let sidePanel;
 // Objects
 
 //Top tier objects
-let connector = new Connector('/chat');
-let messageQueue = new MessageQueue(connector)
-let arrivalHub = new ArrivalHub(connector)
+let connector;
+let messageQueue;
+let arrivalHub;
 let chat = null//new ChatClient();
 let vaultHolder = null;
 let topics = {};
@@ -92,12 +92,6 @@ window.statusConn = processConnectionStatusChanged;
 // ~END TEST
 
 document.addEventListener('DOMContentLoaded', event =>{
-    //console.log(`Initializing page. Registration: ${isRegistration()}, Version: ${version}`);
-
-    //Establish connection,
-    // get vault
-    // password handling state machine
-    //
 
     loadSounds();
     initChat();
@@ -105,8 +99,11 @@ document.addEventListener('DOMContentLoaded', event =>{
     vaultHolder = new VaultHolder();
     vaultHolder.fetchVault()
 
+    connector = new Connector("/chat");
+    arrivalHub = new ArrivalHub(connector);
     version = islandsVersion()
 
+    chat.on(Events.CONNECTION_STATUS_CHANGED, processConnectionStatusChanged);
     //util.$("#print-dpi").onclick = ()=>{alert(window.devicePixelRatio)}
     //util.$("#print-max").onclick = ()=>{alert(window.innerWidth)}
 });
@@ -1598,7 +1595,6 @@ function initChat(){
     })
 
 
-    chat.on(Events.CONNECTION_STATUS_CHANGED, processConnectionStatusChanged);
 
 
     chat.on(Events.DOWNLOAD_SUCCESS, (data, fileName)=>{
@@ -1658,7 +1654,7 @@ function initSession(){
 function loadTopics(vault){
     console.log("Loading topics...");
     setVaultListeners(vault);
-    vault.bootstrap(arrivalHub, messageQueue, version);
+    vault.bootstrap(arrivalHub, connector, version);
     let retriever = new TopicRetriever();
     retriever.once("finished", (data)=> initTopics(data, vault))
     retriever.once("error", (err)=>{ console.log(err)})
@@ -1677,7 +1673,7 @@ function initTopics(data, vault){
         let topic = vault.decryptTopic(data.topics[pkfp], vault.password)
         topics[pkfp] = new Topic(pkfp, topic.name, topic.key, topic.comment)
         setTopicListeners(topics[pkfp])
-        topics[pkfp].bootstrap(messageQueue, arrivalHub, version);
+        topics[pkfp].bootstrap(connector, arrivalHub, version);
     }
 
     createSession(vault)
@@ -1793,7 +1789,7 @@ function postLogin(vault){
     vault.once(Internal.POST_LOGIN_DECRYPT, (msg)=>{
         postLoginDecrypt(msg, vault);
     })
-    messageQueue.enqueue(message);
+    connector.send(message);
 }
 
     // Decrypts topic authorities' and hidden services keys
@@ -1879,7 +1875,7 @@ function postLoginDecrypt(msg, vault){
     vault.once(Events.POST_LOGIN_ERROR, processLoginResult.bind(null, vaultHolder));
     vault.once(Events.LOGIN_ERROR, processLoginResult.bind(null, vaultHolder));
 
-    messageQueue.enqueue(message);
+    connector.send(message);
 
 }
 

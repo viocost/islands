@@ -29,7 +29,7 @@ export class Vault{
         this.publicKey = null;
         this.privateKey = null;
         this.handlers;
-        this.messageQueue;
+        this.connector;
         this.version;
         this.pendingInvites = {}
         this.error = null;
@@ -426,9 +426,9 @@ export class Vault{
         return this.admin;
     }
 
-    bootstrap(arrivalHub, messageQueue, version){
+    bootstrap(arrivalHub, connector, version){
         this.arrivalHub = arrivalHub;
-        this.messageQueue = messageQueue;
+        this.connector = connector;
         this.version = version;
         this.arrivalHub.on(this.id, (msg)=>{
             this.processIncomingMessage(msg, this);
@@ -482,7 +482,7 @@ export class Vault{
         message.signMessage(this.privateKey);
 
         console.log("SAVING VAULT");
-        this.messageQueue.enqueue(message)
+        this.connector.send(message)
     }
 
     changePassword(newPassword){

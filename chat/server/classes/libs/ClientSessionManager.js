@@ -34,6 +34,7 @@ class ClientSessionManager extends EventEmitter{
 
 
             if(!vaultId){
+                console.log("NO VAULT ID");
                 Logger.warn("Warning: no vaultID provided at the connection.", {cat: "session"})
                 return;
             }

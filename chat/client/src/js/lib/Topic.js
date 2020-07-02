@@ -22,7 +22,7 @@ export class Topic{
         this.privateKey = key;
         this.comment = comment;
         this.handlers = {};
-        this.messageQueue;
+        this.connector;
         this.arrivalHub;
         this.currentMetadata;
         this.sharedKey;
@@ -70,10 +70,10 @@ export class Topic{
     }
     // ---------------------------------------------------------------------------------------------------------------------------
     // INITIALIZING
-    bootstrap(messageQueue,
+    bootstrap(connector,
               arrivalHub,
               version){
-        this.messageQueue = messageQueue;
+        this.connector = connector;
         this.arrivalHub = arrivalHub;
         this.arrivalHub.on(this.pkfp, (msg)=>{
             this.preprocessIncomingMessage(msg, this);
@@ -452,7 +452,7 @@ export class Topic{
         }
         request.addNonce();
         request.signMessage(this.privateKey);
-        this.messageQueue.enqueue(request)
+        this.connector.send(request)
     }
 
 
@@ -475,7 +475,7 @@ export class Topic{
             request.body.nickname = myNickNameEncrypted;
             request.body.topicName = topicNameEncrypted;
             request.signMessage(self.privateKey);
-            self.messageQueue.enqueue(request);
+            self.connector.send(request);
         }, 100)
 
     }
@@ -512,7 +512,7 @@ export class Topic{
         };
         request.set("body", body);
         request.signMessage(this.privateKey);
-        this.messageQueue.enqueue(request);
+        this.connector.send(request);
     }
 
     updatePendingInvites(userInvites){
@@ -548,7 +548,7 @@ export class Topic{
         request.body.metadataId = this.metadataId;
         request.body.myNickname = myNickname;
         request.signMessage(this.privateKey);
-        this.messageQueue.enqueue(request);
+        this.connector.send(request);
         console.log(`Nicknames exchange request sent: nickname: ${myNicknameRaw}`);
     }
 
@@ -597,7 +597,7 @@ export class Topic{
                             ChatUtility.symKeyEncrypt(curNickname, sharedKey));
         message.setAttribute(Internal.METADATA_ID, self._metadata.getId());
         message.signMessage(self.privateKey);
-        self.messageQueue.enqueue(message);
+        self.connector.send(message);
     }
 
     requestNickname(pkfp){
@@ -667,7 +667,7 @@ export class Topic{
         request.set("body", body);
         request.signMessage(this.privateKey);
         console.log("Sending update settings request");
-        this.messageQueue.enqueue(request);
+        this.connector.send(request);
     }
 
     //~END SETTINGS ///////////////////////////////////////////////////////////
@@ -682,7 +682,7 @@ export class Topic{
         request.body.message = ChatUtility.encryptStandardMessage(message,
             this.getPublicKey);
         request.signMessage(this.privateKey);
-        this.messageQueue.enqueue(request)
+        this.connector.send(request)
     }
 
     processMessagesLoaded(msg, self){
@@ -855,7 +855,7 @@ export class Topic{
     }
 
     ensureBootstrapped(){
-        if(!this.isBootstrapped || !this.messageQueue || !this.arrivalHub){
+        if(!this.isBootstrapped || !this.connector || !this.arrivalHub){
             throw new Error("Topic is not bootstrapped!");
         }
     }
