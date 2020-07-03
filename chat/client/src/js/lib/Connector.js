@@ -117,7 +117,7 @@ export class Connector {
 
     prepareAcceptorStateMachine(){
         return new StateMachine(this, {
-            name: "Acceptor SM",
+            name: "Accept input from user SM",
             stateMap: {
                 inactive: {
                     transitions: {

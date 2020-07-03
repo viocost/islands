@@ -16,7 +16,10 @@ module.exports.init = (config)=>{
 };
 
 module.exports.get = ()=>{
-    ensureInitialized();
+
+    if(!ensureInitialized()){
+        return;
+    }
 
     let pubKey = fs.readFileSync(path.join(adminKeyPath , fs.readdirSync(adminKeyPath)[0]), "utf8");
     if (!pubKey){
@@ -37,5 +40,5 @@ module.exports.getPkfp = ()=>{
 };
 
 function ensureInitialized(){
-     return !!adminKeyPath
+    return !!adminKeyPath && undefined !== fs.readdirSync(adminKeyPath)[0]
 }

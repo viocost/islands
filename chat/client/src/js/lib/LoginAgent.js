@@ -1,43 +1,51 @@
 import { StateMachine } from "./AdvStateMachine";
 
+
 export class LoginAgent{
-    constructor(){
+    //In object pass UI functions
+    constructor({}){
         this.sm = this.prepareStateMachine()
-
-
     }
 
 
     prepareStateMachine(){
         return new StateMachine(this, {
-            name: "Login Agent SM",
+            name: "Vault Holder SM",
             stateMap: {
-                ready: {
-                    initial: true
+                noVaultNoPassword: {
+                    initial: true,
 
                 },
 
-                fetchingVault: {
+                noVaultHasPassword: {
+                    transitions: {
+                        vaultTimeout: {
+
+                        }
+                    }
 
                 },
 
-                initializingTopics: {
+                hasVaultNoPassword: {
 
                 },
 
-                postLogin: {
+
+
+                decryptingVault: {
 
                 },
+
+                loggedIn: {
+                    final: true
+                }
+
 
 
 
 
             }
-
-        }, {
-            msgNotExistMode: StateMachine.Warn,
-            traceLevel: StateMachine.TraceLevel.DEBUG
-        })
-
+       })
     }
+
 }

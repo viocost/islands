@@ -1,4 +1,4 @@
-import * as util  from "./lib/dom-util";
+import * as util from "./lib/dom-util";
 import * as UI from "./lib/ChatUIFactory";
 import { BlockingSpinner } from "./lib/BlockingSpinner";
 import toastr from "./lib/toastr";
@@ -8,14 +8,16 @@ import "../css/chat.sass"
 import "../css/vendor/loading.css";
 import * as CuteSet from "cute-set";
 import { Topic } from "./lib/Topic";
-import { MessageQueue } from "./lib/MessageQueue"
 import { ArrivalHub } from "./lib/ArrivalHub"
 import { Connector } from "./lib/Connector"
 import { TopicRetriever } from "./lib/TopicRetriever";
+import { TopicCreator } from "./lib/TopicCreator";
 import { runConnectorTest } from "./test/connector"
 import { ChatUtility } from "./lib/ChatUtility";
-import { VaultRetriever } from "./lib/VaultRetriever";
 import { VaultHolder } from './lib/VaultHolder';
+import { Vault } from "./lib/Vault";
+
+
 
 // TEMP IMPORTS FOR FURTHER REFACTORING
 import { iCrypto } from "./lib/iCrypto";
@@ -41,7 +43,6 @@ let sidePanel;
 
 //Top tier objects
 let connector;
-let messageQueue;
 let arrivalHub;
 let chat = null//new ChatClient();
 let vaultHolder = null;
@@ -63,7 +64,7 @@ const viewStack = []
 // Its title displayed in the header
 // Settings displayed in context of this topic
 let topicInFocus;
-window.getTopicInFocus = ()=>{console.log(topicInFocus)};
+window.getTopicInFocus = () => { console.log(topicInFocus) };
 
 // Topics that are in the split windows and display messages
 let activeTopics;
@@ -91,7 +92,7 @@ window.statusConn = processConnectionStatusChanged;
 // 
 // ~END TEST
 
-document.addEventListener('DOMContentLoaded', event =>{
+document.addEventListener('DOMContentLoaded', event => {
 
     loadSounds();
     initChat();
@@ -110,7 +111,7 @@ document.addEventListener('DOMContentLoaded', event =>{
 
 
 
-function initLoginUI(){
+function initLoginUI() {
 
     let header = util.$("header")
     util.appendChildren(header, UI.bakeLoginHeader());
@@ -118,22 +119,22 @@ function initLoginUI(){
     let mainContainer = util.$('#main-container');
     util.removeAllChildren(mainContainer);
 
-    if (isRegistration()){
+    if (isRegistration()) {
 
-        let registrationBlock = UI.bakeRegistrationBlock(()=>{
+        let registrationBlock = UI.bakeRegistrationBlock(() => {
             console.log("New vault registration..")
             loadingOn()
             registerVault()
-                .then(()=>{
+                .then(() => {
                     util.removeAllChildren(mainContainer);
-                    util.appendChildren(mainContainer, UI.bakeRegistrationSuccessBlock(()=>{
+                    util.appendChildren(mainContainer, UI.bakeRegistrationSuccessBlock(() => {
                         document.location.reload()
                     }))
                 })
-                .catch(err=>{
+                .catch(err => {
                     toastr.error(err.message)
                 })
-                .finally(()=>{
+                .finally(() => {
                     loadingOff();
                 })
         })
@@ -146,7 +147,7 @@ function initLoginUI(){
 
 
 //Called after successful login
-function initUI(vaultHolder){
+function initUI(vaultHolder) {
     // let form = isRegistration() ? bakeRegistrationBlock() : bakeLoginBlock();
     let vault = vaultHolder.getVault();
     let header = util.$("header")
@@ -157,7 +158,7 @@ function initUI(vaultHolder){
     util.removeAllChildren(header);
 
     util.appendChildren(header, [
-        UI.bakeHeaderLeftSection((menuButton)=>{
+        UI.bakeHeaderLeftSection((menuButton) => {
             util.toggleClass(menuButton, "menu-on");
             renderLayout()
         }),
@@ -179,28 +180,17 @@ function initUI(vaultHolder){
     // add listener to the menu button
     window.onresize = renderLayout;
     renderLayout()
-   
+
     // modals
-    topicCreateModal = UI.bakeTopicCreateModal(()=>{
-        console.log("Creating topic")
-        let nickname = util.$("#new-topic-nickname").value;
-        let topicName = util.$("#new-topic-name").value;
-        if(!nickname || !topicName){
-            toastr.warning("All fields are required");
-            return;
-        }
-        chat.initTopic(nickname, topicName);
-        toastr.info("Topic is being created")
-        topicCreateModal.close()
-    })
+    topicCreateModal = UI.bakeTopicCreateModal(createTopic)
 
 
-    topicJoinModal = UI.bakeTopicJoinModal(()=>{
+    topicJoinModal = UI.bakeTopicJoinModal(() => {
         console.log("Joining topic")
         let nickname = util.$("#join-topic-nickname").value;
         let topicName = util.$("#join-topic-name").value;
         let inviteCode = util.$("#join-topic-invite-code").value;
-        if(!nickname || !topicName || !inviteCode){
+        if (!nickname || !topicName || !inviteCode) {
             toastr.warning("All fields are required");
             return;
         }
@@ -210,22 +200,22 @@ function initUI(vaultHolder){
     })
 
 
-    setAliasModal = UI.bakeSetAliasModal(()=>{
+    setAliasModal = UI.bakeSetAliasModal(() => {
         console.log("Ok handler")
         let newAliasEl = util.$("#modal-alias-input")
         let newAlias = newAliasEl.value
         let subject = JSON.parse(newAliasEl.getAttribute("rename-data"))
-        switch(subject.type){
+        switch (subject.type) {
             case "topic":
                 console.log("Renaming topic")
                 chat.renameTopic(subject.topicPkfp, newAlias)
                 break
             case "participant":
                 console.log("Renaming participant")
-                if(subject.pkfp === subject.topicPkfp){
+                if (subject.pkfp === subject.topicPkfp) {
                     //change nickname
                     chat.changeNickname(subject.topicPkfp, newAlias)
-                }else{
+                } else {
                     //change alias of another member
                     chat.setParticipantAlias(subject.topicPkfp, subject.pkfp, newAlias);
                 }
@@ -249,9 +239,9 @@ function initUI(vaultHolder){
     UIInitialized = true;
 }
 
-function setupHotkeysHandlers(){
+function setupHotkeysHandlers() {
 
-    util.$('#new-msg').onkeypress = function (e) {
+    util.$('#new-msg').onkeypress = function(e) {
         if (!e.ctrlKey && e.keyCode === 13) {
             event.preventDefault();
             sendMessage();
@@ -264,7 +254,7 @@ function setupHotkeysHandlers(){
     };
 }
 
-function setupSidePanelListeners(){
+function setupSidePanelListeners() {
 
     util.$("#btn-new-topic").onclick = processNewTopicClick;
     util.$("#btn-join-topic").onclick = processJoinTopicClick;
@@ -293,20 +283,20 @@ function setupSidePanelListeners(){
 }
 
 
-function rotateCarousel(ev){
+function rotateCarousel(ev) {
     let select = ev.target.previousSibling;
     let numChildren = select.children.length;
     let blockWrap = select.parentElement.nextSibling;
 
     //if topic is in-focus
-    if (topicInFocus){
+    if (topicInFocus) {
         // rotate
         select.selectedIndex = (select.selectedIndex + 1) % numChildren
-    }else{
+    } else {
         select.selectedIndex = 0;
     }
-    for(let i=0; i< blockWrap.children.length; i++){
-        if (i == select.selectedIndex){
+    for (let i = 0; i < blockWrap.children.length; i++) {
+        if (i == select.selectedIndex) {
             util.flex(blockWrap.children[i]);
         } else {
             util.hide(blockWrap.children[i]);
@@ -314,7 +304,33 @@ function rotateCarousel(ev){
     }
 }
 
-function renderLayout(){
+function createTopic() {
+        console.log("Creating topic")
+        let nickname = util.$("#new-topic-nickname").value;
+        let topicName = util.$("#new-topic-name").value;
+        if (!nickname || !topicName) {
+            toastr.warning("All fields are required");
+            return;
+        }
+        let topicCreator = new TopicCreator(nickname, topicName, connector, vaultHolder);
+        topicCreator.once("result", createTopicHandleResult)
+        topicCreator.run()
+        //vault.initTopic(nickname, topicName);
+        toastr.info("Topic is being created")
+        topicCreateModal.close()
+}
+
+function createTopicHandleResult(err, topic){
+    if(err){
+        toastr.warning(`Error creating topics: ${err}`)
+    }
+
+    toastr.success(`Topic created successfully. Id: ${topic.pkfp}`)
+    topics[topic.pkfp] = topic
+
+}
+
+function renderLayout() {
     console.log("Rendering layout")
     let isSidePanelOn = util.hasClass("#menu-button", "menu-on");
     let sidePanel = util.$(".side-panel-container");
@@ -323,7 +339,7 @@ function renderLayout(){
 
 
     if (isSidePanelOn) {
-        if(window.innerWidth <= SMALL_WIDTH){
+        if (window.innerWidth <= SMALL_WIDTH) {
             util.flex(sidePanel);
             util.hide(messagesPanel);
 
@@ -357,45 +373,48 @@ function renderLayout(){
 // ---------------------------------------------------------------------------------------------------------------------------
 // UI handlers
 
-function newMessageBlockSetVisible(visible){
+function newMessageBlockSetVisible(visible) {
     let display = !!visible ? "flex" : "none";
     util.$("#new-message-container").style.display = display
 }
 
-function sendMessage(){
+function sendMessage() {
     console.log("Sending message...");
     // pass files later
-    if (!topicInFocus){
+    if (!topicInFocus) {
         console.error("No topic selected to write to.")
         return;
     }
 
+    let topic = topics[topicInFocus]
+
     let msgEl = util.$("#new-msg");
     let msg = msgEl.value
     let filesEl = util.$('#attach-file')
-    if (msg.length === 0 && filesEl.files.length === 0){
+    if (msg.length === 0 && filesEl.files.length === 0) {
         console.log("Empty message");
         return;
     }
 
     let recipient = util.$("#private-label").children[2].getAttribute("pkfp");
 
-    if(!uploadingState && filesEl.files.length > 0 ) {
+
+    if (!uploadingState && filesEl.files.length > 0) {
         //sending with files
         console.log("Sending with files");
         setUploadingState(true)
         chat.sendMessage(msg,
-                        topicInFocus,
-                        recipient,
-                        filesEl.files,
-                        clearAttachments);
+            topicInFocus,
+            recipient,
+            filesEl.files,
+            clearAttachments);
     } else {
         //sending text only
 
         console.log("Sending just text");
         chat.sendMessage(msg, topicInFocus, recipient)
     }
-    msgEl.value=""
+    msgEl.value = ""
 }
 
 
@@ -422,7 +441,7 @@ function clearAttachments() {
     setUploadingState(false);
 }
 
-function setUploadingState(uploading){
+function setUploadingState(uploading) {
     let anim = util.$("#uploading-animation");
     let attachButton = util.$("#attach-file-button");
     uploading ? util.flex(anim) : util.hide(anim)
@@ -433,11 +452,11 @@ function setUploadingState(uploading){
 
 function registerVault() {
     let password = util.$("#new-passwd");
-    let confirm =  util.$("#confirm-passwd");
-    if (/^((?:[0-9]{1,3}\.){3}[0-9]{1,3}|localhost)(\:[0-9]{1,5})?$/.test(document.location.host)){
+    let confirm = util.$("#confirm-passwd");
+    if (/^((?:[0-9]{1,3}\.){3}[0-9]{1,3}|localhost)(\:[0-9]{1,5})?$/.test(document.location.host)) {
         console.log("Registering admin vault");
         return Vault.registerAdminVault(password, confirm, chat.version)
-    } else if (ChatUtility.isOnion(document.location.host)){
+    } else if (ChatUtility.isOnion(document.location.host)) {
         console.log("Registering guest vault");
         return Vault.registerVault(password, confirm, chat.version)
     } else {
@@ -446,15 +465,15 @@ function registerVault() {
 }
 
 
-function processActivateTopicClick(ev){
+function processActivateTopicClick(ev) {
     console.error("PROCESSING activate topic click");
     removePrivate();
     let element = ev.currentTarget;
     let pkfp = element.getAttribute("pkfp");
-    if (!pkfp){
+    if (!pkfp) {
         console.log("No topic in focus")
         return;
-    } else if (pkfp === topicInFocus){
+    } else if (pkfp === topicInFocus) {
         deactivateTopicAsset(pkfp);
         return
     }
@@ -463,29 +482,29 @@ function processActivateTopicClick(ev){
     setTopicInFocus(pkfp)
     let topic = topics[pkfp]
     let privatePkfp = topic.getPrivate()
-    if (privatePkfp){
+    if (privatePkfp) {
         enablePrivate(pkfp, privatePkfp, `${topic.getParticipantNickname(privatePkfp)}`);
     } else {
         removePrivate()
     }
     // load messges in the new window
 
-    refreshMessagesWithCb(pkfp, (messages)=>{
-        if(!messages){
+    refreshMessagesWithCb(pkfp, (messages) => {
+        if (!messages) {
             console.log(`No messages in the topics: ${pkfp}`);
-            chat.once(Events.MESSAGES_LOADED, ()=>{
+            chat.once(Events.MESSAGES_LOADED, () => {
                 console.log("ONCE HANDLER FIRED");
-                setTimeout(()=>{
+                setTimeout(() => {
                     scrollChatDown(true)
                 }, 500);
             })
             return;
         }
-        processMessagesLoaded(pkfp, messages, ()=>{
+        processMessagesLoaded(pkfp, messages, () => {
             scrollChatDown(true)
         })
     })
-    if(isExpanded(pkfp)){
+    if (isExpanded(pkfp)) {
         refreshInvites(pkfp);
         refreshParticipants(pkfp);
     }
@@ -494,20 +513,20 @@ function processActivateTopicClick(ev){
 
 }
 
-function processExpandTopicClick(ev){
+function processExpandTopicClick(ev) {
     ev.stopPropagation();
 
     let expandButton = ev.target;
     let topicListItem = expandButton.parentNode.parentNode
     let pkfp = topicListItem.getAttribute("pkfp")
 
-    if(!pkfp) throw new Error(`Pkfp is not found`)
-    if(pkfp !== topicInFocus){
+    if (!pkfp) throw new Error(`Pkfp is not found`)
+    if (pkfp !== topicInFocus) {
         setTopicInFocus(pkfp);
         refreshMessages();
     }
 
-    if(!isExpanded(pkfp)){
+    if (!isExpanded(pkfp)) {
         // item is not expanded already
         expandTopic(topicListItem)
     } else {
@@ -519,10 +538,10 @@ function processExpandTopicClick(ev){
 }
 
 
-function collapseTopic(topicListItem){
+function collapseTopic(topicListItem) {
     let pkfp = topicListItem.getAttribute("pkfp");
     let expandCollapseButton = topicListItem.firstChild.firstChild;
-    if(isExpanded(pkfp)){
+    if (isExpanded(pkfp)) {
         console.log(`Collapsing ${pkfp}`);
         let selected = util.$$(`.side-block-data-list-item[pkfp="${pkfp}"]`)
         util.remove(util.$nextEl(selected[0]))
@@ -532,20 +551,20 @@ function collapseTopic(topicListItem){
 
 }
 
-function expandTopic(topicListItem){
+function expandTopic(topicListItem) {
     let expandCollapseButton = topicListItem.firstChild.firstChild;
-    let topicAssets = util.bake("div", {class: "topic-assets"})
+    let topicAssets = util.bake("div", { class: "topic-assets" })
     util.addAfter(topicListItem, topicAssets);
     util.addClass(expandCollapseButton, "btn-collapse-topic")
 }
 
 
-function processParticipantListItemClick(ev){
+function processParticipantListItemClick(ev) {
     activateTopicAsset(ev);
     console.log("participant list item clicked");
 }
 
-function processParticipantListItemDoubleClick(ev){
+function processParticipantListItemDoubleClick(ev) {
 
     let el = ev.currentTarget;
     let topicPkfp = el.parentNode.previousSibling.getAttribute("pkfp")
@@ -554,8 +573,8 @@ function processParticipantListItemDoubleClick(ev){
 
 }
 
-function enablePrivate(topicPkfp, pkfp, name){
-    if(topicPkfp !== topicInFocus){
+function enablePrivate(topicPkfp, pkfp, name) {
+    if (topicPkfp !== topicInFocus) {
         setTopicInFocus(topicPkfp);
         refreshMessages();
     }
@@ -565,7 +584,7 @@ function enablePrivate(topicPkfp, pkfp, name){
     util.flex(privateBlock);
 }
 
-function removePrivate(){
+function removePrivate() {
     console.log("Removing private");
     let privateBlock = util.$("#private-label")
     privateBlock.children[2].removeAttribute("pkfp")
@@ -573,10 +592,10 @@ function removePrivate(){
     util.hide(privateBlock);
 }
 
-function setTopicInFocus(pkfp){
+function setTopicInFocus(pkfp) {
     topicInFocus = pkfp
-    for(let el of util.$("#topics-list").children){
-        if (el.getAttribute("pkfp") === pkfp){
+    for (let el of util.$("#topics-list").children) {
+        if (el.getAttribute("pkfp") === pkfp) {
             util.addClass(el, "topic-in-focus");
             //Here set the name for active topic in header
 
@@ -591,14 +610,14 @@ function setTopicInFocus(pkfp){
     resetUnreadCounter(pkfp);
 }
 
-function processMuteClick(){
+function processMuteClick() {
     console.log("Mute clicked");
     chat.toggleSound();
 }
 
-function processSettingsClick(){
+function processSettingsClick() {
     console.log("Settings clicked");
-    if (util.isShown("#main-container")){
+    if (util.isShown("#main-container")) {
         util.hide("#main-container")
         util.flex("#settings-container")
     } else {
@@ -607,50 +626,50 @@ function processSettingsClick(){
     }
 }
 
-function processLogoutClick(){
+function processLogoutClick() {
     console.log("Logout clicked");
     document.location.reload(true);
 }
 
-function processAdminLoginClick(){
+function processAdminLoginClick() {
     console.log("admin login clicked");
 }
 
-function processInfoClick(){
+function processInfoClick() {
     alert("Islands v2.0.0")
 }
 
-function processNewTopicClick(){
+function processNewTopicClick() {
     console.log("New topic click");
     topicCreateModal.open()
 }
 
-function processDeleteTopicClick(){
+function processDeleteTopicClick() {
     console.log("Delete topic click");
     let mngTopicList = util.$("#manage-topics-list");
     let pkfp = null;
-    for(let el of mngTopicList.children){
-        if (util.hasClass(el, "selected")){
+    for (let el of mngTopicList.children) {
+        if (util.hasClass(el, "selected")) {
             pkfp = el.getAttribute("pkfp");
             break;
         }
     }
 
-    if(!pkfp){
+    if (!pkfp) {
         toastr.warning("Please select topic to delete.")
         return;
     }
 
-    if (confirm(`All topic data will be deleted beyond recover for ${topics[pkfp].name}!\n\nProceed?`)){
+    if (confirm(`All topic data will be deleted beyond recover for ${topics[pkfp].name}!\n\nProceed?`)) {
         chat.deleteTopic(pkfp);
     }
 }
 
-function processRenameTopciClick(){
+function processRenameTopciClick() {
     console.log("Rename topic click");
 }
 
-function processLeaveTopicClick(){
+function processLeaveTopicClick() {
     console.log("Rename topic click");
 
 }
@@ -660,7 +679,7 @@ function processJoinTopicClick() {
 }
 
 function processNewInviteClick() {
-    if(topicInFocus){
+    if (topicInFocus) {
         chat.requestInvite(topicInFocus);
     } else {
         console.log("No toipc in focus");
@@ -672,11 +691,11 @@ function processRefreshInvitesClick() {
     console.log("Refresh invites");
 }
 
-function processCtxAliasClick(){
+function processCtxAliasClick() {
     console.log("Alias button clicked");
     //Rename topc, or member or invite
 
-    if(!topicInFocus){
+    if (!topicInFocus) {
         console.log("Nothing to rename")
         return;
     }
@@ -689,22 +708,22 @@ function processCtxAliasClick(){
 
     subject.topicPkfp = topicInFocus;
     let asset = getActiveTopicAsset()
-    if(asset){
+    if (asset) {
         // Setting alias either for participant or invite
-        if (util.hasClass(asset, "invite-list-item")){
+        if (util.hasClass(asset, "invite-list-item")) {
             // For invite
             subject.type = "invite"
             subject.code = asset.getAttribute("code")
             util.text(title, "New alias")
             util.text(forLabel, `For invite: ${asset.getAttribute("code").substring(117, 140)}...`)
             aliasInput.setAttribute("placeholder", "Enter new alias")
-        }else if(util.hasClass(asset, "participant-list-item")){
+        } else if (util.hasClass(asset, "participant-list-item")) {
             // For participant
             let pkfp = asset.getAttribute("pkfp");
 
             subject.type = "participant"
             subject.pkfp = pkfp
-            if(pkfp === topicInFocus){
+            if (pkfp === topicInFocus) {
                 //Changing my nickname
                 util.text(title, "Change my nickname")
                 util.text(forLabel, "")
@@ -715,7 +734,7 @@ function processCtxAliasClick(){
                 util.text(forLabel, `For ${topics[topicInFocus].getParticipantNickname(pkfp)}(${pkfp.substring(0, 32)}...)`)
                 aliasInput.setAttribute("placeholder", "Enter new alias")
             }
-        }else {
+        } else {
             //error
             console.log("Unknown topic asset!")
             return;
@@ -732,7 +751,7 @@ function processCtxAliasClick(){
     setAliasModal.open();
 }
 
-function processCtxBootClick(){
+function processCtxBootClick() {
     console.log("booting participant")
     let topicPkfp = topicInFocus;
     let asset = getActiveTopicAsset()
@@ -741,21 +760,21 @@ function processCtxBootClick(){
 
 }
 
-function processCtxDeleteClick(){
+function processCtxDeleteClick() {
     console.log("Delete click. Processing...");
     let inFocus = topicInFocus;
     let topicAsset = getActiveTopicAsset()
 
-    if (!topicAsset){
+    if (!topicAsset) {
         //delete topic
         let confirmMsg = `Topic ${inFocus} hisrory and all hidden services will be deleted. This action is irreversable. \n\nProceed?`
-        if(confirm(confirmMsg)){
+        if (confirm(confirmMsg)) {
             chat.deleteTopic(inFocus)
             return;
         }
     }
 
-    if(util.hasClass(topicAsset, "invite-list-item")){
+    if (util.hasClass(topicAsset, "invite-list-item")) {
         let inviteCode = topicAsset.getAttribute("code")
         console.log(`Deleting invite ${inviteCode}`)
         chat.deleteInvite(inFocus, inviteCode)
@@ -765,11 +784,11 @@ function processCtxDeleteClick(){
 //this is generic function for selecting active item on click from list
 // idAttr is id attribute that is set during list creation
 // listId is id of a list element
-function createSelectorFunction(idAttr, listId){
-    return function(ev){
+function createSelectorFunction(idAttr, listId) {
+    return function(ev) {
         let list = util.$(`#${listId}`);
-        for (let child of list.children){
-            if (child.getAttribute(idAttr) === ev.target.getAttribute(idAttr)){
+        for (let child of list.children) {
+            if (child.getAttribute(idAttr) === ev.target.getAttribute(idAttr)) {
                 util.addClass(child, "selected");
             } else {
                 util.removeClass(child, "selected");
@@ -778,7 +797,7 @@ function createSelectorFunction(idAttr, listId){
     }
 }
 
-function backToChat(){
+function backToChat() {
     let topicsList = util.$("#manage-topics-view")
     //let topicsList = util.$("#manage-topics-list")
     //let topicsList = util.$("#manage-topics-list")
@@ -794,9 +813,9 @@ function backToChat(){
 
 // ---------------------------------------------------------------------------------------------------------------------------
 // Chat Event handlers
-function processLoginResult(vaultHolder, err){
+function processLoginResult(vaultHolder, err) {
 
-    if (err){
+    if (err) {
 
         let loginBtn = util.$("#vault-login-btn")
         loginBtn.removeAttribute("disabled");
@@ -812,9 +831,9 @@ function processLoginResult(vaultHolder, err){
     loadingOff()
 }
 
-function processMessagesLoaded(pkfp, messages, cb){
+function processMessagesLoaded(pkfp, messages, cb) {
 
-    if (topicInFocus !== pkfp){
+    if (topicInFocus !== pkfp) {
         console.log("Topic is inactive. Ignoring")
         return;
     }
@@ -822,10 +841,10 @@ function processMessagesLoaded(pkfp, messages, cb){
     console.log("Appending messages to view")
     let windowInFocus = getChatWindowInFocus();
     clearMessagesWindow(windowInFocus)
-    for (let message of messages){
+    for (let message of messages) {
         let alias = "";
-        if (message.header.author){
-            alias  = topics[pkfp].getParticipantAlias(message.header.author) ||
+        if (message.header.author) {
+            alias = topics[pkfp].getParticipantAlias(message.header.author) ||
                 message.header.author.substring(0, 8)
         }
         appendMessageToChat({
@@ -842,7 +861,7 @@ function processMessagesLoaded(pkfp, messages, cb){
         }, pkfp, windowInFocus, true);
     }
     scrollChatDown()
-    if(cb) cb();
+    if (cb) cb();
 
 }
 
@@ -863,7 +882,7 @@ function processMessagesLoaded(pkfp, messages, cb){
  *  pkfp: pkfp
  * }
  */
-function appendMessageToChat(message, topicPkfp, chatWindow,  toHead = false) {
+function appendMessageToChat(message, topicPkfp, chatWindow, toHead = false) {
     let msg = document.createElement('div');
     let message_id = document.createElement('div');
     let message_body = document.createElement('div');
@@ -958,7 +977,7 @@ function buildMessageHeading(message, topicPkfp) {
         message_heading.appendChild(recipientId);
     }
 
-    if (message.private){
+    if (message.private) {
         let privateMark = preparePrivateMark(message, topics[topicPkfp]);
         message_heading.appendChild(privateMark);
     }
@@ -968,7 +987,7 @@ function buildMessageHeading(message, topicPkfp) {
 
 function preparePrivateMark(message, topic) {
     let text = "(private)"
-    if(message.pkfp === topic.pkfp){
+    if (message.pkfp === topic.pkfp) {
         let nickname = topics[pkfp].getParticipantNickname(message.recipient);
         let alias = topics[pkfp].getParticipantAlias(message.recipient) || message.recipient.substring(0, 8);
         text = `(private to: ${alias} -- ${nickname})`;
@@ -992,7 +1011,7 @@ function processAttachments(attachments) {
         return undefined;
     }
 
-    let getAttachmentSize = function (size) {
+    let getAttachmentSize = function(size) {
         let res = "";
         size = parseInt(size);
         if (size < 1000) {
@@ -1063,7 +1082,7 @@ function processMessageBody(text) {
     //no code
     if (text.search(startPattern) === -1) {
         let pars = []
-        for (let p of text.split("\n")){
+        for (let p of text.split("\n")) {
             result.appendChild(util.bake("p", {
                 children: document.createTextNode(p)
             }));
@@ -1151,10 +1170,10 @@ async function downloadOnClick(ev) {
     try {
         chat.downloadAttachment(fileInfo, topicInFocus); //download file
         console.log("Download started");
-    } catch(err){
+    } catch (err) {
         toastr.warning("file download unsuccessfull: " + err)
         appendEphemeralMessage(fileName + " Download finished with error: " + err)
-    }finally {
+    } finally {
         target.childNodes[0].style.display = "none";
     }
 }
@@ -1188,16 +1207,16 @@ function showCodeView(event) {
 
 
 
-function appendEphemeralMessage(msg){
-    let messagesWindow =  util.$("#messages-window-1")
-    if (!msg){
+function appendEphemeralMessage(msg) {
+    let messagesWindow = util.$("#messages-window-1")
+    if (!msg) {
         console.log("Message is empty.")
         return
     }
-    try{
+    try {
         let msgEl = UI.bakeEphemeralMessage(getChatFormatedDate(new Date()), msg);
         messagesWindow.appendChild(msgEl);
-    }catch(err){
+    } catch (err) {
         console.log("EPHEMERAL ERROR: " + err)
     }
     scrollChatDown()
@@ -1216,20 +1235,20 @@ function processChatScroll(event) {
     }
 }
 
-function getChatWindowInFocus(){
+function getChatWindowInFocus() {
     return util.$("#messages-window-1");
 }
 
-function scrollChatDown(force){
+function scrollChatDown(force) {
 
     let el = util.$('#messages-panel-container')
-    if(force || el.scrollHeight - el.scrollTop - el.offsetHeight <= Math.floor(el.offsetHeight / 2)){
+    if (force || el.scrollHeight - el.scrollTop - el.offsetHeight <= Math.floor(el.offsetHeight / 2)) {
         console.log("Scrolling down");
         el.scrollTop = el.scrollHeight;
     }
 }
 
-function clearMessagesWindow(msgWindow){
+function clearMessagesWindow(msgWindow) {
     msgWindow.innerHTML = "";
 }
 
@@ -1247,34 +1266,34 @@ function getChatFormatedDate(timestamp) {
 // ---------------------------------------------------------------------------------------------------------------------------
 // Side panel handlers
 
-function refreshSidePanel(){
+function refreshSidePanel() {
     //get active topic
     //
 
 }
 
 
-function refreshTopics(){
+function refreshTopics() {
     let topicsList = util.$("#topics-list")
     let topicsListItems = topicsList.querySelector("li");
-    let expandedTopics = topicsListItems ?  new CuteSet(Array.prototype.map.call(topicsListItems,
-                                                              el=>{ return el.getAttribute("pkfp") } ).filter(pkfp=>{
-                                                                  return isExpanded(pkfp);
-                                                              })) : new CuteSet()
+    let expandedTopics = topicsListItems ? new CuteSet(Array.prototype.map.call(topicsListItems,
+        el => { return el.getAttribute("pkfp") }).filter(pkfp => {
+            return isExpanded(pkfp);
+        })) : new CuteSet()
 
     util.removeAllChildren(topicsList)
     let topicsElements = []
-    Object.keys(topics).forEach(key=>{
+    Object.keys(topics).forEach(key => {
         topicsElements.push(UI.bakeTopicListItem(topics[key], processActivateTopicClick, processExpandTopicClick))
     })
-    topicsElements.sort((el)=>{ return el.innerText })
+    topicsElements.sort((el) => { return el.innerText })
     util.appendChildren(topicsList, topicsElements)
 
     topicsListItems = topicsList.querySelector("li");
-    if(topicsListItems){
-        Array.prototype.map.call(topicsList.querySelector("li"), el=>{
+    if (topicsListItems) {
+        Array.prototype.map.call(topicsList.querySelector("li"), el => {
             let pkfp = el.getAttribute("pkfp")
-            if (expandedTopics.has(pkfp)){
+            if (expandedTopics.has(pkfp)) {
                 console.log("Topic was expanded. Expanding...");
                 expandTopic(el);
             }
@@ -1282,27 +1301,27 @@ function refreshTopics(){
     }
 }
 
-function updateMessagesAliases(topicPkfp){
-    if (topicPkfp !== topicInFocus){
+function updateMessagesAliases(topicPkfp) {
+    if (topicPkfp !== topicInFocus) {
         return
     }
 
-    for(let message of util.$("#messages-window-1").children){
+    for (let message of util.$("#messages-window-1").children) {
 
         let authorIdEl = message.firstChild.querySelector(".m-author-id")
-        let privateMarkEl =  message.firstChild.querySelector(".private-mark");
-        if (privateMarkEl  && !authorIdEl){
-            let recipientPkfp =  message.firstChild.querySelector(".m-recipient-id").innerText;
+        let privateMarkEl = message.firstChild.querySelector(".private-mark");
+        if (privateMarkEl && !authorIdEl) {
+            let recipientPkfp = message.firstChild.querySelector(".m-recipient-id").innerText;
             let pAlias = topics[topicPkfp].getParticipantAlias(recipientPkfp);
             let pNickname = topics[topicPkfp].getParticipantNickname(recipientPkfp);
             privateMarkEl.innerText = `(private to: ${pAlias ? pAlias : recipientPkfp.substring(0, 8)} -- ${pNickname})`
         };
 
-        if(!authorIdEl) continue;
+        if (!authorIdEl) continue;
 
         let aliasEl = message.firstChild.querySelector(".m-alias");
         let authorPkfp = authorIdEl.innerText;
-        if (aliasEl){
+        if (aliasEl) {
             let alias = topics[topicPkfp].getParticipantAlias(authorPkfp);
             aliasEl.innerText = alias ? alias : authorPkfp.substring(0, 8)
         }
@@ -1312,8 +1331,8 @@ function updateMessagesAliases(topicPkfp){
 
 }
 
-function refreshInvites(pkfp){
-    if(!isExpanded(pkfp)){
+function refreshInvites(pkfp) {
+    if (!isExpanded(pkfp)) {
         return
     }
     clearExpandedInvites(pkfp);
@@ -1322,32 +1341,32 @@ function refreshInvites(pkfp){
 
     let invites = topics[pkfp].getInvites();
 
-    Object.keys(invites).forEach((i)=>{
+    Object.keys(invites).forEach((i) => {
         topicAssets.appendChild(UI.bakeInviteListItem(i, activateTopicAsset, copyInviteCode, invites[i].name))
     })
 }
 
-function activateTopicAsset(ev){
+function activateTopicAsset(ev) {
     console.error("Activating topic asset");
     let activeItem = ev.currentTarget
     let assets = activeItem.parentElement;
-    for(let child of assets.children){
+    for (let child of assets.children) {
         util.removeClass(child, "active-asset")
     }
 
     util.addClass(activeItem, "active-asset")
-    if (util.hasClass(activeItem, "invite-list-item")){
+    if (util.hasClass(activeItem, "invite-list-item")) {
         displayTopicContextButtons("invite")
-    } else if (util.hasClass(activeItem, "participant-list-item")){
+    } else if (util.hasClass(activeItem, "participant-list-item")) {
         displayTopicContextButtons("participant")
     }
 }
 
 
 
-function refreshParticipants(pkfp){
+function refreshParticipants(pkfp) {
     //refresh side panel and to list
-    if(!isExpanded(pkfp)){
+    if (!isExpanded(pkfp)) {
         console.log("Topic not expanded. ");
         return;
     }
@@ -1356,7 +1375,7 @@ function refreshParticipants(pkfp){
     let participants = topics[pkfp].getParticipants(pkfp);
 
     let elements = []
-    for (let pPkfp of Object.keys(participants)){
+    for (let pPkfp of Object.keys(participants)) {
         let participant = participants[pPkfp]
 
         elements.push(UI.bakeParticipantListItem({
@@ -1372,27 +1391,27 @@ function refreshParticipants(pkfp){
 }
 
 
-function refreshMessages(){
+function refreshMessages() {
     util.removeAllChildren('#messages-window-1');
 
-    if (!topicInFocus){
+    if (!topicInFocus) {
         return
     }
 
     topics[topicInFocus].getMessages(processMessagesLoaded.bind(null, topicInFocus))
 }
 
-function refreshMessagesWithCb(topicPkfp, cb){
+function refreshMessagesWithCb(topicPkfp, cb) {
     topics[topicPkfp].getMessages(cb)
 }
 // ---------------------------------------------------------------------------------------------------------------------------
 // Topic expanded asset management
 
 // retruns whether topic assets are expanded
-function isExpanded(pkfp){
+function isExpanded(pkfp) {
     console.log(`Checking if expanded ${pkfp}`);
     let selected = util.$$(`.side-block-data-list-item[pkfp="${pkfp}"]`)
-    if(selected.length === 0){
+    if (selected.length === 0) {
         return false
     }
 
@@ -1401,54 +1420,54 @@ function isExpanded(pkfp){
 
 }
 
-function clearExpandedInvites(pkfp){
-    if(!isExpanded(pkfp)) return;
+function clearExpandedInvites(pkfp) {
+    if (!isExpanded(pkfp)) return;
     let selected = util.$$(`.side-block-data-list-item[pkfp="${pkfp}"]`)
     let assets = util.$nextEl(selected[0])
     if (!assets.firstElementChild) return
-    while(util.hasClass(assets.lastElementChild, "invite-list-item")){
+    while (util.hasClass(assets.lastElementChild, "invite-list-item")) {
         util.remove(assets.lastElementChild);
     }
 }
 
-function clearExpandedParticipants(pkfp){
-    if(!isExpanded(pkfp)) return;
+function clearExpandedParticipants(pkfp) {
+    if (!isExpanded(pkfp)) return;
     let selected = util.$$(`.side-block-data-list-item[pkfp="${pkfp}"]`)
     let assets = util.$nextEl(selected[0])
-    while(assets.firstElementChild && util.hasClass(assets.firstElementChild, "participant-list-item")){
+    while (assets.firstElementChild && util.hasClass(assets.firstElementChild, "participant-list-item")) {
         util.remove(assets.firstElementChild);
     }
 }
 
 
 
-function getTopicAssets(pkfp){
+function getTopicAssets(pkfp) {
     let selected = util.$$(`.side-block-data-list-item[pkfp="${pkfp}"]`)
-    let next =  util.$nextEl(selected[0])
+    let next = util.$nextEl(selected[0])
 
-    if (next && util.hasClass(next, "topic-assets")){
-       return next;
+    if (next && util.hasClass(next, "topic-assets")) {
+        return next;
     }
 }
 
-function getActiveTopicAsset(){
-    if (!topicInFocus || !isExpanded(topicInFocus)){
+function getActiveTopicAsset() {
+    if (!topicInFocus || !isExpanded(topicInFocus)) {
         console.log("No active assets found");
         return;
     }
 
     let assets = getTopicAssets(topicInFocus);
-    for(let asset of assets.children){
-        if (util.hasClass(asset, "active-asset")){
+    for (let asset of assets.children) {
+        if (util.hasClass(asset, "active-asset")) {
             return asset;
         }
     }
 }
 
-function deactivateTopicAsset(pkfp){
+function deactivateTopicAsset(pkfp) {
     let topicAssets = getTopicAssets(pkfp);
-    if(topicAssets){
-        for(let asset of topicAssets.children){
+    if (topicAssets) {
+        for (let asset of topicAssets.children) {
             util.removeClass(asset, "active-asset")
         }
     }
@@ -1467,7 +1486,7 @@ function deactivateTopicAsset(pkfp){
  *    "participant" - show Alias, Mute, Boot only if user has rights to boot
  * displayBoot - boolean whether user has rights to boot
  */
-function displayTopicContextButtons(state, displayBoot = false){
+function displayTopicContextButtons(state, displayBoot = false) {
     let alias = util.$("#btn-ctx-alias");
     let invite = util.$("#btn-ctx-invite");
     let mute = util.$("#btn-ctx-mute");
@@ -1475,7 +1494,7 @@ function displayTopicContextButtons(state, displayBoot = false){
     let _delete = util.$("#btn-ctx-delete");
     let leave = util.$("#btn-ctx-leave");
 
-    switch(state){
+    switch (state) {
         case "none":
             util.hide(alias);
             util.hide(invite);
@@ -1542,7 +1561,7 @@ function playSound(sound) {
         !vault.settings.hasOwnProperty("sound") ||
         vault.settings.sound
 
-    if (soundOn){
+    if (soundOn) {
         sounds[sound].play();
     }
 }
@@ -1552,56 +1571,56 @@ function playSound(sound) {
 // ---------------------------------------------------------------------------------------------------------------------------
 // Util
 
-function initChat(){
+function initChat() {
     //chat = new Chat({version: version})
 
-    chat = new Chat({version: util.$("#islands-version").value})
+    chat = new Chat({ version: util.$("#islands-version").value })
     //chat = new Chat({version: "2.0.28"})
 
     chat.on(Events.LOGIN_ERROR, processLoginResult)
     chat.on(Events.LOGIN_SUCCESS, processLoginResult)
-    chat.on(Events.POST_LOGIN_SUCCESS, ()=>{
+    chat.on(Events.POST_LOGIN_SUCCESS, () => {
     })
 
-    chat.on(Events.SOUND_STATUS, (status)=>{
+    chat.on(Events.SOUND_STATUS, (status) => {
         let src = status ? "/img/sound-on.svg" : "/img/sound-off.svg";
         util.$("#sound-control").setAttribute("src", src)
     })
-    chat.on(Events.TOPIC_CREATED, ()=>{
+    chat.on(Events.TOPIC_CREATED, () => {
         refreshTopics()
         toastr.success("New topic has been initialized!")
     })
 
-    chat.on(Events.TOPIC_JOINED, (data)=>{
+    chat.on(Events.TOPIC_JOINED, (data) => {
         console.log(`Topic joined: ${data}`)
         appendEphemeralMessage(`You have joined topic ${data.pkfp}`)
         refreshTopics()
     })
 
-    chat.on(Events.TOPIC_DELETED, (pkfp)=>{
+    chat.on(Events.TOPIC_DELETED, (pkfp) => {
         refreshTopics()
         toastr.info(`Topic ${pkfp.substring(0, 5)}... has been deleted.`)
     })
 
 
-    chat.on(Events.VAULT_UPDATED, ()=>{
+    chat.on(Events.VAULT_UPDATED, () => {
         console.log("Vault updated in UI");
         refreshTopics()
-        if (topicInFocus)setTopicInFocus(topicInFocus)
+        if (topicInFocus) setTopicInFocus(topicInFocus)
     })
 
-    chat.on(Events.INIT_TOPIC_ERROR, (err)=>{
+    chat.on(Events.INIT_TOPIC_ERROR, (err) => {
         toastr.warning(`Init topic error: ${err.message}`);
     })
 
 
 
 
-    chat.on(Events.DOWNLOAD_SUCCESS, (data, fileName)=>{
+    chat.on(Events.DOWNLOAD_SUCCESS, (data, fileName) => {
         downloadBuffer(data, fileName);
     })
 
-    chat.on(Events.DOWNLOAD_FAIL, (err)=>{
+    chat.on(Events.DOWNLOAD_FAIL, (err) => {
         console.log(`Download error received from chat: ${err}`);
         appendEphemeralMessage(`Download error: ${err}`);
     })
@@ -1633,16 +1652,16 @@ function initChat(){
 // REFACTORING LOGIN
 
 
-function initSession(){
+function initSession() {
     loadingOn()
     let loginBtn = util.$("#vault-login-btn")
     loginBtn.setAttribute("disabled", true);
     let passwordEl = util.$("#vault-password");
-    if (!passwordEl){
+    if (!passwordEl) {
         throw new Error("Vault password element is not found.");
     }
 
-    if(!vaultHolder.unlock(passwordEl.value)){
+    if (!vaultHolder.unlock(passwordEl.value)) {
         processLoginResult(new Error(`Error decrypting vault: ${vaultHolder.error} \nCheck password and try again!`))
         return;
     }
@@ -1651,22 +1670,22 @@ function initSession(){
 
 }
 
-function loadTopics(vault){
+function loadTopics(vault) {
     console.log("Loading topics...");
     setVaultListeners(vault);
     vault.bootstrap(arrivalHub, connector, version);
     let retriever = new TopicRetriever();
-    retriever.once("finished", (data)=> initTopics(data, vault))
-    retriever.once("error", (err)=>{ console.log(err)})
+    retriever.once("finished", (data) => initTopics(data, vault))
+    retriever.once("error", (err) => { console.log(err) })
     retriever.run();
 }
 
-function initTopics(data, vault){
+function initTopics(data, vault) {
     console.log("Initializing topics...");
 
-    if(!data.topics) return
+    if (!data.topics) return
 
-    for(let pkfp in data.topics){
+    for (let pkfp in data.topics) {
         console.log(`Initializing topics ${pkfp}`);
 
         // TODO fix version!
@@ -1679,106 +1698,106 @@ function initTopics(data, vault){
     createSession(vault)
 }
 
-function createSession(vault){
+function createSession(vault) {
     connector.setConnectionQueryProperty("vaultId", vault.id);
     connector.establishConnection()
 }
 
 
-function setVaultListeners(vault){
-    vault.on(Internal.SESSION_KEY, (message)=>{
+function setVaultListeners(vault) {
+    vault.on(Internal.SESSION_KEY, (message) => {
         vault.sessionKey = message.body.sessionKey;
 
         console.log("Session key is set!")
         postLogin(vault)
     })
-    vault.on(Events.TOPIC_CREATED, (pkfp)=>{
+    vault.on(Events.TOPIC_CREATED, (pkfp) => {
         refreshTopics()
         toastr.success("New topic has been initialized!")
     })
 
-    vault.on(Internal.TOPIC_DELETED, (pkfp)=>{
+    vault.on(Internal.TOPIC_DELETED, (pkfp) => {
         refreshTopics()
         toastr.info(`Topic ${pkfp.substring(0, 5)}... has been deleted.`)
     })
 
 
-    vault.on(Events.VAULT_UPDATED, ()=>{
+    vault.on(Events.VAULT_UPDATED, () => {
         console.log("Vault updated in chat client");
         refreshTopics()
-        if (topicInFocus)setTopicInFocus(topicInFocus)
+        if (topicInFocus) setTopicInFocus(topicInFocus)
     })
 }
 
-function setTopicListeners(topic){
-        topic.on(Events.MESSAGES_LOADED, (messages)=>{
-            processMessagesLoaded(topic.pkfp, messages)
-        })
+function setTopicListeners(topic) {
+    topic.on(Events.MESSAGES_LOADED, (messages) => {
+        processMessagesLoaded(topic.pkfp, messages)
+    })
 
-        topic.on(Events.INVITE_CREATED, (inviteCode)=>{
+    topic.on(Events.INVITE_CREATED, (inviteCode) => {
 
-            console.log("Invite created event from chat");
-            if (topic.pkfp === topicInFocus){
-                refreshInvites(topic.pkfp);
-                appendEphemeralMessage(`New Invite Code: ${inviteCode}`)
-            }
-        })
-
-        topic.on(Events.NEW_CHAT_MESSAGE, (message)=>{
-
-            console.log(`New incoming chat message received for ${topic.pkfp}`)
-
-            if(!message.header.service){
-                if(message.header.author === topic.pkfp){
-                    playSound("message_sent")
-                } else {
-
-                    playSound("incoming_message")
-                }
-            }
-
-            if (topicInFocus !== topic.pkfp){
-                console.log("Topic not in focus")
-                incrementUnreadCounter(topic.pkfp)
-                return
-            }
-
-            let alias = "";
-            if (message.header.author){
-                alias  = topic.getParticipantAlias(message.header.author) ||
-                    message.header.author.substring(0, 8)
-            }
-            console.log("Appending message");
-            appendMessageToChat({
-                nickname: message.header.nickname,
-                alias: alias,
-                body: message.body,
-                timestamp: message.header.timestamp,
-                pkfp: message.header.author,
-                messageID: message.header.id,
-                service: message.header.service,
-                private: message.header.private,
-                recipient: message.header.recipient,
-                attachments: message.attachments
-            }, topicInFocus, util.$("#messages-window-1"));
-
-            scrollChatDown()
-        })
-
-        topic.on(Events.METADATA_UPDATED, ()=>{
-            refreshTopics();
-        })
-
-        topic.on(Events.SETTINGS_UPDATED, ()=>{
-            console.log("Settings updated event from chat");
-            refreshParticipants(topic.pkfp);
+        console.log("Invite created event from chat");
+        if (topic.pkfp === topicInFocus) {
             refreshInvites(topic.pkfp);
-            updateMessagesAliases(topic.pkfp)
-        })
+            appendEphemeralMessage(`New Invite Code: ${inviteCode}`)
+        }
+    })
+
+    topic.on(Events.NEW_CHAT_MESSAGE, (message) => {
+
+        console.log(`New incoming chat message received for ${topic.pkfp}`)
+
+        if (!message.header.service) {
+            if (message.header.author === topic.pkfp) {
+                playSound("message_sent")
+            } else {
+
+                playSound("incoming_message")
+            }
+        }
+
+        if (topicInFocus !== topic.pkfp) {
+            console.log("Topic not in focus")
+            incrementUnreadCounter(topic.pkfp)
+            return
+        }
+
+        let alias = "";
+        if (message.header.author) {
+            alias = topic.getParticipantAlias(message.header.author) ||
+                message.header.author.substring(0, 8)
+        }
+        console.log("Appending message");
+        appendMessageToChat({
+            nickname: message.header.nickname,
+            alias: alias,
+            body: message.body,
+            timestamp: message.header.timestamp,
+            pkfp: message.header.author,
+            messageID: message.header.id,
+            service: message.header.service,
+            private: message.header.private,
+            recipient: message.header.recipient,
+            attachments: message.attachments
+        }, topicInFocus, util.$("#messages-window-1"));
+
+        scrollChatDown()
+    })
+
+    topic.on(Events.METADATA_UPDATED, () => {
+        refreshTopics();
+    })
+
+    topic.on(Events.SETTINGS_UPDATED, () => {
+        console.log("Settings updated event from chat");
+        refreshParticipants(topic.pkfp);
+        refreshInvites(topic.pkfp);
+        updateMessagesAliases(topic.pkfp)
+    })
 
 }
 
-function postLogin(vault){
+function postLogin(vault) {
     //sending post_login request
     let message = new Message(chat.version);
     message.setSource(vault.id);
@@ -1786,24 +1805,24 @@ function postLogin(vault){
     message.addNonce();
     message.body.topics = Object.keys(topics);
     message.signMessage(vault.privateKey);
-    vault.once(Internal.POST_LOGIN_DECRYPT, (msg)=>{
+    vault.once(Internal.POST_LOGIN_DECRYPT, (msg) => {
         postLoginDecrypt(msg, vault);
     })
     connector.send(message);
 }
 
-    // Decrypts topic authorities' and hidden services keys
-    // and re-encrypts them with session key, so island can poke all services
-function postLoginDecrypt(msg, vault){
+// Decrypts topic authorities' and hidden services keys
+// and re-encrypts them with session key, so island can poke all services
+function postLoginDecrypt(msg, vault) {
     console.log(`Got decrypt command from server.`)
     //decrypting and sending data back
 
-    let decryptBlob = (privateKey, blob, lengthChars = 4)=>{
+    let decryptBlob = (privateKey, blob, lengthChars = 4) => {
         let icn = new iCrypto();
         let symLength = parseInt(blob.substr(-lengthChars))
         let blobLength = blob.length;
-        let symk = blob.substring(blobLength- symLength - lengthChars, blobLength-lengthChars );
-        let cipher = blob.substring(0, blobLength- symLength - lengthChars);
+        let symk = blob.substring(blobLength - symLength - lengthChars, blobLength - lengthChars);
+        let cipher = blob.substring(0, blobLength - symLength - lengthChars);
         icn.addBlob("symcip", symk)
             .addBlob("cipher", cipher)
             .asym.setKey("priv", privateKey, "private")
@@ -1812,7 +1831,7 @@ function postLoginDecrypt(msg, vault){
         return icn.get("blob-raw")
     };
 
-    let encryptBlob = (publicKey, blob, lengthChars = 4)=>{
+    let encryptBlob = (publicKey, blob, lengthChars = 4) => {
         let icn = new iCrypto();
         icn.createSYMKey("sym")
             .asym.setKey("pub", publicKey, "public")
@@ -1827,21 +1846,21 @@ function postLoginDecrypt(msg, vault){
     let services = msg.body.services;
     let sessionKey = msg.body.sessionKey;
     let res = {}
-    for (let pkfp of Object.keys(services)){
+    for (let pkfp of Object.keys(services)) {
         let topicData = services[pkfp];
         let topicPrivateKey = topics[pkfp].privateKey;
 
         let clientHSPrivateKey, taHSPrivateKey, taPrivateKey;
 
-        if (topicData.clientHSPrivateKey){
+        if (topicData.clientHSPrivateKey) {
             clientHSPrivateKey = decryptBlob(topicPrivateKey, topicData.clientHSPrivateKey)
         }
 
-        if (topicData.topicAuthority && topicData.topicAuthority.taPrivateKey){
-            taPrivateKey = decryptBlob(topicPrivateKey, topicData.topicAuthority.taPrivateKey )
+        if (topicData.topicAuthority && topicData.topicAuthority.taPrivateKey) {
+            taPrivateKey = decryptBlob(topicPrivateKey, topicData.topicAuthority.taPrivateKey)
         }
 
-        if (topicData.topicAuthority && topicData.topicAuthority.taHSPrivateKey){
+        if (topicData.topicAuthority && topicData.topicAuthority.taHSPrivateKey) {
             taHSPrivateKey = decryptBlob(topicPrivateKey, topicData.topicAuthority.taHSPrivateKey)
         }
 
@@ -1849,16 +1868,16 @@ function postLoginDecrypt(msg, vault){
 
         let preDecrypted = {};
 
-        if (clientHSPrivateKey){
+        if (clientHSPrivateKey) {
             preDecrypted.clientHSPrivateKey = encryptBlob(sessionKey, clientHSPrivateKey)
         }
-        if (taPrivateKey || taHSPrivateKey){
+        if (taPrivateKey || taHSPrivateKey) {
             preDecrypted.topicAuthority = {}
         }
-        if (taPrivateKey){
+        if (taPrivateKey) {
             preDecrypted.topicAuthority.taPrivateKey = encryptBlob(sessionKey, taPrivateKey)
         }
-        if (taHSPrivateKey){
+        if (taHSPrivateKey) {
             preDecrypted.topicAuthority.taHSPrivateKey = encryptBlob(sessionKey, taHSPrivateKey)
         }
 
@@ -1915,25 +1934,25 @@ function copyInviteCode(event) {
 }
 
 
-function incrementUnreadCounter(pkfp){
+function incrementUnreadCounter(pkfp) {
     console.log("Incrementing unread messages counter");
-    if (!unreadCounters.hasOwnProperty(pkfp)){
+    if (!unreadCounters.hasOwnProperty(pkfp)) {
         unreadCounters[pkfp] = 1
     } else {
-         unreadCounters[pkfp]++;
+        unreadCounters[pkfp]++;
     }
     setUnreadMessagesIndicator(pkfp, unreadCounters[pkfp])
 }
 
-function resetUnreadCounter(pkfp){
+function resetUnreadCounter(pkfp) {
     console.log("Resetting unread messages counter");
     unreadCounters[pkfp] = 0
     setUnreadMessagesIndicator(pkfp, unreadCounters[pkfp])
 }
 
-function processConnectionStatusChanged(state){
+function processConnectionStatusChanged(state) {
     return
-    if (!state || state < 1 || state > 5){
+    if (!state || state < 1 || state > 5) {
         throw new Error(`Invaled  connection state: ${state}`)
     }
     if (!UIInitialized) return;
@@ -1941,24 +1960,24 @@ function processConnectionStatusChanged(state){
     let label = util.$("#connection-indicator-label");
     let reconnectButton = util.$("#reconnect-button");
     let reconnectSpinner = util.$("#reconnect-spinner");
-    let indicatorClasses = ["unknown", "connected", "error",  "dicsonnected", "connecting"];
+    let indicatorClasses = ["unknown", "connected", "error", "dicsonnected", "connecting"];
 
-    const disconnected = ()=>{
+    const disconnected = () => {
         label.innerText = "Island disconnected..."
-        util.addClass(indicator,"dicsonnected");
+        util.addClass(indicator, "dicsonnected");
         util.hide(reconnectButton)
         util.hide(reconnectSpinner)
         appendEphemeralMessage("Island disconnected...")
     }
 
-    const error = ()=>{
+    const error = () => {
         label.innerText = "Island disconnected..."
-        util.addClass(indicator,"error");
+        util.addClass(indicator, "error");
         util.hide(reconnectButton)
         util.hide(reconnectSpinner)
         appendEphemeralMessage("Island connection error...")
     }
-    const connected = ()=>{
+    const connected = () => {
         label.innerText = "Connected to island"
         util.addClass(indicator, "connected");
         util.hide(reconnectButton)
@@ -1966,7 +1985,7 @@ function processConnectionStatusChanged(state){
         appendEphemeralMessage("Connected to island")
     }
 
-    const connecting = ()=>{
+    const connecting = () => {
         label.innerText = "Connecting..."
         util.addClass(indicator, "connecting");
         util.hide(reconnectButton)
@@ -1975,32 +1994,32 @@ function processConnectionStatusChanged(state){
     }
 
 
-    for(let c of indicatorClasses){
+    for (let c of indicatorClasses) {
         util.removeClass(indicator, c);
     }
 
-    if(state === 1 ){
+    if (state === 1) {
         disconnected()
-    } else if(state === 5){
+    } else if (state === 5) {
         error();
-    } else if(state === 2){
+    } else if (state === 2) {
         connected()
     } else {
         connecting()
     }
 }
 
-function setUnreadMessagesIndicator(pkfp, num){
+function setUnreadMessagesIndicator(pkfp, num) {
     console.log("Setting unread messages indicator");
     let topicEl
 
-    for (let topic of util.$("#topics-list").children){
-        if (topic.getAttribute("pkfp") === pkfp){
+    for (let topic of util.$("#topics-list").children) {
+        if (topic.getAttribute("pkfp") === pkfp) {
             topicEl = topic;
             break;
         }
     }
-    if (!topicEl){
+    if (!topicEl) {
         console.log(`Error: topic element with pkfp ${pkfp} is not found`);
         return
     }
@@ -2008,7 +2027,7 @@ function setUnreadMessagesIndicator(pkfp, num){
     let unreadCounterLabel = topicEl.firstElementChild.children[2]
 
     util.html(unreadCounterLabel, "");
-    num ? unreadCounterLabel.appendChild(UI.bakeUnreadMessagesElement(num)) : 1===1;
+    num ? unreadCounterLabel.appendChild(UI.bakeUnreadMessagesElement(num)) : 1 === 1;
 }
 
 

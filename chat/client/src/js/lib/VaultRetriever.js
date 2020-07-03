@@ -28,8 +28,8 @@ export class VaultRetriever{
             try{
                 let data = await this.fetchVault()
                 cb(null, data);
-            }catch(err){
-                console.log(`Fetch vault error: ${err}`);
+            }catch(error){
+                console.log(`Fetch vault error: ${error}`);
                 cb(error)
             }
         })

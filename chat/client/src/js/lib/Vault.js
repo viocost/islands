@@ -10,6 +10,7 @@ import { XHR } from "./xhr"
 import * as semver from "semver";
 import { StateMachine } from "./AdvStateMachine"
 import { fetchJSON } from "./FetchJSON";
+import { ChatUtility } from "./ChatUtility";
 
 /**
  * Represents key vault
@@ -645,7 +646,6 @@ export class Vault{
         console.log(`Registring topic ${topic.pkfp}`);
         this.topics[topic.pkfp] = topic;
     }
-
 
 
 }

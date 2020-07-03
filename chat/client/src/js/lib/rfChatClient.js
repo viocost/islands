@@ -1,5 +1,3 @@
-export class ChatClient{
-    constructor(){
+export class ChatClient {
 
-    }
 }

@@ -19,6 +19,40 @@ export class VaultHolder{
         this.vault = null;
         this.vaultId = null;
         this.error = null
+        this.sm = this.prepareStateMachine()
+    }
+
+    prepareStateMachine(){
+        return new StateMachine(this, {
+            name: "Vault Holder SM",
+            stateMap: {
+                noVaultNoPassword: {
+                    initial: true,
+
+                },
+
+                noVaultHasPassword: {
+
+                },
+
+                hasVaultNoPassword: {
+
+                },
+
+                decryptingVault: {
+
+                },
+
+                loggedIn: {
+                    final: true
+                }
+
+
+
+
+
+            }
+       })
     }
 
     unlock(password){
