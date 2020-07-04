@@ -11,6 +11,7 @@ import { Topic } from "./lib/Topic";
 import { ArrivalHub } from "./lib/ArrivalHub"
 import { Connector } from "./lib/Connector"
 import { TopicRetriever } from "./lib/TopicRetriever";
+import { LoginAgent } from "./lib/LoginAgent";
 import { TopicCreator } from "./lib/TopicCreator";
 import { runConnectorTest } from "./test/connector"
 import { ChatUtility } from "./lib/ChatUtility";
