@@ -15,8 +15,6 @@ import { LoginAgent } from "./lib/LoginAgent";
 import { TopicCreator } from "./lib/TopicCreator";
 import { runConnectorTest } from "./test/connector"
 import { ChatUtility } from "./lib/ChatUtility";
-import { VaultHolder } from './lib/VaultHolder';
-import { Vault } from "./lib/Vault";
 
 
 
@@ -47,6 +45,7 @@ let connector;
 let arrivalHub;
 let chat = null//new ChatClient();
 let vaultHolder = null;
+let loginAgent = null;
 let topics = {};
 let metadata = {};
 
@@ -94,20 +93,23 @@ window.statusConn = processConnectionStatusChanged;
 // ~END TEST
 
 document.addEventListener('DOMContentLoaded', event => {
-
     loadSounds();
     initChat();
     initLoginUI();
-    vaultHolder = new VaultHolder();
-    vaultHolder.fetchVault()
-
     connector = new Connector("/chat");
     arrivalHub = new ArrivalHub(connector);
     version = islandsVersion()
 
-    chat.on(Events.CONNECTION_STATUS_CHANGED, processConnectionStatusChanged);
-    //util.$("#print-dpi").onclick = ()=>{alert(window.devicePixelRatio)}
-    //util.$("#print-max").onclick = ()=>{alert(window.innerWidth)}
+    loginAgent = new LoginAgent({
+        version: version,
+        connector: connector,
+        arrivalHub: arrivalHub
+    })
+
+    loginAgent.fetchVault();
+
+
+ //   chat.on(Events.CONNECTION_STATUS_CHANGED, processConnectionStatusChanged);
 });
 
 
@@ -1662,13 +1664,13 @@ function initSession() {
         throw new Error("Vault password element is not found.");
     }
 
-    if (!vaultHolder.unlock(passwordEl.value)) {
-        processLoginResult(new Error(`Error decrypting vault: ${vaultHolder.error} \nCheck password and try again!`))
-        return;
-    }
+    loginAgent.once(Events.LOGIN_ERROR, processLoginResult);
+    loginAgent.once(Events.LOGIN_SUCCESS, resVaultHolder=>{
+        vaultHolder = resVaultHolder;
+        loadTopics(vaultHolder.getVault())
+    })
 
-    loadTopics(vaultHolder.getVault())
-
+    loginAgent.acceptPassword(passwordEl.value);
 }
 
 function loadTopics(vault) {

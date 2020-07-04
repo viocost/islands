@@ -1,14 +1,38 @@
 import { StateMachine } from "./AdvStateMachine";
-
+import { VaultHolder } from './VaultHolder';
+import { Vault } from "./Vault";
+import { WildEmitter } from "./WildEmitter"
+import { Events } from "../../../../common/Events";
 
 export class LoginAgent{
     //In object pass UI functions
-    constructor({}){
-        this.sm = this.prepareStateMachine()
+    constructor({ version, connector, arrivalHub }){
+        WildEmitter.mixin(this);
+        this.version = version;
+        this.connector = connector;
+        this.arrivalHub = arrivalHub;
+        this.sm = this._prepareStateMachine()
+        this.vaultId;
+        this.vaultEncrypted;
+        this.vaultHolder;
+    }
+
+    // ---------------------------------------------------------------------------------------------------------------------------
+    // PUBLIC METHODS
+    fetchVault(){
+        this.sm.handle.fetchVault()
+    }
+
+    acceptPassword(password){
+        this.password = password;
+        this.sm.handle.gotPassword()
     }
 
 
-    prepareStateMachine(){
+    // ---------------------------------------------------------------------------------------------------------------------------
+    // PRIVATE METHODS
+
+    _prepareStateMachine(){
         return new StateMachine(this, {
             name: "Login Agent SM",
             stateMap: {
@@ -16,7 +40,11 @@ export class LoginAgent{
                     initial: true,
                     transitions: {
                         fetchVault: {
-                            actions: this.processFetchVaultResult
+                            actions: this._performFetchVault
+                        },
+
+                        gotPassword: {
+                            state: "noVaultHasPassword",
                         },
 
                         gotVault: {
@@ -47,7 +75,7 @@ export class LoginAgent{
 
                 },
                 decryptingVault: {
-                    entry: this.tryDecrypt,
+                    entry: this._tryDecrypt,
                     transitions: {
                         decryptError: {
                             state: "hasVaultNoPassword"
@@ -73,22 +101,12 @@ export class LoginAgent{
        })
     }
 
-    fetchVault(){
-        this.sm.handle.fetchVault()
-        console.log("Fetching vault");
-
-        if(null != this.vaultEncrypted){
-            return
-        }
-
-        setImmediate(()=>{
-            const vaultRetriever = new VaultRetriever("/vault");
-            vaultRetriever.run(this.processFetchVaultResult.bind(this))
-        })
+    _performFetchVault(){
+        const vaultRetriever = new VaultRetriever("/vault");
+        vaultRetriever.run(this._processFetchVaultResult.bind(this))
     }
 
-
-    processFetchVaultResult(err, data){
+    _processFetchVaultResult(err, data){
 
         if (err){
             console.log(`Fetch vault error: ${err}`);
@@ -99,19 +117,11 @@ export class LoginAgent{
         console.log(`Got the vault: ${data} this: ${this}`);
         this.vaultId = data.vaultId;
         this.vaultEncrypted = data.vault;
+        this.handle.gotVault();
     }
 
-    notifyLoginSuccess(){
-
-    }
-
-    tryDecrypt(stateMachine, evName, args){
-
-        const password = args[0];
-
-        if(this.vaultEncrypted === null){
-            return false;
-        }
+    _tryDecrypt(){
+        let password = this.password;
 
         let ic = new iCrypto();
 
@@ -122,8 +132,7 @@ export class LoginAgent{
                 .createPasswordBasedSymKey("sym", password, "s16")
                 .AESDecrypt("v_cip", "sym", "vault_raw", true)
         } catch (err){
-            this.error = `Error unlocking vault: ${err}\n`
-            return false;
+            this.sm.handle.decryptError(err);
         }
 
         // Populating new object
@@ -150,8 +159,17 @@ export class LoginAgent{
             }
         }
 
-        this.vault = vault;
-        return true;
+        this.vaultHolder = new VaultHolder(vault)
+        this.sm.handle.decryptSuccess();
+    }
+
+    _notifyLoginSuccess(){
+        this.emit(Events.LOGIN_SUCCESS, this.vaultHolder)
+
+    }
+
+    _notifyLoginError(err){
+        this.emit(Events.LOGIN_ERROR, err);
     }
 
 }
