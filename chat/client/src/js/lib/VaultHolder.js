@@ -1,7 +1,7 @@
 export class VaultHolder{
     constructor(vault, password){
-        this.password = null;
-        this.vault = null;
+        this.password = password;
+        this.vault = vault;
     }
 
     getVault(){

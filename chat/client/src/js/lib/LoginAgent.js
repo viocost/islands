@@ -1,8 +1,11 @@
 import { StateMachine } from "./AdvStateMachine";
-import { VaultHolder } from './VaultHolder';
+import { VaultHolder } from "./VaultHolder";
+import { VaultRetriever } from "./VaultRetriever";
 import { Vault } from "./Vault";
-import { WildEmitter } from "./WildEmitter"
+import { WildEmitter } from "./WildEmitter";
 import { Events } from "../../../../common/Events";
+import { iCrypto } from "./iCrypto";
+
 
 export class LoginAgent{
     //In object pass UI functions
@@ -89,7 +92,7 @@ export class LoginAgent{
                 },
 
                 loggedIn: {
-                    entry: this.notifyLoginSuccess,
+                    entry: this._notifyLoginSuccess,
                     final: true
                 }
 
@@ -117,10 +120,11 @@ export class LoginAgent{
         console.log(`Got the vault: ${data} this: ${this}`);
         this.vaultId = data.vaultId;
         this.vaultEncrypted = data.vault;
-        this.handle.gotVault();
+        this.sm.handle.gotVault();
     }
 
     _tryDecrypt(){
+        console.log("Decrypting vault...");
         let password = this.password;
 
         let ic = new iCrypto();
@@ -132,6 +136,7 @@ export class LoginAgent{
                 .createPasswordBasedSymKey("sym", password, "s16")
                 .AESDecrypt("v_cip", "sym", "vault_raw", true)
         } catch (err){
+            console.log(`Decrypt error: ${err}`);
             this.sm.handle.decryptError(err);
         }
 
@@ -160,6 +165,7 @@ export class LoginAgent{
         }
 
         this.vaultHolder = new VaultHolder(vault)
+        console.log('decrypt success');
         this.sm.handle.decryptSuccess();
     }
 

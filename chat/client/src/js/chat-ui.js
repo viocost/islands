@@ -1666,6 +1666,7 @@ function initSession() {
 
     loginAgent.once(Events.LOGIN_ERROR, processLoginResult);
     loginAgent.once(Events.LOGIN_SUCCESS, resVaultHolder=>{
+        console.log("Login agent success handler");
         vaultHolder = resVaultHolder;
         loadTopics(vaultHolder.getVault())
     })

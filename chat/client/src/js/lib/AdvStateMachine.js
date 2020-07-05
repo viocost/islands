@@ -25,8 +25,8 @@ const err = createDerivedErrorClasses(StateMachineError, {
 
 
 class StateMachine {
-    static  Discard () {}  ;
-    static  Warn  (smName, prop) { console.warn(`${smName}: property ${prop} does not exist in current state`) };
+    static Discard () {}  ;
+    static Warn  (smName, prop) { console.warn(`${smName}: property ${prop} does not exist in current state`) };
     static Die   (prop, smName) { throw new err.msgNotExist(`${smName}, ${prop}`)   };
     static TraceLevel = {
         NONE: Symbol("none"),
@@ -36,7 +36,7 @@ class StateMachine {
 
 
     constructor(obj, { stateMap, name = "State Machine" },
-        { msgNotExistMode = StateMachine.Discard, traceLevel = StateMachine.TraceLevel.INFO}){
+        { msgNotExistMode = StateMachine.Discard, traceLevel = StateMachine.TraceLevel.INFO} = {}){
 
         this.validateStateMap(stateMap)
 
@@ -87,6 +87,7 @@ class StateMachine {
                                 target.processEvent(prop, args);
                             }catch(err){
                                 target.error = err;
+                                console.warn(`${target.name}: Event handler "${prop}" thrown an exception: ${err}`)
                                 if(target.isDebug()) throw err
                             }
                         })
