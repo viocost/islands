@@ -67,7 +67,7 @@ export class SendMessageAgent{
             message.travelLog = {};
             message.travelLog[currentTime] = "Outgoing processed on client.";
             message.signMessage(self.topic.privateKey);
-            self.topic.messageQueue.enqueue(message);
+            self.topic.connector.send(message);
             console.log("Chat message enqueued");
         }, 100)
 

@@ -1560,6 +1560,7 @@ function loadSounds() {
 }
 
 function playSound(sound) {
+    let vault = vaultHolder.getVault();
     let soundOn = !vault.hasOwnProperty("settings") ||
         !vault.settings.hasOwnProperty("sound") ||
         vault.settings.sound
@@ -1666,7 +1667,16 @@ function initSession() {
 
     loginAgent.once(Events.LOGIN_ERROR, processLoginResult);
     loginAgent.once(Events.LOGIN_SUCCESS, resVaultHolder=>{
-        console.log("Login agent success handler");
+        console.log("%c Login agent success handler", "color: red; font-size: 20px");
+
+        //TODO REFACTORING REQUIRED!
+        chat = new ChatClient({ version: version });
+        chat.vault = resVaultHolder.getVault();
+        chat.connector = connector;
+        chat.arrivalHub = arrivalHub;
+        chat.topics = topics;
+        //end//////////////////////////////////////////////////////////////////
+       
         vaultHolder = resVaultHolder;
         loadTopics(vaultHolder.getVault())
     })

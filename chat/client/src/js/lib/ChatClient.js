@@ -28,11 +28,8 @@ export class ChatClient{
         this.version = opts.version;
         this.vault;
         this.topics;
-        this.messageQueue;
         this.connector;
         this.arrivalHub;
-        this.sessionKey;
-        this.agents = [];
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------
@@ -55,101 +52,6 @@ export class ChatClient{
     processVault(err, data){
 
 
-    }
-    initSession(password){
-
-        Vault.fetchVault(this.processVault);
-
-        setImmediate(async ()=>{
-            try{
-                if (!password){
-                    throw new Error("Password is missing.")
-                }
-                console.log("Initializing session");
-                let response = await this.getVault();
-
-                let { vault, vaultId } = response;
-                if (!vault){
-                    throw new Error("Vault not found")
-                }
-
-                let vaultObj = new Vault()
-                await vaultObj.initSaved(this.version, vault.vault, password, vault.topics)
-                this.vault = vaultObj;
-                console.log("Got vault. Initializing");
-                //Initialize vault
-
-                // Initialize multiplexor socket
-                this.connector = new Connector();
-                this.setConnectorListeners()
-
-                //Initializing arrival hub
-                this.arrivalHub = new ArrivalHub(this.connector);
-
-                //Initialize message queue
-                this.messageQueue = new MessageQueue(this.connector);
-
-
-                this.vault.setId(vaultId);
-                console.log("Vault initialized. Initializing connector...");
-
-
-                console.log("Bootstrapping vault...");
-                //bootstrapping vault
-                await this.vault.bootstrap(this.arrivalHub, this.messageQueue, this.version);
-
-
-                console.log("Setting listeneres");
-                this.setVaultListeners()
-
-                console.log("Establishing connection");
-                await this.connector.establishConnection(vaultId);
-                console.log("Connection established. Initializing arrival hub..");
-
-
-                console.log(`Initializing topic listeners...`);
-                this.topics = this.vault.topics;
-                for(let pkfp of Object.keys(this.topics)){
-                    this.topics[pkfp].bootstrap(this.messageQueue, this.arrivalHub, this.version);
-                    this.initTopicListeners(this.topics[pkfp])
-                }
-
-                //At this point we have loaded all topic keys, so login is successful
-                this.emit(Events.LOGIN_SUCCESS)
-
-                // Post-login
-                this.postLogin();
-            } catch (err){
-                let errMsg = `Login error: ${err}. \nCheck connection and entered password and try again.`
-                console.log(errMsg);
-                this.emit(Events.LOGIN_ERROR, new Error(errMsg));
-                throw new Error(errMsg);
-            }
-        })
-    }
-
-
-
-    setVaultListeners(){
-        let self = this
-        this.vault.on(Internal.SESSION_KEY, (message)=>{
-            this.sessionKey = message.body.sessionKey;
-            console.log("Session key is set!")
-        })
-        this.vault.on(Events.TOPIC_CREATED, (pkfp)=>{
-            self.initTopicListeners(self.topics[pkfp])
-            self.emit(Events.TOPIC_CREATED, pkfp);
-        })
-
-        this.vault.on(Internal.TOPIC_DELETED, (pkfp)=>{
-            self.emit(Events.TOPIC_DELETED, pkfp);
-        })
-
-
-        this.vault.on(Events.VAULT_UPDATED, ()=>{
-            console.log("Vault updated in chat client");
-            self.emit(Events.VAULT_UPDATED);
-        })
     }
 
     setConnectorListeners(){
@@ -273,7 +175,7 @@ export class ChatClient{
         request.body.vaultSign = ic.get("sign")
         request.addNonce();
         request.signMessage(topic.getPrivateKey());
-        self.messageQueue.enqueue(request);
+        self.connector.send(request);
     }
 
 
@@ -301,7 +203,7 @@ export class ChatClient{
         request.body.vaultSign = ic.get("sign")
         request.addNonce();
         request.signMessage(topic.getPrivateKey());
-        self.messageQueue.enqueue(request);
+        self.connector.send(request);
     }
 
     //~END DELETE TOPIC////////////////////////////////////////////////////////
@@ -420,7 +322,7 @@ export class ChatClient{
         //     this.vault.pendingInvites[inviteID] = {                                                                                       //
         //         nickname: nickname,                                                                                                       //
         //     }                                                                                                                             //
-        //     self.messageQueue.enqueue(request);                                                                                           //
+        //     self.connector.send(request);                                                                                           //
         //     now = new Date()                                                                                                              //
         //     console.log(`Request sent to island in  ${(now - sendStart) / 1000}sec. ${ (now - start) / 1000 } elapsed since beginning.`); //
         // }, 100)                                                                                                                           //
@@ -504,7 +406,7 @@ export class ChatClient{
 
         //Sending request
 
-        self.messageQueue.enqueue(request);
+        self.connector.send(request);
     }
 
     initTopicSuccess(self, request, pendingTopic ){

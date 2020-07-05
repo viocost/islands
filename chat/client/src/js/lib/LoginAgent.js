@@ -95,11 +95,6 @@ export class LoginAgent{
                     entry: this._notifyLoginSuccess,
                     final: true
                 }
-
-
-
-
-
             }
        })
     }
