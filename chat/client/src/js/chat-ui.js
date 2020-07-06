@@ -1723,6 +1723,7 @@ function setVaultListeners(vault) {
         }
 
         topics[pkfp] = vault.topics[pkfp];
+        setTopicListeners(topics[pkfp]);
         refreshTopics()
         toastr.success("New topic has been initialized!")
     })

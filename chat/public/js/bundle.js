@@ -64964,7 +64964,7 @@ var Vault_Vault = /*#__PURE__*/function () {
       var newTopic = new Topic_Topic(pkfp, topicData.name, topicData.key, topicData.comment);
       console.log("New topic initialized: ".concat(pkfp, ", ").concat(topicData.name, " "));
       newTopic.loadMetadata(metadata);
-      newTopic.bootstrap(self.messageQueue, self.arrivalHub, self.version);
+      newTopic.bootstrap(self.connector, self.arrivalHub, self.version);
       self.topics[pkfp] = newTopic;
 
       if (self.pendingInvites.hasOwnProperty(data.body.inviteCode)) {
@@ -69821,6 +69821,7 @@ function setVaultListeners(vault) {
     }
 
     chat_ui_topics[pkfp] = vault.topics[pkfp];
+    setTopicListeners(chat_ui_topics[pkfp]);
     refreshTopics();
     lib_toastr.success("New topic has been initialized!");
   });

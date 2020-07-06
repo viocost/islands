@@ -492,7 +492,7 @@ export class Vault{
 
         console.log(`New topic initialized: ${pkfp}, ${topicData.name} `)
         newTopic.loadMetadata(metadata);
-        newTopic.bootstrap(self.messageQueue, self.arrivalHub, self.version);
+        newTopic.bootstrap(self.connector, self.arrivalHub, self.version);
         self.topics[pkfp] = newTopic;
 
         if (self.pendingInvites.hasOwnProperty(data.body.inviteCode)){
