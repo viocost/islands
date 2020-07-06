@@ -131,7 +131,7 @@ export class LoginAgent{
                 .createPasswordBasedSymKey("sym", password, "s16")
                 .AESDecrypt("v_cip", "sym", "vault_raw", true)
         } catch (err){
-            console.log(`Decrypt error: ${err}`);
+            console.trace(`Decrypt error: ${err}`);
             this.sm.handle.decryptError(err);
         }
 

@@ -16,7 +16,7 @@ import { TopicCreator } from "./lib/TopicCreator";
 import { runConnectorTest } from "./test/connector"
 import { ChatUtility } from "./lib/ChatUtility";
 import { Vault } from "./lib/Vault";
-
+import { TopicJoinAgent } from "./lib/TopicJoinAgent";
 
 // TEMP IMPORTS FOR FURTHER REFACTORING
 import { iCrypto } from "./lib/iCrypto";
@@ -199,7 +199,7 @@ function initUI(vaultHolder) {
             toastr.warning("All fields are required");
             return;
         }
-        chat.joinTopic(nickname, topicName, inviteCode);
+        joinTopic(nickname, topicName, inviteCode);
         toastr.info("Attempting to join topic");
         topicJoinModal.close();
     })
@@ -984,8 +984,8 @@ function buildMessageHeading(message, topicPkfp) {
 function preparePrivateMark(message, topic) {
     let text = "(private)"
     if (message.pkfp === topic.pkfp) {
-        let nickname = topics[pkfp].getParticipantNickname(message.recipient);
-        let alias = topics[pkfp].getParticipantAlias(message.recipient) || message.recipient.substring(0, 8);
+        let nickname = topics[topic.pkfp].getParticipantNickname(message.recipient);
+        let alias = topics[topic.pkfp].getParticipantAlias(message.recipient) || message.recipient.substring(0, 8);
         text = `(private to: ${alias} -- ${nickname})`;
     }
 
@@ -1585,7 +1585,8 @@ function initChat() {
     })
 
     chat.on(Events.TOPIC_JOINED, (data) => {
-        console.log(`Topic joined: ${data}`)
+        console.log(`%c YOU JOINED TOPIC: ${data.pkfp}`, "color: green; font-size: 20px");
+        setTopicListeners(data.pkfp)
         appendEphemeralMessage(`You have joined topic ${data.pkfp}`)
         refreshTopics()
     })
@@ -1681,6 +1682,23 @@ function loadTopics(vault) {
     retriever.once("finished", (data) => initTopics(data, vault))
     retriever.once("error", (err) => { console.log(err) })
     retriever.run();
+}
+
+
+function joinTopic(nickname, topicName, inviteString) {
+    let vault = vaultHolder.getVault()
+    let topicJoinAgent = new TopicJoinAgent(nickname, topicName, inviteString, arrivalHub, connector, vault);
+
+    topicJoinAgent.on(Internal.JOIN_TOPIC_SUCCESS, (data)=>{
+        // data is object: { pkfp: pkfp, nickname: nickname }
+        console.log("Topic join successful");
+        let topic = vault.topics[data.pkfp]
+        topics[data.pkfp] = topic
+        setTopicListeners(topic)
+        refreshTopics();
+    })
+    topicJoinAgent.on(Internal.JOIN_TOPIC_FAIL, ()=>{ console.log("Join topic fail received from the agent")})
+    topicJoinAgent.start()
 }
 
 function initTopics(data, vault) {

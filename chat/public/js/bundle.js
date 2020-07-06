@@ -66287,14 +66287,14 @@ function TopicJoinAgent_createClass(Constructor, protoProps, staticProps) { if (
 
 
 var TopicJoinAgent_TopicJoinAgent = /*#__PURE__*/function () {
-  function TopicJoinAgent(nickname, topicName, inviteString, arrivalHub, messageQueue, vault) {
+  function TopicJoinAgent(nickname, topicName, inviteString, arrivalHub, connector, vault) {
     TopicJoinAgent_classCallCheck(this, TopicJoinAgent);
 
     WildEmitter["a" /* WildEmitter */].mixin(this);
     this.nickname = nickname;
     this.topicName = topicName;
     this.inviteString = inviteString;
-    this.messageQueue = messageQueue;
+    this.connector = connector;
     this.arrivalHub = arrivalHub;
     this.vault = vault;
     this.version = vault.version;
@@ -66332,7 +66332,7 @@ var TopicJoinAgent_TopicJoinAgent = /*#__PURE__*/function () {
         self.inviterResidence = invite[0];
         self.inviterPkfp = invite[1];
         self.inviteCode = invite[2];
-        if (!self.inviteCode || !self.inviterPkfp || !/^[a-z2-7]{16}\.onion$/.test(self.inviterResidence)) throw new error("Invite request is invalid"); // Encrypted vault record
+        if (!self.inviteCode || !self.inviterPkfp || !/^[a-z2-7]{16}\.onion$/.test(self.inviterResidence)) throw new Error("Invite request is invalid"); // Encrypted vault record
 
         console.log("Topic name is: ".concat(self.topicName));
         var vaultRecord = self.vault.prepareVaultTopicRecord(self.version, self.pkfp, self.privateKey, self.topicName);
@@ -66368,7 +66368,7 @@ var TopicJoinAgent_TopicJoinAgent = /*#__PURE__*/function () {
           self.onJoinTopicFail(self, msg);
         });
         console.log("Sending join request");
-        self.messageQueue.enqueue(request);
+        self.connector.send(request);
       }, 100);
     }
   }, {
@@ -66411,7 +66411,7 @@ var TopicJoinAgent_TopicJoinAgent = /*#__PURE__*/function () {
 
       var metadata = msg.body.metadata;
       topic.loadMetadata(metadata);
-      topic.bootstrap(self.messageQueue, self.arrivalHub, self.version);
+      topic.bootstrap(self.connector, self.arrivalHub, self.version);
       console.log("Preparing settings with nickname ".concat(self.nickname));
       topic.setParticipantNickname(self.nickname, self.pkfp);
       self.vault.registerTopic(topic);
@@ -66771,13 +66771,13 @@ function BootParticipantAgent_createClass(Constructor, protoProps, staticProps) 
 
 
 var BootParticipantAgent_BootParticipantAgent = /*#__PURE__*/function () {
-  function BootParticipantAgent(topic, bootCandidatePkfp, messageQueue) {
+  function BootParticipantAgent(topic, bootCandidatePkfp, connector) {
     BootParticipantAgent_classCallCheck(this, BootParticipantAgent);
 
     WildEmitter["a" /* WildEmitter */].mixin(this);
     this.topic = topic;
     this.bootCandidatePkfp = bootCandidatePkfp;
-    this.messageQueue = messageQueue;
+    this.connector = connector;
   }
 
   BootParticipantAgent_createClass(BootParticipantAgent, [{
@@ -66794,7 +66794,7 @@ var BootParticipantAgent_BootParticipantAgent = /*#__PURE__*/function () {
         request.setAttribute("pkfp", _this.bootCandidatePkfp);
         request.signMessage(_this.topic.privateKey);
 
-        _this.messageQueue.enqueue(request);
+        _this.connector.send(request);
 
         console.log("request sent");
       }, 100);
@@ -67023,41 +67023,6 @@ var ChatClient_ChatClient = /*#__PURE__*/function () {
      */
 
   }, {
-    key: "joinTopic",
-    value: function () {
-      var _joinTopic = ChatClient_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(nickname, topicName, inviteString) {
-        var topicJoinAgent, self;
-        return regeneratorRuntime.wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                topicJoinAgent = new TopicJoinAgent_TopicJoinAgent(nickname, topicName, inviteString, this.arrivalHub, this.connector, this.vault);
-                self = this;
-                topicJoinAgent.on(Events["Internal"].JOIN_TOPIC_SUCCESS, function (data) {
-                  // data is object: { pkfp: pkfp, nickname: nickname }
-                  self.initTopicListeners(self.topics[data.pkfp]);
-                  self.emit(Events["Events"].TOPIC_JOINED, data);
-                });
-                topicJoinAgent.on(Events["Internal"].JOIN_TOPIC_FAIL, function () {
-                  console.log("Join topic fail received from the agent");
-                });
-                topicJoinAgent.start();
-
-              case 5:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee, this);
-      }));
-
-      function joinTopic(_x, _x2, _x3) {
-        return _joinTopic.apply(this, arguments);
-      }
-
-      return joinTopic;
-    }()
-  }, {
     key: "getTopicName",
     value: function getTopicName(pkfp) {
       if (!this.topics.hasOwnProperty(pkfp)) {
@@ -67163,23 +67128,23 @@ var ChatClient_ChatClient = /*#__PURE__*/function () {
   }, {
     key: "getMessagesAsync",
     value: function () {
-      var _getMessagesAsync = ChatClient_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(pkfp) {
-        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+      var _getMessagesAsync = ChatClient_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(pkfp) {
+        return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
-            switch (_context2.prev = _context2.next) {
+            switch (_context.prev = _context.next) {
               case 0:
                 assert(this.topics[pkfp], "Topic ".concat(pkfp, " not found!"));
-                return _context2.abrupt("return", this.topics[pkfp].getMessagesAsync());
+                return _context.abrupt("return", this.topics[pkfp].getMessagesAsync());
 
               case 2:
               case "end":
-                return _context2.stop();
+                return _context.stop();
             }
           }
-        }, _callee2, this);
+        }, _callee, this);
       }));
 
-      function getMessagesAsync(_x4) {
+      function getMessagesAsync(_x) {
         return _getMessagesAsync.apply(this, arguments);
       }
 
@@ -67316,14 +67281,14 @@ var ChatClient_ChatClient = /*#__PURE__*/function () {
   }], [{
     key: "fetchVault",
     value: function () {
-      var _fetchVault = ChatClient_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+      var _fetchVault = ChatClient_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
         var url, response;
-        return regeneratorRuntime.wrap(function _callee3$(_context3) {
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
-            switch (_context3.prev = _context3.next) {
+            switch (_context2.prev = _context2.next) {
               case 0:
                 url = "/";
-                _context3.next = 3;
+                _context2.next = 3;
                 return fetch(url, {
                   method: 'POST',
                   headers: {
@@ -67332,28 +67297,28 @@ var ChatClient_ChatClient = /*#__PURE__*/function () {
                 });
 
               case 3:
-                response = _context3.sent;
+                response = _context2.sent;
 
                 if (response.ok) {
-                  _context3.next = 6;
+                  _context2.next = 6;
                   break;
                 }
 
                 throw new Error("".concat(response.status, ": ").concat(response.statusText));
 
               case 6:
-                _context3.next = 8;
+                _context2.next = 8;
                 return response.json();
 
               case 8:
-                return _context3.abrupt("return", _context3.sent);
+                return _context2.abrupt("return", _context2.sent);
 
               case 9:
               case "end":
-                return _context3.stop();
+                return _context2.stop();
             }
           }
-        }, _callee3);
+        }, _callee2);
       }));
 
       function fetchVault() {
@@ -67621,7 +67586,7 @@ var LoginAgent_LoginAgent = /*#__PURE__*/function () {
       try {
         ic.addBlob("s16", this.vaultEncrypted.substring(0, 256)).addBlob("v_cip", this.vaultEncrypted.substr(256)).hexToBytes("s16", "salt").createPasswordBasedSymKey("sym", password, "s16").AESDecrypt("v_cip", "sym", "vault_raw", true);
       } catch (err) {
-        console.log("Decrypt error: ".concat(err));
+        console.trace("Decrypt error: ".concat(err));
         this.sm.handle.decryptError(err);
       } // Populating new object
 
@@ -67961,6 +67926,7 @@ function chat_ui_asyncToGenerator(fn) { return function () { var self = this, ar
 
 
 
+
  // TEMP IMPORTS FOR FURTHER REFACTORING
 
 
@@ -68115,7 +68081,7 @@ function initUI(vaultHolder) {
       return;
     }
 
-    chat_ui_chat.joinTopic(nickname, topicName, inviteCode);
+    joinTopic(nickname, topicName, inviteCode);
     lib_toastr.info("Attempting to join topic");
     topicJoinModal.close();
   });
@@ -68645,12 +68611,11 @@ function processCtxAliasClick() {
       aliasInput.setAttribute("placeholder", "Enter new alias");
     } else if (hasClass(asset, "participant-list-item")) {
       // For participant
-      var _pkfp = asset.getAttribute("pkfp");
-
+      var pkfp = asset.getAttribute("pkfp");
       subject.type = "participant";
-      subject.pkfp = _pkfp;
+      subject.pkfp = pkfp;
 
-      if (_pkfp === topicInFocus) {
+      if (pkfp === topicInFocus) {
         //Changing my nickname
         dom_util_text(title, "Change my nickname");
         dom_util_text(forLabel, "");
@@ -68658,7 +68623,7 @@ function processCtxAliasClick() {
       } else {
         //Alias for another participant
         dom_util_text(title, "New alias");
-        dom_util_text(forLabel, "For ".concat(chat_ui_topics[topicInFocus].getParticipantNickname(_pkfp), "(").concat(_pkfp.substring(0, 32), "...)"));
+        dom_util_text(forLabel, "For ".concat(chat_ui_topics[topicInFocus].getParticipantNickname(pkfp), "(").concat(pkfp.substring(0, 32), "...)"));
         aliasInput.setAttribute("placeholder", "Enter new alias");
       }
     } else {
@@ -68951,8 +68916,8 @@ function preparePrivateMark(message, topic) {
   var text = "(private)";
 
   if (message.pkfp === topic.pkfp) {
-    var nickname = chat_ui_topics[pkfp].getParticipantNickname(message.recipient);
-    var alias = chat_ui_topics[pkfp].getParticipantAlias(message.recipient) || message.recipient.substring(0, 8);
+    var nickname = chat_ui_topics[topic.pkfp].getParticipantNickname(message.recipient);
+    var alias = chat_ui_topics[topic.pkfp].getParticipantAlias(message.recipient) || message.recipient.substring(0, 8);
     text = "(private to: ".concat(alias, " -- ").concat(nickname, ")");
   }
 
@@ -69700,7 +69665,8 @@ function initChat() {
     $("#sound-control").setAttribute("src", src);
   });
   chat_ui_chat.on(Events["Events"].TOPIC_JOINED, function (data) {
-    console.log("Topic joined: ".concat(data));
+    console.log("%c YOU JOINED TOPIC: ".concat(data.pkfp), "color: green; font-size: 20px");
+    setTopicListeners(data.pkfp);
     appendEphemeralMessage("You have joined topic ".concat(data.pkfp));
     refreshTopics();
   });
@@ -69786,18 +69752,34 @@ function loadTopics(vault) {
   retriever.run();
 }
 
+function joinTopic(nickname, topicName, inviteString) {
+  var vault = chat_ui_vaultHolder.getVault();
+  var topicJoinAgent = new TopicJoinAgent_TopicJoinAgent(nickname, topicName, inviteString, chat_ui_arrivalHub, chat_ui_connector, vault);
+  topicJoinAgent.on(Events["Internal"].JOIN_TOPIC_SUCCESS, function (data) {
+    // data is object: { pkfp: pkfp, nickname: nickname }
+    console.log("Topic join successful");
+    var topic = vault.topics[data.pkfp];
+    chat_ui_topics[data.pkfp] = topic;
+    setTopicListeners(topic);
+    refreshTopics();
+  });
+  topicJoinAgent.on(Events["Internal"].JOIN_TOPIC_FAIL, function () {
+    console.log("Join topic fail received from the agent");
+  });
+  topicJoinAgent.start();
+}
+
 function initTopics(data, vault) {
   console.log("Initializing topics...");
   if (!data.topics) return;
 
-  for (var _pkfp2 in data.topics) {
-    console.log("Initializing topics ".concat(_pkfp2)); // TODO fix version!
+  for (var pkfp in data.topics) {
+    console.log("Initializing topics ".concat(pkfp)); // TODO fix version!
 
-    var topic = vault.decryptTopic(data.topics[_pkfp2], vault.password);
-    chat_ui_topics[_pkfp2] = new Topic_Topic(_pkfp2, topic.name, topic.key, topic.comment);
-    setTopicListeners(chat_ui_topics[_pkfp2]);
-
-    chat_ui_topics[_pkfp2].bootstrap(chat_ui_connector, chat_ui_arrivalHub, chat_ui_version);
+    var topic = vault.decryptTopic(data.topics[pkfp], vault.password);
+    chat_ui_topics[pkfp] = new Topic_Topic(pkfp, topic.name, topic.key, topic.comment);
+    setTopicListeners(chat_ui_topics[pkfp]);
+    chat_ui_topics[pkfp].bootstrap(chat_ui_connector, chat_ui_arrivalHub, chat_ui_version);
   }
 
   vault.topics = chat_ui_topics;
@@ -69939,9 +69921,9 @@ function postLoginDecrypt(msg, vault) {
   var res = {};
 
   for (var _i4 = 0, _Object$keys3 = Object.keys(services); _i4 < _Object$keys3.length; _i4++) {
-    var _pkfp3 = _Object$keys3[_i4];
-    var topicData = services[_pkfp3];
-    var topicPrivateKey = chat_ui_topics[_pkfp3].privateKey;
+    var pkfp = _Object$keys3[_i4];
+    var topicData = services[pkfp];
+    var topicPrivateKey = chat_ui_topics[pkfp].privateKey;
     var clientHSPrivateKey = void 0,
         taHSPrivateKey = void 0,
         taPrivateKey = void 0;
@@ -69958,8 +69940,7 @@ function postLoginDecrypt(msg, vault) {
       taHSPrivateKey = decryptBlob(topicPrivateKey, topicData.topicAuthority.taHSPrivateKey);
     }
 
-    chat_ui_topics[_pkfp3].loadMetadata(topicData.metadata);
-
+    chat_ui_topics[pkfp].loadMetadata(topicData.metadata);
     var preDecrypted = {};
 
     if (clientHSPrivateKey) {
@@ -69978,7 +69959,7 @@ function postLoginDecrypt(msg, vault) {
       preDecrypted.topicAuthority.taHSPrivateKey = encryptBlob(sessionKey, taHSPrivateKey);
     }
 
-    res[_pkfp3] = preDecrypted;
+    res[pkfp] = preDecrypted;
   }
 
   console.log("Decryption is successfull.");

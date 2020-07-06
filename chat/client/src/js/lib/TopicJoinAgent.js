@@ -7,12 +7,12 @@ import { ChatUtility } from "./ChatUtility";
 
 export class TopicJoinAgent{
 
-    constructor(nickname, topicName, inviteString, arrivalHub, messageQueue, vault){
+    constructor(nickname, topicName, inviteString, arrivalHub, connector, vault){
         WildEmitter.mixin(this);
         this.nickname = nickname;
         this.topicName = topicName;
         this.inviteString = inviteString;
-        this.messageQueue = messageQueue;
+        this.connector = connector;
         this.arrivalHub = arrivalHub;
         this.vault = vault
         this.version = vault.version
@@ -57,7 +57,7 @@ export class TopicJoinAgent{
             self.inviteCode = invite[2];
 
             if(!self.inviteCode || !self.inviterPkfp || !(/^[a-z2-7]{16}\.onion$/.test(self.inviterResidence)))
-                throw new error("Invite request is invalid")
+                throw new Error("Invite request is invalid")
 
             // Encrypted vault record
             console.log(`Topic name is: ${self.topicName}`);
@@ -101,7 +101,7 @@ export class TopicJoinAgent{
             self.arrivalHub.on(self.inviteCode.trim(), (msg)=>{ self.processServerMessage(self, msg)})
             self.arrivalHub.on(Events.JOIN_TOPIC_FAIL, (msg)=>{ self.onJoinTopicFail(self, msg)})
             console.log("Sending join request");
-            self.messageQueue.enqueue(request);
+            self.connector.send(request);
         }, 100)
     }
 
@@ -137,7 +137,7 @@ export class TopicJoinAgent{
 
         let metadata = msg.body.metadata;
         topic.loadMetadata(metadata);
-        topic.bootstrap(self.messageQueue, self.arrivalHub, self.version)
+        topic.bootstrap(self.connector, self.arrivalHub, self.version)
         console.log(`Preparing settings with nickname ${self.nickname}`);
         topic.setParticipantNickname(self.nickname, self.pkfp);
         self.vault.registerTopic(topic);
