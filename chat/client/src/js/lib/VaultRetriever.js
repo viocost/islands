@@ -1,6 +1,6 @@
 import { WildEmitter } from "./WildEmitter";
 import { createDerivedErrorClasses }  from "../../../../common/DynamicError";
-import { Vault } from "./Vault";
+
 
 class VaultRetrieverError extends Error{ constructor(data){ super(data); this.name = "VaultRetrieverError" } }
 const err = createDerivedErrorClasses(VaultRetrieverError, {

@@ -12,6 +12,7 @@ import { verifyPassword } from "./lib/PasswordVerify";
 import * as util from "./lib/dom-util";
 import { iCrypto } from "./lib/iCrypto"
 import * as semver from "semver"
+import { IError as Err } from "../../../common/IError"
 window.semver = semver;
 let adminSession;
 let filterFieldSelector;
@@ -74,10 +75,10 @@ let processAdminRequest = ()=>{
 
 
 document.addEventListener('DOMContentLoaded', event => {
-    if(!getVersion){
-        throw new Error("getVersion is not defined!")
+    if(!islandsVersion){
+        throw new Error("islandsVersion is not defined!")
     }
-    VERSION = getVersion();
+    VERSION = islandsVersion();
     document.title = "Islands | Admin login";
     util.$("main").classList.add("main-admin");
     util.$("header").style.minWidth = "111rem";
@@ -499,8 +500,8 @@ function adminLogin() {
         url: "/admin/vault",
         success: async res =>{
             try{
-                console.log("Decryptting admin vault");
-                let decryptedVault = await decryptVault(res.vault.vault, password);
+                console.log("Decrypting admin vault");
+                let decryptedVault = await decryptVault(res.vault, password);
                 await requestAdminLogin(decryptedVault.adminKey);
             }catch(err){
                 loadingOff();
@@ -523,13 +524,14 @@ function adminLogin() {
  * @param password
  * @returns {Promise<void>}
  */
-function decryptVault(vaultEnc, password){
+function decryptVault(vaultEnc = Err.required(), password = Err.require()){
     return new Promise((resolve, reject)=>{
         try{
             let vault = new Vault();
             vault.initSaved(VERSION, vaultEnc, password);
             if(!vault.admin || !vault.adminKey){
                 reject("Admin vault is invalid, or doesn't have a private key")
+                return;
             }
             resolve(vault);
         }catch(err){
@@ -541,7 +543,12 @@ function decryptVault(vaultEnc, password){
 async function requestAdminLogin (privateKey){
     try {
         let ic = new iCrypto();
-        ic.createNonce('n').setRSAKey("pk", privateKey, 'private').privateKeySign('n', 'pk', 'sign').bytesToHex('n', 'nhex').publicFromPrivate("pk", "pub").getPublicKeyFingerprint("pub", "pkfp");
+        ic.createNonce('n')
+          .setRSAKey("pk", privateKey, 'private')
+          .privateKeySign('n', 'pk', 'sign')
+          .bytesToHex('n', 'nhex')
+          .publicFromPrivate("pk", "pub")
+          .getPublicKeyFingerprint("pub", "pkfp");
         XHR({
             type: "POST",
             url: "/admin",

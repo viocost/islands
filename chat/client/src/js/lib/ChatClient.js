@@ -216,7 +216,7 @@ export class ChatClient{
         let topic = this.topics[topicPkfp.trim()];
         assert(topic, `No topic found: ${topicPkfp}`);
         assert(topic.hasParticipant(participantPkfp.trim()), `No participant found: ${participantPkfp}`)
-        let bootAgent = new BootParticipantAgent(topic, participantPkfp, this.messageQueue)
+        let bootAgent = new BootParticipantAgent(topic, participantPkfp, this.connector)
         console.log("Proceeding participant boot");
         bootAgent.boot();
     }
@@ -231,7 +231,7 @@ export class ChatClient{
      * @returns {Promise}
      */
     async joinTopic(nickname, topicName, inviteString) {
-        let topicJoinAgent = new TopicJoinAgent(nickname, topicName, inviteString, this.arrivalHub, this.messageQueue, this.vault);
+        let topicJoinAgent = new TopicJoinAgent(nickname, topicName, inviteString, this.arrivalHub, this.connector, this.vault);
         let self = this;
         topicJoinAgent.on(Internal.JOIN_TOPIC_SUCCESS, (data)=>{
             // data is object: { pkfp: pkfp, nickname: nickname }
@@ -240,93 +240,6 @@ export class ChatClient{
         })
         topicJoinAgent.on(Internal.JOIN_TOPIC_FAIL, ()=>{ console.log("Join topic fail received from the agent")})
         topicJoinAgent.start()
-
-
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // setTimeout(()=>{                                                                                                                  //
-        //                                                                                                                                   //
-        //     let start = new Date();                                                                                                       //
-        //     console.log("joining topic with nickname: " + nickname + " | Invite code: " + inviteCode);                                    //
-        //                                                                                                                                   //
-        //     console.log(`Preparing keys...`);                                                                                             //
-        //                                                                                                                                   //
-        //     let cryptoStart = new Date()                                                                                                  //
-        //     let ic = new iCrypto();                                                                                                       //
-        //     ic.asym.createKeyPair("rsa")                                                                                                  //
-        //         .getPublicKeyFingerprint('rsa', 'pkfp')                                                                                   //
-        //         .addBlob("invite64", inviteCode.trim())                                                                                   //
-        //         .base64Decode("invite64", "invite");                                                                                      //
-        //                                                                                                                                   //
-        //     let pkfp = ic.get("pkfp")                                                                                                     //
-        //     let publicKey = ic.get("rsa").publicKey;                                                                                      //
-        //     let privateKey = ic.get("rsa").privateKey;                                                                                    //
-        //                                                                                                                                   //
-        //     let now = new Date()                                                                                                          //
-        //                                                                                                                                   //
-        //     console.log(`Keys generated in ${(now - cryptoStart) / 1000}sec. ${ (now - start) / 1000 } elapsed since beginning.`);        //
-        //                                                                                                                                   //
-        //     let callStart = new Date()                                                                                                    //
-        //                                                                                                                                   //
-        //                                                                                                                                   //
-        //     let invite = ic.get("invite").split("/");                                                                                     //
-        //     let inviterResidence = invite[0];                                                                                             //
-        //     let inviterID = invite[1];                                                                                                    //
-        //     let inviteID = invite[2];                                                                                                     //
-        //                                                                                                                                   //
-        //     ///////////////////////////////////////////////////////////////////////////                                                   //
-        //     // if (!self.inviteRequestValid(inviterResidence, inviterID, inviteID)){ //                                                   //
-        //     //     self.emit("join_topic_fail");                                     //                                                   //
-        //     //     throw new Error("Invite request is invalid");                     //                                                   //
-        //     // }                                                                     //                                                   //
-        //     ///////////////////////////////////////////////////////////////////////////                                                   //
-        //                                                                                                                                   //
-        //     if(!inviteID || !inviterID || !(/^[a-z2-7]{16}\.onion$/.test(inviterResidence)))                                              //
-        //         throw new error("Invite request is invalid")                                                                              //
-        //                                                                                                                                   //
-        //     // Encrypted vault record                                                                                                     //
-        //     console.log(`Topic name is: ${topicName}`);                                                                                   //
-        //     let vaultRecord = self.vault.prepareVaultTopicRecord(self.version,                                                            //
-        //                                                         pkfp,                                                                     //
-        //                                                         privateKey,                                                               //
-        //                                                         topicName)                                                                //
-        //     let vault = JSON.stringify({                                                                                                  //
-        //         record: vaultRecord,                                                                                                      //
-        //         id: self.vault.id                                                                                                         //
-        //     })                                                                                                                            //
-        //                                                                                                                                   //
-        //     ic.addBlob("vlt-rec", vault)                                                                                                  //
-        //     .setRSAKey("priv", self.vault.privateKey, "private")                                                                          //
-        //     .privateKeySign("vlt-rec", "priv", "vlt-sign")                                                                                //
-        //                                                                                                                                   //
-        //                                                                                                                                   //
-        //     let request = new Message(self.version);                                                                                      //
-        //     request.setCommand(Internal.JOIN_TOPIC);                                                                                      //
-        //     request.setSource(pkfp);                                                                                                      //
-        //     request.setDest(inviterID);                                                                                                   //
-        //     let body = {                                                                                                                  //
-        //         inviteString: inviteCode.trim(),                                                                                          //
-        //         inviteCode: inviteID,                                                                                                     //
-        //         destination: inviterResidence,                                                                                            //
-        //         invitee:{                                                                                                                 //
-        //             publicKey: publicKey,                                                                                                 //
-        //             pkfp: pkfp                                                                                                            //
-        //         }                                                                                                                         //
-        //     };                                                                                                                            //
-        //                                                                                                                                   //
-        //     request.set("body", body);                                                                                                    //
-        //     request.vaultSign = ic.get("vlt-sign");                                                                                       //
-        //     request.vault = vault;                                                                                                        //
-        //     request.signMessage(privateKey);                                                                                              //
-        //     console.log("Sending topic join request");                                                                                    //
-        //     let sendStart = new Date();                                                                                                   //
-        //     this.vault.pendingInvites[inviteID] = {                                                                                       //
-        //         nickname: nickname,                                                                                                       //
-        //     }                                                                                                                             //
-        //     self.connector.send(request);                                                                                           //
-        //     now = new Date()                                                                                                              //
-        //     console.log(`Request sent to island in  ${(now - sendStart) / 1000}sec. ${ (now - start) / 1000 } elapsed since beginning.`); //
-        // }, 100)                                                                                                                           //
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     }
 
 
@@ -417,7 +330,7 @@ export class ChatClient{
         let topicName = pendingTopic.topicName;
 
         let topic = self.vault.addTopic(pkfp, topicName, privateKey);
-        topic.bootstrap(self.messageQueue, self.arrivalHub, self.version);
+        topic.bootstrap(self.connector, self.arrivalHub, self.version);
         topic.loadMetadata(data.body.metadata);
         self.vault.save(Internal.TOPIC_ADDED);
 
@@ -545,10 +458,6 @@ export class ChatClient{
             throw new Error(`Topic ${topicPkfp} not found`)
         }
         return this.topics[topicPkfp].getParticipantRepr(participantPkfp);
-    }
-
-    async _initMessageQueue(){
-        this.messageQueue = new MessageQueue();
     }
 
     //requests vault and returns it

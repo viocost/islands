@@ -818,6 +818,7 @@ function processLoginResult(newVaultHolder, err) {
     }
 
     vaultHolder = newVaultHolder;
+    window.vaultHolder = vaultHolder;
    
     initUI(vaultHolder);
     //processConnectionStatusChanged(chat.getConnectionState())
@@ -1697,6 +1698,7 @@ function initTopics(data, vault) {
         topics[pkfp].bootstrap(connector, arrivalHub, version);
     }
 
+    vault.topics = topics;
     createSession(vault)
 }
 

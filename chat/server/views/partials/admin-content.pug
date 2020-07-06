@@ -123,5 +123,7 @@
 
 
 script.
-    getVersion = ()=>{return version}
-    window.getVersion = getVersion;
+    islandsVersion = function(){
+        return "#{version}"
+    }
+    window.islandsVersion = islandsVersion;
