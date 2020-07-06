@@ -15,7 +15,7 @@ import { LoginAgent } from "./lib/LoginAgent";
 import { TopicCreator } from "./lib/TopicCreator";
 import { runConnectorTest } from "./test/connector"
 import { ChatUtility } from "./lib/ChatUtility";
-
+import { Vault } from "./lib/Vault";
 
 
 // TEMP IMPORTS FOR FURTHER REFACTORING

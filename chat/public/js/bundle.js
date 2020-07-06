@@ -3527,6 +3527,17 @@ exports.f = __webpack_require__(11) ? Object.defineProperty : function definePro
 /* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
+// 7.1.13 ToObject(argument)
+var defined = __webpack_require__(34);
+module.exports = function (it) {
+  return Object(defined(it));
+};
+
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
 /* WEBPACK VAR INJECTION */(function(setImmediate) {function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
@@ -3909,17 +3920,6 @@ module.exports = {
   StateMachine: StateMachine
 };
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(96).setImmediate))
-
-/***/ }),
-/* 14 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// 7.1.13 ToObject(argument)
-var defined = __webpack_require__(34);
-module.exports = function (it) {
-  return Object(defined(it));
-};
-
 
 /***/ }),
 /* 15 */
@@ -5860,7 +5860,7 @@ exports.f = __webpack_require__(11) ? gOPD : function getOwnPropertyDescriptor(O
 
 // 19.1.2.9 / 15.2.3.2 Object.getPrototypeOf(O)
 var has = __webpack_require__(21);
-var toObject = __webpack_require__(14);
+var toObject = __webpack_require__(13);
 var IE_PROTO = __webpack_require__(108)('IE_PROTO');
 var ObjectProto = Object.prototype;
 
@@ -6417,7 +6417,7 @@ module.exports = function (KEY, exec) {
 // 6 -> Array#findIndex
 var ctx = __webpack_require__(28);
 var IObject = __webpack_require__(67);
-var toObject = __webpack_require__(14);
+var toObject = __webpack_require__(13);
 var toLength = __webpack_require__(10);
 var asc = __webpack_require__(124);
 module.exports = function (TYPE, $create) {
@@ -6480,7 +6480,7 @@ if (__webpack_require__(11)) {
   var has = __webpack_require__(21);
   var classof = __webpack_require__(60);
   var isObject = __webpack_require__(7);
-  var toObject = __webpack_require__(14);
+  var toObject = __webpack_require__(13);
   var isArrayIter = __webpack_require__(121);
   var create = __webpack_require__(48);
   var getPrototypeOf = __webpack_require__(24);
@@ -18922,7 +18922,7 @@ module.exports = function (original, length) {
 "use strict";
 // 22.1.3.6 Array.prototype.fill(value, start = 0, end = this.length)
 
-var toObject = __webpack_require__(14);
+var toObject = __webpack_require__(13);
 var toAbsoluteIndex = __webpack_require__(47);
 var toLength = __webpack_require__(10);
 module.exports = function fill(value /* , start = 0, end = @length */) {
@@ -25575,7 +25575,7 @@ var DESCRIPTORS = __webpack_require__(11);
 var getKeys = __webpack_require__(46);
 var gOPS = __webpack_require__(83);
 var pIE = __webpack_require__(68);
-var toObject = __webpack_require__(14);
+var toObject = __webpack_require__(13);
 var IObject = __webpack_require__(67);
 var $assign = Object.assign;
 
@@ -25788,7 +25788,7 @@ module.exports = function (iterator, fn, value, entries) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var aFunction = __webpack_require__(15);
-var toObject = __webpack_require__(14);
+var toObject = __webpack_require__(13);
 var IObject = __webpack_require__(67);
 var toLength = __webpack_require__(10);
 
@@ -25824,7 +25824,7 @@ module.exports = function (that, callbackfn, aLen, memo, isRight) {
 "use strict";
 // 22.1.3.3 Array.prototype.copyWithin(target, start, end = this.length)
 
-var toObject = __webpack_require__(14);
+var toObject = __webpack_require__(13);
 var toAbsoluteIndex = __webpack_require__(47);
 var toLength = __webpack_require__(10);
 
@@ -42786,7 +42786,7 @@ var enumKeys = __webpack_require__(224);
 var isArray = __webpack_require__(84);
 var anObject = __webpack_require__(2);
 var isObject = __webpack_require__(7);
-var toObject = __webpack_require__(14);
+var toObject = __webpack_require__(13);
 var toIObject = __webpack_require__(22);
 var toPrimitive = __webpack_require__(33);
 var createDesc = __webpack_require__(44);
@@ -43090,7 +43090,7 @@ __webpack_require__(35)('getOwnPropertyDescriptor', function () {
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.9 Object.getPrototypeOf(O)
-var toObject = __webpack_require__(14);
+var toObject = __webpack_require__(13);
 var $getPrototypeOf = __webpack_require__(24);
 
 __webpack_require__(35)('getPrototypeOf', function () {
@@ -43105,7 +43105,7 @@ __webpack_require__(35)('getPrototypeOf', function () {
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.14 Object.keys(O)
-var toObject = __webpack_require__(14);
+var toObject = __webpack_require__(13);
 var $keys = __webpack_require__(46);
 
 __webpack_require__(35)('keys', function () {
@@ -44322,7 +44322,7 @@ $export($export.S, 'Date', { now: function () { return new Date().getTime(); } }
 "use strict";
 
 var $export = __webpack_require__(0);
-var toObject = __webpack_require__(14);
+var toObject = __webpack_require__(13);
 var toPrimitive = __webpack_require__(33);
 
 $export($export.P + $export.F * __webpack_require__(6)(function () {
@@ -44447,7 +44447,7 @@ $export($export.S, 'Array', { isArray: __webpack_require__(84) });
 
 var ctx = __webpack_require__(28);
 var $export = __webpack_require__(0);
-var toObject = __webpack_require__(14);
+var toObject = __webpack_require__(13);
 var call = __webpack_require__(160);
 var isArrayIter = __webpack_require__(121);
 var toLength = __webpack_require__(10);
@@ -44571,7 +44571,7 @@ $export($export.P + $export.F * __webpack_require__(6)(function () {
 
 var $export = __webpack_require__(0);
 var aFunction = __webpack_require__(15);
-var toObject = __webpack_require__(14);
+var toObject = __webpack_require__(13);
 var fails = __webpack_require__(6);
 var $sort = [].sort;
 var test = [1, 2, 3];
@@ -44995,7 +44995,7 @@ __webpack_require__(89)('match', 1, function (defined, MATCH, $match, maybeCallN
 
 
 var anObject = __webpack_require__(2);
-var toObject = __webpack_require__(14);
+var toObject = __webpack_require__(13);
 var toLength = __webpack_require__(10);
 var toInteger = __webpack_require__(30);
 var advanceStringIndex = __webpack_require__(128);
@@ -46131,7 +46131,7 @@ __webpack_require__(43)('includes');
 // https://tc39.github.io/proposal-flatMap/#sec-Array.prototype.flatMap
 var $export = __webpack_require__(0);
 var flattenIntoArray = __webpack_require__(175);
-var toObject = __webpack_require__(14);
+var toObject = __webpack_require__(13);
 var toLength = __webpack_require__(10);
 var aFunction = __webpack_require__(15);
 var arraySpeciesCreate = __webpack_require__(124);
@@ -46160,7 +46160,7 @@ __webpack_require__(43)('flatMap');
 // https://tc39.github.io/proposal-flatMap/#sec-Array.prototype.flatten
 var $export = __webpack_require__(0);
 var flattenIntoArray = __webpack_require__(175);
-var toObject = __webpack_require__(14);
+var toObject = __webpack_require__(13);
 var toLength = __webpack_require__(10);
 var toInteger = __webpack_require__(30);
 var arraySpeciesCreate = __webpack_require__(124);
@@ -46382,7 +46382,7 @@ $export($export.S, 'Object', {
 "use strict";
 
 var $export = __webpack_require__(0);
-var toObject = __webpack_require__(14);
+var toObject = __webpack_require__(13);
 var aFunction = __webpack_require__(15);
 var $defineProperty = __webpack_require__(12);
 
@@ -46401,7 +46401,7 @@ __webpack_require__(11) && $export($export.P + __webpack_require__(93), 'Object'
 "use strict";
 
 var $export = __webpack_require__(0);
-var toObject = __webpack_require__(14);
+var toObject = __webpack_require__(13);
 var aFunction = __webpack_require__(15);
 var $defineProperty = __webpack_require__(12);
 
@@ -46420,7 +46420,7 @@ __webpack_require__(11) && $export($export.P + __webpack_require__(93), 'Object'
 "use strict";
 
 var $export = __webpack_require__(0);
-var toObject = __webpack_require__(14);
+var toObject = __webpack_require__(13);
 var toPrimitive = __webpack_require__(33);
 var getPrototypeOf = __webpack_require__(24);
 var getOwnPropertyDescriptor = __webpack_require__(23).f;
@@ -46445,7 +46445,7 @@ __webpack_require__(11) && $export($export.P + __webpack_require__(93), 'Object'
 "use strict";
 
 var $export = __webpack_require__(0);
-var toObject = __webpack_require__(14);
+var toObject = __webpack_require__(13);
 var toPrimitive = __webpack_require__(33);
 var getPrototypeOf = __webpack_require__(24);
 var getOwnPropertyDescriptor = __webpack_require__(23).f;
@@ -64386,7 +64386,7 @@ function parseHeaders(headers) {
 var semver = __webpack_require__(217);
 
 // EXTERNAL MODULE: ./client/src/js/lib/AdvStateMachine.js
-var AdvStateMachine = __webpack_require__(13);
+var AdvStateMachine = __webpack_require__(14);
 
 // CONCATENATED MODULE: ./client/src/js/lib/FetchJSON.js
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -64555,7 +64555,6 @@ var Vault_Vault = /*#__PURE__*/function () {
     this.admin = null;
     this.adminKey = null;
     this.topics = {};
-    this.stateMachine = this.prepareStateMachine();
     this.publicKey = null;
     this.privateKey = null;
     this.handlers;
@@ -64567,79 +64566,13 @@ var Vault_Vault = /*#__PURE__*/function () {
   }
 
   Vault_createClass(Vault, [{
-    key: "prepareStateMachine",
-    value: function prepareStateMachine() {
-      var _this = this;
-
-      return new AdvStateMachine["StateMachine"](this, {
-        name: "Vault SM",
-        stateMap: {
-          uninitialized: {
-            initial: true,
-            transitions: {
-              fetchVault: {
-                actions: this.fetchVault,
-                state: "fetchingVault"
-              }
-            }
-          },
-          fetchingVault: {
-            transitions: {
-              JSONReceived: {
-                actions: this.processVault,
-                state: 'processingVault'
-              },
-              fetchJSONError: {
-                actions: this.processJSONError,
-                state: "error"
-              }
-            }
-          },
-          processingVault: {
-            transitions: {
-              setActive: {
-                state: "active"
-              }
-            }
-          },
-          active: {
-            entry: function entry() {
-              console.log("%c Vault initialized", 'color: red');
-              _this.initialized = true;
-
-              _this.emit("active");
-            },
-            exit: function exit() {
-              _this.emit("inactive");
-            }
-          },
-          error: {
-            transitions: {
-              fetchVault: {
-                state: "fetchingVault"
-              }
-            }
-          }
-        }
-      }, {
-        msgNotExistMode: AdvStateMachine["StateMachine"].Warn,
-        traceLevel: AdvStateMachine["StateMachine"].TraceLevel.DEBUG
-      });
-    }
-  }, {
-    key: "load",
-    value: function load() {
-      console.log("%c Scheduling fetchVault", "color: red; font-size: 16px");
-      this.stateMachine.handle.fetchVault();
-    }
-  }, {
     key: "processVault",
     value: function processVault(stateMachine, eventName, args) {
       var _args$ = args[0],
           vault = _args$.vault,
           vaultId = _args$.vaultId;
-      console.log("Processing vault. ");
-      this.initSaved(vault);
+      console.log("Processing vault. "); //this.initSaved(vault)
+
       this.setId(vaultId);
     }
   }, {
@@ -64804,23 +64737,7 @@ var Vault_Vault = /*#__PURE__*/function () {
                   this.pkfp = ic.get("pkfp");
                 } else {
                   this.pkfp = data.pkfp;
-                } //////////////////////////////////////////////////////////////
-                // let unpackedTopics = this.unpackTopics(topics, password) //
-                //                                                          //
-                // if (unpackedTopics){                                     //
-                //     for(let pkfp of Object.keys(unpackedTopics)){        //
-                //         console.log(`INITIALIZING TOPIC ${pkfp}`);       //
-                //         this.topics[pkfp] = new Topic(                   //
-                //             this.version,                                //
-                //             pkfp,                                        //
-                //             unpackedTopics[pkfp].name,                   //
-                //             unpackedTopics[pkfp].key,                    //
-                //             unpackedTopics[pkfp].comment                 //
-                //         )                                                //
-                //     }                                                    //
-                // }                                                        //
-                //////////////////////////////////////////////////////////////
-
+                }
 
                 if (!data.version || semver["lt"](data.version, "2.0.0")) {
                   // TODO format update required!
@@ -64845,9 +64762,7 @@ var Vault_Vault = /*#__PURE__*/function () {
                   }));
                 }
 
-                this.stateMachine.handle.setActive();
-
-              case 13:
+              case 12:
               case "end":
                 return _context2.stop();
             }
@@ -64865,7 +64780,7 @@ var Vault_Vault = /*#__PURE__*/function () {
     key: "updateVaultFormat",
     value: function () {
       var _updateVaultFormat = Vault_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(data) {
-        var _this2 = this;
+        var _this = this;
 
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
@@ -64873,7 +64788,7 @@ var Vault_Vault = /*#__PURE__*/function () {
               case 0:
                 if (Vault_typeof(data.topics) === "object") {
                   Object.keys(data.topics).forEach(function (pkfp) {
-                    _this2.topics[pkfp] = new Topic_Topic(pkfp, data.topics[pkfp].name, data.topics[pkfp].key, data.topics[pkfp].comment);
+                    _this.topics[pkfp] = new Topic_Topic(pkfp, data.topics[pkfp].name, data.topics[pkfp].key, data.topics[pkfp].comment);
                   });
                 }
 
@@ -64912,13 +64827,13 @@ var Vault_Vault = /*#__PURE__*/function () {
   }, {
     key: "bootstrap",
     value: function bootstrap(arrivalHub, connector, version) {
-      var _this3 = this;
+      var _this2 = this;
 
       this.arrivalHub = arrivalHub;
       this.connector = connector;
       this.version = version;
       this.arrivalHub.on(this.id, function (msg) {
-        _this3.processIncomingMessage(msg, _this3);
+        _this2.processIncomingMessage(msg, _this2);
       }); ////////////////////////////////////////////////////////
       // if(this.versionUpdate){                            //
       //     console.log("Updating vault to new format.."); //
@@ -67094,7 +67009,7 @@ var ChatClient_ChatClient = /*#__PURE__*/function () {
       var topic = this.topics[topicPkfp.trim()];
       assert(topic, "No topic found: ".concat(topicPkfp));
       assert(topic.hasParticipant(participantPkfp.trim()), "No participant found: ".concat(participantPkfp));
-      var bootAgent = new BootParticipantAgent_BootParticipantAgent(topic, participantPkfp, this.messageQueue);
+      var bootAgent = new BootParticipantAgent_BootParticipantAgent(topic, participantPkfp, this.connector);
       console.log("Proceeding participant boot");
       bootAgent.boot();
     } // ---------------------------------------------------------------------------------------------------------------------------
@@ -67116,7 +67031,7 @@ var ChatClient_ChatClient = /*#__PURE__*/function () {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                topicJoinAgent = new TopicJoinAgent_TopicJoinAgent(nickname, topicName, inviteString, this.arrivalHub, this.messageQueue, this.vault);
+                topicJoinAgent = new TopicJoinAgent_TopicJoinAgent(nickname, topicName, inviteString, this.arrivalHub, this.connector, this.vault);
                 self = this;
                 topicJoinAgent.on(Events["Internal"].JOIN_TOPIC_SUCCESS, function (data) {
                   // data is object: { pkfp: pkfp, nickname: nickname }
@@ -67126,91 +67041,7 @@ var ChatClient_ChatClient = /*#__PURE__*/function () {
                 topicJoinAgent.on(Events["Internal"].JOIN_TOPIC_FAIL, function () {
                   console.log("Join topic fail received from the agent");
                 });
-                topicJoinAgent.start(); ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                // setTimeout(()=>{                                                                                                                  //
-                //                                                                                                                                   //
-                //     let start = new Date();                                                                                                       //
-                //     console.log("joining topic with nickname: " + nickname + " | Invite code: " + inviteCode);                                    //
-                //                                                                                                                                   //
-                //     console.log(`Preparing keys...`);                                                                                             //
-                //                                                                                                                                   //
-                //     let cryptoStart = new Date()                                                                                                  //
-                //     let ic = new iCrypto();                                                                                                       //
-                //     ic.asym.createKeyPair("rsa")                                                                                                  //
-                //         .getPublicKeyFingerprint('rsa', 'pkfp')                                                                                   //
-                //         .addBlob("invite64", inviteCode.trim())                                                                                   //
-                //         .base64Decode("invite64", "invite");                                                                                      //
-                //                                                                                                                                   //
-                //     let pkfp = ic.get("pkfp")                                                                                                     //
-                //     let publicKey = ic.get("rsa").publicKey;                                                                                      //
-                //     let privateKey = ic.get("rsa").privateKey;                                                                                    //
-                //                                                                                                                                   //
-                //     let now = new Date()                                                                                                          //
-                //                                                                                                                                   //
-                //     console.log(`Keys generated in ${(now - cryptoStart) / 1000}sec. ${ (now - start) / 1000 } elapsed since beginning.`);        //
-                //                                                                                                                                   //
-                //     let callStart = new Date()                                                                                                    //
-                //                                                                                                                                   //
-                //                                                                                                                                   //
-                //     let invite = ic.get("invite").split("/");                                                                                     //
-                //     let inviterResidence = invite[0];                                                                                             //
-                //     let inviterID = invite[1];                                                                                                    //
-                //     let inviteID = invite[2];                                                                                                     //
-                //                                                                                                                                   //
-                //     ///////////////////////////////////////////////////////////////////////////                                                   //
-                //     // if (!self.inviteRequestValid(inviterResidence, inviterID, inviteID)){ //                                                   //
-                //     //     self.emit("join_topic_fail");                                     //                                                   //
-                //     //     throw new Error("Invite request is invalid");                     //                                                   //
-                //     // }                                                                     //                                                   //
-                //     ///////////////////////////////////////////////////////////////////////////                                                   //
-                //                                                                                                                                   //
-                //     if(!inviteID || !inviterID || !(/^[a-z2-7]{16}\.onion$/.test(inviterResidence)))                                              //
-                //         throw new error("Invite request is invalid")                                                                              //
-                //                                                                                                                                   //
-                //     // Encrypted vault record                                                                                                     //
-                //     console.log(`Topic name is: ${topicName}`);                                                                                   //
-                //     let vaultRecord = self.vault.prepareVaultTopicRecord(self.version,                                                            //
-                //                                                         pkfp,                                                                     //
-                //                                                         privateKey,                                                               //
-                //                                                         topicName)                                                                //
-                //     let vault = JSON.stringify({                                                                                                  //
-                //         record: vaultRecord,                                                                                                      //
-                //         id: self.vault.id                                                                                                         //
-                //     })                                                                                                                            //
-                //                                                                                                                                   //
-                //     ic.addBlob("vlt-rec", vault)                                                                                                  //
-                //     .setRSAKey("priv", self.vault.privateKey, "private")                                                                          //
-                //     .privateKeySign("vlt-rec", "priv", "vlt-sign")                                                                                //
-                //                                                                                                                                   //
-                //                                                                                                                                   //
-                //     let request = new Message(self.version);                                                                                      //
-                //     request.setCommand(Internal.JOIN_TOPIC);                                                                                      //
-                //     request.setSource(pkfp);                                                                                                      //
-                //     request.setDest(inviterID);                                                                                                   //
-                //     let body = {                                                                                                                  //
-                //         inviteString: inviteCode.trim(),                                                                                          //
-                //         inviteCode: inviteID,                                                                                                     //
-                //         destination: inviterResidence,                                                                                            //
-                //         invitee:{                                                                                                                 //
-                //             publicKey: publicKey,                                                                                                 //
-                //             pkfp: pkfp                                                                                                            //
-                //         }                                                                                                                         //
-                //     };                                                                                                                            //
-                //                                                                                                                                   //
-                //     request.set("body", body);                                                                                                    //
-                //     request.vaultSign = ic.get("vlt-sign");                                                                                       //
-                //     request.vault = vault;                                                                                                        //
-                //     request.signMessage(privateKey);                                                                                              //
-                //     console.log("Sending topic join request");                                                                                    //
-                //     let sendStart = new Date();                                                                                                   //
-                //     this.vault.pendingInvites[inviteID] = {                                                                                       //
-                //         nickname: nickname,                                                                                                       //
-                //     }                                                                                                                             //
-                //     self.connector.send(request);                                                                                           //
-                //     now = new Date()                                                                                                              //
-                //     console.log(`Request sent to island in  ${(now - sendStart) / 1000}sec. ${ (now - start) / 1000 } elapsed since beginning.`); //
-                // }, 100)                                                                                                                           //
-                ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                topicJoinAgent.start();
 
               case 5:
               case "end":
@@ -67300,7 +67131,7 @@ var ChatClient_ChatClient = /*#__PURE__*/function () {
       var nickname = pendingTopic.ownerNickName;
       var topicName = pendingTopic.topicName;
       var topic = self.vault.addTopic(pkfp, topicName, privateKey);
-      topic.bootstrap(self.messageQueue, self.arrivalHub, self.version);
+      topic.bootstrap(self.connector, self.arrivalHub, self.version);
       topic.loadMetadata(data.body.metadata);
       self.vault.save(Events["Internal"].TOPIC_ADDED); // Add new topic to vault and save it
 
@@ -67452,31 +67283,7 @@ var ChatClient_ChatClient = /*#__PURE__*/function () {
       }
 
       return this.topics[topicPkfp].getParticipantRepr(participantPkfp);
-    }
-  }, {
-    key: "_initMessageQueue",
-    value: function () {
-      var _initMessageQueue2 = ChatClient_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
-        return regeneratorRuntime.wrap(function _callee3$(_context3) {
-          while (1) {
-            switch (_context3.prev = _context3.next) {
-              case 0:
-                this.messageQueue = new MessageQueue();
-
-              case 1:
-              case "end":
-                return _context3.stop();
-            }
-          }
-        }, _callee3, this);
-      }));
-
-      function _initMessageQueue() {
-        return _initMessageQueue2.apply(this, arguments);
-      }
-
-      return _initMessageQueue;
-    }() //requests vault and returns it
+    } //requests vault and returns it
 
   }, {
     key: "getVault",
@@ -67509,14 +67316,14 @@ var ChatClient_ChatClient = /*#__PURE__*/function () {
   }], [{
     key: "fetchVault",
     value: function () {
-      var _fetchVault = ChatClient_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
+      var _fetchVault = ChatClient_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
         var url, response;
-        return regeneratorRuntime.wrap(function _callee4$(_context4) {
+        return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
-            switch (_context4.prev = _context4.next) {
+            switch (_context3.prev = _context3.next) {
               case 0:
                 url = "/";
-                _context4.next = 3;
+                _context3.next = 3;
                 return fetch(url, {
                   method: 'POST',
                   headers: {
@@ -67525,28 +67332,28 @@ var ChatClient_ChatClient = /*#__PURE__*/function () {
                 });
 
               case 3:
-                response = _context4.sent;
+                response = _context3.sent;
 
                 if (response.ok) {
-                  _context4.next = 6;
+                  _context3.next = 6;
                   break;
                 }
 
                 throw new Error("".concat(response.status, ": ").concat(response.statusText));
 
               case 6:
-                _context4.next = 8;
+                _context3.next = 8;
                 return response.json();
 
               case 8:
-                return _context4.abrupt("return", _context4.sent);
+                return _context3.abrupt("return", _context3.sent);
 
               case 9:
               case "end":
-                return _context4.stop();
+                return _context3.stop();
             }
           }
-        }, _callee4);
+        }, _callee3);
       }));
 
       function fetchVault() {
@@ -68153,6 +67960,7 @@ function chat_ui_asyncToGenerator(fn) { return function () { var self = this, ar
 
 
 
+
  // TEMP IMPORTS FOR FURTHER REFACTORING
 
 
@@ -68537,10 +68345,10 @@ function chat_ui_registerVault() {
 
   if (/^((?:[0-9]{1,3}\.){3}[0-9]{1,3}|localhost)(\:[0-9]{1,5})?$/.test(document.location.host)) {
     console.log("Registering admin vault");
-    return Vault.registerAdminVault(password, confirm, chat_ui_chat.version);
+    return Vault_Vault.registerAdminVault(password, confirm, chat_ui_chat.version);
   } else if (ChatUtility_ChatUtility.isOnion(document.location.host)) {
     console.log("Registering guest vault");
-    return Vault.registerVault(password, confirm, chat_ui_chat.version);
+    return Vault_Vault.registerVault(password, confirm, chat_ui_chat.version);
   } else {
     throw new Error("Unrecognized host!");
   }

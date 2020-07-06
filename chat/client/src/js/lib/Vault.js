@@ -26,7 +26,6 @@ export class Vault{
         this.admin = null;
         this.adminKey = null;
         this.topics = {};
-        this.stateMachine = this.prepareStateMachine();
         this.publicKey = null;
         this.privateKey = null;
         this.handlers;
@@ -38,52 +37,6 @@ export class Vault{
     }
 
 
-    prepareStateMachine(){
-        return new StateMachine(this, {
-            name: "Vault SM",
-            stateMap: {
-            uninitialized: {
-                initial: true,
-                transitions: {
-                    fetchVault: { actions: this.fetchVault, state: "fetchingVault" },
-                }
-            },
-
-            fetchingVault: {
-                transitions: {
-                    JSONReceived: { actions: this.processVault, state: 'processingVault'},
-                    fetchJSONError: { actions: this.processJSONError, state: "error" }
-                }
-            },
-
-            processingVault: {
-                transitions: {
-                    setActive: {  state: "active" },
-                }
-
-
-            },
-
-            active: {
-                entry: ()=>{
-                    console.log("%c Vault initialized", 'color: red');
-                    this.initialized = true;
-                    this.emit("active")
-                },
-                exit: ()=>{ this.emit("inactive") }
-            },
-
-            error: {
-                transitions: {
-                    fetchVault: { state: "fetchingVault" }
-                },
-            }
-        },
-
-
-
-        }, { msgNotExistMode: StateMachine.Warn, traceLevel: StateMachine.TraceLevel.DEBUG } )
-    }
 
     static registerVault(password, confirm, version){
         return new Promise((resolve, reject) => {
@@ -198,15 +151,11 @@ export class Vault{
 
 
 
-    load(){
-        console.log(`%c Scheduling fetchVault`, "color: red; font-size: 16px");
-        this.stateMachine.handle.fetchVault()
-    }
 
     processVault(stateMachine, eventName, args){
         const { vault, vaultId } = args[0]
         console.log(`Processing vault. `);
-        this.initSaved(vault)
+        //this.initSaved(vault)
         this.setId(vaultId)
     }
 
@@ -364,23 +313,6 @@ export class Vault{
             this.pkfp = data.pkfp;
         }
 
-        //////////////////////////////////////////////////////////////
-        // let unpackedTopics = this.unpackTopics(topics, password) //
-        //                                                          //
-        // if (unpackedTopics){                                     //
-        //     for(let pkfp of Object.keys(unpackedTopics)){        //
-        //         console.log(`INITIALIZING TOPIC ${pkfp}`);       //
-        //         this.topics[pkfp] = new Topic(                   //
-        //             this.version,                                //
-        //             pkfp,                                        //
-        //             unpackedTopics[pkfp].name,                   //
-        //             unpackedTopics[pkfp].key,                    //
-        //             unpackedTopics[pkfp].comment                 //
-        //         )                                                //
-        //     }                                                    //
-        // }                                                        //
-        //////////////////////////////////////////////////////////////
-
         if (!data.version || semver.lt(data.version, "2.0.0")){
             // TODO format update required!
             console.log(`vault format update required to version ${version}`)
@@ -391,10 +323,6 @@ export class Vault{
                 await  self.updateVaultFormat(data)
             };
         }
-
-
-
-        this.stateMachine.handle.setActive()
     }
 
 

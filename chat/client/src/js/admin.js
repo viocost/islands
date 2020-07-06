@@ -528,7 +528,8 @@ function decryptVault(vaultEnc = Err.required(), password = Err.require()){
     return new Promise((resolve, reject)=>{
         try{
             let vault = new Vault();
-            vault.initSaved(VERSION, vaultEnc, password);
+            vault.password = password;
+            vault.initSaved(vaultEnc, password);
             if(!vault.admin || !vault.adminKey){
                 reject("Admin vault is invalid, or doesn't have a private key")
                 return;
