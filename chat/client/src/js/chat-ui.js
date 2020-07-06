@@ -88,6 +88,8 @@ window.chat = chat;
 window.spinner = spinner;
 window.chatutil = ChatUtility;
 window.statusConn = processConnectionStatusChanged;
+window.vaultHolder = vaultHolder;
+window.topics = topics;
 // ---------------------------------------------------------------------------------------------------------------------------
 // 
 // ~END TEST
@@ -316,22 +318,12 @@ function createTopic() {
             return;
         }
         let topicCreator = new TopicCreator(nickname, topicName, connector, vaultHolder);
-        topicCreator.once("result", createTopicHandleResult)
         topicCreator.run()
-        //vault.initTopic(nickname, topicName);
+
         toastr.info("Topic is being created")
         topicCreateModal.close()
 }
 
-function createTopicHandleResult(err, topic){
-    if(err){
-        toastr.warning(`Error creating topics: ${err}`)
-    }
-
-    toastr.success(`Topic created successfully. Id: ${topic.pkfp}`)
-    topics[topic.pkfp] = topic
-
-}
 
 function renderLayout() {
     console.log("Rendering layout")
@@ -816,21 +808,21 @@ function backToChat() {
 
 // ---------------------------------------------------------------------------------------------------------------------------
 // Chat Event handlers
-function processLoginResult(vaultHolder, err) {
+function processLoginResult(newVaultHolder, err) {
 
     if (err) {
-
         let loginBtn = util.$("#vault-login-btn")
         loginBtn.removeAttribute("disabled");
         toastr.warning(`Login error: ${err.message}`)
-    } else {
-
-        initUI(vaultHolder);
-        //processConnectionStatusChanged(chat.getConnectionState())
-        appendEphemeralMessage("Login successful. Loading data...")
-        //playSound("user_online");
+        return;
     }
 
+    vaultHolder = newVaultHolder;
+   
+    initUI(vaultHolder);
+    //processConnectionStatusChanged(chat.getConnectionState())
+    appendEphemeralMessage("Login successful. Loading data...")
+    playSound("user_online");
     loadingOff()
 }
 
@@ -1590,10 +1582,6 @@ function initChat() {
         let src = status ? "/img/sound-on.svg" : "/img/sound-off.svg";
         util.$("#sound-control").setAttribute("src", src)
     })
-    chat.on(Events.TOPIC_CREATED, () => {
-        refreshTopics()
-        toastr.success("New topic has been initialized!")
-    })
 
     chat.on(Events.TOPIC_JOINED, (data) => {
         console.log(`Topic joined: ${data}`)
@@ -1720,12 +1708,19 @@ function createSession(vault) {
 
 function setVaultListeners(vault) {
     vault.on(Internal.SESSION_KEY, (message) => {
+
         vault.sessionKey = message.body.sessionKey;
 
         console.log("Session key is set!")
         postLogin(vault)
     })
     vault.on(Events.TOPIC_CREATED, (pkfp) => {
+
+        if(!(pkfp in vault.topics)){
+            console.error("%c NEW TOPIC NOT ADDED!", "color: red; font-size: 20px")
+        }
+
+        topics[pkfp] = vault.topics[pkfp];
         refreshTopics()
         toastr.success("New topic has been initialized!")
     })

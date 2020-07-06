@@ -149,6 +149,7 @@ export class LoginAgent{
         vault.privateKey = data.privateKey;
         console.log(`Vault raw data: ${data}`);
         vault.id = this.vaultId;
+        vault.version = this.version;
 
         //settings
         if(data.settings){

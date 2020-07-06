@@ -4,12 +4,12 @@ import { ChatUtility } from "./ChatUtility";
 import { Message } from "./Message";
 import { WildEmitter } from  "./WildEmitter";
 import { createDerivedErrorClasses } from "../../../../common/DynamicError"
-import { createStream } from "socket.io-stream/lib";
-
+import { Topic } from "./Topic";
+import { Internal, Events } from "../../../../common/Events";
 
 class TopicCreatorError extends Error{ constructor(data){ super(data); this.name = "TopicCreatorError" } }
 let err = createDerivedErrorClasses(TopicCreatorError, {
-
+   
 })
 
 
@@ -21,10 +21,26 @@ export class TopicCreator {
         this.topicName = topicName;
         this.connector = connector;
         this.vaultHolder = vaultHolder;
-        this.sm = this.prepareStateMachine();
+        this.sm = this._prepareStateMachine();
+
+        //TODO GET RID OF SESSION KEY HERE!
+        this.sessionKey = vaultHolder.getVault().sessionKey
+        this.version = vaultHolder.getVault().version
+
     }
 
-    prepareStateMachine() {
+    // ---------------------------------------------------------------------------------------------------------------------------
+    // PUBLIC METHODS
+
+    run(){
+        this.sm.handle.run()
+    }
+
+
+    // ---------------------------------------------------------------------------------------------------------------------------
+    // PRIVATE METHODS
+
+    _prepareStateMachine() {
         return new StateMachine(this, {
             name: "Topic Creator SM",
             stateMap: {
@@ -33,7 +49,7 @@ export class TopicCreator {
                     transitions: {
                         run: {
                             state: "creatingTopic",
-                            actions: this.initTopic
+                            actions: this._initTopic
                         }
                     }
                 },
@@ -48,24 +64,24 @@ export class TopicCreator {
                             state: "error",
                             actions: []
                         }
-
-
                     }
                 },
                 success: {
+                    entry: this._addTopicToVault,
                     final: true
                 },
                 error: {
+                    entry: this._processTopicCreateError,
                     final: true
                 }
-
             }
         }, { msgNotExistMode: StateMachine.Warn, traceLevel: StateMachine.TraceLevel.DEBUG })
     }
 
-    async initTopic(stateMachine, evName, args) {
-        nickname = args[0]
-        topicName = args[1]
+    async _initTopic(stateMachine, evName, args) {
+        let nickname = this.nickname;
+        let topicName = this.topicName;
+
         console.log("Checking input");
         nickname = String(nickname).trim();
         if (!nickname || !/^.{2,20}$/.test(nickname)) {
@@ -104,32 +120,32 @@ export class TopicCreator {
         let newTopicDataCipher = ChatUtility.encryptStandardMessage(JSON.stringify(newTopicData), this.sessionKey);
 
         //initializing topic settings
-        let settings = Topic.prepareNewTopicSettings(this.version, nickname, topicName, ownerKeyPair.publicKey)
+        let settings = Topic.prepareNewTopicSettings(this.version, this.nickname, this.topicName, ownerKeyPair.publicKey)
 
         // TODO Prepare new topic vault record
-        let vaultRecord = this.prepareVaultTopicRecord(this.version,
+        let vault = this.vaultHolder.getVault();
+
+        let vaultRecord = vault.prepareVaultTopicRecord(this.version,
             ownerPkfp,
             ownerKeyPair.privateKey,
             topicName)
 
         //Preparing request
-        let request = new Message(this.version);
+        let request = new Message(vault.version);
         request.headers.command = Internal.INIT_TOPIC;
-        request.headers.pkfpSource = this.id;
+        request.headers.pkfpSource = vault.id;
         request.body.topicID = topicID;
         request.body.topicPkfp = ownerPkfp;
         request.body.settings = settings;
         request.body.ownerPublicKey = ownerKeyPair.publicKey;
         request.body.newTopicData = newTopicDataCipher;
         request.body.vaultRecord = vaultRecord;
-        request.body.vaultId = this.id;
-        request.signMessage(this.privateKey)
-
+        request.body.vaultId = vault.id;
+        request.signMessage(vault.privateKey)
         this.connector.send(request)
-
     }
 
-    addTopicToVault(){
+    _addTopicToVault(){
         let vault = this.vaultHolder.getVault();
 
         //if(!Message.verifyMessage(vault.sessionKey, data)){
@@ -161,9 +177,9 @@ export class TopicCreator {
         return pkfp
     }
 
-
-    run(){
-        this.handle.run()
+    _processTopicCreateError(stateMachine, evName, args){
+        console.log(`Error creating topic ${args[0]}`);
     }
+
 
 }

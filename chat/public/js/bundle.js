@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 230);
+/******/ 	return __webpack_require__(__webpack_require__.s = 229);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -90,8 +90,8 @@
 
 var global = __webpack_require__(7);
 var core = __webpack_require__(32);
-var hide = __webpack_require__(22);
-var redefine = __webpack_require__(23);
+var hide = __webpack_require__(23);
+var redefine = __webpack_require__(24);
 var ctx = __webpack_require__(33);
 var PROTOTYPE = 'prototype';
 
@@ -319,13 +319,13 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var forge = __webpack_require__(440);
+var forge = __webpack_require__(439);
 
-var sjcl = __webpack_require__(454);
+var sjcl = __webpack_require__(453);
 
-var Base32 = __webpack_require__(456);
+var Base32 = __webpack_require__(455);
 
-var JSChaCha20 = __webpack_require__(458);
+var JSChaCha20 = __webpack_require__(457);
 
 var iCrypto = /*#__PURE__*/function () {
   function iCrypto(settings) {
@@ -1875,7 +1875,7 @@ module.exports = {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ChatUtility; });
 /* harmony import */ var _iCrypto__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3);
 /* harmony import */ var _common_IError__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
-/* harmony import */ var cute_set__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(21);
+/* harmony import */ var cute_set__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(22);
 /* harmony import */ var cute_set__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(cute_set__WEBPACK_IMPORTED_MODULE_2__);
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -2051,7 +2051,7 @@ if (typeof __g == 'number') __g = global; // eslint-disable-line no-undef
  * Copyright (c) 2010-2018 Digital Bazaar, Inc.
  */
 var forge = __webpack_require__(5);
-var baseN = __webpack_require__(445);
+var baseN = __webpack_require__(444);
 
 /* Utilities API */
 var util = module.exports = forge.util = forge.util || {};
@@ -5024,7 +5024,7 @@ util.estimateCores = function(options, callback) {
   }
 };
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(29), __webpack_require__(103).setImmediate, __webpack_require__(20).Buffer))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(30), __webpack_require__(103).setImmediate, __webpack_require__(21).Buffer))
 
 /***/ }),
 /* 9 */
@@ -5844,6 +5844,1418 @@ module.exports = function (it) {
 
 /***/ }),
 /* 20 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, "a", function() { return /* binding */ Topic_Topic; });
+
+// EXTERNAL MODULE: ./common/Events.js
+var Events = __webpack_require__(1);
+
+// EXTERNAL MODULE: ./common/Util.js
+var Util = __webpack_require__(113);
+
+// EXTERNAL MODULE: ./client/src/js/lib/WildEmitter.js
+var WildEmitter = __webpack_require__(12);
+
+// EXTERNAL MODULE: ./client/src/js/lib/Message.js
+var Message = __webpack_require__(9);
+
+// EXTERNAL MODULE: ./client/src/js/lib/iCrypto.js
+var iCrypto = __webpack_require__(3);
+
+// EXTERNAL MODULE: ./common/IError.js
+var IError = __webpack_require__(2);
+
+// EXTERNAL MODULE: ./client/src/js/lib/ChatUtility.js
+var ChatUtility = __webpack_require__(6);
+
+// CONCATENATED MODULE: ./client/src/js/lib/ClientSettings.js
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+
+
+var ClientSettings_ClientSettings = /*#__PURE__*/function () {
+  function ClientSettings() {
+    var version = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : IError["a" /* IError */].required();
+    var nickname = arguments.length > 1 ? arguments[1] : undefined;
+    var pkfp = arguments.length > 2 ? arguments[2] : undefined;
+
+    _classCallCheck(this, ClientSettings);
+
+    this.version = version;
+    this.membersData = {};
+    this.invites = {};
+
+    if (nickname) {
+      console.log("Setting nickname for new settings: ".concat(nickname));
+      this.nickname = nickname;
+      this.membersData[pkfp] = {
+        nickname: nickname
+      };
+    }
+  }
+
+  _createClass(ClientSettings, [{
+    key: "setOwnerNickname",
+    value: function setOwnerNickname(pkfp, nickname) {
+      this.setNickname(pkfp, nickname);
+      this.nickname = nickname;
+    }
+  }, {
+    key: "setNickname",
+    value: function setNickname(pkfp, nickname) {
+      if (!this.membersData.hasOwnProperty(pkfp)) {
+        this.membersData[pkfp] = {};
+      }
+
+      this.membersData[pkfp].nickname = nickname;
+    }
+  }], [{
+    key: "encrypt",
+    value: function encrypt() {
+      var publicKey = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : IError["a" /* IError */].required;
+      var settings = arguments.length > 1 ? arguments[1] : undefined;
+
+      if (_typeof(settings) === "object") {
+        settings = JSON.stringify(settings);
+      }
+
+      return ChatUtility["a" /* ChatUtility */].encryptStandardMessage(settings, publicKey);
+    }
+  }]);
+
+  return ClientSettings;
+}();
+// CONCATENATED MODULE: ./client/src/js/lib/Metadata.js
+function Metadata_typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { Metadata_typeof = function _typeof(obj) { return typeof obj; }; } else { Metadata_typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return Metadata_typeof(obj); }
+
+function Metadata_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function Metadata_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function Metadata_createClass(Constructor, protoProps, staticProps) { if (protoProps) Metadata_defineProperties(Constructor.prototype, protoProps); if (staticProps) Metadata_defineProperties(Constructor, staticProps); return Constructor; }
+
+
+
+
+
+var Metadata_Metadata = /*#__PURE__*/function () {
+  Metadata_createClass(Metadata, [{
+    key: "decryptSettings",
+    value: function decryptSettings() {
+      var settings = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : IError["a" /* IError */].required("settings");
+      var privateKey = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : IError["a" /* IError */].required("privateKey");
+      return JSON.parse(ChatUtility["a" /* ChatUtility */].decryptStandardMessage(settings, privateKey));
+    }
+  }, {
+    key: "encryptSettings",
+    value: function encryptSettings() {
+      var publicKey = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : IError["a" /* IError */].required("publicKey");
+      var settings = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : IError["a" /* IError */].required("settings");
+
+      if (Metadata_typeof(settings) === "object") {
+        settings = JSON.stringify(settings);
+      }
+
+      return ChatUtility["a" /* ChatUtility */].encryptStandardMessage(settings, publicKey);
+    }
+  }], [{
+    key: "parseMetadata",
+    value: function parseMetadata(blob) {
+      if (typeof blob === "string") {
+        return JSON.parse(blob);
+      } else {
+        return blob;
+      }
+    }
+  }, {
+    key: "isMetadataValid",
+    value: function isMetadataValid(metadata) {
+      if (typeof metadata === "string") {
+        metadata = JSON.parse(metadata);
+      }
+
+      var ic = new iCrypto["a" /* iCrypto */]();
+      ic.setRSAKey("pub", metadata.body.topicAuthority.publicKey, "public").addBlob("body", JSON.stringify(metadata.body)).addBlob("sign", metadata.signature).publicKeyVerify("body", "sign", "pub", "res");
+      return ic.get("res");
+    } //Parses metadata blob and decrypts settings if found
+
+  }, {
+    key: "fromBlob",
+    value: function fromBlob() {
+      var metadata = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : IError["a" /* IError */].required();
+      var privateKey = arguments.length > 1 ? arguments[1] : undefined;
+      var parsed = typeof metadata === "string" ? JSON.parse(metadata) : metadata;
+      var res = new Metadata();
+      res.body = parsed.body;
+      res.signature = parsed.signature;
+
+      if (parsed.body.settings) {
+        Object(IError["b" /* assert */])(privateKey, "No Private key to decrypt settings");
+        res.body.settings = res.decryptSettings(parsed.body.settings, privateKey);
+      } else {
+        console.log("Warning! Metadata without settings!");
+        res.body.settings = res.initializeSettings();
+      }
+
+      return res;
+    }
+  }]);
+
+  function Metadata() {
+    Metadata_classCallCheck(this, Metadata);
+
+    this.body = {
+      id: "",
+      timestamp: "",
+      owner: "",
+      sharedKeySignature: "",
+      participants: {},
+      topicAuthority: {},
+      settings: {
+        version: "",
+        membersData: {},
+        invites: {}
+      }
+    };
+    this.signature;
+  }
+
+  Metadata_createClass(Metadata, [{
+    key: "setParticipantAlias",
+    value: function setParticipantAlias() {
+      var alias = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : IError["a" /* IError */].required("alias");
+      var pkfp = arguments.length > 1 ? arguments[1] : undefined;
+      Object(IError["b" /* assert */])(this.body.participants.hasOwnProperty(pkfp), "Participant ".concat(pkfp, " not found"));
+
+      if (!this.body.settings.membersData.hasOwnProperty(pkfp)) {
+        this.body.settings.membersData[pkfp] = {};
+      }
+
+      this.body.settings.membersData[pkfp].alias = alias;
+    }
+  }, {
+    key: "hasParticipant",
+    value: function hasParticipant(pkfp) {
+      return this.body.participants.hasOwnProperty(pkfp);
+    }
+  }, {
+    key: "setParticipantNickname",
+    value: function setParticipantNickname() {
+      var nickname = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : IError["a" /* IError */].required("nickname");
+      var pkfp = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : IError["a" /* IError */].required("pkfp");
+      Object(IError["b" /* assert */])(this.body.participants.hasOwnProperty(pkfp), "Participant ".concat(pkfp, " not found"));
+
+      if (!this.body.settings.membersData.hasOwnProperty(pkfp)) {
+        this.body.settings.membersData[pkfp] = {};
+      }
+
+      this.body.settings.membersData[pkfp].nickname = nickname;
+    }
+  }, {
+    key: "getParticipantAlias",
+    value: function getParticipantAlias(pkfp) {
+      if (!pkfp) {
+        pkfp = this.body.owner;
+      }
+
+      if (this.body.settings.membersData.hasOwnProperty(pkfp)) {
+        return this.body.settings.membersData[pkfp].alias;
+      } else {
+        return "Deleted";
+      }
+    }
+  }, {
+    key: "getParticipantNickname",
+    value: function getParticipantNickname() {
+      var pkfp = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : IError["a" /* IError */].required("pkfp");
+      return this.body.settings.membersData[pkfp].nickname;
+    }
+  }, {
+    key: "getParticipantPublicKey",
+    value: function getParticipantPublicKey(pkfp) {
+      Object(IError["b" /* assert */])(this.body.participants.hasOwnProperty(pkfp), "Participant ".concat(pkfp, " not found"));
+      return this.body.participants[pkfp].publicKey;
+    }
+  }, {
+    key: "addInvite",
+    value: function addInvite() {
+      var inviteCode = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : IError["a" /* IError */].required("inviteCode");
+      var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "";
+      this.body.settings.invites[inviteCode] = {
+        name: name
+      };
+    }
+  }, {
+    key: "deleteInvite",
+    value: function deleteInvite() {
+      var inviteCode = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : IError["a" /* IError */].required("inviteCode");
+      delete this.body.settings.invites[inviteCode];
+    }
+  }, {
+    key: "getInvites",
+    value: function getInvites() {
+      return JSON.parse(JSON.stringify(this.body.settings.invites));
+    }
+  }, {
+    key: "hasInvite",
+    value: function hasInvite(inviteCode) {
+      return this.body.settings.invites.hasOwnProperty(inviteCode);
+    }
+  }, {
+    key: "setInviteAlias",
+    value: function setInviteAlias(inviteCode, name) {
+      Object(IError["b" /* assert */])(this.hasInvite(inviteCode), "Invite is not found");
+      this.body.settings.invites[inviteCode] = {
+        name: name
+      };
+    }
+  }, {
+    key: "updateMetadata",
+    value: function updateMetadata(newMetadata) {
+      //assert(Metadata.isMetadataValid(newMetadata), "Metadata is invalid")
+      console.log("Updating metadata...");
+
+      if (typeof newMetadata === "string") {
+        newMetadata = JSON.parse(newMetadata);
+      }
+
+      this.body.participants = JSON.parse(JSON.stringify(newMetadata.body.participants));
+      this.body.settings.membersData = ChatUtility["a" /* ChatUtility */].syncMap(Object.keys(this.body.participants), this.body.settings.membersData, {
+        nickname: "Unknown"
+      });
+      this.body.id = newMetadata.body.id;
+      this.body.timestamp = newMetadata.body.timestampa;
+      this.body.sharedKeySignature = newMetadata.body.sharedKeySignature;
+      this.signature = newMetadata.signature;
+    }
+  }, {
+    key: "updateInvites",
+    value: function updateInvites(invites) {
+      this.body.settings.invites = ChatUtility["a" /* ChatUtility */].syncMap(invites, this.body.settings.invites, {
+        name: ""
+      });
+    }
+  }, {
+    key: "updateSettings",
+    value: function updateSettings(settings) {
+      Object(IError["b" /* assert */])(Metadata_typeof(settings) === "object", "Settings are of invalid type.");
+      var currentParticipants = Object.keys(this.body.participants);
+      this.body.settings.membersData = ChatUtility["a" /* ChatUtility */].syncMap(currentParticipants, settings.membersData, {
+        nickname: "Unknown"
+      });
+      this.body.settings.invites = settings.invites;
+      this.body.settings.version = settings.version;
+    }
+  }, {
+    key: "getId",
+    value: function getId() {
+      return this.body.id;
+    }
+  }, {
+    key: "getSharedKey",
+    value: function getSharedKey() {
+      var pkfp = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : IError["a" /* IError */].required("pkfp");
+      var privateKey = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : IError["a" /* IError */].required("privateKey");
+      return ChatUtility["a" /* ChatUtility */].privateKeyDecrypt(this.body.participants[pkfp].key, privateKey);
+    }
+  }, {
+    key: "getSettingsEncrypted",
+    value: function getSettingsEncrypted() {
+      var privateKey = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : IError["a" /* IError */].required();
+      var ic = new iCrypto["a" /* iCrypto */]();
+      ic.asym.setKey("privk", privateKey, "private").publicFromPrivate("privk", "pub");
+      var publicKey = ic.get("pub");
+      var settings = JSON.stringify(this.body.settings);
+      var settingsEnc = ClientSettings_ClientSettings.encrypt(publicKey, settings);
+      ic.addBlob("cipher", settingsEnc).privateKeySign("cipher", "privk", "sign");
+      return {
+        settings: settingsEnc,
+        signature: ic.get("sign")
+      };
+    }
+  }, {
+    key: "getTAPublicKey",
+    value: function getTAPublicKey() {
+      return this.body.topicAuthority.publicKey;
+    }
+  }, {
+    key: "getTAPkfp",
+    value: function getTAPkfp() {
+      return this.body.topicAuthority.pkfp;
+    }
+  }, {
+    key: "initializeSettings",
+    value: function initializeSettings() {
+      var version = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "2.0.0";
+      return {
+        version: version,
+        membersData: {},
+        invites: {}
+      };
+    }
+  }]);
+
+  return Metadata;
+}();
+// EXTERNAL MODULE: ./client/src/js/lib/ChatMessage.js
+var ChatMessage = __webpack_require__(46);
+
+// EXTERNAL MODULE: ./node_modules/cute-set/index.js
+var cute_set = __webpack_require__(22);
+
+// EXTERNAL MODULE: ./node_modules/buffer/index.js
+var buffer = __webpack_require__(21);
+
+// CONCATENATED MODULE: ./client/src/js/lib/Topic.js
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
+function Topic_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function Topic_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function Topic_createClass(Constructor, protoProps, staticProps) { if (protoProps) Topic_defineProperties(Constructor.prototype, protoProps); if (staticProps) Topic_defineProperties(Constructor, staticProps); return Constructor; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+var INITIAL_NUM_MESSAGES = 25;
+var Topic_Topic = /*#__PURE__*/function () {
+  function Topic(pkfp, name, key, comment) {
+    Topic_classCallCheck(this, Topic);
+
+    WildEmitter["a" /* WildEmitter */].mixin(this);
+    this.pkfp = pkfp;
+    this.name = name; // Topic alias. Not shared.
+
+    this.privateKey = key;
+    this.comment = comment;
+    this.handlers = {};
+    this.connector;
+    this.arrivalHub;
+    this.currentMetadata;
+    this.sharedKey;
+    this.metadataId;
+    this.lastPrivate;
+    this.participants = {};
+    this.messages = [];
+    this.settings = {};
+    this.invites = {};
+
+    this.getPrivateKey = function () {
+      return key;
+    }; // Meaning event listeners are set for arrivalHub
+
+
+    this.isBootstrapped = false; // Whether topic's metadata loaded
+
+    this.metadataLoaded = false; // Initial messages load has been completed
+
+    this.isInitLoaded = false; // All messages on this toipcs has been loaded
+
+    this.allMessagesLoaded = false; // When topic has sent load n messages from the server and awaiting result
+
+    this.awaitingMessages = false;
+  }
+
+  Topic_createClass(Topic, [{
+    key: "bootstrap",
+    // ---------------------------------------------------------------------------------------------------------------------------
+    // INITIALIZING
+    value: function bootstrap(connector, arrivalHub, version) {
+      var _this = this;
+
+      this.connector = connector;
+      this.arrivalHub = arrivalHub;
+      this.arrivalHub.on(this.pkfp, function (msg) {
+        _this.preprocessIncomingMessage(msg, _this);
+      });
+      this.version = version;
+      this.setHandlers();
+      this.isBootstrapped = true;
+    } //Called when newly issued metadata arrived
+
+  }, {
+    key: "updateMetadata",
+    value: function updateMetadata(metadata) {
+      if (typeof metadata === "string") {
+        metadata = JSON.parse(metadata);
+      }
+
+      var settings = this._metadata.body.settings;
+      metadata.body.settings = settings;
+      settings.membersData = ChatUtility["a" /* ChatUtility */].syncMap(Object.keys(metadata.body.participants), settings.membersData, {
+        nickname: ""
+      });
+      this._metadata = metadata;
+      this.sharedKey = ChatUtility["a" /* ChatUtility */].privateKeyDecrypt(this.participants[this.pkfp].key, this.privateKey);
+      this.metadataId = metadata.body.id;
+      this.topicAuthority = metadata.body.topicAuthority;
+      this.updateParticipants();
+      this.saveClientSettings();
+    }
+  }, {
+    key: "loadMetadata",
+    value: function loadMetadata(metadata) {
+      var privateKey = this.privateKey;
+      this._metadata = Metadata_Metadata.fromBlob(metadata, privateKey);
+      this.updateParticipants();
+      this.sharedKey = this.getSharedKey();
+      this.metadataId = this._metadata.getId();
+      this.metadataLoaded = true;
+    } //called only when loading metadata from Island on login
+
+  }, {
+    key: "loadMetadataBAK",
+    value: function loadMetadataBAK(metadata) {
+      if (typeof metadata === "string") {
+        metadata = JSON.parse(metadata);
+      }
+
+      var settingsCipher = metadata.body.settings;
+      var settings;
+
+      if (!settingsCipher) {
+        settings = Topic.prepareNewTopicSettings(this.version, undefined, undefined, this.getPublicKey, false);
+      } else {
+        settings = JSON.parse(ChatUtility["a" /* ChatUtility */].decryptStandardMessage(settingsCipher, this.privateKey));
+      }
+
+      this._metadata = metadata;
+      this._metadata.body.settings = settings;
+      this.settings = settings;
+      this.updateParticipants();
+      this.sharedKey = ChatUtility["a" /* ChatUtility */].privateKeyDecrypt(this.participants[this.pkfp].key, this.privateKey);
+      this.metadataId = metadata.body.id;
+      this.topicAuthority = metadata.body.topicAuthority;
+
+      if (!metadata.body.settings.invites) {
+        metadata.body.settings.invites = {};
+      }
+
+      this.invites = metadata.body.settings.invites;
+      this.metadataLoaded = true;
+    }
+  }, {
+    key: "updateParticipants",
+    value: function updateParticipants() {
+      console.log("Updating participants");
+      var metadata = this._metadata;
+      this.participants = {};
+
+      for (var _i = 0, _Object$keys = Object.keys(metadata.body.participants); _i < _Object$keys.length; _i++) {
+        var pkfp = _Object$keys[_i];
+        this.participants[pkfp] = {};
+        this.participants[pkfp].key = metadata.body.participants[pkfp].key;
+        this.participants[pkfp].pkfp = metadata.body.participants[pkfp].pkfp;
+        this.participants[pkfp].publicKey = metadata.body.participants[pkfp].publicKey;
+        this.participants[pkfp].residence = metadata.body.participants[pkfp].residence;
+        this.participants[pkfp].rights = metadata.body.participants[pkfp].rights;
+
+        if (metadata.body.settings.membersData) {
+          this.participants[pkfp].nickname = metadata.body.settings.membersData[pkfp] ? metadata.body.settings.membersData[pkfp].nickname : "";
+          this.participants[pkfp].joined = metadata.body.settings.membersData[pkfp] ? metadata.body.settings.membersData[pkfp].joined : "";
+        }
+      }
+    }
+    /**
+     * Loads topic's last n messsages
+     * If wait for completion function will return only after load is completed
+     */
+
+  }, {
+    key: "initLoad",
+    value: function initLoad(cb) {
+      var _this2 = this;
+
+      this.ensureBootstrapped();
+      this.awaitingMessages = true;
+
+      if (cb) {
+        this.once(Events["Internal"].MESSAGES_LOADED, function () {
+          cb(_this2.messages);
+        });
+      }
+
+      this.requestMessages();
+    }
+  }, {
+    key: "setHandlers",
+    value: function setHandlers() {
+      var _this3 = this;
+
+      var self = this;
+      this.handlers[Events["Internal"].LOAD_MESSAGES_SUCCESS] = this.processMessagesLoaded;
+
+      this.handlers[Events["Internal"].INVITE_REQUEST_TIMEOUT] = function () {
+        console.log("Invite request timeout");
+      };
+
+      this.handlers[Events["Internal"].MESSAGES_SYNC] = function (msg) {
+        console.log("Got messages sync");
+        console.dir(msg);
+        if (!msg.body.lastMessages || !msg.body.lastMessages.messages) return;
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
+
+        try {
+          for (var _iterator = msg.body.lastMessages.messages.reverse()[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var chatMsg = _step.value;
+            self.processIncomingMessage(self, JSON.parse(chatMsg));
+          }
+        } catch (err) {
+          _didIteratorError = true;
+          _iteratorError = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion && _iterator["return"] != null) {
+              _iterator["return"]();
+            }
+          } finally {
+            if (_didIteratorError) {
+              throw _iteratorError;
+            }
+          }
+        }
+      };
+
+      this.handlers[Events["Internal"].INVITE_REQUEST_FAIL] = function (msg) {
+        console.log("Invite request failed: ".concat(msg.body.errorMsg));
+      };
+
+      this.handlers[Events["Events"].INVITE_CREATED] = function (msg) {
+        console.log("Invite created event");
+        var newInvite = self.processInvitesUpdated(self, msg);
+        self.emit(Events["Events"].INVITE_CREATED, newInvite);
+      };
+
+      this.handlers[Events["Internal"].DELETE_INVITE_SUCCESS] = function (msg) {
+        console.log("Invite deleted event");
+        self.processInvitesUpdated(self, msg);
+        self.emit(Events["Internal"].DELETE_INVITE_SUCCESS);
+      };
+
+      this.handlers[Events["Internal"].SETTINGS_UPDATED] = function (msg) {
+        console.log("Settings updated");
+        self.processSettingsUpdated(self, msg);
+      };
+
+      this.handlers[Events["Internal"].METADATA_ISSUE] = function (msg) {
+        console.log("Metadata issue received. Event: ".concat(msg.headers.event));
+        Object(IError["b" /* assert */])(Message["a" /* Message */].verifyMessage(self._metadata.getTAPublicKey(), msg), "TA signature is invalid");
+        console.log("Signature verified. Loading metadata...");
+
+        self._metadata.updateMetadata(msg.body.metadata);
+
+        if (msg.body.invite && _this3._metadata.hasInvite(msg.body.invite)) {
+          //Invite was used by new member:
+          _this3._metadata.deleteInvite(msg.body.invite);
+        }
+
+        if (msg.body.inviteePkfp) {
+          self.nicknameChangeNotify(msg.body.inviteePkfp);
+        }
+
+        self.saveClientSettings();
+        console.log("Metadata updated");
+        self.emit(Events["Events"].METADATA_UPDATED);
+      };
+
+      this.handlers[Events["Internal"].NICKNAME_INITAL_EXCHANGE] = function (msg) {
+        console.log("Initial nickname exchange request received. Processing");
+        var senderPkfp = msg.headers.pkfpSource;
+        Object(IError["b" /* assert */])(self.participants[senderPkfp], "Member has not yet been registered"); //assert(Message.verifyMessage(senderPublicKey, msg), "Signature is invalid")
+
+        if (msg.body.metadataId === self._metadata.getId() && msg.body.myNickname) {
+          console.log("Decrypting new participant nickname...");
+          var nickname = ChatUtility["a" /* ChatUtility */].symKeyDecrypt(msg.body.myNickname, self.getSharedKey());
+          console.log("New member's nickname is ".concat(nickname));
+          console.log("My current nickname is ".concat(self.getCurrentNickname()));
+          self.setParticipantNickname(nickname, senderPkfp);
+        }
+      };
+
+      this.handlers[Events["Internal"].NICKNAME_NOTE] = function (msg) {
+        console.log("nickname note received: metadataId: ".concat(msg.body[Events["Internal"].METADATA_ID]));
+        var senderPkfp = msg.headers.pkfpSource;
+        var senderPublicKey = self.participants[senderPkfp].publicKey; //assert(Message.verifyMessage(senderPublicKey, msg), "Signature is invalid")
+
+        var sharedKey = ChatUtility["a" /* ChatUtility */].privateKeyDecrypt(msg.sharedKey, self.privateKey);
+        var currentSharedKey = self.getSharedKey();
+        console.log("Current key: ".concat(currentSharedKey, ", received key ").concat(sharedKey));
+        var nickname = ChatUtility["a" /* ChatUtility */].symKeyDecrypt(msg.body.nickname, sharedKey);
+        console.log("Participan ".concat(senderPkfp, " changed his nickname to ").concat(nickname));
+        self.setParticipantNickname(nickname, senderPkfp);
+      };
+
+      this.handlers[Events["Internal"].SERVICE_RECORD] = function (msg) {
+        console.log("New service record arrved");
+        var record = msg.body.serviceRecord;
+
+        if (!record) {
+          console.error("Error: Service record is not found!");
+          return;
+        }
+
+        record = new ChatMessage["a" /* ChatMessage */](record);
+        record.decryptServiceRecord(self.privateKey);
+        self.addNewMessage(self, record);
+      };
+
+      this.handlers[Events["Internal"].BROADCAST_MESSAGE] = function (msg) {
+        console.log("Broadcast message received");
+        var msgCopy = JSON.parse(JSON.stringify(msg)); // pkfpDest is added by server when message is broadcasted, so to verify it
+        // must be deleted
+
+        delete msgCopy.pkfpDest;
+        Object(IError["b" /* assert */])(self.participants[msg.headers.pkfpSource], "The participant ".concat(msgCopy.pkfpDest, " not found"));
+        var publicKey = self.participants[msg.headers.pkfpSource].publicKey; //assert(Message.verifyMessage(publicKey, msgCopy), "Message was not verified")
+
+        var message = new ChatMessage["a" /* ChatMessage */](msg.body.message);
+        message.decryptMessage(self.getSharedKey());
+        self.addNewMessage(self, message);
+
+        if (message.header.nickname !== self.getParticipantNickname(msg.headers.pkfpSource)) {
+          console.log("Member's nickname has changed from ".concat(self.getParticipantNickname(msg.headers.pkfpSource), " to ").concat(message.header.nickname));
+          self.setParticipantNickname(message.header.nickname, msg.headers.pkfpSource);
+        }
+      };
+
+      this.handlers[Events["Internal"].SEND_MESSAGE] = function (msg) {
+        Object(IError["b" /* assert */])(self.participants[msg.headers.pkfpSource], "The participant ".concat(msg.headers.pkfpDest, " not found"));
+        var publicKey = self.participants[msg.headers.pkfpSource].publicKey;
+        Object(IError["b" /* assert */])(Message["a" /* Message */].verifyMessage(publicKey, msg));
+        var message = new ChatMessage["a" /* ChatMessage */](msg.body.message);
+        message.decryptPrivateMessage(self.privateKey);
+        self.addNewMessage(self, message);
+      };
+
+      this.handlers[Events["Internal"].MESSAGE_SENT] = function (msg) {
+        console.log("Message sent received. Message: ".concat(msg.body.message));
+
+        _this3.processMessageSent(_this3, msg);
+      };
+    } //End//////////////////////////////////////////////////////////////////////
+    // ---------------------------------------------------------------------------------------------------------------------------
+    // MESSAGE HANDLING
+
+  }, {
+    key: "processIncomingMessage",
+    value: function processIncomingMessage(self, msg) {
+      var message = new ChatMessage["a" /* ChatMessage */](msg);
+
+      if (message.header.service) {
+        message.decryptServiceRecord(self.privateKey);
+      } else if (message.header["private"]) {
+        message.decryptPrivateMessage(self.privateKey);
+      } else {
+        message.decryptMessage(self.getSharedKey());
+      }
+
+      if (!message.header.service) {
+        if (message.header.nickname !== self.getParticipantNickname(msg.header.author)) {
+          console.log("Member's nickname has changed from ".concat(self.getParticipantNickname(msg.header.author), " to ").concat(message.header.nickname));
+          self.setParticipantNickname(message.header.nickname, msg.header.author);
+        }
+      }
+
+      self.addNewMessage(self, message);
+    }
+  }, {
+    key: "processMessageSent",
+    value: function processMessageSent(self, msg) {
+      var sentMessage = new ChatMessage["a" /* ChatMessage */](msg.body.message);
+      console.log("Setting existing message from pending to delivered");
+      var existingMessages = self.messages.filter(function (m) {
+        return m.header.id === sentMessage.header.id;
+      });
+      Object(IError["b" /* assert */])(existingMessages.length < 2, "Message doubling error: ".concat(existingMessages.length));
+      var existingMessage = existingMessages[0];
+
+      if (existingMessage) {
+        existingMessage.pending = false;
+        self.emit(Events["Internal"].MESSAGE_SENT, existingMessage);
+      } else {
+        console.log("Decrypting and adding sent message.");
+        sentMessage.header["private"] ? sentMessage.decryptPrivateMessage(self.privateKey) : sentMessage.decryptMessage(self.getSharedKey());
+        self.addNewMessage(self, sentMessage);
+      }
+    }
+  }, {
+    key: "addNewMessage",
+    value: function addNewMessage(self, chatMessage) {
+      console.log("!!========ADDING NEW CHAT MESSAGE. msgCount: ".concat(self.messages.length, " \n").concat(chatMessage.body));
+      self.messages.splice(0, 0, chatMessage);
+      console.log("Message added. msgCount: ".concat(self.messages.length));
+      self.emit(Events["Events"].NEW_CHAT_MESSAGE, chatMessage);
+    }
+  }, {
+    key: "getMessages",
+    value: function getMessages(cb) {
+      if (this.initLoaded) {
+        cb(this.messages);
+      } else {
+        console.log("Messages has not been loaded. Loading....");
+        this.initLoad(cb);
+      }
+    }
+  }, {
+    key: "getMessagesAsync",
+    value: function getMessagesAsync() {
+      if (this.initLoaded) {
+        return this.messages;
+      } else {
+        console.log("Messages has not been loaded. Loading...."); //init load and then emit
+
+        this.initLoad();
+        return null;
+      }
+    } // Incoming message
+
+  }, {
+    key: "preprocessIncomingMessage",
+    value: function preprocessIncomingMessage(msg, self) {
+      console.log("Incoming message on ".concat(this.pkfp, " received!"));
+
+      if (self.handlers.hasOwnProperty(msg.headers.command)) {
+        self.handlers[msg.headers.command](msg, self);
+      } else {
+        var errMsg = "No handler found for command: ".concat(msg.headers.command);
+        throw new Error(errMsg);
+      }
+    }
+  }, {
+    key: "getCurrentNickname",
+    value: function getCurrentNickname() {
+      if (!this.metadataLoaded) {
+        throw new Error("Cannot get current nickname: metadata is not loaded.");
+      }
+
+      return this._metadata.getParticipantNickname(this.pkfp);
+    }
+  }, {
+    key: "getSharedKey",
+    value: function getSharedKey() {
+      return this._metadata.getSharedKey(this.pkfp, this.privateKey);
+    }
+  }, {
+    key: "getParticipantPublicKey",
+    value: function getParticipantPublicKey(pkfp) {
+      return this._metadata.getParticipantPublicKey(pkfp);
+    }
+  }, {
+    key: "getMetadataId",
+    value: function getMetadataId() {
+      return this._metadata.getId();
+    }
+  }, {
+    key: "loadMoreMessages",
+    value: function loadMoreMessages() {
+      if (this.awaitingMessages || this.allMessagesLoaded) {
+        console.log("Already awaiting messages");
+        return;
+      }
+
+      console.log("Loading more messages");
+      this.awaitingMessages = true;
+      var lastMessageId = this.messages.length > 0 ? this.messages[this.messages.length - 1].header.id : undefined;
+      this.requestMessages(25, lastMessageId);
+    }
+  }, {
+    key: "requestMessages",
+    value: function requestMessages() {
+      var quantity = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : INITIAL_NUM_MESSAGES;
+      var lastMessageId = arguments.length > 1 ? arguments[1] : undefined;
+      var request = new Message["a" /* Message */](this.version);
+      request.headers.command = Events["Internal"].LOAD_MESSAGES;
+      request.headers.pkfpSource = this.pkfp;
+      request.body.quantity = quantity;
+
+      if (lastMessageId) {
+        request.body.lastMessageId = lastMessageId;
+      }
+
+      request.addNonce();
+      request.signMessage(this.privateKey);
+      this.connector.send(request);
+    } // ---------------------------------------------------------------------------------------------------------------------------
+    // INVITES HANDLING
+
+  }, {
+    key: "requestInvite",
+    value: function requestInvite() {
+      var self = this;
+
+      if (!self.metadataLoaded) {
+        throw new Error("Metadata has not been loaded yet.");
+      }
+
+      setTimeout(function () {
+        var request = new Message["a" /* Message */](self.version);
+
+        var taPublicKey = self._metadata.getTAPublicKey();
+
+        var myNickNameEncrypted = ChatUtility["a" /* ChatUtility */].encryptStandardMessage(self.participants[self.pkfp].nickname, taPublicKey);
+        var topicNameEncrypted = ChatUtility["a" /* ChatUtility */].encryptStandardMessage(self.name, taPublicKey);
+        request.setCommand(Events["Internal"].REQUEST_INVITE);
+        request.setSource(self.pkfp);
+        request.setDest(self._metadata.getTAPkfp());
+        request.body.nickname = myNickNameEncrypted;
+        request.body.topicName = topicNameEncrypted;
+        request.signMessage(self.privateKey);
+        self.connector.send(request);
+      }, 100);
+    }
+  }, {
+    key: "setInviteAlias",
+    value: function setInviteAlias(code, alias) {
+      this._metadata.setInviteAlias(code, alias);
+
+      this.saveClientSettings();
+    }
+  }, {
+    key: "getInvites",
+    value: function getInvites() {
+      return this._metadata.getInvites();
+    }
+  }, {
+    key: "syncInvites",
+    value: function syncInvites() {
+      var request = new Message["a" /* Message */](self.version);
+      request.headers.command = "sync_invites";
+      request.headers.pkfpSource = this.session.publicKeyFingerprint;
+      request.headers.pkfpDest = this.session.metadata.topicAuthority.pkfp;
+      request.headers.nonce = ic.get("nhex");
+      request.signMessage(this.session.privateKey);
+      this.chatSocket.emit("request", request);
+    }
+  }, {
+    key: "deleteInvite",
+    value: function deleteInvite(inviteCode) {
+      console.log("About to delete invite: " + inviteCode);
+      Object(IError["b" /* assert */])(this._metadata.hasInvite(inviteCode), "Invite does not exists: ".concat(inviteCode));
+      var request = new Message["a" /* Message */](this.version);
+      request.headers.command = Events["Internal"].DELETE_INVITE;
+      request.headers.pkfpSource = this.pkfp;
+      request.headers.pkfpDest = this._metadata.getTAPkfp();
+      var body = {
+        invite: inviteCode
+      };
+      request.set("body", body);
+      request.signMessage(this.privateKey);
+      this.connector.send(request);
+    }
+  }, {
+    key: "updatePendingInvites",
+    value: function updatePendingInvites(userInvites) {
+      var _iteratorNormalCompletion2 = true;
+      var _didIteratorError2 = false;
+      var _iteratorError2 = undefined;
+
+      try {
+        for (var _iterator2 = userInvites[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+          var i = _step2.value;
+
+          if (!this.session.settings.invites.hasOwnProperty(i)) {
+            this.session.settings.invites[i] = {};
+          }
+        }
+      } catch (err) {
+        _didIteratorError2 = true;
+        _iteratorError2 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion2 && _iterator2["return"] != null) {
+            _iterator2["return"]();
+          }
+        } finally {
+          if (_didIteratorError2) {
+            throw _iteratorError2;
+          }
+        }
+      }
+
+      for (var _i2 = 0, _Object$keys2 = Object.keys(this.session.settings.invites); _i2 < _Object$keys2.length; _i2++) {
+        var _i3 = _Object$keys2[_i2];
+
+        if (!userInvites.includes(_i3)) {
+          delete this.session.settings.invites[_i3];
+        }
+      }
+
+      this.saveClientSettings();
+    } //END//////////////////////////////////////////////////////////////////////
+    // ---------------------------------------------------------------------------------------------------------------------------
+    // Nickname handling
+    //TODO
+
+  }, {
+    key: "exchangeNicknames",
+    value: function exchangeNicknames() {
+      console.log("Attempting to exchange nicknames. Sending my nickname: ".concat(this.getCurrentNickname()));
+
+      if (!this.isBootstrapped) {
+        console.log("Cannot exchange nicknames: topic not bootstrapped.");
+        return;
+      }
+
+      var myNicknameRaw = this.getCurrentNickname();
+      var myNickname = ChatUtility["a" /* ChatUtility */].symKeyEncrypt(myNicknameRaw, this.sharedKey);
+      var request = Message["a" /* Message */].createRequest(this.version, this.pkfp, Events["Internal"].NICKNAME_INITAL_EXCHANGE);
+      request.body.metadataId = this.metadataId;
+      request.body.myNickname = myNickname;
+      request.signMessage(this.privateKey);
+      this.connector.send(request);
+      console.log("Nicknames exchange request sent: nickname: ".concat(myNicknameRaw));
+    }
+  }, {
+    key: "getMetadata",
+    value: function getMetadata() {
+      return this._metadata;
+    }
+  }, {
+    key: "hasParticipant",
+    value: function hasParticipant(pkfp) {
+      return this._metadata.hasParticipant(pkfp);
+    }
+  }, {
+    key: "getParticipantNickname",
+    value: function getParticipantNickname(pkfp) {
+      if (this._metadata.body.settings.membersData[pkfp]) {
+        return this._metadata.body.settings.membersData[pkfp].nickname;
+      }
+    }
+  }, {
+    key: "setParticipantNickname",
+    value: function setParticipantNickname(nickname, pkfp) {
+      this._metadata.setParticipantNickname(nickname, pkfp);
+
+      this.saveClientSettings();
+
+      if (pkfp === this.pkfp) {
+        this.nicknameChangeNotify();
+      }
+    }
+  }, {
+    key: "setParticipantAlias",
+    value: function setParticipantAlias(alias, pkfp) {
+      this._metadata.setParticipantAlias(alias, pkfp);
+
+      this.saveClientSettings();
+    }
+  }, {
+    key: "nicknameChangeNotify",
+    value: function nicknameChangeNotify(pkfp) {
+      var self = this;
+      var curNickname = self.getCurrentNickname();
+      var sharedKey = self.getSharedKey();
+      console.log("Sending current nickname: ".concat(curNickname, ". Encrypting with: ").concat(sharedKey));
+      var message = new Message["a" /* Message */](self.version);
+      message.setCommand(Events["Internal"].NICKNAME_NOTE);
+      message.setSource(self.pkfp);
+
+      if (pkfp) {
+        message.setDest(pkfp);
+      }
+
+      message.addNonce();
+      message.setAttribute("nickname", ChatUtility["a" /* ChatUtility */].symKeyEncrypt(curNickname, sharedKey));
+      message.setAttribute(Events["Internal"].METADATA_ID, self._metadata.getId());
+      message.signMessage(self.privateKey);
+      self.connector.send(message);
+    }
+  }, {
+    key: "requestNickname",
+    value: function requestNickname(pkfp) {
+      if (!pkfp) {
+        throw new Error("Missing required parameter");
+      }
+
+      var request = new Message["a" /* Message */](self.version);
+      request.setCommand("whats_your_name");
+      request.setSource(this.session.publicKeyFingerprint);
+      request.setDest(pkfp);
+      request.addNonce();
+      request.signMessage(this.session.privateKey);
+      this.chatSocket.emit("request", request);
+    }
+  }, {
+    key: "broadcastNameChange",
+    value: function broadcastNameChange() {
+      var self = this;
+      var message = new Message["a" /* Message */](self.version);
+      message.setCommand("nickname_change_broadcast");
+      message.setSource(this.session.publicKeyFingerprint);
+      message.addNonce();
+      message.body.nickname = ChatUtility["a" /* ChatUtility */].symKeyEncrypt(self.session.settings.nickname, self.session.metadata.sharedKey);
+      message.signMessage(this.session.privateKey);
+      this.chatSocket.emit("request", message);
+    }
+  }, {
+    key: "processNicknameResponse",
+    value: function processNicknameResponse(request, self) {
+      self._processNicknameResponseHelper(request, self);
+    }
+  }, {
+    key: "processNicknameChangeNote",
+    value: function processNicknameChangeNote(request, self) {
+      self._processNicknameResponseHelper(request, self, true);
+    }
+  }, {
+    key: "_processNicknameResponseHelper",
+    value: function _processNicknameResponseHelper(request, self) {
+      var broadcast = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+      console.log("Got nickname response");
+      var publicKey = self.session.metadata.participants[request.headers.pkfpSource].publicKey;
+
+      if (!Message["a" /* Message */].verifyMessage(publicKey, request)) {
+        console.trace("Invalid signature");
+        return;
+      }
+
+      var existingNickname = self.getMemberNicknamr(request.headers.pkfpSource);
+      var memberRepr = self.getMemberRepr(request.headers.pkfpSource);
+      var newNickname = broadcast ? ChatUtility["a" /* ChatUtility */].symKeyDecrypt(request.body.nickname, self.session.metadata.sharedKey) : ChatUtility["a" /* ChatUtility */].decryptStandardMessage(request.body.nickname, self.session.privateKey);
+      newNickname = newNickname.toString("utf8");
+
+      if (newNickname !== existingNickname) {
+        self.setParticipantNickname(newNickname, request.headers.pkfpSource);
+        self.saveClientSettings();
+
+        if (existingNickname && existingNickname !== "") {
+          self.createServiceRecordOnMemberNicknameChange(memberRepr, newNickname, request.headers.pkfpSource);
+        }
+      }
+    } //~END NICKNAME HANDLING///////////////////////////////////////////////////
+    // ---------------------------------------------------------------------------------------------------------------------------
+    // Settings handling
+
+  }, {
+    key: "saveClientSettings",
+    value: function saveClientSettings() {
+      var body = this._metadata.getSettingsEncrypted(this.privateKey);
+
+      var request = new Message["a" /* Message */](this.version);
+      request.setSource(this.pkfp);
+      request.setCommand(Events["Internal"].UPDATE_SETTINGS);
+      request.set("body", body);
+      request.signMessage(this.privateKey);
+      console.log("Sending update settings request");
+      this.connector.send(request);
+    } //~END SETTINGS ///////////////////////////////////////////////////////////
+
+  }, {
+    key: "createRegisterServiceRecord",
+    value: function createRegisterServiceRecord(event, message) {
+      var request = new Message["a" /* Message */](self.version);
+      request.addNonce();
+      request.setSource(this.session.publicKeyFingerprint);
+      request.setCommand(Events["Internal"].REGISTER_SERVICE_RECORD);
+      request.body.event = event;
+      request.body.message = ChatUtility["a" /* ChatUtility */].encryptStandardMessage(message, this.getPublicKey);
+      request.signMessage(this.privateKey);
+      this.connector.send(request);
+    }
+  }, {
+    key: "processMessagesLoaded",
+    value: function processMessagesLoaded(msg, self) {
+      var data = msg.body.lastMessages;
+      var keys = data.keys;
+      console.log("Messages loaded. Processing.... Keys: ".concat(keys));
+      var metaIDs = Object.keys(keys);
+
+      for (var i = 0; i < metaIDs.length; ++i) {
+        var _ic = new iCrypto["a" /* iCrypto */]();
+
+        _ic.addBlob('k', keys[metaIDs[i]]).hexToBytes("k", "kraw").setRSAKey("priv", self.privateKey, "private").privateKeyDecrypt("kraw", "priv", "kdec");
+
+        keys[metaIDs[i]] = _ic.get("kdec");
+      }
+
+      var messages = data.messages;
+      var result = [];
+
+      for (var _i4 = 0; _i4 < messages.length; ++_i4) {
+        var message = new ChatMessage["a" /* ChatMessage */](messages[_i4]);
+
+        if (message.header.service) {
+          message.body = ChatUtility["a" /* ChatUtility */].decryptStandardMessage(message.body, self.privateKey);
+        } else if (message.header["private"]) {
+          message.decryptPrivateMessage(self.privateKey);
+        } else {
+          if (!keys.hasOwnProperty(message.header.metadataID)) {
+            console.error("Warning! key not found for ".concat(message.headers.metadataID));
+          }
+
+          message.decryptMessage(keys[message.header.metadataID]);
+        }
+
+        result.push(message);
+      }
+
+      if (!self.initLoaded || self.messages.length === 0) {
+        self.messages = result;
+      } else {
+        var latestLoadedID = result[0].header.id;
+        var glueIndex = self.messages.findIndex(function (msg) {
+          return msg.header.id === latestLoadedID;
+        });
+        self.messages = glueIndex ? [].concat(_toConsumableArray(self.messages.slice(0, glueIndex)), result) : [].concat(_toConsumableArray(self.messages), result);
+      }
+
+      self.initLoaded = true;
+      self.allMessagesLoaded = data.allLoaded;
+      self.awaitingMessages = false;
+      self.emit(Events["Events"].MESSAGES_LOADED, self.messages);
+    }
+  }, {
+    key: "processSettingsUpdated",
+    value: function processSettingsUpdated(self, msg) {
+      var settings = msg.body.settings;
+      var signature = msg.body.signature;
+      var metadata = Metadata_Metadata.fromBlob(msg.body.metadata, self.privateKey);
+      var ic = new iCrypto["a" /* iCrypto */]();
+      ic.addBlob("settings", settings).addBlob("sign", signature).setRSAKey("pub", self.getPublicKey(), "public").publicKeyVerify("settings", "sign", "pub", "res");
+      if (!ic.get("res")) throw new Error("Settings blob signature verification failed");
+      var settingsPlain = JSON.parse(ChatUtility["a" /* ChatUtility */].decryptStandardMessage(settings, self.privateKey));
+
+      if (this._metadata.getId() !== metadata.getId()) {
+        console.log("Metadata has been updated. Updating...");
+
+        this._metadata.updateMetadata(metadata);
+      }
+
+      self._metadata.updateSettings(settingsPlain);
+
+      self.updateParticipants();
+      console.log("Settings updated successfully!");
+      self.emit(Events["Events"].SETTINGS_UPDATED);
+    } //Notification on alias change. Disable for now
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // detectAliasNicknameChangesOnSettingsUpdate(settingsPlain){                                                  //
+    //     Object.keys(this._metadata.body.settings.membersData).forEach(k=>{                                      //
+    //                                                                                                             //
+    //         if(this._metadata.body.settings.membersData[k].nickname !== settingsPlain.membersData[k].nickname){ //
+    //             this.emit(Events.NICKNAME_CHANGED, {                                                            //
+    //                 topicPkfp: this.pkfp,                                                                       //
+    //                 oldNickname: this._metadata.body.settings.membersData[k].nickname,                          //
+    //                 newNickname: settingsPlain.membersData[k].nickname,                                         //
+    //                 participantPkfp: k                                                                          //
+    //             })                                                                                              //
+    //         }                                                                                                   //
+    //                                                                                                             //
+    //         if(this._metadata.body.settings.membersData[k].alias !== settingsPlain.membersData[k].alias){       //
+    //             this.emit(Events.PARTICIPANT_ALIAS_CHANGED, {                                                   //
+    //                 topicPkfp: this.pkfp,                                                                       //
+    //                 oldAlias: this._metadata.body.settings.membersData[k].alias,                                //
+    //                 newAlias: settingsPlain.membersData[k].alias,                                               //
+    //                 participantPkfp: k                                                                          //
+    //             })                                                                                              //
+    //         }                                                                                                   //
+    //     })                                                                                                      //
+    //                                                                                                             //
+    //     Object.keys(this._metadata.body.settings.invites).forEach(k=>{                                          //
+    //         if (this._metadata.body.settings.invites[k].name !== settingsPlain.invites[k].name){                //
+    //             this.emit(Events.INVITE_ALIAS_CHANGED, {                                                        //
+    //                 topicPkfp: this.pkfp,                                                                       //
+    //                 oldAlias: this._metadata.body.settings.invites[k].name,                                     //
+    //                 newAlias: settingsPlain.invites[k].name,                                                    //
+    //                 invite: k                                                                                   //
+    //             })                                                                                              //
+    //         }                                                                                                   //
+    //     })                                                                                                      //
+    // }                                                                                                           //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //TODO Cleanup or implememnt
+
+  }, {
+    key: "processInvitesUpdated",
+    value: function processInvitesUpdated(self, msg) {
+      Object(IError["b" /* assert */])(Message["a" /* Message */].verifyMessage(self._metadata.getTAPublicKey(), msg), "TA signature is invalid");
+      var data = JSON.parse(ChatUtility["a" /* ChatUtility */].decryptStandardMessage(msg.body.data, self.privateKey));
+      console.log("Invites data has been decrypted successfully.");
+
+      if (data.inviteCode) {
+        console.log("New invite: ".concat(data.inviteCode));
+      }
+
+      self._metadata.updateInvites(data.userInvites);
+
+      self.saveClientSettings();
+      return data.inviteCode;
+    }
+  }, {
+    key: "getParticipantAlias",
+    value: function getParticipantAlias(pkfp) {
+      if (!this.isBootstrapped || !pkfp) {
+        return;
+      }
+
+      return this._metadata.getParticipantAlias(pkfp);
+    }
+  }, {
+    key: "getParticipants",
+    value: function getParticipants() {
+      var _this4 = this;
+
+      var res = JSON.parse(JSON.stringify(this._metadata.body.participants));
+      Object.keys(res).forEach(function (k) {
+        res[k].alias = _this4._metadata.getParticipantAlias(k);
+        res[k].nickname = _this4._metadata.getParticipantNickname(k);
+      });
+      return res;
+    }
+  }, {
+    key: "getParticipantRepr",
+    value: function getParticipantRepr(pkfp) {
+      if (this.participants[pkfp]) {
+        return this.participants[pkfp].alias || this.participants[pkfp].nickname || "Unknown";
+      }
+    }
+  }, {
+    key: "getPublicKey",
+    value: function getPublicKey() {
+      if (!this.privateKey) throw new Error("No private key found");
+
+      if (!this.publicKey) {
+        var _ic2 = new iCrypto["a" /* iCrypto */]();
+
+        _ic2.setRSAKey("priv", this.privateKey, "private").publicFromPrivate("priv", "pub");
+
+        this.publicKey = _ic2.get("pub");
+      }
+
+      return this.publicKey;
+    }
+  }, {
+    key: "ensureInitLoaded",
+    value: function ensureInitLoaded() {
+      if (!this.initLoaded || !this.currentMetadata) {
+        throw new Error("Topic has no metadata");
+      }
+    }
+  }, {
+    key: "ensureBootstrapped",
+    value: function ensureBootstrapped() {
+      if (!this.isBootstrapped || !this.connector || !this.arrivalHub) {
+        throw new Error("Topic is not bootstrapped!");
+      }
+    }
+  }, {
+    key: "setName",
+    value: function setName(name) {
+      this.name = name;
+    }
+  }, {
+    key: "setPrivate",
+    value: function setPrivate(pkfp) {
+      Object(IError["b" /* assert */])(this.hasParticipant(pkfp), "Set private error: no member found ".concat(pkfp));
+      this.lastPrivate = pkfp;
+    }
+  }, {
+    key: "getPrivate",
+    value: function getPrivate(pkfp) {
+      return this.lastPrivate;
+    }
+  }, {
+    key: "resetPrivate",
+    value: function resetPrivate() {
+      this.lastPrivate = null;
+    } //Verifies current metadata
+
+  }, {
+    key: "verifyMetadata",
+    value: function verifyMetadata() {
+      return Metadata_Metadata.isMetadataValid(this._metadata);
+    }
+  }, {
+    key: "setTopicName",
+    value: function setTopicName(name) {
+      Object(IError["b" /* assert */])(Object(Util["inRange"])(name.length, 2, 30), "Topic name is invalid");
+      this.name = name;
+    }
+  }, {
+    key: "getLastMessageId",
+    value: function getLastMessageId() {
+      var _iteratorNormalCompletion3 = true;
+      var _didIteratorError3 = false;
+      var _iteratorError3 = undefined;
+
+      try {
+        for (var _iterator3 = this.messages[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+          var msg = _step3.value;
+          if (msg.header && msg.header.id) return msg.header.id;
+        }
+      } catch (err) {
+        _didIteratorError3 = true;
+        _iteratorError3 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion3 && _iterator3["return"] != null) {
+            _iterator3["return"]();
+          }
+        } finally {
+          if (_didIteratorError3) {
+            throw _iteratorError3;
+          }
+        }
+      }
+
+      return null;
+    }
+  }], [{
+    key: "prepareNewTopicSettings",
+    value: function prepareNewTopicSettings(version, nickname, topicName, publicKey) {
+      var encrypt = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : true;
+      //Creating and encrypting topic settings:
+      var settings = new ClientSettings_ClientSettings(version);
+
+      if (nickname) {
+        var _ic3 = new iCrypto["a" /* iCrypto */]();
+
+        _ic3.asym.setKey("pubk", publicKey, "public").getPublicKeyFingerprint("pubk", "pkfp");
+
+        settings.setOwnerNickname(_ic3.get("pkfp"), nickname);
+      }
+
+      if (encrypt) {
+        return ClientSettings_ClientSettings.encrypt(publicKey, settings);
+      } else {
+        return settings;
+      }
+    }
+  }]);
+
+  return Topic;
+}();
+
+/***/ }),
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5857,9 +7269,9 @@ module.exports = function (it) {
 
 
 
-var base64 = __webpack_require__(442)
-var ieee754 = __webpack_require__(443)
-var isArray = __webpack_require__(444)
+var base64 = __webpack_require__(441)
+var ieee754 = __webpack_require__(442)
+var isArray = __webpack_require__(443)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = SlowBuffer
@@ -7640,13 +9052,13 @@ function isnan (val) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(31)))
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(459);
+module.exports = __webpack_require__(458);
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var dP = __webpack_require__(16);
@@ -7660,14 +9072,14 @@ module.exports = __webpack_require__(15) ? function (object, key, value) {
 
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var global = __webpack_require__(7);
-var hide = __webpack_require__(22);
-var has = __webpack_require__(25);
+var hide = __webpack_require__(23);
+var has = __webpack_require__(26);
 var SRC = __webpack_require__(51)('src');
-var $toString = __webpack_require__(234);
+var $toString = __webpack_require__(233);
 var TO_STRING = 'toString';
 var TPL = ('' + $toString).split(TO_STRING);
 
@@ -7697,7 +9109,7 @@ __webpack_require__(32).inspectSource = function (it) {
 
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var $export = __webpack_require__(0);
@@ -7722,7 +9134,7 @@ module.exports = function (NAME, exec) {
 
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports) {
 
 var hasOwnProperty = {}.hasOwnProperty;
@@ -7732,7 +9144,7 @@ module.exports = function (it, key) {
 
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // to indexed object, toObject with fallback for non-array-like ES3 strings
@@ -7744,14 +9156,14 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var pIE = __webpack_require__(74);
 var createDesc = __webpack_require__(50);
-var toIObject = __webpack_require__(26);
+var toIObject = __webpack_require__(27);
 var toPrimitive = __webpack_require__(38);
-var has = __webpack_require__(25);
+var has = __webpack_require__(26);
 var IE8_DOM_DEFINE = __webpack_require__(155);
 var gOPD = Object.getOwnPropertyDescriptor;
 
@@ -7766,11 +9178,11 @@ exports.f = __webpack_require__(15) ? gOPD : function getOwnPropertyDescriptor(O
 
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.9 / 15.2.3.2 Object.getPrototypeOf(O)
-var has = __webpack_require__(25);
+var has = __webpack_require__(26);
 var toObject = __webpack_require__(18);
 var IE_PROTO = __webpack_require__(118)('IE_PROTO');
 var ObjectProto = Object.prototype;
@@ -7785,7 +9197,7 @@ module.exports = Object.getPrototypeOf || function (O) {
 
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -7973,1418 +9385,6 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-
-/***/ }),
-/* 30 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-
-// EXPORTS
-__webpack_require__.d(__webpack_exports__, "a", function() { return /* binding */ Topic_Topic; });
-
-// EXTERNAL MODULE: ./common/Events.js
-var Events = __webpack_require__(1);
-
-// EXTERNAL MODULE: ./common/Util.js
-var Util = __webpack_require__(113);
-
-// EXTERNAL MODULE: ./client/src/js/lib/WildEmitter.js
-var WildEmitter = __webpack_require__(12);
-
-// EXTERNAL MODULE: ./client/src/js/lib/Message.js
-var Message = __webpack_require__(9);
-
-// EXTERNAL MODULE: ./client/src/js/lib/iCrypto.js
-var iCrypto = __webpack_require__(3);
-
-// EXTERNAL MODULE: ./common/IError.js
-var IError = __webpack_require__(2);
-
-// EXTERNAL MODULE: ./client/src/js/lib/ChatUtility.js
-var ChatUtility = __webpack_require__(6);
-
-// CONCATENATED MODULE: ./client/src/js/lib/ClientSettings.js
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-
-
-var ClientSettings_ClientSettings = /*#__PURE__*/function () {
-  function ClientSettings() {
-    var version = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : IError["a" /* IError */].required();
-    var nickname = arguments.length > 1 ? arguments[1] : undefined;
-    var pkfp = arguments.length > 2 ? arguments[2] : undefined;
-
-    _classCallCheck(this, ClientSettings);
-
-    this.version = version;
-    this.membersData = {};
-    this.invites = {};
-
-    if (nickname) {
-      console.log("Setting nickname for new settings: ".concat(nickname));
-      this.nickname = nickname;
-      this.membersData[pkfp] = {
-        nickname: nickname
-      };
-    }
-  }
-
-  _createClass(ClientSettings, [{
-    key: "setOwnerNickname",
-    value: function setOwnerNickname(pkfp, nickname) {
-      this.setNickname(pkfp, nickname);
-      this.nickname = nickname;
-    }
-  }, {
-    key: "setNickname",
-    value: function setNickname(pkfp, nickname) {
-      if (!this.membersData.hasOwnProperty(pkfp)) {
-        this.membersData[pkfp] = {};
-      }
-
-      this.membersData[pkfp].nickname = nickname;
-    }
-  }], [{
-    key: "encrypt",
-    value: function encrypt() {
-      var publicKey = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : IError["a" /* IError */].required;
-      var settings = arguments.length > 1 ? arguments[1] : undefined;
-
-      if (_typeof(settings) === "object") {
-        settings = JSON.stringify(settings);
-      }
-
-      return ChatUtility["a" /* ChatUtility */].encryptStandardMessage(settings, publicKey);
-    }
-  }]);
-
-  return ClientSettings;
-}();
-// CONCATENATED MODULE: ./client/src/js/lib/Metadata.js
-function Metadata_typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { Metadata_typeof = function _typeof(obj) { return typeof obj; }; } else { Metadata_typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return Metadata_typeof(obj); }
-
-function Metadata_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function Metadata_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function Metadata_createClass(Constructor, protoProps, staticProps) { if (protoProps) Metadata_defineProperties(Constructor.prototype, protoProps); if (staticProps) Metadata_defineProperties(Constructor, staticProps); return Constructor; }
-
-
-
-
-
-var Metadata_Metadata = /*#__PURE__*/function () {
-  Metadata_createClass(Metadata, [{
-    key: "decryptSettings",
-    value: function decryptSettings() {
-      var settings = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : IError["a" /* IError */].required("settings");
-      var privateKey = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : IError["a" /* IError */].required("privateKey");
-      return JSON.parse(ChatUtility["a" /* ChatUtility */].decryptStandardMessage(settings, privateKey));
-    }
-  }, {
-    key: "encryptSettings",
-    value: function encryptSettings() {
-      var publicKey = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : IError["a" /* IError */].required("publicKey");
-      var settings = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : IError["a" /* IError */].required("settings");
-
-      if (Metadata_typeof(settings) === "object") {
-        settings = JSON.stringify(settings);
-      }
-
-      return ChatUtility["a" /* ChatUtility */].encryptStandardMessage(settings, publicKey);
-    }
-  }], [{
-    key: "parseMetadata",
-    value: function parseMetadata(blob) {
-      if (typeof blob === "string") {
-        return JSON.parse(blob);
-      } else {
-        return blob;
-      }
-    }
-  }, {
-    key: "isMetadataValid",
-    value: function isMetadataValid(metadata) {
-      if (typeof metadata === "string") {
-        metadata = JSON.parse(metadata);
-      }
-
-      var ic = new iCrypto["a" /* iCrypto */]();
-      ic.setRSAKey("pub", metadata.body.topicAuthority.publicKey, "public").addBlob("body", JSON.stringify(metadata.body)).addBlob("sign", metadata.signature).publicKeyVerify("body", "sign", "pub", "res");
-      return ic.get("res");
-    } //Parses metadata blob and decrypts settings if found
-
-  }, {
-    key: "fromBlob",
-    value: function fromBlob() {
-      var metadata = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : IError["a" /* IError */].required();
-      var privateKey = arguments.length > 1 ? arguments[1] : undefined;
-      var parsed = typeof metadata === "string" ? JSON.parse(metadata) : metadata;
-      var res = new Metadata();
-      res.body = parsed.body;
-      res.signature = parsed.signature;
-
-      if (parsed.body.settings) {
-        Object(IError["b" /* assert */])(privateKey, "No Private key to decrypt settings");
-        res.body.settings = res.decryptSettings(parsed.body.settings, privateKey);
-      } else {
-        console.log("Warning! Metadata without settings!");
-        res.body.settings = res.initializeSettings();
-      }
-
-      return res;
-    }
-  }]);
-
-  function Metadata() {
-    Metadata_classCallCheck(this, Metadata);
-
-    this.body = {
-      id: "",
-      timestamp: "",
-      owner: "",
-      sharedKeySignature: "",
-      participants: {},
-      topicAuthority: {},
-      settings: {
-        version: "",
-        membersData: {},
-        invites: {}
-      }
-    };
-    this.signature;
-  }
-
-  Metadata_createClass(Metadata, [{
-    key: "setParticipantAlias",
-    value: function setParticipantAlias() {
-      var alias = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : IError["a" /* IError */].required("alias");
-      var pkfp = arguments.length > 1 ? arguments[1] : undefined;
-      Object(IError["b" /* assert */])(this.body.participants.hasOwnProperty(pkfp), "Participant ".concat(pkfp, " not found"));
-
-      if (!this.body.settings.membersData.hasOwnProperty(pkfp)) {
-        this.body.settings.membersData[pkfp] = {};
-      }
-
-      this.body.settings.membersData[pkfp].alias = alias;
-    }
-  }, {
-    key: "hasParticipant",
-    value: function hasParticipant(pkfp) {
-      return this.body.participants.hasOwnProperty(pkfp);
-    }
-  }, {
-    key: "setParticipantNickname",
-    value: function setParticipantNickname() {
-      var nickname = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : IError["a" /* IError */].required("nickname");
-      var pkfp = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : IError["a" /* IError */].required("pkfp");
-      Object(IError["b" /* assert */])(this.body.participants.hasOwnProperty(pkfp), "Participant ".concat(pkfp, " not found"));
-
-      if (!this.body.settings.membersData.hasOwnProperty(pkfp)) {
-        this.body.settings.membersData[pkfp] = {};
-      }
-
-      this.body.settings.membersData[pkfp].nickname = nickname;
-    }
-  }, {
-    key: "getParticipantAlias",
-    value: function getParticipantAlias(pkfp) {
-      if (!pkfp) {
-        pkfp = this.body.owner;
-      }
-
-      if (this.body.settings.membersData.hasOwnProperty(pkfp)) {
-        return this.body.settings.membersData[pkfp].alias;
-      } else {
-        return "Deleted";
-      }
-    }
-  }, {
-    key: "getParticipantNickname",
-    value: function getParticipantNickname() {
-      var pkfp = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : IError["a" /* IError */].required("pkfp");
-      return this.body.settings.membersData[pkfp].nickname;
-    }
-  }, {
-    key: "getParticipantPublicKey",
-    value: function getParticipantPublicKey(pkfp) {
-      Object(IError["b" /* assert */])(this.body.participants.hasOwnProperty(pkfp), "Participant ".concat(pkfp, " not found"));
-      return this.body.participants[pkfp].publicKey;
-    }
-  }, {
-    key: "addInvite",
-    value: function addInvite() {
-      var inviteCode = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : IError["a" /* IError */].required("inviteCode");
-      var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "";
-      this.body.settings.invites[inviteCode] = {
-        name: name
-      };
-    }
-  }, {
-    key: "deleteInvite",
-    value: function deleteInvite() {
-      var inviteCode = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : IError["a" /* IError */].required("inviteCode");
-      delete this.body.settings.invites[inviteCode];
-    }
-  }, {
-    key: "getInvites",
-    value: function getInvites() {
-      return JSON.parse(JSON.stringify(this.body.settings.invites));
-    }
-  }, {
-    key: "hasInvite",
-    value: function hasInvite(inviteCode) {
-      return this.body.settings.invites.hasOwnProperty(inviteCode);
-    }
-  }, {
-    key: "setInviteAlias",
-    value: function setInviteAlias(inviteCode, name) {
-      Object(IError["b" /* assert */])(this.hasInvite(inviteCode), "Invite is not found");
-      this.body.settings.invites[inviteCode] = {
-        name: name
-      };
-    }
-  }, {
-    key: "updateMetadata",
-    value: function updateMetadata(newMetadata) {
-      //assert(Metadata.isMetadataValid(newMetadata), "Metadata is invalid")
-      console.log("Updating metadata...");
-
-      if (typeof newMetadata === "string") {
-        newMetadata = JSON.parse(newMetadata);
-      }
-
-      this.body.participants = JSON.parse(JSON.stringify(newMetadata.body.participants));
-      this.body.settings.membersData = ChatUtility["a" /* ChatUtility */].syncMap(Object.keys(this.body.participants), this.body.settings.membersData, {
-        nickname: "Unknown"
-      });
-      this.body.id = newMetadata.body.id;
-      this.body.timestamp = newMetadata.body.timestampa;
-      this.body.sharedKeySignature = newMetadata.body.sharedKeySignature;
-      this.signature = newMetadata.signature;
-    }
-  }, {
-    key: "updateInvites",
-    value: function updateInvites(invites) {
-      this.body.settings.invites = ChatUtility["a" /* ChatUtility */].syncMap(invites, this.body.settings.invites, {
-        name: ""
-      });
-    }
-  }, {
-    key: "updateSettings",
-    value: function updateSettings(settings) {
-      Object(IError["b" /* assert */])(Metadata_typeof(settings) === "object", "Settings are of invalid type.");
-      var currentParticipants = Object.keys(this.body.participants);
-      this.body.settings.membersData = ChatUtility["a" /* ChatUtility */].syncMap(currentParticipants, settings.membersData, {
-        nickname: "Unknown"
-      });
-      this.body.settings.invites = settings.invites;
-      this.body.settings.version = settings.version;
-    }
-  }, {
-    key: "getId",
-    value: function getId() {
-      return this.body.id;
-    }
-  }, {
-    key: "getSharedKey",
-    value: function getSharedKey() {
-      var pkfp = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : IError["a" /* IError */].required("pkfp");
-      var privateKey = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : IError["a" /* IError */].required("privateKey");
-      return ChatUtility["a" /* ChatUtility */].privateKeyDecrypt(this.body.participants[pkfp].key, privateKey);
-    }
-  }, {
-    key: "getSettingsEncrypted",
-    value: function getSettingsEncrypted() {
-      var privateKey = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : IError["a" /* IError */].required();
-      var ic = new iCrypto["a" /* iCrypto */]();
-      ic.asym.setKey("privk", privateKey, "private").publicFromPrivate("privk", "pub");
-      var publicKey = ic.get("pub");
-      var settings = JSON.stringify(this.body.settings);
-      var settingsEnc = ClientSettings_ClientSettings.encrypt(publicKey, settings);
-      ic.addBlob("cipher", settingsEnc).privateKeySign("cipher", "privk", "sign");
-      return {
-        settings: settingsEnc,
-        signature: ic.get("sign")
-      };
-    }
-  }, {
-    key: "getTAPublicKey",
-    value: function getTAPublicKey() {
-      return this.body.topicAuthority.publicKey;
-    }
-  }, {
-    key: "getTAPkfp",
-    value: function getTAPkfp() {
-      return this.body.topicAuthority.pkfp;
-    }
-  }, {
-    key: "initializeSettings",
-    value: function initializeSettings() {
-      var version = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "2.0.0";
-      return {
-        version: version,
-        membersData: {},
-        invites: {}
-      };
-    }
-  }]);
-
-  return Metadata;
-}();
-// EXTERNAL MODULE: ./client/src/js/lib/ChatMessage.js
-var ChatMessage = __webpack_require__(46);
-
-// EXTERNAL MODULE: ./node_modules/cute-set/index.js
-var cute_set = __webpack_require__(21);
-
-// EXTERNAL MODULE: ./node_modules/buffer/index.js
-var buffer = __webpack_require__(20);
-
-// CONCATENATED MODULE: ./client/src/js/lib/Topic.js
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
-
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
-
-function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
-
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
-
-function Topic_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function Topic_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function Topic_createClass(Constructor, protoProps, staticProps) { if (protoProps) Topic_defineProperties(Constructor.prototype, protoProps); if (staticProps) Topic_defineProperties(Constructor, staticProps); return Constructor; }
-
-
-
-
-
-
-
-
-
-
-
-
-
-var INITIAL_NUM_MESSAGES = 25;
-var Topic_Topic = /*#__PURE__*/function () {
-  function Topic(pkfp, name, key, comment) {
-    Topic_classCallCheck(this, Topic);
-
-    WildEmitter["a" /* WildEmitter */].mixin(this);
-    this.pkfp = pkfp;
-    this.name = name; // Topic alias. Not shared.
-
-    this.privateKey = key;
-    this.comment = comment;
-    this.handlers = {};
-    this.connector;
-    this.arrivalHub;
-    this.currentMetadata;
-    this.sharedKey;
-    this.metadataId;
-    this.lastPrivate;
-    this.participants = {};
-    this.messages = [];
-    this.settings = {};
-    this.invites = {};
-
-    this.getPrivateKey = function () {
-      return key;
-    }; // Meaning event listeners are set for arrivalHub
-
-
-    this.isBootstrapped = false; // Whether topic's metadata loaded
-
-    this.metadataLoaded = false; // Initial messages load has been completed
-
-    this.isInitLoaded = false; // All messages on this toipcs has been loaded
-
-    this.allMessagesLoaded = false; // When topic has sent load n messages from the server and awaiting result
-
-    this.awaitingMessages = false;
-  }
-
-  Topic_createClass(Topic, [{
-    key: "bootstrap",
-    // ---------------------------------------------------------------------------------------------------------------------------
-    // INITIALIZING
-    value: function bootstrap(connector, arrivalHub, version) {
-      var _this = this;
-
-      this.connector = connector;
-      this.arrivalHub = arrivalHub;
-      this.arrivalHub.on(this.pkfp, function (msg) {
-        _this.preprocessIncomingMessage(msg, _this);
-      });
-      this.version = version;
-      this.setHandlers();
-      this.isBootstrapped = true;
-    } //Called when newly issued metadata arrived
-
-  }, {
-    key: "updateMetadata",
-    value: function updateMetadata(metadata) {
-      if (typeof metadata === "string") {
-        metadata = JSON.parse(metadata);
-      }
-
-      var settings = this._metadata.body.settings;
-      metadata.body.settings = settings;
-      settings.membersData = ChatUtility["a" /* ChatUtility */].syncMap(Object.keys(metadata.body.participants), settings.membersData, {
-        nickname: ""
-      });
-      this._metadata = metadata;
-      this.sharedKey = ChatUtility["a" /* ChatUtility */].privateKeyDecrypt(this.participants[this.pkfp].key, this.privateKey);
-      this.metadataId = metadata.body.id;
-      this.topicAuthority = metadata.body.topicAuthority;
-      this.updateParticipants();
-      this.saveClientSettings();
-    }
-  }, {
-    key: "loadMetadata",
-    value: function loadMetadata(metadata) {
-      var privateKey = this.privateKey;
-      this._metadata = Metadata_Metadata.fromBlob(metadata, privateKey);
-      this.updateParticipants();
-      this.sharedKey = this.getSharedKey();
-      this.metadataId = this._metadata.getId();
-      this.metadataLoaded = true;
-    } //called only when loading metadata from Island on login
-
-  }, {
-    key: "loadMetadataBAK",
-    value: function loadMetadataBAK(metadata) {
-      if (typeof metadata === "string") {
-        metadata = JSON.parse(metadata);
-      }
-
-      var settingsCipher = metadata.body.settings;
-      var settings;
-
-      if (!settingsCipher) {
-        settings = Topic.prepareNewTopicSettings(this.version, undefined, undefined, this.getPublicKey, false);
-      } else {
-        settings = JSON.parse(ChatUtility["a" /* ChatUtility */].decryptStandardMessage(settingsCipher, this.privateKey));
-      }
-
-      this._metadata = metadata;
-      this._metadata.body.settings = settings;
-      this.settings = settings;
-      this.updateParticipants();
-      this.sharedKey = ChatUtility["a" /* ChatUtility */].privateKeyDecrypt(this.participants[this.pkfp].key, this.privateKey);
-      this.metadataId = metadata.body.id;
-      this.topicAuthority = metadata.body.topicAuthority;
-
-      if (!metadata.body.settings.invites) {
-        metadata.body.settings.invites = {};
-      }
-
-      this.invites = metadata.body.settings.invites;
-      this.metadataLoaded = true;
-    }
-  }, {
-    key: "updateParticipants",
-    value: function updateParticipants() {
-      console.log("Updating participants");
-      var metadata = this._metadata;
-      this.participants = {};
-
-      for (var _i = 0, _Object$keys = Object.keys(metadata.body.participants); _i < _Object$keys.length; _i++) {
-        var pkfp = _Object$keys[_i];
-        this.participants[pkfp] = {};
-        this.participants[pkfp].key = metadata.body.participants[pkfp].key;
-        this.participants[pkfp].pkfp = metadata.body.participants[pkfp].pkfp;
-        this.participants[pkfp].publicKey = metadata.body.participants[pkfp].publicKey;
-        this.participants[pkfp].residence = metadata.body.participants[pkfp].residence;
-        this.participants[pkfp].rights = metadata.body.participants[pkfp].rights;
-
-        if (metadata.body.settings.membersData) {
-          this.participants[pkfp].nickname = metadata.body.settings.membersData[pkfp] ? metadata.body.settings.membersData[pkfp].nickname : "";
-          this.participants[pkfp].joined = metadata.body.settings.membersData[pkfp] ? metadata.body.settings.membersData[pkfp].joined : "";
-        }
-      }
-    }
-    /**
-     * Loads topic's last n messsages
-     * If wait for completion function will return only after load is completed
-     */
-
-  }, {
-    key: "initLoad",
-    value: function initLoad(cb) {
-      var _this2 = this;
-
-      this.ensureBootstrapped();
-      this.awaitingMessages = true;
-
-      if (cb) {
-        this.once(Events["Internal"].MESSAGES_LOADED, function () {
-          cb(_this2.messages);
-        });
-      }
-
-      this.requestMessages();
-    }
-  }, {
-    key: "setHandlers",
-    value: function setHandlers() {
-      var _this3 = this;
-
-      var self = this;
-      this.handlers[Events["Internal"].LOAD_MESSAGES_SUCCESS] = this.processMessagesLoaded;
-
-      this.handlers[Events["Internal"].INVITE_REQUEST_TIMEOUT] = function () {
-        console.log("Invite request timeout");
-      };
-
-      this.handlers[Events["Internal"].MESSAGES_SYNC] = function (msg) {
-        console.log("Got messages sync");
-        console.dir(msg);
-        if (!msg.body.lastMessages || !msg.body.lastMessages.messages) return;
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
-
-        try {
-          for (var _iterator = msg.body.lastMessages.messages.reverse()[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var chatMsg = _step.value;
-            self.processIncomingMessage(self, JSON.parse(chatMsg));
-          }
-        } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion && _iterator["return"] != null) {
-              _iterator["return"]();
-            }
-          } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
-            }
-          }
-        }
-      };
-
-      this.handlers[Events["Internal"].INVITE_REQUEST_FAIL] = function (msg) {
-        console.log("Invite request failed: ".concat(msg.body.errorMsg));
-      };
-
-      this.handlers[Events["Events"].INVITE_CREATED] = function (msg) {
-        console.log("Invite created event");
-        var newInvite = self.processInvitesUpdated(self, msg);
-        self.emit(Events["Events"].INVITE_CREATED, newInvite);
-      };
-
-      this.handlers[Events["Internal"].DELETE_INVITE_SUCCESS] = function (msg) {
-        console.log("Invite deleted event");
-        self.processInvitesUpdated(self, msg);
-        self.emit(Events["Internal"].DELETE_INVITE_SUCCESS);
-      };
-
-      this.handlers[Events["Internal"].SETTINGS_UPDATED] = function (msg) {
-        console.log("Settings updated");
-        self.processSettingsUpdated(self, msg);
-      };
-
-      this.handlers[Events["Internal"].METADATA_ISSUE] = function (msg) {
-        console.log("Metadata issue received. Event: ".concat(msg.headers.event));
-        Object(IError["b" /* assert */])(Message["a" /* Message */].verifyMessage(self._metadata.getTAPublicKey(), msg), "TA signature is invalid");
-        console.log("Signature verified. Loading metadata...");
-
-        self._metadata.updateMetadata(msg.body.metadata);
-
-        if (msg.body.invite && _this3._metadata.hasInvite(msg.body.invite)) {
-          //Invite was used by new member:
-          _this3._metadata.deleteInvite(msg.body.invite);
-        }
-
-        if (msg.body.inviteePkfp) {
-          self.nicknameChangeNotify(msg.body.inviteePkfp);
-        }
-
-        self.saveClientSettings();
-        console.log("Metadata updated");
-        self.emit(Events["Events"].METADATA_UPDATED);
-      };
-
-      this.handlers[Events["Internal"].NICKNAME_INITAL_EXCHANGE] = function (msg) {
-        console.log("Initial nickname exchange request received. Processing");
-        var senderPkfp = msg.headers.pkfpSource;
-        Object(IError["b" /* assert */])(self.participants[senderPkfp], "Member has not yet been registered"); //assert(Message.verifyMessage(senderPublicKey, msg), "Signature is invalid")
-
-        if (msg.body.metadataId === self._metadata.getId() && msg.body.myNickname) {
-          console.log("Decrypting new participant nickname...");
-          var nickname = ChatUtility["a" /* ChatUtility */].symKeyDecrypt(msg.body.myNickname, self.getSharedKey());
-          console.log("New member's nickname is ".concat(nickname));
-          console.log("My current nickname is ".concat(self.getCurrentNickname()));
-          self.setParticipantNickname(nickname, senderPkfp);
-        }
-      };
-
-      this.handlers[Events["Internal"].NICKNAME_NOTE] = function (msg) {
-        console.log("nickname note received: metadataId: ".concat(msg.body[Events["Internal"].METADATA_ID]));
-        var senderPkfp = msg.headers.pkfpSource;
-        var senderPublicKey = self.participants[senderPkfp].publicKey; //assert(Message.verifyMessage(senderPublicKey, msg), "Signature is invalid")
-
-        var sharedKey = ChatUtility["a" /* ChatUtility */].privateKeyDecrypt(msg.sharedKey, self.privateKey);
-        var currentSharedKey = self.getSharedKey();
-        console.log("Current key: ".concat(currentSharedKey, ", received key ").concat(sharedKey));
-        var nickname = ChatUtility["a" /* ChatUtility */].symKeyDecrypt(msg.body.nickname, sharedKey);
-        console.log("Participan ".concat(senderPkfp, " changed his nickname to ").concat(nickname));
-        self.setParticipantNickname(nickname, senderPkfp);
-      };
-
-      this.handlers[Events["Internal"].SERVICE_RECORD] = function (msg) {
-        console.log("New service record arrved");
-        var record = msg.body.serviceRecord;
-
-        if (!record) {
-          console.error("Error: Service record is not found!");
-          return;
-        }
-
-        record = new ChatMessage["a" /* ChatMessage */](record);
-        record.decryptServiceRecord(self.privateKey);
-        self.addNewMessage(self, record);
-      };
-
-      this.handlers[Events["Internal"].BROADCAST_MESSAGE] = function (msg) {
-        console.log("Broadcast message received");
-        var msgCopy = JSON.parse(JSON.stringify(msg)); // pkfpDest is added by server when message is broadcasted, so to verify it
-        // must be deleted
-
-        delete msgCopy.pkfpDest;
-        Object(IError["b" /* assert */])(self.participants[msg.headers.pkfpSource], "The participant ".concat(msgCopy.pkfpDest, " not found"));
-        var publicKey = self.participants[msg.headers.pkfpSource].publicKey; //assert(Message.verifyMessage(publicKey, msgCopy), "Message was not verified")
-
-        var message = new ChatMessage["a" /* ChatMessage */](msg.body.message);
-        message.decryptMessage(self.getSharedKey());
-        self.addNewMessage(self, message);
-
-        if (message.header.nickname !== self.getParticipantNickname(msg.headers.pkfpSource)) {
-          console.log("Member's nickname has changed from ".concat(self.getParticipantNickname(msg.headers.pkfpSource), " to ").concat(message.header.nickname));
-          self.setParticipantNickname(message.header.nickname, msg.headers.pkfpSource);
-        }
-      };
-
-      this.handlers[Events["Internal"].SEND_MESSAGE] = function (msg) {
-        Object(IError["b" /* assert */])(self.participants[msg.headers.pkfpSource], "The participant ".concat(msg.headers.pkfpDest, " not found"));
-        var publicKey = self.participants[msg.headers.pkfpSource].publicKey;
-        Object(IError["b" /* assert */])(Message["a" /* Message */].verifyMessage(publicKey, msg));
-        var message = new ChatMessage["a" /* ChatMessage */](msg.body.message);
-        message.decryptPrivateMessage(self.privateKey);
-        self.addNewMessage(self, message);
-      };
-
-      this.handlers[Events["Internal"].MESSAGE_SENT] = function (msg) {
-        console.log("Message sent received. Message: ".concat(msg.body.message));
-
-        _this3.processMessageSent(_this3, msg);
-      };
-    } //End//////////////////////////////////////////////////////////////////////
-    // ---------------------------------------------------------------------------------------------------------------------------
-    // MESSAGE HANDLING
-
-  }, {
-    key: "processIncomingMessage",
-    value: function processIncomingMessage(self, msg) {
-      var message = new ChatMessage["a" /* ChatMessage */](msg);
-
-      if (message.header.service) {
-        message.decryptServiceRecord(self.privateKey);
-      } else if (message.header["private"]) {
-        message.decryptPrivateMessage(self.privateKey);
-      } else {
-        message.decryptMessage(self.getSharedKey());
-      }
-
-      if (!message.header.service) {
-        if (message.header.nickname !== self.getParticipantNickname(msg.header.author)) {
-          console.log("Member's nickname has changed from ".concat(self.getParticipantNickname(msg.header.author), " to ").concat(message.header.nickname));
-          self.setParticipantNickname(message.header.nickname, msg.header.author);
-        }
-      }
-
-      self.addNewMessage(self, message);
-    }
-  }, {
-    key: "processMessageSent",
-    value: function processMessageSent(self, msg) {
-      var sentMessage = new ChatMessage["a" /* ChatMessage */](msg.body.message);
-      console.log("Setting existing message from pending to delivered");
-      var existingMessages = self.messages.filter(function (m) {
-        return m.header.id === sentMessage.header.id;
-      });
-      Object(IError["b" /* assert */])(existingMessages.length < 2, "Message doubling error: ".concat(existingMessages.length));
-      var existingMessage = existingMessages[0];
-
-      if (existingMessage) {
-        existingMessage.pending = false;
-        self.emit(Events["Internal"].MESSAGE_SENT, existingMessage);
-      } else {
-        console.log("Decrypting and adding sent message.");
-        sentMessage.header["private"] ? sentMessage.decryptPrivateMessage(self.privateKey) : sentMessage.decryptMessage(self.getSharedKey());
-        self.addNewMessage(self, sentMessage);
-      }
-    }
-  }, {
-    key: "addNewMessage",
-    value: function addNewMessage(self, chatMessage) {
-      console.log("!!========ADDING NEW CHAT MESSAGE. msgCount: ".concat(self.messages.length, " \n").concat(chatMessage.body));
-      self.messages.splice(0, 0, chatMessage);
-      console.log("Message added. msgCount: ".concat(self.messages.length));
-      self.emit(Events["Events"].NEW_CHAT_MESSAGE, chatMessage);
-    }
-  }, {
-    key: "getMessages",
-    value: function getMessages(cb) {
-      if (this.initLoaded) {
-        cb(this.messages);
-      } else {
-        console.log("Messages has not been loaded. Loading....");
-        this.initLoad(cb);
-      }
-    }
-  }, {
-    key: "getMessagesAsync",
-    value: function getMessagesAsync() {
-      if (this.initLoaded) {
-        return this.messages;
-      } else {
-        console.log("Messages has not been loaded. Loading...."); //init load and then emit
-
-        this.initLoad();
-        return null;
-      }
-    } // Incoming message
-
-  }, {
-    key: "preprocessIncomingMessage",
-    value: function preprocessIncomingMessage(msg, self) {
-      console.log("Incoming message on ".concat(this.pkfp, " received!"));
-
-      if (self.handlers.hasOwnProperty(msg.headers.command)) {
-        self.handlers[msg.headers.command](msg, self);
-      } else {
-        var errMsg = "No handler found for command: ".concat(msg.headers.command);
-        throw new Error(errMsg);
-      }
-    }
-  }, {
-    key: "getCurrentNickname",
-    value: function getCurrentNickname() {
-      if (!this.metadataLoaded) {
-        throw new Error("Cannot get current nickname: metadata is not loaded.");
-      }
-
-      return this._metadata.getParticipantNickname(this.pkfp);
-    }
-  }, {
-    key: "getSharedKey",
-    value: function getSharedKey() {
-      return this._metadata.getSharedKey(this.pkfp, this.privateKey);
-    }
-  }, {
-    key: "getParticipantPublicKey",
-    value: function getParticipantPublicKey(pkfp) {
-      return this._metadata.getParticipantPublicKey(pkfp);
-    }
-  }, {
-    key: "getMetadataId",
-    value: function getMetadataId() {
-      return this._metadata.getId();
-    }
-  }, {
-    key: "loadMoreMessages",
-    value: function loadMoreMessages() {
-      if (this.awaitingMessages || this.allMessagesLoaded) {
-        console.log("Already awaiting messages");
-        return;
-      }
-
-      console.log("Loading more messages");
-      this.awaitingMessages = true;
-      var lastMessageId = this.messages.length > 0 ? this.messages[this.messages.length - 1].header.id : undefined;
-      this.requestMessages(25, lastMessageId);
-    }
-  }, {
-    key: "requestMessages",
-    value: function requestMessages() {
-      var quantity = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : INITIAL_NUM_MESSAGES;
-      var lastMessageId = arguments.length > 1 ? arguments[1] : undefined;
-      var request = new Message["a" /* Message */](this.version);
-      request.headers.command = Events["Internal"].LOAD_MESSAGES;
-      request.headers.pkfpSource = this.pkfp;
-      request.body.quantity = quantity;
-
-      if (lastMessageId) {
-        request.body.lastMessageId = lastMessageId;
-      }
-
-      request.addNonce();
-      request.signMessage(this.privateKey);
-      this.connector.send(request);
-    } // ---------------------------------------------------------------------------------------------------------------------------
-    // INVITES HANDLING
-
-  }, {
-    key: "requestInvite",
-    value: function requestInvite() {
-      var self = this;
-
-      if (!self.metadataLoaded) {
-        throw new Error("Metadata has not been loaded yet.");
-      }
-
-      setTimeout(function () {
-        var request = new Message["a" /* Message */](self.version);
-
-        var taPublicKey = self._metadata.getTAPublicKey();
-
-        var myNickNameEncrypted = ChatUtility["a" /* ChatUtility */].encryptStandardMessage(self.participants[self.pkfp].nickname, taPublicKey);
-        var topicNameEncrypted = ChatUtility["a" /* ChatUtility */].encryptStandardMessage(self.name, taPublicKey);
-        request.setCommand(Events["Internal"].REQUEST_INVITE);
-        request.setSource(self.pkfp);
-        request.setDest(self._metadata.getTAPkfp());
-        request.body.nickname = myNickNameEncrypted;
-        request.body.topicName = topicNameEncrypted;
-        request.signMessage(self.privateKey);
-        self.connector.send(request);
-      }, 100);
-    }
-  }, {
-    key: "setInviteAlias",
-    value: function setInviteAlias(code, alias) {
-      this._metadata.setInviteAlias(code, alias);
-
-      this.saveClientSettings();
-    }
-  }, {
-    key: "getInvites",
-    value: function getInvites() {
-      return this._metadata.getInvites();
-    }
-  }, {
-    key: "syncInvites",
-    value: function syncInvites() {
-      var request = new Message["a" /* Message */](self.version);
-      request.headers.command = "sync_invites";
-      request.headers.pkfpSource = this.session.publicKeyFingerprint;
-      request.headers.pkfpDest = this.session.metadata.topicAuthority.pkfp;
-      request.headers.nonce = ic.get("nhex");
-      request.signMessage(this.session.privateKey);
-      this.chatSocket.emit("request", request);
-    }
-  }, {
-    key: "deleteInvite",
-    value: function deleteInvite(inviteCode) {
-      console.log("About to delete invite: " + inviteCode);
-      Object(IError["b" /* assert */])(this._metadata.hasInvite(inviteCode), "Invite does not exists: ".concat(inviteCode));
-      var request = new Message["a" /* Message */](this.version);
-      request.headers.command = Events["Internal"].DELETE_INVITE;
-      request.headers.pkfpSource = this.pkfp;
-      request.headers.pkfpDest = this._metadata.getTAPkfp();
-      var body = {
-        invite: inviteCode
-      };
-      request.set("body", body);
-      request.signMessage(this.privateKey);
-      this.connector.send(request);
-    }
-  }, {
-    key: "updatePendingInvites",
-    value: function updatePendingInvites(userInvites) {
-      var _iteratorNormalCompletion2 = true;
-      var _didIteratorError2 = false;
-      var _iteratorError2 = undefined;
-
-      try {
-        for (var _iterator2 = userInvites[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-          var i = _step2.value;
-
-          if (!this.session.settings.invites.hasOwnProperty(i)) {
-            this.session.settings.invites[i] = {};
-          }
-        }
-      } catch (err) {
-        _didIteratorError2 = true;
-        _iteratorError2 = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion2 && _iterator2["return"] != null) {
-            _iterator2["return"]();
-          }
-        } finally {
-          if (_didIteratorError2) {
-            throw _iteratorError2;
-          }
-        }
-      }
-
-      for (var _i2 = 0, _Object$keys2 = Object.keys(this.session.settings.invites); _i2 < _Object$keys2.length; _i2++) {
-        var _i3 = _Object$keys2[_i2];
-
-        if (!userInvites.includes(_i3)) {
-          delete this.session.settings.invites[_i3];
-        }
-      }
-
-      this.saveClientSettings();
-    } //END//////////////////////////////////////////////////////////////////////
-    // ---------------------------------------------------------------------------------------------------------------------------
-    // Nickname handling
-    //TODO
-
-  }, {
-    key: "exchangeNicknames",
-    value: function exchangeNicknames() {
-      console.log("Attempting to exchange nicknames. Sending my nickname: ".concat(this.getCurrentNickname()));
-
-      if (!this.isBootstrapped) {
-        console.log("Cannot exchange nicknames: topic not bootstrapped.");
-        return;
-      }
-
-      var myNicknameRaw = this.getCurrentNickname();
-      var myNickname = ChatUtility["a" /* ChatUtility */].symKeyEncrypt(myNicknameRaw, this.sharedKey);
-      var request = Message["a" /* Message */].createRequest(this.version, this.pkfp, Events["Internal"].NICKNAME_INITAL_EXCHANGE);
-      request.body.metadataId = this.metadataId;
-      request.body.myNickname = myNickname;
-      request.signMessage(this.privateKey);
-      this.connector.send(request);
-      console.log("Nicknames exchange request sent: nickname: ".concat(myNicknameRaw));
-    }
-  }, {
-    key: "getMetadata",
-    value: function getMetadata() {
-      return this._metadata;
-    }
-  }, {
-    key: "hasParticipant",
-    value: function hasParticipant(pkfp) {
-      return this._metadata.hasParticipant(pkfp);
-    }
-  }, {
-    key: "getParticipantNickname",
-    value: function getParticipantNickname(pkfp) {
-      if (this._metadata.body.settings.membersData[pkfp]) {
-        return this._metadata.body.settings.membersData[pkfp].nickname;
-      }
-    }
-  }, {
-    key: "setParticipantNickname",
-    value: function setParticipantNickname(nickname, pkfp) {
-      this._metadata.setParticipantNickname(nickname, pkfp);
-
-      this.saveClientSettings();
-
-      if (pkfp === this.pkfp) {
-        this.nicknameChangeNotify();
-      }
-    }
-  }, {
-    key: "setParticipantAlias",
-    value: function setParticipantAlias(alias, pkfp) {
-      this._metadata.setParticipantAlias(alias, pkfp);
-
-      this.saveClientSettings();
-    }
-  }, {
-    key: "nicknameChangeNotify",
-    value: function nicknameChangeNotify(pkfp) {
-      var self = this;
-      var curNickname = self.getCurrentNickname();
-      var sharedKey = self.getSharedKey();
-      console.log("Sending current nickname: ".concat(curNickname, ". Encrypting with: ").concat(sharedKey));
-      var message = new Message["a" /* Message */](self.version);
-      message.setCommand(Events["Internal"].NICKNAME_NOTE);
-      message.setSource(self.pkfp);
-
-      if (pkfp) {
-        message.setDest(pkfp);
-      }
-
-      message.addNonce();
-      message.setAttribute("nickname", ChatUtility["a" /* ChatUtility */].symKeyEncrypt(curNickname, sharedKey));
-      message.setAttribute(Events["Internal"].METADATA_ID, self._metadata.getId());
-      message.signMessage(self.privateKey);
-      self.connector.send(message);
-    }
-  }, {
-    key: "requestNickname",
-    value: function requestNickname(pkfp) {
-      if (!pkfp) {
-        throw new Error("Missing required parameter");
-      }
-
-      var request = new Message["a" /* Message */](self.version);
-      request.setCommand("whats_your_name");
-      request.setSource(this.session.publicKeyFingerprint);
-      request.setDest(pkfp);
-      request.addNonce();
-      request.signMessage(this.session.privateKey);
-      this.chatSocket.emit("request", request);
-    }
-  }, {
-    key: "broadcastNameChange",
-    value: function broadcastNameChange() {
-      var self = this;
-      var message = new Message["a" /* Message */](self.version);
-      message.setCommand("nickname_change_broadcast");
-      message.setSource(this.session.publicKeyFingerprint);
-      message.addNonce();
-      message.body.nickname = ChatUtility["a" /* ChatUtility */].symKeyEncrypt(self.session.settings.nickname, self.session.metadata.sharedKey);
-      message.signMessage(this.session.privateKey);
-      this.chatSocket.emit("request", message);
-    }
-  }, {
-    key: "processNicknameResponse",
-    value: function processNicknameResponse(request, self) {
-      self._processNicknameResponseHelper(request, self);
-    }
-  }, {
-    key: "processNicknameChangeNote",
-    value: function processNicknameChangeNote(request, self) {
-      self._processNicknameResponseHelper(request, self, true);
-    }
-  }, {
-    key: "_processNicknameResponseHelper",
-    value: function _processNicknameResponseHelper(request, self) {
-      var broadcast = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-      console.log("Got nickname response");
-      var publicKey = self.session.metadata.participants[request.headers.pkfpSource].publicKey;
-
-      if (!Message["a" /* Message */].verifyMessage(publicKey, request)) {
-        console.trace("Invalid signature");
-        return;
-      }
-
-      var existingNickname = self.getMemberNicknamr(request.headers.pkfpSource);
-      var memberRepr = self.getMemberRepr(request.headers.pkfpSource);
-      var newNickname = broadcast ? ChatUtility["a" /* ChatUtility */].symKeyDecrypt(request.body.nickname, self.session.metadata.sharedKey) : ChatUtility["a" /* ChatUtility */].decryptStandardMessage(request.body.nickname, self.session.privateKey);
-      newNickname = newNickname.toString("utf8");
-
-      if (newNickname !== existingNickname) {
-        self.setParticipantNickname(newNickname, request.headers.pkfpSource);
-        self.saveClientSettings();
-
-        if (existingNickname && existingNickname !== "") {
-          self.createServiceRecordOnMemberNicknameChange(memberRepr, newNickname, request.headers.pkfpSource);
-        }
-      }
-    } //~END NICKNAME HANDLING///////////////////////////////////////////////////
-    // ---------------------------------------------------------------------------------------------------------------------------
-    // Settings handling
-
-  }, {
-    key: "saveClientSettings",
-    value: function saveClientSettings() {
-      var body = this._metadata.getSettingsEncrypted(this.privateKey);
-
-      var request = new Message["a" /* Message */](this.version);
-      request.setSource(this.pkfp);
-      request.setCommand(Events["Internal"].UPDATE_SETTINGS);
-      request.set("body", body);
-      request.signMessage(this.privateKey);
-      console.log("Sending update settings request");
-      this.connector.send(request);
-    } //~END SETTINGS ///////////////////////////////////////////////////////////
-
-  }, {
-    key: "createRegisterServiceRecord",
-    value: function createRegisterServiceRecord(event, message) {
-      var request = new Message["a" /* Message */](self.version);
-      request.addNonce();
-      request.setSource(this.session.publicKeyFingerprint);
-      request.setCommand(Events["Internal"].REGISTER_SERVICE_RECORD);
-      request.body.event = event;
-      request.body.message = ChatUtility["a" /* ChatUtility */].encryptStandardMessage(message, this.getPublicKey);
-      request.signMessage(this.privateKey);
-      this.connector.send(request);
-    }
-  }, {
-    key: "processMessagesLoaded",
-    value: function processMessagesLoaded(msg, self) {
-      var data = msg.body.lastMessages;
-      var keys = data.keys;
-      console.log("Messages loaded. Processing.... Keys: ".concat(keys));
-      var metaIDs = Object.keys(keys);
-
-      for (var i = 0; i < metaIDs.length; ++i) {
-        var _ic = new iCrypto["a" /* iCrypto */]();
-
-        _ic.addBlob('k', keys[metaIDs[i]]).hexToBytes("k", "kraw").setRSAKey("priv", self.privateKey, "private").privateKeyDecrypt("kraw", "priv", "kdec");
-
-        keys[metaIDs[i]] = _ic.get("kdec");
-      }
-
-      var messages = data.messages;
-      var result = [];
-
-      for (var _i4 = 0; _i4 < messages.length; ++_i4) {
-        var message = new ChatMessage["a" /* ChatMessage */](messages[_i4]);
-
-        if (message.header.service) {
-          message.body = ChatUtility["a" /* ChatUtility */].decryptStandardMessage(message.body, self.privateKey);
-        } else if (message.header["private"]) {
-          message.decryptPrivateMessage(self.privateKey);
-        } else {
-          if (!keys.hasOwnProperty(message.header.metadataID)) {
-            console.error("Warning! key not found for ".concat(message.headers.metadataID));
-          }
-
-          message.decryptMessage(keys[message.header.metadataID]);
-        }
-
-        result.push(message);
-      }
-
-      if (!self.initLoaded || self.messages.length === 0) {
-        self.messages = result;
-      } else {
-        var latestLoadedID = result[0].header.id;
-        var glueIndex = self.messages.findIndex(function (msg) {
-          return msg.header.id === latestLoadedID;
-        });
-        self.messages = glueIndex ? [].concat(_toConsumableArray(self.messages.slice(0, glueIndex)), result) : [].concat(_toConsumableArray(self.messages), result);
-      }
-
-      self.initLoaded = true;
-      self.allMessagesLoaded = data.allLoaded;
-      self.awaitingMessages = false;
-      self.emit(Events["Events"].MESSAGES_LOADED, self.messages);
-    }
-  }, {
-    key: "processSettingsUpdated",
-    value: function processSettingsUpdated(self, msg) {
-      var settings = msg.body.settings;
-      var signature = msg.body.signature;
-      var metadata = Metadata_Metadata.fromBlob(msg.body.metadata, self.privateKey);
-      var ic = new iCrypto["a" /* iCrypto */]();
-      ic.addBlob("settings", settings).addBlob("sign", signature).setRSAKey("pub", self.getPublicKey(), "public").publicKeyVerify("settings", "sign", "pub", "res");
-      if (!ic.get("res")) throw new Error("Settings blob signature verification failed");
-      var settingsPlain = JSON.parse(ChatUtility["a" /* ChatUtility */].decryptStandardMessage(settings, self.privateKey));
-
-      if (this._metadata.getId() !== metadata.getId()) {
-        console.log("Metadata has been updated. Updating...");
-
-        this._metadata.updateMetadata(metadata);
-      }
-
-      self._metadata.updateSettings(settingsPlain);
-
-      self.updateParticipants();
-      console.log("Settings updated successfully!");
-      self.emit(Events["Events"].SETTINGS_UPDATED);
-    } //Notification on alias change. Disable for now
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // detectAliasNicknameChangesOnSettingsUpdate(settingsPlain){                                                  //
-    //     Object.keys(this._metadata.body.settings.membersData).forEach(k=>{                                      //
-    //                                                                                                             //
-    //         if(this._metadata.body.settings.membersData[k].nickname !== settingsPlain.membersData[k].nickname){ //
-    //             this.emit(Events.NICKNAME_CHANGED, {                                                            //
-    //                 topicPkfp: this.pkfp,                                                                       //
-    //                 oldNickname: this._metadata.body.settings.membersData[k].nickname,                          //
-    //                 newNickname: settingsPlain.membersData[k].nickname,                                         //
-    //                 participantPkfp: k                                                                          //
-    //             })                                                                                              //
-    //         }                                                                                                   //
-    //                                                                                                             //
-    //         if(this._metadata.body.settings.membersData[k].alias !== settingsPlain.membersData[k].alias){       //
-    //             this.emit(Events.PARTICIPANT_ALIAS_CHANGED, {                                                   //
-    //                 topicPkfp: this.pkfp,                                                                       //
-    //                 oldAlias: this._metadata.body.settings.membersData[k].alias,                                //
-    //                 newAlias: settingsPlain.membersData[k].alias,                                               //
-    //                 participantPkfp: k                                                                          //
-    //             })                                                                                              //
-    //         }                                                                                                   //
-    //     })                                                                                                      //
-    //                                                                                                             //
-    //     Object.keys(this._metadata.body.settings.invites).forEach(k=>{                                          //
-    //         if (this._metadata.body.settings.invites[k].name !== settingsPlain.invites[k].name){                //
-    //             this.emit(Events.INVITE_ALIAS_CHANGED, {                                                        //
-    //                 topicPkfp: this.pkfp,                                                                       //
-    //                 oldAlias: this._metadata.body.settings.invites[k].name,                                     //
-    //                 newAlias: settingsPlain.invites[k].name,                                                    //
-    //                 invite: k                                                                                   //
-    //             })                                                                                              //
-    //         }                                                                                                   //
-    //     })                                                                                                      //
-    // }                                                                                                           //
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //TODO Cleanup or implememnt
-
-  }, {
-    key: "processInvitesUpdated",
-    value: function processInvitesUpdated(self, msg) {
-      Object(IError["b" /* assert */])(Message["a" /* Message */].verifyMessage(self._metadata.getTAPublicKey(), msg), "TA signature is invalid");
-      var data = JSON.parse(ChatUtility["a" /* ChatUtility */].decryptStandardMessage(msg.body.data, self.privateKey));
-      console.log("Invites data has been decrypted successfully.");
-
-      if (data.inviteCode) {
-        console.log("New invite: ".concat(data.inviteCode));
-      }
-
-      self._metadata.updateInvites(data.userInvites);
-
-      self.saveClientSettings();
-      return data.inviteCode;
-    }
-  }, {
-    key: "getParticipantAlias",
-    value: function getParticipantAlias(pkfp) {
-      if (!this.isBootstrapped || !pkfp) {
-        return;
-      }
-
-      return this._metadata.getParticipantAlias(pkfp);
-    }
-  }, {
-    key: "getParticipants",
-    value: function getParticipants() {
-      var _this4 = this;
-
-      var res = JSON.parse(JSON.stringify(this._metadata.body.participants));
-      Object.keys(res).forEach(function (k) {
-        res[k].alias = _this4._metadata.getParticipantAlias(k);
-        res[k].nickname = _this4._metadata.getParticipantNickname(k);
-      });
-      return res;
-    }
-  }, {
-    key: "getParticipantRepr",
-    value: function getParticipantRepr(pkfp) {
-      if (this.participants[pkfp]) {
-        return this.participants[pkfp].alias || this.participants[pkfp].nickname || "Unknown";
-      }
-    }
-  }, {
-    key: "getPublicKey",
-    value: function getPublicKey() {
-      if (!this.privateKey) throw new Error("No private key found");
-
-      if (!this.publicKey) {
-        var _ic2 = new iCrypto["a" /* iCrypto */]();
-
-        _ic2.setRSAKey("priv", this.privateKey, "private").publicFromPrivate("priv", "pub");
-
-        this.publicKey = _ic2.get("pub");
-      }
-
-      return this.publicKey;
-    }
-  }, {
-    key: "ensureInitLoaded",
-    value: function ensureInitLoaded() {
-      if (!this.initLoaded || !this.currentMetadata) {
-        throw new Error("Topic has no metadata");
-      }
-    }
-  }, {
-    key: "ensureBootstrapped",
-    value: function ensureBootstrapped() {
-      if (!this.isBootstrapped || !this.connector || !this.arrivalHub) {
-        throw new Error("Topic is not bootstrapped!");
-      }
-    }
-  }, {
-    key: "setName",
-    value: function setName(name) {
-      this.name = name;
-    }
-  }, {
-    key: "setPrivate",
-    value: function setPrivate(pkfp) {
-      Object(IError["b" /* assert */])(this.hasParticipant(pkfp), "Set private error: no member found ".concat(pkfp));
-      this.lastPrivate = pkfp;
-    }
-  }, {
-    key: "getPrivate",
-    value: function getPrivate(pkfp) {
-      return this.lastPrivate;
-    }
-  }, {
-    key: "resetPrivate",
-    value: function resetPrivate() {
-      this.lastPrivate = null;
-    } //Verifies current metadata
-
-  }, {
-    key: "verifyMetadata",
-    value: function verifyMetadata() {
-      return Metadata_Metadata.isMetadataValid(this._metadata);
-    }
-  }, {
-    key: "setTopicName",
-    value: function setTopicName(name) {
-      Object(IError["b" /* assert */])(Object(Util["inRange"])(name.length, 2, 30), "Topic name is invalid");
-      this.name = name;
-    }
-  }, {
-    key: "getLastMessageId",
-    value: function getLastMessageId() {
-      var _iteratorNormalCompletion3 = true;
-      var _didIteratorError3 = false;
-      var _iteratorError3 = undefined;
-
-      try {
-        for (var _iterator3 = this.messages[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-          var msg = _step3.value;
-          if (msg.header && msg.header.id) return msg.header.id;
-        }
-      } catch (err) {
-        _didIteratorError3 = true;
-        _iteratorError3 = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion3 && _iterator3["return"] != null) {
-            _iterator3["return"]();
-          }
-        } finally {
-          if (_didIteratorError3) {
-            throw _iteratorError3;
-          }
-        }
-      }
-
-      return null;
-    }
-  }], [{
-    key: "prepareNewTopicSettings",
-    value: function prepareNewTopicSettings(version, nickname, topicName, publicKey) {
-      var encrypt = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : true;
-      //Creating and encrypting topic settings:
-      var settings = new ClientSettings_ClientSettings(version);
-
-      if (nickname) {
-        var _ic3 = new iCrypto["a" /* iCrypto */]();
-
-        _ic3.asym.setKey("pubk", publicKey, "public").getPublicKeyFingerprint("pubk", "pkfp");
-
-        settings.setOwnerNickname(_ic3.get("pkfp"), nickname);
-      }
-
-      if (encrypt) {
-        return ClientSettings_ClientSettings.encrypt(publicKey, settings);
-      } else {
-        return settings;
-      }
-    }
-  }]);
-
-  return Topic;
-}();
 
 /***/ }),
 /* 31 */
@@ -9793,20 +9793,20 @@ if (__webpack_require__(15)) {
   var ctx = __webpack_require__(33);
   var anInstance = __webpack_require__(57);
   var propertyDesc = __webpack_require__(50);
-  var hide = __webpack_require__(22);
+  var hide = __webpack_require__(23);
   var redefineAll = __webpack_require__(59);
   var toInteger = __webpack_require__(35);
   var toLength = __webpack_require__(14);
   var toIndex = __webpack_require__(183);
   var toAbsoluteIndex = __webpack_require__(53);
   var toPrimitive = __webpack_require__(38);
-  var has = __webpack_require__(25);
+  var has = __webpack_require__(26);
   var classof = __webpack_require__(66);
   var isObject = __webpack_require__(11);
   var toObject = __webpack_require__(18);
   var isArrayIter = __webpack_require__(131);
   var create = __webpack_require__(54);
-  var getPrototypeOf = __webpack_require__(28);
+  var getPrototypeOf = __webpack_require__(29);
   var gOPN = __webpack_require__(55).f;
   var getIterFn = __webpack_require__(133);
   var uid = __webpack_require__(51);
@@ -9821,7 +9821,7 @@ if (__webpack_require__(15)) {
   var arrayFill = __webpack_require__(135);
   var arrayCopyWithin = __webpack_require__(172);
   var $DP = __webpack_require__(16);
-  var $GOPD = __webpack_require__(27);
+  var $GOPD = __webpack_require__(28);
   var dP = $DP.f;
   var gOPD = $GOPD.f;
   var RangeError = global.RangeError;
@@ -11996,7 +11996,7 @@ module.exports = false;
 
 var META = __webpack_require__(51)('meta');
 var isObject = __webpack_require__(11);
-var has = __webpack_require__(25);
+var has = __webpack_require__(26);
 var setDesc = __webpack_require__(16).f;
 var id = 0;
 var isExtensible = Object.isExtensible || function () {
@@ -12056,7 +12056,7 @@ var meta = module.exports = {
 // 22.1.3.31 Array.prototype[@@unscopables]
 var UNSCOPABLES = __webpack_require__(13)('unscopables');
 var ArrayProto = Array.prototype;
-if (ArrayProto[UNSCOPABLES] == undefined) __webpack_require__(22)(ArrayProto, UNSCOPABLES, {});
+if (ArrayProto[UNSCOPABLES] == undefined) __webpack_require__(23)(ArrayProto, UNSCOPABLES, {});
 module.exports = function (key) {
   ArrayProto[UNSCOPABLES][key] = true;
 };
@@ -12239,7 +12239,7 @@ exports.RETURN = RETURN;
 /* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var redefine = __webpack_require__(23);
+var redefine = __webpack_require__(24);
 module.exports = function (target, src, safe) {
   for (var key in src) redefine(target, key, src[key], safe);
   return target;
@@ -13604,7 +13604,7 @@ var util = Object.create(__webpack_require__(84));
 util.inherits = __webpack_require__(63);
 /*</replacement>*/
 
-var Readable = __webpack_require__(221);
+var Readable = __webpack_require__(220);
 var Writable = __webpack_require__(154);
 
 util.inherits(Duplex, Readable);
@@ -13692,7 +13692,7 @@ Duplex.prototype._destroy = function (err, cb) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var def = __webpack_require__(16).f;
-var has = __webpack_require__(25);
+var has = __webpack_require__(26);
 var TAG = __webpack_require__(13)('toStringTag');
 
 module.exports = function (it, tag, stat) {
@@ -14185,15 +14185,15 @@ Emitter.prototype.hasListeners = function(event){
  * Module dependencies.
  */
 
-var keys = __webpack_require__(472);
+var keys = __webpack_require__(471);
 var hasBinary = __webpack_require__(214);
-var sliceBuffer = __webpack_require__(474);
-var after = __webpack_require__(475);
-var utf8 = __webpack_require__(476);
+var sliceBuffer = __webpack_require__(473);
+var after = __webpack_require__(474);
+var utf8 = __webpack_require__(475);
 
 var base64encoder;
 if (typeof ArrayBuffer !== 'undefined') {
-  base64encoder = __webpack_require__(477);
+  base64encoder = __webpack_require__(476);
 }
 
 /**
@@ -14251,7 +14251,7 @@ var err = { type: 'error', data: 'parser error' };
  * Create a blob api even for blob builder when vendor prefixes exist
  */
 
-var Blob = __webpack_require__(478);
+var Blob = __webpack_require__(477);
 
 /**
  * Encodes a packet.
@@ -15021,7 +15021,7 @@ var singleton = null;
 var	singletonCounter = 0;
 var	stylesInsertedAtTop = [];
 
-var	fixUrls = __webpack_require__(435);
+var	fixUrls = __webpack_require__(434);
 
 module.exports = function(list, options) {
 	if (typeof DEBUG !== "undefined" && DEBUG) {
@@ -16371,7 +16371,7 @@ function isPrimitive(arg) {
 }
 exports.isPrimitive = isPrimitive;
 
-exports.isBuffer = __webpack_require__(460);
+exports.isBuffer = __webpack_require__(459);
 
 function objectToString(o) {
   return Object.prototype.toString.call(o);
@@ -16540,7 +16540,7 @@ function callbackify(original) {
 }
 exports.callbackify = callbackify;
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(29)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(30)))
 
 /***/ }),
 /* 82 */
@@ -17136,7 +17136,7 @@ function objectToString(o) {
   return Object.prototype.toString.call(o);
 }
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(20).Buffer))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(21).Buffer))
 
 /***/ }),
 /* 85 */
@@ -17263,7 +17263,7 @@ module.exports = {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return XHR; });
-/* harmony import */ var cute_set__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(21);
+/* harmony import */ var cute_set__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(22);
 /* harmony import */ var cute_set__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(cute_set__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var util__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(81);
 /* harmony import */ var util__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(util__WEBPACK_IMPORTED_MODULE_1__);
@@ -17536,7 +17536,7 @@ function parseHeaders(headers) {
  * Module dependencies.
  */
 
-var url = __webpack_require__(461);
+var url = __webpack_require__(460);
 var parser = __webpack_require__(148);
 var Manager = __webpack_require__(211);
 var debug = __webpack_require__(107)('socket.io-client');
@@ -17632,7 +17632,7 @@ exports.Socket = __webpack_require__(217);
 /***/ (function(module, exports, __webpack_require__) {
 
 
-module.exports = __webpack_require__(219);
+module.exports = __webpack_require__(485);
 
 
 
@@ -17642,7 +17642,7 @@ module.exports = __webpack_require__(219);
 
 // false -> Array#indexOf
 // true  -> Array#includes
-var toIObject = __webpack_require__(26);
+var toIObject = __webpack_require__(27);
 var toLength = __webpack_require__(14);
 var toAbsoluteIndex = __webpack_require__(53);
 module.exports = function (IS_INCLUDES) {
@@ -17783,8 +17783,8 @@ module.exports = function (R, S) {
 "use strict";
 
 __webpack_require__(174);
-var redefine = __webpack_require__(23);
-var hide = __webpack_require__(22);
+var redefine = __webpack_require__(24);
+var hide = __webpack_require__(23);
 var fails = __webpack_require__(10);
 var defined = __webpack_require__(39);
 var wks = __webpack_require__(13);
@@ -17897,7 +17897,7 @@ module.exports = navigator && navigator.userAgent || '';
 
 var global = __webpack_require__(7);
 var $export = __webpack_require__(0);
-var redefine = __webpack_require__(23);
+var redefine = __webpack_require__(24);
 var redefineAll = __webpack_require__(59);
 var meta = __webpack_require__(48);
 var forOf = __webpack_require__(58);
@@ -17986,7 +17986,7 @@ module.exports = function (NAME, wrapper, methods, common, IS_MAP, IS_WEAK) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var global = __webpack_require__(7);
-var hide = __webpack_require__(22);
+var hide = __webpack_require__(23);
 var uid = __webpack_require__(51);
 var TYPED = uid('typed_array');
 var VIEW = uid('view');
@@ -18142,7 +18142,7 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(441);
+__webpack_require__(440);
 // On some exotic environments, it's not clear which object `setimmediate` was
 // able to install onto.  Search each possibility in the same order as the
 // `setimmediate` library.
@@ -21981,7 +21981,7 @@ function localstorage() {
 	}
 }
 
-module.exports = __webpack_require__(462)(exports);
+module.exports = __webpack_require__(461)(exports);
 
 const {formatters} = module.exports;
 
@@ -21997,7 +21997,7 @@ formatters.j = function (v) {
 	}
 };
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(29)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(30)))
 
 /***/ }),
 /* 108 */
@@ -22307,7 +22307,7 @@ function localstorage() {
 	}
 }
 
-module.exports = __webpack_require__(479)(exports);
+module.exports = __webpack_require__(478)(exports);
 
 const {formatters} = module.exports;
 
@@ -22323,7 +22323,7 @@ formatters.j = function (v) {
 	}
 };
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(29)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(30)))
 
 /***/ }),
 /* 111 */
@@ -22376,7 +22376,7 @@ function nextTick(fn, arg1, arg2, arg3) {
 }
 
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(29)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(30)))
 
 /***/ }),
 /* 112 */
@@ -22401,7 +22401,7 @@ function verifyPassword(password, confirm) {
   }
 }
 // EXTERNAL MODULE: ./client/src/js/lib/Topic.js + 2 modules
-var Topic = __webpack_require__(30);
+var Topic = __webpack_require__(20);
 
 // EXTERNAL MODULE: ./client/src/js/lib/iCrypto.js
 var iCrypto = __webpack_require__(3);
@@ -22419,7 +22419,7 @@ var Events = __webpack_require__(1);
 var xhr = __webpack_require__(86);
 
 // EXTERNAL MODULE: ./node_modules/semver/semver.js
-var semver = __webpack_require__(228);
+var semver = __webpack_require__(227);
 
 // EXTERNAL MODULE: ./client/src/js/lib/AdvStateMachine.js
 var AdvStateMachine = __webpack_require__(17);
@@ -23515,7 +23515,7 @@ module.exports = {
   set: Object.setPrototypeOf || ('__proto__' in {} ? // eslint-disable-line
     function (test, buggy, set) {
       try {
-        set = __webpack_require__(33)(Function.call, __webpack_require__(27).f(Object.prototype, '__proto__').set, 2);
+        set = __webpack_require__(33)(Function.call, __webpack_require__(28).f(Object.prototype, '__proto__').set, 2);
         set(test, []);
         buggy = !(test instanceof Array);
       } catch (e) { buggy = true; }
@@ -23607,12 +23607,12 @@ module.exports = (!$expm1
 
 var LIBRARY = __webpack_require__(47);
 var $export = __webpack_require__(0);
-var redefine = __webpack_require__(23);
-var hide = __webpack_require__(22);
+var redefine = __webpack_require__(24);
+var hide = __webpack_require__(23);
 var Iterators = __webpack_require__(68);
 var $iterCreate = __webpack_require__(128);
 var setToStringTag = __webpack_require__(65);
-var getPrototypeOf = __webpack_require__(28);
+var getPrototypeOf = __webpack_require__(29);
 var ITERATOR = __webpack_require__(13)('iterator');
 var BUGGY = !([].keys && 'next' in [].keys()); // Safari has buggy iterators w/o `next`
 var FF_ITERATOR = '@@iterator';
@@ -23687,7 +23687,7 @@ var setToStringTag = __webpack_require__(65);
 var IteratorPrototype = {};
 
 // 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
-__webpack_require__(22)(IteratorPrototype, __webpack_require__(13)('iterator'), function () { return this; });
+__webpack_require__(23)(IteratorPrototype, __webpack_require__(13)('iterator'), function () { return this; });
 
 module.exports = function (Constructor, NAME, next) {
   Constructor.prototype = create(IteratorPrototype, { next: descriptor(1, next) });
@@ -23775,7 +23775,7 @@ module.exports = __webpack_require__(32).getIteratorMethod = function (it) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // 9.4.2.3 ArraySpeciesCreate(originalArray, length)
-var speciesConstructor = __webpack_require__(323);
+var speciesConstructor = __webpack_require__(322);
 
 module.exports = function (original, length) {
   return new (speciesConstructor(original))(length);
@@ -23813,7 +23813,7 @@ module.exports = function fill(value /* , start = 0, end = @length */) {
 var addToUnscopables = __webpack_require__(49);
 var step = __webpack_require__(173);
 var Iterators = __webpack_require__(68);
-var toIObject = __webpack_require__(26);
+var toIObject = __webpack_require__(27);
 
 // 22.1.3.4 Array.prototype.entries()
 // 22.1.3.13 Array.prototype.keys()
@@ -24125,7 +24125,7 @@ var global = __webpack_require__(7);
 var DESCRIPTORS = __webpack_require__(15);
 var LIBRARY = __webpack_require__(47);
 var $typed = __webpack_require__(99);
-var hide = __webpack_require__(22);
+var hide = __webpack_require__(23);
 var redefineAll = __webpack_require__(59);
 var fails = __webpack_require__(10);
 var anInstance = __webpack_require__(57);
@@ -25145,7 +25145,7 @@ module.exports = forge.pbkdf2 = pkcs5.pbkdf2 = function(
   outer();
 };
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(20).Buffer))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(21).Buffer))
 
 /***/ }),
 /* 146 */
@@ -25265,7 +25265,7 @@ __webpack_require__(61);
 __webpack_require__(44);
 __webpack_require__(104);
 __webpack_require__(45);
-__webpack_require__(447);
+__webpack_require__(446);
 __webpack_require__(62);
 __webpack_require__(69);
 __webpack_require__(147);
@@ -28680,9 +28680,9 @@ pss.create = function(options) {
  * Module dependencies.
  */
 
-var debug = __webpack_require__(464)('socket.io-parser');
+var debug = __webpack_require__(463)('socket.io-parser');
 var Emitter = __webpack_require__(70);
-var binary = __webpack_require__(467);
+var binary = __webpack_require__(466);
 var isArray = __webpack_require__(209);
 var isBuf = __webpack_require__(210);
 
@@ -29098,7 +29098,7 @@ function error(msg) {
 
 // browser shim for xmlhttprequest module
 
-var hasCORS = __webpack_require__(470);
+var hasCORS = __webpack_require__(469);
 
 module.exports = function (opts) {
   var xdomain = opts.xdomain;
@@ -29307,10 +29307,10 @@ Transport.prototype.onClose = function () {
 /***/ (function(module, exports, __webpack_require__) {
 
 var util = __webpack_require__(81);
-var Duplex = __webpack_require__(220).Duplex;
+var Duplex = __webpack_require__(219).Duplex;
 var bind = __webpack_require__(82);
 var uuid = __webpack_require__(498);
-var debug = __webpack_require__(226)('socket.io-stream:iostream');
+var debug = __webpack_require__(225)('socket.io-stream:iostream');
 
 
 module.exports = IOStream;
@@ -29577,12 +29577,12 @@ IOStream.prototype._onerror = function(err) {
 /* 152 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(221);
+exports = module.exports = __webpack_require__(220);
 exports.Stream = exports;
 exports.Readable = exports;
 exports.Writable = __webpack_require__(154);
 exports.Duplex = __webpack_require__(64);
-exports.Transform = __webpack_require__(225);
+exports.Transform = __webpack_require__(224);
 exports.PassThrough = __webpack_require__(493);
 
 
@@ -29591,7 +29591,7 @@ exports.PassThrough = __webpack_require__(493);
 /***/ (function(module, exports, __webpack_require__) {
 
 /* eslint-disable node/no-deprecated-api */
-var buffer = __webpack_require__(20)
+var buffer = __webpack_require__(21)
 var Buffer = buffer.Buffer
 
 // alternative to using Object.keys for old browsers
@@ -29736,7 +29736,7 @@ var internalUtil = {
 /*</replacement>*/
 
 /*<replacement>*/
-var Stream = __webpack_require__(222);
+var Stream = __webpack_require__(221);
 /*</replacement>*/
 
 /*<replacement>*/
@@ -29752,7 +29752,7 @@ function _isUint8Array(obj) {
 
 /*</replacement>*/
 
-var destroyImpl = __webpack_require__(223);
+var destroyImpl = __webpack_require__(222);
 
 util.inherits(Writable, Stream);
 
@@ -30346,7 +30346,7 @@ Writable.prototype._destroy = function (err, cb) {
   this.end();
   cb(err);
 };
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(29), __webpack_require__(103).setImmediate, __webpack_require__(31)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(30), __webpack_require__(103).setImmediate, __webpack_require__(31)))
 
 /***/ }),
 /* 155 */
@@ -30368,8 +30368,8 @@ exports.f = __webpack_require__(13);
 /* 157 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var has = __webpack_require__(25);
-var toIObject = __webpack_require__(26);
+var has = __webpack_require__(26);
+var toIObject = __webpack_require__(27);
 var arrayIndexOf = __webpack_require__(89)(false);
 var IE_PROTO = __webpack_require__(118)('IE_PROTO');
 
@@ -30411,7 +30411,7 @@ module.exports = __webpack_require__(15) ? Object.defineProperties : function de
 /***/ (function(module, exports, __webpack_require__) {
 
 // fallback for IE11 buggy Object.getOwnPropertyNames with iframe and window
-var toIObject = __webpack_require__(26);
+var toIObject = __webpack_require__(27);
 var gOPN = __webpack_require__(55).f;
 var toString = {}.toString;
 
@@ -30990,7 +30990,7 @@ module.exports = __webpack_require__(98)(SET, function (get) {
 
 var global = __webpack_require__(7);
 var each = __webpack_require__(41)(0);
-var redefine = __webpack_require__(23);
+var redefine = __webpack_require__(24);
 var meta = __webpack_require__(48);
 var assign = __webpack_require__(160);
 var weak = __webpack_require__(182);
@@ -31062,7 +31062,7 @@ var isObject = __webpack_require__(11);
 var anInstance = __webpack_require__(57);
 var forOf = __webpack_require__(58);
 var createArrayMethod = __webpack_require__(41);
-var $has = __webpack_require__(25);
+var $has = __webpack_require__(26);
 var validate = __webpack_require__(60);
 var arrayFind = createArrayMethod(5);
 var arrayFindIndex = createArrayMethod(6);
@@ -31247,7 +31247,7 @@ module.exports = function (that, maxLength, fillString, left) {
 
 var DESCRIPTORS = __webpack_require__(15);
 var getKeys = __webpack_require__(52);
-var toIObject = __webpack_require__(26);
+var toIObject = __webpack_require__(27);
 var isEnum = __webpack_require__(74).f;
 module.exports = function (isEntries) {
   return function (it) {
@@ -38489,7 +38489,7 @@ prng.create = function(plugin) {
   return ctx;
 };
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(29)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(30)))
 
 /***/ }),
 /* 198 */
@@ -42133,7 +42133,7 @@ function isBuf(obj) {
           (withNativeArrayBuffer && (obj instanceof ArrayBuffer || isView(obj)));
 }
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(20).Buffer))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(21).Buffer))
 
 /***/ }),
 /* 211 */
@@ -42144,7 +42144,7 @@ function isBuf(obj) {
  * Module dependencies.
  */
 
-var eio = __webpack_require__(468);
+var eio = __webpack_require__(467);
 var Socket = __webpack_require__(217);
 var Emitter = __webpack_require__(70);
 var parser = __webpack_require__(148);
@@ -42152,7 +42152,7 @@ var on = __webpack_require__(218);
 var bind = __webpack_require__(82);
 var debug = __webpack_require__(107)('socket.io-client:manager');
 var indexOf = __webpack_require__(216);
-var Backoff = __webpack_require__(485);
+var Backoff = __webpack_require__(484);
 
 /**
  * IE6+ hasOwnProperty
@@ -42723,9 +42723,9 @@ Manager.prototype.onreconnect = function () {
  */
 
 var XMLHttpRequest = __webpack_require__(149);
-var XHR = __webpack_require__(471);
-var JSONP = __webpack_require__(481);
-var websocket = __webpack_require__(482);
+var XHR = __webpack_require__(470);
+var JSONP = __webpack_require__(480);
+var websocket = __webpack_require__(481);
 
 /**
  * Export transports.
@@ -43034,7 +43034,7 @@ Polling.prototype.uri = function () {
  * Module requirements.
  */
 
-var isArray = __webpack_require__(473);
+var isArray = __webpack_require__(472);
 
 var toString = Object.prototype.toString;
 var withNativeBlob = typeof Blob === 'function' ||
@@ -43093,7 +43093,7 @@ function hasBinary (obj) {
   return false;
 }
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(20).Buffer))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(21).Buffer))
 
 /***/ }),
 /* 215 */
@@ -43196,7 +43196,7 @@ module.exports = function(arr, obj){
 
 var parser = __webpack_require__(148);
 var Emitter = __webpack_require__(70);
-var toArray = __webpack_require__(484);
+var toArray = __webpack_require__(483);
 var on = __webpack_require__(218);
 var bind = __webpack_require__(82);
 var debug = __webpack_require__(107)('socket.io-client:socket');
@@ -43663,90 +43663,6 @@ function on (obj, ev, fn) {
 /* 219 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {var Socket = __webpack_require__(486);
-var IOStream = __webpack_require__(151);
-var BlobReadStream = __webpack_require__(502);
-
-
-exports = module.exports = lookup;
-
-/**
- * Expose Node Buffer for browser.
- *
- * @api public
- */
-exports.Buffer = Buffer;
-
-/**
- * Expose Socket constructor.
- *
- * @api public
- */
-exports.Socket = Socket;
-
-/**
- * Expose IOStream constructor.
- *
- * @api public
- */
-exports.IOStream = IOStream;
-
-/**
- * Forces base 64 encoding when emitting. Must be set to true for Socket.IO v0.9 or lower.
- *
- * @api public
- */
-exports.forceBase64 = false;
-
-/**
- * Look up an existing Socket.
- *
- * @param {socket.io#Socket} socket.io
- * @param {Object} options
- * @return {Socket} Socket instance
- * @api public
- */
-function lookup(sio, options) {
-  options = options || {};
-  if (null == options.forceBase64) {
-    options.forceBase64 = exports.forceBase64;
-  }
-
-  if (!sio._streamSocket) {
-    sio._streamSocket = new Socket(sio, options);
-  }
-  return sio._streamSocket;
-}
-
-/**
- * Creates a new duplex stream.
- *
- * @param {Object} options
- * @return {IOStream} duplex stream
- * @api public
- */
-exports.createStream = function(options) {
-  return new IOStream(options);
-};
-
-/**
- * Creates a new readable stream for Blob/File on browser.
- *
- * @param {Blob} blob
- * @param {Object} options
- * @return {BlobReadStream} stream
- * @api public
- */
-exports.createBlobReadStream = function(blob, options) {
-  return new BlobReadStream(blob, options);
-};
-
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(20).Buffer))
-
-/***/ }),
-/* 220 */
-/***/ (function(module, exports, __webpack_require__) {
-
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -43877,7 +43793,7 @@ Stream.prototype.pipe = function(dest, options) {
 
 
 /***/ }),
-/* 221 */
+/* 220 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -43930,7 +43846,7 @@ var EElistenerCount = function (emitter, type) {
 /*</replacement>*/
 
 /*<replacement>*/
-var Stream = __webpack_require__(222);
+var Stream = __webpack_require__(221);
 /*</replacement>*/
 
 /*<replacement>*/
@@ -43962,7 +43878,7 @@ if (debugUtil && debugUtil.debuglog) {
 /*</replacement>*/
 
 var BufferList = __webpack_require__(489);
-var destroyImpl = __webpack_require__(223);
+var destroyImpl = __webpack_require__(222);
 var StringDecoder;
 
 util.inherits(Readable, Stream);
@@ -44052,7 +43968,7 @@ function ReadableState(options, stream) {
   this.decoder = null;
   this.encoding = null;
   if (options.encoding) {
-    if (!StringDecoder) StringDecoder = __webpack_require__(224).StringDecoder;
+    if (!StringDecoder) StringDecoder = __webpack_require__(223).StringDecoder;
     this.decoder = new StringDecoder(options.encoding);
     this.encoding = options.encoding;
   }
@@ -44208,7 +44124,7 @@ Readable.prototype.isPaused = function () {
 
 // backwards compatibility.
 Readable.prototype.setEncoding = function (enc) {
-  if (!StringDecoder) StringDecoder = __webpack_require__(224).StringDecoder;
+  if (!StringDecoder) StringDecoder = __webpack_require__(223).StringDecoder;
   this._readableState.decoder = new StringDecoder(enc);
   this._readableState.encoding = enc;
   return this;
@@ -44900,17 +44816,17 @@ function indexOf(xs, x) {
   }
   return -1;
 }
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(31), __webpack_require__(29)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(31), __webpack_require__(30)))
 
 /***/ }),
-/* 222 */
+/* 221 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(83).EventEmitter;
 
 
 /***/ }),
-/* 223 */
+/* 222 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44990,7 +44906,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 224 */
+/* 223 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -45292,7 +45208,7 @@ function simpleEnd(buf) {
 }
 
 /***/ }),
-/* 225 */
+/* 224 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -45512,7 +45428,7 @@ function done(stream, er, data) {
 }
 
 /***/ }),
-/* 226 */
+/* 225 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -45686,7 +45602,7 @@ function localstorage(){
 
 
 /***/ }),
-/* 227 */
+/* 226 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;!function(t,o){ true?!(__WEBPACK_AMD_DEFINE_FACTORY__ = (o),
@@ -45696,7 +45612,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;!function(t,o)
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)):undefined}(this,function(){function t(t){var o={onClose:null,onOpen:null,beforeOpen:null,beforeClose:null,stickyFooter:!1,footer:!1,cssClass:[],closeLabel:"Close",closeMethods:["overlay","button","escape"]};this.opts=r({},o,t),this.init()}function o(){this.modalBoxFooter&&(this.modalBoxFooter.style.width=this.modalBox.clientWidth+"px",this.modalBoxFooter.style.left=this.modalBox.offsetLeft+"px")}function e(){this.modal=document.createElement("div"),this.modal.classList.add("tingle-modal"),0!==this.opts.closeMethods.length&&-1!==this.opts.closeMethods.indexOf("overlay")||this.modal.classList.add("tingle-modal--noOverlayClose"),this.modal.style.display="none",this.opts.cssClass.forEach(function(t){"string"==typeof t&&this.modal.classList.add(t)},this),-1!==this.opts.closeMethods.indexOf("button")&&(this.modalCloseBtn=document.createElement("button"),this.modalCloseBtn.type="button",this.modalCloseBtn.classList.add("tingle-modal__close"),this.modalCloseBtnIcon=document.createElement("span"),this.modalCloseBtnIcon.classList.add("tingle-modal__closeIcon"),this.modalCloseBtnIcon.innerHTML="×",this.modalCloseBtnLabel=document.createElement("span"),this.modalCloseBtnLabel.classList.add("tingle-modal__closeLabel"),this.modalCloseBtnLabel.innerHTML=this.opts.closeLabel,this.modalCloseBtn.appendChild(this.modalCloseBtnIcon),this.modalCloseBtn.appendChild(this.modalCloseBtnLabel)),this.modalBox=document.createElement("div"),this.modalBox.classList.add("tingle-modal-box"),this.modalBoxContent=document.createElement("div"),this.modalBoxContent.classList.add("tingle-modal-box__content"),this.modalBox.appendChild(this.modalBoxContent),-1!==this.opts.closeMethods.indexOf("button")&&this.modal.appendChild(this.modalCloseBtn),this.modal.appendChild(this.modalBox)}function s(){this.modalBoxFooter=document.createElement("div"),this.modalBoxFooter.classList.add("tingle-modal-box__footer"),this.modalBox.appendChild(this.modalBoxFooter)}function i(){this._events={clickCloseBtn:this.close.bind(this),clickOverlay:l.bind(this),resize:this.checkOverflow.bind(this),keyboardNav:n.bind(this)},-1!==this.opts.closeMethods.indexOf("button")&&this.modalCloseBtn.addEventListener("click",this._events.clickCloseBtn),this.modal.addEventListener("mousedown",this._events.clickOverlay),window.addEventListener("resize",this._events.resize),document.addEventListener("keydown",this._events.keyboardNav)}function n(t){-1!==this.opts.closeMethods.indexOf("escape")&&27===t.which&&this.isOpen()&&this.close()}function l(t){-1!==this.opts.closeMethods.indexOf("overlay")&&!d(t.target,"tingle-modal")&&t.clientX<this.modal.clientWidth&&this.close()}function d(t,o){for(;(t=t.parentElement)&&!t.classList.contains(o););return t}function a(){-1!==this.opts.closeMethods.indexOf("button")&&this.modalCloseBtn.removeEventListener("click",this._events.clickCloseBtn),this.modal.removeEventListener("mousedown",this._events.clickOverlay),window.removeEventListener("resize",this._events.resize),document.removeEventListener("keydown",this._events.keyboardNav)}function r(){for(var t=1;t<arguments.length;t++)for(var o in arguments[t])arguments[t].hasOwnProperty(o)&&(arguments[0][o]=arguments[t][o]);return arguments[0]}var h=function(){var t,o=document.createElement("tingle-test-transition"),e={transition:"transitionend",OTransition:"oTransitionEnd",MozTransition:"transitionend",WebkitTransition:"webkitTransitionEnd"};for(t in e)if(void 0!==o.style[t])return e[t]}(),c=!1;return t.prototype.init=function(){if(!this.modal)return e.call(this),i.call(this),document.body.insertBefore(this.modal,document.body.firstChild),this.opts.footer&&this.addFooter(),this},t.prototype._busy=function(t){c=t},t.prototype._isBusy=function(){return c},t.prototype.destroy=function(){null!==this.modal&&(this.isOpen()&&this.close(!0),a.call(this),this.modal.parentNode.removeChild(this.modal),this.modal=null)},t.prototype.isOpen=function(){return!!this.modal.classList.contains("tingle-modal--visible")},t.prototype.open=function(){if(!this._isBusy()){this._busy(!0);var t=this;return"function"==typeof t.opts.beforeOpen&&t.opts.beforeOpen(),this.modal.style.removeProperty?this.modal.style.removeProperty("display"):this.modal.style.removeAttribute("display"),this._scrollPosition=window.pageYOffset,document.body.classList.add("tingle-enabled"),document.body.style.top=-this._scrollPosition+"px",this.setStickyFooter(this.opts.stickyFooter),this.modal.classList.add("tingle-modal--visible"),h?this.modal.addEventListener(h,function o(){"function"==typeof t.opts.onOpen&&t.opts.onOpen.call(t),t.modal.removeEventListener(h,o,!1),t._busy(!1)},!1):("function"==typeof t.opts.onOpen&&t.opts.onOpen.call(t),t._busy(!1)),this.checkOverflow(),this}},t.prototype.close=function(t){if(!this._isBusy()){if(this._busy(!0),t=t||!1,"function"==typeof this.opts.beforeClose){if(!this.opts.beforeClose.call(this))return}document.body.classList.remove("tingle-enabled"),window.scrollTo(0,this._scrollPosition),document.body.style.top=null,this.modal.classList.remove("tingle-modal--visible");var o=this;t?(o.modal.style.display="none","function"==typeof o.opts.onClose&&o.opts.onClose.call(this),o._busy(!1)):h?this.modal.addEventListener(h,function t(){o.modal.removeEventListener(h,t,!1),o.modal.style.display="none","function"==typeof o.opts.onClose&&o.opts.onClose.call(this),o._busy(!1)},!1):(o.modal.style.display="none","function"==typeof o.opts.onClose&&o.opts.onClose.call(this),o._busy(!1))}},t.prototype.setContent=function(t){return"string"==typeof t?this.modalBoxContent.innerHTML=t:(this.modalBoxContent.innerHTML="",this.modalBoxContent.appendChild(t)),this.isOpen()&&this.checkOverflow(),this},t.prototype.getContent=function(){return this.modalBoxContent},t.prototype.addFooter=function(){return s.call(this),this},t.prototype.setFooterContent=function(t){return this.modalBoxFooter.innerHTML=t,this},t.prototype.getFooterContent=function(){return this.modalBoxFooter},t.prototype.setStickyFooter=function(t){return this.isOverflow()||(t=!1),t?this.modalBox.contains(this.modalBoxFooter)&&(this.modalBox.removeChild(this.modalBoxFooter),this.modal.appendChild(this.modalBoxFooter),this.modalBoxFooter.classList.add("tingle-modal-box__footer--sticky"),o.call(this),this.modalBoxContent.style["padding-bottom"]=this.modalBoxFooter.clientHeight+20+"px"):this.modalBoxFooter&&(this.modalBox.contains(this.modalBoxFooter)||(this.modal.removeChild(this.modalBoxFooter),this.modalBox.appendChild(this.modalBoxFooter),this.modalBoxFooter.style.width="auto",this.modalBoxFooter.style.left="",this.modalBoxContent.style["padding-bottom"]="",this.modalBoxFooter.classList.remove("tingle-modal-box__footer--sticky"))),this},t.prototype.addFooterBtn=function(t,o,e){var s=document.createElement("button");return s.innerHTML=t,s.addEventListener("click",e),"string"==typeof o&&o.length&&o.split(" ").forEach(function(t){s.classList.add(t)}),this.modalBoxFooter.appendChild(s),s},t.prototype.resize=function(){console.warn("Resize is deprecated and will be removed in version 1.0")},t.prototype.isOverflow=function(){var t=window.innerHeight;return this.modalBox.clientHeight>=t},t.prototype.checkOverflow=function(){this.modal.classList.contains("tingle-modal--visible")&&(this.isOverflow()?this.modal.classList.add("tingle-modal--overflow"):this.modal.classList.remove("tingle-modal--overflow"),!this.isOverflow()&&this.opts.stickyFooter?this.setStickyFooter(!1):this.isOverflow()&&this.opts.stickyFooter&&(o.call(this),this.setStickyFooter(!0)))},{modal:t}});
 
 /***/ }),
-/* 228 */
+/* 227 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {exports = module.exports = SemVer
@@ -47296,10 +47212,10 @@ function coerce (version, options) {
     '.' + (match[4] || '0'), options)
 }
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(29)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(30)))
 
 /***/ }),
-/* 229 */
+/* 228 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -47469,25 +47385,25 @@ var VaultRetriever = /*#__PURE__*/function () {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(103).setImmediate))
 
 /***/ }),
-/* 230 */
+/* 229 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(231);
+__webpack_require__(230);
 module.exports = __webpack_require__(507);
 
 
 /***/ }),
-/* 231 */
+/* 230 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(global) {
 
-__webpack_require__(232);
+__webpack_require__(231);
+
+__webpack_require__(428);
 
 __webpack_require__(429);
-
-__webpack_require__(430);
 
 if (global._babelPolyfill) {
   throw new Error("only one instance of babel-polyfill is allowed");
@@ -47512,10 +47428,11 @@ define(String.prototype, "padRight", "".padEnd);
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(31)))
 
 /***/ }),
-/* 232 */
+/* 231 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(233);
+__webpack_require__(232);
+__webpack_require__(235);
 __webpack_require__(236);
 __webpack_require__(237);
 __webpack_require__(238);
@@ -47591,16 +47508,16 @@ __webpack_require__(307);
 __webpack_require__(308);
 __webpack_require__(309);
 __webpack_require__(310);
-__webpack_require__(311);
+__webpack_require__(312);
 __webpack_require__(313);
-__webpack_require__(314);
+__webpack_require__(315);
 __webpack_require__(316);
 __webpack_require__(317);
 __webpack_require__(318);
 __webpack_require__(319);
 __webpack_require__(320);
 __webpack_require__(321);
-__webpack_require__(322);
+__webpack_require__(323);
 __webpack_require__(324);
 __webpack_require__(325);
 __webpack_require__(326);
@@ -47613,20 +47530,20 @@ __webpack_require__(332);
 __webpack_require__(333);
 __webpack_require__(334);
 __webpack_require__(335);
-__webpack_require__(336);
 __webpack_require__(136);
-__webpack_require__(337);
+__webpack_require__(336);
 __webpack_require__(174);
-__webpack_require__(338);
+__webpack_require__(337);
 __webpack_require__(175);
+__webpack_require__(338);
 __webpack_require__(339);
 __webpack_require__(340);
 __webpack_require__(341);
 __webpack_require__(342);
-__webpack_require__(343);
 __webpack_require__(178);
 __webpack_require__(180);
 __webpack_require__(181);
+__webpack_require__(343);
 __webpack_require__(344);
 __webpack_require__(345);
 __webpack_require__(346);
@@ -47711,22 +47628,21 @@ __webpack_require__(424);
 __webpack_require__(425);
 __webpack_require__(426);
 __webpack_require__(427);
-__webpack_require__(428);
 module.exports = __webpack_require__(32);
 
 
 /***/ }),
-/* 233 */
+/* 232 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 // ECMAScript 6 symbols shim
 var global = __webpack_require__(7);
-var has = __webpack_require__(25);
+var has = __webpack_require__(26);
 var DESCRIPTORS = __webpack_require__(15);
 var $export = __webpack_require__(0);
-var redefine = __webpack_require__(23);
+var redefine = __webpack_require__(24);
 var META = __webpack_require__(48).KEY;
 var $fails = __webpack_require__(10);
 var shared = __webpack_require__(72);
@@ -47735,17 +47651,17 @@ var uid = __webpack_require__(51);
 var wks = __webpack_require__(13);
 var wksExt = __webpack_require__(156);
 var wksDefine = __webpack_require__(117);
-var enumKeys = __webpack_require__(235);
+var enumKeys = __webpack_require__(234);
 var isArray = __webpack_require__(91);
 var anObject = __webpack_require__(4);
 var isObject = __webpack_require__(11);
 var toObject = __webpack_require__(18);
-var toIObject = __webpack_require__(26);
+var toIObject = __webpack_require__(27);
 var toPrimitive = __webpack_require__(38);
 var createDesc = __webpack_require__(50);
 var _create = __webpack_require__(54);
 var gOPNExt = __webpack_require__(159);
-var $GOPD = __webpack_require__(27);
+var $GOPD = __webpack_require__(28);
 var $GOPS = __webpack_require__(90);
 var $DP = __webpack_require__(16);
 var $keys = __webpack_require__(52);
@@ -47959,7 +47875,7 @@ $JSON && $export($export.S + $export.F * (!USE_NATIVE || $fails(function () {
 });
 
 // 19.4.3.4 Symbol.prototype[@@toPrimitive](hint)
-$Symbol[PROTOTYPE][TO_PRIMITIVE] || __webpack_require__(22)($Symbol[PROTOTYPE], TO_PRIMITIVE, $Symbol[PROTOTYPE].valueOf);
+$Symbol[PROTOTYPE][TO_PRIMITIVE] || __webpack_require__(23)($Symbol[PROTOTYPE], TO_PRIMITIVE, $Symbol[PROTOTYPE].valueOf);
 // 19.4.3.5 Symbol.prototype[@@toStringTag]
 setToStringTag($Symbol, 'Symbol');
 // 20.2.1.9 Math[@@toStringTag]
@@ -47969,14 +47885,14 @@ setToStringTag(global.JSON, 'JSON', true);
 
 
 /***/ }),
-/* 234 */
+/* 233 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(72)('native-function-to-string', Function.toString);
 
 
 /***/ }),
-/* 235 */
+/* 234 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // all enumerable object keys, includes symbols
@@ -47997,7 +47913,7 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 236 */
+/* 235 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var $export = __webpack_require__(0);
@@ -48006,7 +47922,7 @@ $export($export.S, 'Object', { create: __webpack_require__(54) });
 
 
 /***/ }),
-/* 237 */
+/* 236 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var $export = __webpack_require__(0);
@@ -48015,7 +47931,7 @@ $export($export.S + $export.F * !__webpack_require__(15), 'Object', { defineProp
 
 
 /***/ }),
-/* 238 */
+/* 237 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var $export = __webpack_require__(0);
@@ -48024,12 +47940,12 @@ $export($export.S + $export.F * !__webpack_require__(15), 'Object', { defineProp
 
 
 /***/ }),
-/* 239 */
+/* 238 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.6 Object.getOwnPropertyDescriptor(O, P)
-var toIObject = __webpack_require__(26);
-var $getOwnPropertyDescriptor = __webpack_require__(27).f;
+var toIObject = __webpack_require__(27);
+var $getOwnPropertyDescriptor = __webpack_require__(28).f;
 
 __webpack_require__(40)('getOwnPropertyDescriptor', function () {
   return function getOwnPropertyDescriptor(it, key) {
@@ -48039,12 +47955,12 @@ __webpack_require__(40)('getOwnPropertyDescriptor', function () {
 
 
 /***/ }),
-/* 240 */
+/* 239 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.9 Object.getPrototypeOf(O)
 var toObject = __webpack_require__(18);
-var $getPrototypeOf = __webpack_require__(28);
+var $getPrototypeOf = __webpack_require__(29);
 
 __webpack_require__(40)('getPrototypeOf', function () {
   return function getPrototypeOf(it) {
@@ -48054,7 +47970,7 @@ __webpack_require__(40)('getPrototypeOf', function () {
 
 
 /***/ }),
-/* 241 */
+/* 240 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.14 Object.keys(O)
@@ -48069,7 +47985,7 @@ __webpack_require__(40)('keys', function () {
 
 
 /***/ }),
-/* 242 */
+/* 241 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.7 Object.getOwnPropertyNames(O)
@@ -48079,7 +47995,7 @@ __webpack_require__(40)('getOwnPropertyNames', function () {
 
 
 /***/ }),
-/* 243 */
+/* 242 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.5 Object.freeze(O)
@@ -48094,7 +48010,7 @@ __webpack_require__(40)('freeze', function ($freeze) {
 
 
 /***/ }),
-/* 244 */
+/* 243 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.17 Object.seal(O)
@@ -48109,7 +48025,7 @@ __webpack_require__(40)('seal', function ($seal) {
 
 
 /***/ }),
-/* 245 */
+/* 244 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.15 Object.preventExtensions(O)
@@ -48124,7 +48040,7 @@ __webpack_require__(40)('preventExtensions', function ($preventExtensions) {
 
 
 /***/ }),
-/* 246 */
+/* 245 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.12 Object.isFrozen(O)
@@ -48138,7 +48054,7 @@ __webpack_require__(40)('isFrozen', function ($isFrozen) {
 
 
 /***/ }),
-/* 247 */
+/* 246 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.13 Object.isSealed(O)
@@ -48152,7 +48068,7 @@ __webpack_require__(40)('isSealed', function ($isSealed) {
 
 
 /***/ }),
-/* 248 */
+/* 247 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.11 Object.isExtensible(O)
@@ -48166,7 +48082,7 @@ __webpack_require__(40)('isExtensible', function ($isExtensible) {
 
 
 /***/ }),
-/* 249 */
+/* 248 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.3.1 Object.assign(target, source)
@@ -48176,7 +48092,7 @@ $export($export.S + $export.F, 'Object', { assign: __webpack_require__(160) });
 
 
 /***/ }),
-/* 250 */
+/* 249 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.3.10 Object.is(value1, value2)
@@ -48185,7 +48101,7 @@ $export($export.S, 'Object', { is: __webpack_require__(161) });
 
 
 /***/ }),
-/* 251 */
+/* 250 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.3.19 Object.setPrototypeOf(O, proto)
@@ -48194,7 +48110,7 @@ $export($export.S, 'Object', { setPrototypeOf: __webpack_require__(121).set });
 
 
 /***/ }),
-/* 252 */
+/* 251 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48204,14 +48120,14 @@ var classof = __webpack_require__(66);
 var test = {};
 test[__webpack_require__(13)('toStringTag')] = 'z';
 if (test + '' != '[object z]') {
-  __webpack_require__(23)(Object.prototype, 'toString', function toString() {
+  __webpack_require__(24)(Object.prototype, 'toString', function toString() {
     return '[object ' + classof(this) + ']';
   }, true);
 }
 
 
 /***/ }),
-/* 253 */
+/* 252 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.2.3.2 / 15.3.4.5 Function.prototype.bind(thisArg, args...)
@@ -48221,7 +48137,7 @@ $export($export.P, 'Function', { bind: __webpack_require__(162) });
 
 
 /***/ }),
-/* 254 */
+/* 253 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var dP = __webpack_require__(16).f;
@@ -48243,13 +48159,13 @@ NAME in FProto || __webpack_require__(15) && dP(FProto, NAME, {
 
 
 /***/ }),
-/* 255 */
+/* 254 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var isObject = __webpack_require__(11);
-var getPrototypeOf = __webpack_require__(28);
+var getPrototypeOf = __webpack_require__(29);
 var HAS_INSTANCE = __webpack_require__(13)('hasInstance');
 var FunctionProto = Function.prototype;
 // 19.2.3.6 Function.prototype[@@hasInstance](V)
@@ -48263,7 +48179,7 @@ if (!(HAS_INSTANCE in FunctionProto)) __webpack_require__(16).f(FunctionProto, H
 
 
 /***/ }),
-/* 256 */
+/* 255 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var $export = __webpack_require__(0);
@@ -48273,7 +48189,7 @@ $export($export.G + $export.F * (parseInt != $parseInt), { parseInt: $parseInt }
 
 
 /***/ }),
-/* 257 */
+/* 256 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var $export = __webpack_require__(0);
@@ -48283,19 +48199,19 @@ $export($export.G + $export.F * (parseFloat != $parseFloat), { parseFloat: $pars
 
 
 /***/ }),
-/* 258 */
+/* 257 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var global = __webpack_require__(7);
-var has = __webpack_require__(25);
+var has = __webpack_require__(26);
 var cof = __webpack_require__(34);
 var inheritIfRequired = __webpack_require__(123);
 var toPrimitive = __webpack_require__(38);
 var fails = __webpack_require__(10);
 var gOPN = __webpack_require__(55).f;
-var gOPD = __webpack_require__(27).f;
+var gOPD = __webpack_require__(28).f;
 var dP = __webpack_require__(16).f;
 var $trim = __webpack_require__(67).trim;
 var NUMBER = 'Number';
@@ -48354,12 +48270,12 @@ if (!$Number(' 0o1') || !$Number('0b1') || $Number('+0x1')) {
   }
   $Number.prototype = proto;
   proto.constructor = $Number;
-  __webpack_require__(23)(global, NUMBER, $Number);
+  __webpack_require__(24)(global, NUMBER, $Number);
 }
 
 
 /***/ }),
-/* 259 */
+/* 258 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48480,7 +48396,7 @@ $export($export.P + $export.F * (!!$toFixed && (
 
 
 /***/ }),
-/* 260 */
+/* 259 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48505,7 +48421,7 @@ $export($export.P + $export.F * ($fails(function () {
 
 
 /***/ }),
-/* 261 */
+/* 260 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.1.2.1 Number.EPSILON
@@ -48515,7 +48431,7 @@ $export($export.S, 'Number', { EPSILON: Math.pow(2, -52) });
 
 
 /***/ }),
-/* 262 */
+/* 261 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.1.2.2 Number.isFinite(number)
@@ -48530,7 +48446,7 @@ $export($export.S, 'Number', {
 
 
 /***/ }),
-/* 263 */
+/* 262 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.1.2.3 Number.isInteger(number)
@@ -48540,7 +48456,7 @@ $export($export.S, 'Number', { isInteger: __webpack_require__(167) });
 
 
 /***/ }),
-/* 264 */
+/* 263 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.1.2.4 Number.isNaN(number)
@@ -48555,7 +48471,7 @@ $export($export.S, 'Number', {
 
 
 /***/ }),
-/* 265 */
+/* 264 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.1.2.5 Number.isSafeInteger(number)
@@ -48571,7 +48487,7 @@ $export($export.S, 'Number', {
 
 
 /***/ }),
-/* 266 */
+/* 265 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.1.2.6 Number.MAX_SAFE_INTEGER
@@ -48581,7 +48497,7 @@ $export($export.S, 'Number', { MAX_SAFE_INTEGER: 0x1fffffffffffff });
 
 
 /***/ }),
-/* 267 */
+/* 266 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.1.2.10 Number.MIN_SAFE_INTEGER
@@ -48591,7 +48507,7 @@ $export($export.S, 'Number', { MIN_SAFE_INTEGER: -0x1fffffffffffff });
 
 
 /***/ }),
-/* 268 */
+/* 267 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var $export = __webpack_require__(0);
@@ -48601,7 +48517,7 @@ $export($export.S + $export.F * (Number.parseFloat != $parseFloat), 'Number', { 
 
 
 /***/ }),
-/* 269 */
+/* 268 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var $export = __webpack_require__(0);
@@ -48611,7 +48527,7 @@ $export($export.S + $export.F * (Number.parseInt != $parseInt), 'Number', { pars
 
 
 /***/ }),
-/* 270 */
+/* 269 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.2.2.3 Math.acosh(x)
@@ -48635,7 +48551,7 @@ $export($export.S + $export.F * !($acosh
 
 
 /***/ }),
-/* 271 */
+/* 270 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.2.2.5 Math.asinh(x)
@@ -48651,7 +48567,7 @@ $export($export.S + $export.F * !($asinh && 1 / $asinh(0) > 0), 'Math', { asinh:
 
 
 /***/ }),
-/* 272 */
+/* 271 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.2.2.7 Math.atanh(x)
@@ -48667,7 +48583,7 @@ $export($export.S + $export.F * !($atanh && 1 / $atanh(-0) < 0), 'Math', {
 
 
 /***/ }),
-/* 273 */
+/* 272 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.2.2.9 Math.cbrt(x)
@@ -48682,7 +48598,7 @@ $export($export.S, 'Math', {
 
 
 /***/ }),
-/* 274 */
+/* 273 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.2.2.11 Math.clz32(x)
@@ -48696,7 +48612,7 @@ $export($export.S, 'Math', {
 
 
 /***/ }),
-/* 275 */
+/* 274 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.2.2.12 Math.cosh(x)
@@ -48711,7 +48627,7 @@ $export($export.S, 'Math', {
 
 
 /***/ }),
-/* 276 */
+/* 275 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.2.2.14 Math.expm1(x)
@@ -48722,7 +48638,7 @@ $export($export.S + $export.F * ($expm1 != Math.expm1), 'Math', { expm1: $expm1 
 
 
 /***/ }),
-/* 277 */
+/* 276 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.2.2.16 Math.fround(x)
@@ -48732,7 +48648,7 @@ $export($export.S, 'Math', { fround: __webpack_require__(169) });
 
 
 /***/ }),
-/* 278 */
+/* 277 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.2.2.17 Math.hypot([value1[, value2[, … ]]])
@@ -48763,7 +48679,7 @@ $export($export.S, 'Math', {
 
 
 /***/ }),
-/* 279 */
+/* 278 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.2.2.18 Math.imul(x, y)
@@ -48786,7 +48702,7 @@ $export($export.S + $export.F * __webpack_require__(10)(function () {
 
 
 /***/ }),
-/* 280 */
+/* 279 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.2.2.21 Math.log10(x)
@@ -48800,7 +48716,7 @@ $export($export.S, 'Math', {
 
 
 /***/ }),
-/* 281 */
+/* 280 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.2.2.20 Math.log1p(x)
@@ -48810,7 +48726,7 @@ $export($export.S, 'Math', { log1p: __webpack_require__(168) });
 
 
 /***/ }),
-/* 282 */
+/* 281 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.2.2.22 Math.log2(x)
@@ -48824,7 +48740,7 @@ $export($export.S, 'Math', {
 
 
 /***/ }),
-/* 283 */
+/* 282 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.2.2.28 Math.sign(x)
@@ -48834,7 +48750,7 @@ $export($export.S, 'Math', { sign: __webpack_require__(125) });
 
 
 /***/ }),
-/* 284 */
+/* 283 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.2.2.30 Math.sinh(x)
@@ -48855,7 +48771,7 @@ $export($export.S + $export.F * __webpack_require__(10)(function () {
 
 
 /***/ }),
-/* 285 */
+/* 284 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.2.2.33 Math.tanh(x)
@@ -48873,7 +48789,7 @@ $export($export.S, 'Math', {
 
 
 /***/ }),
-/* 286 */
+/* 285 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.2.2.34 Math.trunc(x)
@@ -48887,7 +48803,7 @@ $export($export.S, 'Math', {
 
 
 /***/ }),
-/* 287 */
+/* 286 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var $export = __webpack_require__(0);
@@ -48916,11 +48832,11 @@ $export($export.S + $export.F * (!!$fromCodePoint && $fromCodePoint.length != 1)
 
 
 /***/ }),
-/* 288 */
+/* 287 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var $export = __webpack_require__(0);
-var toIObject = __webpack_require__(26);
+var toIObject = __webpack_require__(27);
 var toLength = __webpack_require__(14);
 
 $export($export.S, 'String', {
@@ -48940,7 +48856,7 @@ $export($export.S, 'String', {
 
 
 /***/ }),
-/* 289 */
+/* 288 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48954,7 +48870,7 @@ __webpack_require__(67)('trim', function ($trim) {
 
 
 /***/ }),
-/* 290 */
+/* 289 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48978,7 +48894,7 @@ __webpack_require__(127)(String, 'String', function (iterated) {
 
 
 /***/ }),
-/* 291 */
+/* 290 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48994,7 +48910,7 @@ $export($export.P, 'String', {
 
 
 /***/ }),
-/* 292 */
+/* 291 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49021,7 +48937,7 @@ $export($export.P + $export.F * __webpack_require__(130)(ENDS_WITH), 'String', {
 
 
 /***/ }),
-/* 293 */
+/* 292 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49040,7 +48956,7 @@ $export($export.P + $export.F * __webpack_require__(130)(INCLUDES), 'String', {
 
 
 /***/ }),
-/* 294 */
+/* 293 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var $export = __webpack_require__(0);
@@ -49052,7 +48968,7 @@ $export($export.P, 'String', {
 
 
 /***/ }),
-/* 295 */
+/* 294 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49077,15 +48993,29 @@ $export($export.P + $export.F * __webpack_require__(130)(STARTS_WITH), 'String',
 
 
 /***/ }),
-/* 296 */
+/* 295 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 // B.2.3.2 String.prototype.anchor(name)
-__webpack_require__(24)('anchor', function (createHTML) {
+__webpack_require__(25)('anchor', function (createHTML) {
   return function anchor(name) {
     return createHTML(this, 'a', 'name', name);
+  };
+});
+
+
+/***/ }),
+/* 296 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+// B.2.3.3 String.prototype.big()
+__webpack_require__(25)('big', function (createHTML) {
+  return function big() {
+    return createHTML(this, 'big', '', '');
   };
 });
 
@@ -49096,10 +49026,10 @@ __webpack_require__(24)('anchor', function (createHTML) {
 
 "use strict";
 
-// B.2.3.3 String.prototype.big()
-__webpack_require__(24)('big', function (createHTML) {
-  return function big() {
-    return createHTML(this, 'big', '', '');
+// B.2.3.4 String.prototype.blink()
+__webpack_require__(25)('blink', function (createHTML) {
+  return function blink() {
+    return createHTML(this, 'blink', '', '');
   };
 });
 
@@ -49110,10 +49040,10 @@ __webpack_require__(24)('big', function (createHTML) {
 
 "use strict";
 
-// B.2.3.4 String.prototype.blink()
-__webpack_require__(24)('blink', function (createHTML) {
-  return function blink() {
-    return createHTML(this, 'blink', '', '');
+// B.2.3.5 String.prototype.bold()
+__webpack_require__(25)('bold', function (createHTML) {
+  return function bold() {
+    return createHTML(this, 'b', '', '');
   };
 });
 
@@ -49124,10 +49054,10 @@ __webpack_require__(24)('blink', function (createHTML) {
 
 "use strict";
 
-// B.2.3.5 String.prototype.bold()
-__webpack_require__(24)('bold', function (createHTML) {
-  return function bold() {
-    return createHTML(this, 'b', '', '');
+// B.2.3.6 String.prototype.fixed()
+__webpack_require__(25)('fixed', function (createHTML) {
+  return function fixed() {
+    return createHTML(this, 'tt', '', '');
   };
 });
 
@@ -49138,10 +49068,10 @@ __webpack_require__(24)('bold', function (createHTML) {
 
 "use strict";
 
-// B.2.3.6 String.prototype.fixed()
-__webpack_require__(24)('fixed', function (createHTML) {
-  return function fixed() {
-    return createHTML(this, 'tt', '', '');
+// B.2.3.7 String.prototype.fontcolor(color)
+__webpack_require__(25)('fontcolor', function (createHTML) {
+  return function fontcolor(color) {
+    return createHTML(this, 'font', 'color', color);
   };
 });
 
@@ -49152,10 +49082,10 @@ __webpack_require__(24)('fixed', function (createHTML) {
 
 "use strict";
 
-// B.2.3.7 String.prototype.fontcolor(color)
-__webpack_require__(24)('fontcolor', function (createHTML) {
-  return function fontcolor(color) {
-    return createHTML(this, 'font', 'color', color);
+// B.2.3.8 String.prototype.fontsize(size)
+__webpack_require__(25)('fontsize', function (createHTML) {
+  return function fontsize(size) {
+    return createHTML(this, 'font', 'size', size);
   };
 });
 
@@ -49166,10 +49096,10 @@ __webpack_require__(24)('fontcolor', function (createHTML) {
 
 "use strict";
 
-// B.2.3.8 String.prototype.fontsize(size)
-__webpack_require__(24)('fontsize', function (createHTML) {
-  return function fontsize(size) {
-    return createHTML(this, 'font', 'size', size);
+// B.2.3.9 String.prototype.italics()
+__webpack_require__(25)('italics', function (createHTML) {
+  return function italics() {
+    return createHTML(this, 'i', '', '');
   };
 });
 
@@ -49180,10 +49110,10 @@ __webpack_require__(24)('fontsize', function (createHTML) {
 
 "use strict";
 
-// B.2.3.9 String.prototype.italics()
-__webpack_require__(24)('italics', function (createHTML) {
-  return function italics() {
-    return createHTML(this, 'i', '', '');
+// B.2.3.10 String.prototype.link(url)
+__webpack_require__(25)('link', function (createHTML) {
+  return function link(url) {
+    return createHTML(this, 'a', 'href', url);
   };
 });
 
@@ -49194,10 +49124,10 @@ __webpack_require__(24)('italics', function (createHTML) {
 
 "use strict";
 
-// B.2.3.10 String.prototype.link(url)
-__webpack_require__(24)('link', function (createHTML) {
-  return function link(url) {
-    return createHTML(this, 'a', 'href', url);
+// B.2.3.11 String.prototype.small()
+__webpack_require__(25)('small', function (createHTML) {
+  return function small() {
+    return createHTML(this, 'small', '', '');
   };
 });
 
@@ -49208,10 +49138,10 @@ __webpack_require__(24)('link', function (createHTML) {
 
 "use strict";
 
-// B.2.3.11 String.prototype.small()
-__webpack_require__(24)('small', function (createHTML) {
-  return function small() {
-    return createHTML(this, 'small', '', '');
+// B.2.3.12 String.prototype.strike()
+__webpack_require__(25)('strike', function (createHTML) {
+  return function strike() {
+    return createHTML(this, 'strike', '', '');
   };
 });
 
@@ -49222,10 +49152,10 @@ __webpack_require__(24)('small', function (createHTML) {
 
 "use strict";
 
-// B.2.3.12 String.prototype.strike()
-__webpack_require__(24)('strike', function (createHTML) {
-  return function strike() {
-    return createHTML(this, 'strike', '', '');
+// B.2.3.13 String.prototype.sub()
+__webpack_require__(25)('sub', function (createHTML) {
+  return function sub() {
+    return createHTML(this, 'sub', '', '');
   };
 });
 
@@ -49236,22 +49166,8 @@ __webpack_require__(24)('strike', function (createHTML) {
 
 "use strict";
 
-// B.2.3.13 String.prototype.sub()
-__webpack_require__(24)('sub', function (createHTML) {
-  return function sub() {
-    return createHTML(this, 'sub', '', '');
-  };
-});
-
-
-/***/ }),
-/* 308 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
 // B.2.3.14 String.prototype.sup()
-__webpack_require__(24)('sup', function (createHTML) {
+__webpack_require__(25)('sup', function (createHTML) {
   return function sup() {
     return createHTML(this, 'sup', '', '');
   };
@@ -49259,7 +49175,7 @@ __webpack_require__(24)('sup', function (createHTML) {
 
 
 /***/ }),
-/* 309 */
+/* 308 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.3.3.1 / 15.9.4.4 Date.now()
@@ -49269,7 +49185,7 @@ $export($export.S, 'Date', { now: function () { return new Date().getTime(); } }
 
 
 /***/ }),
-/* 310 */
+/* 309 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49292,12 +49208,12 @@ $export($export.P + $export.F * __webpack_require__(10)(function () {
 
 
 /***/ }),
-/* 311 */
+/* 310 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.3.4.36 / 15.9.5.43 Date.prototype.toISOString()
 var $export = __webpack_require__(0);
-var toISOString = __webpack_require__(312);
+var toISOString = __webpack_require__(311);
 
 // PhantomJS / old WebKit has a broken implementations
 $export($export.P + $export.F * (Date.prototype.toISOString !== toISOString), 'Date', {
@@ -49306,7 +49222,7 @@ $export($export.P + $export.F * (Date.prototype.toISOString !== toISOString), 'D
 
 
 /***/ }),
-/* 312 */
+/* 311 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49339,7 +49255,7 @@ module.exports = (fails(function () {
 
 
 /***/ }),
-/* 313 */
+/* 312 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var DateProto = Date.prototype;
@@ -49348,7 +49264,7 @@ var TO_STRING = 'toString';
 var $toString = DateProto[TO_STRING];
 var getTime = DateProto.getTime;
 if (new Date(NaN) + '' != INVALID_DATE) {
-  __webpack_require__(23)(DateProto, TO_STRING, function toString() {
+  __webpack_require__(24)(DateProto, TO_STRING, function toString() {
     var value = getTime.call(this);
     // eslint-disable-next-line no-self-compare
     return value === value ? $toString.call(this) : INVALID_DATE;
@@ -49357,17 +49273,17 @@ if (new Date(NaN) + '' != INVALID_DATE) {
 
 
 /***/ }),
-/* 314 */
+/* 313 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var TO_PRIMITIVE = __webpack_require__(13)('toPrimitive');
 var proto = Date.prototype;
 
-if (!(TO_PRIMITIVE in proto)) __webpack_require__(22)(proto, TO_PRIMITIVE, __webpack_require__(315));
+if (!(TO_PRIMITIVE in proto)) __webpack_require__(23)(proto, TO_PRIMITIVE, __webpack_require__(314));
 
 
 /***/ }),
-/* 315 */
+/* 314 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49383,7 +49299,7 @@ module.exports = function (hint) {
 
 
 /***/ }),
-/* 316 */
+/* 315 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 22.1.2.2 / 15.4.3.2 Array.isArray(arg)
@@ -49393,7 +49309,7 @@ $export($export.S, 'Array', { isArray: __webpack_require__(91) });
 
 
 /***/ }),
-/* 317 */
+/* 316 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49437,7 +49353,7 @@ $export($export.S + $export.F * !__webpack_require__(94)(function (iter) { Array
 
 
 /***/ }),
-/* 318 */
+/* 317 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49463,14 +49379,14 @@ $export($export.S + $export.F * __webpack_require__(10)(function () {
 
 
 /***/ }),
-/* 319 */
+/* 318 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 // 22.1.3.13 Array.prototype.join(separator)
 var $export = __webpack_require__(0);
-var toIObject = __webpack_require__(26);
+var toIObject = __webpack_require__(27);
 var arrayJoin = [].join;
 
 // fallback for not array-like strings
@@ -49482,7 +49398,7 @@ $export($export.P + $export.F * (__webpack_require__(73) != Object || !__webpack
 
 
 /***/ }),
-/* 320 */
+/* 319 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49517,7 +49433,7 @@ $export($export.P + $export.F * __webpack_require__(10)(function () {
 
 
 /***/ }),
-/* 321 */
+/* 320 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49547,7 +49463,7 @@ $export($export.P + $export.F * (fails(function () {
 
 
 /***/ }),
-/* 322 */
+/* 321 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49565,7 +49481,7 @@ $export($export.P + $export.F * !STRICT, 'Array', {
 
 
 /***/ }),
-/* 323 */
+/* 322 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var isObject = __webpack_require__(11);
@@ -49587,7 +49503,7 @@ module.exports = function (original) {
 
 
 /***/ }),
-/* 324 */
+/* 323 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49604,7 +49520,7 @@ $export($export.P + $export.F * !__webpack_require__(36)([].map, true), 'Array',
 
 
 /***/ }),
-/* 325 */
+/* 324 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49621,7 +49537,7 @@ $export($export.P + $export.F * !__webpack_require__(36)([].filter, true), 'Arra
 
 
 /***/ }),
-/* 326 */
+/* 325 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49638,7 +49554,7 @@ $export($export.P + $export.F * !__webpack_require__(36)([].some, true), 'Array'
 
 
 /***/ }),
-/* 327 */
+/* 326 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49655,7 +49571,7 @@ $export($export.P + $export.F * !__webpack_require__(36)([].every, true), 'Array
 
 
 /***/ }),
-/* 328 */
+/* 327 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49672,7 +49588,7 @@ $export($export.P + $export.F * !__webpack_require__(36)([].reduce, true), 'Arra
 
 
 /***/ }),
-/* 329 */
+/* 328 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49689,7 +49605,7 @@ $export($export.P + $export.F * !__webpack_require__(36)([].reduceRight, true), 
 
 
 /***/ }),
-/* 330 */
+/* 329 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49711,13 +49627,13 @@ $export($export.P + $export.F * (NEGATIVE_ZERO || !__webpack_require__(36)($nati
 
 
 /***/ }),
-/* 331 */
+/* 330 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var $export = __webpack_require__(0);
-var toIObject = __webpack_require__(26);
+var toIObject = __webpack_require__(27);
 var toInteger = __webpack_require__(35);
 var toLength = __webpack_require__(14);
 var $native = [].lastIndexOf;
@@ -49740,7 +49656,7 @@ $export($export.P + $export.F * (NEGATIVE_ZERO || !__webpack_require__(36)($nati
 
 
 /***/ }),
-/* 332 */
+/* 331 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 22.1.3.3 Array.prototype.copyWithin(target, start, end = this.length)
@@ -49752,7 +49668,7 @@ __webpack_require__(49)('copyWithin');
 
 
 /***/ }),
-/* 333 */
+/* 332 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 22.1.3.6 Array.prototype.fill(value, start = 0, end = this.length)
@@ -49764,7 +49680,7 @@ __webpack_require__(49)('fill');
 
 
 /***/ }),
-/* 334 */
+/* 333 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49785,7 +49701,7 @@ __webpack_require__(49)(KEY);
 
 
 /***/ }),
-/* 335 */
+/* 334 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49806,14 +49722,14 @@ __webpack_require__(49)(KEY);
 
 
 /***/ }),
-/* 336 */
+/* 335 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(56)('Array');
 
 
 /***/ }),
-/* 337 */
+/* 336 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var global = __webpack_require__(7);
@@ -49855,14 +49771,14 @@ if (__webpack_require__(15) && (!CORRECT_NEW || __webpack_require__(10)(function
   for (var keys = gOPN(Base), i = 0; keys.length > i;) proxy(keys[i++]);
   proto.constructor = $RegExp;
   $RegExp.prototype = proto;
-  __webpack_require__(23)(global, 'RegExp', $RegExp);
+  __webpack_require__(24)(global, 'RegExp', $RegExp);
 }
 
 __webpack_require__(56)('RegExp');
 
 
 /***/ }),
-/* 338 */
+/* 337 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49875,7 +49791,7 @@ var TO_STRING = 'toString';
 var $toString = /./[TO_STRING];
 
 var define = function (fn) {
-  __webpack_require__(23)(RegExp.prototype, TO_STRING, fn, true);
+  __webpack_require__(24)(RegExp.prototype, TO_STRING, fn, true);
 };
 
 // 21.2.5.14 RegExp.prototype.toString()
@@ -49894,7 +49810,7 @@ if (__webpack_require__(10)(function () { return $toString.call({ source: 'a', f
 
 
 /***/ }),
-/* 339 */
+/* 338 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49941,7 +49857,7 @@ __webpack_require__(96)('match', 1, function (defined, MATCH, $match, maybeCallN
 
 
 /***/ }),
-/* 340 */
+/* 339 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50066,7 +49982,7 @@ __webpack_require__(96)('replace', 2, function (defined, REPLACE, $replace, mayb
 
 
 /***/ }),
-/* 341 */
+/* 340 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50104,7 +50020,7 @@ __webpack_require__(96)('search', 1, function (defined, SEARCH, $search, maybeCa
 
 
 /***/ }),
-/* 342 */
+/* 341 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50245,7 +50161,7 @@ __webpack_require__(96)('split', 2, function (defined, SPLIT, $split, maybeCallN
 
 
 /***/ }),
-/* 343 */
+/* 342 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50538,7 +50454,7 @@ $export($export.S + $export.F * !(USE_NATIVE && __webpack_require__(94)(function
 
 
 /***/ }),
-/* 344 */
+/* 343 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50559,7 +50475,7 @@ __webpack_require__(98)(WEAK_SET, function (get) {
 
 
 /***/ }),
-/* 345 */
+/* 344 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50612,7 +50528,7 @@ __webpack_require__(56)(ARRAY_BUFFER);
 
 
 /***/ }),
-/* 346 */
+/* 345 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var $export = __webpack_require__(0);
@@ -50622,7 +50538,7 @@ $export($export.G + $export.W + $export.F * !__webpack_require__(99).ABV, {
 
 
 /***/ }),
-/* 347 */
+/* 346 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(42)('Int8', 1, function (init) {
@@ -50633,7 +50549,7 @@ __webpack_require__(42)('Int8', 1, function (init) {
 
 
 /***/ }),
-/* 348 */
+/* 347 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(42)('Uint8', 1, function (init) {
@@ -50644,7 +50560,7 @@ __webpack_require__(42)('Uint8', 1, function (init) {
 
 
 /***/ }),
-/* 349 */
+/* 348 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(42)('Uint8', 1, function (init) {
@@ -50655,7 +50571,7 @@ __webpack_require__(42)('Uint8', 1, function (init) {
 
 
 /***/ }),
-/* 350 */
+/* 349 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(42)('Int16', 2, function (init) {
@@ -50666,7 +50582,7 @@ __webpack_require__(42)('Int16', 2, function (init) {
 
 
 /***/ }),
-/* 351 */
+/* 350 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(42)('Uint16', 2, function (init) {
@@ -50677,7 +50593,7 @@ __webpack_require__(42)('Uint16', 2, function (init) {
 
 
 /***/ }),
-/* 352 */
+/* 351 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(42)('Int32', 4, function (init) {
@@ -50688,7 +50604,7 @@ __webpack_require__(42)('Int32', 4, function (init) {
 
 
 /***/ }),
-/* 353 */
+/* 352 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(42)('Uint32', 4, function (init) {
@@ -50699,7 +50615,7 @@ __webpack_require__(42)('Uint32', 4, function (init) {
 
 
 /***/ }),
-/* 354 */
+/* 353 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(42)('Float32', 4, function (init) {
@@ -50710,7 +50626,7 @@ __webpack_require__(42)('Float32', 4, function (init) {
 
 
 /***/ }),
-/* 355 */
+/* 354 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(42)('Float64', 8, function (init) {
@@ -50721,7 +50637,7 @@ __webpack_require__(42)('Float64', 8, function (init) {
 
 
 /***/ }),
-/* 356 */
+/* 355 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 26.1.1 Reflect.apply(target, thisArgument, argumentsList)
@@ -50743,7 +50659,7 @@ $export($export.S + $export.F * !__webpack_require__(10)(function () {
 
 
 /***/ }),
-/* 357 */
+/* 356 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 26.1.2 Reflect.construct(target, argumentsList [, newTarget])
@@ -50796,7 +50712,7 @@ $export($export.S + $export.F * (NEW_TARGET_BUG || ARGS_BUG), 'Reflect', {
 
 
 /***/ }),
-/* 358 */
+/* 357 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 26.1.3 Reflect.defineProperty(target, propertyKey, attributes)
@@ -50825,12 +50741,12 @@ $export($export.S + $export.F * __webpack_require__(10)(function () {
 
 
 /***/ }),
-/* 359 */
+/* 358 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 26.1.4 Reflect.deleteProperty(target, propertyKey)
 var $export = __webpack_require__(0);
-var gOPD = __webpack_require__(27).f;
+var gOPD = __webpack_require__(28).f;
 var anObject = __webpack_require__(4);
 
 $export($export.S, 'Reflect', {
@@ -50842,7 +50758,7 @@ $export($export.S, 'Reflect', {
 
 
 /***/ }),
-/* 360 */
+/* 359 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50875,13 +50791,13 @@ $export($export.S, 'Reflect', {
 
 
 /***/ }),
-/* 361 */
+/* 360 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 26.1.6 Reflect.get(target, propertyKey [, receiver])
-var gOPD = __webpack_require__(27);
-var getPrototypeOf = __webpack_require__(28);
-var has = __webpack_require__(25);
+var gOPD = __webpack_require__(28);
+var getPrototypeOf = __webpack_require__(29);
+var has = __webpack_require__(26);
 var $export = __webpack_require__(0);
 var isObject = __webpack_require__(11);
 var anObject = __webpack_require__(4);
@@ -50902,11 +50818,11 @@ $export($export.S, 'Reflect', { get: get });
 
 
 /***/ }),
-/* 362 */
+/* 361 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 26.1.7 Reflect.getOwnPropertyDescriptor(target, propertyKey)
-var gOPD = __webpack_require__(27);
+var gOPD = __webpack_require__(28);
 var $export = __webpack_require__(0);
 var anObject = __webpack_require__(4);
 
@@ -50918,12 +50834,12 @@ $export($export.S, 'Reflect', {
 
 
 /***/ }),
-/* 363 */
+/* 362 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 26.1.8 Reflect.getPrototypeOf(target)
 var $export = __webpack_require__(0);
-var getProto = __webpack_require__(28);
+var getProto = __webpack_require__(29);
 var anObject = __webpack_require__(4);
 
 $export($export.S, 'Reflect', {
@@ -50934,7 +50850,7 @@ $export($export.S, 'Reflect', {
 
 
 /***/ }),
-/* 364 */
+/* 363 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 26.1.9 Reflect.has(target, propertyKey)
@@ -50948,7 +50864,7 @@ $export($export.S, 'Reflect', {
 
 
 /***/ }),
-/* 365 */
+/* 364 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 26.1.10 Reflect.isExtensible(target)
@@ -50965,7 +50881,7 @@ $export($export.S, 'Reflect', {
 
 
 /***/ }),
-/* 366 */
+/* 365 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 26.1.11 Reflect.ownKeys(target)
@@ -50975,7 +50891,7 @@ $export($export.S, 'Reflect', { ownKeys: __webpack_require__(184) });
 
 
 /***/ }),
-/* 367 */
+/* 366 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 26.1.12 Reflect.preventExtensions(target)
@@ -50997,14 +50913,14 @@ $export($export.S, 'Reflect', {
 
 
 /***/ }),
-/* 368 */
+/* 367 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 26.1.13 Reflect.set(target, propertyKey, V [, receiver])
 var dP = __webpack_require__(16);
-var gOPD = __webpack_require__(27);
-var getPrototypeOf = __webpack_require__(28);
-var has = __webpack_require__(25);
+var gOPD = __webpack_require__(28);
+var getPrototypeOf = __webpack_require__(29);
+var has = __webpack_require__(26);
 var $export = __webpack_require__(0);
 var createDesc = __webpack_require__(50);
 var anObject = __webpack_require__(4);
@@ -51036,7 +50952,7 @@ $export($export.S, 'Reflect', { set: set });
 
 
 /***/ }),
-/* 369 */
+/* 368 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 26.1.14 Reflect.setPrototypeOf(target, proto)
@@ -51057,7 +50973,7 @@ if (setProto) $export($export.S, 'Reflect', {
 
 
 /***/ }),
-/* 370 */
+/* 369 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51076,7 +50992,7 @@ __webpack_require__(49)('includes');
 
 
 /***/ }),
-/* 371 */
+/* 370 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51105,7 +51021,7 @@ __webpack_require__(49)('flatMap');
 
 
 /***/ }),
-/* 372 */
+/* 371 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51133,7 +51049,7 @@ __webpack_require__(49)('flatten');
 
 
 /***/ }),
-/* 373 */
+/* 372 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51150,7 +51066,7 @@ $export($export.P, 'String', {
 
 
 /***/ }),
-/* 374 */
+/* 373 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51171,7 +51087,7 @@ $export($export.P + $export.F * WEBKIT_BUG, 'String', {
 
 
 /***/ }),
-/* 375 */
+/* 374 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51192,7 +51108,7 @@ $export($export.P + $export.F * WEBKIT_BUG, 'String', {
 
 
 /***/ }),
-/* 376 */
+/* 375 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51206,7 +51122,7 @@ __webpack_require__(67)('trimLeft', function ($trim) {
 
 
 /***/ }),
-/* 377 */
+/* 376 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51220,7 +51136,7 @@ __webpack_require__(67)('trimRight', function ($trim) {
 
 
 /***/ }),
-/* 378 */
+/* 377 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51257,28 +51173,28 @@ $export($export.P, 'String', {
 
 
 /***/ }),
-/* 379 */
+/* 378 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(117)('asyncIterator');
 
 
 /***/ }),
-/* 380 */
+/* 379 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(117)('observable');
 
 
 /***/ }),
-/* 381 */
+/* 380 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://github.com/tc39/proposal-object-getownpropertydescriptors
 var $export = __webpack_require__(0);
 var ownKeys = __webpack_require__(184);
-var toIObject = __webpack_require__(26);
-var gOPD = __webpack_require__(27);
+var toIObject = __webpack_require__(27);
+var gOPD = __webpack_require__(28);
 var createProperty = __webpack_require__(132);
 
 $export($export.S, 'Object', {
@@ -51299,7 +51215,7 @@ $export($export.S, 'Object', {
 
 
 /***/ }),
-/* 382 */
+/* 381 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://github.com/tc39/proposal-object-values-entries
@@ -51314,7 +51230,7 @@ $export($export.S, 'Object', {
 
 
 /***/ }),
-/* 383 */
+/* 382 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://github.com/tc39/proposal-object-values-entries
@@ -51329,7 +51245,7 @@ $export($export.S, 'Object', {
 
 
 /***/ }),
-/* 384 */
+/* 383 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51348,7 +51264,7 @@ __webpack_require__(15) && $export($export.P + __webpack_require__(100), 'Object
 
 
 /***/ }),
-/* 385 */
+/* 384 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51367,7 +51283,7 @@ __webpack_require__(15) && $export($export.P + __webpack_require__(100), 'Object
 
 
 /***/ }),
-/* 386 */
+/* 385 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51375,8 +51291,8 @@ __webpack_require__(15) && $export($export.P + __webpack_require__(100), 'Object
 var $export = __webpack_require__(0);
 var toObject = __webpack_require__(18);
 var toPrimitive = __webpack_require__(38);
-var getPrototypeOf = __webpack_require__(28);
-var getOwnPropertyDescriptor = __webpack_require__(27).f;
+var getPrototypeOf = __webpack_require__(29);
+var getOwnPropertyDescriptor = __webpack_require__(28).f;
 
 // B.2.2.4 Object.prototype.__lookupGetter__(P)
 __webpack_require__(15) && $export($export.P + __webpack_require__(100), 'Object', {
@@ -51392,7 +51308,7 @@ __webpack_require__(15) && $export($export.P + __webpack_require__(100), 'Object
 
 
 /***/ }),
-/* 387 */
+/* 386 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51400,8 +51316,8 @@ __webpack_require__(15) && $export($export.P + __webpack_require__(100), 'Object
 var $export = __webpack_require__(0);
 var toObject = __webpack_require__(18);
 var toPrimitive = __webpack_require__(38);
-var getPrototypeOf = __webpack_require__(28);
-var getOwnPropertyDescriptor = __webpack_require__(27).f;
+var getPrototypeOf = __webpack_require__(29);
+var getOwnPropertyDescriptor = __webpack_require__(28).f;
 
 // B.2.2.5 Object.prototype.__lookupSetter__(P)
 __webpack_require__(15) && $export($export.P + __webpack_require__(100), 'Object', {
@@ -51417,7 +51333,7 @@ __webpack_require__(15) && $export($export.P + __webpack_require__(100), 'Object
 
 
 /***/ }),
-/* 388 */
+/* 387 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://github.com/DavidBruant/Map-Set.prototype.toJSON
@@ -51427,7 +51343,7 @@ $export($export.P + $export.R, 'Map', { toJSON: __webpack_require__(188)('Map') 
 
 
 /***/ }),
-/* 389 */
+/* 388 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://github.com/DavidBruant/Map-Set.prototype.toJSON
@@ -51437,7 +51353,7 @@ $export($export.P + $export.R, 'Set', { toJSON: __webpack_require__(188)('Set') 
 
 
 /***/ }),
-/* 390 */
+/* 389 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://tc39.github.io/proposal-setmap-offrom/#sec-map.of
@@ -51445,7 +51361,7 @@ __webpack_require__(101)('Map');
 
 
 /***/ }),
-/* 391 */
+/* 390 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://tc39.github.io/proposal-setmap-offrom/#sec-set.of
@@ -51453,7 +51369,7 @@ __webpack_require__(101)('Set');
 
 
 /***/ }),
-/* 392 */
+/* 391 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://tc39.github.io/proposal-setmap-offrom/#sec-weakmap.of
@@ -51461,7 +51377,7 @@ __webpack_require__(101)('WeakMap');
 
 
 /***/ }),
-/* 393 */
+/* 392 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://tc39.github.io/proposal-setmap-offrom/#sec-weakset.of
@@ -51469,7 +51385,7 @@ __webpack_require__(101)('WeakSet');
 
 
 /***/ }),
-/* 394 */
+/* 393 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://tc39.github.io/proposal-setmap-offrom/#sec-map.from
@@ -51477,7 +51393,7 @@ __webpack_require__(102)('Map');
 
 
 /***/ }),
-/* 395 */
+/* 394 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://tc39.github.io/proposal-setmap-offrom/#sec-set.from
@@ -51485,7 +51401,7 @@ __webpack_require__(102)('Set');
 
 
 /***/ }),
-/* 396 */
+/* 395 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://tc39.github.io/proposal-setmap-offrom/#sec-weakmap.from
@@ -51493,7 +51409,7 @@ __webpack_require__(102)('WeakMap');
 
 
 /***/ }),
-/* 397 */
+/* 396 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://tc39.github.io/proposal-setmap-offrom/#sec-weakset.from
@@ -51501,7 +51417,7 @@ __webpack_require__(102)('WeakSet');
 
 
 /***/ }),
-/* 398 */
+/* 397 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://github.com/tc39/proposal-global
@@ -51511,7 +51427,7 @@ $export($export.G, { global: __webpack_require__(7) });
 
 
 /***/ }),
-/* 399 */
+/* 398 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://github.com/tc39/proposal-global
@@ -51521,7 +51437,7 @@ $export($export.S, 'System', { global: __webpack_require__(7) });
 
 
 /***/ }),
-/* 400 */
+/* 399 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://github.com/ljharb/proposal-is-error
@@ -51536,7 +51452,7 @@ $export($export.S, 'Error', {
 
 
 /***/ }),
-/* 401 */
+/* 400 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://rwaldron.github.io/proposal-math-extensions/
@@ -51550,7 +51466,7 @@ $export($export.S, 'Math', {
 
 
 /***/ }),
-/* 402 */
+/* 401 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://rwaldron.github.io/proposal-math-extensions/
@@ -51560,7 +51476,7 @@ $export($export.S, 'Math', { DEG_PER_RAD: Math.PI / 180 });
 
 
 /***/ }),
-/* 403 */
+/* 402 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://rwaldron.github.io/proposal-math-extensions/
@@ -51575,7 +51491,7 @@ $export($export.S, 'Math', {
 
 
 /***/ }),
-/* 404 */
+/* 403 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://rwaldron.github.io/proposal-math-extensions/
@@ -51591,7 +51507,7 @@ $export($export.S, 'Math', {
 
 
 /***/ }),
-/* 405 */
+/* 404 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://gist.github.com/BrendanEich/4294d5c212a6d2254703
@@ -51608,7 +51524,7 @@ $export($export.S, 'Math', {
 
 
 /***/ }),
-/* 406 */
+/* 405 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://gist.github.com/BrendanEich/4294d5c212a6d2254703
@@ -51625,7 +51541,7 @@ $export($export.S, 'Math', {
 
 
 /***/ }),
-/* 407 */
+/* 406 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://gist.github.com/BrendanEich/4294d5c212a6d2254703
@@ -51647,7 +51563,7 @@ $export($export.S, 'Math', {
 
 
 /***/ }),
-/* 408 */
+/* 407 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://rwaldron.github.io/proposal-math-extensions/
@@ -51657,7 +51573,7 @@ $export($export.S, 'Math', { RAD_PER_DEG: 180 / Math.PI });
 
 
 /***/ }),
-/* 409 */
+/* 408 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://rwaldron.github.io/proposal-math-extensions/
@@ -51672,7 +51588,7 @@ $export($export.S, 'Math', {
 
 
 /***/ }),
-/* 410 */
+/* 409 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://rwaldron.github.io/proposal-math-extensions/
@@ -51682,7 +51598,7 @@ $export($export.S, 'Math', { scale: __webpack_require__(190) });
 
 
 /***/ }),
-/* 411 */
+/* 410 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://gist.github.com/BrendanEich/4294d5c212a6d2254703
@@ -51704,7 +51620,7 @@ $export($export.S, 'Math', {
 
 
 /***/ }),
-/* 412 */
+/* 411 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // http://jfbastien.github.io/papers/Math.signbit.html
@@ -51717,7 +51633,7 @@ $export($export.S, 'Math', { signbit: function signbit(x) {
 
 
 /***/ }),
-/* 413 */
+/* 412 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51744,7 +51660,7 @@ $export($export.P + $export.R, 'Promise', { 'finally': function (onFinally) {
 
 
 /***/ }),
-/* 414 */
+/* 413 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51763,7 +51679,7 @@ $export($export.S, 'Promise', { 'try': function (callbackfn) {
 
 
 /***/ }),
-/* 415 */
+/* 414 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var metadata = __webpack_require__(43);
@@ -51777,7 +51693,7 @@ metadata.exp({ defineMetadata: function defineMetadata(metadataKey, metadataValu
 
 
 /***/ }),
-/* 416 */
+/* 415 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var metadata = __webpack_require__(43);
@@ -51798,12 +51714,12 @@ metadata.exp({ deleteMetadata: function deleteMetadata(metadataKey, target /* , 
 
 
 /***/ }),
-/* 417 */
+/* 416 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var metadata = __webpack_require__(43);
 var anObject = __webpack_require__(4);
-var getPrototypeOf = __webpack_require__(28);
+var getPrototypeOf = __webpack_require__(29);
 var ordinaryHasOwnMetadata = metadata.has;
 var ordinaryGetOwnMetadata = metadata.get;
 var toMetaKey = metadata.key;
@@ -51821,14 +51737,14 @@ metadata.exp({ getMetadata: function getMetadata(metadataKey, target /* , target
 
 
 /***/ }),
-/* 418 */
+/* 417 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Set = __webpack_require__(180);
 var from = __webpack_require__(189);
 var metadata = __webpack_require__(43);
 var anObject = __webpack_require__(4);
-var getPrototypeOf = __webpack_require__(28);
+var getPrototypeOf = __webpack_require__(29);
 var ordinaryOwnMetadataKeys = metadata.keys;
 var toMetaKey = metadata.key;
 
@@ -51846,7 +51762,7 @@ metadata.exp({ getMetadataKeys: function getMetadataKeys(target /* , targetKey *
 
 
 /***/ }),
-/* 419 */
+/* 418 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var metadata = __webpack_require__(43);
@@ -51861,7 +51777,7 @@ metadata.exp({ getOwnMetadata: function getOwnMetadata(metadataKey, target /* , 
 
 
 /***/ }),
-/* 420 */
+/* 419 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var metadata = __webpack_require__(43);
@@ -51875,12 +51791,12 @@ metadata.exp({ getOwnMetadataKeys: function getOwnMetadataKeys(target /* , targe
 
 
 /***/ }),
-/* 421 */
+/* 420 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var metadata = __webpack_require__(43);
 var anObject = __webpack_require__(4);
-var getPrototypeOf = __webpack_require__(28);
+var getPrototypeOf = __webpack_require__(29);
 var ordinaryHasOwnMetadata = metadata.has;
 var toMetaKey = metadata.key;
 
@@ -51897,7 +51813,7 @@ metadata.exp({ hasMetadata: function hasMetadata(metadataKey, target /* , target
 
 
 /***/ }),
-/* 422 */
+/* 421 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var metadata = __webpack_require__(43);
@@ -51912,7 +51828,7 @@ metadata.exp({ hasOwnMetadata: function hasOwnMetadata(metadataKey, target /* , 
 
 
 /***/ }),
-/* 423 */
+/* 422 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var $metadata = __webpack_require__(43);
@@ -51933,7 +51849,7 @@ $metadata.exp({ metadata: function metadata(metadataKey, metadataValue) {
 
 
 /***/ }),
-/* 424 */
+/* 423 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://github.com/rwaldron/tc39-notes/blob/master/es6/2014-09/sept-25.md#510-globalasap-for-enqueuing-a-microtask
@@ -51951,7 +51867,7 @@ $export($export.G, {
 
 
 /***/ }),
-/* 425 */
+/* 424 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51966,7 +51882,7 @@ var aFunction = __webpack_require__(19);
 var anObject = __webpack_require__(4);
 var anInstance = __webpack_require__(57);
 var redefineAll = __webpack_require__(59);
-var hide = __webpack_require__(22);
+var hide = __webpack_require__(23);
 var forOf = __webpack_require__(58);
 var RETURN = forOf.RETURN;
 
@@ -52157,7 +52073,7 @@ __webpack_require__(56)('Observable');
 
 
 /***/ }),
-/* 426 */
+/* 425 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // ie9- setTimeout & setInterval additional parameters fix
@@ -52183,7 +52099,7 @@ $export($export.G + $export.B + $export.F * MSIE, {
 
 
 /***/ }),
-/* 427 */
+/* 426 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var $export = __webpack_require__(0);
@@ -52195,14 +52111,14 @@ $export($export.G + $export.B, {
 
 
 /***/ }),
-/* 428 */
+/* 427 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var $iterators = __webpack_require__(136);
 var getKeys = __webpack_require__(52);
-var redefine = __webpack_require__(23);
+var redefine = __webpack_require__(24);
 var global = __webpack_require__(7);
-var hide = __webpack_require__(22);
+var hide = __webpack_require__(23);
 var Iterators = __webpack_require__(68);
 var wks = __webpack_require__(13);
 var ITERATOR = wks('iterator');
@@ -52259,7 +52175,7 @@ for (var collections = getKeys(DOMIterables), i = 0; i < collections.length; i++
 
 
 /***/ }),
-/* 429 */
+/* 428 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -53002,26 +52918,26 @@ for (var collections = getKeys(DOMIterables), i = 0; i < collections.length; i++
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(31)))
 
 /***/ }),
-/* 430 */
+/* 429 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(431);
+__webpack_require__(430);
 module.exports = __webpack_require__(32).RegExp.escape;
 
 
 /***/ }),
-/* 431 */
+/* 430 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://github.com/benjamingr/RexExp.escape
 var $export = __webpack_require__(0);
-var $re = __webpack_require__(432)(/[\\^$*+?.()|[\]{}]/g, '\\$&');
+var $re = __webpack_require__(431)(/[\\^$*+?.()|[\]{}]/g, '\\$&');
 
 $export($export.S, 'RegExp', { escape: function escape(it) { return $re(it); } });
 
 
 /***/ }),
-/* 432 */
+/* 431 */
 /***/ (function(module, exports) {
 
 module.exports = function (regExp, replace) {
@@ -53035,11 +52951,11 @@ module.exports = function (regExp, replace) {
 
 
 /***/ }),
-/* 433 */
+/* 432 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-var content = __webpack_require__(434);
+var content = __webpack_require__(433);
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -53060,7 +52976,7 @@ if(content.locals) module.exports = content.locals;
 if(false) {}
 
 /***/ }),
-/* 434 */
+/* 433 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(77)(false);
@@ -53070,7 +52986,7 @@ exports.push([module.i, ".tingle-modal *{box-sizing:border-box}.tingle-modal{pos
 
 
 /***/ }),
-/* 435 */
+/* 434 */
 /***/ (function(module, exports) {
 
 
@@ -53165,11 +53081,11 @@ module.exports = function (css) {
 
 
 /***/ }),
-/* 436 */
+/* 435 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-var content = __webpack_require__(437);
+var content = __webpack_require__(436);
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -53190,7 +53106,7 @@ if(content.locals) module.exports = content.locals;
 if(false) {}
 
 /***/ }),
-/* 437 */
+/* 436 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(77)(false);
@@ -53200,11 +53116,11 @@ exports.push([module.i, "@keyframes spin{0%{transform:translateZ(0) rotate(0)}10
 
 
 /***/ }),
-/* 438 */
+/* 437 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-var content = __webpack_require__(439);
+var content = __webpack_require__(438);
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -53225,7 +53141,7 @@ if(content.locals) module.exports = content.locals;
 if(false) {}
 
 /***/ }),
-/* 439 */
+/* 438 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(77)(false);
@@ -53235,7 +53151,7 @@ exports.push([module.i, ".siiimpleToast{position:absolute;padding:14px 18px;min-
 
 
 /***/ }),
-/* 440 */
+/* 439 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -53247,36 +53163,36 @@ exports.push([module.i, ".siiimpleToast{position:absolute;padding:14px 18px;min-
  */
 module.exports = __webpack_require__(5);
 __webpack_require__(61);
-__webpack_require__(446);
+__webpack_require__(445);
 __webpack_require__(44);
 __webpack_require__(143);
 __webpack_require__(204);
 __webpack_require__(104);
-__webpack_require__(448);
+__webpack_require__(447);
 __webpack_require__(79);
-__webpack_require__(449);
+__webpack_require__(448);
 __webpack_require__(206);
-__webpack_require__(450);
+__webpack_require__(449);
 __webpack_require__(203);
 __webpack_require__(145);
 __webpack_require__(69);
 __webpack_require__(199);
 __webpack_require__(201);
-__webpack_require__(451);
+__webpack_require__(450);
 __webpack_require__(193);
 __webpack_require__(200);
 __webpack_require__(197);
 __webpack_require__(147);
 __webpack_require__(37);
 __webpack_require__(198);
+__webpack_require__(451);
 __webpack_require__(452);
-__webpack_require__(453);
 __webpack_require__(192);
 __webpack_require__(8);
 
 
 /***/ }),
-/* 441 */
+/* 440 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -53466,10 +53382,10 @@ __webpack_require__(8);
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(31), __webpack_require__(29)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(31), __webpack_require__(30)))
 
 /***/ }),
-/* 442 */
+/* 441 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53628,7 +53544,7 @@ function fromByteArray (uint8) {
 
 
 /***/ }),
-/* 443 */
+/* 442 */
 /***/ (function(module, exports) {
 
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -53718,7 +53634,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
 
 /***/ }),
-/* 444 */
+/* 443 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -53729,7 +53645,7 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ }),
-/* 445 */
+/* 444 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {/**
@@ -53919,10 +53835,10 @@ function _encodeWithByteBuffer(input, alphabet) {
   return output;
 }
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(20).Buffer))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(21).Buffer))
 
 /***/ }),
-/* 446 */
+/* 445 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -54212,7 +54128,7 @@ function compareMacs(key, mac1, mac2) {
 
 
 /***/ }),
-/* 447 */
+/* 446 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -54230,7 +54146,7 @@ forge.mgf.mgf1 = forge.mgf1;
 
 
 /***/ }),
-/* 448 */
+/* 447 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {/**
@@ -55230,10 +55146,10 @@ function M(o, a, b) {
   o[15] = t15;
 }
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(20).Buffer))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(21).Buffer))
 
 /***/ }),
-/* 449 */
+/* 448 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -55407,7 +55323,7 @@ function _createKDF(kdf, md, counterStart, digestLength) {
 
 
 /***/ }),
-/* 450 */
+/* 449 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -55426,7 +55342,7 @@ __webpack_require__(205);
 
 
 /***/ }),
-/* 451 */
+/* 450 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -56689,7 +56605,7 @@ function _decryptContent(msg) {
 
 
 /***/ }),
-/* 452 */
+/* 451 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -56931,7 +56847,7 @@ function _sha1() {
 
 
 /***/ }),
-/* 453 */
+/* 452 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -57662,7 +57578,7 @@ forge.task.createCondition = function() {
 
 
 /***/ }),
-/* 454 */
+/* 453 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57715,7 +57631,7 @@ this.a.mouseCollector),document.detachEvent("keypress",this.a.keyboardCollector)
 a.touches[0]||a.changedTouches[0];this.addEntropy([a.pageX||a.clientX,a.pageY||a.clientY],1,"touch");C(this,0)},ma:function(){C(this,2)},ea:function(a){a=a.accelerationIncludingGravity.x||a.accelerationIncludingGravity.y||a.accelerationIncludingGravity.z;if(window.orientation){var b=window.orientation;"number"===typeof b&&this.addEntropy(b,1,"accelerometer")}a&&this.addEntropy(a,2,"accelerometer");C(this,0)}};
 function A(a,b){var c,d=sjcl.random.K[a],e=[];for(c in d)d.hasOwnProperty(c)&&e.push(d[c]);for(c=0;c<e.length;c++)e[c](b)}function C(a,b){"undefined"!==typeof window&&window.performance&&"function"===typeof window.performance.now?a.addEntropy(window.performance.now(),b,"loadtime"):a.addEntropy((new Date).valueOf(),b,"loadtime")}function y(a){a.b=z(a).concat(z(a));a.L=new sjcl.cipher.aes(a.b)}function z(a){for(var b=0;4>b&&(a.h[b]=a.h[b]+1|0,!a.h[b]);b++);return a.L.encrypt(a.h)}
 function B(a,b){return function(){b.apply(a,arguments)}}sjcl.random=new sjcl.prng(6);
-a:try{var D,E,F,G;if(G= true&&module.exports){var H;try{H=__webpack_require__(455)}catch(a){H=null}G=E=H}if(G&&E.randomBytes)D=E.randomBytes(128),D=new Uint32Array((new Uint8Array(D)).buffer),sjcl.random.addEntropy(D,1024,"crypto['randomBytes']");else if("undefined"!==typeof window&&"undefined"!==typeof Uint32Array){F=new Uint32Array(32);if(window.crypto&&window.crypto.getRandomValues)window.crypto.getRandomValues(F);else if(window.msCrypto&&window.msCrypto.getRandomValues)window.msCrypto.getRandomValues(F);
+a:try{var D,E,F,G;if(G= true&&module.exports){var H;try{H=__webpack_require__(454)}catch(a){H=null}G=E=H}if(G&&E.randomBytes)D=E.randomBytes(128),D=new Uint32Array((new Uint8Array(D)).buffer),sjcl.random.addEntropy(D,1024,"crypto['randomBytes']");else if("undefined"!==typeof window&&"undefined"!==typeof Uint32Array){F=new Uint32Array(32);if(window.crypto&&window.crypto.getRandomValues)window.crypto.getRandomValues(F);else if(window.msCrypto&&window.msCrypto.getRandomValues)window.msCrypto.getRandomValues(F);
 else break a;sjcl.random.addEntropy(F,1024,"crypto['getRandomValues']")}}catch(a){"undefined"!==typeof window&&window.console&&(console.log("There was an error collecting entropy from the browser:"),console.log(a))}
 sjcl.json={defaults:{v:1,iter:1E4,ks:128,ts:64,mode:"ccm",adata:"",cipher:"aes"},ja:function(a,b,c,d){c=c||{};d=d||{};var e=sjcl.json,f=e.g({iv:sjcl.random.randomWords(4,0)},e.defaults),g;e.g(f,c);c=f.adata;"string"===typeof f.salt&&(f.salt=sjcl.codec.base64.toBits(f.salt));"string"===typeof f.iv&&(f.iv=sjcl.codec.base64.toBits(f.iv));if(!sjcl.mode[f.mode]||!sjcl.cipher[f.cipher]||"string"===typeof a&&100>=f.iter||64!==f.ts&&96!==f.ts&&128!==f.ts||128!==f.ks&&192!==f.ks&&0x100!==f.ks||2>f.iv.length||
 4<f.iv.length)throw new sjcl.exception.invalid("json encrypt: invalid parameters");"string"===typeof a?(g=sjcl.misc.cachedPbkdf2(a,f),a=g.key.slice(0,f.ks/32),f.salt=g.salt):sjcl.ecc&&a instanceof sjcl.ecc.elGamal.publicKey&&(g=a.kem(),f.kemtag=g.tag,a=g.key.slice(0,f.ks/32));"string"===typeof b&&(b=sjcl.codec.utf8String.toBits(b));"string"===typeof c&&(f.adata=c=sjcl.codec.utf8String.toBits(c));g=new sjcl.cipher[f.cipher](a);e.g(d,f);d.key=a;f.ct="ccm"===f.mode&&sjcl.arrayBuffer&&sjcl.arrayBuffer.ccm&&
@@ -57730,13 +57646,13 @@ b){var c={},d;for(d=0;d<b.length;d++)void 0!==a[b[d]]&&(c[b[d]]=a[b[d]]);return 
 
 
 /***/ }),
-/* 455 */
+/* 454 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
-/* 456 */
+/* 455 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process, global, module) {var __WEBPACK_AMD_DEFINE_RESULT__;function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -57762,7 +57678,7 @@ b){var c={},d;for(d=0;d<b.length;d++)void 0!==a[b[d]]&&(c[b[d]]=a[b[d]]);return 
   }
 
   var COMMON_JS = !root.HI_BASE32_NO_COMMON_JS && ( false ? undefined : _typeof(module)) === 'object' && module.exports;
-  var AMD =  true && __webpack_require__(457);
+  var AMD =  true && __webpack_require__(456);
   var BASE32_ENCODE_CHAR = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'.split('');
   var BASE32_DECODE_CHAR = {
     'A': 0,
@@ -58198,10 +58114,10 @@ b){var c={},d;for(d=0;d<b.length;d++)void 0!==a[b[d]]&&(c[b[d]]=a[b[d]]);return 
     }
   }
 })();
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(29), __webpack_require__(31), __webpack_require__(207)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(30), __webpack_require__(31), __webpack_require__(207)(module)))
 
 /***/ }),
-/* 457 */
+/* 456 */
 /***/ (function(module, exports) {
 
 /* WEBPACK VAR INJECTION */(function(__webpack_amd_options__) {/* globals __webpack_amd_options__ */
@@ -58210,7 +58126,7 @@ module.exports = __webpack_amd_options__;
 /* WEBPACK VAR INJECTION */}.call(this, {}))
 
 /***/ }),
-/* 458 */
+/* 457 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -58474,7 +58390,7 @@ if ( true && module.exports) {
 
 
 /***/ }),
-/* 459 */
+/* 458 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {// MIT License
@@ -58701,7 +58617,7 @@ if( true && module.hasOwnProperty('exports')){
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(207)(module)))
 
 /***/ }),
-/* 460 */
+/* 459 */
 /***/ (function(module, exports) {
 
 module.exports = function isBuffer(arg) {
@@ -58712,7 +58628,7 @@ module.exports = function isBuffer(arg) {
 }
 
 /***/ }),
-/* 461 */
+/* 460 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -58793,7 +58709,7 @@ function url (uri, loc) {
 
 
 /***/ }),
-/* 462 */
+/* 461 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -58809,7 +58725,7 @@ function setup(env) {
 	createDebug.disable = disable;
 	createDebug.enable = enable;
 	createDebug.enabled = enabled;
-	createDebug.humanize = __webpack_require__(463);
+	createDebug.humanize = __webpack_require__(462);
 
 	Object.keys(env).forEach(key => {
 		createDebug[key] = env[key];
@@ -59065,7 +58981,7 @@ module.exports = setup;
 
 
 /***/ }),
-/* 463 */
+/* 462 */
 /***/ (function(module, exports) {
 
 /**
@@ -59233,7 +59149,7 @@ function plural(ms, msAbs, n, name) {
 
 
 /***/ }),
-/* 464 */
+/* 463 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {/**
@@ -59242,7 +59158,7 @@ function plural(ms, msAbs, n, name) {
  * Expose `debug()` as the module.
  */
 
-exports = module.exports = __webpack_require__(465);
+exports = module.exports = __webpack_require__(464);
 exports.log = log;
 exports.formatArgs = formatArgs;
 exports.save = save;
@@ -59432,10 +59348,10 @@ function localstorage() {
   } catch (e) {}
 }
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(29)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(30)))
 
 /***/ }),
-/* 465 */
+/* 464 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -59451,7 +59367,7 @@ exports.coerce = coerce;
 exports.disable = disable;
 exports.enable = enable;
 exports.enabled = enabled;
-exports.humanize = __webpack_require__(466);
+exports.humanize = __webpack_require__(465);
 
 /**
  * Active `debug` instances.
@@ -59666,7 +59582,7 @@ function coerce(val) {
 
 
 /***/ }),
-/* 466 */
+/* 465 */
 /***/ (function(module, exports) {
 
 /**
@@ -59824,7 +59740,7 @@ function plural(ms, n, name) {
 
 
 /***/ }),
-/* 467 */
+/* 466 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*global Blob,File*/
@@ -59971,11 +59887,11 @@ exports.removeBlobs = function(data, callback) {
 
 
 /***/ }),
-/* 468 */
+/* 467 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-module.exports = __webpack_require__(469);
+module.exports = __webpack_require__(468);
 
 /**
  * Exports parser
@@ -59987,7 +59903,7 @@ module.exports.parser = __webpack_require__(71);
 
 
 /***/ }),
-/* 469 */
+/* 468 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -60741,7 +60657,7 @@ Socket.prototype.filterUpgrades = function (upgrades) {
 
 
 /***/ }),
-/* 470 */
+/* 469 */
 /***/ (function(module, exports) {
 
 
@@ -60764,7 +60680,7 @@ try {
 
 
 /***/ }),
-/* 471 */
+/* 470 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* global attachEvent */
@@ -61187,7 +61103,7 @@ function unloadHandler () {
 
 
 /***/ }),
-/* 472 */
+/* 471 */
 /***/ (function(module, exports) {
 
 
@@ -61212,7 +61128,7 @@ module.exports = Object.keys || function keys (obj){
 
 
 /***/ }),
-/* 473 */
+/* 472 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -61223,7 +61139,7 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ }),
-/* 474 */
+/* 473 */
 /***/ (function(module, exports) {
 
 /**
@@ -61258,7 +61174,7 @@ module.exports = function(arraybuffer, start, end) {
 
 
 /***/ }),
-/* 475 */
+/* 474 */
 /***/ (function(module, exports) {
 
 module.exports = after
@@ -61292,7 +61208,7 @@ function noop() {}
 
 
 /***/ }),
-/* 476 */
+/* 475 */
 /***/ (function(module, exports) {
 
 /*! https://mths.be/utf8js v2.1.2 by @mathias */
@@ -61508,7 +61424,7 @@ module.exports = {
 
 
 /***/ }),
-/* 477 */
+/* 476 */
 /***/ (function(module, exports) {
 
 /*
@@ -61581,7 +61497,7 @@ module.exports = {
 
 
 /***/ }),
-/* 478 */
+/* 477 */
 /***/ (function(module, exports) {
 
 /**
@@ -61687,7 +61603,7 @@ module.exports = (function() {
 
 
 /***/ }),
-/* 479 */
+/* 478 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -61703,7 +61619,7 @@ function setup(env) {
 	createDebug.disable = disable;
 	createDebug.enable = enable;
 	createDebug.enabled = enabled;
-	createDebug.humanize = __webpack_require__(480);
+	createDebug.humanize = __webpack_require__(479);
 
 	Object.keys(env).forEach(key => {
 		createDebug[key] = env[key];
@@ -61959,7 +61875,7 @@ module.exports = setup;
 
 
 /***/ }),
-/* 480 */
+/* 479 */
 /***/ (function(module, exports) {
 
 /**
@@ -62127,7 +62043,7 @@ function plural(ms, msAbs, n, name) {
 
 
 /***/ }),
-/* 481 */
+/* 480 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -62373,7 +62289,7 @@ JSONPPolling.prototype.doWrite = function (data, fn) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(31)))
 
 /***/ }),
-/* 482 */
+/* 481 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {/**
@@ -62397,7 +62313,7 @@ if (typeof WebSocket !== 'undefined') {
 
 if (typeof window === 'undefined') {
   try {
-    NodeWebSocket = __webpack_require__(483);
+    NodeWebSocket = __webpack_require__(482);
   } catch (e) { }
 }
 
@@ -62672,16 +62588,16 @@ WS.prototype.check = function () {
   return !!WebSocketImpl && !('__initialize' in WebSocketImpl && this.name === WS.prototype.name);
 };
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(20).Buffer))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(21).Buffer))
 
 /***/ }),
-/* 483 */
+/* 482 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
-/* 484 */
+/* 483 */
 /***/ (function(module, exports) {
 
 module.exports = toArray
@@ -62700,7 +62616,7 @@ function toArray(list, index) {
 
 
 /***/ }),
-/* 485 */
+/* 484 */
 /***/ (function(module, exports) {
 
 
@@ -62791,6 +62707,90 @@ Backoff.prototype.setJitter = function(jitter){
 
 
 /***/ }),
+/* 485 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(Buffer) {var Socket = __webpack_require__(486);
+var IOStream = __webpack_require__(151);
+var BlobReadStream = __webpack_require__(502);
+
+
+exports = module.exports = lookup;
+
+/**
+ * Expose Node Buffer for browser.
+ *
+ * @api public
+ */
+exports.Buffer = Buffer;
+
+/**
+ * Expose Socket constructor.
+ *
+ * @api public
+ */
+exports.Socket = Socket;
+
+/**
+ * Expose IOStream constructor.
+ *
+ * @api public
+ */
+exports.IOStream = IOStream;
+
+/**
+ * Forces base 64 encoding when emitting. Must be set to true for Socket.IO v0.9 or lower.
+ *
+ * @api public
+ */
+exports.forceBase64 = false;
+
+/**
+ * Look up an existing Socket.
+ *
+ * @param {socket.io#Socket} socket.io
+ * @param {Object} options
+ * @return {Socket} Socket instance
+ * @api public
+ */
+function lookup(sio, options) {
+  options = options || {};
+  if (null == options.forceBase64) {
+    options.forceBase64 = exports.forceBase64;
+  }
+
+  if (!sio._streamSocket) {
+    sio._streamSocket = new Socket(sio, options);
+  }
+  return sio._streamSocket;
+}
+
+/**
+ * Creates a new duplex stream.
+ *
+ * @param {Object} options
+ * @return {IOStream} duplex stream
+ * @api public
+ */
+exports.createStream = function(options) {
+  return new IOStream(options);
+};
+
+/**
+ * Creates a new readable stream for Blob/File on browser.
+ *
+ * @param {Blob} blob
+ * @param {Object} options
+ * @return {BlobReadStream} stream
+ * @api public
+ */
+exports.createBlobReadStream = function(blob, options) {
+  return new BlobReadStream(blob, options);
+};
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(21).Buffer))
+
+/***/ }),
 /* 486 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -62799,7 +62799,7 @@ var EventEmitter = __webpack_require__(83).EventEmitter;
 var bind = __webpack_require__(82);
 var IOStream = __webpack_require__(151);
 var parser = __webpack_require__(501);
-var debug = __webpack_require__(226)('socket.io-stream:socket');
+var debug = __webpack_require__(225)('socket.io-stream:socket');
 var emit = EventEmitter.prototype.emit;
 var on = EventEmitter.prototype.on;
 var slice = Array.prototype.slice;
@@ -63082,7 +63082,7 @@ Socket.prototype.cleanup = function(id) {
 };
 
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(20).Buffer, __webpack_require__(31)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(21).Buffer, __webpack_require__(31)))
 
 /***/ }),
 /* 487 */
@@ -63271,7 +63271,7 @@ function config (name) {
 /***/ (function(module, exports, __webpack_require__) {
 
 /* eslint-disable node/no-deprecated-api */
-var buffer = __webpack_require__(20)
+var buffer = __webpack_require__(21)
 var Buffer = buffer.Buffer
 
 // alternative to using Object.keys for old browsers
@@ -63370,7 +63370,7 @@ SafeBuffer.allocUnsafeSlow = function (size) {
 
 module.exports = PassThrough;
 
-var Transform = __webpack_require__(225);
+var Transform = __webpack_require__(224);
 
 /*<replacement>*/
 var util = Object.create(__webpack_require__(84));
@@ -63898,7 +63898,7 @@ Decoder.prototype.decodeObject = function(obj) {
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var util = __webpack_require__(81);
-var Readable = __webpack_require__(220).Readable;
+var Readable = __webpack_require__(219).Readable;
 var bind = __webpack_require__(82);
 
 
@@ -63965,7 +63965,7 @@ BlobReadStream.prototype._onerror = function(e) {
 };
 
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(20).Buffer))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(21).Buffer))
 
 /***/ }),
 /* 503 */
@@ -64467,10 +64467,10 @@ function isParent(parent, child) {
   return false;
 }
 // EXTERNAL MODULE: ./node_modules/tingle.js/dist/tingle.min.js
-var tingle_min = __webpack_require__(227);
+var tingle_min = __webpack_require__(226);
 
 // EXTERNAL MODULE: ./client/src/css/vendor/tingle.css
-var tingle = __webpack_require__(433);
+var tingle = __webpack_require__(432);
 
 // CONCATENATED MODULE: ./client/src/js/lib/DynmaicModal.js
 
@@ -65156,7 +65156,7 @@ function bakeTopicJoinModal(joinClick) {
 // }                                        //
 //////////////////////////////////////////////
 // EXTERNAL MODULE: ./client/src/css/vendor/blocking-spinner.min.css
-var blocking_spinner_min = __webpack_require__(436);
+var blocking_spinner_min = __webpack_require__(435);
 
 // CONCATENATED MODULE: ./client/src/js/lib/BlockingSpinner.js
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -65227,7 +65227,7 @@ var BlockingSpinner_BlockingSpinner = /*#__PURE__*/function () {
   return BlockingSpinner;
 }();
 // EXTERNAL MODULE: ./client/src/css/vendor/toastr.css
-var toastr = __webpack_require__(438);
+var toastr = __webpack_require__(437);
 
 // CONCATENATED MODULE: ./client/src/js/lib/toastr.js
 var _toastr;
@@ -65381,7 +65381,7 @@ var toastr_toastr = (_toastr = {}, _defineProperty(_toastr, privateKeys.defaultO
 var WildEmitter = __webpack_require__(12);
 
 // EXTERNAL MODULE: ./common/Events.js
-var common_Events = __webpack_require__(1);
+var Events = __webpack_require__(1);
 
 // EXTERNAL MODULE: ./common/Util.js
 var Util = __webpack_require__(113);
@@ -65396,7 +65396,7 @@ var xhr = __webpack_require__(86);
 var lib = __webpack_require__(87);
 
 // EXTERNAL MODULE: ./node_modules/cute-set/index.js
-var cute_set = __webpack_require__(21);
+var cute_set = __webpack_require__(22);
 
 // EXTERNAL MODULE: ./client/src/js/lib/AdvStateMachine.js
 var AdvStateMachine = __webpack_require__(17);
@@ -65629,7 +65629,7 @@ var Connector_Connector = /*#__PURE__*/function () {
     key: "emitState",
     value: function emitState() {
       console.log("Emitting state ".concat(this.connectorStateMachine.state));
-      this.emit(common_Events["Internal"].CONNECTION_STATE_CHANGED, this.connectorStateMachine.state);
+      this.emit(Events["Internal"].CONNECTION_STATE_CHANGED, this.connectorStateMachine.state);
     }
   }, {
     key: "setConnectionQueryProperty",
@@ -65865,7 +65865,7 @@ var ChatUtility = __webpack_require__(6);
 var Message = __webpack_require__(9);
 
 // EXTERNAL MODULE: ./client/src/js/lib/Topic.js + 2 modules
-var lib_Topic = __webpack_require__(30);
+var Topic = __webpack_require__(20);
 
 // EXTERNAL MODULE: ./client/src/js/lib/iCrypto.js
 var iCrypto = __webpack_require__(3);
@@ -66397,7 +66397,7 @@ var DownloadAttachmentAgent_DownloadAttachmentAgent = /*#__PURE__*/function () {
               case 9:
                 fileData = _context.sent;
 
-                _self.emit(common_Events["Events"].DOWNLOAD_SUCCESS, fileData, parsedFileInfo.name);
+                _self.emit(Events["Events"].DOWNLOAD_SUCCESS, fileData, parsedFileInfo.name);
 
                 _context.next = 17;
                 break;
@@ -66406,7 +66406,7 @@ var DownloadAttachmentAgent_DownloadAttachmentAgent = /*#__PURE__*/function () {
                 _context.prev = 13;
                 _context.t0 = _context["catch"](0);
                 console.log("Download failed: ".concat(_context.t0));
-                self.emit(common_Events["Events"].DOWNLOAD_FAIL, _context.t0);
+                self.emit(Events["Events"].DOWNLOAD_FAIL, _context.t0);
 
               case 17:
               case "end":
@@ -66588,7 +66588,7 @@ var TopicJoinAgent_TopicJoinAgent = /*#__PURE__*/function () {
         console.log("Encrypting vault record...");
         ic.addBlob("vlt-rec", vault).setRSAKey("priv", self.vault.privateKey, "private").privateKeySign("vlt-rec", "priv", "vlt-sign");
         var request = new Message["a" /* Message */](self.version);
-        request.setCommand(common_Events["Internal"].JOIN_TOPIC);
+        request.setCommand(Events["Internal"].JOIN_TOPIC);
         request.setSource(self.pkfp);
         request.setDest(self.inviterPkfp);
         var body = {
@@ -66609,7 +66609,7 @@ var TopicJoinAgent_TopicJoinAgent = /*#__PURE__*/function () {
         self.arrivalHub.on(self.inviteCode.trim(), function (msg) {
           self.processServerMessage(self, msg);
         });
-        self.arrivalHub.on(common_Events["Events"].JOIN_TOPIC_FAIL, function (msg) {
+        self.arrivalHub.on(Events["Events"].JOIN_TOPIC_FAIL, function (msg) {
           self.onJoinTopicFail(self, msg);
         });
         console.log("Sending join request");
@@ -66623,11 +66623,11 @@ var TopicJoinAgent_TopicJoinAgent = /*#__PURE__*/function () {
       console.log(msg.headers.command);
 
       switch (msg.headers.command) {
-        case common_Events["Internal"].JOIN_TOPIC_SUCCESS:
+        case Events["Internal"].JOIN_TOPIC_SUCCESS:
           self.onJoinTopicSuccess(self, msg);
           break;
 
-        case common_Events["Internal"].JOIN_TOPIC_FAIL:
+        case Events["Internal"].JOIN_TOPIC_FAIL:
           self.onJoinTopicFail(self, msg);
           break;
 
@@ -66648,7 +66648,7 @@ var TopicJoinAgent_TopicJoinAgent = /*#__PURE__*/function () {
   }, {
     key: "onJoinTopicSuccess",
     value: function onJoinTopicSuccess(self, msg) {
-      var topic = new lib_Topic["a" /* Topic */](self.pkfp, self.topicName, self.privateKey);
+      var topic = new Topic["a" /* Topic */](self.pkfp, self.topicName, self.privateKey);
 
       if (!msg.body.metadata) {
         console.log("Error. No metadata.");
@@ -66661,7 +66661,7 @@ var TopicJoinAgent_TopicJoinAgent = /*#__PURE__*/function () {
       topic.setParticipantNickname(self.nickname, self.pkfp);
       self.vault.registerTopic(topic);
       topic.exchangeNicknames();
-      self.emit(common_Events["Internal"].JOIN_TOPIC_SUCCESS, {
+      self.emit(Events["Internal"].JOIN_TOPIC_SUCCESS, {
         pkfp: self.pkfp,
         nickname: self.nickname
       });
@@ -66716,7 +66716,7 @@ var SendMessageAgent_SendMessageAgent = /*#__PURE__*/function () {
   function SendMessageAgent(topic, msg, recipient, files, onFilesUploaded) {
     SendMessageAgent_classCallCheck(this, SendMessageAgent);
 
-    Object(IError["b" /* assert */])(topic instanceof lib_Topic["a" /* Topic */]);
+    Object(IError["b" /* assert */])(topic instanceof Topic["a" /* Topic */]);
     Object(IError["b" /* assert */])(msg);
     this["private"] = recipient && recipient !== "ALL";
     this.recipient = recipient;
@@ -66824,7 +66824,7 @@ var SendMessageAgent_SendMessageAgent = /*#__PURE__*/function () {
 
                 message = new Message["a" /* Message */](self.version);
                 message.headers.pkfpSource = self.topic.pkfp;
-                message.headers.command = self["private"] ? common_Events["Internal"].SEND_MESSAGE : common_Events["Internal"].BROADCAST_MESSAGE;
+                message.headers.command = self["private"] ? Events["Internal"].SEND_MESSAGE : Events["Internal"].BROADCAST_MESSAGE;
 
                 if (_this["private"]) {
                   message.setDest(_this.recipient);
@@ -67039,7 +67039,7 @@ var BootParticipantAgent_BootParticipantAgent = /*#__PURE__*/function () {
       setTimeout(function () {
         console.log("Sending boot request");
         var request = new Message["a" /* Message */](_this.topic.version);
-        request.setCommand(common_Events["Internal"].BOOT_PARTICIPANT);
+        request.setCommand(Events["Internal"].BOOT_PARTICIPANT);
         request.setSource(_this.topic.pkfp);
         request.setDest(_this.topic.getMetadata().getTAPkfp());
         request.setAttribute("pkfp", _this.bootCandidatePkfp);
@@ -67114,10 +67114,10 @@ var ChatClient_ChatClient = /*#__PURE__*/function () {
       var _this = this;
 
       var self = this;
-      this.connector.on(common_Events["Internal"].CONNECTION_STATE_CHANGED, function (state) {
+      this.connector.on(Events["Internal"].CONNECTION_STATE_CHANGED, function (state) {
         console.log("Island connection state changed: ".concat(state));
 
-        _this.emit(common_Events["Events"].CONNECTION_STATUS_CHANGED, state);
+        _this.emit(Events["Events"].CONNECTION_STATUS_CHANGED, state);
 
         if (state === ConnectionState.DISCONNECTED || state === ConnectionState.ERROR) {
           var lastMessagesIds = {};
@@ -67140,26 +67140,26 @@ var ChatClient_ChatClient = /*#__PURE__*/function () {
     value: function initTopicListeners(topic) {
       var _this2 = this;
 
-      topic.on(common_Events["Events"].MESSAGES_LOADED, function (messages) {
-        _this2.emit(common_Events["Events"].MESSAGES_LOADED, {
+      topic.on(Events["Events"].MESSAGES_LOADED, function (messages) {
+        _this2.emit(Events["Events"].MESSAGES_LOADED, {
           pkfp: topic.pkfp,
           messages: messages
         });
       });
-      topic.on(common_Events["Events"].INVITE_CREATED, function (inviteCode) {
-        _this2.emit(common_Events["Events"].INVITE_CREATED, {
+      topic.on(Events["Events"].INVITE_CREATED, function (inviteCode) {
+        _this2.emit(Events["Events"].INVITE_CREATED, {
           pkfp: topic.pkfp,
           inviteCode: inviteCode
         });
       });
-      topic.on(common_Events["Events"].NEW_CHAT_MESSAGE, function (msg, pkfp) {
-        _this2.emit(common_Events["Events"].NEW_CHAT_MESSAGE, msg, topic.pkfp);
+      topic.on(Events["Events"].NEW_CHAT_MESSAGE, function (msg, pkfp) {
+        _this2.emit(Events["Events"].NEW_CHAT_MESSAGE, msg, topic.pkfp);
       });
-      topic.on(common_Events["Events"].METADATA_UPDATED, function () {
-        _this2.emit(common_Events["Events"].METADATA_UPDATED, topic.pkfp);
+      topic.on(Events["Events"].METADATA_UPDATED, function () {
+        _this2.emit(Events["Events"].METADATA_UPDATED, topic.pkfp);
       });
-      topic.on(common_Events["Events"].SETTINGS_UPDATED, function () {
-        _this2.emit(common_Events["Events"].SETTINGS_UPDATED, topic.pkfp);
+      topic.on(Events["Events"].SETTINGS_UPDATED, function () {
+        _this2.emit(Events["Events"].SETTINGS_UPDATED, topic.pkfp);
       }); ///////////////////////////////////////////////////////////
       // topic.on(Events.NICKNAME_CHANGED, (data)=>{           //
       //     this.emit(Events.NICKNAME_CHANGED, data)          //
@@ -67205,7 +67205,7 @@ var ChatClient_ChatClient = /*#__PURE__*/function () {
   }, {
     key: "toggleSound",
     value: function toggleSound() {
-      this.emit(common_Events["Events"].SOUND_STATUS, this.vault.toggleSound());
+      this.emit(Events["Events"].SOUND_STATUS, this.vault.toggleSound());
     } // ---------------------------------------------------------------------------------------------------------------------------
     // DELETE TOPIC, LEAVE
 
@@ -67219,7 +67219,7 @@ var ChatClient_ChatClient = /*#__PURE__*/function () {
       var ic = new iCrypto["a" /* iCrypto */]();
       ic.createNonce("n").bytesToHex("n", "nhex").setRSAKey("priv", self.vault.privateKey, "private").privateKeySign("nhex", "priv", "sign");
       var request = new Message["a" /* Message */](self.version);
-      request.setCommand(common_Events["Internal"].DELETE_TOPIC);
+      request.setCommand(Events["Internal"].DELETE_TOPIC);
       request.setSource(self.vault.id);
       request.body.vaultId = self.vault.id;
       request.body.topicPkfp = pkfp;
@@ -67240,7 +67240,7 @@ var ChatClient_ChatClient = /*#__PURE__*/function () {
       var ic = new iCrypto["a" /* iCrypto */]();
       ic.createNonce("n").bytesToHex("n", "nhex").setRSAKey("priv", self.vault.privateKey, "private").privateKeySign("nhex", "priv", "sign");
       var request = new Message["a" /* Message */](self.version);
-      request.setCommand(common_Events["Internal"].LEAVE_TOPIC);
+      request.setCommand(Events["Internal"].LEAVE_TOPIC);
       request.setSource(self.vault.id);
       request.body.vaultId = self.vault.id;
       request.body.topicPkfp = pkfp;
@@ -67284,12 +67284,12 @@ var ChatClient_ChatClient = /*#__PURE__*/function () {
               case 0:
                 topicJoinAgent = new TopicJoinAgent_TopicJoinAgent(nickname, topicName, inviteString, this.arrivalHub, this.messageQueue, this.vault);
                 self = this;
-                topicJoinAgent.on(common_Events["Internal"].JOIN_TOPIC_SUCCESS, function (data) {
+                topicJoinAgent.on(Events["Internal"].JOIN_TOPIC_SUCCESS, function (data) {
                   // data is object: { pkfp: pkfp, nickname: nickname }
                   self.initTopicListeners(self.topics[data.pkfp]);
-                  self.emit(common_Events["Events"].TOPIC_JOINED, data);
+                  self.emit(Events["Events"].TOPIC_JOINED, data);
                 });
-                topicJoinAgent.on(common_Events["Internal"].JOIN_TOPIC_FAIL, function () {
+                topicJoinAgent.on(Events["Internal"].JOIN_TOPIC_FAIL, function () {
                   console.log("Join topic fail received from the agent");
                 });
                 topicJoinAgent.start(); ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -67426,11 +67426,11 @@ var ChatClient_ChatClient = /*#__PURE__*/function () {
       };
       var newTopicDataCipher = ChatUtility["a" /* ChatUtility */].encryptStandardMessage(JSON.stringify(newTopicData), token); //initializing topic settings
 
-      var settings = lib_Topic["a" /* Topic */].prepareNewTopicSettings(self.version, pendingTopic.ownerNickName, pendingTopic.topicName, pendingTopic.ownerKeyPair.publicKey);
+      var settings = Topic["a" /* Topic */].prepareNewTopicSettings(self.version, pendingTopic.ownerNickName, pendingTopic.topicName, pendingTopic.ownerKeyPair.publicKey);
       var vaultRecord = self.vault.prepareVaultTopicRecord(this.version, pendingTopic.ownerPkfp, pendingTopic.ownerKeyPair.privateKey, pendingTopic.topicName); //Preparing request
 
       var request = new Message["a" /* Message */](self.version);
-      request.headers.command = common_Events["Internal"].INIT_TOPIC;
+      request.headers.command = Events["Internal"].INIT_TOPIC;
       request.headers.pkfpSource = pendingTopic.ownerPkfp;
       request.body.topicID = pendingTopic.topicID;
       request.body.settings = settings;
@@ -67440,15 +67440,15 @@ var ChatClient_ChatClient = /*#__PURE__*/function () {
       request.body.vaultId = self.vault.id;
       self.arrivalHub.once(pendingTopic.ownerPkfp, function (data) {
         switch (data.headers.message) {
-          case common_Events["Events"].INIT_TOPIC_SUCCESS:
+          case Events["Events"].INIT_TOPIC_SUCCESS:
             self.initTopicSuccess(self, data, pendingTopic);
             break;
 
-          case common_Events["Events"].INIT_TOPIC_ERROR:
+          case Events["Events"].INIT_TOPIC_ERROR:
             self.processInitTopicError(data, self);
             console.error("Init topic error");
             console.error(data.headers.error);
-            self.emit(common_Events["Events"].INIT_TOPIC_ERROR);
+            self.emit(Events["Events"].INIT_TOPIC_ERROR);
             break;
 
           default:
@@ -67468,7 +67468,7 @@ var ChatClient_ChatClient = /*#__PURE__*/function () {
       var topic = self.vault.addTopic(pkfp, topicName, privateKey);
       topic.bootstrap(self.messageQueue, self.arrivalHub, self.version);
       topic.loadMetadata(data.body.metadata);
-      self.vault.save(common_Events["Internal"].TOPIC_ADDED); // Add new topic to vault and save it
+      self.vault.save(Events["Internal"].TOPIC_ADDED); // Add new topic to vault and save it
 
       self.emit("init_topic_success", {
         pkfp: pendingTopic.ownerPkfp,
@@ -67579,13 +67579,13 @@ var ChatClient_ChatClient = /*#__PURE__*/function () {
       Object(IError["b" /* assert */])(this.topics[topicPkfp], "Topic is invalid");
       var topic = this.topics[topicPkfp];
       var downloadAttachmentAgent = new DownloadAttachmentAgent_DownloadAttachmentAgent(fileInfo, topic);
-      downloadAttachmentAgent.once(common_Events["Events"].DOWNLOAD_SUCCESS, function (fileData, fileName) {
+      downloadAttachmentAgent.once(Events["Events"].DOWNLOAD_SUCCESS, function (fileData, fileName) {
         console.log("Download successful event from agent");
 
-        _this3.emit(common_Events["Events"].DOWNLOAD_SUCCESS, fileData, fileName);
+        _this3.emit(Events["Events"].DOWNLOAD_SUCCESS, fileData, fileName);
       });
-      downloadAttachmentAgent.once(common_Events["Events"].DOWNLOAD_FAIL, function (err) {
-        _this3.emit(common_Events["Events"].DOWNLOAD_FAIL, err);
+      downloadAttachmentAgent.once(Events["Events"].DOWNLOAD_FAIL, function (err) {
+        _this3.emit(Events["Events"].DOWNLOAD_FAIL, err);
       });
       downloadAttachmentAgent.download();
     }
@@ -67850,7 +67850,7 @@ var VaultHolder = /*#__PURE__*/function () {
   return VaultHolder;
 }();
 // EXTERNAL MODULE: ./client/src/js/lib/VaultRetriever.js
-var VaultRetriever = __webpack_require__(229);
+var VaultRetriever = __webpack_require__(228);
 
 // CONCATENATED MODULE: ./client/src/js/lib/LoginAgent.js
 function LoginAgent_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -67998,7 +67998,8 @@ var LoginAgent_LoginAgent = /*#__PURE__*/function () {
       vault.publicKey = data.publicKey;
       vault.privateKey = data.privateKey;
       console.log("Vault raw data: ".concat(data));
-      vault.id = this.vaultId; //settings
+      vault.id = this.vaultId;
+      vault.version = this.version; //settings
 
       if (data.settings) {
         vault.settings = JSON.parse(JSON.stringify(data.settings));
@@ -68015,12 +68016,12 @@ var LoginAgent_LoginAgent = /*#__PURE__*/function () {
   }, {
     key: "_notifyLoginSuccess",
     value: function _notifyLoginSuccess() {
-      this.emit(common_Events["Events"].LOGIN_SUCCESS, this.vaultHolder);
+      this.emit(Events["Events"].LOGIN_SUCCESS, this.vaultHolder);
     }
   }, {
     key: "_notifyLoginError",
     value: function _notifyLoginError(err) {
-      this.emit(common_Events["Events"].LOGIN_ERROR, err);
+      this.emit(Events["Events"].LOGIN_ERROR, err);
     }
   }]);
 
@@ -68028,9 +68029,6 @@ var LoginAgent_LoginAgent = /*#__PURE__*/function () {
 }();
 // EXTERNAL MODULE: ./common/DynamicError.js
 var DynamicError = __webpack_require__(85);
-
-// EXTERNAL MODULE: ./node_modules/socket.io-stream/lib/index.js
-var socket_io_stream_lib = __webpack_require__(219);
 
 // CONCATENATED MODULE: ./client/src/js/lib/TopicCreator.js
 function TopicCreator_asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -68071,6 +68069,7 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 
 
 
+
 var TopicCreatorError = /*#__PURE__*/function (_Error) {
   _inherits(TopicCreatorError, _Error);
 
@@ -68097,12 +68096,24 @@ var TopicCreator_TopicCreator = /*#__PURE__*/function () {
     this.topicName = topicName;
     this.connector = connector;
     this.vaultHolder = vaultHolder;
-    this.sm = this.prepareStateMachine();
-  }
+    this.sm = this._prepareStateMachine(); //TODO GET RID OF SESSION KEY HERE!
+
+    this.sessionKey = vaultHolder.getVault().sessionKey;
+    this.version = vaultHolder.getVault().version;
+  } // ---------------------------------------------------------------------------------------------------------------------------
+  // PUBLIC METHODS
+
 
   TopicCreator_createClass(TopicCreator, [{
-    key: "prepareStateMachine",
-    value: function prepareStateMachine() {
+    key: "run",
+    value: function run() {
+      this.sm.handle.run();
+    } // ---------------------------------------------------------------------------------------------------------------------------
+    // PRIVATE METHODS
+
+  }, {
+    key: "_prepareStateMachine",
+    value: function _prepareStateMachine() {
       return new AdvStateMachine["StateMachine"](this, {
         name: "Topic Creator SM",
         stateMap: {
@@ -68111,7 +68122,7 @@ var TopicCreator_TopicCreator = /*#__PURE__*/function () {
             transitions: {
               run: {
                 state: "creatingTopic",
-                actions: this.initTopic
+                actions: this._initTopic
               }
             }
           },
@@ -68128,9 +68139,11 @@ var TopicCreator_TopicCreator = /*#__PURE__*/function () {
             }
           },
           success: {
+            entry: this._addTopicToVault,
             "final": true
           },
           error: {
+            entry: this._processTopicCreateError,
             "final": true
           }
         }
@@ -68140,16 +68153,16 @@ var TopicCreator_TopicCreator = /*#__PURE__*/function () {
       });
     }
   }, {
-    key: "initTopic",
+    key: "_initTopic",
     value: function () {
-      var _initTopic = TopicCreator_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(stateMachine, evName, args) {
-        var ic, ownerKeyPair, topicKeyPair, ownerPkfp, topicID, newTopicData, newTopicDataCipher, settings, vaultRecord, request;
+      var _initTopic2 = TopicCreator_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(stateMachine, evName, args) {
+        var nickname, topicName, ic, ownerKeyPair, topicKeyPair, ownerPkfp, topicID, newTopicData, newTopicDataCipher, settings, vault, vaultRecord, request;
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                nickname = args[0];
-                topicName = args[1];
+                nickname = this.nickname;
+                topicName = this.topicName;
                 console.log("Checking input");
                 nickname = String(nickname).trim();
 
@@ -68158,7 +68171,7 @@ var TopicCreator_TopicCreator = /*#__PURE__*/function () {
                   break;
                 }
 
-                this.emit(Events.INIT_TOPIC_ERROR, "Nickname entered is invalid");
+                this.emit(Events["Events"].INIT_TOPIC_ERROR, "Nickname entered is invalid");
                 return _context.abrupt("return");
 
               case 7:
@@ -68167,7 +68180,7 @@ var TopicCreator_TopicCreator = /*#__PURE__*/function () {
                   break;
                 }
 
-                this.emit(Events.INIT_TOPIC_ERROR, "Topic name entered is invalid");
+                this.emit(Events["Events"].INIT_TOPIC_ERROR, "Topic name entered is invalid");
                 return _context.abrupt("return");
 
               case 10:
@@ -68199,24 +68212,25 @@ var TopicCreator_TopicCreator = /*#__PURE__*/function () {
                 console.log("Preparing request");
                 newTopicDataCipher = ChatUtility["a" /* ChatUtility */].encryptStandardMessage(JSON.stringify(newTopicData), this.sessionKey); //initializing topic settings
 
-                settings = Topic.prepareNewTopicSettings(this.version, nickname, topicName, ownerKeyPair.publicKey); // TODO Prepare new topic vault record
+                settings = Topic["a" /* Topic */].prepareNewTopicSettings(this.version, this.nickname, this.topicName, ownerKeyPair.publicKey); // TODO Prepare new topic vault record
 
-                vaultRecord = this.prepareVaultTopicRecord(this.version, ownerPkfp, ownerKeyPair.privateKey, topicName); //Preparing request
+                vault = this.vaultHolder.getVault();
+                vaultRecord = vault.prepareVaultTopicRecord(this.version, ownerPkfp, ownerKeyPair.privateKey, topicName); //Preparing request
 
-                request = new Message["a" /* Message */](this.version);
-                request.headers.command = Internal.INIT_TOPIC;
-                request.headers.pkfpSource = this.id;
+                request = new Message["a" /* Message */](vault.version);
+                request.headers.command = Events["Internal"].INIT_TOPIC;
+                request.headers.pkfpSource = vault.id;
                 request.body.topicID = topicID;
                 request.body.topicPkfp = ownerPkfp;
                 request.body.settings = settings;
                 request.body.ownerPublicKey = ownerKeyPair.publicKey;
                 request.body.newTopicData = newTopicDataCipher;
                 request.body.vaultRecord = vaultRecord;
-                request.body.vaultId = this.id;
-                request.signMessage(this.privateKey);
+                request.body.vaultId = vault.id;
+                request.signMessage(vault.privateKey);
                 this.connector.send(request);
 
-              case 41:
+              case 42:
               case "end":
                 return _context.stop();
             }
@@ -68224,15 +68238,15 @@ var TopicCreator_TopicCreator = /*#__PURE__*/function () {
         }, _callee, this);
       }));
 
-      function initTopic(_x, _x2, _x3) {
-        return _initTopic.apply(this, arguments);
+      function _initTopic(_x, _x2, _x3) {
+        return _initTopic2.apply(this, arguments);
       }
 
-      return initTopic;
+      return _initTopic;
     }()
   }, {
-    key: "addTopicToVault",
-    value: function addTopicToVault() {
+    key: "_addTopicToVault",
+    value: function _addTopicToVault() {
       var vault = this.vaultHolder.getVault(); //if(!Message.verifyMessage(vault.sessionKey, data)){
       //    throw new Error("Session key signature is invalid!")
       //}
@@ -68242,7 +68256,7 @@ var TopicCreator_TopicCreator = /*#__PURE__*/function () {
       var metadata = data.body.metadata;
       var topicData = vault.decryptTopic(vaultRecord, vault.password);
       var pkfp = topicData.pkfp;
-      var newTopic = new Topic(pkfp, topicData.name, topicData.key, topicData.comment);
+      var newTopic = new Topic["a" /* Topic */](pkfp, topicData.name, topicData.key, topicData.comment);
       console.log("New topic initialized: ".concat(pkfp, ", ").concat(topicData.name, " "));
       newTopic.loadMetadata(metadata);
       newTopic.bootstrap(vault.messageQueue, vault.arrivalHub, vault.version);
@@ -68254,13 +68268,13 @@ var TopicCreator_TopicCreator = /*#__PURE__*/function () {
         vault.initSettingsOnTopicJoin(vault, pkfp, inviteeNickname, data);
       }
 
-      vault.emit(Events.TOPIC_CREATED, pkfp);
+      vault.emit(Events["Events"].TOPIC_CREATED, pkfp);
       return pkfp;
     }
   }, {
-    key: "run",
-    value: function run() {
-      this.handle.run();
+    key: "_processTopicCreateError",
+    value: function _processTopicCreateError(stateMachine, evName, args) {
+      console.log("Error creating topic ".concat(args[0]));
     }
   }]);
 
@@ -68375,7 +68389,9 @@ window.toastr = lib_toastr;
 window.chat = chat_ui_chat;
 window.spinner = spinner;
 window.chatutil = ChatUtility["a" /* ChatUtility */];
-window.statusConn = processConnectionStatusChanged; // ---------------------------------------------------------------------------------------------------------------------------
+window.statusConn = processConnectionStatusChanged;
+window.vaultHolder = chat_ui_vaultHolder;
+window.topics = topics; // ---------------------------------------------------------------------------------------------------------------------------
 // 
 // ~END TEST
 
@@ -68576,20 +68592,9 @@ function createTopic() {
   }
 
   var topicCreator = new TopicCreator_TopicCreator(nickname, topicName, chat_ui_connector, chat_ui_vaultHolder);
-  topicCreator.once("result", createTopicHandleResult);
-  topicCreator.run(); //vault.initTopic(nickname, topicName);
-
+  topicCreator.run();
   lib_toastr.info("Topic is being created");
   topicCreateModal.close();
-}
-
-function createTopicHandleResult(err, topic) {
-  if (err) {
-    lib_toastr.warning("Error creating topics: ".concat(err));
-  }
-
-  lib_toastr.success("Topic created successfully. Id: ".concat(topic.pkfp));
-  topics[topic.pkfp] = topic;
 }
 
 function renderLayout() {
@@ -68739,7 +68744,7 @@ function processActivateTopicClick(ev) {
   refreshMessagesWithCb(pkfp, function (messages) {
     if (!messages) {
       console.log("No messages in the topics: ".concat(pkfp));
-      chat_ui_chat.once(common_Events["Events"].MESSAGES_LOADED, function () {
+      chat_ui_chat.once(Events["Events"].MESSAGES_LOADED, function () {
         console.log("ONCE HANDLER FIRED");
         setTimeout(function () {
           scrollChatDown(true);
@@ -69115,17 +69120,19 @@ function backToChat() {
 // Chat Event handlers
 
 
-function processLoginResult(vaultHolder, err) {
+function processLoginResult(newVaultHolder, err) {
   if (err) {
     var loginBtn = $("#vault-login-btn");
     loginBtn.removeAttribute("disabled");
     lib_toastr.warning("Login error: ".concat(err.message));
-  } else {
-    initUI(vaultHolder); //processConnectionStatusChanged(chat.getConnectionState())
-
-    appendEphemeralMessage("Login successful. Loading data..."); //playSound("user_online");
+    return;
   }
 
+  chat_ui_vaultHolder = newVaultHolder;
+  initUI(chat_ui_vaultHolder); //processConnectionStatusChanged(chat.getConnectionState())
+
+  appendEphemeralMessage("Login successful. Loading data...");
+  playSound("user_online");
   chat_ui_loadingOff();
 }
 
@@ -70045,38 +70052,34 @@ function initChat() {
     version: $("#islands-version").value
   }); //chat = new Chat({version: "2.0.28"})
 
-  chat_ui_chat.on(common_Events["Events"].LOGIN_ERROR, processLoginResult);
-  chat_ui_chat.on(common_Events["Events"].LOGIN_SUCCESS, processLoginResult);
-  chat_ui_chat.on(common_Events["Events"].POST_LOGIN_SUCCESS, function () {});
-  chat_ui_chat.on(common_Events["Events"].SOUND_STATUS, function (status) {
+  chat_ui_chat.on(Events["Events"].LOGIN_ERROR, processLoginResult);
+  chat_ui_chat.on(Events["Events"].LOGIN_SUCCESS, processLoginResult);
+  chat_ui_chat.on(Events["Events"].POST_LOGIN_SUCCESS, function () {});
+  chat_ui_chat.on(Events["Events"].SOUND_STATUS, function (status) {
     var src = status ? "/img/sound-on.svg" : "/img/sound-off.svg";
     $("#sound-control").setAttribute("src", src);
   });
-  chat_ui_chat.on(common_Events["Events"].TOPIC_CREATED, function () {
-    refreshTopics();
-    lib_toastr.success("New topic has been initialized!");
-  });
-  chat_ui_chat.on(common_Events["Events"].TOPIC_JOINED, function (data) {
+  chat_ui_chat.on(Events["Events"].TOPIC_JOINED, function (data) {
     console.log("Topic joined: ".concat(data));
     appendEphemeralMessage("You have joined topic ".concat(data.pkfp));
     refreshTopics();
   });
-  chat_ui_chat.on(common_Events["Events"].TOPIC_DELETED, function (pkfp) {
+  chat_ui_chat.on(Events["Events"].TOPIC_DELETED, function (pkfp) {
     refreshTopics();
     lib_toastr.info("Topic ".concat(pkfp.substring(0, 5), "... has been deleted."));
   });
-  chat_ui_chat.on(common_Events["Events"].VAULT_UPDATED, function () {
+  chat_ui_chat.on(Events["Events"].VAULT_UPDATED, function () {
     console.log("Vault updated in UI");
     refreshTopics();
     if (topicInFocus) setTopicInFocus(topicInFocus);
   });
-  chat_ui_chat.on(common_Events["Events"].INIT_TOPIC_ERROR, function (err) {
+  chat_ui_chat.on(Events["Events"].INIT_TOPIC_ERROR, function (err) {
     lib_toastr.warning("Init topic error: ".concat(err.message));
   });
-  chat_ui_chat.on(common_Events["Events"].DOWNLOAD_SUCCESS, function (data, fileName) {
+  chat_ui_chat.on(Events["Events"].DOWNLOAD_SUCCESS, function (data, fileName) {
     downloadBuffer(data, fileName);
   });
-  chat_ui_chat.on(common_Events["Events"].DOWNLOAD_FAIL, function (err) {
+  chat_ui_chat.on(Events["Events"].DOWNLOAD_FAIL, function (err) {
     console.log("Download error received from chat: ".concat(err));
     appendEphemeralMessage("Download error: ".concat(err));
   }); ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -70111,8 +70114,8 @@ function initSession() {
     throw new Error("Vault password element is not found.");
   }
 
-  loginAgent.once(common_Events["Events"].LOGIN_ERROR, processLoginResult);
-  loginAgent.once(common_Events["Events"].LOGIN_SUCCESS, function (resVaultHolder) {
+  loginAgent.once(Events["Events"].LOGIN_ERROR, processLoginResult);
+  loginAgent.once(Events["Events"].LOGIN_SUCCESS, function (resVaultHolder) {
     console.log("%c Login agent success handler", "color: red; font-size: 20px"); //TODO REFACTORING REQUIRED!
 
     chat_ui_chat = new ChatClient_ChatClient({
@@ -70151,7 +70154,7 @@ function initTopics(data, vault) {
     console.log("Initializing topics ".concat(_pkfp2)); // TODO fix version!
 
     var topic = vault.decryptTopic(data.topics[_pkfp2], vault.password);
-    topics[_pkfp2] = new lib_Topic["a" /* Topic */](_pkfp2, topic.name, topic.key, topic.comment);
+    topics[_pkfp2] = new Topic["a" /* Topic */](_pkfp2, topic.name, topic.key, topic.comment);
     setTopicListeners(topics[_pkfp2]);
 
     topics[_pkfp2].bootstrap(chat_ui_connector, chat_ui_arrivalHub, chat_ui_version);
@@ -70166,20 +70169,25 @@ function createSession(vault) {
 }
 
 function setVaultListeners(vault) {
-  vault.on(common_Events["Internal"].SESSION_KEY, function (message) {
+  vault.on(Events["Internal"].SESSION_KEY, function (message) {
     vault.sessionKey = message.body.sessionKey;
     console.log("Session key is set!");
     postLogin(vault);
   });
-  vault.on(common_Events["Events"].TOPIC_CREATED, function (pkfp) {
+  vault.on(Events["Events"].TOPIC_CREATED, function (pkfp) {
+    if (!(pkfp in vault.topics)) {
+      console.error("%c NEW TOPIC NOT ADDED!", "color: red; font-size: 20px");
+    }
+
+    topics[pkfp] = vault.topics[pkfp];
     refreshTopics();
     lib_toastr.success("New topic has been initialized!");
   });
-  vault.on(common_Events["Internal"].TOPIC_DELETED, function (pkfp) {
+  vault.on(Events["Internal"].TOPIC_DELETED, function (pkfp) {
     refreshTopics();
     lib_toastr.info("Topic ".concat(pkfp.substring(0, 5), "... has been deleted."));
   });
-  vault.on(common_Events["Events"].VAULT_UPDATED, function () {
+  vault.on(Events["Events"].VAULT_UPDATED, function () {
     console.log("Vault updated in chat client");
     refreshTopics();
     if (topicInFocus) setTopicInFocus(topicInFocus);
@@ -70187,10 +70195,10 @@ function setVaultListeners(vault) {
 }
 
 function setTopicListeners(topic) {
-  topic.on(common_Events["Events"].MESSAGES_LOADED, function (messages) {
+  topic.on(Events["Events"].MESSAGES_LOADED, function (messages) {
     processMessagesLoaded(topic.pkfp, messages);
   });
-  topic.on(common_Events["Events"].INVITE_CREATED, function (inviteCode) {
+  topic.on(Events["Events"].INVITE_CREATED, function (inviteCode) {
     console.log("Invite created event from chat");
 
     if (topic.pkfp === topicInFocus) {
@@ -70198,7 +70206,7 @@ function setTopicListeners(topic) {
       appendEphemeralMessage("New Invite Code: ".concat(inviteCode));
     }
   });
-  topic.on(common_Events["Events"].NEW_CHAT_MESSAGE, function (message) {
+  topic.on(Events["Events"].NEW_CHAT_MESSAGE, function (message) {
     console.log("New incoming chat message received for ".concat(topic.pkfp));
 
     if (!message.header.service) {
@@ -70236,10 +70244,10 @@ function setTopicListeners(topic) {
     }, topicInFocus, $("#messages-window-1"));
     scrollChatDown();
   });
-  topic.on(common_Events["Events"].METADATA_UPDATED, function () {
+  topic.on(Events["Events"].METADATA_UPDATED, function () {
     refreshTopics();
   });
-  topic.on(common_Events["Events"].SETTINGS_UPDATED, function () {
+  topic.on(Events["Events"].SETTINGS_UPDATED, function () {
     console.log("Settings updated event from chat");
     refreshParticipants(topic.pkfp);
     refreshInvites(topic.pkfp);
@@ -70251,11 +70259,11 @@ function postLogin(vault) {
   //sending post_login request
   var message = new Message["a" /* Message */](chat_ui_chat.version);
   message.setSource(vault.id);
-  message.setCommand(common_Events["Internal"].POST_LOGIN);
+  message.setCommand(Events["Internal"].POST_LOGIN);
   message.addNonce();
   message.body.topics = Object.keys(topics);
   message.signMessage(vault.privateKey);
-  vault.once(common_Events["Internal"].POST_LOGIN_DECRYPT, function (msg) {
+  vault.once(Events["Internal"].POST_LOGIN_DECRYPT, function (msg) {
     postLoginDecrypt(msg, vault);
   });
   chat_ui_connector.send(message);
@@ -70333,13 +70341,13 @@ function postLoginDecrypt(msg, vault) {
 
   console.log("Decryption is successfull.");
   var message = new Message["a" /* Message */](chat_ui_chat.version);
-  message.setCommand(common_Events["Internal"].POST_LOGIN_CHECK_SERVICES);
+  message.setCommand(Events["Internal"].POST_LOGIN_CHECK_SERVICES);
   message.setSource(vault.getId());
   message.body.services = res;
   message.signMessage(vault.privateKey);
-  vault.once(common_Events["Events"].POST_LOGIN_SUCCESS, processLoginResult.bind(null, chat_ui_vaultHolder));
-  vault.once(common_Events["Events"].POST_LOGIN_ERROR, processLoginResult.bind(null, chat_ui_vaultHolder));
-  vault.once(common_Events["Events"].LOGIN_ERROR, processLoginResult.bind(null, chat_ui_vaultHolder));
+  vault.once(Events["Events"].POST_LOGIN_SUCCESS, processLoginResult.bind(null, chat_ui_vaultHolder));
+  vault.once(Events["Events"].POST_LOGIN_ERROR, processLoginResult.bind(null, chat_ui_vaultHolder));
+  vault.once(Events["Events"].LOGIN_ERROR, processLoginResult.bind(null, chat_ui_vaultHolder));
   chat_ui_connector.send(message);
 } //END REFACTORING CODE/////////////////////////////////////////////////////////
 
