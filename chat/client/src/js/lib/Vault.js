@@ -36,7 +36,10 @@ export class Vault{
         this.initHandlers();
     }
 
-
+    isSoundOn(){
+        if(this.settings)
+            return this.settings.sound;
+    }
 
     static registerVault(password, confirm, version){
         return new Promise((resolve, reject) => {
@@ -273,6 +276,7 @@ export class Vault{
         this.adminKey = adminKey;
 
     }
+
 
 
     async initSaved(vaultEncrypted = Err.required("Vault parse: data parameter missing")){

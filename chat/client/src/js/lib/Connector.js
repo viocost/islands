@@ -312,12 +312,9 @@ export class Connector {
 
             self.socket = io(`${this.connectionString}/chat`, socketConfig);
 
-
             attemptConnection();
         })
-
     }
-
 }
 
 export const ConnectionState = {

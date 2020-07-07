@@ -17,7 +17,7 @@ import { runConnectorTest } from "./test/connector"
 import { ChatUtility } from "./lib/ChatUtility";
 import { Vault } from "./lib/Vault";
 import { TopicJoinAgent } from "./lib/TopicJoinAgent";
-
+import { ConnectionIndicator } from  "./ui/ConnectionIndicator";
 // TEMP IMPORTS FOR FURTHER REFACTORING
 import { iCrypto } from "./lib/iCrypto";
 import { Message } from "./lib/Message";
@@ -37,6 +37,7 @@ let setAliasModal;
 let newMessageBlock; // container with new message inputs and elements
 let messagesPanel;   // messages container
 let sidePanel;
+let connectionIndicator;
 // ---------------------------------------------------------------------------------------------------------------------------
 // Objects
 
@@ -110,8 +111,6 @@ document.addEventListener('DOMContentLoaded', event => {
 
     loginAgent.fetchVault();
 
-
- //   chat.on(Events.CONNECTION_STATUS_CHANGED, processConnectionStatusChanged);
 });
 
 
@@ -461,7 +460,6 @@ function registerVault() {
 
 
 function processActivateTopicClick(ev) {
-    console.error("PROCESSING activate topic click");
     removePrivate();
     let element = ev.currentTarget;
     let pkfp = element.getAttribute("pkfp");
@@ -1343,7 +1341,6 @@ function refreshInvites(pkfp) {
 }
 
 function activateTopicAsset(ev) {
-    console.error("Activating topic asset");
     let activeItem = ev.currentTarget
     let assets = activeItem.parentElement;
     for (let child of assets.children) {
@@ -1580,8 +1577,6 @@ function initChat() {
     })
 
     chat.on(Events.SOUND_STATUS, (status) => {
-        let src = status ? "/img/sound-on.svg" : "/img/sound-off.svg";
-        util.$("#sound-control").setAttribute("src", src)
     })
 
     chat.on(Events.TOPIC_JOINED, (data) => {
@@ -1756,6 +1751,9 @@ function setVaultListeners(vault) {
         console.log("Vault updated in chat client");
         refreshTopics()
         if (topicInFocus) setTopicInFocus(topicInFocus)
+
+        let src = vault.isSoundOn() ? "/img/sound-on.svg" : "/img/sound-off.svg";
+        util.$("#sound-control").setAttribute("src", src)
     })
 }
 
@@ -1980,64 +1978,6 @@ function resetUnreadCounter(pkfp) {
     setUnreadMessagesIndicator(pkfp, unreadCounters[pkfp])
 }
 
-function processConnectionStatusChanged(state) {
-    return
-    if (!state || state < 1 || state > 5) {
-        throw new Error(`Invaled  connection state: ${state}`)
-    }
-    if (!UIInitialized) return;
-    let indicator = util.$("#connection-indicator");
-    let label = util.$("#connection-indicator-label");
-    let reconnectButton = util.$("#reconnect-button");
-    let reconnectSpinner = util.$("#reconnect-spinner");
-    let indicatorClasses = ["unknown", "connected", "error", "dicsonnected", "connecting"];
-
-    const disconnected = () => {
-        label.innerText = "Island disconnected..."
-        util.addClass(indicator, "dicsonnected");
-        util.hide(reconnectButton)
-        util.hide(reconnectSpinner)
-        appendEphemeralMessage("Island disconnected...")
-    }
-
-    const error = () => {
-        label.innerText = "Island disconnected..."
-        util.addClass(indicator, "error");
-        util.hide(reconnectButton)
-        util.hide(reconnectSpinner)
-        appendEphemeralMessage("Island connection error...")
-    }
-    const connected = () => {
-        label.innerText = "Connected to island"
-        util.addClass(indicator, "connected");
-        util.hide(reconnectButton)
-        util.hide(reconnectSpinner)
-        appendEphemeralMessage("Connected to island")
-    }
-
-    const connecting = () => {
-        label.innerText = "Connecting..."
-        util.addClass(indicator, "connecting");
-        util.hide(reconnectButton)
-        util.flex(reconnectSpinner)
-        appendEphemeralMessage("Connecting to island....")
-    }
-
-
-    for (let c of indicatorClasses) {
-        util.removeClass(indicator, c);
-    }
-
-    if (state === 1) {
-        disconnected()
-    } else if (state === 5) {
-        error();
-    } else if (state === 2) {
-        connected()
-    } else {
-        connecting()
-    }
-}
 
 function setUnreadMessagesIndicator(pkfp, num) {
     console.log("Setting unread messages indicator");

@@ -64566,6 +64566,11 @@ var Vault_Vault = /*#__PURE__*/function () {
   }
 
   Vault_createClass(Vault, [{
+    key: "isSoundOn",
+    value: function isSoundOn() {
+      if (this.settings) return this.settings.sound;
+    }
+  }, {
     key: "processVault",
     value: function processVault(stateMachine, eventName, args) {
       var _args$ = args[0],
@@ -68321,7 +68326,6 @@ function chat_ui_registerVault() {
 }
 
 function processActivateTopicClick(ev) {
-  console.error("PROCESSING activate topic click");
   removePrivate();
   var element = ev.currentTarget;
   var pkfp = element.getAttribute("pkfp");
@@ -69367,7 +69371,6 @@ function refreshInvites(pkfp) {
 }
 
 function activateTopicAsset(ev) {
-  console.error("Activating topic asset");
   var activeItem = ev.currentTarget;
   var assets = activeItem.parentElement;
   var _iteratorNormalCompletion8 = true;
@@ -69660,10 +69663,7 @@ function initChat() {
   chat_ui_chat.on(Events["Events"].LOGIN_ERROR, processLoginResult);
   chat_ui_chat.on(Events["Events"].LOGIN_SUCCESS, processLoginResult);
   chat_ui_chat.on(Events["Events"].POST_LOGIN_SUCCESS, function () {});
-  chat_ui_chat.on(Events["Events"].SOUND_STATUS, function (status) {
-    var src = status ? "/img/sound-on.svg" : "/img/sound-off.svg";
-    $("#sound-control").setAttribute("src", src);
-  });
+  chat_ui_chat.on(Events["Events"].SOUND_STATUS, function (status) {});
   chat_ui_chat.on(Events["Events"].TOPIC_JOINED, function (data) {
     console.log("%c YOU JOINED TOPIC: ".concat(data.pkfp), "color: green; font-size: 20px");
     setTopicListeners(data.pkfp);
@@ -69815,6 +69815,8 @@ function setVaultListeners(vault) {
     console.log("Vault updated in chat client");
     refreshTopics();
     if (topicInFocus) setTopicInFocus(topicInFocus);
+    var src = vault.isSoundOn() ? "/img/sound-on.svg" : "/img/sound-off.svg";
+    $("#sound-control").setAttribute("src", src);
   });
 }
 
