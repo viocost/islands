@@ -37,8 +37,7 @@ export class BlockingSpinner{
                 }, timeout)
             }
         } else {
-            console.trace()
-            console.error("Attempt to turn off spinner that hasn't been turned on.")
+            console.warn("Attempt to turn off spinner that hasn't been turned on.")
         }
     }
 }

@@ -12,14 +12,18 @@ export class ConnectionIndicator{
         this.reconnectSpinner = util.$("#reconnect-spinner");
         this.indicatorClasses = ["unknown", "connected", "error", "dicsonnected", "connecting"];
         connector.on(Internal.CONNECTION_STATE_CHANGED, this._processConnectionStatusChange.bind(this))
-
-
+        this._processConnectionStatusChange(connector.getConnectionState())
     }
+
+
+    // ---------------------------------------------------------------------------------------------------------------------------
+    // PRIVATE METHODS
+
 
     _processConnectionStatusChange(state){
 
         for (let c of this.indicatorClasses) {
-            util.removeClass(indicator, c);
+            util.removeClass(this.indicator, c);
         }
 
         switch(state){
@@ -43,28 +47,28 @@ export class ConnectionIndicator{
     }
 
     _setDisconnected(){
-        label.innerText = "Island disconnected..."
+        this.label.innerText = "Disconnected"
         util.addClass(this.indicator, "dicsonnected");
         util.hide(this.reconnectButton)
         util.hide(this.reconnectSpinner)
     }
 
     _setConnecting(){
-        label.innerText = "Connecting..."
+        this.label.innerText = "Connecting..."
         util.addClass(this.indicator, "connecting");
         util.hide(this.reconnectButton)
         util.flex(this.reconnectSpinner)
     }
 
     _setConnected(){
-        label.innerText = "Connected to island"
+        this.label.innerText = "Connected"
         util.addClass(this.indicator, "connected");
         util.hide(this.reconnectButton)
         util.hide(this.reconnectSpinner)
     }
 
     _setError(){
-        label.innerText = "Island disconnected..."
+        this.label.innerText = "Connection error"
         util.addClass(this.indicator, "error");
         util.hide(this.reconnectButton)
         util.hide(this.reconnectSpinner)

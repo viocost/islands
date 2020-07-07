@@ -88,7 +88,6 @@ window.toastr = toastr;
 window.chat = chat;
 window.spinner = spinner;
 window.chatutil = ChatUtility;
-window.statusConn = processConnectionStatusChanged;
 window.vaultHolder = vaultHolder;
 window.topics = topics;
 // ---------------------------------------------------------------------------------------------------------------------------
@@ -819,7 +818,7 @@ function processLoginResult(newVaultHolder, err) {
     window.vaultHolder = vaultHolder;
    
     initUI(vaultHolder);
-    //processConnectionStatusChanged(chat.getConnectionState())
+    connectionIndicator = new ConnectionIndicator(connector)
     appendEphemeralMessage("Login successful. Loading data...")
     playSound("user_online");
     loadingOff()
