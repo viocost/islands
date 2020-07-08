@@ -18,6 +18,7 @@ export class LoginAgent{
         this.vaultId;
         this.vaultEncrypted;
         this.vaultHolder;
+        this.vaultRaw;
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------
@@ -135,6 +136,7 @@ export class LoginAgent{
                 .AESDecrypt("v_cip", "sym", "vault_raw", true)
 
             data = JSON.parse(ic.get("vault_raw"));
+            this.vaultRaw = data;
 
         } catch (err){
             this.sm.handle.decryptError(err);
@@ -157,14 +159,7 @@ export class LoginAgent{
         vault.version = this.version;
 
         //settings
-        if(data.settings){
-            vault.settings = JSON.parse(JSON.stringify(data.settings));
-        } else {
-            vault.settings = {
-                sound: true
-            }
-        }
-
+        vault.initializeSettings(data.settings)
         this.vaultHolder = new VaultHolder(vault)
         console.log('decrypt success');
         this.sm.handle.decryptSuccess();

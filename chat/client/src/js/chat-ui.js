@@ -122,6 +122,9 @@ document.addEventListener('DOMContentLoaded', event => {
 
         vaultHolder = resVaultHolder;
         loadTopics(vaultHolder.getVault())
+
+        //V1 support
+        addV1Topics(loginAgent.vaultRaw, vaultHolder.getVault())
     })
 
     loginAgent.fetchVault();
@@ -1695,6 +1698,19 @@ function joinTopic(nickname, topicName, inviteString) {
     })
     topicJoinAgent.on(Internal.JOIN_TOPIC_FAIL, ()=>{ console.log("Join topic fail received from the agent")})
     topicJoinAgent.start()
+}
+
+//V1 support
+function addV1Topics(data){
+   
+    if (!data.topics) return
+
+    for (let pkfp in data.topics) {
+        console.log(`Initializing topics ${pkfp}`);
+        topics[pkfp] = new Topic(pkfp, topic.name, topic.key, topic.comment)
+        setTopicListeners(topics[pkfp])
+        topics[pkfp].bootstrap(connector, arrivalHub, version);
+    }
 }
 
 function initTopics(data, vault) {

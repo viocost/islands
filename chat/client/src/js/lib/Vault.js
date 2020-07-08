@@ -153,6 +153,11 @@ export class Vault{
     }
 
 
+    initializeSettings(settings){
+        this.settings = settings ?
+            JSON.parse(JSON.stringify(settings)) :
+            { sound: true }
+    }
 
 
     processVault(stateMachine, eventName, args){
@@ -569,9 +574,6 @@ export class Vault{
         return newTopic
     }
 
-    removeTopic(){
-
-    }
 
     //Only adds initialized topic to vault topics
     registerTopic(topic = Err.required()){
