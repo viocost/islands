@@ -108,6 +108,22 @@ document.addEventListener('DOMContentLoaded', event => {
         arrivalHub: arrivalHub
     })
 
+    loginAgent.on(Events.LOGIN_ERROR, err=>processLoginResult(null, err));
+    loginAgent.on(Events.LOGIN_SUCCESS, resVaultHolder=>{
+        console.log("%c Login agent success handler", "color: red; font-size: 20px");
+
+        //TODO REFACTORING REQUIRED!
+        chat = new ChatClient({ version: version });
+        chat.vault = resVaultHolder.getVault();
+        chat.connector = connector;
+        chat.arrivalHub = arrivalHub;
+        chat.topics = topics;
+        //end//////////////////////////////////////////////////////////////////
+
+        vaultHolder = resVaultHolder;
+        loadTopics(vaultHolder.getVault())
+    })
+
     loginAgent.fetchVault();
 
 });
@@ -810,7 +826,8 @@ function processLoginResult(newVaultHolder, err) {
     if (err) {
         let loginBtn = util.$("#vault-login-btn")
         loginBtn.removeAttribute("disabled");
-        toastr.warning(`Login error: ${err.message}`)
+        toastr.warning(`Login error: ${err}`)
+        loadingOff()
         return;
     }
 
@@ -819,7 +836,7 @@ function processLoginResult(newVaultHolder, err) {
    
     initUI(vaultHolder);
     connectionIndicator = new ConnectionIndicator(connector)
-    appendEphemeralMessage("Login successful. Loading data...")
+    appendEphemeralMessage("Topics has been loaded and decrypted successfully. ")
     playSound("user_online");
     loadingOff()
 }
@@ -1570,7 +1587,7 @@ function initChat() {
     chat = new Chat({ version: util.$("#islands-version").value })
     //chat = new Chat({version: "2.0.28"})
 
-    chat.on(Events.LOGIN_ERROR, processLoginResult)
+    chat.on(Events.LOGIN_ERROR, err=> processLoginResult(null, err))
     chat.on(Events.LOGIN_SUCCESS, processLoginResult)
     chat.on(Events.POST_LOGIN_SUCCESS, () => {
     })
@@ -1649,21 +1666,6 @@ function initSession() {
         throw new Error("Vault password element is not found.");
     }
 
-    loginAgent.once(Events.LOGIN_ERROR, processLoginResult);
-    loginAgent.once(Events.LOGIN_SUCCESS, resVaultHolder=>{
-        console.log("%c Login agent success handler", "color: red; font-size: 20px");
-
-        //TODO REFACTORING REQUIRED!
-        chat = new ChatClient({ version: version });
-        chat.vault = resVaultHolder.getVault();
-        chat.connector = connector;
-        chat.arrivalHub = arrivalHub;
-        chat.topics = topics;
-        //end//////////////////////////////////////////////////////////////////
-       
-        vaultHolder = resVaultHolder;
-        loadTopics(vaultHolder.getVault())
-    })
 
     loginAgent.acceptPassword(passwordEl.value);
 }

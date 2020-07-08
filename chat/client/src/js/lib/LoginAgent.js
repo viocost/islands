@@ -81,7 +81,9 @@ export class LoginAgent{
                     entry: this._tryDecrypt,
                     transitions: {
                         decryptError: {
-                            state: "hasVaultNoPassword"
+                            state: "hasVaultNoPassword",
+                            actions: this._notifyLoginError
+
                         },
 
                         decryptSuccess: {
@@ -123,6 +125,7 @@ export class LoginAgent{
         let password = this.password;
 
         let ic = new iCrypto();
+        let data;
 
         try{
             ic.addBlob("s16", this.vaultEncrypted.substring(0, 256))
@@ -130,13 +133,15 @@ export class LoginAgent{
                 .hexToBytes("s16", "salt")
                 .createPasswordBasedSymKey("sym", password, "s16")
                 .AESDecrypt("v_cip", "sym", "vault_raw", true)
+
+            data = JSON.parse(ic.get("vault_raw"));
+
         } catch (err){
-            console.trace(`Decrypt error: ${err}`);
             this.sm.handle.decryptError(err);
+            return;
         }
 
         // Populating new object
-        let data = JSON.parse(ic.get("vault_raw"));
         ic.setRSAKey("pub", data.publicKey, "public")
             .getPublicKeyFingerprint("pub", "pkfp");
 
@@ -170,7 +175,7 @@ export class LoginAgent{
 
     }
 
-    _notifyLoginError(err){
+    _notifyLoginError(sm, evName, err){
         this.emit(Events.LOGIN_ERROR, err);
     }
 

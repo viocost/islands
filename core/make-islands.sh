@@ -157,8 +157,9 @@ ${INSTALLER_PATH}/config-gen/generate.py -p ${CONFIG_PATH}
 #
 # copy apps and core scripts
 
-#Emptying any content of apps
+#Emptying any content of apps and data
 rm -rf ${BUILD_PATH}/apps/*
+rm -rf ${BUILD_PATH}/data/*
 
 echo Copying engine
 cp -r ${INSTALLER_PATH}/services/engine ${BUILD_PATH}/apps

@@ -1,3 +1,167 @@
+/*
+ * State map constraints
+ *
+ * 1. Any state can be either leaf state or region
+ * 2. Region state must have property region: true
+ * 3. There must be exactly ONE region or state that is root.
+ * 4. Any region can be either concurrent or non-concurrent
+ * 5. Non-concurrent region has exactly one active child state when active
+ * 6. Concurrent region assumes to have one or more child regions
+ * 7. In concurrent region when active all its children regions are active
+ * 8. Concurrent region cannot have leaf states as children
+ * 9. Non-concurrent region can have memory enabled, so when re-entered, the state will be set to where it left off.
+ * 10. By default a region considered to be non-concurrent. To make region concurrent need to set concurrent: true in state map.
+ *
+ *
+ * Example:
+ *
+ * Imagine an electircal device that has 2 modes:
+ *  1. Lumen
+ *  2. Music + rotation
+ *
+ *  It cannot do Lumen and play music/rotate at the same time.
+ *
+ *  Lumen mode has following substates:
+ *    - green
+ *    - yellow
+ *    - red
+ *    - off (initial)
+ *
+ * Music + rotation has 2 concurrent regions: music and rotation.
+ *
+ * Music substates are:
+ *   - Playing
+ *   - Off
+ *
+ * Rotation substates are
+ *  - Off
+ *  - Rotating left
+ *  - Rotating right
+ *
+ * We also have power state, which can be on or off.
+ * If power goes off it forces the system out of all states.
+ *
+ * Here's the state map for such machine:
+ *
+  {
+     powerOff: {
+        root: true,
+        transitions: {
+            powerOn: {
+                state: "powerOn",
+                actions: ...
+            }
+        }
+     },
+
+     powerOn: {
+         region: true,
+         transitions: {
+             powerOff: {
+                 state: "powerOff",
+                 actions: ...
+             }
+         }
+     },
+
+     lumen: {
+         region: true,
+         parent: "powerOn",
+         transition: {
+             switchToMusicRotation: {
+                 state: "musicRotation"
+             }
+         }
+     },
+
+     musicRotation: {
+         region: true,
+         concurrent: true,
+         parent: "powerOn",
+         initial: true,
+         transitions: {
+             switchToLumen: {
+                 state: "lumen"
+             }
+         }
+
+     },
+
+     music: {
+         region: true,
+         parent: "musicRotation"
+     },
+
+     rotation: {
+         region: true,
+         parent: "musicRotation"
+     },
+
+     musicPlaying: {
+         parent: "music",
+         transitions: {
+             stopMusic: {
+                 state: "musicOff",
+             }
+         }
+     },
+
+     musicOff: {
+         parent: "music",
+         initial: true,
+         transitions: {
+             playMusic: {
+                 state: "musicPlaying",
+             }
+         }
+     },
+
+     rotationOff: {
+         parent: "rotation",
+         initial: true,
+         transitions: {
+             rotateLeft: {
+                 state: "rotationLeft"
+             },
+             rotateRight: {
+                 state: "rotationRight"
+             }
+         }
+     },
+
+     rotationLeft: {
+
+         parent: "rotation",
+         transitions: {
+             stopRotation: {
+                 state: "rotationOff"
+             },
+             rotateRight: {
+                 state: "rotationRight"
+             }
+         }
+     }
+
+     rotationRight: {
+         parent: "rotation",
+         transitions: {
+             rotateLeft: {
+                 state: "rotationLeft"
+             },
+             stopRotation: {
+                 state: "rotationOff"
+             }
+         }
+     }
+
+
+
+
+  }
+ /
+
+
+
 const { createDerivedErrorClasses } = require("../../../../common/DynamicError");
 
 
@@ -14,6 +178,8 @@ const err = createDerivedErrorClasses(StateMachineError, {
     actionTypeInvalid: "ActionTypeInvalid",
     cannotDetermineAction: "CannotDetermineValidAction",
 })
+
+
 
 /**
  *
@@ -238,7 +404,21 @@ class StateMachine {
     }
 
     validateStateMap(stateMap){
-        //Verify there is state map
+        /*
+        * State map constraints
+        *
+        * 1. Any state can be either leaf state or region
+        * 2. Region state must have property region: true
+        * 3. There must be exactly ONE region or state that is root.
+        * 4. Any region can be either concurrent or non-concurrent
+        * 5. Non-concurrent region has exactly one active child state when active
+        * 6. Concurrent region assumes to have one or more child regions
+        * 7. In concurrent region when active all its children regions are active
+        * 8. Concurrent region cannot have leaf states as children
+        * 9. Non-concurrent region can have memory enabled, so when re-entered, the state will be set to where it left off.
+        * 10. By default a region considered to be non-concurrent. To make region concurrent need to set concurrent: true in state map.
+                //Verify there is state map
+        */
         if( stateMap === undefined) throw new err.noStateMap();
 
         //Verify there is initial state

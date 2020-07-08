@@ -26,41 +26,6 @@ window.iCrypto = iCrypto
 
 let VERSION;
 
-//////////////////////////////////////////////////////////////////////////////////////////
-// window.testCrypto = ()=>{                                                            //
-//                                                                                      //
-//     let passwd = "hfgkhsdjf"                                                         //
-//     let stuff = "kljfgljsdkfgkdjgfdjlkfgjljgewjrkgjegjdjfgjdsgjsdfgdssdljvdcvjdcjv"; //
-//     let ic = new iCrypto();                                                          //
-//     ic.createNonce("salt", 128)                                                      //
-//         .encode("salt","hex", "salt-hex")                                            //
-//         .createPasswordBasedSymKey("key", passwd, "salt-hex")                        //
-//         .addBlob("vault", stuff)                                                     //
-//         .AESEncrypt("vault", "key", "cipher")                                        //
-//         .encode("cipher","hex",  "cip-hex")                                          //
-//         .merge(["salt-hex", "cip-hex"], "res")                                       //
-//                                                                                      //
-//     let vault_encrypted = ic.get("res");                                             //
-//                                                                                      //
-//     let icn = new iCrypto()                                                          //
-//     icn.addBlob("s16", vault_encrypted.substring(0, 256))                            //
-//         .addBlob("v_cip", vault_encrypted.substr(256))                               //
-//         .hexToBytes("s16", "salt")                                                   //
-//         .createPasswordBasedSymKey("sym", passwd, "s16")                             //
-//                                                                                      //
-//     console.log(ic.get("cip-hex") === v_cip);                                        //
-//     icn.AESDecrypt("v_cip", "sym", "vault_raw", true);                               //
-// }                                                                                    //
-//                                                                                      //
-// window.testVault = ()=>{                                                             //
-//     let v = new Vault()                                                              //
-//     let pass = "jhdfgdslhglsdhgljhghdsfgh"                                           //
-//     v.init(pass)                                                                     //
-//     let cip = v.pack()                                                               //
-//     let dec = new Vault()                                                            //
-//     dec.initSaved(cip.vault, pass)                                                   //
-// }                                                                                    //
-//////////////////////////////////////////////////////////////////////////////////////////
 
 /**
  * Closure for processing admin requests while admin logged in
@@ -140,7 +105,7 @@ function autoLogin(){
     let pkcipher = localStorage.getItem(id);
     if (!pkcipher){
         loadingOff();
-        throw new Error("Autologin failed: no private ley found in local storage");
+        throw new Error("Autologin failed: no private key found in local storage");
     }
 
     let ic = new iCrypto();
@@ -492,7 +457,6 @@ function adminLogin() {
         toastr.warning("Password is required!");
         return;
     }
-    loadingOn();
 
     //Request admin vault
     XHR({
@@ -623,7 +587,7 @@ function setupIslandAdmin() {
 function setupAdminContinue(password) {
     console.log("Setup admin continue called");
     return new Promise((resolve, reject) => {
-        loadingOn();
+        //loadingOn();
         let ic = new iCrypto();
         ic.generateRSAKeyPair("adminkp")
             .createNonce("n")
@@ -801,7 +765,6 @@ function loadLogs(errorsOnly = false, download = false) {
     });
 }
 
-
 function downloadLogs(res){
     console.log("Records received, downloading logs.");
 
@@ -819,8 +782,6 @@ function downloadLogs(res){
     el.click();
     document.body.removeChild(el);
 }
-
-
 
 function processLogsLoaded(res) {
     console.log(res.records);
@@ -1002,7 +963,6 @@ function clearLogs(ev) {
     });
 }
 
-
 function prepareRequestProcessor(adminSession){
     return function (data, onSuccess, onError){
         if (!data.action){
@@ -1033,143 +993,3 @@ function prepareRequestProcessor(adminSession){
         });
     };
 }
-
-// ---------------------------------------------------------------------------------------------------------------------------
-// Direct updates are not currently used
-
-
-// function switchUpdateMode() {
-//
-//    if ($('#update-from-file').prop('checked')) {
-//        $('#update-from-file--wrapper').css("display", "block");
-//        $('#update-from-git--wrapper').hide();
-//        $('#github-update-options--wrap').hide();
-//    } else {
-//        $('#update-from-file--wrapper').hide();
-//        $('#update-from-git--wrapper').css("display", "block");
-//        $('#github-update-options--wrap').css("display", "block");
-//    }
-//}
-//
-//
-//function processUpdateFile() {
-//    let file = util.$("#update-file").files[0];
-//    getUpdateFileData(file).then(filedata => {
-//        let signature = signUpdateFile(filedata);
-//        util.$("#pkfp").value = adminSession.pkfp;
-//        util.$("#sign").value = signature;
-//        util.$("#select-file").innerText = "SELECTED: " + file.name;
-//    }).catch(err => {
-//        throw err;
-//    });
-//}
-//
-//function launchUpdate() {
-//    if ($('#update-from-file').hasClass('active') && util.$("#update-file").value) {
-//        loadingOn();
-//        updateFromFile();
-//    } else if ($('#update-from-git').hasClass('active')) {
-//        console.log("Updating from GIT");
-//        loadingOn();
-//        updateFromGithub();
-//    } else {
-//        toastr.warning("Please select the update file!");
-//    }
-//}
-//
-//function updateFromFile() {
-//    let file = util.$("#update-file").files[0];
-//    getUpdateFileData(file).then(filedata => {
-//        let signature = signUpdateFile(filedata);
-//        sendUpdateFromFileRequest(file, signature);
-//    }).catch(err => {
-//        throw err;
-//    });
-//}
-//
-//function getUpdateFileData(file) {
-//    return new Promise((resolve, reject) => {
-//        try {
-//            let reader = new FileReader();
-//
-//            reader.onload = () => {
-//                resolve(reader.result);
-//            };
-//            reader.readAsBinaryString(file);
-//        } catch (err) {
-//            reject(err);
-//        }
-//    });
-//}
-//
-//
-//function signUpdateFile(filedata) {
-//    let ic = new iCrypto();
-//    ic.setRSAKey("pk", adminSession.privateKey, "private").addBlob("f", filedata).privateKeySign("f", "pk", "sign");
-//    return ic.get("sign");
-//}
-//
-//function getSelectedUpdateBranch() {
-//    let branchSelect = util.$("#gh-update-branch-select");
-//    return branchSelect.options[branchSelect.options.selectedIndex].value;
-//}
-//
-//function updateFromGithub() {
-//    let ic = new iCrypto();
-//
-//    ic.setRSAKey("pk", adminSession.privateKey, "private").createNonce("n").bytesToHex("n", "nhex").privateKeySign("n", "pk", "sign");
-//    let data = new FormData();
-//    data.append("action", "update_from_github");
-//    data.append("branch", getSelectedUpdateBranch());
-//    data.append("pkfp", adminSession.pkfp);
-//    data.append("nonce", ic.get("nhex"));
-//    data.append("sign", ic.get("sign"));
-//    sendUpdateRequest(data);
-//}
-//
-//function sendUpdateFromFileRequest(filedata, signature) {
-//    let data = new FormData();
-//    data.append("action", "update_from_file");
-//    data.append("pkfp", adminSession.pkfp);
-//    data.append("file", util.$("#update-file").files[0]);
-//    data.append("sign", signature);
-//
-//    sendUpdateRequest(data);
-//}
-//
-//function sendUpdateRequest(data) {
-//    let request = new XMLHttpRequest();
-//    request.open("POST", window.location.href, true);
-//    request.send(data);
-//    request.onreadystatechange = () => {
-//        if (request.readyState === XMLHttpRequest.DONE) {
-//            //
-//            console.log("Handling response");
-//            loadingOff();
-//            if (request.status === 200) {
-//                $('#close-code-view').hide();
-//                showModalNotification("Update completed", "<span id=timer>You will be redirected in 5 seconds</span>");
-//                delayedPageReload(5);
-//            } else {
-//                toastr.warning("Update failed: " + request.responseText);
-//            }
-//        }
-//    };
-//}
-
-//
-//function switchUpdateOption(event) {
-//    if ($(event.target).hasClass("active")) {
-//        return;
-//    }
-//
-//    util.$$(".update-option").forEach((el) => {
-//        if (!$(el).hasClass("active") && $(el).attr("id") === "update-from-file") {
-//            $("#update-file--wrapper").css("display", "flex");
-//        } else if ($(el).hasClass("active") && $(el).attr("id") === "update-from-file") {
-//            $("#update-file--wrapper").css("display", "none");
-//        }
-//        $(el).toggleClass("active");
-//    });
-//}
-//
