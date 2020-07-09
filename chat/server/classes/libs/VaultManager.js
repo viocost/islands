@@ -30,8 +30,10 @@ class VaultManager{
         this.vaultIdLength = config.vaultIdLength || 64;
 
 
-        requestEmitter.on(Internal.UPDATE_VAULT_FORMAT, this.updateVaultFormat)
-        requestEmitter.on(Internal.SAVE_VAULT_SETTINGS, this.saveVaultSettings)
+        if(requestEmitter){
+            requestEmitter.on(Internal.UPDATE_VAULT_FORMAT, this.updateVaultFormat.bind(this))
+            requestEmitter.on(Internal.SAVE_VAULT_SETTINGS, this.saveVaultSettings.bind(this))
+        }
     }
 
     saveVaultSettings(){
@@ -40,16 +42,20 @@ class VaultManager{
     }
 
 
-    updateVaultFormat(id, vaultBlob, topics, publicKey, hash){
+    updateVaultFormat(request){
+        let id = request.headers.pkfpSource;
 
-        console.log("UPDATING VAULT FORMAT");
-        return;
+        let { vault, topics, hash } = request.body
+        let publicKey = this.getVaultPublicKey(id)
         Logger.info("Updating vault format", {cat: "vault"});
+
+        console.log(`UPDATING VAULT FORMAT: \nVault: ${vault}\nTopics: ${topics}\npublicKey: ${publicKey}\nHash: ${hash}`);
         this._backupVault(id)
-        this._writeVault(id, vaultBlob, publicKey, hash)
+        this._writeVault(id, vault, publicKey, hash)
         for(let pkfp of Object.keys(topics)){
             this.saveTopic(id, pkfp, topics[pkfp])
         }
+        console.log("VAULT SHOULD BE UPDATED NOW");
     }
 
 
@@ -266,7 +272,11 @@ class VaultManager{
     }
 
     getTopicsPath(id){
-        return path.join(this.vaultsPath, id, "topics");
+        let topicsPath =  path.join(this.vaultsPath, id, "topics");
+        if(!fs.existsSync(topicsPath)){
+            fs.mkdirSync(topicsPath)
+        }
+        return topicsPath;
     }
 
     async deleteVault(id){
@@ -300,17 +310,16 @@ class VaultManager{
     }
 
     _backupVault(id){
-        let vaultPath = path.join(this.vaultsPath, id);
-        let bakPath = path.join(this.vaultsPath, `${id}_BAK`);
+        console.log("Backing up vault");
+        let timestamp = new Date().toISOString()
+        let vaultPath = path.join(this.vaultsPath, id, "vault");
+        let vaultBakPath = path.join(this.vaultsPath, `${id}`, `vault_BAK_${timestamp}`);
 
         if(!fs.existsSync(vaultPath)){
             return;
         }
 
-        if(!fs.existsSync(bakPath)){
-            fs.mkdirSync(bakPath)
-        }
-        fs.copySync(vaultPath, bakPath)
+        fs.renameSync(vaultPath, vaultBakPath);
     }
 
     _updateVault(id, blob){

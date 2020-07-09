@@ -55,8 +55,8 @@ class LoginAssistant{
 
         // Verify request
         // Post login should be sent on behalf of vault
-        let verified = Request.verify(request, self.vaultManager.getVaultPublicKey(request.headers.pkfpSource));
-        Logger.debug(`Verified: ${verified}`, {cat: "login"});
+        //let verified = Request.verify(request, self.vaultManager.getVaultPublicKey(request.headers.pkfpSource));
+        //Logger.debug(`Verified: ${verified}`, {cat: "login"});
 
         // Gather encrypted HS private keys and topic authorities
 

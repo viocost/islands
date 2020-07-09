@@ -426,6 +426,7 @@ export class Vault{
     saveVaultSettings(){
         let { vault, hash, sign } = this.pack();
 
+        let message = new Message(this.version);
         message.setSource(this.id);
         message.setCommand(Internal.SAVE_VAULT_SETTINGS);
         message.addNonce();
@@ -572,7 +573,7 @@ export class Vault{
             this.settings.sound = !this.settings.sound;
         }
 
-        this.save(Events.SOUND_STATUS);
+        this.saveVaultSettings(Events.SOUND_STATUS);
         return this.settings.sound
     }
 

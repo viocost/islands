@@ -124,8 +124,6 @@ document.addEventListener('DOMContentLoaded', event => {
 
         //Load topics V1 here
 
-        checkUpdateVaultFormat(vaultHolder, topics)
-       
         loadTopics(vaultHolder.getVault())
 
     })
@@ -1720,6 +1718,9 @@ function initTopics(data, vault) {
     }
 
     vault.topics = topics;
+
+    checkUpdateVaultFormat(vaultHolder, topics)
+
     createSession(vault)
 }
 
@@ -1883,7 +1884,7 @@ function checkUpdateVaultFormat(vaultHolder, existingTopics){
     message.body.topics = packedVault.topics;
     message.signMessage(currentVault.privateKey);
     console.log("%c UPDATING VAULT FORMAT!!", "color: red; font-size: 20px");
-    this.connector.send(message)
+    connector.send(message)
 
 }
 
