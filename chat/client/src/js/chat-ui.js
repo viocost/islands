@@ -121,6 +121,11 @@ document.addEventListener('DOMContentLoaded', event => {
         //end//////////////////////////////////////////////////////////////////
 
         vaultHolder = resVaultHolder;
+
+        //Load topics V1 here
+
+        checkUpdateVaultFormat(vaultHolder, topics)
+       
         loadTopics(vaultHolder.getVault())
 
     })
@@ -1840,11 +1845,9 @@ function postLogin(vault) {
         postLoginDecrypt(msg, vault);
     })
     connector.send(message);
-
-    checkUpdateVaultFormat()
 }
 
-function checkUpdateVaultFormat(){
+function checkUpdateVaultFormat(vaultHolder, existingTopics){
     //V1 support
     let rawVault = loginAgent.getRawVault()
 
@@ -1853,32 +1856,33 @@ function checkUpdateVaultFormat(){
     //Otherwise version 1, update required. First initializing topics
     for (let pkfp in rawVault.topics) {
 
-        if(pkfp in topics){
+        if(pkfp in existingTopics){
             continue;
         }
-
-        console.log(`Initializing topics ${pkfp}`);
-        topics[pkfp] = new Topic(pkfp, topic.name, topic.key, topic.comment)
-        setTopicListeners(topics[pkfp])
-        topics[pkfp].bootstrap(connector, arrivalHub, version);
+        let topic = rawVault.topics[pkfp];
+        console.log(`Initializing existingTopics ${pkfp}`);
+        existingTopics[pkfp] = new Topic(pkfp, topic.name, topic.key, topic.comment)
+        setTopicListeners(existingTopics[pkfp])
+        existingTopics[pkfp].bootstrap(connector, arrivalHub, version);
     }
 
 
     //updating vault to current format
 
     let currentVault = vaultHolder.getVault();
-    let { vault, topics, hash, sign } = currentVault.pack();
+    //let { vault, existingTopics, hash, sign } = currentVault.pack();
+    let packedVault = currentVault.pack()
 
     let message = new Message(currentVault.version);
     message.setSource(currentVault.id);
     message.setCommand(Internal.SAVE_VAULT);
     message.addNonce();
-    message.body.vault = vault;
-    message.body.sign = sign;
-    message.body.hash = hash;
-    message.body.topics = topics;
-    message.body.cause = cause;
-    message.signMessage(this.privateKey);
+    message.body.vault = packedVault.vault;
+    message.body.sign = packedVault.sign;
+    message.body.hash = packedVault.hash;
+    message.body.topics = packedVault.topics;
+    message.body.cause = "vault_update";
+    message.signMessage(currentVault.privateKey);
 
     console.log("%c SAVING VAULT!!", "color: red; font-size: 20px");
     //this.connector.send(message)

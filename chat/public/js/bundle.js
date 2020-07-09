@@ -68238,7 +68238,9 @@ document.addEventListener('DOMContentLoaded', function (event) {
     chat_ui_chat.arrivalHub = chat_ui_arrivalHub;
     chat_ui_chat.topics = chat_ui_topics; //end//////////////////////////////////////////////////////////////////
 
-    chat_ui_vaultHolder = resVaultHolder;
+    chat_ui_vaultHolder = resVaultHolder; //Load topics V1 here
+
+    checkUpdateVaultFormat(chat_ui_vaultHolder, chat_ui_topics);
     loadTopics(chat_ui_vaultHolder.getVault());
   });
   loginAgent.fetchVault();
@@ -69988,9 +69990,8 @@ function initTopics(data, vault) {
   for (var pkfp in data.topics) {
     console.log("Initializing topics ".concat(pkfp)); // TODO fix version!
 
-    var _topic = vault.decryptTopic(data.topics[pkfp], vault.password);
-
-    chat_ui_topics[pkfp] = new Topic_Topic(pkfp, _topic.name, _topic.key, _topic.comment);
+    var topic = vault.decryptTopic(data.topics[pkfp], vault.password);
+    chat_ui_topics[pkfp] = new Topic_Topic(pkfp, topic.name, topic.key, topic.comment);
     setTopicListeners(chat_ui_topics[pkfp]);
     chat_ui_topics[pkfp].bootstrap(chat_ui_connector, chat_ui_arrivalHub, chat_ui_version);
   }
@@ -70106,44 +70107,39 @@ function postLogin(vault) {
     postLoginDecrypt(msg, vault);
   });
   chat_ui_connector.send(message);
-  checkUpdateVaultFormat();
 }
 
-function checkUpdateVaultFormat() {
+function checkUpdateVaultFormat(vaultHolder, existingTopics) {
   //V1 support
   var rawVault = loginAgent.getRawVault();
   if (!rawVault.topics) return; //Otherwise version 1, update required. First initializing topics
 
   for (var pkfp in rawVault.topics) {
-    if (pkfp in topics) {
+    if (pkfp in existingTopics) {
       continue;
     }
 
-    console.log("Initializing topics ".concat(pkfp));
-    topics[pkfp] = new Topic_Topic(pkfp, topic.name, topic.key, topic.comment);
-    setTopicListeners(topics[pkfp]);
-    topics[pkfp].bootstrap(chat_ui_connector, chat_ui_arrivalHub, chat_ui_version);
+    var topic = rawVault.topics[pkfp];
+    console.log("Initializing existingTopics ".concat(pkfp));
+    existingTopics[pkfp] = new Topic_Topic(pkfp, topic.name, topic.key, topic.comment);
+    setTopicListeners(existingTopics[pkfp]);
+    existingTopics[pkfp].bootstrap(chat_ui_connector, chat_ui_arrivalHub, chat_ui_version);
   } //updating vault to current format
 
 
-  var currentVault = chat_ui_vaultHolder.getVault();
+  var currentVault = vaultHolder.getVault(); //let { vault, existingTopics, hash, sign } = currentVault.pack();
 
-  var _currentVault$pack = currentVault.pack(),
-      vault = _currentVault$pack.vault,
-      topics = _currentVault$pack.topics,
-      hash = _currentVault$pack.hash,
-      sign = _currentVault$pack.sign;
-
+  var packedVault = currentVault.pack();
   var message = new Message_Message(currentVault.version);
   message.setSource(currentVault.id);
   message.setCommand(Events["Internal"].SAVE_VAULT);
   message.addNonce();
-  message.body.vault = vault;
-  message.body.sign = sign;
-  message.body.hash = hash;
-  message.body.topics = topics;
-  message.body.cause = cause;
-  message.signMessage(this.privateKey);
+  message.body.vault = packedVault.vault;
+  message.body.sign = packedVault.sign;
+  message.body.hash = packedVault.hash;
+  message.body.topics = packedVault.topics;
+  message.body.cause = "vault_update";
+  message.signMessage(currentVault.privateKey);
   console.log("%c SAVING VAULT!!", "color: red; font-size: 20px"); //this.connector.send(message)
 } // Decrypts topic authorities' and hidden services keys
 // and re-encrypts them with session key, so island can poke all services
@@ -70288,10 +70284,10 @@ function setUnreadMessagesIndicator(pkfp, num) {
 
   try {
     for (var _iterator11 = $("#topics-list").children[Symbol.iterator](), _step11; !(_iteratorNormalCompletion11 = (_step11 = _iterator11.next()).done); _iteratorNormalCompletion11 = true) {
-      var _topic2 = _step11.value;
+      var topic = _step11.value;
 
-      if (_topic2.getAttribute("pkfp") === pkfp) {
-        topicEl = _topic2;
+      if (topic.getAttribute("pkfp") === pkfp) {
+        topicEl = topic;
         break;
       }
     }
