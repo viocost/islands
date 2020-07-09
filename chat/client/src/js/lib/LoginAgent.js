@@ -32,6 +32,9 @@ export class LoginAgent{
         this.sm.handle.gotPassword()
     }
 
+    getRawVault(){
+        return this.vaultRaw;
+    }
 
     // ---------------------------------------------------------------------------------------------------------------------------
     // PRIVATE METHODS

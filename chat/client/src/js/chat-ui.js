@@ -123,8 +123,6 @@ document.addEventListener('DOMContentLoaded', event => {
         vaultHolder = resVaultHolder;
         loadTopics(vaultHolder.getVault())
 
-        //V1 support
-        addV1Topics(loginAgent.vaultRaw, vaultHolder.getVault())
     })
 
     loginAgent.fetchVault();
@@ -1669,8 +1667,8 @@ function initSession() {
         throw new Error("Vault password element is not found.");
     }
 
-
     loginAgent.acceptPassword(passwordEl.value);
+
 }
 
 function loadTopics(vault) {
@@ -1700,18 +1698,6 @@ function joinTopic(nickname, topicName, inviteString) {
     topicJoinAgent.start()
 }
 
-//V1 support
-function addV1Topics(data){
-   
-    if (!data.topics) return
-
-    for (let pkfp in data.topics) {
-        console.log(`Initializing topics ${pkfp}`);
-        topics[pkfp] = new Topic(pkfp, topic.name, topic.key, topic.comment)
-        setTopicListeners(topics[pkfp])
-        topics[pkfp].bootstrap(connector, arrivalHub, version);
-    }
-}
 
 function initTopics(data, vault) {
     console.log("Initializing topics...");
@@ -1854,6 +1840,49 @@ function postLogin(vault) {
         postLoginDecrypt(msg, vault);
     })
     connector.send(message);
+
+    checkUpdateVaultFormat()
+}
+
+function checkUpdateVaultFormat(){
+    //V1 support
+    let rawVault = loginAgent.getRawVault()
+
+    if (!rawVault.topics) return
+
+    //Otherwise version 1, update required. First initializing topics
+    for (let pkfp in rawVault.topics) {
+
+        if(pkfp in topics){
+            continue;
+        }
+
+        console.log(`Initializing topics ${pkfp}`);
+        topics[pkfp] = new Topic(pkfp, topic.name, topic.key, topic.comment)
+        setTopicListeners(topics[pkfp])
+        topics[pkfp].bootstrap(connector, arrivalHub, version);
+    }
+
+
+    //updating vault to current format
+
+    let currentVault = vaultHolder.getVault();
+    let { vault, topics, hash, sign } = currentVault.pack();
+
+    let message = new Message(currentVault.version);
+    message.setSource(currentVault.id);
+    message.setCommand(Internal.SAVE_VAULT);
+    message.addNonce();
+    message.body.vault = vault;
+    message.body.sign = sign;
+    message.body.hash = hash;
+    message.body.topics = topics;
+    message.body.cause = cause;
+    message.signMessage(this.privateKey);
+
+    console.log("%c SAVING VAULT!!", "color: red; font-size: 20px");
+    //this.connector.send(message)
+
 }
 
 // Decrypts topic authorities' and hidden services keys

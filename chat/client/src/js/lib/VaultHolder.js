@@ -1,5 +1,5 @@
 export class VaultHolder{
-    constructor(vault, password){
+    constructor(vault, password, vaultRaw){
         this.password = password;
         this.vault = vault;
     }
@@ -7,5 +7,6 @@ export class VaultHolder{
     getVault(){
         return this.vault;
     }
+
 
 }

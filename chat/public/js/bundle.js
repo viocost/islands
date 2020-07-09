@@ -64718,6 +64718,13 @@ var Vault_Vault = /*#__PURE__*/function () {
       if (this.settings) return this.settings.sound;
     }
   }, {
+    key: "initializeSettings",
+    value: function initializeSettings(settings) {
+      this.settings = settings ? JSON.parse(JSON.stringify(settings)) : {
+        sound: true
+      };
+    }
+  }, {
     key: "processVault",
     value: function processVault(stateMachine, eventName, args) {
       var _args$ = args[0],
@@ -65179,10 +65186,7 @@ var Vault_Vault = /*#__PURE__*/function () {
       var newTopic = new Topic_Topic(pkfp, name, privateKey, comment);
       this.topics[pkfp] = newTopic;
       return newTopic;
-    }
-  }, {
-    key: "removeTopic",
-    value: function removeTopic() {} //Only adds initialized topic to vault topics
+    } //Only adds initialized topic to vault topics
 
   }, {
     key: "registerTopic",
@@ -67524,7 +67528,7 @@ function VaultHolder_defineProperties(target, props) { for (var i = 0; i < props
 function VaultHolder_createClass(Constructor, protoProps, staticProps) { if (protoProps) VaultHolder_defineProperties(Constructor.prototype, protoProps); if (staticProps) VaultHolder_defineProperties(Constructor, staticProps); return Constructor; }
 
 var VaultHolder = /*#__PURE__*/function () {
-  function VaultHolder(vault, password) {
+  function VaultHolder(vault, password, vaultRaw) {
     VaultHolder_classCallCheck(this, VaultHolder);
 
     this.password = password;
@@ -67574,6 +67578,7 @@ var LoginAgent_LoginAgent = /*#__PURE__*/function () {
     this.vaultId;
     this.vaultEncrypted;
     this.vaultHolder;
+    this.vaultRaw;
   } // ---------------------------------------------------------------------------------------------------------------------------
   // PUBLIC METHODS
 
@@ -67588,6 +67593,11 @@ var LoginAgent_LoginAgent = /*#__PURE__*/function () {
     value: function acceptPassword(password) {
       this.password = password;
       this.sm.handle.gotPassword();
+    }
+  }, {
+    key: "getRawVault",
+    value: function getRawVault() {
+      return this.vaultRaw;
     } // ---------------------------------------------------------------------------------------------------------------------------
     // PRIVATE METHODS
 
@@ -67676,6 +67686,7 @@ var LoginAgent_LoginAgent = /*#__PURE__*/function () {
       try {
         ic.addBlob("s16", this.vaultEncrypted.substring(0, 256)).addBlob("v_cip", this.vaultEncrypted.substr(256)).hexToBytes("s16", "salt").createPasswordBasedSymKey("sym", password, "s16").AESDecrypt("v_cip", "sym", "vault_raw", true);
         data = JSON.parse(ic.get("vault_raw"));
+        this.vaultRaw = data;
       } catch (err) {
         this.sm.handle.decryptError(err);
         return;
@@ -67694,14 +67705,7 @@ var LoginAgent_LoginAgent = /*#__PURE__*/function () {
       vault.id = this.vaultId;
       vault.version = this.version; //settings
 
-      if (data.settings) {
-        vault.settings = JSON.parse(JSON.stringify(data.settings));
-      } else {
-        vault.settings = {
-          sound: true
-        };
-      }
-
+      vault.initializeSettings(data.settings);
       this.vaultHolder = new VaultHolder(vault);
       console.log('decrypt success');
       this.sm.handle.decryptSuccess();
@@ -69984,8 +69988,9 @@ function initTopics(data, vault) {
   for (var pkfp in data.topics) {
     console.log("Initializing topics ".concat(pkfp)); // TODO fix version!
 
-    var topic = vault.decryptTopic(data.topics[pkfp], vault.password);
-    chat_ui_topics[pkfp] = new Topic_Topic(pkfp, topic.name, topic.key, topic.comment);
+    var _topic = vault.decryptTopic(data.topics[pkfp], vault.password);
+
+    chat_ui_topics[pkfp] = new Topic_Topic(pkfp, _topic.name, _topic.key, _topic.comment);
     setTopicListeners(chat_ui_topics[pkfp]);
     chat_ui_topics[pkfp].bootstrap(chat_ui_connector, chat_ui_arrivalHub, chat_ui_version);
   }
@@ -70101,6 +70106,45 @@ function postLogin(vault) {
     postLoginDecrypt(msg, vault);
   });
   chat_ui_connector.send(message);
+  checkUpdateVaultFormat();
+}
+
+function checkUpdateVaultFormat() {
+  //V1 support
+  var rawVault = loginAgent.getRawVault();
+  if (!rawVault.topics) return; //Otherwise version 1, update required. First initializing topics
+
+  for (var pkfp in rawVault.topics) {
+    if (pkfp in topics) {
+      continue;
+    }
+
+    console.log("Initializing topics ".concat(pkfp));
+    topics[pkfp] = new Topic_Topic(pkfp, topic.name, topic.key, topic.comment);
+    setTopicListeners(topics[pkfp]);
+    topics[pkfp].bootstrap(chat_ui_connector, chat_ui_arrivalHub, chat_ui_version);
+  } //updating vault to current format
+
+
+  var currentVault = chat_ui_vaultHolder.getVault();
+
+  var _currentVault$pack = currentVault.pack(),
+      vault = _currentVault$pack.vault,
+      topics = _currentVault$pack.topics,
+      hash = _currentVault$pack.hash,
+      sign = _currentVault$pack.sign;
+
+  var message = new Message_Message(currentVault.version);
+  message.setSource(currentVault.id);
+  message.setCommand(Events["Internal"].SAVE_VAULT);
+  message.addNonce();
+  message.body.vault = vault;
+  message.body.sign = sign;
+  message.body.hash = hash;
+  message.body.topics = topics;
+  message.body.cause = cause;
+  message.signMessage(this.privateKey);
+  console.log("%c SAVING VAULT!!", "color: red; font-size: 20px"); //this.connector.send(message)
 } // Decrypts topic authorities' and hidden services keys
 // and re-encrypts them with session key, so island can poke all services
 
@@ -70244,10 +70288,10 @@ function setUnreadMessagesIndicator(pkfp, num) {
 
   try {
     for (var _iterator11 = $("#topics-list").children[Symbol.iterator](), _step11; !(_iteratorNormalCompletion11 = (_step11 = _iterator11.next()).done); _iteratorNormalCompletion11 = true) {
-      var topic = _step11.value;
+      var _topic2 = _step11.value;
 
-      if (topic.getAttribute("pkfp") === pkfp) {
-        topicEl = topic;
+      if (_topic2.getAttribute("pkfp") === pkfp) {
+        topicEl = _topic2;
         break;
       }
     }
