@@ -101,8 +101,12 @@ module.exports.Internal = Object.freeze({
     TOPIC_DELETED: "topic_deleted",
     TOPIC_ADDED: "topic_added",
     TOPIC_UPDATED: "topic_updated",
+    SAVE_VAULT_SETTINGS: "save_vault_settings",
     VAULT_SETTINGS_UPDATED: "vault_settings_updated",
+    UPDATE_VAULT_FORMAT: "update_vault_format",
+    VAULT_FORMAT_UPDATED: "vault_format_updated",
     VAULT_UPDATED: "vault_updated",
+
     //END//////////////////////////////////////////////////////////////////////
 
     CONNECTION_ERROR: "conn_error",

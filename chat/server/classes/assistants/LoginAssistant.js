@@ -157,23 +157,6 @@ class LoginAssistant{
 
     }
 
-    async saveVault(request, connectionId, self){
-        console.log("SAVING VAULT!!!")
-        let { vault, hash, sign, topics } = request.body
-        let id = request.headers.pkfpSource;
-        let publicKey = self.vaultManager.getVaultPublicKey(id);
-        if (!Request.isRequestValid(request, publicKey)){
-            throw new Error("Save vault request signature is not verified.")
-        }
-
-        console.log("Updating vault")
-        self.vaultManager.updateVaultFormat(id, vault, topics, publicKey,  hash)
-        console.log("VAULT UPDATED!");
-        let message = Message.makeResponse(request, "island", Events.VAULT_UPDATED)
-        message.body = request.body;
-        let session = self.sessionManager.getSessionByConnectionId(connectionId);
-        session.broadcast(message);
-    }
 
     /*********************************************
      * ~ END Handlers ~
@@ -292,7 +275,6 @@ class LoginAssistant{
         this.handlers = {}
         this.handlers[Internal.POST_LOGIN] = this.postLogin;
         this.handlers[Internal.POST_LOGIN_CHECK_SERVICES] = this.checkServices;
-        this.handlers[Internal.SAVE_VAULT] = this.saveVault;
     }
 
     async handleRequest(request, connectionId, self){

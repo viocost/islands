@@ -4,6 +4,7 @@ const path = require("path")
 const RandExp = require("randexp");
 const iCrypto = require("./iCrypto");
 const AdminKey = require("./AdminKey");
+const { Internal } = require("../../../common/Events")
 
 
 
@@ -14,7 +15,7 @@ const PUBLICKEY = "publicKey";
 
 
 class VaultManager{
-    constructor(config){
+    constructor(config, requestEmitter){
         if (!config.vaultsPath){
             throw new Error("Init error: Vaults path is not specified!");
         }
@@ -27,9 +28,22 @@ class VaultManager{
         }
 
         this.vaultIdLength = config.vaultIdLength || 64;
+
+
+        requestEmitter.on(Internal.UPDATE_VAULT_FORMAT, this.updateVaultFormat)
+        requestEmitter.on(Internal.SAVE_VAULT_SETTINGS, this.saveVaultSettings)
     }
 
+    saveVaultSettings(){
+        console.log("SAVING VAULT SETTINGS");
+
+    }
+
+
     updateVaultFormat(id, vaultBlob, topics, publicKey, hash){
+
+        console.log("UPDATING VAULT FORMAT");
+        return;
         Logger.info("Updating vault format", {cat: "vault"});
         this._backupVault(id)
         this._writeVault(id, vaultBlob, publicKey, hash)

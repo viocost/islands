@@ -105,6 +105,7 @@ function isVaultAwaitingRegistration(onion){
 }
 
 //Given a host returns vault ID associated with it
+
 //IF host is not an onion address - id of admin vault returned
 //If no vault matches onion address - undefined returned
 function getVaultId (host){

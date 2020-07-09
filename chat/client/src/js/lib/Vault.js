@@ -423,6 +423,21 @@ export class Vault{
         this.connector.send(message)
     }
 
+    saveVaultSettings(){
+        let { vault, hash, sign } = this.pack();
+
+        message.setSource(this.id);
+        message.setCommand(Internal.SAVE_VAULT_SETTINGS);
+        message.addNonce();
+        message.body.vault = vault;
+        message.body.sign = sign;
+        message.body.hash = hash;
+        message.signMessage(this.privateKey);
+
+        console.log("UPDATING VAULT SETTINGS");
+        this.connector.send(message)
+    }
+
     changePassword(newPassword){
         if(!this.initialized){
             throw new Error("The vault hasn't been initialized");

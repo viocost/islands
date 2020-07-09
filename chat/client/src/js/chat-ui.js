@@ -1875,17 +1875,15 @@ function checkUpdateVaultFormat(vaultHolder, existingTopics){
 
     let message = new Message(currentVault.version);
     message.setSource(currentVault.id);
-    message.setCommand(Internal.SAVE_VAULT);
+    message.setCommand(Internal.UPDATE_VAULT_FORMAT);
     message.addNonce();
     message.body.vault = packedVault.vault;
     message.body.sign = packedVault.sign;
     message.body.hash = packedVault.hash;
     message.body.topics = packedVault.topics;
-    message.body.cause = "vault_update";
     message.signMessage(currentVault.privateKey);
-
-    console.log("%c SAVING VAULT!!", "color: red; font-size: 20px");
-    //this.connector.send(message)
+    console.log("%c UPDATING VAULT FORMAT!!", "color: red; font-size: 20px");
+    this.connector.send(message)
 
 }
 

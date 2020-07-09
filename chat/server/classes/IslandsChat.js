@@ -17,6 +17,7 @@ const BootLeaveAssistant = require("./assistants/BootLeaveAssistant.js");
 const VaultManager = require("./libs/VaultManager.js");
 const Logger = require("./libs/Logger.js");
 const AssistantCoordinator = require("./assistants/AssistantCoordinator.js");
+const VaultUpdater = require("../lib/VaultUpdater");
 
 class IslandsChat{
     constructor(server, opts) {
@@ -25,11 +26,12 @@ class IslandsChat{
         this.clientRequestEmitter = new ClientRequestRouter(this.chatConnectionManager);
         this.torConnector = new TorConnector(opts);
         this.crossIslandMessenger = new CrossIslandMessenger(this.torConnector);
-        this.vaultManager = new VaultManager(opts);
+        this.vaultManager = new VaultManager(opts, this.clientRequestEmitter);
         this.hm = new HistoryManager(this.historyPath);
         this.clientSessionManager = new ClientSessionManager(this.chatConnectionManager, this.vaultManager);
 
         AssistantCoordinator.initialize();
+
 
         this.topicAuthorityManager = new TopicAuthorityManager(this.crossIslandMessenger,
             this.torConnector,
@@ -112,6 +114,8 @@ class IslandsChat{
             this.vaultManager,
             this.torConnector
         );
+
+        this.vaultUpdater = new VaultUpdater(opts, this.clientRequestEmitter);
 
         Logger.verbose("Chat started")
     }
