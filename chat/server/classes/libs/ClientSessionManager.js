@@ -14,6 +14,7 @@ class ClientSessionManager extends EventEmitter{
         this.connectionManager = connectionManager;
         this.topicToSessionMap = {};
         this.vaultManager = vaultManager;
+        this.vaultManager
         this.registerConnectionManager(connectionManager);
     }
 

@@ -4,8 +4,10 @@ const path = require("path")
 const RandExp = require("randexp");
 const iCrypto = require("./iCrypto");
 const AdminKey = require("./AdminKey");
+const Message = require("../objects/Message")
 const { Internal } = require("../../../common/Events")
 
+const Err = require("../libs/IError.js");
 
 
 /**FILENAMES*/
@@ -29,16 +31,28 @@ class VaultManager{
 
         this.vaultIdLength = config.vaultIdLength || 64;
 
-
+        //TODO REFACTOR
         if(requestEmitter){
             requestEmitter.on(Internal.UPDATE_VAULT_FORMAT, this.updateVaultFormat.bind(this))
             requestEmitter.on(Internal.SAVE_VAULT_SETTINGS, this.saveVaultSettings.bind(this))
         }
     }
 
-    saveVaultSettings(){
-        console.log("SAVING VAULT SETTINGS");
+    registerSessionManager(sessionManager){
+        this.clientSessionManager = sessionManager;
+    }
 
+    saveVaultSettings(request){
+        console.log("SAVING VAULT SETTINGS");
+        let id = request.headers.pkfpSource;
+        let { vault, hash } = request.body
+        let publicKey = this.getVaultPublicKey(id)
+
+        this._backupVault(id)
+        this._writeVault(id, vault, publicKey, hash)
+        console.log("VAULT SHOULD BE UPDATED NOW");
+
+        this.notifyUser(Internal.VAULT_SETTINGS_UPDATED, id)
     }
 
 
@@ -56,6 +70,27 @@ class VaultManager{
             this.saveTopic(id, pkfp, topics[pkfp])
         }
         console.log("VAULT SHOULD BE UPDATED NOW");
+
+        this.notifyUser(Internal.VAULT_FORMAT_UPDATED, id)
+
+    }
+
+
+    notifyUser(event = Err.required("Notify user event"), vaultId = Err.required("Vault id")){
+
+        if(!this.clientSessionManager){
+            return;
+        }
+
+        let session = this.clientSessionManager.getSessionBySessionID(vaultId);
+
+        if(!session) return;
+
+        let response = new Message()
+        response.setSource("island");
+        response.setDest(vaultId);
+        response.setCommand(event)
+        session.broadcast(response);
     }
 
 
@@ -119,7 +154,7 @@ class VaultManager{
         return id;
     }
 
-    async saveTopic(vaultId, topicPkfp, topicBlob){
+    saveTopic(vaultId, topicPkfp, topicBlob){
         //verify
         Logger.debug(`Save topic request received: vault id: ${vaultId}, toipcPkfp: ${topicPkfp}, blob lengt: ${topicBlob.length}`,
                      {cat: "topic_create"});
@@ -313,7 +348,9 @@ class VaultManager{
         console.log("Backing up vault");
         let timestamp = new Date().toISOString()
         let vaultPath = path.join(this.vaultsPath, id, "vault");
+        let vaultHashPath = path.join(this.vaultsPath, id, "hash");
         let vaultBakPath = path.join(this.vaultsPath, `${id}`, `vault_BAK_${timestamp}`);
+        let vaultHashBakPath = path.join(this.vaultsPath, `${id}`, `vault_BAK_${timestamp}`);
 
         if(!fs.existsSync(vaultPath)){
             return;

@@ -26,9 +26,11 @@ class IslandsChat{
         this.clientRequestEmitter = new ClientRequestRouter(this.chatConnectionManager);
         this.torConnector = new TorConnector(opts);
         this.crossIslandMessenger = new CrossIslandMessenger(this.torConnector);
-        this.vaultManager = new VaultManager(opts, this.clientRequestEmitter);
         this.hm = new HistoryManager(this.historyPath);
+
+        this.vaultManager = new VaultManager(opts, this.clientRequestEmitter);
         this.clientSessionManager = new ClientSessionManager(this.chatConnectionManager, this.vaultManager);
+        this.vaultManager.registerSessionManager(this.clientSessionManager);
 
         AssistantCoordinator.initialize();
 

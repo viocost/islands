@@ -1760,10 +1760,21 @@ function setVaultListeners(vault) {
         console.log("Vault updated in chat client");
         refreshTopics()
         if (topicInFocus) setTopicInFocus(topicInFocus)
-
-        let src = vault.isSoundOn() ? "/img/sound-on.svg" : "/img/sound-off.svg";
-        util.$("#sound-control").setAttribute("src", src)
+        processVaultSettingsUpdate(vault)
     })
+
+    vault.on(Internal.VAULT_SETTINGS_UPDATED, ()=>processVaultSettingsUpdate(vault))
+
+    vault.on(Internal.VAULT_FORMAT_UPDATED, ()=>processVaultFormatUpdated(vault))
+}
+
+function processVaultFormatUpdated(vault){
+    toastr.success("Vault format has been updated.")
+}
+
+function processVaultSettingsUpdate(vault){
+    let src = vault.isSoundOn() ? "/img/sound-on.svg" : "/img/sound-off.svg";
+    util.$("#sound-control").setAttribute("src", src)
 }
 
 function setTopicListeners(topic) {

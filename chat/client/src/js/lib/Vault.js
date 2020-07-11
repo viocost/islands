@@ -235,6 +235,23 @@ export class Vault{
             self.sessionKey = msg.body.sessionKey;
             self.emit(Internal.SESSION_KEY, msg)
         }
+
+        this.handlers[Internal.VAULT_FORMAT_UPDATED] = ()=>{
+            console.log("%c VAULT FORMAT UPDATED", "color: red; font-size: 20px");
+            this.emit(Internal.VAULT_FORMAT_UPDATED)
+        }
+
+
+        this.handlers[Internal.VAULT_SETTINGS_UPDATED] = ()=>{
+            console.log("%c VAULT SETTINGS UPDATED",  "color: red; font-size: 20px");
+            this.emit(Internal.VAULT_SETTINGS_UPDATED);
+        }
+
+
+        this.handlers[Internal.VAULT_SETTINGS_UPDATED] = ()=>{
+            console.log("%c VAULT  UPDATED",  "color: red; font-size: 20px");
+            this.emit(Internal.VAULT_SETTINGS_UPDATED);
+        }
     }
 
     /**

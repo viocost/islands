@@ -64773,6 +64773,8 @@ var Vault_Vault = /*#__PURE__*/function () {
   }, {
     key: "initHandlers",
     value: function initHandlers() {
+      var _this = this;
+
       var self = this;
       this.handlers = {};
 
@@ -64807,6 +64809,24 @@ var Vault_Vault = /*#__PURE__*/function () {
 
         self.sessionKey = msg.body.sessionKey;
         self.emit(Events["Internal"].SESSION_KEY, msg);
+      };
+
+      this.handlers[Events["Internal"].VAULT_FORMAT_UPDATED] = function () {
+        console.log("%c VAULT FORMAT UPDATED", "color: red; font-size: 20px");
+
+        _this.emit(Events["Internal"].VAULT_FORMAT_UPDATED);
+      };
+
+      this.handlers[Events["Internal"].VAULT_SETTINGS_UPDATED] = function () {
+        console.log("%c VAULT SETTINGS UPDATED", "color: red; font-size: 20px");
+
+        _this.emit(Events["Internal"].VAULT_SETTINGS_UPDATED);
+      };
+
+      this.handlers[Events["Internal"].VAULT_SETTINGS_UPDATED] = function () {
+        console.log("%c VAULT  UPDATED", "color: red; font-size: 20px");
+
+        _this.emit(Events["Internal"].VAULT_SETTINGS_UPDATED);
       };
     }
     /**
@@ -64942,7 +64962,7 @@ var Vault_Vault = /*#__PURE__*/function () {
     key: "updateVaultFormat",
     value: function () {
       var _updateVaultFormat = Vault_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(data) {
-        var _this = this;
+        var _this2 = this;
 
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
@@ -64950,7 +64970,7 @@ var Vault_Vault = /*#__PURE__*/function () {
               case 0:
                 if (Vault_typeof(data.topics) === "object") {
                   Object.keys(data.topics).forEach(function (pkfp) {
-                    _this.topics[pkfp] = new Topic_Topic(pkfp, data.topics[pkfp].name, data.topics[pkfp].key, data.topics[pkfp].comment);
+                    _this2.topics[pkfp] = new Topic_Topic(pkfp, data.topics[pkfp].name, data.topics[pkfp].key, data.topics[pkfp].comment);
                   });
                 }
 
@@ -64989,13 +65009,13 @@ var Vault_Vault = /*#__PURE__*/function () {
   }, {
     key: "bootstrap",
     value: function bootstrap(arrivalHub, connector, version) {
-      var _this2 = this;
+      var _this3 = this;
 
       this.arrivalHub = arrivalHub;
       this.connector = connector;
       this.version = version;
       this.arrivalHub.on(this.id, function (msg) {
-        _this2.processIncomingMessage(msg, _this2);
+        _this3.processIncomingMessage(msg, _this3);
       }); ////////////////////////////////////////////////////////
       // if(this.versionUpdate){                            //
       //     console.log("Updating vault to new format.."); //
@@ -70051,9 +70071,23 @@ function setVaultListeners(vault) {
     console.log("Vault updated in chat client");
     refreshTopics();
     if (topicInFocus) setTopicInFocus(topicInFocus);
-    var src = vault.isSoundOn() ? "/img/sound-on.svg" : "/img/sound-off.svg";
-    $("#sound-control").setAttribute("src", src);
+    processVaultSettingsUpdate(vault);
   });
+  vault.on(Events["Internal"].VAULT_SETTINGS_UPDATED, function () {
+    return processVaultSettingsUpdate(vault);
+  });
+  vault.on(Events["Internal"].VAULT_FORMAT_UPDATED, function () {
+    return processVaultFormatUpdated(vault);
+  });
+}
+
+function processVaultFormatUpdated(vault) {
+  lib_toastr.success("Vault format has been updated.");
+}
+
+function processVaultSettingsUpdate(vault) {
+  var src = vault.isSoundOn() ? "/img/sound-on.svg" : "/img/sound-off.svg";
+  $("#sound-control").setAttribute("src", src);
 }
 
 function setTopicListeners(topic) {
