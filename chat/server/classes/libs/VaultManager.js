@@ -348,15 +348,19 @@ class VaultManager{
         console.log("Backing up vault");
         let timestamp = new Date().toISOString()
         let vaultPath = path.join(this.vaultsPath, id, "vault");
-        let vaultHashPath = path.join(this.vaultsPath, id, "hash");
         let vaultBakPath = path.join(this.vaultsPath, `${id}`, `vault_BAK_${timestamp}`);
-        let vaultHashBakPath = path.join(this.vaultsPath, `${id}`, `vault_BAK_${timestamp}`);
 
-        if(!fs.existsSync(vaultPath)){
-            return;
+        let vaultHashPath = path.join(this.vaultsPath, id, "hash");
+        let vaultHashBakPath = path.join(this.vaultsPath, `${id}`, `hash_BAK_${timestamp}`);
+
+        if(fs.existsSync(vaultPath)){
+            fs.renameSync(vaultPath, vaultBakPath);
         }
 
-        fs.renameSync(vaultPath, vaultBakPath);
+
+        if(fs.existsSync(vaultHashPath)){
+            fs.renameSync(vaultHashPath, vaultHashBakPath);
+        }
     }
 
     _updateVault(id, blob){
