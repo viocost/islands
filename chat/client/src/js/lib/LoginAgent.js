@@ -1,4 +1,4 @@
-import { StateMachine } from "./AdvStateMachine";
+import { StateMachine } from "../../../../common/AdvStateMachine";
 import { VaultHolder } from "./VaultHolder";
 import { VaultRetriever } from "./VaultRetriever";
 import { Vault } from "./Vault";

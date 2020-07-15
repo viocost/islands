@@ -1,4 +1,4 @@
-import { StateMachine } from "./AdvStateMachine";
+import { StateMachine } from "../../../../common/AdvStateMachine";
 import { iCrypto } from "../../../../common/iCrypto";
 import { ChatUtility } from "./ChatUtility";
 import { Message } from "./Message";

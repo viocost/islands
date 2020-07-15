@@ -8,7 +8,7 @@ import { Events, Internal  } from "../../../../common/Events";
 import { assert } from "../../../../common/IError";
 import { XHR } from "./xhr"
 import * as semver from "semver";
-import { StateMachine } from "./AdvStateMachine"
+import { StateMachine } from "../../../../common/AdvStateMachine"
 import { fetchJSON } from "./FetchJSON";
 import { ChatUtility } from "./ChatUtility";
 
