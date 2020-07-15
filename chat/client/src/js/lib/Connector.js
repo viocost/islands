@@ -2,7 +2,7 @@ import { WildEmitter } from "./WildEmitter";
 import * as io from "socket.io-client";
 import { Internal } from "../../../../common/Events";
 import { StateMachine } from "./AdvStateMachine";
-import { iCrypto } from "./iCrypto";
+import { iCrypto } from "../../../../common/iCrypto";
 
 
 export class Connector {

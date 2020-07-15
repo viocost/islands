@@ -1,5 +1,5 @@
 import { StateMachine } from "./AdvStateMachine";
-import { iCrypto } from "./iCrypto";
+import { iCrypto } from "../../../../common/iCrypto";
 import { ChatUtility } from "./ChatUtility";
 import { Message } from "./Message";
 import { WildEmitter } from  "./WildEmitter";

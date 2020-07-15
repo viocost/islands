@@ -4,7 +4,7 @@ import { VaultRetriever } from "./VaultRetriever";
 import { Vault } from "./Vault";
 import { WildEmitter } from "./WildEmitter";
 import { Events } from "../../../../common/Events";
-import { iCrypto } from "./iCrypto";
+import { iCrypto } from "../../../../common/iCrypto";
 
 
 export class LoginAgent{

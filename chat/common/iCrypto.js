@@ -4,7 +4,7 @@ const sjcl = require("sjcl");
 const Base32 = require("./Base32.js");
 const JSChaCha20 = require("js-chacha20");
 
-export class iCrypto {
+class iCrypto {
     constructor(settings){
         let self = this;
         self.settings = {};
@@ -103,6 +103,7 @@ export class iCrypto {
     /**********************$$*****************************/
     /***####NONCES PLAIN TEXT####***/
 
+
     asyncCreateNonce(nameToSave, length=32){
         return new Promise((resolve, reject)=>{
             try{
@@ -112,6 +113,8 @@ export class iCrypto {
             }
         })
     }
+
+
 
     /**
      * Creates nonce of the given length and
@@ -1279,3 +1282,7 @@ export class iCrypto {
     }
 }
 
+
+module.exports = {
+    iCrypto: iCrypto
+}

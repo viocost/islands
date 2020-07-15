@@ -3,7 +3,7 @@ const Err = require("./IError.js");
 const Logger = require("../libs/Logger.js");
 const { Internal, Events } = require("../../../common/Events")
 const { EventEmitter } = require("events")
-const crypto = require("crypto");
+
 
 
 class ClientSessionManager extends EventEmitter{
@@ -28,10 +28,9 @@ class ClientSessionManager extends EventEmitter{
 
             let socket = connectionManager.getSocketById(connectionId);
 
-            let keysObj = crypto.getDiffieHellman("modp14");
-            keysObj.generateKeys();
 
-            let sessionPublicKey = socket.handshake.query.public_key;
+            let message = new Message();
+
 
             return
 

@@ -1,7 +1,7 @@
 import { IError as Err }  from "../../../../common/IError";
 import { verifyPassword } from "./PasswordVerify";
 import { Topic } from "../lib/Topic";
-import { iCrypto } from "./iCrypto";
+import { iCrypto } from "../../../../common/iCrypto";
 import { WildEmitter } from "./WildEmitter";
 import { Message } from "./Message";
 import { Events, Internal  } from "../../../../common/Events";

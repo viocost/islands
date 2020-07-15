@@ -19,7 +19,7 @@ import { Vault } from "./lib/Vault";
 import { TopicJoinAgent } from "./lib/TopicJoinAgent";
 import { ConnectionIndicator } from  "./ui/ConnectionIndicator";
 // TEMP IMPORTS FOR FURTHER REFACTORING
-import { iCrypto } from "./lib/iCrypto";
+import { iCrypto } from "../../../common/iCrypto";
 import { Message } from "./lib/Message";
 import * as DH from "diffie-hellman/browser";
 
