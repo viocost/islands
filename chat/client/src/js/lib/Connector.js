@@ -2,6 +2,8 @@ import { WildEmitter } from "./WildEmitter";
 import * as io from "socket.io-client";
 import { Internal } from "../../../../common/Events";
 import { StateMachine } from "./AdvStateMachine";
+import { iCrypto } from "./iCrypto";
+
 
 export class Connector {
     constructor(connectionString = "") {
@@ -10,7 +12,6 @@ export class Connector {
         this.socketInitialized = false;
         this.connectorStateMachine = this._prepareConnectorStateMachine()
         this.acceptorStateMachine = this._prepareAcceptorStateMachine()
-
 
         this.pingCount = 0;
         this.queue = [];
@@ -25,7 +26,8 @@ export class Connector {
 
     // ---------------------------------------------------------------------------------------------------------------------------
     // PUBLIC METHODS
-    
+
+
     send(msg) {
         console.log("Sending message");
         this.acceptorStateMachine.handle.acceptMessage(msg);
@@ -58,6 +60,10 @@ export class Connector {
 
     _emitState(stateMachine) {
         this.emit(Internal.CONNECTION_STATE_CHANGED, stateMachine.state);
+    }
+
+    _notifyError(err){
+        this.emit(Internal.CONNECTION_ERROR, err)
     }
 
     _connect(){
@@ -224,10 +230,11 @@ export class Connector {
                     entry:  this._emitState,
                     transitions: {
                         connected: {
-                            state: ConnectionState.CONNECTED,
+                            state: ConnectionState.SESSION_ESTABLISHED,
                         },
                         error: {
-                            state: ConnectionState.ERROR
+                            state: ConnectionState.DISCONNECTED,
+                            actions: this._notifyError
                         },
 
                     }
@@ -236,10 +243,12 @@ export class Connector {
                 reconnecting: {
                     entry: this._emitState,
                     transitions: {
-                        connected: { state: ConnectionState.CONNECTED },
+                        connected: { state: ConnectionState.SESSION_ESTABLISHED },
                         error: { state: ConnectionState.ERROR }
                     }
                 },
+
+
 
                 connected: {
                     entry: [this._resetConnectionAttempts, this._emitState, this._processQueue],
@@ -280,9 +289,9 @@ export class Connector {
 
 export const ConnectionState = {
     DISCONNECTED: "disconnected",
-    CONNECTED: "connected",
     CONNECTING: "connecting",
-    RECONNECTING: "reconnecting",
-    ERROR: "error",
-    TIMEOUT: "timeout"
+    AWATING_SESSION_KEY: "awating_session_key",
+    AWATING_AUTH_OK: "awating_auth_ok",
+    SESSION_ESTABLISHED: "session_established",
+    RECONNECTING: "reconnecting"
 }

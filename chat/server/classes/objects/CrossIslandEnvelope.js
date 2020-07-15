@@ -17,11 +17,18 @@ const Err = require("../libs/IError.js");
  *  In that case return is set to true and error message is added to the envelope.
  *
  */
+
+/**
+ * TODO Version negotiation
+ *
+ */
+
 class CrossIslandEnvelope{
     constructor(destination = Err.required(),
                 payload = Err.required(),
                 origin){
         this.destination = destination;
+        this.version = "1";
         this.payload = payload;
         this.origin = origin;
         this.returnOnConnectionFail = false;

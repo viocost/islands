@@ -3,6 +3,7 @@ const Err = require("./IError.js");
 const Logger = require("../libs/Logger.js");
 const { Internal, Events } = require("../../../common/Events")
 const { EventEmitter } = require("events")
+const crypto = require("crypto");
 
 
 class ClientSessionManager extends EventEmitter{
@@ -26,6 +27,13 @@ class ClientSessionManager extends EventEmitter{
             //Executed when new client connects
 
             let socket = connectionManager.getSocketById(connectionId);
+
+            let keysObj = crypto.getDiffieHellman("modp14");
+            keysObj.generateKeys();
+
+            let sessionPublicKey = socket.handshake.query.public_key;
+
+            return
 
             // this must be provided to indentify session
             // Session is identified by Vault id

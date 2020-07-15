@@ -91,10 +91,23 @@ export class LoginAgent{
                         },
 
                         decryptSuccess: {
-                            state: "loggedIn"
+                            state: "exchangingKeys"
                         }
                     }
 
+                },
+
+                exchangingKeys:{
+                    transitions: {
+                        solveChallenge: {
+                            actions: this._solveChallenge
+                        },
+
+                        authenticated: {
+                            state: "loggedIn"
+                        }
+
+                    }
                 },
 
                 loggedIn: {

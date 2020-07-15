@@ -21,6 +21,7 @@ import { ConnectionIndicator } from  "./ui/ConnectionIndicator";
 // TEMP IMPORTS FOR FURTHER REFACTORING
 import { iCrypto } from "./lib/iCrypto";
 import { Message } from "./lib/Message";
+import * as DH from "diffie-hellman/browser";
 
 // ---------------------------------------------------------------------------------------------------------------------------
 // CONSTANTS
@@ -81,6 +82,7 @@ let UIInitialized = false;
 // ---------------------------------------------------------------------------------------------------------------------------
 // TEST ONLY!
 // Comment out for production!
+window.dh = DH
 window.connectorTest = runConnectorTest;
 window.connector = connector;
 window.util = util;

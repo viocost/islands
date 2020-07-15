@@ -93,6 +93,7 @@ module.exports.Internal = Object.freeze({
 
     // ---------------------------------------------------------------------------------------------------------------------------
     // Vault update notifications
+    GET_LOGIN_SET: "get_login_set",
     SAVE_VAULT: "save_vault",
     TOPIC_CREATED: "topic_created",
 
