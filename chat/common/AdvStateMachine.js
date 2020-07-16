@@ -153,16 +153,13 @@
              }
          }
      }
-
-
-
-
   }
  /
 
+*/
 
 
-const { createDerivedErrorClasses } = require("../../../../common/DynamicError");
+const { createDerivedErrorClasses } = require("./DynamicError");
 
 
 class StateMachineError extends Error{ constructor(details) { super(details); this.name = "StateMachineError" } }

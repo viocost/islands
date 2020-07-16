@@ -104,6 +104,9 @@ document.addEventListener('DOMContentLoaded', event => {
     arrivalHub = new ArrivalHub(connector);
     version = islandsVersion()
 
+
+    connector.establishConnection()
+
     loginAgent = new LoginAgent({
         version: version,
         connector: connector,
@@ -130,7 +133,7 @@ document.addEventListener('DOMContentLoaded', event => {
 
     })
 
-    loginAgent.fetchVault();
+    //loginAgent.fetchVault();
 
 });
 

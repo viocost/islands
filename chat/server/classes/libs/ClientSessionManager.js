@@ -15,92 +15,94 @@ class ClientSessionManager extends EventEmitter{
         this.connectionManager = connectionManager;
         this.topicToSessionMap = {};
         this.vaultManager = vaultManager;
-        this.vaultManager
-        this.registerConnectionManager(connectionManager);
+        this.connectionManager.on("client_connected", this._processClientConnected.bind(this))
     }
 
-    registerConnectionManager(connectionManager){
-        let self = this;
 
-        //Initializing new client connection
-        connectionManager.on("client_connected", connectionId=>{
-            //Executed when new client connects
+    _processClientConnected(connectionId){
 
-            let socket = connectionManager.getSocketById(connectionId);
+        //Executed when new client connects
 
+        // if reconnect - return
+        // else create new session;
 
-            let message = new Message();
-
-
+        let reconnect = false
+        if (reconnect){
             return
+        }
 
-            // this must be provided to indentify session
-            // Session is identified by Vault id
-            let vaultId = socket.handshake.query.vaultId;
+        //let socket = connectionManager.getSocketById(connectionId);
+        console.log("Client connected!");
+        let session = new ClientSession(this.connectionManager, connectionId);
 
-            console.log(`Vault id on client_connected: ${vaultId}, `, socket.handshake.query);
+        this.sessions[connectionId] = session;
+        console.log("Session created");
+    }
+
+    _associateVaultWithSession(socket){
+
+        // this must be provided to indentify session
+        // Session is identified by Vault id
+        let vaultId = socket.handshake.query.vaultn
+        let host = socket.handshake.headers.host;
+
+        console.log(`Vault id on client_connected: ${vaultId}, `, socket.handshake.query);
 
 
-            if(!vaultId){
-                console.log("NO VAULT ID");
-                Logger.warn("Warning: no vaultID provided at the connection.", {cat: "session"})
-                return;
+        if(!vaultId){
+            console.log("NO VAULT ID");
+            Logger.warn("Warning: no vaultID provided at the connection.", {cat: "session"})
+            return;
+        }
+        if(this.sessions.hasOwnProperty(vaultId)){
+            console.log(`Session exists. Adding connection...`);
+            self.sessions[vaultId].addConnection(connectionId);
+        } else {
+            console.log(`Session does not exist. Creating...`);
+            let topicsIds = self.vaultManager.getTopicsIds(vaultId);
+            let newSession = new ClientSession(vaultId, connectionId, connectionManager, topicsIds);
+            this.sessions[vaultId] = newSession;
+
+            //Adding topic to session mapping
+            for(let pkfp of newSession.topics){
+                self.topicToSessionMap[pkfp] = newSession;
             }
-            if(this.sessions.hasOwnProperty(vaultId)){
-                console.log(`Session exists. Adding connection...`);
-                self.sessions[vaultId].addConnection(connectionId);
-            } else {
-                console.log(`Session does not exist. Creating...`);
-                let topicsIds = self.vaultManager.getTopicsIds(vaultId);
-                let newSession = new ClientSession(vaultId, connectionId, connectionManager, topicsIds);
-                this.sessions[vaultId] = newSession;
 
-                //Adding topic to session mapping
-                for(let pkfp of newSession.topics){
-                    self.topicToSessionMap[pkfp] = newSession;
-                }
-
-                newSession.on(Internal.KILL_SESSION, (session)=>{
-                    Logger.debug(`Killing session ${session.id} on timeout`)
-                    //Clearing topic to session mapping
-                    for(let pkfp of Object.keys(session.topics)){
-                        delete self.topicToSessionMap[pkfp];
-                    }
-                    delete this.sessions[session.id]
-                })
-
-                newSession.on(Internal.TOPIC_ADDED, (pkfp)=>{
-                    Logger.debug(`Topic ${pkfp} added for session ${newSession.id}`, {
-                        cat: "session"
-                    })
-                    self.topicToSessionMap[pkfp] = newSession;
-                })
-
-                newSession.on(Internal.TOPIC_DELETED, (pkfp)=>{
-                    Logger.debug(`Topic ${pkfp} deleted for session ${newSession.id}`, {
-                        cat: "session"
-                    })
+            newSession.on(Internal.KILL_SESSION, (session)=>{
+                Logger.debug(`Killing session ${session.id} on timeout`)
+                //Clearing topic to session mapping
+                for(let pkfp of Object.keys(session.topics)){
                     delete self.topicToSessionMap[pkfp];
+                }
+                delete this.sessions[session.id]
+            })
+
+            newSession.on(Internal.TOPIC_ADDED, (pkfp)=>{
+                Logger.debug(`Topic ${pkfp} added for session ${newSession.id}`, {
+                    cat: "session"
                 })
-            }
+                self.topicToSessionMap[pkfp] = newSession;
+            })
 
-            // Checking if reconnect. If last seen messages Ids provided, assuming reconnect
-            let lastMsgIds = socket.handshake.query.lastMessagesIds;
+            newSession.on(Internal.TOPIC_DELETED, (pkfp)=>{
+                Logger.debug(`Topic ${pkfp} deleted for session ${newSession.id}`, {
+                    cat: "session"
+                })
+                delete self.topicToSessionMap[pkfp];
+            })
+        }
 
-            if(lastMsgIds){
-                //And emiting it for service manager
-                console.log("Assuming reconnect");
-                this.emit(Internal.MESSAGES_SYNC, lastMsgIds, connectionId)
-            }
+        // Checking if reconnect. If last seen messages Ids provided, assuming reconnect
+        let lastMsgIds = socket.handshake.query.lastMessagesIds;
 
-        })
+        if(lastMsgIds){
+            //And emiting it for service manager
+            console.log("Assuming reconnect");
+            this.emit(Internal.MESSAGES_SYNC, lastMsgIds, connectionId)
+        }
+    }
 
-        connectionManager.on("client_disconnected", connectionId=>{
-            let session = self.getSessionByConnectionId(connectionId)
-            if(session === undefined) return;
-            session.removeConnection(connectionId);
-
-        });
+    _provideVaultToSession(session){
 
     }
 
@@ -130,80 +132,9 @@ class ClientSessionManager extends EventEmitter{
     }
 
 
-    createSession(pkfp, connectionId, sessionID){
-        const sessions = this.getSessionBySessionID(sessionID);
-        if (sessions.length > 0){
-            this.cleanupZombieSessions(sessions);
-        }
-
-        this.registerSession(new ClientSession(pkfp, connectionId, sessionID));
-        console.log("\nCreated new session. ConnectionId: " + connectionId);
-        console.log("Sessions: " );
-        Object.keys(this.connectionManager.socketHub.sockets).forEach(socketId=>{
-            console.log("Key: "+ socketId + " Val: " + this.connectionManager.socketHub.sockets[socketId].id);
-        })
-        console.log("\n")
-    }
-
-
-    cleanupZombieSessions(sessions = Err.required()){
-        sessions.forEach((session)=>{
-            delete this.sessions[session.getConnectionID()];
-        })
-    }
-
-    registerSession(session){
-        if (!(session instanceof ClientSession)){
-            throw new Error("Invalid session type");
-        }
-        this.sessions[session.getConnectionID()] = session;
-    }
 
 
 
-    broadcastUserResponse(pkfp, response){
-        const activeConnections = this.getSession(pkfp);
-        activeConnections.forEach((session)=>{
-            this.connectionManager.sendResponse(session.getConnectionID(), response)
-        })
-    }
-
-    broadcastServiceMessage(pkfp, message){
-        const session = this.getSession(pkfp);
-        if (session && session.activeConnectionsCount() > 0){
-            session.broadcast(message)
-        } else {
-            Logger.debug(`No active connections found for ${pkfp}`, { cat: "session" });
-        }
-    }
-
-    sendServiceMessage(connectionId, message){
-        this.connectionManager.sendServiceMessage(connectionId, message)
-    }
-
-    broadcastServiceRecord(pkfp, record){
-        const activeConnections = this.getSession(pkfp);
-        activeConnections.forEach((session)=>{
-            this.connectionManager.sendServiceRecord(session.getConnectionID(), record)
-        })
-    }
-
-    broadcastMessage(pkfp, message){
-        let session = this.topicToSessionMap[pkfp];
-        console.log(`Session ${session}`);
-        if(!(session instanceof ClientSession)){
-            Logger.debug(`No active sessions found for topic ${pkfp}`, {
-                cat: "chat"
-            })
-            return;
-        }
-
-        Logger.verbose("Broadcasting chat message",{
-            pkfp: pkfp,
-            cat: "session"
-        });
-        session.broadcast(message);
-    }
 
 
 }

@@ -1,5 +1,5 @@
 const iCrypto = require("../../../common/iCrypto");
-const StateMachine = require("../../../common/AdvStateMachine");
+const { StateMachine } = require("../../../common/AdvStateMachine");
 
 
 class ClientSession{

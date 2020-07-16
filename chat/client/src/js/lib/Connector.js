@@ -43,6 +43,7 @@ export class Connector {
     }
 
     establishConnection() {
+        console.trace()
         this.connectorStateMachine.handle.connect();
     }
 
@@ -250,7 +251,7 @@ export class Connector {
 
 
 
-                connected: {
+                session_established: {
                     entry: [this._resetConnectionAttempts, this._emitState, this._processQueue],
 
                     transitions: {
