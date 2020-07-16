@@ -4,7 +4,7 @@ import { WildEmitter } from "./WildEmitter";
 import { Message } from "./Message";
 import { Metadata } from  "./Metadata";
 import { ChatUtility } from "./ChatUtility";
-import { iCrypto } from  "./iCrypto";
+import { iCrypto } from  "../../../../common/iCrypto";
 import { ChatMessage } from "./ChatMessage";
 import { ClientSettings } from "./ClientSettings";
 import { CuteSet } from  "cute-set";

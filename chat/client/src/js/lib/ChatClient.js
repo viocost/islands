@@ -11,7 +11,7 @@ import  { ChatUtility }  from "./ChatUtility";
 import { Message } from "./Message";
 import { Topic } from "./Topic";
 import { DownloadAttachmentAgent } from "./DownloadAttachmentAgent";
-import { iCrypto } from "./iCrypto"
+import { iCrypto } from "../../../../common/iCrypto"
 import { TopicJoinAgent } from "./TopicJoinAgent";
 import { SendMessageAgent } from "./SendMessageAgent";
 import { BootParticipantAgent } from "./BootParticipantAgent";

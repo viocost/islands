@@ -1,4 +1,4 @@
-import { StateMachine } from "./AdvStateMachine";
+import { StateMachine } from "../../../../common/AdvStateMachine";
 import { fetchJSON } from "./FetchJSON";
 import { WildEmitter } from "./WildEmitter"
 
