@@ -2,6 +2,11 @@ const iCrypto = require("../../../common/iCrypto");
 const { StateMachine } = require("../../../common/AdvStateMachine");
 
 
+/**
+ * When session is authenticated it is recognized as key agent (or master)
+ *
+ */
+
 class ClientSession{
     constructor(connectionManager, connectionId){
         this.sm = this._prepareStateMachine()

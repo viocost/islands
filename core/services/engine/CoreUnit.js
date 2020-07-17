@@ -52,14 +52,13 @@ class CoreUnit{
     }
 
     launch(){
-        let self = this;
         this.process = execFile(this.executable, this.args)
         let handler = ()=>{
-            self.crashes.push(new Date())
-            let tmt = self.calculateRestartTimeout()
+            this.crashes.push(new Date())
+            let tmt = this.calculateRestartTimeout()
             setTimeout(()=>{
-                if (self.killing) return;
-                self.launch()
+                if (this.killing) return;
+                this.launch()
             }, tmt)
         }
         this.process.on('exit', handler)
