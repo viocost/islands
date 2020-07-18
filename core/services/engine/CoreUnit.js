@@ -1,11 +1,14 @@
-const { execFile }  = require("child_process");
+const { execFile, fork }  = require("child_process");
 const { StateMachine } = require("adv-state");
+const { createDerivedErrorClasses } = require("./DynamicError");
 
-
+class CoreUnitError extends Error{ constructor(data){ super(data); this.name = "CoreUnitError" } }
+const err = createDerivedErrorClasses(CoreUnitError, {
+    LaunchFromBase: "AttemptToInvokeLaunchFromBaseClass",
+})
 
 const SHUTDOWN_TIMEOUT = 10000;
-const RESTART_TIMOUT_LEVEL_1 = 200;
-const RESTART_TIMOUT_LEVEL_2 = 2000;
+
 
 /**
  * This class provides simple process management functionality
@@ -16,15 +19,14 @@ const RESTART_TIMOUT_LEVEL_2 = 2000;
 class CoreUnit{
     constructor(executable, args, output){
         console.log("Launching core unit: " + executable)
-        this.sm = this._prepareStateMachine()
         this.output = output; //if true then print to console
         this.executable = executable;
         this.args = args;
+        this.sm;
         this.restartTimeout = 200;
         this.crashLevel = 0;
         this.crashes = getLimitedLengthArray(15);
-        this.process = null //  process handle
-        this.killing = false // kill flag
+        this.process = null
         this.onoutput;
     }
 
@@ -51,14 +53,7 @@ class CoreUnit{
     // Private methods
 
     _performLaunch(){
-        this.process = execFile(this.executable, this.args, ()=>{
-            console.log(`Subprocess ${this.executable} started`);
-            this.sm.handle.processRunning()
-        })
-
-        this.process.on('exit', this._processExit.bind(this))
-        this.process.stdout.on("data", this.handleOutput.bind(this))
-        this.process.stderr.on("data", this.handleOutput.bind(this))
+        throw new err.LaunchFromBase("This method should be implemented by child classes")
     }
 
 
@@ -138,6 +133,28 @@ class CoreUnit{
         }, SHUTDOWN_TIMEOUT)
     }
 
+
+    handleOutput(data){
+        let msg = data.toString('utf8')
+        if (this.output){
+            console.log(msg)
+        }
+        if (typeof this.onoutput === "function"){
+            this.onoutput(msg)
+        }
+    }
+
+
+
+}
+
+
+class ExecutableChildProcess extends CoreUnit{
+    constructor(...args){
+        super(...args)
+        this.sm = this._prepareStateMachine()
+    }
+
     _prepareStateMachine(){
         return new StateMachine(this, {
             name: "Core Unit SM",
@@ -186,6 +203,90 @@ class CoreUnit{
 
                 },
 
+                shutdownTimeout: {
+                    final: true,
+                    entry: this._notifyShutdownTimeout
+                },
+
+                terminated: {
+                    final: true
+                }
+
+            }
+
+        }, { msgNotExist: StateMachine.Warn, traceLevel: StateMachine.TraceLevel.DEBUG })
+    }
+
+}
+
+
+class NodeChildProcess extends CoreUnit{
+
+    constructor(...args){
+        super(...args)
+        this.sm = this._prepareStateMachine()
+    }
+
+
+    _performLaunch(){
+        this.process = fork(this.executable, this.args, ()=>{
+            console.log(`Subprocess ${this.executable} started`);
+            this.sm.handle.processRunning()
+        })
+
+        this.process.on('exit', this._processExit.bind(this))
+        this.process.stdout.on("data", this.handleOutput.bind(this))
+        this.process.stderr.on("data", this.handleOutput.bind(this))
+    }
+
+
+    _prepareStateMachine(){
+        return new StateMachine(this, {
+            name: "Core Unit SM",
+            stateMap: {
+                notRunning: {
+                    initial: true,
+                    transitions: {
+                        launch: {
+                            actions: this._performLaunch,
+                        },
+
+                        processRunning: {
+                            state: "running"
+                        }
+
+                    }
+                },
+
+                running: {
+                    transitions: {
+                        nonZeroExit: {
+                            state: "notRunning",
+                            actions: this._restartOnCrash
+                        },
+
+                        kill: {
+                            actions: this._kill,
+                            state: "shuttingDown"
+                        }
+                    }
+                },
+
+                shuttingDown: {
+                    entry: this._setShutdownTimeout,
+                    transitions: {
+                        exitedNormally: {
+                            state: "terminated"
+                        },
+
+                        shutdownTimeoutExpired: {
+                            state: "shutdownTimeout"
+
+                        }
+
+                    }
+
+                },
 
                 shutdownTimeout: {
                     final: true,
@@ -202,30 +303,8 @@ class CoreUnit{
     }
 
 
-    handleOutput(data){
-        let msg = data.toString('utf8')
-        if (this.output){
-            console.log(msg)
-        }
-        if (typeof this.onoutput === "function"){
-            this.onoutput(msg)
-        }
-    }
-
-
-
 }
 
-
-class NodeChildProcess extends CoreUnit{
-    constructor(){
-        super(arguments)
-    }
-}
-
-class ExecutableChildProcess extends CoreUnit{
-
-}
 
 // ---------------------------------------------------------------------------------------------------------------------------
 // Util
