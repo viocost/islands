@@ -36,17 +36,6 @@ global.DEBUG = false;
 
 
 
-function verifyGetConfigParameter(param, configFile){
-    if(process.env[param]){
-        return process.env[param]
-    } else if (!global.DEBUG || !configFile[param]){
-        console.error(`Required parameter ${param} has not been provided. Note that production mode requires paramters to be passed via environment variables. \nExiting...`)
-        process.exit(1)
-    } else {
-        return configFile[param]
-    }
-}
-
 //Building configuration
 
 

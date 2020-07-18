@@ -1,4 +1,5 @@
-const Logger = require("./classes/libs/Logger.js");
+const Logger = require("./classes/libs/Logger");
+const { prepareConfig } = require("./lib/IslandsConfig");
 const { StateMachine } = require("../common/AdvStateMachine");
 
 
@@ -7,10 +8,12 @@ const { StateMachine } = require("../common/AdvStateMachine");
 
 
 //parse arguments
-let adminKeysPath
-let HOST
-let PORT
-let oneTimePassword
+/////////////////////////
+// let adminKeysPath   //
+// let HOST            //
+// let PORT            //
+// let oneTimePassword //
+/////////////////////////
 
 process.argv.forEach((val, index, array)=>{
     switch(val){
@@ -33,6 +36,14 @@ process.argv.forEach((val, index, array)=>{
     }
 });
 
+//create config
+const config = prepareConfig();
+
+//check admin account
+
+//notify parent if can start
+
+//or notify that cannot and exit;
 
 //const islandSM = prepareIslandStateMachine();
 //setup state machine
@@ -52,3 +63,5 @@ function prepareIslandStateMachine(){
         }
     })
 }
+
+
