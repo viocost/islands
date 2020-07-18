@@ -13,7 +13,13 @@ let interval = setInterval(()=>{
 }, 1000)
 
 
-let subProcess = execFile("node",  ['./sub.js'])
+let subProcess = execFile("node",  ['./subi.js'], ()=>{
+    console.log("Process started");
+})
+
+subProcess.on("close", code=>{
+    console.log(`CLOSE WITH CODE: ${code}`);
+})
 
 subProcess.stdout.on("data", data => { console.log(`STDOUT SUB ${data.toString('utf8')}`) })
 subProcess.stderr.on("data", data => { console.log(`STDERR SUB ${data.toString('utf8')}`) })

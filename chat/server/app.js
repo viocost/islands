@@ -7,7 +7,7 @@ const fs = require("fs-extra");
 const fileUpload = require('express-fileupload');
 //const HiddenServiceManager = require("./classes/libs/HiddenServiceManager");
 
-const Logger = require("./classes/libs/Logger.js");
+//const Logger = require("./classes/libs/Logger.js");
 //const helpRouter = require("./helpRouter.js");
 //const vaultRouter = require("./vaultRouter");
 const adminRouter = require("./adminRouter");
@@ -35,32 +35,6 @@ let HOST = '0.0.0.0';
 global.DEBUG = false;
 
 
-let configPath = path.join(__dirname, 'config', 'config.json');
-let historyPath = "../history/";
-let adminKeysPath = "../keys/";
-let servicePath = "../service/";
-let logger;
-
-process.argv.forEach((val, index, array)=>{
-    switch(val){
-        case "-p":
-            PORT = process.argv[index+1];
-            break;
-        case "-h":
-            HOST = process.argv[index+1];
-            break;
-        case "-k":
-            adminKeysPath = process.argv[index+1];
-            break
-        case "--debug":
-            console.log("Setting global debug to true");
-            global.DEBUG = true;
-            break
-    }
-});
-
-
-let configFile = JSON.parse(fs.readFileSync(configPath, 'utf8'));
 
 function verifyGetConfigParameter(param, configFile){
     if(process.env[param]){
@@ -74,56 +48,7 @@ function verifyGetConfigParameter(param, configFile){
 }
 
 //Building configuration
-const basePath = path.join(verifyGetConfigParameter("ISLANDS_DATA"), "IslandsChat");
-const torPassword = verifyGetConfigParameter("TOR_PASSWD", configFile);
-const torControlPort = verifyGetConfigParameter("TOR_CONTROL_PORT", configFile);
-const torControlHost = verifyGetConfigParameter("TOR_CONTROL_HOST", configFile);
-const torHost = verifyGetConfigParameter("TOR_HOST", configFile);
-const torPort = verifyGetConfigParameter("TOR_PORT", configFile);
-const torSOCKSPort = verifyGetConfigParameter("TOR_SOCKS_PORT", configFile);
 
-const config = {
-    "historyPath":        path.join(basePath, "history"),
-    "updatePath":         path.join(basePath, "update"),
-    "adminKeyPath":       path.join(basePath, "keys"),
-    "vaultsPath":         path.join(basePath, "vaults"),
-    "servicePath":        path.join(basePath, "service"),
-    "hsVaultMap":         path.join(basePath, "hsmap"),
-    "hiddenServicesPath": path.join(basePath, "hs"),
-    "basePath":           basePath,
-    "vaultIdLength":      64,
-    "torConnector": {
-        "hiddenServiceHOST": torHost,
-        "hiddenServicePORT": torPort,
-        "torListenerPort": 80,
-        "torControlHost": torControlHost,
-        "torControlPort": torControlPort,
-        "torControlPassword" : torPassword,
-        "torSOCKSPort": torSOCKSPort
-    }
-}
-
-if(!fs.existsSync(basePath)){
-    try{
-        fs.mkdirSync(basePath)
-    }catch (err){
-        console.log(`Unable to create base directory: ${err}`)
-        console.log("Exiting...");
-        process.exit
-    }
-}
-
-Logger.initLogger(config.servicePath, "debug");
-let helloMsg = "!!=====ISLANDS v." + global.VERSION + " =====!!"
-console.log(helloMsg);
-Logger.info(helloMsg);
-
-historyPath = config.historyPath || historyPath;
-let updatePath = config.updatePath || "../update";
-
-let adminKeyPath = config.adminKeyPath || "../keys";
-
-servicePath = config.servicePath || "../service/";
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');

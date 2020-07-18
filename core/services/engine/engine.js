@@ -1,4 +1,4 @@
-const  CoreUnit = require("./CoreUnit.js");
+const  { ExecutableChildProcess, NodeChildProcess } = require("./CoreUnit.js");
 const readline = require("readline");
 const fs = require("fs");
 const path = require("path");
@@ -145,7 +145,7 @@ function launchTor(){
     // Set tor env variables
     // launch tor
     let torCmdArgs = ["-f", torConfig.torrcPath];
-    tor = new CoreUnit(process.env["TOR"], torCmdArgs, true);
+    tor = new ExecutableChildProcess(process.env["TOR"], torCmdArgs, true);
     tor.launch();
     tor.onoutput = data=>{ outputHandler(data, "TOR") };
 }
