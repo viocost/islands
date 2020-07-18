@@ -2,7 +2,7 @@ const Logger = require("./classes/libs/Logger.js");
 const { StateMachine } = require("../common/AdvStateMachine");
 
 
-Logger.initLogger(config.servicePath, "debug");
+//Logger.initLogger(config.servicePath, "debug");
 
 
 
@@ -34,16 +34,13 @@ process.argv.forEach((val, index, array)=>{
 });
 
 
-const islandSM = prepareIslandStateMachine();
+//const islandSM = prepareIslandStateMachine();
 //setup state machine
-
-
-
 
 
 //Say hello
 let helloMsg = "!!=====ISLANDS v." + global.VERSION + " =====!!"
-Logger.info(helloMsg);
+//Logger.info(helloMsg);
 
 
 

@@ -152,69 +152,17 @@ class CoreUnit{
 class ExecutableChildProcess extends CoreUnit{
     constructor(...args){
         super(...args)
-        this.sm = this._prepareStateMachine()
+        this.sm = prepareCoreUnitStateMachine.call(this, this.executable);
     }
 
-    _prepareStateMachine(){
-        return new StateMachine(this, {
-            name: "Core Unit SM",
-            stateMap: {
-                notRunning: {
-                    initial: true,
-                    transitions: {
-                        launch: {
-                            actions: this._performLaunch,
-                        },
 
-                        processRunning: {
-                            state: "running"
-                        }
+    _performLaunch(){
+        this.process = execFile(this.executable, this.args)
 
-                    }
-                },
-
-                running: {
-                    transitions: {
-                        nonZeroExit: {
-                            state: "notRunning",
-                            actions: this._restartOnCrash
-                        },
-
-                        kill: {
-                            actions: this._kill,
-                            state: "shuttingDown"
-                        }
-                    }
-                },
-
-                shuttingDown: {
-                    entry: this._setShutdownTimeout,
-                    transitions: {
-                        exitedNormally: {
-                            state: "terminated"
-                        },
-
-                        shutdownTimeoutExpired: {
-                            state: "shutdownTimeout"
-
-                        }
-
-                    }
-
-                },
-
-                shutdownTimeout: {
-                    final: true,
-                    entry: this._notifyShutdownTimeout
-                },
-
-                terminated: {
-                    final: true
-                }
-
-            }
-
-        }, { msgNotExist: StateMachine.Warn, traceLevel: StateMachine.TraceLevel.DEBUG })
+        this.process.on('exit', this._processExit.bind(this))
+        this.process.stdout.on("data", this.handleOutput.bind(this))
+        this.process.stderr.on("data", this.handleOutput.bind(this))
+        this.sm.handle.processRunning()
     }
 
 }
@@ -224,7 +172,7 @@ class NodeChildProcess extends CoreUnit{
 
     constructor(...args){
         super(...args)
-        this.sm = this._prepareStateMachine()
+        this.sm = prepareCoreUnitStateMachine.call(this, this.executable);
     }
 
 
@@ -237,69 +185,6 @@ class NodeChildProcess extends CoreUnit{
         this.process.on('exit', this._processExit.bind(this))
         this.process.stdout.on("data", this.handleOutput.bind(this))
         this.process.stderr.on("data", this.handleOutput.bind(this))
-    }
-
-
-    _prepareStateMachine(){
-        return new StateMachine(this, {
-            name: "Core Unit SM",
-            stateMap: {
-                notRunning: {
-                    initial: true,
-                    transitions: {
-                        launch: {
-                            actions: this._performLaunch,
-                        },
-
-                        processRunning: {
-                            state: "running"
-                        }
-
-                    }
-                },
-
-                running: {
-                    transitions: {
-                        nonZeroExit: {
-                            state: "notRunning",
-                            actions: this._restartOnCrash
-                        },
-
-                        kill: {
-                            actions: this._kill,
-                            state: "shuttingDown"
-                        }
-                    }
-                },
-
-                shuttingDown: {
-                    entry: this._setShutdownTimeout,
-                    transitions: {
-                        exitedNormally: {
-                            state: "terminated"
-                        },
-
-                        shutdownTimeoutExpired: {
-                            state: "shutdownTimeout"
-
-                        }
-
-                    }
-
-                },
-
-                shutdownTimeout: {
-                    final: true,
-                    entry: this._notifyShutdownTimeout
-                },
-
-                terminated: {
-                    final: true
-                }
-
-            }
-
-        }, { msgNotExist: StateMachine.Warn, traceLevel: StateMachine.TraceLevel.DEBUG })
     }
 
 
@@ -322,6 +207,79 @@ function getLimitedLengthArray(length){
 
     return arr;
 }
+
+
+function prepareCoreUnitStateMachine(name){
+        return new StateMachine(this, {
+            name: name,
+            stateMap: {
+                notRunning: {
+                    initial: true,
+                    transitions: {
+                        launch: {
+                            actions: this._performLaunch,
+                        },
+
+                        exitedNormally: {
+                            state: "terminated"
+                        },
+
+                        nonZeroExit: {
+                            state: "notRunning",
+                            actions: this._restartOnCrash
+                        },
+
+
+                        processRunning: {
+                            state: "running"
+                        }
+
+                    }
+                },
+
+                running: {
+                    transitions: {
+                        nonZeroExit: {
+                            state: "notRunning",
+                            actions: this._restartOnCrash
+                        },
+
+                        kill: {
+                            actions: this._kill,
+                            state: "shuttingDown"
+                        }
+                    }
+                },
+
+                shuttingDown: {
+                    entry: this._setShutdownTimeout,
+                    transitions: {
+                        exitedNormally: {
+                            state: "terminated"
+                        },
+
+                        shutdownTimeoutExpired: {
+                            state: "shutdownTimeout"
+
+                        }
+
+                    }
+
+                },
+
+                shutdownTimeout: {
+                    final: true,
+                    entry: this._notifyShutdownTimeout
+                },
+
+                terminated: {
+                    final: true
+                }
+
+            }
+
+        }, { msgNotExist: StateMachine.Warn, traceLevel: StateMachine.TraceLevel.DEBUG })
+    }
 
 module.exports = {
     NodeChildProcess: NodeChildProcess,
