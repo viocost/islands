@@ -16,7 +16,7 @@ const RESTART_TIMOUT_LEVEL_2 = 2000;
 class CoreUnit{
     constructor(executable, args, output){
         console.log("Launching core unit: " + executable)
-        this.sm = _prepareStateMachine()
+        this.sm = this._prepareStateMachine()
         this.output = output; //if true then print to console
         this.executable = executable;
         this.args = args;
@@ -33,28 +33,12 @@ class CoreUnit{
     // Public methods
 
     launch(){
-        this.process = execFile(this.executable, this.args, ()=>{
-            console.log(`Subprocess ${this.executable} started`);
-
-        })
-        let handler = ()=>{
-            this.crashes.push(new Date())
-            let tmt = this._calculateRestartTimeout()
-            setTimeout(()=>{
-                if (this.killing) return;
-                this.launch()
-            }, tmt)
-        }
-        this.process.on('exit', handler)
-        this.process.stdout.on("data", data => { this.handleOutput(data, this) })
-        this.process.stderr.on("data", data => { this.handleOutput(data, this) })
+        this.sm.handle.launch()
     }
 
 
     kill(){
-        console.log("Killing core unit")
-        this.killing = true;
-        this.process.kill()
+        this.sm.handle.kill()
     }
 
 
@@ -62,73 +46,43 @@ class CoreUnit{
         this.output = !!onOff;
     }
 
-    restart(){
-        this.process.kill("SIGTERM");
-    }
 
     // ---------------------------------------------------------------------------------------------------------------------------
     // Private methods
 
-    _prepareStateMachine(){
-        return new StateMachine(this, {
-            name: "Core Unit SM",
-            stateMap: {
-                notRunning: {
-                    initial: true,
-                    transitions: {
-                        launch: {
-                            actions: this.launch,
-                        },
+    _performLaunch(){
+        this.process = execFile(this.executable, this.args, ()=>{
+            console.log(`Subprocess ${this.executable} started`);
+            this.sm.handle.processRunning()
+        })
 
-                        processRunning: {
-                            state: "running"
-                        }
-
-                    }
-                },
-
-                running: {
-                    transitions: {
-                        processClosedNonZero: {
-                            state: "notRunning",
-                            actions: this._restartOnCrash
-                        },
-
-                        kill: {
-                            actions: this._kill,
-                            state: "shuttingDown"
-                        }
-                    }
-                },
-
-                shuttingDown: {
-                    entry: this._setShutdownTimeout,
-                    transitions: {
-                        subProcessClosed: {
-                            state: terminated
-                        },
-
-                        shutdownTimeoutExpired: {
-
-                        }
-
-                    }
-
-                },
+        this.process.on('exit', this._processExit.bind(this))
+        this.process.stdout.on("data", this.handleOutput.bind(this))
+        this.process.stderr.on("data", this.handleOutput.bind(this))
+    }
 
 
-                shutdownTimeout: {
-                    final: true,
-                    entry: this._notifyShutdownTimeout
-                },
 
-                terminated: {
-                    final: true
-                }
+    _processExit(code){
+        console.log(`Child process exited with code: ${code}`);
+        if (code === 0){
+            this.sm.handle.exitedNormally()
+        } else {
+            this.sm.handle.nonZeroExit(code)
+        }
 
-            }
 
-        }, { msgNotExist: StateMachine.Warn, traceLevel: StateMachine.TraceLevel.DEBUG })
+    }
+
+    _restartOnCrash(stateMachine, evName, args){
+        this.crashes.push(new Date())
+        let timeout = this._calculateRestartTimeout()
+
+        setTimeout(()=>{
+            console.log("Restarting after crash");
+            this.sm.handle.launch()
+        }, timeout)
+
     }
 
     _notifyShutdownTimeout(){
@@ -173,14 +127,88 @@ class CoreUnit{
         return res
     }
 
+    _performKill(){
+        console.log("Killing core unit")
+        this.process.kill()
 
-    handleOutput(data, self){
+        setTimeout(()=>{
+            if(this.sm.state ===  "shuttingDown"){
+                this.sm.handle.shutdownTimeoutExpired()
+            }
+        }, SHUTDOWN_TIMEOUT)
+    }
+
+    _prepareStateMachine(){
+        return new StateMachine(this, {
+            name: "Core Unit SM",
+            stateMap: {
+                notRunning: {
+                    initial: true,
+                    transitions: {
+                        launch: {
+                            actions: this._performLaunch,
+                        },
+
+                        processRunning: {
+                            state: "running"
+                        }
+
+                    }
+                },
+
+                running: {
+                    transitions: {
+                        nonZeroExit: {
+                            state: "notRunning",
+                            actions: this._restartOnCrash
+                        },
+
+                        kill: {
+                            actions: this._kill,
+                            state: "shuttingDown"
+                        }
+                    }
+                },
+
+                shuttingDown: {
+                    entry: this._setShutdownTimeout,
+                    transitions: {
+                        exitedNormally: {
+                            state: "terminated"
+                        },
+
+                        shutdownTimeoutExpired: {
+                            state: "shutdownTimeout"
+
+                        }
+
+                    }
+
+                },
+
+
+                shutdownTimeout: {
+                    final: true,
+                    entry: this._notifyShutdownTimeout
+                },
+
+                terminated: {
+                    final: true
+                }
+
+            }
+
+        }, { msgNotExist: StateMachine.Warn, traceLevel: StateMachine.TraceLevel.DEBUG })
+    }
+
+
+    handleOutput(data){
         let msg = data.toString('utf8')
-        if (self.output){
+        if (this.output){
             console.log(msg)
         }
-        if (typeof self.onoutput === "function"){
-            self.onoutput(msg)
+        if (typeof this.onoutput === "function"){
+            this.onoutput(msg)
         }
     }
 
