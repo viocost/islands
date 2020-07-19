@@ -7,15 +7,15 @@ const { EventEmitter } = require("events")
 
 
 class ClientSessionManager extends EventEmitter{
-    constructor(connectionManager = Err.required(),
+    constructor(clientConnector = Err.required(),
                 vaultManager = Err.required()){
         super()
         // Sessions are stored by vaultID
         this.sessions = {};
-        this.connectionManager = connectionManager;
+        this.clientConnector = clientConnector;
         this.topicToSessionMap = {};
         this.vaultManager = vaultManager;
-        this.connectionManager.on("client_connected", this._processClientConnected.bind(this))
+        this.clientConnector.on("client_connected", this._processClientConnected.bind(this))
     }
 
 
@@ -31,9 +31,9 @@ class ClientSessionManager extends EventEmitter{
             return
         }
 
-        //let socket = connectionManager.getSocketById(connectionId);
+        //let socket = clientConnector.getSocketById(connectionId);
         console.log("Client connected!");
-        let session = new ClientSession(this.connectionManager, connectionId);
+        let session = new ClientSession(this.clientConnector, connectionId);
 
         this.sessions[connectionId] = session;
         console.log("Session created");
@@ -60,7 +60,7 @@ class ClientSessionManager extends EventEmitter{
         } else {
             console.log(`Session does not exist. Creating...`);
             let topicsIds = self.vaultManager.getTopicsIds(vaultId);
-            let newSession = new ClientSession(vaultId, connectionId, connectionManager, topicsIds);
+            let newSession = new ClientSession(vaultId, connectionId, clientConnector, topicsIds);
             this.sessions[vaultId] = newSession;
 
             //Adding topic to session mapping
