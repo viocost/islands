@@ -1,14 +1,15 @@
 const Logger = require("./classes/libs/Logger");
 const { prepareConfig } = require("./lib/IslandsConfig");
 const { StateMachine } = require("../common/AdvStateMachine");
+const fs = require("fs-extra")
 
 
 //Logger.initLogger(config.servicePath, "debug");
-
+const VaultRegistrators = {}
 
 
 //parse arguments
-let adminKeysPath
+let adminKeysPath  
 let HOST
 let PORT
 let oneTimePassword
@@ -34,10 +35,25 @@ process.argv.forEach((val, index, array)=>{
     }
 });
 
+
 //create config
 const config = prepareConfig();
 
+//convert legacy
+
+
+const vaults = loadVaults(config.vaultsPath)
+
+function loadVaults(vaultsPath){
+    fs.readdirSync(vaultsPath).map(vaultId => {
+
+
+        new Vault(vaultId, config)
+    })
+}
+
 //check admin account
+// TODO Later rafactor vault system
 
 
 //notify parent if can start

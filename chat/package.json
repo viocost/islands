@@ -16,6 +16,7 @@
   "author": "Konstantin Rybakov <viocost@gmail.com>",
   "license": "ISC",
   "dependencies": {
+    "adv-state": "^1.0.1",
     "base32": "0.0.6",
     "bimap": "0.0.15",
     "body-parser": "^1.18.2",
