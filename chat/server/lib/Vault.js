@@ -5,11 +5,10 @@ const fs = require("fs-extra");
 
 class Vault extends EventEmitter{
 
-    constructor(id, vaultPath, webService){
+    constructor(id, config){
         super();
-        this.vaultPath = vaultPath;
-        this.webService = webService;
         this.id = id;
+        this.vaultPath = path.join(config.vaultsPath, id)
         this.state = VaultState.UNINITIALIZED;
         this.onions = []
 

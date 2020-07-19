@@ -8,12 +8,10 @@ const { StateMachine } = require("../common/AdvStateMachine");
 
 
 //parse arguments
-/////////////////////////
-// let adminKeysPath   //
-// let HOST            //
-// let PORT            //
-// let oneTimePassword //
-/////////////////////////
+let adminKeysPath
+let HOST
+let PORT
+let oneTimePassword
 
 process.argv.forEach((val, index, array)=>{
     switch(val){
@@ -40,6 +38,7 @@ process.argv.forEach((val, index, array)=>{
 const config = prepareConfig();
 
 //check admin account
+
 
 //notify parent if can start
 

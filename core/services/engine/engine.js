@@ -68,6 +68,7 @@ let tor; //tor subprocess handle
 let chat; //chat subprocess handle
 
 
+
 //Parse islands config
 async function parseTorConfig(){
     config = JSON.parse(fs.readFileSync(path.join(process.env["CONFIG"], "island_conf.json")));
