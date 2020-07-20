@@ -1,4 +1,3 @@
-
 import { StateMachine } from "../../../../common/AdvStateMachine";
 import { VaultHolder } from "./VaultHolder";
 import { VaultRetriever } from "./VaultRetriever";
@@ -44,76 +43,79 @@ export class LoginAgent{
         return new StateMachine(this, {
             name: "Login Agent SM",
             stateMap: {
-                watingForPassword: {
+                noVaultNoPassword: {
                     initial: true,
                     transitions: {
-                        acceptPassword: {
-                            actions: this._acceptPassword,
-                            state: "connecting"
+                        fetchVault: {
+                            actions: this._performFetchVault
+                        },
+
+                        gotPassword: {
+                            state: "noVaultHasPassword",
+                        },
+
+                        gotVault: {
+                            state: "hasVaultNoPassword",
                         }
                     }
                 },
 
-                connecting: {
+                noVaultHasPassword: {
                     transitions: {
-                        keyChallengeReceived: {
+                        gotVault: {
+                            state: "decryptingVault"
+                        },
+
+                        vaultTimeout: {
 
                         }
                     }
+
                 },
 
-                decrypting: {
+                hasVaultNoPassword: {
                     transitions: {
-                        decryptionSuccess: {
-                            state: "waitingForVault",
-                            actions: this._finishAuth,
+                        gotPassword: {
+                            state: "decryptingVault"
+                        }
+                    }
+
+                },
+                decryptingVault: {
+                    entry: this._tryDecrypt,
+                    transitions: {
+                        decryptError: {
+                            state: "hasVaultNoPassword",
+                            actions: this._notifyLoginError
 
                         },
 
-                        decryptionError: {
-                            state: "invalidPassword",
-
+                        decryptSuccess: {
+                            state: "exchangingKeys"
                         }
                     }
+
                 },
 
-                waitingForVault: {
-
-                    vaultReceived: {
-                        actions: this._notifyLoginSuccess,
-                        state: "success"
-                    }
-                },
-
-                invalidPassword: {
-                    entry: this._notifyPasswordInvalid,
+                exchangingKeys:{
                     transitions: {
-                        acceptPassword: {
-                            state: "decrypting",
-                            actions: this._retryDecrypt
+                        solveChallenge: {
+                            actions: this._solveChallenge
                         },
 
-                        disconnect: {
-                            state: "connectionError"
+                        authenticated: {
+                            state: "loggedIn"
                         }
-                    }
 
+                    }
                 },
 
-                connectionError: {
-                    reconnect: {
-                        state: "connecting" ,
-                        actions: ()=>{throw new Error("Not implemented")}
-                    }
-
-                },
-
-                success: {
+                loggedIn: {
+                    entry: this._notifyLoginSuccess,
                     final: true
                 }
             }
-
-        }, { msgNotExistMode: StateMachine.Warn, traceLevel: StateMachine.TraceLevel.DEBUG })
+       })
     }
 
     _performFetchVault(){
@@ -133,10 +135,6 @@ export class LoginAgent{
         this.vaultId = data.vaultId;
         this.vaultEncrypted = data.vault;
         this.sm.handle.gotVault();
-    }
-
-    _notifyPasswordInvalid(){
-        console.log("password invalid");
     }
 
     _tryDecrypt(){

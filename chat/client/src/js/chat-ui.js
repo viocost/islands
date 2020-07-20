@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', event => {
     version = islandsVersion()
 
 
-    connector.establishConnection()
+//    connector.establishConnection()
 
     loginAgent = new LoginAgent({
         version: version,
@@ -133,7 +133,6 @@ document.addEventListener('DOMContentLoaded', event => {
 
     })
 
-    //loginAgent.fetchVault();
 
 });
 
