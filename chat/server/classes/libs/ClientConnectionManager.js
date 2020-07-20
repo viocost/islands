@@ -9,58 +9,54 @@ const Logger = require("./Logger.js");
  * adds and removes listeners
  * keeps track of active sockets
  */
-class ClientConnectionManager extends EventEmitter{
+class ClientConnector extends EventEmitter{
 
     constructor(server = Err.required("Missing required parameter.")){
         super();
         this.io = SocketIO.listen(server);
         this.socketHub = this.io.of("/chat");
+        this.socketHub.on('connection', this.setSocketListenersOnNewChatConnection.bind(this))
         this.dataSocketHub = this.io.of("/file");
-        this.setListeners();
+
+        this.dataSocketHub.on('connection', this.setSocketListenersOnNewDataConnection.bind(this))
     }
 
-    /**
-     * Sets standard event handlers for
-     */
-    setListeners(){
-        let self = this;
-
-        self.socketHub.on('connection', (socket) => {
-            console.log(`SOCKET HUB CONNECTION: socket id: ${socket.id}`)
-            self.emit("client_connected", socket.id);
-            socket.on("disconnect", (reason)=>{
-                Logger.verbose("Client disconnected: " + socket.id)
-                self.emit("client_disconnected", socket.id)
-            });
-
-            socket.on('reconnect', (attemptNumber) => {
-                console.log(`Client reconnected: ${socket.id}`);
-                self.emit("client_reconnected", socket.id)
-            });
-
-            socket.on("error", (err)=>{
-                Logger.error(`Client socket error: ${err.message}`, {stack: err.stack});
-            })
-
+    setSocketListenersOnNewChatConnection(socket){
+        console.log(`SOCKET HUB CONNECTION: socket id: ${socket.id}`)
+        this.emit("client_connected", socket.id);
+        socket.on("disconnect", (reason)=>{
+            Logger.verbose("Client disconnected: " + socket.id)
+            this.emit("client_disconnected", socket.id)
         });
 
-        self.dataSocketHub.on('connection', (socket)=>{
-            console.log("File socket connected");
-            self.emit("data_channel_opened", socket);
-            console.log("After data_channel_opened emit")
-            socket.on("disconnect", (reason)=>{
-                self.emit("data_channel_closed", socket.id);
-            });
+        socket.on('reconnect', (attemptNumber) => {
+            console.log(`Client reconnected: ${socket.id}`);
+            this.emit("client_reconnected", socket.id)
+        });
 
-            socket.on("reconnect",  (attemptNumber) => {
-                self.emit("data_channel_reconnection", socket.id);
-            })
-
-            socket.on("error", (err)=>{
-                Logger.error("Data socket error: " + err)
-            })
-
+        socket.on("error", (err)=>{
+            Logger.error(`Client socket error: ${err.message}`, {stack: err.stack});
         })
+
+    }
+
+    setSocketListenersOnNewDataConnection(socket){
+
+        console.log("File socket connected");
+        this.emit("data_channel_opened", socket);
+        console.log("After data_channel_opened emit")
+        socket.on("disconnect", (reason)=>{
+            this.emit("data_channel_closed", socket.id);
+        });
+
+        socket.on("reconnect",  (attemptNumber) => {
+            this.emit("data_channel_reconnection", socket.id);
+        })
+
+        socket.on("error", (err)=>{
+            Logger.error("Data socket error: " + err)
+        })
+
     }
 
     isAlive(socketId){
@@ -106,4 +102,4 @@ class ClientConnectionManager extends EventEmitter{
 }
 
 
-module.exports = ClientConnectionManager;
+module.exports = ClientConnector;

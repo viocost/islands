@@ -22,20 +22,12 @@ class ClientSessionManager extends EventEmitter{
     _processClientConnected(connectionId){
 
         //Executed when new client connects
+        if(this.session.hasOwnProperty(connectionId)) return
 
-        // if reconnect - return
-        // else create new session;
-
-        let reconnect = false
-        if (reconnect){
-            return
-        }
 
         //let socket = clientConnector.getSocketById(connectionId);
         console.log("Client connected!");
-        let session = new ClientSession(this.clientConnector, connectionId);
-
-        this.sessions[connectionId] = session;
+        this.sessions[connectionId] = new ClientSession(this.clientConnector, connectionId);
         console.log("Session created");
     }
 
