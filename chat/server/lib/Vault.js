@@ -7,15 +7,15 @@ const { iCrypto } = require("../../common/iCrypto");
 
 class Vault extends EventEmitter {
 
-    static MakePendingVault(oneTimePassword) {
+    static makePendingVault(config, clientConnector, oneTimePassword) {
         const vault = new Vault();
         vault.setPending(oneTimePassword)
         return vault;
     }
 
-    constructor(id, config) {
+    constructor(config, ) {
         this.id = id;
-        this.sm = this.prepareStateMachine();
+        this.sm = this._prepareStateMachine();
         this.onions = []
     }
 
@@ -50,14 +50,24 @@ class Vault extends EventEmitter {
 
     }
 
-    prepareStateMachine() {
+    _OTPDeriveSymKey(OTP){
+
+    }
+
+    _setPendingSymkey(stateMachine, eventName, args){
+        let OTP = args[0];
+        this._pendingSymKey = this._OTPDeriveSymKey(OTP);
+    }
+
+    _prepareStateMachine() {
         return new StateMachine(this, {
             name: "Vault SM",
             stateMap: {
                 start: {
                     transitions: {
                         setPending: {
-                            state: "pending"
+                            state: "pending",
+                            actions: this._setPendingSymkey
                         },
 
                         setActive: {
