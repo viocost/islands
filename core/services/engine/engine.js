@@ -154,7 +154,7 @@ function launchTor(){
 
 async function launchChat(){
 
-    let chatCmdArgs = [`${process.env["APPS"]}/chat/server/island.js`];
+    let chatCmdArgs = [`${process.env["APPS"]}/chat/server/app.js`];
     if (process.env["DEBUG"]){
         console.log("Setting DEUBG flag for chat")
         chatCmdArgs.push("--debug")
