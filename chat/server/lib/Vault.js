@@ -5,18 +5,29 @@ const { StateMachine } = require('adv-state')
 const { iCrypto } = require("../../common/iCrypto");
 
 
-class Vault extends EventEmitter {
+class VaultFactory{
+    constructor(){
 
-    static makePendingVault(config, clientConnector, oneTimePassword) {
+    }
+
+
+    makePendingVault(config) {
         const vault = new Vault();
         vault.setPending(oneTimePassword)
         return vault;
     }
 
-    constructor(config, ) {
-        this.id = id;
+    makeActiveVault(vaultId, config){
+        const vault = new Vault()
+    }
+}
+
+class Vault extends EventEmitter {
+
+
+
+    constructor() {
         this.sm = this._prepareStateMachine();
-        this.onions = []
     }
 
     setPending(oneTimePassword){

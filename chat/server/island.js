@@ -36,20 +36,22 @@ process.argv.forEach((val, index, array)=>{
 });
 
 
+
 //create config
 const config = prepareConfig();
 
 //convert legacy
 
 
-const vaults = loadVaults(config.vaultsPath)
+loadVaults(config.vaultsPath)
 
 function loadVaults(vaultsPath){
-    fs.readdirSync(vaultsPath).map(vaultId => {
 
+    fs.readdirSync(vaultsPath).map(()=> {
 
-        new Vault(vaultId, config)
+        return new Vault(config)
     })
+
 }
 
 //check admin account

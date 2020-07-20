@@ -49,8 +49,15 @@ class CoreUnit{
     }
 
 
+    restart(){
+        this.sm.handle.restart()
+
+
+    }
+
     // ---------------------------------------------------------------------------------------------------------------------------
     // Private methods
+
 
     _performLaunch(){
         throw new err.LaunchFromBase("This method should be implemented by child classes")
@@ -133,6 +140,10 @@ class CoreUnit{
         }, SHUTDOWN_TIMEOUT)
     }
 
+    _performRestart(){
+        console.log('Restarting process');
+        this.process.kill()
+    }
 
     handleOutput(data){
         let msg = data.toString('utf8')
@@ -244,11 +255,28 @@ function prepareCoreUnitStateMachine(name){
                             actions: this._restartOnCrash
                         },
 
+                        restart: {
+                            actions: this._performRestart
+                        },
+
                         kill: {
                             actions: this._kill,
                             state: "shuttingDown"
                         }
                     }
+                },
+
+                restarting: {
+                    transitions: {
+                        nonZeroExit: {
+                            actions: this._performLaunch
+                        },
+
+                        exitedNormally: {
+                            actions: this._performLaunch
+                        },
+                    }
+
                 },
 
                 shuttingDown: {

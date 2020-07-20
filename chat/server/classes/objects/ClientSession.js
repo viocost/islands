@@ -8,9 +8,9 @@ const { StateMachine } = require("../../../common/AdvStateMachine");
  */
 
 class ClientSession{
-    constructor(connectionManager, connectionId){
+    constructor(clientConnector, connectionId){
         this.sm = this._prepareStateMachine()
-        this.connectionManager = connectionManager;
+        this.clientConnector = clientConnector;
         this.connectionId = connectionId;
         this.clientPublicKey = null;
         this.sessionKey = null;
