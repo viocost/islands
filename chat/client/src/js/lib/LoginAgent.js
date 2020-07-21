@@ -1,4 +1,4 @@
-
+import { MasterRSAKeyAgent } from "./lib/KeyAgent";
 import { StateMachine } from "../../../../common/AdvStateMachine";
 import { VaultHolder } from "./VaultHolder";
 import { VaultRetriever } from "./VaultRetriever";
@@ -20,6 +20,7 @@ export class LoginAgent{
         this.vaultEncrypted;
         this.vaultHolder;
         this.vaultRaw;
+        this.masterKeyAgent;
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------
@@ -40,8 +41,11 @@ export class LoginAgent{
     // PRIVATE METHODS
 
     _acceptPassword(stateMachine, evName, args){
-        this.password = args[0]
-        console.log(`Password accepted: ${this.password}`);
+        this.masterKeyAgent = new MasterRSAKeyAgent(args[0])
+        console.log(`Password accepted: ${args[0]}`);
+        this.connector.setMasterKeyAgent(this.masterKeyAgent)
+        this.connector.establishConnection()
+
     }
 
     _prepareStateMachine(){
@@ -60,54 +64,29 @@ export class LoginAgent{
 
                 connecting: {
                     transitions: {
-                        keyChallengeReceived: {
-
-                        }
-                    }
-                },
-
-                decrypting: {
-                    transitions: {
-                        decryptionSuccess: {
+                        sessionEstablished: {
                             state: "waitingForVault",
-                            actions: this._finishAuth,
-
-                        },
-
-                        decryptionError: {
-                            state: "invalidPassword",
-
+                            actions: this._performFetchVault
                         }
                     }
                 },
 
                 waitingForVault: {
-
                     vaultReceived: {
-                        actions: this._notifyLoginSuccess,
-                        state: "success"
+                        actions: this._tryDecrypt,
+                        state: "decrypting"
                     }
                 },
 
-                invalidPassword: {
-                    entry: this._notifyPasswordInvalid,
-                    transitions: {
-                        acceptPassword: {
-                            state: "decrypting",
-                            actions: this._retryDecrypt
-                        },
+                decrypting: {
+                    decryptionError: {
+                        state: "waitingForPassword",
+                        actions: this._notifyLoginError
+                    },
 
-                        disconnect: {
-                            state: "connectionError"
-                        }
-                    }
-
-                },
-
-                connectionError: {
-                    reconnect: {
-                        state: "connecting" ,
-                        actions: ()=>{throw new Error("Not implemented")}
+                    success: {
+                        state: "success",
+                        actions: this._notifyLoginSuccess
                     }
 
                 },
@@ -120,9 +99,6 @@ export class LoginAgent{
         }, { msgNotExistMode: StateMachine.Warn, traceLevel: StateMachine.TraceLevel.DEBUG })
     }
 
-    _connect(){
-        this.connector.establishConnection()
-    }
 
     _performFetchVault(){
         const vaultRetriever = new VaultRetriever("/vault");

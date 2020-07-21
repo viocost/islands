@@ -1674,6 +1674,8 @@ function initSession() {
         throw new Error("Vault password element is not found.");
     }
 
+
+
     loginAgent.acceptPassword(passwordEl.value);
 
 }

@@ -6,21 +6,20 @@ import { iCrypto } from "../../../../common/iCrypto";
 
 
 export class Connector {
-    constructor(connectionString = "") {
+    constructor(connectionString = "", ) {
         WildEmitter.mixin(this);
         this.socket = this._createSocket(connectionString);
         this.socketInitialized = false;
         this.connectorStateMachine = this._prepareConnectorStateMachine()
         this.acceptorStateMachine = this._prepareAcceptorStateMachine()
-
         this.pingCount = 0;
         this.queue = [];
-
         this.maxUnrespondedPings = 10;
         this.reconnectionDelay = 4000;
         this.connectionAttempts = 0;
         this.maxConnectionAttempts = 8;
         this.killSocket = false;
+        this.keyAgent;
     }
 
 
@@ -31,6 +30,10 @@ export class Connector {
     send(msg) {
         console.log("Sending message");
         this.acceptorStateMachine.handle.acceptMessage(msg);
+    }
+
+    setKeyAgent(keyAgent){
+        this.sm.handle.acceptKeyAgent(keyAgent);
     }
 
     setConnectionQueryProperty(k, v) {
@@ -54,6 +57,10 @@ export class Connector {
 
     // ---------------------------------------------------------------------------------------------------------------------------
     // PRIVATE METHODS
+
+    _decryptSessionKey(stateMachine, evName, args){
+        let sessionKey = args[0];
+    }
 
     _resetConnectionAttempts(){
         this.connectionAttempts = 0;
@@ -87,6 +94,7 @@ export class Connector {
         this.queue.push(msg);
         this.connectorStateMachine.handle.processQueue()
     }
+
 
     _processQueue(){
 
@@ -224,6 +232,10 @@ export class Connector {
                             state: ConnectionState.CONNECTING,
                             actions: this._connect
                         },
+
+                        reconnect: {
+
+                        }
                     }
                 },
 
@@ -231,7 +243,7 @@ export class Connector {
                     entry:  this._emitState,
                     transitions: {
                         connected: {
-                            state: ConnectionState.SESSION_ESTABLISHED,
+                            state: ConnectionState.AWATING_SESSION_KEY,
                         },
                         error: {
                             state: ConnectionState.DISCONNECTED,
@@ -239,6 +251,45 @@ export class Connector {
                         },
 
                     }
+                },
+
+
+                awatingSessionKey: {
+                    transitions: {
+                        gotSessionKey: {
+                            state: ConnectionState.DECRYPTING_SESSION_KEY,
+                            actions: this._decryptSessionKey
+                        }
+                    }
+
+                },
+
+                decryptingSessionKey: {
+                    transitions: {
+                        decryptionSuccess: {
+                            state: ConnectionState.AWATING_AUTH_RESULT
+                        }
+
+                    }
+                },
+
+                awatingAuthResult: {
+                    transitions: {
+                        sessionEstablished: {
+
+                        },
+
+                        error: {
+
+                            state: ConnectionState.DISCONNECTED,
+                            actions: this._notifyError
+                        }
+                    }
+
+                },
+
+                decryptionError: {
+
                 },
 
                 reconnecting: {
@@ -251,7 +302,7 @@ export class Connector {
 
 
 
-                session_established: {
+                sessionEstablished: {
                     entry: [this._resetConnectionAttempts, this._emitState, this._processQueue],
 
                     transitions: {
@@ -261,7 +312,7 @@ export class Connector {
                         },
 
                         disconnectSocket: {
-                            actions:  this.killSocket
+                            actions:  this.killSocke.DECRYP
                         },
 
                         processQueue: {
@@ -280,7 +331,6 @@ export class Connector {
                         }
                     }
                 },
-
             }
         }, { msgNotExistMode: StateMachine.Warn, traceLevel: StateMachine.TraceLevel.DEBUG })
     }
@@ -291,8 +341,10 @@ export class Connector {
 export const ConnectionState = {
     DISCONNECTED: "disconnected",
     CONNECTING: "connecting",
-    AWATING_SESSION_KEY: "awating_session_key",
-    AWATING_AUTH_OK: "awating_auth_ok",
+    AWATING_SESSION_KEY: "awatingSessionKey",
+    DECRYPTING_SESSION_KEY: "decryptingSessionKey",
+    DECRYPTION_ERROR: "decryptionError",
+    AWATING_AUTH_RESULT: "awatingAuthResult",
     SESSION_ESTABLISHED: "session_established",
     RECONNECTING: "reconnecting"
 }
