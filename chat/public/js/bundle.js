@@ -71759,62 +71759,64 @@ var LoginAgent_LoginAgent = /*#__PURE__*/function () {
       return new AdvStateMachine["StateMachine"](this, {
         name: "Login Agent SM",
         stateMap: {
-          noVaultNoPassword: {
+          watingForPassword: {
             initial: true,
             transitions: {
-              fetchVault: {
-                actions: this._performFetchVault
-              },
-              gotPassword: {
-                state: "noVaultHasPassword"
-              },
-              gotVault: {
-                state: "hasVaultNoPassword"
+              acceptPassword: {
+                actions: this._acceptPassword,
+                state: "connecting"
               }
             }
           },
-          noVaultHasPassword: {
+          connecting: {
             transitions: {
-              gotVault: {
-                state: "decryptingVault"
-              },
-              vaultTimeout: {}
+              keyChallengeReceived: {}
             }
           },
-          hasVaultNoPassword: {
+          decrypting: {
             transitions: {
-              gotPassword: {
-                state: "decryptingVault"
+              decryptionSuccess: {
+                state: "waitingForVault",
+                actions: this._finishAuth
+              },
+              decryptionError: {
+                state: "invalidPassword"
               }
             }
           },
-          decryptingVault: {
-            entry: this._tryDecrypt,
+          waitingForVault: {
+            vaultReceived: {
+              actions: this._notifyLoginSuccess,
+              state: "success"
+            }
+          },
+          invalidPassword: {
+            entry: this._notifyPasswordInvalid,
             transitions: {
-              decryptError: {
-                state: "hasVaultNoPassword",
-                actions: this._notifyLoginError
+              acceptPassword: {
+                state: "decrypting",
+                actions: this._retryDecrypt
               },
-              decryptSuccess: {
-                state: "exchangingKeys"
+              disconnect: {
+                state: "connectionError"
               }
             }
           },
-          exchangingKeys: {
-            transitions: {
-              solveChallenge: {
-                actions: this._solveChallenge
-              },
-              authenticated: {
-                state: "loggedIn"
+          connectionError: {
+            reconnect: {
+              state: "connecting",
+              actions: function actions() {
+                throw new Error("Not implemented");
               }
             }
           },
-          loggedIn: {
-            entry: this._notifyLoginSuccess,
+          success: {
             "final": true
           }
         }
+      }, {
+        msgNotExistMode: AdvStateMachine["StateMachine"].Warn,
+        traceLevel: AdvStateMachine["StateMachine"].TraceLevel.DEBUG
       });
     }
   }, {
@@ -71836,6 +71838,11 @@ var LoginAgent_LoginAgent = /*#__PURE__*/function () {
       this.vaultId = data.vaultId;
       this.vaultEncrypted = data.vault;
       this.sm.handle.gotVault();
+    }
+  }, {
+    key: "_notifyPasswordInvalid",
+    value: function _notifyPasswordInvalid() {
+      console.log("password invalid");
     }
   }, {
     key: "_tryDecrypt",
@@ -72385,8 +72392,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
   initLoginUI();
   chat_ui_connector = new Connector_Connector("/chat");
   chat_ui_arrivalHub = new ArrivalHub_ArrivalHub(chat_ui_connector);
-  chat_ui_version = islandsVersion();
-  chat_ui_connector.establishConnection();
+  chat_ui_version = islandsVersion(); //    connector.establishConnection()
+
   loginAgent = new LoginAgent_LoginAgent({
     version: chat_ui_version,
     connector: chat_ui_connector,
@@ -72409,7 +72416,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
     chat_ui_vaultHolder = resVaultHolder; //Load topics V1 here
 
     loadTopics(chat_ui_vaultHolder.getVault());
-  }); //loginAgent.fetchVault();
+  });
 });
 
 function initLoginUI() {

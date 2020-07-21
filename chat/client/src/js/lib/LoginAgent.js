@@ -29,8 +29,7 @@ export class LoginAgent{
     }
 
     acceptPassword(password){
-        this.password = password;
-        this.sm.handle.gotPassword()
+        this.sm.handle.acceptPassword(password)
     }
 
     getRawVault(){
@@ -40,6 +39,11 @@ export class LoginAgent{
     // ---------------------------------------------------------------------------------------------------------------------------
     // PRIVATE METHODS
 
+    _acceptPassword(stateMachine, evName, args){
+        this.password = args[0]
+        console.log(`Password accepted: ${this.password}`);
+    }
+
     _prepareStateMachine(){
         return new StateMachine(this, {
             name: "Login Agent SM",
@@ -48,7 +52,7 @@ export class LoginAgent{
                     initial: true,
                     transitions: {
                         acceptPassword: {
-                            actions: this._acceptPassword,
+                            actions: [ this._acceptPassword, this._connect ],
                             state: "connecting"
                         }
                     }
@@ -114,6 +118,10 @@ export class LoginAgent{
             }
 
         }, { msgNotExistMode: StateMachine.Warn, traceLevel: StateMachine.TraceLevel.DEBUG })
+    }
+
+    _connect(){
+        this.connector.establishConnection()
     }
 
     _performFetchVault(){
