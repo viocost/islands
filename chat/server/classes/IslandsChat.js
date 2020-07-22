@@ -23,13 +23,13 @@ class IslandsChat{
     constructor(server, opts) {
         this.historyPath = (opts ? opts.historyPath : null);
         this.chatConnectionManager = new ClientConnectionManager(server);
-        this.clientRequestEmitter = new ClientRequestRouter(this.chatConnectionManager);
+        this.clientRequestEmitter = new ClientRequestRouter();
         this.torConnector = new TorConnector(opts);
         this.crossIslandMessenger = new CrossIslandMessenger(this.torConnector);
         this.hm = new HistoryManager(this.historyPath);
 
         this.vaultManager = new VaultManager(opts, this.clientRequestEmitter);
-        this.clientSessionManager = new ClientSessionManager(this.chatConnectionManager, this.vaultManager);
+        this.clientSessionManager = new ClientSessionManager(this.chatConnectionManager, this.vaultManager, this.clientRequestEmitter);
         this.vaultManager.registerSessionManager(this.clientSessionManager);
 
         AssistantCoordinator.initialize();

@@ -4,8 +4,9 @@ const { createClientIslandEnvelope } = require("../../common/Message");
 
 
 class ClientSession {
-    constructor(clientConnector, connectionId){
+    constructor(clientConnector, connectionId, clientRequestEmitter){
         this.clientConnector = clientConnector;
+        this.clientRequestEmitter;
         this.connectionId = connectionId;
         this.sm = this._prepareStateMachine();
         this._subscribe(clientConnector, connectionId)

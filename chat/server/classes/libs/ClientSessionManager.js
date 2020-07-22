@@ -8,12 +8,14 @@ const { EventEmitter } = require("events")
 
 class ClientSessionManager extends EventEmitter{
     constructor(clientConnector = Err.required(),
-                vaultManager = Err.required()){
+                vaultManager = Err.required(),
+                clientRequestEmitter = Err.required()){
         super()
         // Sessions are stored by vaultID
         this.sessions = {};
         this.clientConnector = clientConnector;
         this.topicToSessionMap = {};
+        this.clientRequestEmitter = clientRequestEmitter;
         this.vaultManager = vaultManager;
         this.clientConnector.on("client_connected", this._processClientConnected.bind(this))
     }
@@ -26,20 +28,16 @@ class ClientSessionManager extends EventEmitter{
 
         //let socket = clientConnector.getSocketById(connectionId);
         console.log("Client connected!");
-        const session = new ClientSession(this.clientConnector, connectionId);
+        const session = new ClientSession(this.clientConnector, connectionId, this.clientRequestEmitter);
         this.sessions[connectionId] = session;
 
         //get host
-
         let host = this.clientConnector.getHost(connectionId)
         let vaultId = this.vaultManager.getVaultId(host);
         let publicKey = this.vaultManager.getVaultPublicKey(vaultId);
         let vault = this.vaultManager.getVault(vaultId);
 
         session.acceptAsymKey(publicKey, vault)
-
-        //supply it to session
-
         console.log("Session created");
     }
 
