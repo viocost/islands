@@ -116,10 +116,11 @@ class Message{
 function createClientIslandEnvelope({ pkfpSource,
                                              pkfpDest,
                                              command,
-                                             version,
+                                             version = global.VERSION ? global.VERSION : window.islandsVersion(),
                                              body = {},
                                              privateKey  } = {}){
-    const message = new Message(version = global.VERSION);
+
+    const message = new Message(version);
     message.headers.pkfpSource = pkfpSource;
     message.headers.pkfpDest = pkfpDest;
     message.headers.command = command;

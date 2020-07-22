@@ -20,7 +20,7 @@ import { TopicJoinAgent } from "./lib/TopicJoinAgent";
 import { ConnectionIndicator } from  "./ui/ConnectionIndicator";
 // TEMP IMPORTS FOR FURTHER REFACTORING
 import { iCrypto } from "../../../common/iCrypto";
-import { Message } from "./lib/Message";
+import { createClientIslandEnvelope, Message } from "../../../common/Message";
 import * as DH from "diffie-hellman/browser";
 
 // ---------------------------------------------------------------------------------------------------------------------------
@@ -1723,23 +1723,13 @@ function initTopics(data, vault) {
 
     checkUpdateVaultFormat(vaultHolder, topics)
 
-    createSession(vault)
+    postLogin(vault);
+
 }
 
-function createSession(vault) {
-    connector.setConnectionQueryProperty("vaultId", vault.id);
-    connector.establishConnection()
-}
 
 
 function setVaultListeners(vault) {
-    vault.on(Internal.SESSION_KEY, (message) => {
-
-        vault.sessionKey = message.body.sessionKey;
-
-        console.log("Session key is set!")
-        postLogin(vault)
-    })
     vault.on(Events.TOPIC_CREATED, (pkfp) => {
 
         if(!(pkfp in vault.topics)){
@@ -1849,12 +1839,23 @@ function setTopicListeners(topic) {
 
 function postLogin(vault) {
     //sending post_login request
-    let message = new Message(chat.version);
-    message.setSource(vault.id);
-    message.setCommand(Internal.POST_LOGIN);
-    message.addNonce();
-    message.body.topics = Object.keys(topics);
-    message.signMessage(vault.privateKey);
+
+    const message = createClientIslandEnvelope({
+        command: Internal.POST_LOGIN,
+        pkfpSource: vault.id,
+        privateKey: vault.privateKey,
+        body: {
+            topics: Object.keys(topics)
+        }
+    })
+
+    ////////////////////////////////////////////////
+    // let message = new Message(chat.version);   //
+    // message.setSource(vault.id);               //
+    // message.setCommand(Internal.POST_LOGIN);   //
+    // message.body.topics = Object.keys(topics); //
+    // message.signMessage(vault.privateKey);     //
+    ////////////////////////////////////////////////
     vault.once(Internal.POST_LOGIN_DECRYPT, (msg) => {
         postLoginDecrypt(msg, vault);
     })

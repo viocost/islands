@@ -225,6 +225,7 @@ export class Connector {
             const { privateKeyEncrypted, sessionKey } = this._challenge;
             this.keyAgent.initializeMasterKey(privateKeyEncrypted)
             this.sessionKey = this.keyAgent.masterKeyDecrypt(sessionKey)
+            this.acceptorStateMachine.handle.activate()
             this.connectorStateMachine.handle.decryptionSuccess()
         }catch(err){
             console.log(`DECRYPTION ERROR: ${err}`);
