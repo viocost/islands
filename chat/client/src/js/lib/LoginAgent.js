@@ -63,7 +63,7 @@ export class LoginAgent{
                     initial: true,
                     transitions: {
                         acceptPassword: {
-                            actions: [ this._acceptPassword, this._connect ],
+                            actions: this._acceptPassword,
                             state: "connecting"
                         }
                     }

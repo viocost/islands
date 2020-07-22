@@ -21,6 +21,25 @@ class ClientConnector extends EventEmitter{
         this.dataSocketHub.on('connection', this.setSocketListenersOnNewDataConnection.bind(this))
     }
 
+
+    /**
+     *
+     * @param message
+     * @param data: arbitrary object
+     * @param connectionId - translates to socketID
+     */
+    send(connectionId = Err.required("Missing required parameter connectionId"),
+         message = Err.required("Missing required parameter message"),
+         data = Err.required("Missing required parameter data")){
+        let client = this.getSocketById(connectionId);
+        if(!client || !client.connected){
+            throw new Error("Error sending message: client is not connected.");
+        }
+
+        client.emit(message, data);
+    }
+
+
     setSocketListenersOnNewChatConnection(socket){
         console.log(`SOCKET HUB CONNECTION: socket id: ${socket.id}`)
         this.emit("client_connected", socket.id);
@@ -93,22 +112,6 @@ class ClientConnector extends EventEmitter{
         this.send(connectionId, "message", message);
     }
 
-    /**
-     *
-     * @param message
-     * @param data: arbitrary object
-     * @param connectionId - translates to socketID
-     */
-    send(connectionId = Err.required("Missing required parameter connectionId"),
-         message = Err.required("Missing required parameter message"),
-         data = Err.required("Missing required parameter data")){
-        let client = this.getSocketById(connectionId);
-        if(!client || !client.connected){
-            throw new Error("Error sending message: client is not connected.");
-        }
-
-        client.emit(message, data);
-    }
 
 }
 

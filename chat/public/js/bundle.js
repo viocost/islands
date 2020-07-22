@@ -69487,10 +69487,10 @@ var Connector_Connector = /*#__PURE__*/function () {
     Connector_classCallCheck(this, Connector);
 
     WildEmitter["a" /* WildEmitter */].mixin(this);
-    this.socket = this._createSocket(connectionString);
-    this.socketInitialized = false;
     this.connectorStateMachine = this._prepareConnectorStateMachine();
     this.acceptorStateMachine = this._prepareAcceptorStateMachine();
+    this.socket = this._createSocket(connectionString);
+    this.socketInitialized = false;
     this.pingCount = 0;
     this.queue = [];
     this.maxUnrespondedPings = 10;
@@ -69642,6 +69642,12 @@ var Connector_Connector = /*#__PURE__*/function () {
 
         _this.connectorStateMachine.handle.connected();
       });
+      socket.on("message", function (msg) {
+        _this.connectorStateMachine.handle.message(msg);
+      });
+      socket.on("auth", function (msg) {
+        _this.connectorStateMachine.handle.authMessage(msg);
+      });
       socket.on("*", function (event, data) {
         console.log("Got event: ".concat(event));
 
@@ -69674,6 +69680,34 @@ var Connector_Connector = /*#__PURE__*/function () {
         _this.connectorStateMachine.handle.error();
       });
       return socket;
+    }
+  }, {
+    key: "_processAuthMessage",
+    value: function _processAuthMessage(stateMachine, evName, args) {
+      console.log("Auth message received");
+      var message = args[0];
+
+      switch (message.headers.command) {
+        case "challenge":
+          this._solveChallenge.call(this, message);
+
+          break;
+
+        case "auth_ok":
+          console.log("AUTH OK!");
+          break;
+      }
+    }
+  }, {
+    key: "_solveChallenge",
+    value: function _solveChallenge(message) {
+      var _message$body = message.body,
+          privateKeyEncrypted = _message$body.privateKeyEncrypted,
+          secret = _message$body.secret,
+          sessionKey = _message$body.sessionKey;
+      this.keyAgent.initializeMasterKey(privateKeyEncrypted);
+      this.sessionKey = this.keyAgent.masterKeyDecrypt(sessionKey);
+      var secretRaw = this.keyAgent.masterKeyDecrypt(secret);
     }
   }, {
     key: "_prepareAcceptorStateMachine",
@@ -69742,6 +69776,9 @@ var Connector_Connector = /*#__PURE__*/function () {
           },
           awatingSessionKey: {
             transitions: {
+              authMessage: {
+                actions: this._processAuthMessage
+              },
               gotSessionKey: {
                 entry: function entry() {
                   console.log("AWATING SESSION KEY");
@@ -69760,6 +69797,9 @@ var Connector_Connector = /*#__PURE__*/function () {
           },
           awatingAuthResult: {
             transitions: {
+              authMessage: {
+                actions: this._processAuthMessage
+              },
               sessionEstablished: {},
               error: {
                 state: ConnectionState.DISCONNECTED,
@@ -71846,10 +71886,13 @@ var KeyAgent_MasterRSAKeyAgent = /*#__PURE__*/function (_KeyAgent) {
 
   }, {
     key: "_passwordSymkeyDecrypt",
-    value: function _passwordSymkeyDecrypt(encryptedData) {
+    value: function _passwordSymkeyDecrypt(vaultEncrypted) {
       try {
-        ic.addBlob("salt_hex", encryptedData.substring(0, 256)).addBlob("cipher", encryptedData.substr(256)).hexToBytes("salt_hex", "salt_raw").createPasswordBasedSymKey("sym", this.password, "salt_raw").AESDecrypt("cipher", "sym", "raw_data", true);
-        return ic.get("raw_data");
+        var _ic2 = new iCrypto["iCrypto"]();
+
+        _ic2.addBlob("s16", vaultEncrypted.substring(0, 256)).addBlob("v_cip", vaultEncrypted.substr(256)).hexToBytes("s16", "salt").createPasswordBasedSymKey("sym", this.password, "s16").AESDecrypt("v_cip", "sym", "vault_raw", true);
+
+        return _ic2.get("vault_raw");
       } catch (error) {
         throw new KeyAgent_err.decryptionError(error.message);
       }
@@ -71968,7 +72011,7 @@ var LoginAgent_LoginAgent = /*#__PURE__*/function () {
             initial: true,
             transitions: {
               acceptPassword: {
-                actions: [this._acceptPassword, this._connect],
+                actions: this._acceptPassword,
                 state: "connecting"
               }
             }

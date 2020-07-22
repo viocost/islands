@@ -22,9 +22,10 @@ export class MasterRSAKeyAgent extends KeyAgent{
         this.masterPublicKey;
     }
 
-    initializeMasterKey(masterKeyCipher){
+    initializeMasterKey(vaultEncrypted){
         // trying to decrypt
-        this.masterPrivateKey = this._passwordSymkeyDecrypt(masterKeyCipher);
+        let vaultRaw = JSON.parse(this._passwordSymkeyDecrypt(vaultEncrypted));
+        this.masterPrivateKey = vaultRaw.privateKey;
         let ic = new iCrypto()
         ic.setRSAKey("private_key", this.masterPrivateKey, "private")
           .publicFromPrivate("private_key", "public_key")
@@ -75,14 +76,16 @@ export class MasterRSAKeyAgent extends KeyAgent{
     // ---------------------------------------------------------------------------------------------------------------------------
     // Private methods
 
-    _passwordSymkeyDecrypt(encryptedData){
+    _passwordSymkeyDecrypt(vaultEncrypted){
         try{
-            ic.addBlob("salt_hex", encryptedData.substring(0, 256))
-                .addBlob("cipher", encryptedData.substr(256))
-                .hexToBytes("salt_hex", "salt_raw")
-                .createPasswordBasedSymKey("sym", this.password, "salt_raw")
-                .AESDecrypt("cipher", "sym", "raw_data", true);
-            return ic.get("raw_data")
+            let ic = new iCrypto();
+
+            ic.addBlob("s16", vaultEncrypted.substring(0, 256))
+                .addBlob("v_cip", vaultEncrypted.substr(256))
+                .hexToBytes("s16", "salt")
+                .createPasswordBasedSymKey("sym", this.password, "s16")
+                .AESDecrypt("v_cip", "sym", "vault_raw", true);
+            return ic.get("vault_raw")
         } catch(error){
             throw new err.decryptionError(error.message);
         }

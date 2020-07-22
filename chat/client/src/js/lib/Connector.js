@@ -3,15 +3,17 @@ import * as io from "socket.io-client";
 import { Internal } from "../../../../common/Events";
 import { StateMachine } from "../../../../common/AdvStateMachine";
 import { iCrypto } from "../../../../common/iCrypto";
+import { createClientIslandEnvelope } from "../../../../common/Message"
 
 
 export class Connector {
     constructor(connectionString = "", ) {
         WildEmitter.mixin(this);
-        this.socket = this._createSocket(connectionString);
-        this.socketInitialized = false;
+
         this.connectorStateMachine = this._prepareConnectorStateMachine()
         this.acceptorStateMachine = this._prepareAcceptorStateMachine()
+        this.socket = this._createSocket(connectionString);
+        this.socketInitialized = false;
         this.pingCount = 0;
         this.queue = [];
         this.maxUnrespondedPings = 10;
@@ -156,6 +158,14 @@ export class Connector {
         });
 
 
+        socket.on("message", (msg)=>{
+            this.connectorStateMachine.handle.message(msg)
+        })
+
+        socket.on("auth", msg =>{
+            this.connectorStateMachine.handle.authMessage(msg)
+        })
+
         socket.on("*", (event, data) => {
             console.log(`Got event: ${event}`);
             this.emit(event, data);
@@ -194,11 +204,52 @@ export class Connector {
         return socket;
     }
 
+    _processAuthMessage(stateMachine, evName, args){
+        console.log("Auth message received");
+        let message = args[0];
+        switch(message.headers.command){
+            case "challenge":
+                this._solveChallenge.call(this, message)
+                break
+            case "auth_ok":
+                console.log("AUTH OK!");
+                break
+        }
+    }
+
+    _solveChallenge(message){
+        const { privateKeyEncrypted, secret, sessionKey } = message.body;
+        this.keyAgent.initializeMasterKey(privateKeyEncrypted)
+        this.sessionKey = this.keyAgent.masterKeyDecrypt(sessionKey)
+        let secretRaw = this.keyAgent.masterKeyDecrypt(secret)
+
+
+        const msg = createClientIslandEnvelope({ command: "solution",  })
+    }
+
+    _sessionKeyEncrypt(data){
+        const msg = typeof data === "string" ? data : JSON.stringify(data);
+        const ic = new iCrypto();
+        ic.addBlob("msg_raw", msg)
+          .setSYMKey("key", this.sessionKey)
+          .AESEncrypt("msg_raw", "key", "msg_enc", true)
+        return ic.get("msg_enc");
+    }
+
+    _sessionKeyDecrypt(data){
+        const ic = new iCrypto();
+        ic.addBlob("msg_enc", data)
+          .setSYMKey("key", this.sessionKey)
+          .AESDecrypt("msg_enc", "key", "msg_raw", true)
+        return ic.get("msg_raw");
+    }
+
     _prepareAcceptorStateMachine(){
         return new StateMachine(this, {
             name: "Accept input from user SM",
             stateMap: {
                 inactive: {
+                    initial: true,
                     transitions: {
                         activate: {
                             state: "acceptingMessages",
@@ -208,7 +259,6 @@ export class Connector {
 
                 acceptingMessages: {
                     entry: ()=>{ console.log("Now accepting messages") },
-                    initial: true,
                     transitions: {
                         acceptMessage: {
                             actions: this._performAcceptMessage
@@ -264,6 +314,10 @@ export class Connector {
 
                 awatingSessionKey: {
                     transitions: {
+                        authMessage: {
+                            actions: this._processAuthMessage
+                        },
+
                         gotSessionKey: {
                             entry: ()=>{ console.log("AWATING SESSION KEY") },
                             state: ConnectionState.DECRYPTING_SESSION_KEY,
@@ -284,6 +338,10 @@ export class Connector {
 
                 awatingAuthResult: {
                     transitions: {
+                        authMessage: {
+                            actions: this._processAuthMessage
+                        },
+
                         sessionEstablished: {
 
                         },

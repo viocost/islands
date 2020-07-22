@@ -4,7 +4,9 @@ const { createClientIslandEnvelope } = require("../../common/Message");
 
 
 class ClientSession {
-    constructor(){
+    constructor(clientConnector, connectionId){
+        this.clientConnector = clientConnector;
+        this.connectionId = connectionId;
         this.sm = this._prepareStateMachine();
 
     }
@@ -24,6 +26,23 @@ class ClientSession {
     // ---------------------------------------------------------------------------------------------------------------------------
     // Private methods
 
+    _sessionKeyEncrypt(data){
+        const msg = typeof data === "string" ? data : JSON.stringify(data);
+        const ic = new iCrypto();
+        ic.addBlob("msg_raw", msg)
+          .setSYMKey("key", this.sessionKey)
+          .AESEncrypt("msg_raw", "key", "msg_enc", true)
+        return ic.get("msg_enc");
+    }
+
+    _sessionKeyDecrypt(data){
+        const ic = new iCrypto();
+        ic.addBlob("msg_enc", data)
+          .setSYMKey("key", this.sessionKey)
+          .AESDecrypt("msg_enc", "key", "msg_raw", true)
+        return ic.get("msg_raw");
+    }
+
     _authWithPublicKey(stateMachin, evName, args){
         let publicKey = args[0]
         let privateKeyEncrypted = args[1]
@@ -32,13 +51,13 @@ class ClientSession {
         ic.createNonce("secret", 128)
           .createSYMKey("session-key")
           .setRSAKey("public-key", publicKey, "public")
-          .publicKeyEncrypt("secret", "public-key", "secret-enc")
-          .publicKeyEncrypt("session-key", "public-key", "session-key-enc")
+          .publicKeyEncrypt("secret", "public-key", "secret-enc", "hex")
+          .publicKeyEncrypt("session-key", "public-key", "session-key-enc", "hex")
 
         this.sessionKey = ic.get("session-key")
         this.secret = ic.get("secret")
 
-        let msg = createClientIslandEnvelope({ command: "auth-challenge", body: {
+        let msg = createClientIslandEnvelope({ command: "challenge", body: {
             privateKeyEncrypted: privateKeyEncrypted,
             secret: ic.get("secret-enc"),
             sessionKey: ic.get("session-key-enc")
@@ -46,6 +65,7 @@ class ClientSession {
 
         console.log("Sending auth challenge to client");
 
+        this.clientConnector.send(this.connectionId, "auth", msg)
     }
 
     _authWithSymkey(){
