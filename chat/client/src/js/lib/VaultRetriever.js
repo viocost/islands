@@ -1,7 +1,6 @@
 import { WildEmitter } from "./WildEmitter";
 import { createDerivedErrorClasses }  from "../../../../common/DynamicError";
-import { Message } from "./Message";
-import { Internal } from "../../../../common/Events"
+
 
 class VaultRetrieverError extends Error{ constructor(data){ super(data); this.name = "VaultRetrieverError" } }
 const err = createDerivedErrorClasses(VaultRetrieverError, {
@@ -13,10 +12,8 @@ const err = createDerivedErrorClasses(VaultRetrieverError, {
 
 export class VaultRetriever{
 
-    constructor(connector){
-
+    constructor(url = "/vault"){
         WildEmitter.mixin(this);
-        this.connector = connector;
         this.url = url;
         this.vaultData = null;
     }
@@ -28,9 +25,6 @@ export class VaultRetriever{
 
     run(cb){
         setImmediate(async ()=>{
-            let message = new Message();
-            message.setCommand(Internal.GET_LOGIN_SET);
-            this.connector.send()
             try{
                 let data = await this.fetchVault()
                 cb(null, data);

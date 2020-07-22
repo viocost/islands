@@ -178,7 +178,7 @@ export class LoginAgent {
 
                 fetchingVault: {
                     entry: this._performFetchVault,
-                    trnasitions: {
+                    transitions: {
                         gotVault: {
                             state: "decryptingVault"
                         },
