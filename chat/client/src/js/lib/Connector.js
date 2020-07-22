@@ -22,6 +22,7 @@ export class Connector {
         this.maxConnectionAttempts = 8;
         this.killSocket = false;
         this.keyAgent;
+        this._challenge;
     }
 
 
@@ -210,9 +211,6 @@ export class Connector {
             case "challenge":
                 this._solveChallenge.call(this, message)
                 break
-            case "auth_ok":
-                console.log("AUTH OK!");
-                break
         }
     }
 
@@ -224,11 +222,12 @@ export class Connector {
 
     _decryptSessionKey(stateMachine, evName, args){
         try{
-            const { privateKeyEncrypted, sessionKey } = this.challenge;
+            const { privateKeyEncrypted, sessionKey } = this._challenge;
             this.keyAgent.initializeMasterKey(privateKeyEncrypted)
             this.sessionKey = this.keyAgent.masterKeyDecrypt(sessionKey)
             this.connectorStateMachine.handle.decryptionSuccess()
         }catch(err){
+            console.log(`DECRYPTION ERROR: ${err}`);
             this.connectorStateMachine.handle.decryptionError();
         }
     }

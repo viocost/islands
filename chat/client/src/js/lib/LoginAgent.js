@@ -11,9 +11,9 @@ import { Internal } from "../../../../common/Events"
 
 
 
-export class LoginAgent{
+export class LoginAgent {
     //In object pass UI functions
-    constructor({ version, connector, arrivalHub }){
+    constructor({ version, connector, arrivalHub }) {
         WildEmitter.mixin(this);
         this.version = version;
         this.connector = connector;
@@ -26,8 +26,8 @@ export class LoginAgent{
         this.masterKeyAgent;
         this.password;
 
-        this.connector.on(Internal.CONNECTION_STATE_CHANGED, state=>{
-            switch(state){
+        this.connector.on(Internal.CONNECTION_STATE_CHANGED, state => {
+            switch (state) {
                 case ConnectionState.SESSION_ESTABLISHED:
                     this.sm.handle.sessionEstablished()
                     break
@@ -42,19 +42,19 @@ export class LoginAgent{
 
     // ---------------------------------------------------------------------------------------------------------------------------
     // PUBLIC METHODS
-    fetchVault(){
+    fetchVault() {
         console.log("FETCH VAULT CALLED");
-       
 
- //       this.sm.handle.fetchVault()
+
+        //       this.sm.handle.fetchVault()
     }
 
-    acceptPassword(password){
+    acceptPassword(password) {
         this.password = password;
         this.sm.handle.acceptPassword(password)
     }
 
-    getRawVault(){
+    getRawVault() {
         return this.vaultRaw;
     }
 
@@ -62,7 +62,7 @@ export class LoginAgent{
     // PRIVATE METHODS
 
 
-    _acceptPassword(stateMachine, evName, args){
+    _acceptPassword(stateMachine, evName, args) {
         this.masterKeyAgent = new MasterRSAKeyAgent(args[0])
         console.log(`Password accepted: ${args[0]}`);
         this.connector.setKeyAgent(this.masterKeyAgent)
@@ -70,15 +70,15 @@ export class LoginAgent{
 
     }
 
-    _performFetchVault(){
+    _performFetchVault() {
         console.log("Fetching vault now");
         const vaultRetriever = new VaultRetriever("/vault");
         vaultRetriever.run(this._processFetchVaultResult.bind(this))
     }
 
-    _processFetchVaultResult(err, data){
+    _processFetchVaultResult(err, data) {
 
-        if (err){
+        if (err) {
             console.log(`Fetch vault error: ${err}`);
             this.error = err;
             return;
@@ -90,18 +90,18 @@ export class LoginAgent{
         this.sm.handle.gotVault();
     }
 
-    _notifyPasswordInvalid(){
-        console.log("password invalid");
+    _notifyPasswordInvalid() {
+        this.emit(Events.LOGIN_ERROR, "Passowrd invalid");
     }
 
-    _tryDecrypt(){
+    _tryDecrypt() {
         console.log("Decrypting vault...");
         let password = this.password;
 
         let ic = new iCrypto();
         let data;
 
-        try{
+        try {
             ic.addBlob("s16", this.vaultEncrypted.substring(0, 256))
                 .addBlob("v_cip", this.vaultEncrypted.substr(256))
                 .hexToBytes("s16", "salt")
@@ -111,7 +111,7 @@ export class LoginAgent{
             data = JSON.parse(ic.get("vault_raw"));
             this.vaultRaw = data;
 
-        } catch (err){
+        } catch (err) {
             this.sm.handle.decryptError(err);
             return;
         }
@@ -138,18 +138,18 @@ export class LoginAgent{
         this.sm.handle.decryptSuccess();
     }
 
-    _notifyLoginSuccess(){
+    _notifyLoginSuccess() {
         this.emit(Events.LOGIN_SUCCESS, this.vaultHolder)
 
     }
 
-    _notifyLoginError(sm, evName, err){
+    _notifyLoginError(sm, evName, err) {
         this.emit(Events.LOGIN_ERROR, err);
     }
 
 
 
-    _prepareStateMachine(){
+    _prepareStateMachine() {
         return new StateMachine(this, {
             name: "Login Agent SM",
             stateMap: {
@@ -166,7 +166,7 @@ export class LoginAgent{
                 awatingSession: {
                     transitions: {
                         sessionEstablished: {
-                            state: "obtainingVault"
+                            state: "fetchingVault"
                         },
 
                         decryptionError: {
@@ -176,7 +176,7 @@ export class LoginAgent{
                     }
                 },
 
-                obtainintgVault: {
+                fetchingVault: {
                     entry: this._performFetchVault,
                     trnasitions: {
                         gotVault: {
@@ -201,15 +201,16 @@ export class LoginAgent{
                         }
                     }
 
-
                 },
 
                 success: {
+                    entry: this._notifyLoginSuccess,
                     final: true
                 },
 
                 fatalError: {
-                    entry: ()=>{console.log("FATAL ERROR");}
+                    entry: this._notifyLoginError,
+                    entry: () => { console.log("FATAL ERROR"); }
                 }
             }
 

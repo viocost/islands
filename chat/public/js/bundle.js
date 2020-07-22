@@ -69804,6 +69804,7 @@ var Connector_Connector = /*#__PURE__*/function () {
     this.maxConnectionAttempts = 8;
     this.killSocket = false;
     this.keyAgent;
+    this._challenge;
   } // ---------------------------------------------------------------------------------------------------------------------------
   // PUBLIC METHODS
 
@@ -69995,10 +69996,6 @@ var Connector_Connector = /*#__PURE__*/function () {
           this._solveChallenge.call(this, message);
 
           break;
-
-        case "auth_ok":
-          console.log("AUTH OK!");
-          break;
       }
     }
   }, {
@@ -70011,13 +70008,14 @@ var Connector_Connector = /*#__PURE__*/function () {
     key: "_decryptSessionKey",
     value: function _decryptSessionKey(stateMachine, evName, args) {
       try {
-        var _this$challenge = this.challenge,
-            privateKeyEncrypted = _this$challenge.privateKeyEncrypted,
-            sessionKey = _this$challenge.sessionKey;
+        var _this$_challenge = this._challenge,
+            privateKeyEncrypted = _this$_challenge.privateKeyEncrypted,
+            sessionKey = _this$_challenge.sessionKey;
         this.keyAgent.initializeMasterKey(privateKeyEncrypted);
         this.sessionKey = this.keyAgent.masterKeyDecrypt(sessionKey);
         this.connectorStateMachine.handle.decryptionSuccess();
       } catch (err) {
+        console.log("DECRYPTION ERROR: ".concat(err));
         this.connectorStateMachine.handle.decryptionError();
       }
     }
@@ -72268,6 +72266,8 @@ var VaultHolder = /*#__PURE__*/function () {
 var VaultRetriever = __webpack_require__(225);
 
 // CONCATENATED MODULE: ./client/src/js/lib/LoginAgent.js
+function LoginAgent_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function LoginAgent_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function LoginAgent_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -72307,7 +72307,19 @@ var LoginAgent_LoginAgent = /*#__PURE__*/function () {
     this.masterKeyAgent;
     this.password;
     this.connector.on(Events["Internal"].CONNECTION_STATE_CHANGED, function (state) {
-      _this.sm.handle.connectionStateChanged(state);
+      switch (state) {
+        case ConnectionState.SESSION_ESTABLISHED:
+          _this.sm.handle.sessionEstablished();
+
+          break;
+
+        case ConnectionState.INVALID_KEY:
+          console.log("Decryption error");
+
+          _this.sm.handle.decryptionError();
+
+          break;
+      }
     });
   } // ---------------------------------------------------------------------------------------------------------------------------
   // PUBLIC METHODS
@@ -72332,78 +72344,12 @@ var LoginAgent_LoginAgent = /*#__PURE__*/function () {
     // PRIVATE METHODS
 
   }, {
-    key: "_processConnectionStateChange",
-    value: function _processConnectionStateChange(stateMachine, eventName, args) {
-      var state = args[0];
-
-      switch (state) {
-        case ConnectionState.SESSION_ESTABLISHED:
-          this.sm.handle.sessionEstablished();
-          break;
-
-        case ConnectionState.INVALID_KEY:
-          console.log("Decryption error");
-          this.sm.handle.decryptionError();
-          break;
-      }
-    }
-  }, {
     key: "_acceptPassword",
     value: function _acceptPassword(stateMachine, evName, args) {
       this.masterKeyAgent = new KeyAgent_MasterRSAKeyAgent(args[0]);
       console.log("Password accepted: ".concat(args[0]));
       this.connector.setKeyAgent(this.masterKeyAgent);
       this.connector.establishConnection();
-    }
-  }, {
-    key: "_prepareStateMachine",
-    value: function _prepareStateMachine() {
-      return new AdvStateMachine["StateMachine"](this, {
-        name: "Login Agent SM",
-        stateMap: {
-          awatingPassword: {
-            initial: true,
-            transitions: {
-              acceptPassword: {
-                actions: this._acceptPassword,
-                state: "awatingSession"
-              }
-            }
-          },
-          awatingSession: {
-            transitions: {
-              sessionEstablished: {
-                state: "obtainingVault"
-              },
-              decryptionError: {
-                state: "awatingPassword",
-                actions: this._notifyPasswordInvalid
-              }
-            }
-          },
-          obtainintgVault: {
-            trnasitions: {
-              success: {
-                state: "success"
-              },
-              error: {
-                state: "fatalError"
-              }
-            }
-          },
-          success: {
-            "final": true
-          },
-          fatalError: {
-            entry: function entry() {
-              console.log("FATAL ERROR");
-            }
-          }
-        }
-      }, {
-        msgNotExistMode: AdvStateMachine["StateMachine"].Warn,
-        traceLevel: AdvStateMachine["StateMachine"].TraceLevel.DEBUG
-      });
     }
   }, {
     key: "_performFetchVault",
@@ -72429,7 +72375,7 @@ var LoginAgent_LoginAgent = /*#__PURE__*/function () {
   }, {
     key: "_notifyPasswordInvalid",
     value: function _notifyPasswordInvalid() {
-      console.log("password invalid");
+      this.emit(Events["Events"].LOGIN_ERROR, "Passowrd invalid");
     }
   }, {
     key: "_tryDecrypt",
@@ -72475,6 +72421,69 @@ var LoginAgent_LoginAgent = /*#__PURE__*/function () {
     key: "_notifyLoginError",
     value: function _notifyLoginError(sm, evName, err) {
       this.emit(Events["Events"].LOGIN_ERROR, err);
+    }
+  }, {
+    key: "_prepareStateMachine",
+    value: function _prepareStateMachine() {
+      return new AdvStateMachine["StateMachine"](this, {
+        name: "Login Agent SM",
+        stateMap: {
+          awatingPassword: {
+            initial: true,
+            transitions: {
+              acceptPassword: {
+                actions: this._acceptPassword,
+                state: "awatingSession"
+              }
+            }
+          },
+          awatingSession: {
+            transitions: {
+              sessionEstablished: {
+                state: "fetchingVault"
+              },
+              decryptionError: {
+                state: "awatingPassword",
+                actions: this._notifyPasswordInvalid
+              }
+            }
+          },
+          fetchingVault: {
+            entry: this._performFetchVault,
+            trnasitions: {
+              gotVault: {
+                state: "decryptingVault"
+              },
+              error: {
+                state: "fatalError"
+              }
+            }
+          },
+          decryptingVault: {
+            entry: this._tryDecrypt,
+            transitions: {
+              decryptSuccess: {
+                state: "success"
+              },
+              decryptError: {
+                state: "fatalError"
+              }
+            }
+          },
+          success: {
+            entry: this._notifyLoginSuccess,
+            "final": true
+          },
+          fatalError: LoginAgent_defineProperty({
+            entry: this._notifyLoginError
+          }, "entry", function entry() {
+            console.log("FATAL ERROR");
+          })
+        }
+      }, {
+        msgNotExistMode: AdvStateMachine["StateMachine"].Warn,
+        traceLevel: AdvStateMachine["StateMachine"].TraceLevel.DEBUG
+      });
     }
   }]);
 
