@@ -112,7 +112,7 @@ export class Connector {
         let msg
         while(msg = outbound.shift(0)){
             console.log(`Sending message ${msg}`);
-            this.socket.send(msg);
+            this.socket.send(this._sessionKeyEncrypt(msg));
         }
     }
 

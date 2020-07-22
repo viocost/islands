@@ -97,6 +97,7 @@ class ClientSession {
     _messageFromClient(blob){
         try{
             let msg = JSON.parse(this._sessionKeyDecrypt(blob))
+            this.clientRequestEmitter.acceptMessage(msg, this.connectionId)
 
         }catch(err){
             console.log(`Decryption error in client session: ${err.message}`);

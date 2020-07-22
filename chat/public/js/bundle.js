@@ -69869,7 +69869,7 @@ var Connector_Connector = /*#__PURE__*/function () {
 
       while (msg = outbound.shift(0)) {
         console.log("Sending message ".concat(msg));
-        this.socket.send(msg);
+        this.socket.send(this._sessionKeyEncrypt(msg));
       }
     }
   }, {
