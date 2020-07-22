@@ -48,7 +48,6 @@ export class Connector {
     }
 
     establishConnection() {
-        console.trace()
         this.connectorStateMachine.handle.connect();
     }
 
@@ -159,7 +158,7 @@ export class Connector {
             this.connectorStateMachine.handle.message(msg)
         })
 
-        socket.on("auth", msg =>{
+        socket.on("auth", msg=>{
             this.connectorStateMachine.handle.authMessage(msg)
         })
 
@@ -179,8 +178,11 @@ export class Connector {
         });
 
         socket.on('error', (err) => {
-            this.connectorStateMachine.handle.error();
-            console.log(`Socket error: ${err}`)
+            this.connectorStateMachine.handle.error();           
+        socket.on('reconnecting', (attemptNumber) => {
+        })
+            this.connectorStateMachine.handle.reconnecting()
+            console.log(`Attempting to reconnect : ${attemptNumber}`)
         })
 
         socket.on("disconnect", () => {
@@ -215,15 +217,25 @@ export class Connector {
     }
 
     _solveChallenge(message){
+        this._challenge = message.body;
         this.connectorStateMachine.handle.gotSessionKey(message)
     }
 
 
     _decryptSessionKey(stateMachine, evName, args){
-        const { privateKeyEncrypted, sessionKey } = message.body;
-        this.keyAgent.initializeMasterKey(privateKeyEncrypted)
-        this.sessionKey = this.keyAgent.masterKeyDecrypt(sessionKey)
-        this.connectorStateMachine.handle.decryptionSuccess()
+        try{
+            const { privateKeyEncrypted, sessionKey } = this.challenge;
+            this.keyAgent.initializeMasterKey(privateKeyEncrypted)
+            this.sessionKey = this.keyAgent.masterKeyDecrypt(sessionKey)
+            this.connectorStateMachine.handle.decryptionSuccess()
+        }catch(err){
+            this.connectorStateMachine.handle.decryptionError();
+        }
+    }
+
+    _retryDecryption(stateMachine, evName, args){
+        this.keyAgent = args[0]
+        this.connectorStateMachine.handle.decryptSessionKey()
     }
 
     _sessionKeyEncrypt(data){
@@ -309,7 +321,6 @@ export class Connector {
                     }
                 },
 
-
                 awatingSessionKey: {
                     transitions: {
                         authMessage: {
@@ -317,25 +328,36 @@ export class Connector {
                         },
 
                         gotSessionKey: {
-                            entry: ()=>{ console.log("GOT SESSION KEY") },
                             state: ConnectionState.DECRYPTING_SESSION_KEY,
-                            actions: this._decryptSessionKey
                         }
                     }
-
                 },
 
-                decryptingSessionKey: {
+                decryptingSessionKey:{
+                    entry: this._decryptSessionKey,
                     transitions: {
                         decryptionSuccess: {
                             state: ConnectionState.SESSION_ESTABLISHED
+                        },
+
+                        decryptionError: {
+                            state: "invalidKey"
                         }
 
                     }
                 },
 
-                decryptionError: {
+                invalidKey: {
+                    entry: this._emitState,
+                    transitions: {
+                        acceptKeyAgent: {
+                            actions: this._retryDecryption
+                        },
 
+                        decryptSessionKey: {
+                            state: "decryptingSessionKey"
+                        }
+                    }
                 },
 
                 reconnecting: {
@@ -389,8 +411,8 @@ export const ConnectionState = {
     CONNECTING: "connecting",
     AWATING_SESSION_KEY: "awatingSessionKey",
     DECRYPTING_SESSION_KEY: "decryptingSessionKey",
-    DECRYPTION_ERROR: "decryptionError",
+    INVALID_KEY: "invalidKey",
     AWATING_AUTH_RESULT: "awatingAuthResult",
-    SESSION_ESTABLISHED: "session_established",
+    SESSION_ESTABLISHED: "sessionEstablished",
     RECONNECTING: "reconnecting"
 }

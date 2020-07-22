@@ -69831,7 +69831,6 @@ var Connector_Connector = /*#__PURE__*/function () {
   }, {
     key: "establishConnection",
     value: function establishConnection() {
-      console.trace();
       this.connectorStateMachine.handle.connect();
     }
   }, {
@@ -69841,11 +69840,6 @@ var Connector_Connector = /*#__PURE__*/function () {
     } // ---------------------------------------------------------------------------------------------------------------------------
     // PRIVATE METHODS
 
-  }, {
-    key: "_decryptSessionKey",
-    value: function _decryptSessionKey(stateMachine, evName, args) {
-      var sessionKey = args[0];
-    }
   }, {
     key: "_acceptKeyAgent",
     value: function _acceptKeyAgent(stateMachine, evName, args) {
@@ -69971,7 +69965,11 @@ var Connector_Connector = /*#__PURE__*/function () {
       socket.on('error', function (err) {
         _this.connectorStateMachine.handle.error();
 
-        console.log("Socket error: ".concat(err));
+        socket.on('reconnecting', function (attemptNumber) {});
+
+        _this.connectorStateMachine.handle.reconnecting();
+
+        console.log("Attempting to reconnect : ".concat(attemptNumber));
       });
       socket.on("disconnect", function () {
         _this.connectorStateMachine.handle.processDisconnect();
@@ -70006,13 +70004,28 @@ var Connector_Connector = /*#__PURE__*/function () {
   }, {
     key: "_solveChallenge",
     value: function _solveChallenge(message) {
-      var _message$body = message.body,
-          privateKeyEncrypted = _message$body.privateKeyEncrypted,
-          secret = _message$body.secret,
-          sessionKey = _message$body.sessionKey;
-      this.keyAgent.initializeMasterKey(privateKeyEncrypted);
-      this.sessionKey = this.keyAgent.masterKeyDecrypt(sessionKey);
-      this.connectorStateMachine.handle.decryptionSuccess();
+      this._challenge = message.body;
+      this.connectorStateMachine.handle.gotSessionKey(message);
+    }
+  }, {
+    key: "_decryptSessionKey",
+    value: function _decryptSessionKey(stateMachine, evName, args) {
+      try {
+        var _this$challenge = this.challenge,
+            privateKeyEncrypted = _this$challenge.privateKeyEncrypted,
+            sessionKey = _this$challenge.sessionKey;
+        this.keyAgent.initializeMasterKey(privateKeyEncrypted);
+        this.sessionKey = this.keyAgent.masterKeyDecrypt(sessionKey);
+        this.connectorStateMachine.handle.decryptionSuccess();
+      } catch (err) {
+        this.connectorStateMachine.handle.decryptionError();
+      }
+    }
+  }, {
+    key: "_retryDecryption",
+    value: function _retryDecryption(stateMachine, evName, args) {
+      this.keyAgent = args[0];
+      this.connectorStateMachine.handle.decryptSessionKey();
     }
   }, {
     key: "_sessionKeyEncrypt",
@@ -70100,22 +70113,32 @@ var Connector_Connector = /*#__PURE__*/function () {
                 actions: this._processAuthMessage
               },
               gotSessionKey: {
-                entry: function entry() {
-                  console.log("GOT SESSION KEY");
-                },
-                state: ConnectionState.DECRYPTING_SESSION_KEY,
-                actions: this._decryptSessionKey
+                state: ConnectionState.DECRYPTING_SESSION_KEY
               }
             }
           },
           decryptingSessionKey: {
+            entry: this._decryptSessionKey,
             transitions: {
               decryptionSuccess: {
                 state: ConnectionState.SESSION_ESTABLISHED
+              },
+              decryptionError: {
+                state: "invalidKey"
               }
             }
           },
-          decryptionError: {},
+          invalidKey: {
+            entry: this._emitState,
+            transitions: {
+              acceptKeyAgent: {
+                actions: this._retryDecryption
+              },
+              decryptSessionKey: {
+                state: "decryptingSessionKey"
+              }
+            }
+          },
           reconnecting: {
             entry: this._emitState,
             transitions: {
@@ -70169,9 +70192,9 @@ var ConnectionState = {
   CONNECTING: "connecting",
   AWATING_SESSION_KEY: "awatingSessionKey",
   DECRYPTING_SESSION_KEY: "decryptingSessionKey",
-  DECRYPTION_ERROR: "decryptionError",
+  INVALID_KEY: "invalidKey",
   AWATING_AUTH_RESULT: "awatingAuthResult",
-  SESSION_ESTABLISHED: "session_established",
+  SESSION_ESTABLISHED: "sessionEstablished",
   RECONNECTING: "reconnecting"
 };
 // CONCATENATED MODULE: ./client/src/js/lib/MessageQueue.js
@@ -72260,9 +72283,12 @@ function LoginAgent_createClass(Constructor, protoProps, staticProps) { if (prot
 
 
 
+
 var LoginAgent_LoginAgent = /*#__PURE__*/function () {
   //In object pass UI functions
   function LoginAgent(_ref) {
+    var _this = this;
+
     var version = _ref.version,
         connector = _ref.connector,
         arrivalHub = _ref.arrivalHub;
@@ -72272,8 +72298,6 @@ var LoginAgent_LoginAgent = /*#__PURE__*/function () {
     WildEmitter["a" /* WildEmitter */].mixin(this);
     this.version = version;
     this.connector = connector;
-    this.connector.on(ConnectionState.DECRYPTION_ERROR, this._notifyPasswordInvalid.bind(this));
-    this.connector.on(ConnectionState.SESSION_ESTABLISHED, this.fetchVault.bind(this));
     this.arrivalHub = arrivalHub;
     this.sm = this._prepareStateMachine();
     this.vaultId;
@@ -72281,6 +72305,10 @@ var LoginAgent_LoginAgent = /*#__PURE__*/function () {
     this.vaultHolder;
     this.vaultRaw;
     this.masterKeyAgent;
+    this.password;
+    this.connector.on(Events["Internal"].CONNECTION_STATE_CHANGED, function (state) {
+      _this.sm.handle.connectionStateChanged(state);
+    });
   } // ---------------------------------------------------------------------------------------------------------------------------
   // PUBLIC METHODS
 
@@ -72293,6 +72321,7 @@ var LoginAgent_LoginAgent = /*#__PURE__*/function () {
   }, {
     key: "acceptPassword",
     value: function acceptPassword(password) {
+      this.password = password;
       this.sm.handle.acceptPassword(password);
     }
   }, {
@@ -72302,6 +72331,22 @@ var LoginAgent_LoginAgent = /*#__PURE__*/function () {
     } // ---------------------------------------------------------------------------------------------------------------------------
     // PRIVATE METHODS
 
+  }, {
+    key: "_processConnectionStateChange",
+    value: function _processConnectionStateChange(stateMachine, eventName, args) {
+      var state = args[0];
+
+      switch (state) {
+        case ConnectionState.SESSION_ESTABLISHED:
+          this.sm.handle.sessionEstablished();
+          break;
+
+        case ConnectionState.INVALID_KEY:
+          console.log("Decryption error");
+          this.sm.handle.decryptionError();
+          break;
+      }
+    }
   }, {
     key: "_acceptPassword",
     value: function _acceptPassword(stateMachine, evName, args) {
@@ -72316,41 +72361,43 @@ var LoginAgent_LoginAgent = /*#__PURE__*/function () {
       return new AdvStateMachine["StateMachine"](this, {
         name: "Login Agent SM",
         stateMap: {
-          watingForPassword: {
+          awatingPassword: {
             initial: true,
             transitions: {
               acceptPassword: {
                 actions: this._acceptPassword,
-                state: "connecting"
+                state: "awatingSession"
               }
             }
           },
-          connecting: {
+          awatingSession: {
             transitions: {
               sessionEstablished: {
-                state: "waitingForVault",
-                actions: this._performFetchVault
+                state: "obtainingVault"
+              },
+              decryptionError: {
+                state: "awatingPassword",
+                actions: this._notifyPasswordInvalid
               }
             }
           },
-          waitingForVault: {
-            vaultReceived: {
-              actions: this._tryDecrypt,
-              state: "decrypting"
-            }
-          },
-          decrypting: {
-            decryptionError: {
-              state: "waitingForPassword",
-              actions: this._notifyLoginError
-            },
-            success: {
-              state: "success",
-              actions: this._notifyLoginSuccess
+          obtainintgVault: {
+            trnasitions: {
+              success: {
+                state: "success"
+              },
+              error: {
+                state: "fatalError"
+              }
             }
           },
           success: {
             "final": true
+          },
+          fatalError: {
+            entry: function entry() {
+              console.log("FATAL ERROR");
+            }
           }
         }
       }, {
@@ -72361,6 +72408,7 @@ var LoginAgent_LoginAgent = /*#__PURE__*/function () {
   }, {
     key: "_performFetchVault",
     value: function _performFetchVault() {
+      console.log("Fetching vault now");
       var vaultRetriever = new VaultRetriever["a" /* VaultRetriever */]("/vault");
       vaultRetriever.run(this._processFetchVaultResult.bind(this));
     }

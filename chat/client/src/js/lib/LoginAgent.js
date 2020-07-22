@@ -7,6 +7,7 @@ import { WildEmitter } from "./WildEmitter";
 import { Events } from "../../../../common/Events";
 import { iCrypto } from "../../../../common/iCrypto";
 import { ConnectionState } from "./Connector";
+import { Internal } from "../../../../common/Events"
 
 
 
@@ -16,8 +17,6 @@ export class LoginAgent{
         WildEmitter.mixin(this);
         this.version = version;
         this.connector = connector;
-        this.connector.on(ConnectionState.DECRYPTION_ERROR, this._notifyPasswordInvalid.bind(this))
-        this.connector.on(ConnectionState.SESSION_ESTABLISHED, this.fetchVault.bind(this))
         this.arrivalHub = arrivalHub;
         this.sm = this._prepareStateMachine()
         this.vaultId;
@@ -25,6 +24,20 @@ export class LoginAgent{
         this.vaultHolder;
         this.vaultRaw;
         this.masterKeyAgent;
+        this.password;
+
+        this.connector.on(Internal.CONNECTION_STATE_CHANGED, state=>{
+            switch(state){
+                case ConnectionState.SESSION_ESTABLISHED:
+                    this.sm.handle.sessionEstablished()
+                    break
+                case ConnectionState.INVALID_KEY:
+                    console.log("Decryption error");
+                    this.sm.handle.decryptionError()
+                    break
+
+            }
+        })
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------
@@ -37,6 +50,7 @@ export class LoginAgent{
     }
 
     acceptPassword(password){
+        this.password = password;
         this.sm.handle.acceptPassword(password)
     }
 
@@ -47,6 +61,7 @@ export class LoginAgent{
     // ---------------------------------------------------------------------------------------------------------------------------
     // PRIVATE METHODS
 
+
     _acceptPassword(stateMachine, evName, args){
         this.masterKeyAgent = new MasterRSAKeyAgent(args[0])
         console.log(`Password accepted: ${args[0]}`);
@@ -55,59 +70,8 @@ export class LoginAgent{
 
     }
 
-    _prepareStateMachine(){
-        return new StateMachine(this, {
-            name: "Login Agent SM",
-            stateMap: {
-                watingForPassword: {
-                    initial: true,
-                    transitions: {
-                        acceptPassword: {
-                            actions: this._acceptPassword,
-                            state: "connecting"
-                        }
-                    }
-                },
-
-                connecting: {
-                    transitions: {
-                        sessionEstablished: {
-                            state: "waitingForVault",
-                            actions: this._performFetchVault
-                        }
-                    }
-                },
-
-                waitingForVault: {
-                    vaultReceived: {
-                        actions: this._tryDecrypt,
-                        state: "decrypting"
-                    }
-                },
-
-                decrypting: {
-                    decryptionError: {
-                        state: "waitingForPassword",
-                        actions: this._notifyLoginError
-                    },
-
-                    success: {
-                        state: "success",
-                        actions: this._notifyLoginSuccess
-                    }
-
-                },
-
-                success: {
-                    final: true
-                }
-            }
-
-        }, { msgNotExistMode: StateMachine.Warn, traceLevel: StateMachine.TraceLevel.DEBUG })
-    }
-
-
     _performFetchVault(){
+        console.log("Fetching vault now");
         const vaultRetriever = new VaultRetriever("/vault");
         vaultRetriever.run(this._processFetchVaultResult.bind(this))
     }
@@ -181,6 +145,75 @@ export class LoginAgent{
 
     _notifyLoginError(sm, evName, err){
         this.emit(Events.LOGIN_ERROR, err);
+    }
+
+
+
+    _prepareStateMachine(){
+        return new StateMachine(this, {
+            name: "Login Agent SM",
+            stateMap: {
+                awatingPassword: {
+                    initial: true,
+                    transitions: {
+                        acceptPassword: {
+                            actions: this._acceptPassword,
+                            state: "awatingSession"
+                        }
+                    }
+                },
+
+                awatingSession: {
+                    transitions: {
+                        sessionEstablished: {
+                            state: "obtainingVault"
+                        },
+
+                        decryptionError: {
+                            state: "awatingPassword",
+                            actions: this._notifyPasswordInvalid
+                        }
+                    }
+                },
+
+                obtainintgVault: {
+                    entry: this._performFetchVault,
+                    trnasitions: {
+                        gotVault: {
+                            state: "decryptingVault"
+                        },
+
+                        error: {
+                            state: "fatalError"
+                        }
+                    }
+                },
+
+                decryptingVault: {
+                    entry: this._tryDecrypt,
+                    transitions: {
+                        decryptSuccess: {
+                            state: "success"
+                        },
+
+                        decryptError: {
+                            state: "fatalError"
+                        }
+                    }
+
+
+                },
+
+                success: {
+                    final: true
+                },
+
+                fatalError: {
+                    entry: ()=>{console.log("FATAL ERROR");}
+                }
+            }
+
+        }, { msgNotExistMode: StateMachine.Warn, traceLevel: StateMachine.TraceLevel.DEBUG })
     }
 
 }

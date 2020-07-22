@@ -128,9 +128,7 @@ document.addEventListener('DOMContentLoaded', event => {
         vaultHolder = resVaultHolder;
 
         //Load topics V1 here
-
         loadTopics(vaultHolder.getVault())
-
     })
 
 
