@@ -61,8 +61,10 @@ class ClientConnector extends EventEmitter{
 
     getHost(connectionId){
         if(this.socketHub.sockets[connectionId]){
-            let socket = this.socketHub.sockets[connectionId];
-            return socket.handshake.headers.host
+            const socket = this.socketHub.sockets[connectionId];
+            const host = socket.handshake.headers.host
+            console.log(`Get host called. Host: ${host}`);
+            return host;
         }
 
         return null;

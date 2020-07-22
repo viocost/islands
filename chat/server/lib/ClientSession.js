@@ -1,5 +1,6 @@
 const { StateMachine } = require("adv-state");
 const { iCrypto } = require("../../common/iCrypto")
+const { createClientIslandEnvelope } = require("../../common/Message");
 
 
 class ClientSession {
@@ -12,8 +13,8 @@ class ClientSession {
     // ---------------------------------------------------------------------------------------------------------------------------
     // Public methods
 
-    acceptAsymKey(publicKey, privateKeyEncrypted){
-        this.sm.handle.authWithPublicKey(publicKey, privateKeyEncrypted)
+    acceptAsymKey(publicKey, vaultEncrypted){
+        this.sm.handle.authWithPublicKey(publicKey, vaultEncrypted)
     }
 
 
@@ -28,7 +29,7 @@ class ClientSession {
         let privateKeyEncrypted = args[1]
 
         let ic = new iCrypto()
-        ic.createNonce("secret", 256)
+        ic.createNonce("secret", 128)
           .createSYMKey("session-key")
           .setRSAKey("public-key", publicKey, "public")
           .publicKeyEncrypt("secret", "public-key", "secret-enc")
@@ -37,6 +38,13 @@ class ClientSession {
         this.sessionKey = ic.get("session-key")
         this.secret = ic.get("secret")
 
+        let msg = createClientIslandEnvelope({ command: "auth-challenge", body: {
+            privateKeyEncrypted: privateKeyEncrypted,
+            secret: ic.get("secret-enc"),
+            sessionKey: ic.get("session-key-enc")
+        }})
+
+        console.log("Sending auth challenge to client");
 
     }
 

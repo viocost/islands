@@ -4,7 +4,7 @@ const path = require("path")
 const RandExp = require("randexp");
 const iCrypto = require("./iCrypto");
 const AdminKey = require("./AdminKey");
-const HSMap = require("./classes/libs/HSVaultMap");
+const HSMap = require("./HSVaultMap");
 const Message = require("../objects/Message")
 const { Internal } = require("../../../common/Events")
 
@@ -379,11 +379,15 @@ class VaultManager{
 
 
     getVaultId (host){
-        if (!isOnion(host)) {
+        if (!this.isOnion(host)) {
             return AdminKey.getPkfp();
         } else {
-            return HSMap.getVaultId(extractOnion(host));
+            return HSMap.getVaultId(this._extractOnion(host));
         }
+    }
+
+    _extractOnion(host){
+        return host.match(/[a-z2-7]{16}\.onion/)[0];
     }
 
     isOnion(host){

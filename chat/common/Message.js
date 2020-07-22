@@ -119,7 +119,7 @@ function createClientIslandEnvelope({ pkfpSource,
                                              version,
                                              body = {},
                                              privateKey  } = {}){
-    const message = new Message(version);
+    const message = new Message(version = global.VERSION);
     message.headers.pkfpSource = pkfpSource;
     message.headers.pkfpDest = pkfpDest;
     message.headers.command = command;

@@ -1,4 +1,4 @@
-const ClientSession = require("../objects/ClientSession.js");
+const { ClientSession } = require("../../lib/ClientSession");
 const Err = require("./IError.js");
 const Logger = require("../libs/Logger.js");
 const { Internal, Events } = require("../../../common/Events")
@@ -31,8 +31,12 @@ class ClientSessionManager extends EventEmitter{
 
         //get host
 
+        let host = this.clientConnector.getHost(connectionId)
+        let vaultId = this.vaultManager.getVaultId(host);
+        let publicKey = this.vaultManager.getVaultPublicKey(vaultId);
+        let vault = this.vaultManager.getVault(vaultId);
 
-        //obtain public key and private encrypted key
+        session.acceptAsymKey(publicKey, vault)
 
         //supply it to session
 
