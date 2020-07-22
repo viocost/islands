@@ -221,10 +221,7 @@ export class Connector {
         const { privateKeyEncrypted, secret, sessionKey } = message.body;
         this.keyAgent.initializeMasterKey(privateKeyEncrypted)
         this.sessionKey = this.keyAgent.masterKeyDecrypt(sessionKey)
-        let secretRaw = this.keyAgent.masterKeyDecrypt(secret)
-
-
-        const msg = createClientIslandEnvelope({ command: "solution",  })
+        console.log("Session established");
     }
 
     _sessionKeyEncrypt(data){

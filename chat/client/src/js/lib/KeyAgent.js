@@ -44,7 +44,7 @@ export class MasterRSAKeyAgent extends KeyAgent{
         try{
             const ic = new iCrypto();
             ic.addBlob("blobcip", data)
-                .asym.setKey("priv", this.privateKey, "private")
+                .asym.setKey("priv", this.masterPrivateKey, "private")
                 .privateKeyDecrypt("blobcip", "priv", "data", "hex");
             return ic.get("data");
         }catch(error){

@@ -8,6 +8,7 @@ class ClientSession {
         this.clientConnector = clientConnector;
         this.connectionId = connectionId;
         this.sm = this._prepareStateMachine();
+        this._subscribe(clientConnector, connectionId)
 
     }
 
@@ -25,6 +26,10 @@ class ClientSession {
 
     // ---------------------------------------------------------------------------------------------------------------------------
     // Private methods
+
+    _subscribe(clientConnector, connectionId){
+
+    }
 
     _sessionKeyEncrypt(data){
         const msg = typeof data === "string" ? data : JSON.stringify(data);
