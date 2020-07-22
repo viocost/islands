@@ -4,6 +4,7 @@ const path = require("path")
 const RandExp = require("randexp");
 const iCrypto = require("./iCrypto");
 const AdminKey = require("./AdminKey");
+const HSMap = require("./classes/libs/HSVaultMap");
 const Message = require("../objects/Message")
 const { Internal } = require("../../../common/Events")
 
@@ -376,6 +377,19 @@ class VaultManager{
         return fs.readFileSync(path.join(this.vaultsPath, id, "publicKey"), 'utf8');
     }
 
+
+    getVaultId (host){
+        if (!isOnion(host)) {
+            return AdminKey.getPkfp();
+        } else {
+            return HSMap.getVaultId(extractOnion(host));
+        }
+    }
+
+    isOnion(host){
+        let pattern = /.*[a-z2-7]{16}\.onion.*/;
+        return pattern.test(host);
+    }
 
     generateID(){
         return new RandExp(new RegExp("[a-f0-9]{" + this.vaultIdLength + "}")).gen();

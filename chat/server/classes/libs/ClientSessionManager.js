@@ -29,7 +29,12 @@ class ClientSessionManager extends EventEmitter{
         const session = new ClientSession(this.clientConnector, connectionId);
         this.sessions[connectionId] = session;
 
-        session.
+        //get host
+
+
+        //obtain public key and private encrypted key
+
+        //supply it to session
 
         console.log("Session created");
     }

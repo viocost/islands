@@ -59,6 +59,15 @@ class ClientConnector extends EventEmitter{
 
     }
 
+    getHost(connectionId){
+        if(this.socketHub.sockets[connectionId]){
+            let socket = this.socketHub.sockets[connectionId];
+            return socket.handshake.headers.host
+        }
+
+        return null;
+    }
+
     isAlive(socketId){
         return (this.socketHub.sockets[socketId] && this.socketHub.sockets[socketId].connected);
     }
