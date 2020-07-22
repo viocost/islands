@@ -6,7 +6,7 @@ const { createClientIslandEnvelope } = require("../../common/Message");
 class ClientSession {
     constructor(clientConnector, connectionId, clientRequestEmitter){
         this.clientConnector = clientConnector;
-        this.clientRequestEmitter;
+        this.clientRequestEmitter = clientRequestEmitter
         this.connectionId = connectionId;
         this.sm = this._prepareStateMachine();
         this._subscribe(clientConnector, connectionId)
@@ -22,13 +22,24 @@ class ClientSession {
     }
 
 
-
-
-
     // ---------------------------------------------------------------------------------------------------------------------------
     // Private methods
 
     _subscribe(clientConnector, connectionId){
+        clientConnector.on(connectionId, (msg, data)=>{
+            switch(msg){
+                case "message":
+                    this._messageFromClient(data)
+                    break
+
+                case "disconnect":
+                    console.log(`Client disconnected: ${connectionId}`);
+                    break
+                case "reconnect":
+                    console.log(`Client reconnected: ${connectionId}`);
+                    break
+            }
+        })
 
     }
 
@@ -83,12 +94,18 @@ class ClientSession {
 
     }
 
-    _messageFromClient(){
+    _messageFromClient(blob){
+        try{
+            let msg = JSON.parse(this._sessionKeyDecrypt(blob))
 
+        }catch(err){
+            console.log(`Decryption error in client session: ${err.message}`);
+        }
     }
 
-    _messageToClient() {
-
+    _messageToClient(msg) {
+        const blob = this._sessionKeyEncrypt(msg);
+        this.clientConnector.send(this.connectionId, "message", blob)
     }
 
 
@@ -107,12 +124,11 @@ class ClientSession {
                     transitions: {
                         authWithSymkey:{
                             actions: this._authWithSymkey,
-                            state: "awatingAuth",
                         },
 
                         authWithPublicKey: {
                             actions: this._authWithPublicKey,
-                            state: "awatingAuth",
+                            state: "active"
                         },
 
                         disconnect: {
@@ -120,27 +136,6 @@ class ClientSession {
                         }
                     }
                 },
-
-                awatingAuth: {
-                    transitions: {
-                        authSuccess: {
-                            state: "active",
-                        },
-                        authFailed: {
-                            actions: this._terminate
-                        },
-                        processTerminated: {
-                            state: "terminated"
-                        },
-
-                        disconnect: {
-                            actions: this._terminate
-                        }
-
-                    }
-
-                },
-
 
                 active: {
                     transitions: {

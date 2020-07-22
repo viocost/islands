@@ -70012,7 +70012,7 @@ var Connector_Connector = /*#__PURE__*/function () {
           sessionKey = _message$body.sessionKey;
       this.keyAgent.initializeMasterKey(privateKeyEncrypted);
       this.sessionKey = this.keyAgent.masterKeyDecrypt(sessionKey);
-      console.log("Session established");
+      this.connectorStateMachine.handle.decryptionSuccess();
     }
   }, {
     key: "_sessionKeyEncrypt",
@@ -70101,7 +70101,7 @@ var Connector_Connector = /*#__PURE__*/function () {
               },
               gotSessionKey: {
                 entry: function entry() {
-                  console.log("AWATING SESSION KEY");
+                  console.log("GOT SESSION KEY");
                 },
                 state: ConnectionState.DECRYPTING_SESSION_KEY,
                 actions: this._decryptSessionKey
@@ -70111,19 +70111,7 @@ var Connector_Connector = /*#__PURE__*/function () {
           decryptingSessionKey: {
             transitions: {
               decryptionSuccess: {
-                state: ConnectionState.AWATING_AUTH_RESULT
-              }
-            }
-          },
-          awatingAuthResult: {
-            transitions: {
-              authMessage: {
-                actions: this._processAuthMessage
-              },
-              sessionEstablished: {},
-              error: {
-                state: ConnectionState.DISCONNECTED,
-                actions: this._notifyError
+                state: ConnectionState.SESSION_ESTABLISHED
               }
             }
           },

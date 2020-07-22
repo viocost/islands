@@ -45,16 +45,22 @@ class ClientConnector extends EventEmitter{
         this.emit("client_connected", socket.id);
         socket.on("disconnect", (reason)=>{
             Logger.verbose("Client disconnected: " + socket.id)
-            this.emit("client_disconnected", socket.id)
+            this.emit(socket.id,  "client_disconnected")
         });
 
         socket.on('reconnect', (attemptNumber) => {
             console.log(`Client reconnected: ${socket.id}`);
-            this.emit("client_reconnected", socket.id)
+            this.emit(socket.id,  "client_reconnected")
         });
 
         socket.on("error", (err)=>{
             Logger.error(`Client socket error: ${err.message}`, {stack: err.stack});
+
+            this.emit(socket.id, "error", err)
+        })
+
+        socket.on("message", msg =>{
+            this.emit(socket.id, "message", msg)
         })
 
     }

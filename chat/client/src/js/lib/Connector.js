@@ -60,9 +60,6 @@ export class Connector {
     // ---------------------------------------------------------------------------------------------------------------------------
     // PRIVATE METHODS
 
-    _decryptSessionKey(stateMachine, evName, args){
-        let sessionKey = args[0];
-    }
 
     _acceptKeyAgent(stateMachine, evName, args){
         this.keyAgent = args[0];
@@ -218,10 +215,15 @@ export class Connector {
     }
 
     _solveChallenge(message){
-        const { privateKeyEncrypted, secret, sessionKey } = message.body;
+        this.connectorStateMachine.handle.gotSessionKey(message)
+    }
+
+
+    _decryptSessionKey(stateMachine, evName, args){
+        const { privateKeyEncrypted, sessionKey } = message.body;
         this.keyAgent.initializeMasterKey(privateKeyEncrypted)
         this.sessionKey = this.keyAgent.masterKeyDecrypt(sessionKey)
-        console.log("Session established");
+        this.connectorStateMachine.handle.decryptionSuccess()
     }
 
     _sessionKeyEncrypt(data){
@@ -277,7 +279,6 @@ export class Connector {
                 disconnected: {
                     entry: this._emitState,
                     initial: true,
-
                     transitions: {
                         connect: {
                             state: ConnectionState.CONNECTING,
@@ -316,7 +317,7 @@ export class Connector {
                         },
 
                         gotSessionKey: {
-                            entry: ()=>{ console.log("AWATING SESSION KEY") },
+                            entry: ()=>{ console.log("GOT SESSION KEY") },
                             state: ConnectionState.DECRYPTING_SESSION_KEY,
                             actions: this._decryptSessionKey
                         }
@@ -327,29 +328,10 @@ export class Connector {
                 decryptingSessionKey: {
                     transitions: {
                         decryptionSuccess: {
-                            state: ConnectionState.AWATING_AUTH_RESULT
+                            state: ConnectionState.SESSION_ESTABLISHED
                         }
 
                     }
-                },
-
-                awatingAuthResult: {
-                    transitions: {
-                        authMessage: {
-                            actions: this._processAuthMessage
-                        },
-
-                        sessionEstablished: {
-
-                        },
-
-                        error: {
-
-                            state: ConnectionState.DISCONNECTED,
-                            actions: this._notifyError
-                        }
-                    }
-
                 },
 
                 decryptionError: {
