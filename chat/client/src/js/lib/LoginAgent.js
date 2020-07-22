@@ -1,4 +1,4 @@
-import { MasterRSAKeyAgent } from "./lib/KeyAgent";
+import { MasterRSAKeyAgent } from "./KeyAgent";
 import { StateMachine } from "../../../../common/AdvStateMachine";
 import { VaultHolder } from "./VaultHolder";
 import { VaultRetriever } from "./VaultRetriever";
@@ -6,6 +6,8 @@ import { Vault } from "./Vault";
 import { WildEmitter } from "./WildEmitter";
 import { Events } from "../../../../common/Events";
 import { iCrypto } from "../../../../common/iCrypto";
+import { ConnectionState } from "./Connector";
+
 
 
 export class LoginAgent{
@@ -14,6 +16,8 @@ export class LoginAgent{
         WildEmitter.mixin(this);
         this.version = version;
         this.connector = connector;
+        this.connector.on(ConnectionState.DECRYPTION_ERROR, this._notifyPasswordInvalid.bind(this))
+        this.connector.on(ConnectionState.SESSION_ESTABLISHED, this.fetchVault.bind(this))
         this.arrivalHub = arrivalHub;
         this.sm = this._prepareStateMachine()
         this.vaultId;
@@ -26,7 +30,10 @@ export class LoginAgent{
     // ---------------------------------------------------------------------------------------------------------------------------
     // PUBLIC METHODS
     fetchVault(){
-        this.sm.handle.fetchVault()
+        console.log("FETCH VAULT CALLED");
+       
+
+ //       this.sm.handle.fetchVault()
     }
 
     acceptPassword(password){
@@ -43,7 +50,7 @@ export class LoginAgent{
     _acceptPassword(stateMachine, evName, args){
         this.masterKeyAgent = new MasterRSAKeyAgent(args[0])
         console.log(`Password accepted: ${args[0]}`);
-        this.connector.setMasterKeyAgent(this.masterKeyAgent)
+        this.connector.setKeyAgent(this.masterKeyAgent)
         this.connector.establishConnection()
 
     }

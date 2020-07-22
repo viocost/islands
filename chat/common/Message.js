@@ -1,4 +1,5 @@
-import { iCrypto } from "./iCrypto"
+const { iCrypto } = require("./iCrypto")
+const { clone } = require("./ObjectUtil")
 
 
 /**
@@ -17,7 +18,7 @@ import { iCrypto } from "./iCrypto"
  *
  *
  */
-export class Message{
+class Message{
     constructor(version, request){
         if(version === undefined || version === "") throw new Error("Message init error: Software version is required!");
 
@@ -112,5 +113,30 @@ export class Message{
 
 }
 
+function createClientIslandEnvelope({ pkfpSource,
+                                             pkfpDest,
+                                             command,
+                                             version,
+                                             body = {},
+                                             privateKey  } = {}){
+    const message = new Message(version);
+    message.headers.pkfpSource = pkfpSource;
+    message.headers.pkfpDest = pkfpDest;
+    message.headers.command = command;
+    message.headers.version = version;
+    message.body = clone(body);
+
+    if (privateKey){
+        message.signMessage(privateKey);
+    }
+
+    return message;
+}
+
 Message.properties = ["headers", "body", "signature"];
 
+
+module.exports = {
+    createClientIslandEnvelope: createClientIslandEnvelope,
+    Message: Message
+}

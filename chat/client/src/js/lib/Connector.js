@@ -33,7 +33,7 @@ export class Connector {
     }
 
     setKeyAgent(keyAgent){
-        this.sm.handle.acceptKeyAgent(keyAgent);
+        this.connectorStateMachine.handle.acceptKeyAgent(keyAgent);
     }
 
     setConnectionQueryProperty(k, v) {
@@ -60,6 +60,10 @@ export class Connector {
 
     _decryptSessionKey(stateMachine, evName, args){
         let sessionKey = args[0];
+    }
+
+    _acceptKeyAgent(stateMachine, evName, args){
+        this.keyAgent = args[0];
     }
 
     _resetConnectionAttempts(){
@@ -198,7 +202,7 @@ export class Connector {
                     transitions: {
                         activate: {
                             state: "acceptingMessages",
-                        }
+                        },
                     }
                 },
 
@@ -233,6 +237,10 @@ export class Connector {
                             actions: this._connect
                         },
 
+                        acceptKeyAgent: {
+                            actions: this._acceptKeyAgent
+                        },
+
                         reconnect: {
 
                         }
@@ -257,6 +265,7 @@ export class Connector {
                 awatingSessionKey: {
                     transitions: {
                         gotSessionKey: {
+                            entry: ()=>{ console.log("AWATING SESSION KEY") },
                             state: ConnectionState.DECRYPTING_SESSION_KEY,
                             actions: this._decryptSessionKey
                         }
@@ -312,7 +321,7 @@ export class Connector {
                         },
 
                         disconnectSocket: {
-                            actions:  this.killSocke.DECRYP
+                            actions:  this.killSocket
                         },
 
                         processQueue: {

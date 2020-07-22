@@ -1,8 +1,42 @@
 const { StateMachine } = require("adv-state");
+const { iCrypto } = require("../../common/iCrypto")
 
 
 class ClientSession {
     constructor(){
+        this.sm = this._prepareStateMachine();
+
+    }
+
+
+    // ---------------------------------------------------------------------------------------------------------------------------
+    // Public methods
+
+    acceptAsymKey(publicKey, privateKeyEncrypted){
+        this.sm.handle.authWithPublicKey(publicKey, privateKeyEncrypted)
+    }
+
+
+
+
+
+    // ---------------------------------------------------------------------------------------------------------------------------
+    // Private methods
+
+    _authWithPublicKey(stateMachin, evName, args){
+        let publicKey = args[0]
+        let privateKeyEncrypted = args[1]
+
+        let ic = new iCrypto()
+        ic.createNonce("secret", 256)
+          .createSYMKey("session-key")
+          .setRSAKey("public-key", publicKey, "public")
+          .publicKeyEncrypt("secret", "public-key", "secret-enc")
+          .publicKeyEncrypt("session-key", "public-key", "session-key-enc")
+
+        this.sessionKey = ic.get("session-key")
+        this.secret = ic.get("secret")
+
 
     }
 
