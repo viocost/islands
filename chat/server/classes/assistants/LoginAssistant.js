@@ -100,8 +100,6 @@ class LoginAssistant{
         //verify request
 
         let services = request.body.services;
-        let session = self.sessionManager.getSessionByConnectionId(connectionId);
-        let privateKey = await session.getPrivateKey();
 
         for(let pkfp of Object.keys(services)){
             let metadata = JSON.parse(await self.hm.getLastMetadata(pkfp));
@@ -109,8 +107,8 @@ class LoginAssistant{
             if (self.isTopicOwner(pkfp, metadata) && await self.taLaunchRequired(metadata.body.topicAuthority.pkfp)){
                 Logger.debug(`Topic autority launch required. Launching`, {cat: "login"})
                 const taPkfp = metadata.body.topicAuthority.pkfp;
-                const taPrivateKey = Util.decryptStandardMessage(services[pkfp].topicAuthority.taPrivateKey, privateKey);
-                const taHSPrivateKey = Util.decryptStandardMessage(services[pkfp].topicAuthority.taHSPrivateKey, privateKey);
+                const taPrivateKey = services[pkfp].topicAuthority.taPrivateKey;
+                const taHSPrivateKey = services[pkfp].topicAuthority.taHSPrivateKey;
                 await self.topicAuthorityManager.launchTopicAuthority(taPrivateKey, taHSPrivateKey, taPkfp);
             }
 

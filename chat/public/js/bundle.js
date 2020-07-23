@@ -69868,8 +69868,10 @@ var Connector_Connector = /*#__PURE__*/function () {
       var msg;
 
       while (msg = outbound.shift(0)) {
-        console.log("Sending message ".concat(msg));
-        this.socket.send(this._sessionKeyEncrypt(msg));
+        var msgEncrypted = this._sessionKeyEncrypt(msg);
+
+        console.log("Sending message ".concat(JSON.stringify(msg), " \n ENCRYPTED: ").concat(msgEncrypted));
+        this.socket.emit("message", msgEncrypted);
       }
     }
   }, {
@@ -69913,7 +69915,7 @@ var Connector_Connector = /*#__PURE__*/function () {
         _this.connectorStateMachine.handle.connected();
       });
       socket.on("message", function (msg) {
-        _this.connectorStateMachine.handle.message(msg);
+        _this.connectorStateMachine.handle.messageReceived(msg);
       });
       socket.on("auth", function (msg) {
         _this.connectorStateMachine.handle.authMessage(msg);
@@ -69935,9 +69937,8 @@ var Connector_Connector = /*#__PURE__*/function () {
       });
       socket.on('error', function (err) {
         _this.connectorStateMachine.handle.error();
-
-        socket.on('reconnecting', function (attemptNumber) {});
-
+      });
+      socket.on('reconnecting', function (attemptNumber) {
         _this.connectorStateMachine.handle.reconnecting();
 
         console.log("Attempting to reconnect : ".concat(attemptNumber));
@@ -69966,6 +69967,17 @@ var Connector_Connector = /*#__PURE__*/function () {
           this._solveChallenge.call(this, message);
 
           break;
+      }
+    }
+  }, {
+    key: "_processIncomingMessage",
+    value: function _processIncomingMessage(stateMachine, evName, args) {
+      try {
+        var message = JSON.parse(this._sessionKeyDecrypt(args[0]));
+        console.log("Message received for ".concat(message.headers.pkfpDest, "\nContent: ").concat(JSON.stringify(message.body)));
+        this.emit(message.headers.pkfpDest, message);
+      } catch (err) {
+        console.log("Message processing error: ".concat(err));
       }
     }
   }, {
@@ -70128,6 +70140,9 @@ var Connector_Connector = /*#__PURE__*/function () {
               },
               disconnectSocket: {
                 actions: this.killSocket
+              },
+              messageReceived: {
+                actions: this._processIncomingMessage
               },
               processQueue: {
                 actions: this._processQueue
@@ -74945,7 +74960,7 @@ function postLoginDecrypt(msg, vault) {
     var preDecrypted = {};
 
     if (clientHSPrivateKey) {
-      preDecrypted.clientHSPrivateKey = encryptBlob(sessionKey, clientHSPrivateKey);
+      preDecrypted.clientHSPrivateKey = clientHSPrivateKey;
     }
 
     if (taPrivateKey || taHSPrivateKey) {
@@ -74953,11 +74968,11 @@ function postLoginDecrypt(msg, vault) {
     }
 
     if (taPrivateKey) {
-      preDecrypted.topicAuthority.taPrivateKey = encryptBlob(sessionKey, taPrivateKey);
+      preDecrypted.topicAuthority.taPrivateKey = taPrivateKey;
     }
 
     if (taHSPrivateKey) {
-      preDecrypted.topicAuthority.taHSPrivateKey = encryptBlob(sessionKey, taHSPrivateKey);
+      preDecrypted.topicAuthority.taHSPrivateKey = taHSPrivateKey;
     }
 
     res[pkfp] = preDecrypted;

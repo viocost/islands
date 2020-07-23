@@ -1960,16 +1960,16 @@ function postLoginDecrypt(msg, vault) {
         let preDecrypted = {};
 
         if (clientHSPrivateKey) {
-            preDecrypted.clientHSPrivateKey = encryptBlob(sessionKey, clientHSPrivateKey)
+            preDecrypted.clientHSPrivateKey =  clientHSPrivateKey
         }
         if (taPrivateKey || taHSPrivateKey) {
             preDecrypted.topicAuthority = {}
         }
         if (taPrivateKey) {
-            preDecrypted.topicAuthority.taPrivateKey = encryptBlob(sessionKey, taPrivateKey)
+            preDecrypted.topicAuthority.taPrivateKey = taPrivateKey
         }
         if (taHSPrivateKey) {
-            preDecrypted.topicAuthority.taHSPrivateKey = encryptBlob(sessionKey, taHSPrivateKey)
+            preDecrypted.topicAuthority.taHSPrivateKey = taHSPrivateKey
         }
 
         res[pkfp] = preDecrypted

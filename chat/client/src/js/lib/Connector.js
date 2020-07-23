@@ -111,8 +111,9 @@ export class Connector {
         this.queue = []
         let msg
         while(msg = outbound.shift(0)){
-            console.log(`Sending message ${msg}`);
-            this.socket.send(this._sessionKeyEncrypt(msg));
+            const msgEncrypted = this._sessionKeyEncrypt(msg)
+            console.log(`Sending message ${JSON.stringify(msg)} \n ENCRYPTED: ${msgEncrypted}`);
+            this.socket.emit("message", msgEncrypted);
         }
     }
 
@@ -156,7 +157,7 @@ export class Connector {
 
 
         socket.on("message", (msg)=>{
-            this.connectorStateMachine.handle.message(msg)
+            this.connectorStateMachine.handle.messageReceived(msg)
         })
 
         socket.on("auth", msg=>{
@@ -179,9 +180,10 @@ export class Connector {
         });
 
         socket.on('error', (err) => {
-            this.connectorStateMachine.handle.error();           
-        socket.on('reconnecting', (attemptNumber) => {
+            this.connectorStateMachine.handle.error();
         })
+       
+        socket.on('reconnecting', (attemptNumber) => {
             this.connectorStateMachine.handle.reconnecting()
             console.log(`Attempting to reconnect : ${attemptNumber}`)
         })
@@ -211,6 +213,16 @@ export class Connector {
             case "challenge":
                 this._solveChallenge.call(this, message)
                 break
+        }
+    }
+
+    _processIncomingMessage(stateMachine, evName, args){
+        try{
+            let message = JSON.parse(this._sessionKeyDecrypt(args[0]))
+            console.log(`Message received for ${message.headers.pkfpDest}\nContent: ${JSON.stringify(message.body)}`);
+            this.emit(message.headers.pkfpDest, message)
+        } catch(err) {
+            console.log(`Message processing error: ${err}`);
         }
     }
 
@@ -381,6 +393,10 @@ export class Connector {
 
                         disconnectSocket: {
                             actions:  this.killSocket
+                        },
+
+                        messageReceived: {
+                            actions: this._processIncomingMessage
                         },
 
                         processQueue: {

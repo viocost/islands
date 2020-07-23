@@ -10,10 +10,10 @@ const CuteSet = require("cute-set");
  *
  */
 class ClientSessionAdapter{
-    constructor(vaultId){
+    constructor({ vaultId, publicKey   }){
         this.id = vaultId;
         this.sessions = {}
-
+        this.vaultPublicKey;
         this.toipcs = new CuteSet();
 
     }
@@ -56,6 +56,9 @@ class ClientSessionAdapter{
         return this.topics.has(pkfp);
     }
 
+    getPublicKey(){
+        return this.vaultPublicKey;
+    }
 
 }
 

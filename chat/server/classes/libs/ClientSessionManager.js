@@ -58,13 +58,14 @@ class ClientSessionManager extends EventEmitter{
     }
 
     _initializeSessionAdapter(vaultId){
-        let adapterId = new ClientSessionAdapter(vaultId);
+        let vaultPublicKey = this.vaultManager.getVaultPublicKey(vaultId)
+        let adapter = new ClientSessionAdapter({vaultId: vaultId, publicKey: vaultPublicKey});
         let topicIds = this.vaultManager.getTopicsIds(vaultId)
         for(let topicId of topicIds){
-            adapterId.addTopic(topicId)
+            adapter.addTopic(topicId)
         }
 
-        return adapterId
+        return adapter
     }
 
     _associateVaultWithSession(socket){
