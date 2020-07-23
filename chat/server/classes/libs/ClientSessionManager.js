@@ -3,6 +3,7 @@ const Err = require("./IError.js");
 const Logger = require("../libs/Logger.js");
 const { Internal, Events } = require("../../../common/Events")
 const { EventEmitter } = require("events")
+const { ClientSessionAdapter } = require("../../lib/ClientSessionAdapter");
 
 
 
@@ -11,8 +12,16 @@ class ClientSessionManager extends EventEmitter{
                 vaultManager = Err.required(),
                 clientRequestEmitter = Err.required()){
         super()
-        // Sessions are stored by vaultID
+
+        // sessions used to be collection of connections groupped per vault id
+        // now, however sessions are responsible for a single connection
+        // Session adapters now serve as vault to session mappers
+        // session keys are socket IDs
         this.sessions = {};
+
+        // Session adapters hold sessions
+        // keys are vault IDs
+        this.sessionAdapters = {}
         this.clientConnector = clientConnector;
         this.topicToSessionMap = {};
         this.clientRequestEmitter = clientRequestEmitter;
@@ -34,19 +43,37 @@ class ClientSessionManager extends EventEmitter{
         //get host
         let host = this.clientConnector.getHost(connectionId)
         let vaultId = this.vaultManager.getVaultId(host);
+        this.sessionAdapters
         let publicKey = this.vaultManager.getVaultPublicKey(vaultId);
         let vault = this.vaultManager.getVault(vaultId);
 
+        if(!this.sessionAdapters.hasOwnProperty(vaultId)){
+            this.sessionAdapters[vaultId] = this._initializeSessionAdapter(vaultId)
+        }
+
+        this.sessionAdapters[vaultId].addSession(session)
+
         session.acceptAsymKey(publicKey, vault)
         console.log("Session created");
+    }
+
+    _initializeSessionAdapter(vaultId){
+        let adapterId = new ClientSessionAdapter(vaultId);
+        let topicIds = this.vaultManager.getTopicsIds(vaultId)
+        for(let topicId of topicIds){
+            adapterId.addTopic(topicId)
+        }
+
+        return adapterId
     }
 
     _associateVaultWithSession(socket){
 
         // this must be provided to indentify session
         // Session is identified by Vault id
-        let vaultId = socket.handshake.query.vaultn
+
         let host = socket.handshake.headers.host;
+        let vaultId = this.vaultManager.getVaultId(host)
 
         console.log(`Vault id on client_connected: ${vaultId}, `, socket.handshake.query);
 
@@ -104,32 +131,29 @@ class ClientSessionManager extends EventEmitter{
         }
     }
 
-    _provideVaultToSession(session){
-
-    }
 
     //Given participant's pkfp returns active session if exists
     getSession(pkfp){
-        return this.topicToSessionMap[pkfp];
+        return this.getSessionByTopicPkfp(pkfp);
     }
 
     getSessionByConnectionId(connectionId = Err.required()){
-        for(let session of Object.keys(this.sessions)){
-            if (this.sessions[session].hasConnection(connectionId)){
-                return this.sessions[session];
+        for(let adapterId in this.sessionAdapters){
+            if (this.sessionAdapters[adapterId].hasSession(connectionId)){
+                return this.sessionAdapters[adapterId];
             }
         }
     }
 
-    getSessionBySessionID(sessionID){
-        return this.sessions[sessionID];
+    getSessionBySessionID(adapterId){
+        return this.sessionAdapters[adapterId];
     }
 
     getSessionByTopicPkfp(pkfp){
-        if (this.topicToSessionMap.hasOwnProperty(pkfp)){
-            return this.topicToSessionMap[pkfp]
-        } else {
-            console.log(`No active sessions found for ${pkfp}` );
+        for(let adapterId in this.sessionAdapters){
+            if (this.sessionAdapters[adapterId].doesServeTopic(pkfp)){
+                return this.sessionAdapters[adapterId];
+            }
         }
     }
 

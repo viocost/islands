@@ -158,7 +158,7 @@ class TopicJoinAssistant {
             response.body.inviterNickname = taResponse.body.inviterNickname;
             response.body.inviterPkfp = taResponse.body.inviterPkfp;
             response.body.inviteCode = pendingRequest.inviteCode;
-            let session = self.sessionManager.getSessionBySessionID(pendingRequest.vaultId);
+            let session = self.sessionManager.getSessionBySessionId(pendingRequest.vaultId);
             session.addTopic(pendingRequest.pkfp);
             if(!session){
                 Logger.warn(`Session ${pendingRequest.vaultId} not found.`)

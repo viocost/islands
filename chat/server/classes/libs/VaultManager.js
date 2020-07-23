@@ -253,9 +253,9 @@ class VaultManager{
     }
 
 
-    getTopicsIds(id){
-        if(!this.isVaultExist(id)) return null;
-        let topicsPath = this.getTopicsPath(id);
+    getTopicsIds(vaultId){
+        if(!this.isVaultExist(vaultId)) return null;
+        let topicsPath = this.getTopicsPath(vaultId);
         let ids = fs.readdirSync(topicsPath);
         console.log(`topic ids: ${ids}`)
         return ids
