@@ -32,7 +32,9 @@ class ClientSessionManager extends EventEmitter{
     //adapter function used in many managers
     broadcastMessage(vaultId, message){
         if(vaultId in this.sessionAdapters){
-            this.sessionAdapters.broadcastMessage(message);
+            this.sessionAdapters[vaultId].broadcastMessage(message);
+        } else {
+            console.log("Adapter not found!");
         }
     }
 
