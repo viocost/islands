@@ -14,7 +14,7 @@ class ClientSessionAdapter{
         this.id = vaultId;
         this.sessions = {}
         this.vaultPublicKey;
-        this.toipcs = new CuteSet();
+        this.topics = new CuteSet();
 
     }
 
@@ -37,10 +37,9 @@ class ClientSessionAdapter{
     }
 
     broadcast(message){
-        for(connectionId in this.sessions){
+        for(let connectionId in this.sessions){
             this.send(message, connectionId)
         }
-
     }
 
     addTopic(topicPkfp){

@@ -72,10 +72,9 @@ class TopicInitAssistant{
 
         Logger.debug("Init toipc request verified", {cat: "topic_create"})
         //const newTopicPending = self.getNewTopicPendingData(request.body.topicID);
-        let session = self.sessionManager.getSessionByConnectionId(connectionId);
-        const newTopicRequest = request.body.newTopicData;
 
-        const newTopicData = JSON.parse(await session.decryptMessage(newTopicRequest));
+
+        const newTopicData =  request.body.newTopicData
 
         const topicKeyPair = newTopicData.topicKeyPair;
         const ownerPublicKey = newTopicData.ownerPublicKey;
@@ -124,6 +123,8 @@ class TopicInitAssistant{
         response.body.metadata = metadata;
         response.body.vaultRecord = request.body.vaultRecord;
         response.body.topicPkfp = request.body.topicPkfp;
+
+        let session = self.sessionManager.getSessionByConnectionId(connectionId);
         session.addTopic(request.body.topicPkfp);
         session.send(response, connectionId);
     }

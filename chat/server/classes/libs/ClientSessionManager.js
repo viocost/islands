@@ -29,6 +29,12 @@ class ClientSessionManager extends EventEmitter{
         this.clientConnector.on("client_connected", this._processClientConnected.bind(this))
     }
 
+    //adapter function used in many managers
+    broadcastMessage(vaultId, message){
+        if(vaultId in this.sessionAdapters){
+            this.sessionAdapters.broadcastMessage(message);
+        }
+    }
 
     _processClientConnected(connectionId){
 

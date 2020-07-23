@@ -22,6 +22,10 @@ class ClientSession {
     }
 
 
+    send(message){
+        this.sm.handle.messageToClient(message);
+    }
+
     // ---------------------------------------------------------------------------------------------------------------------------
     // Private methods
 
@@ -104,8 +108,8 @@ class ClientSession {
         }
     }
 
-    _messageToClient(msg) {
-        const blob = this._sessionKeyEncrypt(msg);
+    _messageToClient(stateMachine, evName, args) {
+        const blob = this._sessionKeyEncrypt(args[0]);
         this.clientConnector.send(this.connectionId, "message", blob)
     }
 

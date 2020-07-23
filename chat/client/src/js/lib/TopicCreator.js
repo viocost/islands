@@ -111,13 +111,14 @@ export class TopicCreator {
         let topicID = ic.get("topic-pkfp")
 
         //Forming request
+        //Theses are topic authority keypair and owner's public key
         let newTopicData = {
             topicKeyPair: topicKeyPair,
             ownerPublicKey: ownerKeyPair.publicKey
         };
 
         console.log("Preparing request");
-        let newTopicDataCipher = ChatUtility.encryptStandardMessage(JSON.stringify(newTopicData), this.sessionKey);
+        let newTopicDataCipher = JSON.stringify(newTopicData);
 
         //initializing topic settings
         let settings = Topic.prepareNewTopicSettings(this.version, this.nickname, this.topicName, ownerKeyPair.publicKey)
@@ -138,7 +139,7 @@ export class TopicCreator {
         request.body.topicPkfp = ownerPkfp;
         request.body.settings = settings;
         request.body.ownerPublicKey = ownerKeyPair.publicKey;
-        request.body.newTopicData = newTopicDataCipher;
+        request.body.newTopicData = newTopicData;
         request.body.vaultRecord = vaultRecord;
         request.body.vaultId = vault.id;
         request.signMessage(vault.privateKey)
