@@ -37,6 +37,7 @@ class ClientSessionAdapter{
     }
 
     broadcast(message){
+        console.log(`Broadcast called on Client sesion adapter. Sessions: ${Object.keys(this.sessions).length}`);
         for(let connectionId in this.sessions){
             this.send(message, connectionId)
         }

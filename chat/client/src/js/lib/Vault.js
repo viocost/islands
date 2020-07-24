@@ -18,8 +18,10 @@ import { ChatUtility } from "./ChatUtility";
  *
  */
 export class Vault{
-    constructor(){
+    constructor(version){
         WildEmitter.mixin(this);
+
+        this.version = version;
         this.id = null;
         this.pkfp;
         this.initialized = false;
@@ -30,7 +32,6 @@ export class Vault{
         this.privateKey = null;
         this.handlers;
         this.connector;
-        this.version;
         this.pendingInvites = {}
         this.error = null;
         this.initHandlers();

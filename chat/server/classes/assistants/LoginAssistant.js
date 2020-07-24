@@ -1,5 +1,4 @@
 const Request = require("../objects/ClientRequest.js");
-const Response = require("../objects/ClientResponse.js");
 const Message = require("../objects/Message.js");
 const Err = require("../libs/IError.js");
 const Metadata = require("../objects/Metadata.js");
@@ -9,6 +8,7 @@ const Util = require("../libs/ChatUtility.js");
 const Logger = require("../libs/Logger.js");
 const Events = require("../../../common/Events").Events;
 const Internal = require("../../../common/Events").Internal;
+const { createClientIslandEnvelope } = require("../../../common/Message")
 
 
 // number of messages loaded initially by default
@@ -84,13 +84,17 @@ class LoginAssistant{
 
         Logger.debug(`got data for ${Object.keys(topicsData)}`, {cat: "login"})
 
-        let sessionPublicKey = await session.getPublicKey();
-
         // Send to client for decryption
-        let response = Message.makeResponse(request, "island", Internal.POST_LOGIN_DECRYPT);
-        response.body.services = topicsData;
-        response.body.sessionKey = sessionPublicKey;
-        self.connectionManager.sendMessage(connectionId, response);
+        let response = createClientIslandEnvelope({
+            pkfpSource: "island",
+            command: Internal.POST_LOGIN_DECRYPT,
+            pkfpDest: request.headers.pkfpSource,
+            body: {
+                services: topicsData,
+            }
+        })
+
+        session.send(response, connectionId)
     }
 
     async checkServices(request, connectionId, self){
@@ -122,8 +126,8 @@ class LoginAssistant{
 
         }
         let response = Message.makeResponse(request, "island", Events.POST_LOGIN_SUCCESS)
-        self.connectionManager.sendMessage(connectionId, response);
-        Logger.debug(`Services check completed!`, {cat: "login"});
+        let session = self.sessionManager.getSessionByConnectionId(connectionId);
+        session.send(response, connectionId);
     }
 
     async getDataForDecryption(clientPkfp, metadata, sessionID){
@@ -291,7 +295,9 @@ class LoginAssistant{
 
             try{
                 let error = new ClientError(request, this.getErrorType(request.headers.command) , err.message)
-                this.connectionManager.sendResponse(connectionId, error);
+                let session = self.sessionManager.getSessionByConnectionId(connectionId)
+                session.send(error, connectionId)
+
             }catch(fatalError){
                 Logger.error("Topic login assistant FATAL ERROR", {
                     connectionId: connectionId,
@@ -312,82 +318,6 @@ class LoginAssistant{
     /*********************************************
      * ~ End helper Functions
      *********************************************/
-
-
-    ///JUNK
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // async initLogin(request, connectionId, self) {                                                                                        //
-    //     const clientPkfp = request.headers.pkfpSource;                                                                                    //
-    //     test                                                                                                                              //
-    //                                                                                                                                       //
-    //     await self.verifyLoginRequest(request);                                                                                           //
-    //     await self.setPendingLogin(request);                                                                                              //
-    //     const pendingLogin = self.getPendingLogin(request.body.sessionID);                                                                //
-    //     const metadata = pendingLogin.metadata;                                                                                           //
-    //     const dataForDecryption = await self.getDataForDecryption(clientPkfp, metadata, request.body.sessionID);                          //
-    //                                                                                                                                       //
-    //     if (pendingLogin.taLaunchRequired || pendingLogin.hsLaunchRequired) {                                                             //
-    //         await self.sendToClientForDecrytpion(dataForDecryption, request, connectionId);                                               //
-    //     } else {                                                                                                                          //
-    //         await self.finalizeLogin(request, connectionId, self);                                                                        //
-    //     }                                                                                                                                 //
-    //                                                                                                                                       //
-    // }                                                                                                                                     //
-    //                                                                                                                                       //
-    // async continueAfterDecryption(request, connectionId, self){                                                                           //
-    //     const pendingLogin = self.getPendingLogin(request.body.sessionID);                                                                //
-    //     if(!pendingLogin){                                                                                                                //
-    //         throw new Error("Login was not properly initialized");                                                                        //
-    //     }                                                                                                                                 //
-    //     const tokenPrivateKey = pendingLogin.token.privateKey;                                                                            //
-    //     if (pendingLogin.hsLaunchRequired){                                                                                               //
-    //         const clientHSKey = Util.decryptStandardMessage(request.body.preDecrypted.clientHSPrivateKey, tokenPrivateKey);               //
-    //         await self.launchClientHS(clientHSKey)                                                                                        //
-    //     }                                                                                                                                 //
-    //                                                                                                                                       //
-    //     if (pendingLogin.taLaunchRequired){                                                                                               //
-    //         const taPkfp = pendingLogin.metadata.body.topicAuthority.pkfp;                                                                //
-    //         const taPrivateKey = Util.decryptStandardMessage(request.body.preDecrypted.topicAuthority.taPrivateKey, tokenPrivateKey);     //
-    //         const taHSPrivateKey = Util.decryptStandardMessage(request.body.preDecrypted.topicAuthority.taHSPrivateKey, tokenPrivateKey); //
-    //         await self.topicAuthorityManager.launchTopicAuthority(taPrivateKey, taHSPrivateKey, taPkfp);                                  //
-    //     }                                                                                                                                 //
-    //                                                                                                                                       //
-    //                                                                                                                                       //
-    //     self.finalizeLogin(request, connectionId, self);                                                                                  //
-    //                                                                                                                                       //
-    // }                                                                                                                                     //
-    //                                                                                                                                       //
-    // sendToClientForDecrytpion(dataForDecryption, request, connectionId){                                                                  //
-    //     console.log("Sending to client for decryption");                                                                                  //
-    //     const token = this.generateDecryptionToken();                                                                                     //
-    //     const response = new Response("login_decryption_required", request);                                                              //
-    //     response.body.dataForDecryption = dataForDecryption;                                                                              //
-    //     response.body.token = token.publicKey;                                                                                            //
-    //     this.getPendingLogin(request.body.sessionID).token = token;                                                                       //
-    //     this.connectionManager.sendResponse(connectionId, response);                                                                      //
-    // }                                                                                                                                     //
-    //                                                                                                                                       //
-    // async finalizeLogin(request, connectionId, self){                                                                                     //
-    //     if(!self.pendingLogins[request.body.sessionID]){                                                                                  //
-    //         throw new Error("Login was not properly initialized");                                                                        //
-    //     }                                                                                                                                 //
-    //     await self.initSession(request, connectionId, self);                                                                              //
-    //     const messages = await self.getLastMessages(request.headers.pkfpSource);                                                          //
-    //     const settings = await self.getSettings(request.headers.pkfpSource);                                                              //
-    //                                                                                                                                       //
-    //     const response = new Response("login_success", request);                                                                          //
-    //     response.body.messages = messages;                                                                                                //
-    //     response.body.metadata = self.pendingLogins[request.body.sessionID].metadata;                                                     //
-    //     response.body.settings = settings;                                                                                                //
-    //                                                                                                                                       //
-    //     self.connectionManager.sendResponse(connectionId, response);                                                                      //
-    //                                                                                                                                       //
-    //     this.deletePendingLogin(request.body.sessionID);                                                                                  //
-    // }                                                                                                                                     //
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    ///JUNK END
-
 
 }
 

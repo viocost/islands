@@ -41,7 +41,6 @@ class TopicJoinAssistant {
     async joinTopicIncoming(envelope, self) {
         Logger.debug("Join topic incoming request receives", {cat: "topic_join"});
         const request = Request.parse(envelope.payload);
-
         if(semver.lt("2.0.0", request.headers.version)){
             Logger.debug("Legacy join request", {cat: "topic_join"})
             await self.joinTopicIncomingLegacy(envelope, self)
@@ -158,7 +157,7 @@ class TopicJoinAssistant {
             response.body.inviterNickname = taResponse.body.inviterNickname;
             response.body.inviterPkfp = taResponse.body.inviterPkfp;
             response.body.inviteCode = pendingRequest.inviteCode;
-            let session = self.sessionManager.getSessionBySessionId(pendingRequest.vaultId);
+            let session = self.sessionManager.getSessionBySessionID(pendingRequest.vaultId);
             session.addTopic(pendingRequest.pkfp);
             if(!session){
                 Logger.warn(`Session ${pendingRequest.vaultId} not found.`)

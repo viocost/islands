@@ -227,7 +227,8 @@ class TopicInitAssistant{
             try{
                 Logger.error(`Topic init assistant error: ${err.message}`, {stack: err.stack, cat: "topic_create"} );
                 let error = new ClientError(request, this.getErrorType(request.headers.command) , `Topic init error: ${err.message}`);
-                this.connectionManager.sendMessage(connectionId, error);
+                let session = this.sessionManager.getSessionByConnectionId(connectionId)
+                session.send(error, connectionId)
             }catch(fatalError){
                 Logger.error(`Topic init assistant FATAL ERROR: ${fatalError.message}`, {stack: fatalError.stack, cat: "topic_create"} );
             }

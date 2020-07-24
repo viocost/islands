@@ -120,7 +120,7 @@ export class LoginAgent {
         ic.setRSAKey("pub", data.publicKey, "public")
             .getPublicKeyFingerprint("pub", "pkfp");
 
-        const vault = new Vault()
+        const vault = new Vault(this.version)
         vault.password = password;
         vault.pkfp = ic.get("pkfp");
         vault.adminKey = data.adminKey;

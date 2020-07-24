@@ -123,6 +123,7 @@ class ClientSession {
 
 
     _handleDisconnect() {
+        console.log("Here we handling disconnect");
 
     } 
 

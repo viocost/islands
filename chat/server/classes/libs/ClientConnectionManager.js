@@ -113,12 +113,6 @@ class ClientConnector extends EventEmitter{
         }
         return this.dataSocketHub.sockets[id];
     }
-
-    sendMessage(connectionId, message){
-        this.send(connectionId, "message", message);
-    }
-
-
 }
 
 

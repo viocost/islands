@@ -274,12 +274,13 @@ class InviteAssistant{
     }
 
     /***** Error handlers *****/
-    async clientErrorHandler(request, connectionID, self, err){
+    async clientErrorHandler(request, connectionId, self, err){
         console.trace(err);
         try{
             Logger.error(`Client error: ${err.message}`, {cat: "invite"})
             let error = new ClientError(request, self.getClientErrorType(request.headers.command) , "Internal server error")
-            self.connectionManager.sendResponse(connectionID, error);
+            let session = self.sessionManager.getSessionByConnectionId(connectionId);
+            session.send(error, connectionId)
         }catch(fatalError){
             console.log("Some big shit happened: " + fatalError + "\nOriginal error: " + err);
             console.trace(err)

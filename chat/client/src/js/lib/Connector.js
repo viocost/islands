@@ -4,6 +4,7 @@ import { Internal } from "../../../../common/Events";
 import { StateMachine } from "../../../../common/AdvStateMachine";
 import { iCrypto } from "../../../../common/iCrypto";
 import { createClientIslandEnvelope } from "../../../../common/Message"
+import { inspect } from "util";
 
 
 export class Connector {
@@ -222,7 +223,12 @@ export class Connector {
 
     _processIncomingMessage(stateMachine, evName, args){
         try{
-            let { seq, message }= JSON.parse(this._sessionKeyDecrypt(args[0]))
+
+            let encryptedBlob = args[0]
+            console.log(inspect(encryptedBlob));
+            let decrypted = this._sessionKeyDecrypt(encryptedBlob)
+            console.log(`Decrypted message: ${decrypted}`);
+            let { seq, message }= JSON.parse(decrypted)
 
             console.log(`Received message with seq ${seq}. Previous seq: ${this._receiveCount}`);
             if(seq !== this._receiveCount + 1){

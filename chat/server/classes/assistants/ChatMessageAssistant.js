@@ -281,7 +281,8 @@ class ChatMessageAssistant{
                 context: err.stack,
             });
             let error = new ClientError(request, self.getClientErrorType(request.headers.command) , err.message || err || "Unknown error");
-            self.connectionManager.sendResponse(connectionID, error);
+            let session = self.sessionManager.getSessionByConnectionId(connectionId);
+            session.send(error, connectionId)
         }catch(fatalError){
             Logger.error("FATAL: Could nod handle client error.", {
                 fatalError: fatalError.message,

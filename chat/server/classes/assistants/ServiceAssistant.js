@@ -320,7 +320,8 @@ class ServiceAssistant{
             request.body.lastMessageId
         );
 
-        self.connectionManager.sendMessage(connectionId, response);
+        let session = self.sessionManager.getSessionByConnectionId(connectionId);
+        session.send(response, connectionId)
     }
 
 
