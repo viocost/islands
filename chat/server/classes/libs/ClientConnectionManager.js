@@ -3,6 +3,7 @@ const EventEmitter = require('events');
 const ID_SIZE = 6
 const Err = require("./IError.js");
 const Logger = require("./Logger.js");
+const { inspect } = require("util");
 
 /**
  * Manages client->island connections
@@ -17,7 +18,6 @@ class ClientConnector extends EventEmitter{
         this.socketHub = this.io.of("/chat");
         this.socketHub.on('connection', this.setSocketListenersOnNewChatConnection.bind(this))
         this.dataSocketHub = this.io.of("/file");
-
         this.dataSocketHub.on('connection', this.setSocketListenersOnNewDataConnection.bind(this))
     }
 
@@ -101,7 +101,7 @@ class ClientConnector extends EventEmitter{
 
     getSocketById(id){
         if(!this.socketHub.sockets[id]){
-            Logger.error(`Socket not found: ${id}, \nExisting sockets: ${JSON.stringify(Object.keys(this.socketHub.sockets))}`, {cat: "connection"})
+            Logger.error(`Socket not found: ${id}, \nExisting sockets: ${inspect(Object.keys(this.socketHub.sockets))}`, {cat: "connection"})
             throw new Error("Socket does not exist: " + id);
         }
         return this.socketHub.sockets[id];

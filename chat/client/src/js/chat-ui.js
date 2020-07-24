@@ -101,6 +101,7 @@ document.addEventListener('DOMContentLoaded', event => {
     initChat();
     initLoginUI();
     connector = new Connector("/chat");
+    window.connector = connector
     arrivalHub = new ArrivalHub(connector);
     version = islandsVersion()
 
@@ -1849,13 +1850,6 @@ function postLogin(vault) {
         }
     })
 
-    ////////////////////////////////////////////////
-    // let message = new Message(chat.version);   //
-    // message.setSource(vault.id);               //
-    // message.setCommand(Internal.POST_LOGIN);   //
-    // message.body.topics = Object.keys(topics); //
-    // message.signMessage(vault.privateKey);     //
-    ////////////////////////////////////////////////
     vault.once(Internal.POST_LOGIN_DECRYPT, (msg) => {
         postLoginDecrypt(msg, vault);
     })

@@ -1,5 +1,6 @@
 const Logger = require("../classes/libs/Logger");
 const CuteSet = require("cute-set");
+const { ClientSession } = require("../lib/ClientSession");
 
 /**
  * this class needed to adapt new sessions to assistants.
@@ -10,16 +11,25 @@ const CuteSet = require("cute-set");
  *
  */
 class ClientSessionAdapter{
-    constructor({ vaultId, publicKey   }){
+    constructor({ vaultId,  vaultManager,  sessionManager, clientConnector, requestEmitter  }){
         this.id = vaultId;
         this.sessions = {}
-        this.vaultPublicKey;
+        this.clientConnector = clientConnector;
+        this.sessionManager = sessionManager;
+        this.requestEmitter = requestEmitter;
+        this.vaultManager = vaultManager;
         this.topics = new CuteSet();
-
+        this.vaultPublicKey = this.vaultManager.getVaultPublicKey(vaultId)
+        this._subscribe(this.sessionManager);
+        this._loadTopicIds()
     }
+
+
+
 
     addSession(session){
         this.sessions[session.connectionId] = session;
+
     }
 
     hasSession(sessionId){
@@ -63,6 +73,40 @@ class ClientSessionAdapter{
         return this.vaultPublicKey;
     }
 
+    _subscribe(sessionManager){
+        sessionManager.on(this.id, this._processSessionManagerEvent.bind(this))
+    }
+
+    _processSessionManagerEvent(eventName, data){
+        switch(eventName){
+            case "client_connected":
+                this._processNewClientConnection(data)
+                break
+        }
+    }
+
+
+    _processNewClientConnection(connectionId){
+        let publicKey = this.vaultManager.getVaultPublicKey(this.id)
+        let vault = this.vaultManager.getVault(this.id)
+        console.log(`Client connected. Connection id: ${connectionId}`);
+        if(connectionId in this.sessions){
+            console.log(`Client session ${connectionId} already exist.`);
+            return
+        }
+
+        let session  = new ClientSession(this.clientConnector, connectionId, this.requestEmitter)
+        this.addSession(session);
+        session.acceptAsymKey(publicKey, vault)
+    }
+
+    _loadTopicIds(){
+
+        let topicIds = this.vaultManager.getTopicsIds(this.id)
+        for(let topicId of topicIds){
+            this.addTopic(topicId)
+        }
+    }
 }
 
 

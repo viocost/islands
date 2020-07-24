@@ -37,10 +37,10 @@ class ClientSession {
                     this._messageFromClient(data)
                     break
 
-                case "disconnect":
+                case "client_disconnected":
                     console.log(`Client disconnected: ${connectionId}`);
                     break
-                case "reconnect":
+                case "client_reconnected":
                     console.log(`Client reconnected: ${connectionId}`);
                     break
             }
@@ -65,7 +65,7 @@ class ClientSession {
         return ic.get("msg_raw");
     }
 
-    _authWithPublicKey(stateMachin, evName, args){
+    _authWithPublicKey(stateMachine, evName, args){
         let publicKey = args[0]
         let privateKeyEncrypted = args[1]
 
@@ -123,7 +123,7 @@ class ClientSession {
 
 
     _handleDisconnect() {
-        console.log("Here we handling disconnect");
+        console.log("\nHere we handling disconnect\n");
 
     } 
 
@@ -207,7 +207,7 @@ class ClientSession {
 
             }
 
-        }, { msgNotExistMode: StateMachine.Warn, traceLevel: StateMachine.TraceLevel.DEBUG })
+        }, { msgNotExistMode: StateMachine.Warn, traceLevel: StateMachine.TraceLevel.NONE})
 
     }
 }

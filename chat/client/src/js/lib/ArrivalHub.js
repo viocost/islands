@@ -26,7 +26,7 @@ export class ArrivalHub{
                 }
                 self.emit(dest, data);
             } else {
-                console.log(`MESSAGE WITHOUT HEADERS ARRIVED. Event: ${event}, data: ${JSON.stringify(data)}, `);
+                console.log(`MESSAGE WITHOUT HEADERS ARRIVED. Event: ${event}, data: ${inspect(data)}, `);
             }
         })
 

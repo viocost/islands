@@ -120,7 +120,7 @@ class LoginAssistant{
             console.log("Checking client hidden service: " + residence, {cat: "login"});
             if (!await self.connector.isHSUp(residence)){
                 Logger.debug(`Hidden service ${residence} launch required.`, {cat: "login"})
-                const clientHSKey = Util.decryptStandardMessage(services[pkfp].clientHSPrivateKey, privateKey);
+                const clientHSKey = services[pkfp].clientHSPrivateKey ;
                 await self.launchClientHS(clientHSKey);
             }
 

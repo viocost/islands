@@ -1,4 +1,3 @@
-const { ClientSession } = require("../../lib/ClientSession");
 const Err = require("./IError.js");
 const Logger = require("../libs/Logger.js");
 const { Internal, Events } = require("../../../common/Events")
@@ -39,41 +38,24 @@ class ClientSessionManager extends EventEmitter{
     }
 
     _processClientConnected(connectionId){
-
-        //Executed when new client connects
-        if(this.sessions.hasOwnProperty(connectionId)) return
-
-        //let socket = clientConnector.getSocketById(connectionId);
-        console.log("Client connected!");
-        const session = new ClientSession(this.clientConnector, connectionId, this.clientRequestEmitter);
-        this.sessions[connectionId] = session;
-
-        //get host
         let host = this.clientConnector.getHost(connectionId)
         let vaultId = this.vaultManager.getVaultId(host);
-        this.sessionAdapters
-        let publicKey = this.vaultManager.getVaultPublicKey(vaultId);
-        let vault = this.vaultManager.getVault(vaultId);
 
         if(!this.sessionAdapters.hasOwnProperty(vaultId)){
             this.sessionAdapters[vaultId] = this._initializeSessionAdapter(vaultId)
         }
 
-        this.sessionAdapters[vaultId].addSession(session)
-
-        session.acceptAsymKey(publicKey, vault)
-        console.log("Session created");
+        this.emit(vaultId, "client_connected", connectionId)
     }
 
     _initializeSessionAdapter(vaultId){
-        let vaultPublicKey = this.vaultManager.getVaultPublicKey(vaultId)
-        let adapter = new ClientSessionAdapter({vaultId: vaultId, publicKey: vaultPublicKey});
-        let topicIds = this.vaultManager.getTopicsIds(vaultId)
-        for(let topicId of topicIds){
-            adapter.addTopic(topicId)
-        }
-
-        return adapter
+        return new ClientSessionAdapter({
+            vaultId: vaultId,
+            clientConnector: this.clientConnector,
+            sessionManager: this,
+            requestEmitter: this.clientRequestEmitter,
+            vaultManager: this.vaultManager
+        });
     }
 
     _associateVaultWithSession(socket){
