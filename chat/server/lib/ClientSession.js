@@ -27,6 +27,22 @@ class ClientSession {
         this.sm.handle.messageToClient(message);
     }
 
+
+    // This function expects encrypted with session key secret
+    // On reconnect if given secret decrypts and matches the secret that was set earlier
+    // A new socket will be given to the session
+    isSecretIdentified(secretEncrypted){
+        try{
+            console.log(`Identifying a secret: ${secretEncrypted}`);
+            let secretRaw = this._sessionKeyDecrypt(secretEncrypted)
+            console.log(`Secret set: ${this.secret}, secret given: ${secretRaw}, matches: ${secretRaw === this.secret}`);
+            return this.secret === secretRaw;
+        }catch (err){
+            console.log("secret didn't match:", err);
+            return false
+        }
+    }
+
     // ---------------------------------------------------------------------------------------------------------------------------
     // Private methods
 
@@ -58,6 +74,7 @@ class ClientSession {
     }
 
     _sessionKeyDecrypt(data){
+        console.log(`Session key${this.sessionKey}`);
         const ic = new iCrypto();
         ic.addBlob("msg_enc", data)
           .setSYMKey("key", this.sessionKey)
@@ -70,7 +87,8 @@ class ClientSession {
         let privateKeyEncrypted = args[1]
 
         let ic = new iCrypto()
-        ic.createNonce("secret", 128)
+        ic.createNonce("secret-bin", 64)
+          .bytesToHex("secret-bin", "secret")
           .createSYMKey("session-key")
           .setRSAKey("public-key", publicKey, "public")
           .publicKeyEncrypt("secret", "public-key", "secret-enc", "hex")
@@ -89,6 +107,7 @@ class ClientSession {
 
         this.clientConnector.send(this.connectionId, "auth", msg)
     }
+
 
     _authWithSymkey(){
 

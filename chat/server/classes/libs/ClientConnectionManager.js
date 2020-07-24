@@ -102,9 +102,15 @@ class ClientConnector extends EventEmitter{
     getSocketById(id){
         if(!this.socketHub.sockets[id]){
             Logger.error(`Socket not found: ${id}, \nExisting sockets: ${inspect(Object.keys(this.socketHub.sockets))}`, {cat: "connection"})
-            throw new Error("Socket does not exist: " + id);
+            return;
         }
         return this.socketHub.sockets[id];
+    }
+
+    getConnectionQueryParameter(id, param){
+        if(this.socketHub.sockets[id]){
+            return this.socketHub.sockets[id].handshake.query[param]
+        }
     }
 
     getDataSocketById(id){

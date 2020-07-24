@@ -73701,9 +73701,19 @@ var Connector_Connector = /*#__PURE__*/function () {
       try {
         var _this$_challenge = this._challenge,
             privateKeyEncrypted = _this$_challenge.privateKeyEncrypted,
-            sessionKey = _this$_challenge.sessionKey;
+            sessionKey = _this$_challenge.sessionKey,
+            secret = _this$_challenge.secret;
         this.keyAgent.initializeMasterKey(privateKeyEncrypted);
         this.sessionKey = this.keyAgent.masterKeyDecrypt(sessionKey);
+        var secretRaw = this.keyAgent.masterKeyDecrypt(secret);
+
+        var secretEncryptedWithSessionKey = this._sessionKeyEncrypt(secretRaw);
+
+        console.log("Secret encrypted with session key is: ".concat(secretEncryptedWithSessionKey));
+
+        var dec = this._sessionKeyDecrypt(secretEncryptedWithSessionKey);
+
+        this.setConnectionQueryProperty("secret", secretEncryptedWithSessionKey);
         this.acceptorStateMachine.handle.activate();
         this.connectorStateMachine.handle.decryptionSuccess();
       } catch (err) {
@@ -73720,6 +73730,7 @@ var Connector_Connector = /*#__PURE__*/function () {
   }, {
     key: "_sessionKeyEncrypt",
     value: function _sessionKeyEncrypt(data) {
+      console.log("SESSION KEY ".concat(this.sessionKey));
       var msg = typeof data === "string" ? data : JSON.stringify(data);
       var ic = new iCrypto["iCrypto"]();
       ic.addBlob("msg_raw", msg).setSYMKey("key", this.sessionKey).AESEncrypt("msg_raw", "key", "msg_enc", true);

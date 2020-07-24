@@ -87,6 +87,22 @@ class ClientSessionAdapter{
 
 
     _processNewClientConnection(connectionId){
+        let secret = this.clientConnector.getConnectionQueryParameter(connectionId, "secret");
+
+        if(secret){
+            for(let sessionId in this.sessions){
+                if(this.sessions[sessionId].isSecretIdentified(secret)){
+                    this._resetSessionSocket(this.sessions[sessionId], connectionId);
+                    return;
+                }
+            }
+        }
+
+        this._createNewSession(connectionId);
+
+    }
+
+    _createNewSession(connectionId){
         let publicKey = this.vaultManager.getVaultPublicKey(this.id)
         let vault = this.vaultManager.getVault(this.id)
         console.log(`Client connected. Connection id: ${connectionId}`);
@@ -98,6 +114,10 @@ class ClientSessionAdapter{
         let session  = new ClientSession(this.clientConnector, connectionId, this.requestEmitter)
         this.addSession(session);
         session.acceptAsymKey(publicKey, vault)
+    }
+
+    _resetSessionSocket(session, connectionId){
+        console.log("Resetting socket for session");
     }
 
     _loadTopicIds(){

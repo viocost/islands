@@ -325,7 +325,6 @@ class VaultManager{
         let vaultDir = path.join(this.vaultsPath, id);
         let vaultFile = path.join(this.vaultsPath, id, "vault");
         let pubKey = path.join(this.vaultsPath, id, "publicKey");
-        console.log(`dir: ${vaultDir}, file: ${vaultFile}, key: ${pubKey}`);
 
         return (fs.existsSync(vaultDir) &&
                 fs.existsSync(vaultFile) &&

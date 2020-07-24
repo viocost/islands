@@ -249,9 +249,14 @@ export class Connector {
 
     _decryptSessionKey(stateMachine, evName, args){
         try{
-            const { privateKeyEncrypted, sessionKey } = this._challenge;
+            const { privateKeyEncrypted, sessionKey, secret } = this._challenge;
             this.keyAgent.initializeMasterKey(privateKeyEncrypted)
             this.sessionKey = this.keyAgent.masterKeyDecrypt(sessionKey)
+            let secretRaw = this.keyAgent.masterKeyDecrypt(secret)
+            let secretEncryptedWithSessionKey = this._sessionKeyEncrypt(secretRaw)
+            console.log(`Secret encrypted with session key is: ${secretEncryptedWithSessionKey}`);
+            let dec = this._sessionKeyDecrypt(secretEncryptedWithSessionKey)
+            this.setConnectionQueryProperty("secret", secretEncryptedWithSessionKey)
             this.acceptorStateMachine.handle.activate()
             this.connectorStateMachine.handle.decryptionSuccess()
         }catch(err){
@@ -266,6 +271,7 @@ export class Connector {
     }
 
     _sessionKeyEncrypt(data){
+        console.log(`SESSION KEY ${this.sessionKey}`);
         const msg = typeof data === "string" ? data : JSON.stringify(data);
         const ic = new iCrypto();
         ic.addBlob("msg_raw", msg)
