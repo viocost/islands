@@ -1,7 +1,7 @@
 const path = require("path");
 const fs = require("fs-extra");
 const { EventEmitter } = require('events');
-const { StateMachine } = require('adv-state')
+const { StateMachine } = require("../../common/AdvStateMachine")
 const { iCrypto } = require("../../common/iCrypto");
 
 

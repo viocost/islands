@@ -164,7 +164,6 @@ class TopicJoinAssistant {
                 Logger.warn(`Session ${pendingRequest.vaultId} not found.`)
                 return;
             }
-            await session.signMessage(response);
             session.broadcast(response);
             Logger.debug("Join notification sent!", {cat: "topic_join"});
         } catch (err) {
@@ -295,7 +294,6 @@ class TopicJoinAssistant {
                 Logger.warn(`Session ${connId} is not found`)
                 return;
             }
-            await session.signMessage(msg);
             session.send(msg, connId);
         } catch(err){
             //logging
@@ -343,7 +341,6 @@ class TopicJoinAssistant {
         msg.setSource("island")
         msg.setDest(session.id)
         msg.body.errorMsg = errMsg;
-        await session.signMessage(msg);
         session.send(msg, connectionId);
     }
 

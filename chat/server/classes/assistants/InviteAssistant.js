@@ -193,7 +193,6 @@ class InviteAssistant{
             Logger.warn(`Session ${pkfpSource} is not found`)
             return;
         }
-        await session.signMessage(msg);
         session.broadcast(msg);
         ///////////////////////////////////////////////////////////////////////////////////////////
         // const originalRequest = Envelope.getOriginalPayload(envelope);                        //

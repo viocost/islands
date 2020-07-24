@@ -236,7 +236,6 @@ class BootLeaveAssistant extends Assistant{
             msg.setCommand(self.getClientErrorType(request.headers.command))
             msg.setDest(request.headers.pkfpSource);
             msg.body.errorMsg = err.message;
-            await session.signMessage(msg);
             session.send(msg, connectionId)
 
         }catch(fatalError){

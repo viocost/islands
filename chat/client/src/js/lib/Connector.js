@@ -23,6 +23,8 @@ export class Connector {
         this.killSocket = false;
         this.keyAgent;
         this._challenge;
+        this._sendCount = 0;
+        this._receiveCount = 0;
     }
 
 
@@ -94,7 +96,9 @@ export class Connector {
 
     _performAcceptMessage(stateMachine, evName, args){
         let msg = args[0]
-        this.queue.push(msg);
+        let seq = ++this._sendCount;
+        console.log(`Accepting outgoing message. Seq: ${seq}`);
+        this.queue.push({seq: seq, message: msg});
         this.connectorStateMachine.handle.processQueue()
     }
 
@@ -218,8 +222,13 @@ export class Connector {
 
     _processIncomingMessage(stateMachine, evName, args){
         try{
-            let message = JSON.parse(this._sessionKeyDecrypt(args[0]))
-            console.log(`Message received for ${message.headers.pkfpDest}\nContent: ${JSON.stringify(message.body)}`);
+            let { seq, message }= JSON.parse(this._sessionKeyDecrypt(args[0]))
+
+            console.log(`Received message with seq ${seq}. Previous seq: ${this._receiveCount}`);
+            if(seq !== this._receiveCount + 1){
+                console.log("Messages missing!");
+            }
+            this._receiveCount++;
             this.emit(message.headers.pkfpDest, message)
         } catch(err) {
             console.log(`Message processing error: ${err}`);

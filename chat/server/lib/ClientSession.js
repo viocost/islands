@@ -9,8 +9,9 @@ class ClientSession {
         this.clientRequestEmitter = clientRequestEmitter
         this.connectionId = connectionId;
         this.sm = this._prepareStateMachine();
+        this._sendCount = 0;
+        this._receiveCount = 0;
         this._subscribe(clientConnector, connectionId)
-
     }
 
 
@@ -100,8 +101,13 @@ class ClientSession {
 
     _messageFromClient(blob){
         try{
-            let msg = JSON.parse(this._sessionKeyDecrypt(blob))
-            this.clientRequestEmitter.acceptMessage(msg, this.connectionId)
+            let {seq, message} = JSON.parse(this._sessionKeyDecrypt(blob))
+            console.log(`Received message with seq ${seq}. Previous seq: ${this._receiveCount}`);
+            if(seq !== this._receiveCount + 1){
+                console.log("Messages missing!");
+            }
+            this._receiveCount++;
+            this.clientRequestEmitter.acceptMessage(message, this.connectionId)
 
         }catch(err){
             console.log(`Decryption error in client session: ${err.message}`);
@@ -109,7 +115,9 @@ class ClientSession {
     }
 
     _messageToClient(stateMachine, evName, args) {
-        const blob = this._sessionKeyEncrypt(args[0]);
+
+        const seq = ++this._sendCount;
+        const blob = this._sessionKeyEncrypt({ seq: seq, message: args[0] });
         this.clientConnector.send(this.connectionId, "message", blob)
     }
 
