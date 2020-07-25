@@ -1,5 +1,6 @@
 const { buildConfig } = require("./Config")
-const { VaultsDirectory, Vaults } = require("Vault")
+const { VaultsDirectory, Vaults } = require("./Vault")
+const { WebService } = require("./WebService")
 
 
 function activateAccount(vault, requestEmitter){
@@ -29,18 +30,25 @@ function main(){
 
     //Building configuration
     const config = buildConfig()
-    const VaultsDirectory = new VaultsDirectory(config.vaultsPath)
+
 
 
     //Initializing vaults
-    
+    const vaults = new VaultsDirectory(config.vaultsPath)
+    vaults.loadVaults()
+
+
     //if admin vault does not exist - create it
+    let webServices = []
+    for(let vault of vaults){
+        webServices.push(new WebService)
+
+    }
 
 
     //launch vault services
 
 
-    const vaults = new Vaults()
 
 
 }

@@ -58,22 +58,41 @@ class VaultDirectory extends Store {
         let pathToFile = path.join(this._vaultPath, ...keyComponents)
         fs.writeFileSync(pathToFile, blob)
     }
-
 }
 
-class VaultsDirectory {
+
+class Vaults {
+
+    _vaults = [];
+
+    *[Symbol.iterator]  (){
+        for(let vault of this._vaults){
+            yield vault;
+        }
+    }
+
+    loadVaults() {
+        throw new NotImplemented()
+    }
+
+    makeNewVault(){
+        throw new NotImplemented()
+    }
+}
+
+
+class VaultsDirectory extends Vaults {
 
     constructor(vaultsPath) {
+        super()
         this._vaultsPath = vaultsPath;
-        this._vaults = {}
-
     }
 
     loadVaults() {
         //populates list of vaults
         let vaults = fs.readdirSync(this._vaultsPath);
         for (let vault of vaults) {
-            this._vaults[vault] = new VaultDirectory(path.join(this._vaultsPath, vault))
+            this._vaults.push(new VaultDirectory(path.join(this._vaultsPath, vault)))
         }
     }
 
@@ -92,28 +111,13 @@ class VaultsDirectory {
         const vault = new VaultDirectory(path.join(this._vaultsPath, vaultId))
         vault.saveBlob("publicKey", publicKey)
         vault.saveBlob("encryptedPrivateKey", encryptedPrivateKey)
-        this._vaults[vaultId] = vault;
+        this._vaults.push(vault);
     }
 
-
-
-
-}
-
-class Vaults {
-
-    constructor() {
-
-    }
-
-    getVaults() {
-        //returns array of vaults
-    }
 }
 
 
 module.exports = {
-    Vaults: Vaults,
     VaultsDirectory: VaultsDirectory,
     VaultDirectory: VaultDirectory
 }

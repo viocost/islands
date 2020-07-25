@@ -5,13 +5,14 @@ const appRouter = require("./appRouter");
 const path = require("path")
 
 class WebService{
-    constructor(host, port){
+    constructor(host, port, staticPath, viewsPath, vault){
         this._port = port;
         this._host = host;
-        this._app = express()
+        this._app = express();
+        this._vault = vault;
 
 
-        this._app.set('views', path.join(__dirname, 'views'));
+        this._app.set('views', viewsPath);
         this._app.set('view engine', 'pug');
 
         if (this._app.get('env') === 'development'){
@@ -20,14 +21,14 @@ class WebService{
             this._app.locals.pretty = true;
         }
 
-        this._app.use(express.static(path.join(__dirname, '../public')));
+        this._app.use(express.static(staticPath));
         this._app.use("/", appRouter.router);
     }
 
 
     launch(){
         this._server = this._app.listen(this._port, this._host, ()=>{
-            console.log(`Island Web Service is running at ${host}:${port}`);
+            console.log(`Island Web Service is running at ${this._host}:${this._port}`);
             this._launchSocketServer(this._server)
         });
 
@@ -57,7 +58,6 @@ class WebService{
 
     _handleNewDataConnection(socket){
 
-
     }
 
 
@@ -65,8 +65,8 @@ class WebService{
 
 
 class WebServiceAdmin extends WebService{
-    constructor(port){
-        super(port)
+    constructor(){
+        super(...arguments)
 //        this._app.use("/admin", adminRouter.router);
     }
 
@@ -75,8 +75,8 @@ class WebServiceAdmin extends WebService{
 }
 
 class WebServiceGuest extends WebService{
-    constructor(port){
-        super(port)
+    constructor(){
+        super(...arguments)
         this._app.use("/admin", adminRouter.router);
     }
 }
