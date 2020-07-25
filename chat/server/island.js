@@ -1,84 +1,48 @@
-const Logger = require("./classes/libs/Logger");
-const { prepareConfig } = require("./lib/IslandsConfig");
-const { StateMachine } = require("../common/AdvStateMachine");
-const fs = require("fs-extra")
+const { buildConfig } = require("./Config")
+const { VaultsDirectory, Vaults } = require("Vault")
 
 
-//Logger.initLogger(config.servicePath, "debug");
-const VaultRegistrators = {}
+function activateAccount(vault, requestEmitter){
+    //create express
+    //launch tor service
+    //create sessions
+
+}
+
+//create express
+
+function main(){
 
 
-//parse arguments
-let adminKeysPath  
-let HOST
-let PORT
-let oneTimePassword
+    console.log("Starting Islands...");
 
-process.argv.forEach((val, index, array)=>{
-    switch(val){
-        case "-otp":
-            oneTimePassword = process.argv[index+1]
-            break
-        case "-p":
-            PORT = process.argv[index+1];
-            break;
-        case "-h":
-            HOST = process.argv[index+1];
-            break;
-        case "-k":
-            adminKeysPath = process.argv[index+1];
-            break
-        case "--debug":
-            console.log("Setting global debug to true");
-            global.DEBUG = true;
-            break
+    //Setting global version
+    try{
+        global.VERSION = JSON.parse(fs.readFileSync(path.join(__dirname, "../",'package.json' )).toString()).version;
+
+        console.log(`Version is set to ${global.VERSION}`)
+    }catch(err){
+        console.trace("Failed to set version: " + err );
+        global.VERSION = "version unknown";
     }
-});
 
 
-
-//create config
-const config = prepareConfig();
-
-//convert legacy
+    //Building configuration
+    const config = buildConfig()
+    const VaultsDirectory = new VaultsDirectory(config.vaultsPath)
 
 
-loadVaults(config.vaultsPath)
+    //Initializing vaults
+    
+    //if admin vault does not exist - create it
 
-function loadVaults(vaultsPath){
 
-    fs.readdirSync(vaultsPath).map(()=> {
+    //launch vault services
 
-        return new Vault(config)
-    })
+
+    const vaults = new Vaults()
+
 
 }
 
-//check admin account
-// TODO Later rafactor vault system
-
-
-//notify parent if can start
-
-//or notify that cannot and exit;
-
-//const islandSM = prepareIslandStateMachine();
-//setup state machine
-
-
-//Say hello
-let helloMsg = "!!=====ISLANDS v." + global.VERSION + " =====!!"
-//Logger.info(helloMsg);
-
-
-
-function prepareIslandStateMachine(){
-    return new StateMachine(null, {
-        name: "Island SM",
-        stateMap: {
-
-        }
-    })
-}
-
-
+main();

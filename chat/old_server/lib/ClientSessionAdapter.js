@@ -25,11 +25,8 @@ class ClientSessionAdapter{
     }
 
 
-
-
     addSession(session){
         this.sessions[session.connectionId] = session;
-
     }
 
     hasSession(sessionId){
