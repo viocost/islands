@@ -101,9 +101,8 @@ document.addEventListener('DOMContentLoaded', event => {
     return;
 
 
-    loadSounds();
-    //initChat();
-    //initLoginUI();
+    initChat();
+    initLoginUI();
     connector = new Connector("/chat");
     window.connector = connector
     arrivalHub = new ArrivalHub(connector);
@@ -140,13 +139,24 @@ document.addEventListener('DOMContentLoaded', event => {
 //Called when document content loaded
 function init(){
 
+    loadSounds();
     //only show loading animation,
+    let mainContainer = util.$('#main-container');
+    util.removeAllChildren(mainContainer);
+    let container = util.$("#main-container")
+    let loadingEl = UI.bakeLoadingElement()
+    let loadingText = loadingEl.querySelector("#loading-text")
+    util.text(loadingText, "Connecting to Island...")
+    util.appendChildren(container, loadingEl)
+   
+
+
 
     // establish connection with island
-    connector = new Connector("/chat");
-    window.connector = connector
-    arrivalHub = new ArrivalHub(connector);
-    version = islandsVersion()
+    //connector = new Connector("/chat");
+    //window.connector = connector
+    //arrivalHub = new ArrivalHub(connector);
+    //version = islandsVersion()
 
     // request auth
     // if vault exist

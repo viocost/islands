@@ -4,6 +4,23 @@ import { IError as Err } from "../../../../common/IError";
 
 //Bakes select list for side panel
 // top boolean whether it is select for top block
+
+export function bakeLoadingElement(){
+    return util.bake("div", {
+        id: "loading-text-container",
+        class: "loading-text-container",
+        children: [
+            util.bake("img", {
+                src: "/img/island.svg"
+            }),
+            util.bake("span", {
+                id: "loading-text",
+                class: "loading-text",
+            })
+        ]
+    })
+}
+
 export function bakeCarousel(){
     let options = []
     options.push(util.bake("option", {text: "Topics"}))

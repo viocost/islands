@@ -64,8 +64,7 @@ describe("vault", ()=>{
     })
 
 
-    it("Should throw exceptiont for trying to write outside of parent directory", ()=>{
-
+    it("Should throw exceptiont for trying to read data outside of parent directory", ()=>{
         function getFromOutside(){
             const vault = createVault(vaultsBasePath, "admin")
 
