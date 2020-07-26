@@ -153,10 +153,11 @@ function init(){
 
 
     // establish connection with island
-    //connector = new Connector("/chat");
+    connector = new Connector("/chat");
     //window.connector = connector
-    //arrivalHub = new ArrivalHub(connector);
-    //version = islandsVersion()
+    arrivalHub = new ArrivalHub(connector);
+    version = islandsVersion()
+    connector.establishConnection();
 
     // request auth
     // if vault exist

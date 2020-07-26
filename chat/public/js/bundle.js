@@ -75821,14 +75821,14 @@ var KeyAgent = function KeyAgent(password) {
 };
 
 var KeyAgent_MasterRSAKeyAgent = /*#__PURE__*/function (_KeyAgent) {
-  _inherits(MasterRSAKeyAgent, _KeyAgent);
+  _inherits(MasterRSAKeyHolder, _KeyAgent);
 
-  var _super2 = _createSuper(MasterRSAKeyAgent);
+  var _super2 = _createSuper(MasterRSAKeyHolder);
 
-  function MasterRSAKeyAgent(password) {
+  function MasterRSAKeyHolder(password) {
     var _this2;
 
-    KeyAgent_classCallCheck(this, MasterRSAKeyAgent);
+    KeyAgent_classCallCheck(this, MasterRSAKeyHolder);
 
     _this2 = _super2.call(this, password);
     _this2.masterPrivateKey;
@@ -75836,7 +75836,7 @@ var KeyAgent_MasterRSAKeyAgent = /*#__PURE__*/function (_KeyAgent) {
     return _this2;
   }
 
-  KeyAgent_createClass(MasterRSAKeyAgent, [{
+  KeyAgent_createClass(MasterRSAKeyHolder, [{
     key: "initializeMasterKey",
     value: function initializeMasterKey(vaultEncrypted) {
       // trying to decrypt
@@ -75907,7 +75907,7 @@ var KeyAgent_MasterRSAKeyAgent = /*#__PURE__*/function (_KeyAgent) {
     }
   }]);
 
-  return MasterRSAKeyAgent;
+  return MasterRSAKeyHolder;
 }(KeyAgent);
 // CONCATENATED MODULE: ./client/src/js/lib/VaultHolder.js
 function VaultHolder_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }

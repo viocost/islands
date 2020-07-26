@@ -1,4 +1,4 @@
-import { MasterRSAKeyAgent } from "./KeyAgent";
+import { MasterRSAKeyHolder } from "./KeyAgent";
 import { StateMachine } from "../../../../common/AdvStateMachine";
 import { VaultHolder } from "./VaultHolder";
 import { VaultRetriever } from "./VaultRetriever";
@@ -63,7 +63,7 @@ export class LoginAgent {
 
 
     _acceptPassword(stateMachine, evName, args) {
-        this.masterKeyAgent = new MasterRSAKeyAgent(args[0])
+        this.masterKeyAgent = new MasterRSAKeyHolder(args[0])
         console.log(`Password accepted: ${args[0]}`);
         this.connector.setKeyAgent(this.masterKeyAgent)
         this.connector.establishConnection()

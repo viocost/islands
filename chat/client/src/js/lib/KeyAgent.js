@@ -1,21 +1,28 @@
 import { IError as Err } from "../../../../common/IError";
 import { iCrypto } from "../../../../common/iCrypto";
 import { createDerivedErrorClasses } from "../../../../common/DynamicError"
+import * as err from "../../../../common/Error";
+
+
+
 
 class KeyAgentError extends Error{ constructor(data){ super(data); this.name = "KeyAgentError" } }
-
-const err = createDerivedErrorClasses(KeyAgentError, {
+const khErr = createDerivedErrorClasses(KeyAgentError, {
     decryptionError: "DecryptionError"
 })
 
-class KeyAgent{
+
+class KeyHolder{
     constructor(password){
+        if(this.constructor === KeyHolder){
+            throw new err.AttemptToInstatiateBaseClass()
+        }
         this.password = password;
     }
 }
 
 
-export class MasterRSAKeyAgent extends KeyAgent{
+export class MasterRSAKeyHolder extends KeyHolder{
     constructor(password){
         super(password);
         this.masterPrivateKey;
@@ -48,7 +55,7 @@ export class MasterRSAKeyAgent extends KeyAgent{
                 .privateKeyDecrypt("blobcip", "priv", "data", "hex");
             return ic.get("data");
         }catch(error){
-            throw new err.decryptionError(error.message)
+            throw new khErr.decryptionError(error.message)
         }
     }
 
@@ -87,7 +94,7 @@ export class MasterRSAKeyAgent extends KeyAgent{
                 .AESDecrypt("v_cip", "sym", "vault_raw", true);
             return ic.get("vault_raw")
         } catch(error){
-            throw new err.decryptionError(error.message);
+            throw new khErr.decryptionError(error.message);
         }
     }
 
