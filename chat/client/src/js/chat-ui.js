@@ -97,15 +97,17 @@ window.topics = topics;
 // ~END TEST
 
 document.addEventListener('DOMContentLoaded', event => {
+    init()
+    return;
+
+
     loadSounds();
-    initChat();
-    initLoginUI();
+    //initChat();
+    //initLoginUI();
     connector = new Connector("/chat");
     window.connector = connector
     arrivalHub = new ArrivalHub(connector);
     version = islandsVersion()
-
-
 //    connector.establishConnection()
 
     loginAgent = new LoginAgent({
@@ -134,6 +136,24 @@ document.addEventListener('DOMContentLoaded', event => {
 
 
 });
+
+//Called when document content loaded
+function init(){
+
+    //only show loading animation,
+
+    // establish connection with island
+    connector = new Connector("/chat");
+    window.connector = connector
+    arrivalHub = new ArrivalHub(connector);
+    version = islandsVersion()
+
+    // request auth
+    // if vault exist
+    //    - show login screen
+    // else
+    //    - show registrations
+}
 
 
 

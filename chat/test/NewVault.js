@@ -1,5 +1,5 @@
 const mocha = require("mocha")
-const { assert } = require("chai")
+const { assert, expect } = require("chai")
 const fs = require("fs-extra")
 const path = require("path")
 const { VaultDirectory } = require("../server/Vault")
@@ -50,6 +50,32 @@ describe("vault", ()=>{
         assert(data === "hello")
     })
 
+
+
+    it("Should throw exceptiont for trying to write outside of parent directory", ()=>{
+
+        function writeOutside(){
+            const vault = createVault(vaultsBasePath, "admin")
+            vault.saveBlob("testDir/../../test", "hello");
+            let data = vault.getBlob("testDir/test")
+            assert(data === "hello")
+        }
+        expect(writeOutside).to.throw();
+    })
+
+
+    it("Should throw exceptiont for trying to write outside of parent directory", ()=>{
+
+        function getFromOutside(){
+            const vault = createVault(vaultsBasePath, "admin")
+
+            vault.saveBlob("testDir/test", "hello");
+            vault.getBlob("testDir/../../../test");
+            let data = vault.getBlob("testDir/test")
+            assert(data === "hello")
+        }
+        expect(getFromOutside).to.throw();
+    })
 
     after(()=>{
         console.log("Cleaning up...");

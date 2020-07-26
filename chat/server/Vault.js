@@ -1,30 +1,30 @@
 const fs = require("fs-extra");
 const path = require("path")
-class AttemptToInstatiateBaseClass extends Error { constructor(data) { super(data); this.name = "AttemptToInstatiateBaseClass" } }
-class NotImplemented extends Error { constructor(data) { super(data); this.name = "NotImplemented" } }
 const { iCrypto } = require("../common/iCrypto")
+const err = require("./Error")
+const { isContained } = require("./util");
 
 class Store {
     constructor() {
         if (this.constructor === Store) {
-            throw new AttemptToInstatiateBaseClass(Store);
+            throw new err.AttemptToInstatiateBaseClass();
         }
     }
 
     getBlob() {
-        throw new NotImplemented()
+        throw new err.NotImplemented()
     }
 
     saveBlob() {
-        throw new NotImplemented()
+        throw new err.NotImplemented()
     }
 
     getSignedBlob() {
-        throw new NotImplemented()
+        throw new err.NotImplemented()
     }
 
     saveSignedBlob() {
-        throw new NotImplemented()
+        throw new err.NotImplemented()
     }
 
 }
@@ -43,6 +43,10 @@ class VaultDirectory extends Store {
     getBlob(key) {
         let keyComponents = key.split("/")
         let pathToFile = path.join(this._vaultPath, ...keyComponents)
+        if(!isContained(this._vaultPath, pathToFile)){
+            throw new err.AccessDenied()
+        }
+
         if (!fs.existsSync(pathToFile)) {
             return null
         }
@@ -52,10 +56,16 @@ class VaultDirectory extends Store {
 
     saveBlob(key, blob) {
         let keyComponents = key.split("/")
-        if (keyComponents.length > 1) {
-            fs.ensureDirSync(path.join(this._vaultPath, ...keyComponents.slice(0, keyComponents.length - 1)))
-        }
         let pathToFile = path.join(this._vaultPath, ...keyComponents)
+        let subdir = path.join(this._vaultPath, ...keyComponents.slice(0, keyComponents.length - 1))
+
+        if(!isContained(this._vaultPath, pathToFile)){
+            throw new err.AccessDenied()
+        }
+
+        if (keyComponents.length > 1) {
+            fs.ensureDirSync(subdir)
+        }
         fs.writeFileSync(pathToFile, blob)
     }
 }
@@ -72,11 +82,11 @@ class Vaults {
     }
 
     loadVaults() {
-        throw new NotImplemented()
+        throw new err.NotImplemented()
     }
 
     makeNewVault(){
-        throw new NotImplemented()
+        throw new err.NotImplemented()
     }
 }
 

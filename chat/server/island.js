@@ -39,18 +39,23 @@ function main(){
 
 
     //if admin vault does not exist - create it
-    let webServices = []
+    let accounts = []
+
     for(let vault of vaults){
-        webServices.push(new WebService)
+        let webService = new WebService()
+        let sessions = new Sessions(vault)
+        let hiddenService = new HiddenService();
+        webService.on('connection', (ClientConnectionSocket)=>{
+            sessions.add(socket)
+        })
+        accounts.push([webService, sessions, hiddenService])
 
     }
 
 
-    //launch vault services
-
-
-
-
 }
+
+//disable account functionality
+
 
 main();

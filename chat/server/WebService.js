@@ -5,13 +5,10 @@ const appRouter = require("./appRouter");
 const path = require("path")
 
 class WebService{
-    constructor(host, port, staticPath, viewsPath, vault){
+    constructor({host, port, viewsPath, staticPath}){
         this._port = port;
         this._host = host;
         this._app = express();
-        this._vault = vault;
-
-
         this._app.set('views', viewsPath);
         this._app.set('view engine', 'pug');
 
@@ -51,8 +48,8 @@ class WebService{
     }
 
     _handleNewChatConnection(socket){
-
-
+        this.emit('connection', new SocketIOClientConnection(socket))
+        //2 state machines: connection / reconnection
     }
 
 

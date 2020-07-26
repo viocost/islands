@@ -10,6 +10,7 @@ function inRange(x, min, max, inclusive=true) {
     return inclusive ? temp <= 0 : temp < 0;
 }
 
+
 module.exports = {
     inRange: inRange
 }
