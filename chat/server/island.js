@@ -14,17 +14,15 @@ function activateAccount(vault, requestEmitter){
 
 function main(){
 
-
     console.log("Starting Islands...");
 
     //Setting global version
     try{
         global.VERSION = JSON.parse(fs.readFileSync(path.join(__dirname, "../",'package.json' )).toString()).version;
-
         console.log(`Version is set to ${global.VERSION}`)
     }catch(err){
-        console.trace("Failed to set version: " + err );
-        global.VERSION = "version unknown";
+        console.trace("Missing version number. Exiting..." + err );
+        process.exit(-1)
     }
 
 

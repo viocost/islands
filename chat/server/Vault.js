@@ -1,7 +1,7 @@
 const fs = require("fs-extra");
 const path = require("path")
 const { iCrypto } = require("../common/iCrypto")
-const err = require("./Error")
+const err = require("../common/Error")
 const { isContained } = require("./util");
 
 class Store {
