@@ -3,9 +3,12 @@ const SocketIO = require('socket.io');
 //const adminRouter = require("./adminRouter");
 const appRouter = require("./appRouter");
 const path = require("path")
+const { EventEmitter } = require("events")
+const { SocketIOClientConnection } = require("./ClientConnection")
 
-class WebService{
+class WebService extends EventEmitter{
     constructor({host, port, viewsPath, staticPath}){
+        super()
         this._port = port;
         this._host = host;
         this._app = express();

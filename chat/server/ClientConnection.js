@@ -1,18 +1,21 @@
-const { EventEmitter }
+const { EventEmitter } = require("events")
+const err = require("../common/Error")
 
 
 class ClientConnection extends EventEmitter{
-
     constructor(){
         super()
+        if(this.constructor === ClientConnection){
+            throw new err.AttemptToInstatiateBaseClass()
+        }
     }
 
     getReconnectInfo(){
-        throw new Error()
+        throw new err.NotImplemented()
     }
 
     send(){
-        throw new Error()
+        throw new err.NotImplemented()
     }
 
 
@@ -24,7 +27,6 @@ class SocketIOClientConnection extends ClientConnection{
     constructor(socket){
         super()
         this._socket = socket;
-
         this._socket.on()
 
     }
@@ -43,4 +45,9 @@ class SocketIOClientConnection extends ClientConnection{
         }
     }
 
+}
+
+
+module.exports = {
+    SocketIOClientConnection: SocketIOClientConnection
 }

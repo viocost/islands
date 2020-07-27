@@ -21,7 +21,7 @@ import { ConnectionIndicator } from  "./ui/ConnectionIndicator";
 // TEMP IMPORTS FOR FURTHER REFACTORING
 import { iCrypto } from "../../../common/iCrypto";
 import { createClientIslandEnvelope, Message } from "../../../common/Message";
-import * as DH from "diffie-hellman/browser";
+import * as MainView from "./MainView";
 
 // ---------------------------------------------------------------------------------------------------------------------------
 // CONSTANTS
@@ -82,7 +82,6 @@ let UIInitialized = false;
 // ---------------------------------------------------------------------------------------------------------------------------
 // TEST ONLY!
 // Comment out for production!
-window.dh = DH
 window.connectorTest = runConnectorTest;
 window.connector = connector;
 window.util = util;
@@ -138,23 +137,11 @@ document.addEventListener('DOMContentLoaded', event => {
 
 //Called when document content loaded
 function init(){
-
     loadSounds();
-    //only show loading animation,
-    let mainContainer = util.$('#main-container');
-    util.removeAllChildren(mainContainer);
-    let container = util.$("#main-container")
-    let loadingEl = UI.bakeLoadingElement()
-    let loadingText = loadingEl.querySelector("#loading-text")
-    util.text(loadingText, "Connecting to Island...")
-    util.appendChildren(container, loadingEl)
-   
-
-
+    MainView.setLoginView({ onLoginClick: initSession })
 
     // establish connection with island
     connector = new Connector("/chat");
-    //window.connector = connector
     arrivalHub = new ArrivalHub(connector);
     version = islandsVersion()
     connector.establishConnection();
@@ -168,39 +155,6 @@ function init(){
 
 
 
-function initLoginUI() {
-
-    let header = util.$("header")
-    util.appendChildren(header, UI.bakeLoginHeader());
-
-    let mainContainer = util.$('#main-container');
-    util.removeAllChildren(mainContainer);
-
-    if (isRegistration()) {
-
-        let registrationBlock = UI.bakeRegistrationBlock(() => {
-            console.log("New vault registration..")
-            loadingOn()
-            registerVault()
-                .then(() => {
-                    util.removeAllChildren(mainContainer);
-                    util.appendChildren(mainContainer, UI.bakeRegistrationSuccessBlock(() => {
-                        document.location.reload()
-                    }))
-                })
-                .catch(err => {
-                    toastr.error(err.message)
-                })
-                .finally(() => {
-                    loadingOff();
-                })
-        })
-        util.appendChildren("#main-container", registrationBlock)
-    } else {
-        let loginBlock = UI.bakeLoginBlock(initSession)
-        util.appendChildren("#main-container", loginBlock)
-    }
-}
 
 
 //Called after successful login
@@ -497,18 +451,34 @@ function setUploadingState(uploading) {
 }
 
 
+//registration
 function registerVault() {
     let password = util.$("#new-passwd");
     let confirm = util.$("#confirm-passwd");
     if (/^((?:[0-9]{1,3}\.){3}[0-9]{1,3}|localhost)(\:[0-9]{1,5})?$/.test(document.location.host)) {
         console.log("Registering admin vault");
-        return Vault.registerAdminVault(password, confirm, chat.version)
+        Vault.registerAdminVault(password, confirm, chat.version)
+            .then(afterVaultRegistration)
+            .catch(err => {
+                toastr.error(err.message)
+            })
+            .finally(loadingOff)
+
     } else if (ChatUtility.isOnion(document.location.host)) {
         console.log("Registering guest vault");
         return Vault.registerVault(password, confirm, chat.version)
+        
     } else {
         throw new Error("Unrecognized host!")
     }
+}
+
+function afterVaultRegistration(){
+    let mainContainer = util.$('#main-container');
+    util.removeAllChildren(mainContainer);
+    util.appendChildren(mainContainer, UI.bakeRegistrationSuccessBlock(() => {
+        document.location.reload()
+    }))
 }
 
 

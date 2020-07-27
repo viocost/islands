@@ -1,70 +1,25 @@
-import { StateMachine } from "adv-state";
-class BaseView{
+import * as util from "./lib/dom-util";
+import * as UI from "./lib/ChatUIFactory"
 
+
+export function setLoginView({ onLoginClick }) {
+    let header = util.$("header")
+    util.appendChildren(header, UI.bakeLoginHeader());
+
+    let mainContainer = util.$('#main-container');
+    util.removeAllChildren(mainContainer);
+
+    let loginBlock = UI.bakeLoginBlock()
+    util.appendChildren("#main-container", loginBlock)
+
+    let loginBtn = util.$('#vault-login-btn')
+    loginBtn.onclick = onLoginClick;
 }
 
-export class MainView extends BaseView{
-    constructor(){
-        super()
-        this.sm = this._prepareStateMachine()
-    }
+export function setRegistrationView({ onRegisterClick }){
+    let registrationBlock = UI.bakeRegistrationBlock(onRegisterClick)
+    util.appendChildren("#main-container", registrationBlock)
 
-    _prepareStateMachine(){
-        return new StateMachine(this, {
-            name: "Chat Main View SM", 
-            stateMap: {
-                blank: {
-                    initial: true,
-                    transitions: {
-                        loading: {
-                            state: "loading"
-                        }
-                    }
-                },
-
-                loading: {
-                    transitions: {
-                        login: {
-                            state: "login"
-                        },
-                       
-                        registration: {
-                            state: "registration"
-                        }
-
-                    }
-                },
-
-                login: {
-                    transitions: {
-                        active: {
-                            state: "active"
-                        },
-                    }
-
-                },
-
-                registration: {
-                    transitions: {
-                        login: {
-                            state: "login"
-                        }
-                    }
-                },
-
-                active: {
-                    transitions: {
-                        logout: {
-                            state: "logout"
-                        }
-                    }
-                },
-
-                logout: {
-                    final: true
-                }
-            }
-        })
-        
-    }
+    let registerBtn = util.$("#register-vault-btn")
+    registerBtn.onclick = onRegisterClick;
 }
