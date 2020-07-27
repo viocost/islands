@@ -40,6 +40,9 @@ class VaultDirectory extends Store {
         }
     }
 
+    // ---------------------------------------------------------------------------------------------------------------------------
+    // Public methods
+
     getBlob(key) {
         const pathToFile = this._keyToPath(key)
         return fs.existsSync(pathToFile) ? fs.readFileSync(pathToFile, "utf8") : null;
@@ -51,9 +54,13 @@ class VaultDirectory extends Store {
         fs.writeFileSync(pathToFile, blob)
     }
 
-    keyExist(key){
-        this._ensureContained(this._keyToPath(key))
+    hasKey(key){
+        return fs.existsSync(this._keyToPath(key))
     }
+
+
+    // ---------------------------------------------------------------------------------------------------------------------------
+    // Private methods
 
 
     _keyToPath(key){

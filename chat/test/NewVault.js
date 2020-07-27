@@ -29,6 +29,12 @@ describe("vault", ()=>{
     })
 
 
+    it("Should return true if key exists and false if doesn't ", ()=>{
+        const vault = createVault(vaultsBasePath, "admin")
+        vault.saveBlob("mur", "blabla")
+        assert(vault.hasKey("mur") && !vault.hasKey("kjsadfgh"))
+    })
+
     it("Should return null when blob not found", ()=>{
         const vault = createVault(vaultsBasePath, "admin")
         let blob = vault.getBlob("not-exist")
