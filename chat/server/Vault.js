@@ -34,40 +34,50 @@ class VaultDirectory extends Store {
     constructor(vaultPath) {
         super()
         this._vaultPath = vaultPath;
+        fs.ensureDirSync(this._vaultPath);
+        if(this.getBlob("admin") === "true"){
 
-        if (!fs.existsSync(this._vaultPath)) {
-            fs.mkdirSync(this._vaultPath);
         }
     }
 
     getBlob(key) {
-        let keyComponents = key.split("/")
-        let pathToFile = path.join(this._vaultPath, ...keyComponents)
-        if(!isContained(this._vaultPath, pathToFile)){
-            throw new err.AccessDenied()
-        }
-
-        if (!fs.existsSync(pathToFile)) {
-            return null
-        }
-
-        return fs.readFileSync(pathToFile, "utf8");
+        const pathToFile = this._keyToPath(key)
+        return fs.existsSync(pathToFile) ? fs.readFileSync(pathToFile, "utf8") : null;
     }
 
     saveBlob(key, blob) {
+        const pathToFile = this._keyToPath(key)
+        this._ensureSubdirExist(key)
+        fs.writeFileSync(pathToFile, blob)
+    }
+
+    keyExist(key){
+        this._ensureContained(this._keyToPath(key))
+    }
+
+
+    _keyToPath(key){
         let keyComponents = key.split("/")
         let pathToFile = path.join(this._vaultPath, ...keyComponents)
-        let subdir = path.join(this._vaultPath, ...keyComponents.slice(0, keyComponents.length - 1))
+        this._ensureContained(pathToFile)
+        return pathToFile;
+    }
 
+    _ensureSubdirExist(pathToFile){
+        let keyComponents = pathToFile.split("/").filter(token=>token);
+
+        if(keyComponents.length > 1){
+            const subdir =  path.join(this._vaultPath, ...keyComponents.slice(0, keyComponents.length - 1))
+            fs.ensureDirSync(subdir);
+        }
+    }
+
+    _ensureContained(pathToFile){
         if(!isContained(this._vaultPath, pathToFile)){
             throw new err.AccessDenied()
         }
-
-        if (keyComponents.length > 1) {
-            fs.ensureDirSync(subdir)
-        }
-        fs.writeFileSync(pathToFile, blob)
     }
+
 }
 
 

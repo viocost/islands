@@ -1,6 +1,7 @@
 const { buildConfig } = require("./Config")
 const { VaultsDirectory, Vaults } = require("./Vault")
 const { WebService } = require("./WebService")
+const { parseArguments } = require("./ArgParser");
 
 
 function activateAccount(vault, requestEmitter){
@@ -15,6 +16,11 @@ function activateAccount(vault, requestEmitter){
 function main(){
 
     console.log("Starting Islands...");
+    const args = parseArguments(process.argv);
+
+    if(args.debug){
+        global.DEBUG = true;
+    }
 
     //Setting global version
     try{
@@ -34,6 +40,8 @@ function main(){
     //Initializing vaults
     const vaults = new VaultsDirectory(config.vaultsPath)
     vaults.loadVaults()
+
+
 
 
     //if admin vault does not exist - create it
