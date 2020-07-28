@@ -12,6 +12,7 @@ function createVault(basePath, name){
     const vault = new VaultDirectory(vaultPath)
     return vault
 }
+
 describe("vault", ()=>{
 
 

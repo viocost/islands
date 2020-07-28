@@ -4,9 +4,9 @@ const { iCrypto } = require("../common/iCrypto")
 const err = require("../common/Error")
 const { isContained } = require("./util");
 
-class Store {
+class Vault {
     constructor() {
-        if (this.constructor === Store) {
+        if (this.constructor === Vault) {
             throw new err.AttemptToInstatiateBaseClass();
         }
     }
@@ -16,6 +16,10 @@ class Store {
     }
 
     saveBlob() {
+        throw new err.NotImplemented()
+    }
+
+    deleteBlob(){
         throw new err.NotImplemented()
     }
 
@@ -30,7 +34,7 @@ class Store {
 }
 
 
-class VaultDirectory extends Store {
+class VaultDirectory extends Vault {
     constructor(vaultPath) {
         super()
         this._vaultPath = vaultPath;
@@ -88,27 +92,32 @@ class VaultDirectory extends Store {
 }
 
 
-class Vaults {
 
-    _vaults = [];
 
-    *[Symbol.iterator]  (){
-        for(let vault of this._vaults){
-            yield vault;
-        }
-    }
-
-    loadVaults() {
-        throw new err.NotImplemented()
-    }
-
+class VaultFactory{
     makeNewVault(){
-        throw new err.NotImplemented()
+
+    }
+
+    loadVaults(){
+        throw
     }
 }
 
+class VaultFactoryV1 extends VaultFactory{
 
-class VaultsDirectory extends Vaults {
+}
+
+
+class VaultFactoryV2 VaultFactory{
+
+}
+
+class VaultsSQLite extends VaultFactory{
+
+}
+
+class VaultsDirectory extends VaultFactory{
 
     constructor(vaultsPath) {
         super()
@@ -117,10 +126,17 @@ class VaultsDirectory extends Vaults {
 
     loadVaults() {
         //populates list of vaults
-        let vaults = fs.readdirSync(this._vaultsPath);
+        let vaults = fs.readdirSync(this._vaultsPath).map(vaultPath);
+        let x =  []
         for (let vault of vaults) {
-            this._vaults.push(new VaultDirectory(path.join(this._vaultsPath, vault)))
+            x.push(new VaultDirectory(path.join(this._vaultsPath, vault)))
         }
+        return x
+    }
+
+
+    initializePendingVault(){
+
     }
 
     makeNewVault(publicKey, encryptedPrivateKey, isAdmin) {
@@ -140,6 +156,7 @@ class VaultsDirectory extends Vaults {
         vault.saveBlob("encryptedPrivateKey", encryptedPrivateKey)
         this._vaults.push(vault);
     }
+
 
 }
 

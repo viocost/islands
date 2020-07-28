@@ -3,12 +3,16 @@ const { VaultsDirectory, Vaults } = require("./Vault")
 const { WebService } = require("./WebService")
 const { parseArguments } = require("./ArgParser");
 
+const accounts
 
 function activateAccount(vault, requestEmitter){
-    //create express
-    //launch tor service
-    //create sessions
-
+    let webService = new WebService()
+    let sessions = new Sessions(vault)
+    let hiddenService = new HiddenService();
+    webService.on('connection', (ClientConnectionSocket)=>{
+        sessions.add(socket)
+    })
+    accounts.push([webService, sessions, hiddenService])
 }
 
 //create express
@@ -38,24 +42,15 @@ function main(){
 
 
     //Initializing vaults
-    const vaults = new VaultsDirectory(config.vaultsPath)
+    const vaults = new Vaults(config.vaultsPath)
     vaults.loadVaults()
 
 
 
 
     //if admin vault does not exist - create it
-    let accounts = []
-
     for(let vault of vaults){
-        let webService = new WebService()
-        let sessions = new Sessions(vault)
-        let hiddenService = new HiddenService();
-        webService.on('connection', (ClientConnectionSocket)=>{
-            sessions.add(socket)
-        })
-        accounts.push([webService, sessions, hiddenService])
-
+        activateAccount(vault, )
     }
 
 
