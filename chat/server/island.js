@@ -5,14 +5,17 @@ const { parseArguments } = require("./ArgParser");
 const fs = require("fs-extra")
 const path = require("path")
 
+
 const accounts = [];
 
 function activateAccount(vault, requestEmitter){
     let webService = new WebService()
     let sessions = new Sessions(vault)
     let hiddenService = new HiddenService();
-    webService.on('connection', (ClientConnectionSocket)=>{
+    webService.on('connection', (socket)=>{
+        //need to figure out if
         sessions.add(socket)
+        //create new session and add it
     })
     accounts.push([webService, sessions, hiddenService])
 }

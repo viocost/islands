@@ -52,6 +52,7 @@ class WebService extends EventEmitter{
 
     _handleNewChatConnection(socket){
         this.emit('connection', new SocketIOClientConnection(socket))
+
         //2 state machines: connection / reconnection
     }
 

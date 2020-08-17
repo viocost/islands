@@ -14,11 +14,9 @@ class Session{
 
 
 
-class ClientSession {
-    constructor(clientConnector, connectionId, clientRequestEmitter){
-        this.clientConnector = clientConnector;
-        this.clientRequestEmitter = clientRequestEmitter
-        this.connectionId = connectionId;
+class ClientSession extends Session {
+    constructor(, ){
+        super();
         this.sm = this._prepareStateMachine();
         this._sendCount = 0;
         this._receiveCount = 0;
@@ -39,10 +37,38 @@ class ClientSession {
     }
 
 
+
+
+    tryReconnection(socket){
+        let secretEncrypted = socket.getSessionSecret()
+        if(this._isSecretIdentified()){
+            this.sm.handle.reconnect(socket)
+        }
+
+    }
+
+
+
+    // ---------------------------------------------------------------------------------------------------------------------------
+    // Private methods
+
+    _acceptMessage(message){
+        console.log("Accept message called");
+    }
+
+
+    //Replaces dead socket with new alive one
+    _acceptSocketOnReconnection(socket){
+        this._socket.off("*");
+        this._socket = socket;
+        this._socket.on("disconnect", ()=>{ throw new Error("Not implemented") })
+        this._socket.on("message", ()=>{ throw new Error("Not implemented") })
+    }
+
     // This function expects encrypted with session key secret
     // On reconnect if given secret decrypts and matches the secret that was set earlier
     // A new socket will be given to the session
-    isSecretIdentified(secretEncrypted){
+    _isSecretIdentified(secretEncrypted){
         try{
             console.log(`Identifying a secret: ${secretEncrypted}`);
             let secretRaw = this._sessionKeyDecrypt(secretEncrypted)
@@ -54,26 +80,6 @@ class ClientSession {
         }
     }
 
-    // ---------------------------------------------------------------------------------------------------------------------------
-    // Private methods
-
-    _subscribe(clientConnector, connectionId){
-        clientConnector.on(connectionId, (msg, data)=>{
-            switch(msg){
-                case "message":
-                    this._messageFromClient(data)
-                    break
-
-                case "client_disconnected":
-                    console.log(`Client disconnected: ${connectionId}`);
-                    break
-                case "client_reconnected":
-                    console.log(`Client reconnected: ${connectionId}`);
-                    break
-            }
-        })
-
-    }
 
     _sessionKeyEncrypt(data){
         const msg = typeof data === "string" ? data : JSON.stringify(data);
@@ -163,78 +169,48 @@ class ClientSession {
         return  new StateMachine(this, {
             name: "Clien Session SM",
             stateMap: {
-                waitingForClientSecret: {
-                    initial: true,
+                connectedNotAuthenticated: {
                     transitions: {
-                        authWithSymkey:{
-                            actions: this._authWithSymkey,
-                        },
-
-                        authWithPublicKey: {
-                            actions: this._authWithPublicKey,
-                            state: "active"
-                        },
-
                         disconnect: {
-                            actions: this._terminate
+                            state: "terminated",
+                        },
+
+                        authOk: {
+                            state: "connectedAuthenticated",
                         }
                     }
                 },
 
-                active: {
+                connectedAuthenticated: {
                     transitions: {
-                        messageFromClient: {
-                            actions: this._messageFromClient,
-                        },
-
-                        messageToClient: {
-                            actions: this._messageToClient,
-                        },
-
                         disconnect: {
-                            actions: this._handleDisconnect,
-                            state: "reconnectOrDie"
-                        }
+                            state: "awatingReconnect"
+                        },
+
+                        acceptMessage: {
+                            actions: this._acceptMessage.bind(this)
+                        },
+
                     }
                 },
 
-                reconnectOrDie: {
+                awatingReconnect: {
                     transitions: {
-                        reconnect: {
-                            actions: this._handleResync,
-                            state: "resync"
-                        },
-
-                        timerExpired: {
-                            actions: this._terminate
-                        },
-
-                        processTerminated: {
+                        timeout: {
                             state: "terminated"
                         },
+
+                        reconnect: {
+                            state: "connectedAuthenticated",
+                            actions: this._acceptSocketOnReconnection.bind(this)
+                        }
                     }
-
                 },
-
-                resync: {
-
-                    disconnect: {
-                        actions: this._handleDisconnect,
-                        state: "reconnectOrDie"
-                    },
-
-                    resynced: {
-                        state: "active"
-                    }
-
-
-                },
-
 
                 terminated: {
+                    entry: this._commitSuicie,
                     final: true
                 }
-
             }
 
         }, { msgNotExistMode: StateMachine.Warn, traceLevel: StateMachine.TraceLevel.NONE})

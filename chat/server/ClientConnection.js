@@ -22,6 +22,7 @@ class ClientConnection extends EventEmitter{
 }
 
 
+//Only a wrapper around socket.io Socket
 class SocketIOClientConnection extends ClientConnection{
 
     constructor(socket){
