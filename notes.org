@@ -1,0 +1,11 @@
+* Inbox
+** TODO [2020-08-17 Mon 13:48] Debug server initiation
+:PROPERTIES:
+:ID:       a300ab27-2cbc-403d-acb6-9776f663693d
+:END:
+
+[[file:~/projects/islands/notes.org::*\[2020-08-17 Mon 13:37\] Invalid argument exception in island.js][[2020-08-17 Mon 13:37] Invalid argument exception in island.js]]
+** DONE [2020-08-17 Mon 13:37] Invalid argument exception in island.js
+CLOSED: [2020-08-17 Mon 13:48]
+
+[[file:~/projects/islands/chat/server/island.js::webService.on('connection', (ClientConnectionSocket)=>{]]

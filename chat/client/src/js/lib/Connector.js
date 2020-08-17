@@ -7,10 +7,12 @@ import { createClientIslandEnvelope } from "../../../../common/Message"
 import { inspect } from "util";
 
 
-export class Connector {
-    constructor(connectionString = "", ) {
-        WildEmitter.mixin(this);
 
+
+export class Connector {
+    constructor(connectionString = "", authenticationAgent) {
+        WildEmitter.mixin(this);
+        this.authenticationAgent = authenticationAgent;
         this.connectorStateMachine = this._prepareConnectorStateMachine()
         this.acceptorStateMachine = this._prepareAcceptorStateMachine()
         this.socket = this._createSocket(connectionString);
@@ -95,32 +97,7 @@ export class Connector {
         setTimeout(this.establishConnection.bind(this), this.reconnectionDelay)
     }
 
-    _performAcceptMessage(stateMachine, evName, args){
-        let msg = args[0]
-        let seq = ++this._sendCount;
-        console.log(`Accepting outgoing message. Seq: ${seq}`);
-        this.queue.push({seq: seq, message: msg});
-        this.connectorStateMachine.handle.processQueue()
-    }
 
-
-    _processQueue(){
-
-        if(this.queue.length === 0){
-            console.log("Nothing to send");
-            return;
-        }
-
-        console.log("Processing queue");
-        let outbound = this.queue
-        this.queue = []
-        let msg
-        while(msg = outbound.shift(0)){
-            const msgEncrypted = this._sessionKeyEncrypt(msg)
-            console.log(`Sending message ${JSON.stringify(msg)} \n ENCRYPTED: ${msgEncrypted}`);
-            this.socket.emit("message", msgEncrypted);
-        }
-    }
 
     _createSocket(connectionString) {
         let socketConfig = {
@@ -440,6 +417,78 @@ export class Connector {
         }, { msgNotExistMode: StateMachine.Warn, traceLevel: StateMachine.TraceLevel.DEBUG })
     }
 
+
+}
+
+
+class SessionAuthenticator{
+
+}
+
+class MessageQueue{
+
+    constructor(socket){
+        this._socket = socket;
+        this._sm = this._prepareAcceptorStateMachine()
+
+    }
+
+    _prepareAcceptorStateMachine(){
+        return new StateMachine(this, {
+            name: "Accept input from user SM",
+            stateMap: {
+                inactive: {
+                    initial: true,
+                    transitions: {
+                        activate: {
+                            state: "acceptingMessages",
+                        },
+                    }
+                },
+
+                acceptingMessages: {
+                    entry: ()=>{ console.log("Now accepting messages") },
+                    transitions: {
+                        acceptMessage: {
+                            actions: this._performAcceptMessage
+                        },
+
+                        deactivate: {
+                            state: "inactive"
+                        }
+                    }
+                }
+            }
+        }, { msgNotExistMode: StateMachine.Warn, traceLevel: StateMachine.TraceLevel.DEBUG })
+    }
+
+
+    _processQueue(){
+
+        if(this.queue.length === 0){
+            console.log("Nothing to send");
+            return;
+        }
+
+        console.log("Processing queue");
+        let outbound = this.queue
+        this.queue = []
+        let msg
+        while(msg = outbound.shift(0)){
+            const msgEncrypted = this._sessionKeyEncrypt(msg)
+            console.log(`Sending message ${JSON.stringify(msg)} \n ENCRYPTED: ${msgEncrypted}`);
+            this.socket.emit("message", msgEncrypted);
+        }
+    }
+
+
+    _performAcceptMessage(stateMachine, evName, args){
+        let msg = args[0]
+        let seq = ++this._sendCount;
+        console.log(`Accepting outgoing message. Seq: ${seq}`);
+        this.queue.push({seq: seq, message: msg});
+        this.connectorStateMachine.handle.processQueue()
+    }
 
 }
 

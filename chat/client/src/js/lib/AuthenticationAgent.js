@@ -11,7 +11,7 @@ import { Internal } from "../../../../common/Events"
 
 
 
-export class LoginAgent {
+export class AuthenticationAgent {
     //In object pass UI functions
     constructor({ version, connector, arrivalHub }) {
         WildEmitter.mixin(this);

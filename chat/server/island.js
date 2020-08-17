@@ -2,8 +2,10 @@ const { buildConfig } = require("./Config")
 const { VaultsDirectory, Vaults } = require("./Vault")
 const { WebService } = require("./WebService")
 const { parseArguments } = require("./ArgParser");
+const fs = require("fs-extra")
+const path = require("path")
 
-const accounts
+const accounts = [];
 
 function activateAccount(vault, requestEmitter){
     let webService = new WebService()
@@ -20,7 +22,7 @@ function activateAccount(vault, requestEmitter){
 function main(){
 
     console.log("Starting Islands...");
-    const args = parseArguments(process.argv);
+    const args = parseArguments(process.argv.slice(2));
 
     if(args.debug){
         global.DEBUG = true;
@@ -39,21 +41,15 @@ function main(){
     //Building configuration
     const config = buildConfig()
 
-
-
     //Initializing vaults
     const vaults = new Vaults(config.vaultsPath)
     vaults.loadVaults()
 
 
-
-
     //if admin vault does not exist - create it
     for(let vault of vaults){
-        activateAccount(vault, )
+        activateAccount(vault)
     }
-
-
 }
 
 //disable account functionality

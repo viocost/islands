@@ -52,7 +52,7 @@
     "tmp": "^0.1.0",
     "toastr": "^2.1.4",
     "tor-control": "^0.0.3",
-    "winston": "^3.1.0",
+    "winston": "^3.3.3",
     "xstate": "^4.9.1",
     "zip-a-folder": "0.0.12"
   },

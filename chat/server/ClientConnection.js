@@ -27,12 +27,11 @@ class SocketIOClientConnection extends ClientConnection{
     constructor(socket){
         super()
         this._socket = socket;
-        this._socket.on()
 
     }
 
     getReconnectInfo(){
-        return this._socket.handshake.query...
+       // return this._socket.handshake.query...
     }
 
     send(){

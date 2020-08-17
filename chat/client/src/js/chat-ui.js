@@ -11,7 +11,7 @@ import { Topic } from "./lib/Topic";
 import { ArrivalHub } from "./lib/ArrivalHub"
 import { Connector } from "./lib/Connector"
 import { TopicRetriever } from "./lib/TopicRetriever";
-import { LoginAgent } from "./lib/LoginAgent";
+import { AuthenticationAgent } from "./lib/AuthenticationAgent";
 import { TopicCreator } from "./lib/TopicCreator";
 import { runConnectorTest } from "./test/connector"
 import { ChatUtility } from "./lib/ChatUtility";
@@ -140,10 +140,15 @@ function init(){
     loadSounds();
     MainView.setLoginView({ onLoginClick: initSession })
 
-    // establish connection with island
-    connector = new Connector("/chat");
-    arrivalHub = new ArrivalHub(connector);
     version = islandsVersion()
+    console.log("INITIALIZINGF");
+    // establish connection with island
+
+    connector = new Connector("/chat");
+
+    arrivalHub = new ArrivalHub(connector);
+    const authAgent = new AuthenticationAgent({version: version, connector: connector, arrivalHub: arrivalHub})
+    window.connector = connector;
     connector.establishConnection();
 
     // request auth

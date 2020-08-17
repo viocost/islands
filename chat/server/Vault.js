@@ -100,7 +100,7 @@ class VaultFactory{
     }
 
     loadVaults(){
-        throw
+
     }
 }
 
@@ -109,7 +109,7 @@ class VaultFactoryV1 extends VaultFactory{
 }
 
 
-class VaultFactoryV2 VaultFactory{
+class VaultFactoryV2 extends VaultFactory{
 
 }
 
