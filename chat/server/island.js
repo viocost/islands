@@ -1,5 +1,5 @@
 const { buildConfig } = require("./Config")
-const { VaultsDirectory, Vaults } = require("./Vault")
+const { Vault, Vaults } = require("./Vault")
 const { WebService } = require("./WebService")
 const { parseArguments } = require("./ArgParser");
 const fs = require("fs-extra")
@@ -7,6 +7,7 @@ const path = require("path")
 
 
 const accounts = [];
+const vaults = [];
 
 function activateAccount(vault, requestEmitter){
     let webService = new WebService()
@@ -45,9 +46,7 @@ function main(){
     const config = buildConfig()
 
     //Initializing vaults
-    const vaults = new Vaults(config.vaultsPath)
-    vaults.loadVaults()
-
+    const vaults = loadVaults(config.vaultsPath);
 
     //if admin vault does not exist - create it
     for(let vault of vaults){
@@ -57,5 +56,16 @@ function main(){
 
 //disable account functionality
 
+function loadVaults(vaultsPath, config, requestEmitter){
+    let vaultDirectories = fs.readdirSync(vaultsPath);
+    let vaults = [];
+
+    for (let vaultId of vaultDirectories){
+        let fullVaultDir = path.join(vaultsPath, vaultId)
+        vaults.push(new Vault(vaultId, fullVaultDir, requestEmitter));
+    }
+
+    return vaults;
+}
 
 main();
