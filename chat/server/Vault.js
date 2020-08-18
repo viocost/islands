@@ -1,6 +1,6 @@
 const fs = require("fs-extra");
 const path = require("path")
-const iCrypto = require("../common/iCrypto");
+const { iCrypto } = require("../common/iCrypto");
 const RandExp = require("randexp");
 const Logger = require("../old_server/classes/libs/Logger");
 
@@ -255,14 +255,14 @@ class Vault{
 
     isRegistrationActive(){
         let adminPublicKey = AdminKey.get();
-        if(!this.isRegistrationPending(vaultID)){
+        if(!this.isRegistrationPending()){
             return false
         }
 
-        let signData =  fs.readFileSync(path.join(this.vaultsPath, vaultID, PENDING), "utf8");
+        let signData =  fs.readFileSync(path.join(this.vaultDir, PENDING), "utf8");
         let ic = new iCrypto();
         ic.addBlob("sign", signData)
-            .addBlob("idhex", vaultID)
+          .addBlob("idhex", this.id)
             .hexToBytes("idhex", "id")
             .setRSAKey("pub", adminPublicKey, "public")
             .publicKeyVerify("id", "sign", "pub", "res");

@@ -5,21 +5,12 @@ const { parseArguments } = require("./ArgParser");
 const fs = require("fs-extra")
 const path = require("path")
 
+const HistoryManager = require("../old_server/classes/libs/HistoryManager.js");
+const ClientRequestRouter = require("../old_server/classes/libs/ClientRequestCollector.js");
 
 const accounts = [];
 const vaults = [];
 
-function activateAccount(vault, requestEmitter){
-    let webService = new WebService()
-    let sessions = new Sessions(vault)
-    let hiddenService = new HiddenService();
-    webService.on('connection', (socket)=>{
-        //need to figure out if
-        sessions.add(socket)
-        //create new session and add it
-    })
-    accounts.push([webService, sessions, hiddenService])
-}
 
 //create express
 
@@ -45,19 +36,79 @@ function main(){
     //Building configuration
     const config = buildConfig()
 
+    ensureDirExist(config.basePath);
+
     //Initializing vaults
+
     const vaults = loadVaults(config.vaultsPath);
 
-    //if admin vault does not exist - create it
-    for(let vault of vaults){
-        activateAccount(vault)
-    }
+    activateAdminAccount(vaults, args.port, config)
+
+    activateGuestAccounts(vaults)
+
 }
 
-//disable account functionality
 
-function loadVaults(vaultsPath, config, requestEmitter){
+function activateAdminAccount(vaults, port, config){
+
+    ensureAdminVaultExist()
+
+    let adminVault = vaults.filter( v =>{
+        return v.id = getAdminVaultId()
+    })
+
+    if(adminVault.length === 0){
+        //make admin vault
+        new Vault(adminVaultId)
+
+    }
+
+    activateAccount()
+
+}
+
+/**
+ * TODO Refactor this later when change storage system
+ */
+function activateAccounts(port, config, requestEmitter){
+    let vaultsPath = config.vaultsPath;
+    ensureDirExist(vaultsPath);
     let vaultDirectories = fs.readdirSync(vaultsPath);
+
+    switch(vaultDirectories.length){
+
+        case 0: //No vaults. Creating pending admin vault and initializing admin service
+            console.log("Initializing admin");
+            let newVaultId = Vault.generateID();
+            let vault = new Vault(newVaultId, path.join(vaultsPath, newVaultId),  requestEmitter)
+            activateAccount(vault);
+
+        case 1: //Only a single vault, which assumed to be admin
+            console.log("Initializing existing admin vault");
+            let vaultId = vaultDirectories[0]
+            let vault = new Vault(vaultId, path.join(vaultsPath, vaultId), requestEmitter)
+            activateAccount(vault);
+
+        default: // More than 1 vault. Figuring out which accoutn is which and activating all
+            for(let vaultId of vaultDirectories){
+                let vault = new Vault(vaultId, path.join(vaultsPath, vaultId), requestEmitter)
+
+                if(isAdminVault(vaultId)){
+
+                    //Activating admin vault with provided port number
+                    activateAccount(vault, port)
+                } else {
+
+                    //Activate with ephemeral port
+                    activateAccount(vault)
+                }
+            }
+
+
+
+    }
+
+
     let vaults = [];
 
     for (let vaultId of vaultDirectories){
@@ -66,6 +117,59 @@ function loadVaults(vaultsPath, config, requestEmitter){
     }
 
     return vaults;
+}
+
+function activateGuestAccounts(vaults){
+    //if admin vault does not exist - create it
+
+    for(let vault of vaults){
+        activateAccount(vault)
+    }
+}
+
+//disable account functionality
+
+function ensureAdminVaultExist(vaults){
+    //if no vaults - then there's no admin vault
+
+    // If there's one vault - then that's the admin's vault
+
+    // else (multiple vaults) do any magic to determine which vault belongs to admin and return its id
+    //
+
+}
+
+function loadVaults(vaultsPath, config, requestEmitter){
+}
+
+
+function activateAccount(vault, requestEmitter){
+    let webService = new WebService()
+    let sessions = new Sessions(vault)
+    let hiddenService = new HiddenService();
+    webService.on('connection', (socket)=>{
+        //need to figure out if
+        sessions.add(socket)
+        //create new session and add it
+    })
+    accounts.push([webService, sessions, hiddenService])
+}
+
+function isAdminVault(vaultId){
+
+}
+
+//Initializing leagcy managers
+function initializeManagers(){
+        this.clientRequestEmitter = new ClientRequestRouter();
+        this.hm = new HistoryManager(this.historyPath);
+}
+
+function ensureDirExist(dirPath){
+    if(!fs.existsSync(dirPath)){
+        console.log(`Directory doesn't exist: ${dirPath}. Creating...`);
+        fs.mkdirSync(dirPath)
+    }
 }
 
 main();
