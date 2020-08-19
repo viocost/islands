@@ -1,4 +1,4 @@
-const { WebServiceAdmin } = require("../server/WebService");
+const { WebService } = require("../server/WebService");
 const { join, normalize } = require("path")
 
 
@@ -8,5 +8,5 @@ let viewsPath = normalize(join(__dirname, "..", "server", "views"))
 let staticPath = normalize(join(__dirname, "..", "public"))
 
 
-const ws = new WebServiceAdmin({ port: 4000, host: "127.0.0.1", staticPath: staticPath, viewsPath: viewsPath })
+const ws = new WebService({ port: 4000, host: "127.0.0.1", staticPath: staticPath, viewsPath: viewsPath })
 ws.launch()

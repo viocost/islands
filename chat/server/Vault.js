@@ -376,7 +376,7 @@ class Vault{
         return pattern.test(host);
     }
 
-    generateID(){
+    static generateID(){
         return new RandExp(new RegExp("[a-f0-9]{" + this.vaultIdLength + "}")).gen();
     }
 

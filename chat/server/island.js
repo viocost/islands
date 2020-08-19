@@ -2,8 +2,12 @@ const { buildConfig } = require("./Config")
 const { Vault, Vaults } = require("./Vault")
 const { WebService } = require("./WebService")
 const { parseArguments } = require("./ArgParser");
+const Logger = require("../old_server/classes/libs/Logger");
+
 const fs = require("fs-extra")
 const path = require("path")
+
+const { getMap, init } = require("../old_server/classes/libs/HSVaultMap")
 
 const HistoryManager = require("../old_server/classes/libs/HistoryManager.js");
 const ClientRequestRouter = require("../old_server/classes/libs/ClientRequestCollector.js");
@@ -36,34 +40,27 @@ function main(){
     //Building configuration
     const config = buildConfig()
 
+
+    //Initializing logger
+    Logger.initLogger(config.servicePath, global.DEBUG ? "debug" : "info");
+
+
+    // TODO Refactor
+    //Initializing hsVaultMap
+    init(config.hsVaultMap)
+
+
     ensureDirExist(config.basePath);
 
     //Initializing vaults
 
-    const vaults = loadVaults(config.vaultsPath);
+    //const vaults = loadVaults(config.vaultsPath);
 
-    activateAdminAccount(vaults, args.port, config)
+    //activateAdminAccount(vaults, args.port, config)
 
-    activateGuestAccounts(vaults)
-
-}
-
-
-function activateAdminAccount(vaults, port, config){
-
-    ensureAdminVaultExist()
-
-    let adminVault = vaults.filter( v =>{
-        return v.id = getAdminVaultId()
-    })
-
-    if(adminVault.length === 0){
-        //make admin vault
-        new Vault(adminVaultId)
-
-    }
-
-    activateAccount()
+    //activateGuestAccounts(vaults)
+    const requestEmitter = new ClientRequestRouter();
+    activateAccounts(args.port, config, requestEmitter)
 
 }
 
@@ -77,19 +74,19 @@ function activateAccounts(port, config, requestEmitter){
 
     switch(vaultDirectories.length){
 
-        case 0: //No vaults. Creating pending admin vault and initializing admin service
-            console.log("Initializing admin");
+        case 0: {//No vaults. Creating pending admin vault and initializing admin service
+            console.log("No vaults. Initializing pending admin vault");
             let newVaultId = Vault.generateID();
             let vault = new Vault(newVaultId, path.join(vaultsPath, newVaultId),  requestEmitter)
-            activateAccount(vault);
-
-        case 1: //Only a single vault, which assumed to be admin
+            activateAccount(vault, );
+        }
+        case 1:{  //Only a single vault, which assumed to be admin
             console.log("Initializing existing admin vault");
             let vaultId = vaultDirectories[0]
             let vault = new Vault(vaultId, path.join(vaultsPath, vaultId), requestEmitter)
             activateAccount(vault);
-
-        default: // More than 1 vault. Figuring out which accoutn is which and activating all
+        }
+        default: {  // Figuring out which accoutn is which and activating all
             for(let vaultId of vaultDirectories){
                 let vault = new Vault(vaultId, path.join(vaultsPath, vaultId), requestEmitter)
 
@@ -103,7 +100,7 @@ function activateAccounts(port, config, requestEmitter){
                     activateAccount(vault)
                 }
             }
-
+        }
 
 
     }
@@ -119,34 +116,44 @@ function activateAccounts(port, config, requestEmitter){
     return vaults;
 }
 
-function activateGuestAccounts(vaults){
-    //if admin vault does not exist - create it
+/**
+ * TODO Refactor this
+ *
+ * Currently admin vault is determined only by the way island is accessed
+ * If it is accessed via direct link - then it is considered as admin
+ *
+ * If accessed via onion - then there is a JSON blob that has mapping
+ * onion->{vaultID, isAdmin, isEnabled} (names are different in hsVaultMap)
+ *
+ * Guests could only access island via onion, not via direct link
+ *
+ * Admin vault may not have any onion activated, so the map will contain only guest
+ * onion services.
+ *
+ * Given vaultId this function loads hsVaultMap.
+ * If vaultId not in map, then we assume that it is admin
+ * otherwise we read isAdmin ("admin") value from the map for corresponding vaultId
+ *
+ */
+function isAdminVault(vaultID){
+    let hsVaultMap = getMap()
+    let adminOnions = Object.keys(hsVaultMap).filter(onion=>{
+        return hsVaultMap[onion].vaultID === vaultID;
+    })
 
-    for(let vault of vaults){
-        activateAccount(vault)
+    if (adminOnions.length === 0){
+        return true
+    } else {
+        return hsVaultMap[adminOnions[0]].admin;
     }
 }
 
-//disable account functionality
+function activateAccount(vault, requestEmitter, port){
 
-function ensureAdminVaultExist(vaults){
-    //if no vaults - then there's no admin vault
-
-    // If there's one vault - then that's the admin's vault
-
-    // else (multiple vaults) do any magic to determine which vault belongs to admin and return its id
-    //
-
-}
-
-function loadVaults(vaultsPath, config, requestEmitter){
-}
-
-
-function activateAccount(vault, requestEmitter){
-    let webService = new WebService()
-    let sessions = new Sessions(vault)
-    let hiddenService = new HiddenService();
+    console.log(`Activating account for ${vault.id}`);
+    let webService = new WebService({})
+    let sessions =null //new Sessions(vault)
+    let hiddenService = null;  //new HiddenService();
     webService.on('connection', (socket)=>{
         //need to figure out if
         sessions.add(socket)
@@ -155,9 +162,6 @@ function activateAccount(vault, requestEmitter){
     accounts.push([webService, sessions, hiddenService])
 }
 
-function isAdminVault(vaultId){
-
-}
 
 //Initializing leagcy managers
 function initializeManagers(){

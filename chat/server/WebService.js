@@ -7,7 +7,13 @@ const { EventEmitter } = require("events")
 const { SocketIOClientConnection } = require("./ClientConnection")
 
 class WebService extends EventEmitter{
-    constructor({host, port, viewsPath, staticPath}){
+    constructor({
+        host = "127.0.0.1",
+        viewsPath = "./views",
+        staticPath = "../public",
+        port
+    }){
+
         super()
         this._port = port;
         this._host = host;
@@ -64,25 +70,6 @@ class WebService extends EventEmitter{
 
 }
 
-
-class WebServiceAdmin extends WebService{
-    constructor(){
-        super(...arguments)
-//        this._app.use("/admin", adminRouter.router);
-    }
-
-
-
-}
-
-class WebServiceGuest extends WebService{
-    constructor(){
-        super(...arguments)
-        this._app.use("/admin", adminRouter.router);
-    }
-}
-
 module.exports = {
-    WebServiceAdmin: WebServiceAdmin,
-    WebServiceGuest: WebServiceGuest
+    WebService: WebService
 }
