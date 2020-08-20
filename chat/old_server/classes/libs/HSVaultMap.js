@@ -1,5 +1,4 @@
 const fs = require("fs-extra");
-const Logger = require("./Logger");
 
 let filePath;
 let filename = "map.json";
@@ -17,9 +16,6 @@ module.exports.init = function(path){
     if (!fs.existsSync(filePath)){
         fs.writeFileSync(filePath, "{}")
     }
-
-    Logger.debug("HSVault map initialized with filepath: " + filePath)
-
 };
 
 module.exports.put = function(onion, vaultID, description = "", admin = false){

@@ -15,12 +15,11 @@ let CONFIG;
 
 function migrate(config){
 
+    CONFIG = config;
     let version = getVersion(config.basePath);
 
-    CONFIG = config;
-
-    for(let migrate of MIGRATION_SEQUENCE.slice(version)){
-        migrate()
+    for(let step of MIGRATION_SEQUENCE.slice(version)){
+        step(config)
     }
 
 
@@ -41,35 +40,45 @@ function getVersion(basePath){
 // Moves all hidden service to corresponding vaults
 // Removes HS map
 //
-function toVersion1(){
+function toVersion1(config){
     console.log("Migrating to version 1");
     const { getMap, init } = require("../../old_server/classes/libs/HSVaultMap")
-    init(CONFIG.hsVaultMap)
+    init(config.hsVaultMap)
     let hsVaultMap = getMap()
 
-    let vaultsPath = CONFIG.vaultsPath;
+    let vaultsPath = config.vaultsPath;
     let vaults = fs.readdirSync(vaultsPath);
     let adminVaultId = vaults.filter(vaultId =>{
         return isAdminVault(vaultId, hsVaultMap);
     })[0];
 
 
-
-
-    for (let vaultId of fs.readdirSync(vaultsPath)){
+    for (let vaultId of vaults){
         let vaultDir = path.join(vaultsPath, vaultId)
         let hsDir = path.join(vaultDir, "hidden_services")
         if(!fs.existsSync(hsDir)){
             fs.mkdirSync(hsDir);
         }
 
+        let hiddenServices = Object.keys(hsVaultMap).filter(onion=>{
+            return hsVaultMap[onion].vaultID === vaultId;
+        })
 
+        for(let onion of hiddenServices){
+            let onionDir = path.join(hsDir, onion)
+            if(!fs.existsSync(onionDir)){
+                fs.mkdirSync(onionDir)
+                let key = fs.readFileSync(path.join(config.hiddenServicesPath, onion))
+                fs.writeFileSync(path.join(onionDir, "key"), key);
+                fs.writeFileSync(path.join(onionDir, "is_enabled"), hsVaultMap[onion].enabled);
+            }
+        }
     }
 
+    fs.writeFileSync(path.join(vaultsPath, adminVaultId, "admin"), "");
 
-
-
-
+    fs.writeFileSync(path.join(config.basePath, VERSION_FILENAME), "1")
+    console.log("Migration to version 1 is completed");
 }
 
 
@@ -108,4 +117,8 @@ function isAdminVault(vaultID, hsVaultMap){
     } else {
         return hsVaultMap[adminOnions[0]].admin;
     }
+}
+
+module.exports = {
+    migrate: migrate
 }

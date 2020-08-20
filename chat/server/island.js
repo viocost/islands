@@ -6,13 +6,13 @@ const adminRouter = require("../old_server/adminRouter")
 const appRouter = require("../old_server/appRouter")
 const { Sessions } = require("./Sessions")
 const { HiddenService } = require("./lib/HiddenService")
+const { migrate } = require("./lib/Migration");
 
 const Logger = require("../old_server/classes/libs/Logger");
 
 const fs = require("fs-extra")
 const path = require("path")
 
-const { getMap, init } = require("../old_server/classes/libs/HSVaultMap")
 
 const HistoryManager = require("../old_server/classes/libs/HistoryManager.js");
 
@@ -30,6 +30,7 @@ const managers = {};
 
 function main(){
 
+
     console.log("Starting Islands...");
     const args = parseArguments(process.argv.slice(2));
 
@@ -46,9 +47,11 @@ function main(){
         process.exit(-1)
     }
 
-
     //Building configuration
     const config = buildConfig()
+
+    //Migration
+    migrate(config);
 
 
     //Initializing logger
@@ -60,7 +63,6 @@ function main(){
 
     // TODO Refactor
     //Initializing hsVaultMap
-    init(config.hsVaultMap)
 
 
 
@@ -149,37 +151,6 @@ function activateAccounts(port, config, requestEmitter){
     return vaults;
 }
 
-/**
- * TODO Refactor this
- *
- * Currently admin vault is determined only by the way island is accessed
- * If it is accessed via direct link - then it is considered as admin
- *
- * If accessed via onion - then there is a JSON blob that has mapping
- * onion->{vaultID, isAdmin, isEnabled} (names are different in hsVaultMap)
- *
- * Guests could only access island via onion, not via direct link
- *
- * Admin vault may not have any onion activated, so the map will contain only guest
- * onion services.
- *
- * Given vaultId this function loads hsVaultMap.
- * If vaultId not in map, then we assume that it is admin
- * otherwise we read isAdmin ("admin") value from the map for corresponding vaultId
- *
- */
-function isAdminVault(vaultID){
-    let hsVaultMap = getMap()
-    let adminOnions = Object.keys(hsVaultMap).filter(onion=>{
-        return hsVaultMap[onion].vaultID === vaultID;
-    })
-
-    if (adminOnions.length === 0){
-        return true
-    } else {
-        return hsVaultMap[adminOnions[0]].admin;
-    }
-}
 
 function activateAccount(vault, requestEmitter, port, isAdmin){
 
