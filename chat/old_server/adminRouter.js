@@ -5,6 +5,7 @@ const Logger = require("./classes/libs/Logger");
 const HSMap = require("./classes/libs/HSVaultMap");
 const version = require("./classes/libs/Version");
 const adminServer = require('./classes/AdminServer');
+const { RouterHolder } = require("../server/lib/RouterHolder")
 
 let VERSION;
 
@@ -45,9 +46,12 @@ function isOnion(host){
     return pattern.test(host);
 }
 
-module.exports.init = (app, config, HOST, PORT, adminKeyPath, updatePath)=>{
+
+module.exports.init = (app, config, adminKeyPath, updatePath)=>{
     adminServer.setKeyFolder(adminKeyPath, updatePath);
     adminServer.initAdminEnv(app, config, HOST, PORT);
 };
 
-module.exports.router = router;
+
+
+module.exports.router = new RouterHolder("/admin", router)

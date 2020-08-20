@@ -11,18 +11,24 @@ const PENDING = "pending.signature";
 const VAULT = "vault";
 const PUBLICKEY = "publicKey";
 
-class Vault{
-    constructor(vaultId, vaultDir, requestEmitter){
-        this.id  = vaultId;
-        this.vaultDir = vaultDir;
+const VAULT_ID_LENGTH = 64;
 
-        if(!fs.existsSync(this.vaultDir)){
+class Vault{
+    constructor({
+        vaultDirectory,
+        vaultId,
+        requestEmitter
+    }){
+        this.id  = vaultId;
+        this.vaultDirectory = vaultDirectory;
+
+        if(!fs.existsSync(this.vaultDirectory)){
             Logger.debug("Vaults directory doesn't exist. Creating...");
-            fs.mkdirSync(this.vaultDir);
+            fs.mkdirSync(this.vaultDirectory);
             Logger.debug("Vaults directory created!");
         }
 
-        //this.vaultIdLength = config.vaultIdLength || 64;
+
 
         //TODO REFACTOR
         if(requestEmitter){
@@ -134,9 +140,9 @@ class Vault{
 
         if (!id){
             do{
-                id = this.generateID();
-            }while (this.isVaultExist(id));
-        } else if (this.isVaultExist(id)){
+                id = Vault.generateId();
+            }while (this.isVaultExist());
+        } else if (this.isVaultExist()){
             throw new Error("Vault already exists");
         }
         this._writeVault(id, vaultBlob, publicKey, hash);
@@ -247,10 +253,10 @@ class Vault{
     }
 
     isRegistrationPending(vaultID){
-        return  fs.existsSync(path.join(this.vaultDir  )) &&
-            !fs.existsSync(path.join(this.vaultDir,  VAULT)) &&
-            !fs.existsSync(path.join(this.vaultDir,  PUBLICKEY)) &&
-            fs.existsSync(path.join(this.vaultDir,   PENDING))
+        return  fs.existsSync(path.join(this.vaultDirectory  )) &&
+            !fs.existsSync(path.join(this.vaultDirectory,  VAULT)) &&
+            !fs.existsSync(path.join(this.vaultDirectory,  PUBLICKEY)) &&
+            fs.existsSync(path.join(this.vaultDirectory,   PENDING))
     }
 
     isRegistrationActive(){
@@ -259,7 +265,7 @@ class Vault{
             return false
         }
 
-        let signData =  fs.readFileSync(path.join(this.vaultDir, PENDING), "utf8");
+        let signData =  fs.readFileSync(path.join(this.vaultDirectory, PENDING), "utf8");
         let ic = new iCrypto();
         ic.addBlob("sign", signData)
           .addBlob("idhex", this.id)
@@ -284,15 +290,15 @@ class Vault{
 
     //backward compatability
     getVaultDirPath(){
-        return this.vaultDir ;
+        return this.vaultDirectory ;
     }
 
     getVaultPath(){
-        return path.join(this.vaultDir, "vault");
+        return path.join(this.vaultDirectory, "vault");
     }
 
     getTopicsPath(){
-        let topicsPath =  path.join(this.vaultDir, "topics");
+        let topicsPath =  path.join(this.vaultDirectory, "topics");
         if(!fs.existsSync(topicsPath)){
             fs.mkdirSync(topicsPath)
         }
@@ -300,40 +306,40 @@ class Vault{
     }
 
     async deleteVault(){
-        if(fs.existsSync(this.vaultDir))
-            await fs.remove(this.vaultDir);
+        if(fs.existsSync(this.vaultDirectory))
+            await fs.remove(this.vaultDirectory);
     }
 
     isVaultExist(){
-        let vaultDir = this.vaultDir;
-        let vaultFile = path.join(this.vaultDir, "vault");
-        let pubKey = path.join(this.vaultDir, "publicKey");
+        let vaultDirectory = this.vaultDirectory;
+        let vaultFile = path.join(this.vaultDirectory, "vault");
+        let pubKey = path.join(this.vaultDirectory, "publicKey");
 
-        return (fs.existsSync(vaultDir) &&
+        return (fs.existsSync(vaultDirectory) &&
                 fs.existsSync(vaultFile) &&
                 fs.existsSync(pubKey));
     }
 
     _writeVault(id, blob, publicKey, hash){
-        if(!fs.existsSync(this.vaultDir)){
-            fs.mkdirSync(this.vaultDir);
+        if(!fs.existsSync(this.vaultDirectory)){
+            fs.mkdirSync(this.vaultDirectory);
         }
-        if (!fs.existsSync(path.join(this.vaultDir, "topics"))){
-            fs.mkdirSync(path.join(this.vaultDir, "topics"));
+        if (!fs.existsSync(path.join(this.vaultDirectory, "topics"))){
+            fs.mkdirSync(path.join(this.vaultDirectory, "topics"));
         }
-        fs.writeFileSync(path.join(this.vaultDir, "vault"), blob);
-        fs.writeFileSync(path.join(this.vaultDir, "publicKey"), publicKey);
-        fs.writeFileSync(path.join(this.vaultDir, "hash"), hash);
+        fs.writeFileSync(path.join(this.vaultDirectory, "vault"), blob);
+        fs.writeFileSync(path.join(this.vaultDirectory, "publicKey"), publicKey);
+        fs.writeFileSync(path.join(this.vaultDirectory, "hash"), hash);
     }
 
     _backupVault(){
         console.log("Backing up vault");
         let timestamp = new Date().toISOString()
-        let vaultPath = path.join(this.vaultDir, "vault");
-        let vaultBakPath = path.join(this.vaultDir, `vault_BAK_${timestamp}`);
+        let vaultPath = path.join(this.vaultDirectory, "vault");
+        let vaultBakPath = path.join(this.vaultDirectory, `vault_BAK_${timestamp}`);
 
-        let vaultHashPath = path.join(this.vaultDir, "hash");
-        let vaultHashBakPath = path.join(this.vaultDir, `hash_BAK_${timestamp}`);
+        let vaultHashPath = path.join(this.vaultDirectory, "hash");
+        let vaultHashBakPath = path.join(this.vaultDirectory, `hash_BAK_${timestamp}`);
 
         if(fs.existsSync(vaultPath)){
             fs.renameSync(vaultPath, vaultBakPath);
@@ -376,8 +382,8 @@ class Vault{
         return pattern.test(host);
     }
 
-    static generateID(){
-        return new RandExp(new RegExp("[a-f0-9]{" + this.vaultIdLength + "}")).gen();
+    static generateId(){
+        return new RandExp(new RegExp("[a-f0-9]{" + VAULT_ID_LENGTH + "}")).gen();
     }
 
 }

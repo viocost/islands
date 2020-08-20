@@ -1,5 +1,6 @@
 const { Router } = require("express");
 const router = Router();
+const { RouterHolder } = require("../server/lib/RouterHolder")
 //const VaultManager = require("./classes/libs/VaultManager");
 //const Logger = require("./classes/libs/Logger");
 //const AdminKey = require("./classes/libs/AdminKey");
@@ -107,4 +108,4 @@ function guestVaultRegistration(req, res){
 }
 
 
-module.exports.router = router;
+module.exports.router = new RouterHolder("/", router);

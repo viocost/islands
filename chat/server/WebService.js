@@ -1,6 +1,6 @@
 const express = require('express');
 const SocketIO = require('socket.io');
-//const adminRouter = require("./adminRouter");
+const getPort = require('get-port');
 const appRouter = require("./appRouter");
 const path = require("path")
 const { EventEmitter } = require("events")
@@ -11,6 +11,7 @@ class WebService extends EventEmitter{
         host = "127.0.0.1",
         viewsPath = "./views",
         staticPath = "../public",
+        routers = [],
         port
     }){
 
@@ -28,17 +29,26 @@ class WebService extends EventEmitter{
         }
 
         this._app.use(express.static(staticPath));
-        this._app.use("/", appRouter.router);
+        for(let router of routers){
+            this._app.use(router.getBase(), router.getRouter())
+        }
     }
 
 
     launch(){
-        this._server = this._app.listen(this._port, this._host, ()=>{
-            console.log(`Island Web Service is running at ${this._host}:${this._port}`);
-            this._launchSocketServer(this._server)
-        });
+        this.ensurePortSet()
+            .then(()=>{
+                this._server = this._app.listen(this._port, this._host, ()=>{
+                    console.log(`Island Web Service is running at ${this._host}:${this._port}`);
+                    this._launchSocketServer(this._server)
+                });
+            })
+    }
 
-
+    async ensurePortSet(){
+        if(!this._port){
+            this._port = await getPort()
+        }
     }
 
     kill(){

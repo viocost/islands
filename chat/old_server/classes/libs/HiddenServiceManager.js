@@ -283,6 +283,7 @@ HiddenService.Status  = {
 
 
 
-module.exports = HiddenServiceManager;
-
-
+module.exports = {
+    HiddenServiceManager: HiddenServiceManager,
+    HiddenService: HiddenService
+}

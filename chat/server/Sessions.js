@@ -24,3 +24,5 @@ class Sessions{
         }
     }
 }
+
+module.exports.Sessions = Sessions;

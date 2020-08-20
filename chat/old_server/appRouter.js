@@ -5,7 +5,7 @@ const Logger = require("./classes/libs/Logger");
 const AdminKey = require("./classes/libs/AdminKey");
 const HSMap = require("./classes/libs/HSVaultMap");
 const { isSecured } = require("./classes/AdminServer");
-
+const { RouterHolder } = require("../server/lib/RouterHolder")
 
 let vaultManager;
 
@@ -131,4 +131,4 @@ function extractOnion(host){
     return host.match(/[a-z2-7]{16}\.onion/)[0];
 }
 
-module.exports.router = router;
+module.exports.router = new RouterHolder("/", router);

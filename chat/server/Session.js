@@ -1,7 +1,7 @@
-const err = require('./Error')
+const err = require('../common/Error')
 const { StateMachine } = require("adv-state");
-const { iCrypto } = require("../../common/iCrypto")
-const { createClientIslandEnvelope } = require("../../common/Message");
+const { iCrypto } = require("../common/iCrypto")
+const { createClientIslandEnvelope } = require("../common/Message");
 
 
 class Session{
@@ -15,12 +15,12 @@ class Session{
 
 
 class ClientSession extends Session {
-    constructor(, ){
+    constructor(){
         super();
         this.sm = this._prepareStateMachine();
         this._sendCount = 0;
         this._receiveCount = 0;
-        this._subscribe(clientConnector, connectionId)
+        //this._subscribe(clientConnector, connectionId)
     }
 
 
