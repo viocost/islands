@@ -7,6 +7,7 @@ const appRouter = require("../old_server/appRouter")
 const { Sessions } = require("./Sessions")
 const { HiddenService } = require("./lib/HiddenService")
 const { migrate } = require("./lib/Migration");
+const TorController = require("../old_server/classes/libs/TorController")
 
 const Logger = require("../old_server/classes/libs/Logger");
 
@@ -27,7 +28,6 @@ const managers = {};
 
 
 //create express
-
 function main(){
 
 
@@ -54,6 +54,13 @@ function main(){
     migrate(config);
 
 
+    //Initializing tor controller
+    let torController = new TorController({
+        host: config.torConnector.torControlHost,
+        port: config.torConnector.torControlPort,
+        password:  config.torConnector.torPassword,
+    })
+
     //Initializing logger
     Logger.initLogger(config.servicePath, global.DEBUG ? "debug" : "info");
 
@@ -61,14 +68,9 @@ function main(){
     // ---------------------------------------------------------------------------------------------------------------------------
     // Legacy section
 
-    // TODO Refactor
-    //Initializing hsVaultMap
-
-
-
-
-
     ensureDirExist(config.basePath);
+
+    ensureAdminVaultExist(config)
 
     //Initializing vaults
 
@@ -82,12 +84,8 @@ function main(){
 
 }
 
-/**
- * TODO Refactor this later when change storage system
- */
+
 function activateAccounts(port, config, requestEmitter){
-    let vaultsPath = config.vaultsPath;
-    ensureDirExist(vaultsPath);
     let vaultDirectories = fs.readdirSync(vaultsPath);
 
     console.log(`VD Length: ${vaultDirectories.length}`);
@@ -125,7 +123,7 @@ function activateAccounts(port, config, requestEmitter){
                     vaultDirectory: path.join(vaultsPath, vaultId)
                 })
 
-                if(isAdminVault(vaultId)){
+                if(isAdminVault(config, vaultId)){
 
                     //Activating admin vault with provided port number
                     activateAccount(vault, requestEmitter, port, true)
@@ -187,14 +185,7 @@ function initializeManagers(config){
     managers.historyManager = new HistoryManager(config.historyPath);
 }
 
-function ensureDirExist(dirPath){
-    if(!fs.existsSync(dirPath)){
-        console.log(`Directory doesn't exist: ${dirPath}. Creating...`);
-        fs.mkdirSync(dirPath)
-    }
-}
 
-main();
 
 
 
@@ -205,7 +196,6 @@ function getAccountHiddenServices(vaultId){
     })
 }
 
-
 function getHSPrivateKey(config, hsid){
     hsid = hsid.substring(0, 16);
     let hsPath = path.join(config.hiddenServicesPath, hsid)
@@ -214,3 +204,33 @@ function getHSPrivateKey(config, hsid){
     }
     return fs.readFileSync(hsPath, "utf8")
 }
+
+function isAdminVault(config, vaultId){
+    let vaultPath = path.join(config.vaultsPath, vaultId)
+    return fs.existsSync(path.join(vaultPath, "admin"))
+}
+
+function ensureAdminVaultExist(config){
+    let vaultsPath = config.vaultsPath;
+    ensureDirExist(vaultsPath);
+
+    if(fs.readdirSync(vaultsPath).length === 0){
+
+        //create hidden service
+
+
+        //create vault
+        Vault.createPendingVault(vaultsPath)
+    }
+}
+
+function ensureDirExist(dirPath){
+    if(!fs.existsSync(dirPath)){
+        console.log(`Directory doesn't exist: ${dirPath}. Creating...`);
+        fs.mkdirSync(dirPath)
+    }
+}
+
+
+
+main();

@@ -1,11 +1,25 @@
 const TorControl = require('tor-control');
 const SocksProxyAgent = require("socks5-http-client/lib/Agent");
 const ioClient = require('socket.io-client');
+const { createDerivedErrorClasses  } = require("../../../common/DynamicError");
+
+
 let socksProxyHost = "127.0.0.1";
 let socksProxyPort = "9050";
 
+
+class TorControllerError extends Error{ constructor(data){ super(data); this.name = "TorControllerError" } }
+
+const err = createDerivedErrorClasses(TorControllerError, {
+    noPort: "NewOnionPortNotSpecified",
+    noHost: "NewOnionHostNotSpecified",
+    noKey:  "LaunchOnionKeyNotSpecified"
+
+})
+
+
 class TorController extends TorControl{
-    constructor(opts){
+    constructor({ host, port, password }){
         /**
          * Tor control class
          * @link https://gitweb.torproject.org/torspec.git/tree/control-spec.txt
@@ -16,97 +30,46 @@ class TorController extends TorControl{
          * @param {string} [opts.path] - Connect by path (alternative way to opts.host and opts.port)
          * @constructor
          */
-        super(opts)
+        super({ host: host, port: port, password: password})
     }
 
 
-    /**
-     *
-     * @param {object} params parameters that contain all options      *
-     *  port Must be a string in format "PORT,HOST_IP:PORT"
-     *      for example "80,127.0.0.1:5000"
-     *  keyType can be "NEW", "RSA1024", "ED25519-V3"
-     *  keyContent in raw base64 format
-     *  discardKey
-     *  detached
-     *  basicAuth
-     *  maxStreams
-     *
-     * @returns {Promise}
-     */
-    createHiddenService(params){
-        return new Promise(async (resolve, reject)=>{
-            if(process.env["DEBUG"]){
-                console.log("Launching hidden service with parameters: ");
-                console.dir(params);
-            }
-            let serviceID;
-            let KEYTYPES = ["NEW", "RSA1024", "ED25519-V3"];
-            let portPattern =/(6553[0-5]|655[0-2][0-9]\d|65[0-4](\d){2}|6[0-4](\d){3}|[1-5](\d){4}|[1-9](\d){0,3}),\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b(:(6553[0-5]|655[0-2][0-9]\d|65[0-4](\d){2}|6[0-4](\d){3}|[1-5](\d){4}|[1-9](\d){0,3}))?/;
+    async createNewOnion({ host, port, keyType = "ED25519-V3" }){
+        if(!port)  throw new err.noPort()
+        if(!host)  throw new err.noHost()
+        let request = `ADD_ONION NEW:${keyType} Flags=detach Port=80,${host}:${port}`;
+        return this._processOnionLaunchRequest(request)
+    }
 
-            if(!params.hasOwnProperty("port")
-                || !params.hasOwnProperty("keyType")
-                || !KEYTYPES.includes(params.keyType)
-                || !portPattern.test(params.port)
-                || (params.keyType !== "NEW" && !params.hasOwnProperty("keyContent"))){
-                reject("Invalid request.");
-                return;
-            }
-            let request = "ADD_ONION ";
+    async launchOnionWithKey({ host, port, key }){
+        if(!port)  throw new err.noPort()
+        if(!host)  throw new err.noHost()
+        if(!host)  throw new err.noKey()
+        let request = `ADD_ONION ${key} Flags=detach Port=80,${host}:${port}`;
+        return this._processOnionLaunchRequest(request)
+    }
 
 
-            if (params.keyType === "NEW")
-                request += "NEW:RSA1024";
-            else
-                request += params.keyType +":" + params.keyContent + " ";
-
-            let flags = [];
-
-
-            if (params.detached)
-                flags.push("detach");
-            if (params.discardKey)
-                flags.push("DiscardPK");
-            if (params.basicAuth)
-                flags.push("BasicAuth");
-
-            let flagsString = flags.length ===0 ? "" : " Flags=" + flags[0];
-            for (let i=1; i<flags.length; ++i){
-                flagsString += ("," + flags[i])
-            }
-            request += flagsString;
-            request += " port=" +params.port;
+    _processOnionLaunchRequest(request){
+        return new Promise((resolve, reject)=>{
             this.sendCommand(request, async (err, response)=>{
-
                 if(err) {
                     console.log("Tor command error " + err);
                     reject(err);
-                } else{
-                    try{
-                        response.messages = this.torMessagesToJSON(response.messages);
-                        console.log("Hidden service was launched. ID: " + response.messages.ServiceID);
-                        serviceID = response.messages.ServiceID + ".onion";
-                        console.log(serviceID)
-                        if(!params.awaitPublication){
-                            resolve(response);
-                            return;
-                        } else{
-
-                            await this.awaitPublication(serviceID);
-                            resolve(response)
-                        }
-
-                    }catch(err){
-                        console.log("Error creating hidden service: " + err);
-                        reject(err)
-                    }
+                    return
                 }
 
-            });
-
-
+                response.messages = this.torMessagesToJSON(response.messages);
+                console.log("Hidden service was launched. ID: " + response.messages.ServiceID);
+                let serviceID = response.messages.ServiceID + ".onion";
+                console.log(serviceID)
+                resolve(response);
+            })
         })
+
     }
+
+
 
     awaitPublication(service, privateKey, attempts = 10, timeout = 20000){
         return new Promise((resolve, reject)=>{

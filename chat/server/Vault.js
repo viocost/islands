@@ -37,6 +37,27 @@ class Vault{
         }
     }
 
+
+
+    /**
+     *
+     */
+    static createPendingVault(vaultsPath, { onion, key, isEnabled }){
+        let id = Vault.generateId()
+        let vaultPath = path.join(vaultsPath, id)
+        let hsRootDir = path.join(vaultPath, "hidden_services")
+        let hsPath = path.join(hsRootDir, onion)
+
+        fs.mkdirSync(vaultPath)
+        fs.mkdirSync(hsRootDir)
+        fs.writeFileSync(path.join(vaultPath, "admin"), "")
+        fs.writeFileSync(hsPath, JSON.stringify({
+            key: key,
+            enabled: isEnabled
+        }))
+    }
+
+
     saveVaultSettings(request){
         console.log("SAVING VAULT SETTINGS");
         let id = this.id;

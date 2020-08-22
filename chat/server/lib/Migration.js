@@ -65,13 +65,12 @@ function toVersion1(config){
         })
 
         for(let onion of hiddenServices){
-            let onionDir = path.join(hsDir, onion)
-            if(!fs.existsSync(onionDir)){
-                fs.mkdirSync(onionDir)
-                let key = fs.readFileSync(path.join(config.hiddenServicesPath, onion))
-                fs.writeFileSync(path.join(onionDir, "key"), key);
-                fs.writeFileSync(path.join(onionDir, "is_enabled"), hsVaultMap[onion].enabled);
-            }
+            let hsPath = path.join(hsDir, onion)
+            let key = fs.readFileSync(path.join(config.hiddenServicesPath, onion), "utf8")
+            fs.writeFileSync(hsPath, JSON.stringify({
+                key: key,
+                enabled:  hsVaultMap[onion].enabled
+            }))
         }
     }
 
