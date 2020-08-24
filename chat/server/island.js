@@ -104,7 +104,8 @@ function activateAccounts(port, config, requestEmitter){
             requestEmitter: requestEmitter,
             isAdmin: isAdmin,
             port: isAdmin ? port : getPort(), //if not admin - then port is ephemeral
-            host: '0.0.0.0'  //hardcoded for now
+            host: '0.0.0.0',  //hardcoded for now
+            config: config
         })
     }
 
@@ -112,7 +113,7 @@ function activateAccounts(port, config, requestEmitter){
     let vaults = [];
 
     for (let vaultId of vaultDirectories){
-        let fullVaultDir = path.join(vaultsPath, vaultId)
+        let fullVaultDir = path.join(config.vaultsPath, vaultId)
         vaults.push(new Vault({ vaultId: vaultId, vaultDirectory: fullVaultDir, requestEmitter: requestEmitter }));
     }
 
@@ -120,12 +121,12 @@ function activateAccounts(port, config, requestEmitter){
 }
 
 
-function activateAccount({vault, config, requestEmitter, port, host, isAdmin}){
+function activateAccount({vault, requestEmitter, port, host, isAdmin, config}){
 
     console.log(`Activating account for ${vault.id}`);
 
     //Creating tor controller
-    const torControl = new TorController({ host: host, port: port, password:  config.torConnector.torControlPassword })
+    const torControl = new TorController({ host: config.torConnector.torControlHost, port: config.torConnector.torControlPort, password:  config.torConnector.torControlPassword })
 
     //launching hidden services
     let hiddenServices = vault.loadHiddenServices().map(hsData=>{

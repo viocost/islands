@@ -44,7 +44,7 @@ class TorController extends TorControl{
     async createAndLaunchNewOnion({ host, port, keyType = "ED25519-V3" }){
         if(!port)  throw new err.noPort()
         if(!host)  throw new err.noHost()
-        let request = `ADD_ONION NEW:${keyType} Flags=detach Port=80,${host}:${port}`;
+        let request = `ADD_ONION NEW:${this._preprocessKey(keyType)} Flags=detach Port=80,${host}:${port}`;
         return this._processOnionLaunchRequest(request)
     }
 
@@ -52,10 +52,19 @@ class TorController extends TorControl{
         if(!port)  throw new err.noPort()
         if(!host)  throw new err.noHost()
         if(!host)  throw new err.noKey()
-        let request = `ADD_ONION ${key} Flags=detach Port=80,${host}:${port}`;
+        let request = `ADD_ONION ${this._preprocessKey(key)} Flags=detach Port=80,${host}:${port}`;
         return this._processOnionLaunchRequest(request)
     }
 
+
+    _preprocessKey(privateKey){
+        if(/^ED25519-V3/.test(privateKey)) return privateKey
+
+        let ic = new iCrypto()
+        ic.setRSAKey("sk", privateKey, "private")
+          .pemToBase64("sk", "res", "private")
+        return `RSA1024:${ic.get("res")}`
+    }
 
     _processOnionLaunchRequest(request){
         return new Promise((resolve, reject)=>{
