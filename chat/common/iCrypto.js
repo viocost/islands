@@ -1194,7 +1194,7 @@ class iCrypto {
             bytes.push(parseInt(pkfp.slice(i, i + 2), 16));
         }
 
-        return  Base32.encode(bytes, "RFC4648_HEX").toLowerCase() + ".onion";
+        return  Base32.encode(bytes, "RFC4648_HEX").toLowerCase();
     }
 
     /**

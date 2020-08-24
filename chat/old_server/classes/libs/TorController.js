@@ -2,6 +2,7 @@ const TorControl = require('tor-control');
 const SocksProxyAgent = require("socks5-http-client/lib/Agent");
 const ioClient = require('socket.io-client');
 const { createDerivedErrorClasses  } = require("../../../common/DynamicError");
+const { iCrypto } = require("../../../common/iCrypto")
 
 
 let socksProxyHost = "127.0.0.1";
@@ -33,8 +34,14 @@ class TorController extends TorControl{
         super({ host: host, port: port, password: password})
     }
 
+    static generateRSA1024Onion(){
+        let ic = new iCrypto()
+        ic.generateRSAKeyPair('kp', 1024)
+        const onion = iCrypto.onionAddressFromPrivateKey(ic.get("kp").privateKey)
+        return { onion: onion, publicKey: ic.get("kp").publicKey, privateKey: ic.get("kp").privateKey }
+    }
 
-    async createNewOnion({ host, port, keyType = "ED25519-V3" }){
+    async createAndLaunchNewOnion({ host, port, keyType = "ED25519-V3" }){
         if(!port)  throw new err.noPort()
         if(!host)  throw new err.noHost()
         let request = `ADD_ONION NEW:${keyType} Flags=detach Port=80,${host}:${port}`;

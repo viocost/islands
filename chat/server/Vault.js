@@ -6,10 +6,12 @@ const Logger = require("../old_server/classes/libs/Logger");
 
 const { Internal } = require("../common/Events")
 
+
 /**FILENAMES*/
 const PENDING = "pending.signature";
 const VAULT = "vault";
 const PUBLICKEY = "publicKey";
+const HIDDEN_SERVICES_DIRNAME = "hidden_services"
 
 const VAULT_ID_LENGTH = 64;
 
@@ -38,14 +40,13 @@ class Vault{
     }
 
 
-
     /**
-     *
+     * Initializes pending vault
      */
     static createPendingVault(vaultsPath, { onion, key, isEnabled }){
         let id = Vault.generateId()
         let vaultPath = path.join(vaultsPath, id)
-        let hsRootDir = path.join(vaultPath, "hidden_services")
+        let hsRootDir = path.join(vaultPath, HIDDEN_SERVICES_DIRNAME)
         let hsPath = path.join(hsRootDir, onion)
 
         fs.mkdirSync(vaultPath)
@@ -57,6 +58,18 @@ class Vault{
         }))
     }
 
+    loadHiddenServices(){
+        const hsDir = path.join(this.vaultDirectory, HIDDEN_SERVICES_DIRNAME)
+        const hsFiles = fs.readdirSync(hsDir);
+
+        return hsFiles.map(hsName =>{
+            return {
+                onion: hsName,
+                key: fs.readFileSync(path.join(hsDir, hsName), "utf8")
+            }
+        })
+
+    }
 
     saveVaultSettings(request){
         console.log("SAVING VAULT SETTINGS");

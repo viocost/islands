@@ -8,6 +8,7 @@ const { Sessions } = require("./Sessions")
 const { HiddenService } = require("./lib/HiddenService")
 const { migrate } = require("./lib/Migration");
 const TorController = require("../old_server/classes/libs/TorController")
+const getPort = require("get-port-sync")
 
 const Logger = require("../old_server/classes/libs/Logger");
 
@@ -69,6 +70,7 @@ function main(){
 
     ensureDirExist(config.basePath);
 
+    //Ensure that at least admin vault exists
     ensureAdminVaultExist(config)
 
     //Initializing vaults
@@ -101,11 +103,9 @@ function activateAccounts(port, config, requestEmitter){
             vault: vault,
             requestEmitter: requestEmitter,
             isAdmin: isAdmin,
-            port: isAdmin ? port : undefined, //if not admin - then port is ephemeral
+            port: isAdmin ? port : getPort(), //if not admin - then port is ephemeral
             host: '0.0.0.0'  //hardcoded for now
         })
-
-
     }
 
 
@@ -120,33 +120,44 @@ function activateAccounts(port, config, requestEmitter){
 }
 
 
-function activateAccount({vault, requestEmitter, port, host, isAdmin}){
+function activateAccount({vault, config, requestEmitter, port, host, isAdmin}){
 
     console.log(`Activating account for ${vault.id}`);
 
-    //load hidden service
-    let accountHiddenServices = getAccountHiddenServices(vault.id)
+    //Creating tor controller
+    const torControl = new TorController({ host: host, port: port, password:  config.torConnector.torControlPassword })
+
+    //launching hidden services
+    let hiddenServices = vault.loadHiddenServices().map(hs=>{
+        return new HiddenService({
+            onion: hs.onion,
+            key: hs.key,
+            control: torControl,
+            host: host,
+            port: port
+        })
+    });
 
     let routers = isAdmin ? [ adminRouter.router, appRouter.router ] : [ appRouter.router ]
 
     let webService = new WebService({
         routers: routers,
         port: port,
-        host: "0.0.0.0",
+        host: host,
         viewsPath: path.join(__dirname, "views"),
         staticPath: path.join(__dirname, "..", "public")
     })
+
     let sessions = new Sessions(vault)
 
 
-    let hiddenService = new HiddenService();
     webService.on('connection', (socket)=>{
         //need to figure out if
         sessions.add(socket)
         //create new session and add it
     })
     webService.launch();
-    accounts.push([webService, sessions, hiddenService])
+    accounts.push([webService, sessions, hiddenServices])
 }
 
 
@@ -157,14 +168,6 @@ function initializeManagers(config){
 
 
 
-
-
-function getAccountHiddenServices(vaultId){
-    let hsVaultMap = getMap()
-    return Object.keys((hsVaultMap)).filter(onion =>{
-        return hsVaultMap[onion].vaultID === vaultId
-    })
-}
 
 function getHSPrivateKey(config, hsid){
     hsid = hsid.substring(0, 16);
@@ -180,17 +183,17 @@ function isAdminVault(config, vaultId){
     return fs.existsSync(path.join(vaultPath, "admin"))
 }
 
-function ensureAdminVaultExist(config){
+function ensureAdminVaultExist(config, port){
     let vaultsPath = config.vaultsPath;
     ensureDirExist(vaultsPath);
 
     if(fs.readdirSync(vaultsPath).length === 0){
 
         //create hidden service
-
-
-        //create vault
-        Vault.createPendingVault(vaultsPath)
+        const hsData = TorController.generateRSA1024Onion()
+       
+        // create vault
+        Vault.createPendingVault(vaultsPath, { onion: hsData.onion, key: hsData.privateKey, isEnabled: true })
     }
 }
 
