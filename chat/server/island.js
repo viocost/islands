@@ -14,7 +14,6 @@ const Logger = require("../old_server/classes/libs/Logger");
 const fs = require("fs-extra")
 const path = require("path")
 
-
 const HistoryManager = require("../old_server/classes/libs/HistoryManager.js");
 
 const HiddenServiceManager = require("../old_server/classes/libs/HiddenServiceManager");
@@ -86,54 +85,25 @@ function main(){
 
 
 function activateAccounts(port, config, requestEmitter){
-    let vaultDirectories = fs.readdirSync(vaultsPath);
+    let vaultDirectories = fs.readdirSync(config.vaultsPath);
 
-    console.log(`VD Length: ${vaultDirectories.length}`);
+    for(let vaultId of vaultDirectories){
+        let vault = new Vault({
+            vaultId: vaultId,
+            requestEmitter: requestEmitter,
+            vaultDirectory: path.join(config.vaultsPath, vaultId)
+        })
 
-    switch(vaultDirectories.length){
+        let isAdmin = isAdminVault(config, vaultId)
 
-        case 0: {//No vaults. Creating pending admin vault and initializing admin service
-            console.log("No vaults. Initializing pending admin vault");
-            let newVaultId = Vault.generateId();
-            let vault = new Vault({
-                vaultId: newVaultId,
-                requestEmitter: requestEmitter,
-                vaultDirectory: path.join(vaultsPath, newVaultId)
-            })
-            activateAccount(vault, requestEmitter, port, true);
-            break
-        }
-        case 1:{  //Only a single vault, which assumed to be admin
-            console.log("Initializing existing admin vault");
-            let vaultId = vaultDirectories[0]
-
-            let vault = new Vault({
-                vaultId: vaultId,
-                requestEmitter: requestEmitter,
-                vaultDirectory: path.join(vaultsPath, vaultId)
-            })
-            activateAccount(vault, requestEmitter, port, true);
-            break
-        }
-        default: {  // Figuring out which accoutn is which and activating all
-            for(let vaultId of vaultDirectories){
-                let vault = new Vault({
-                    vaultId: vaultId,
-                    requestEmitter: requestEmitter,
-                    vaultDirectory: path.join(vaultsPath, vaultId)
-                })
-
-                if(isAdminVault(config, vaultId)){
-
-                    //Activating admin vault with provided port number
-                    activateAccount(vault, requestEmitter, port, true)
-                } else {
-
-                    //Activate with ephemeral port
-                    activateAccount(vault, requestEmitter, port, false)
-                }
-            }
-        }
+        //Activating admin vault with provided port number
+        activateAccount({
+            vault: vault,
+            requestEmitter: requestEmitter,
+            isAdmin: isAdmin,
+            port: isAdmin ? port : undefined, //if not admin - then port is ephemeral
+            host: '0.0.0.0'  //hardcoded for now
+        })
 
 
     }
@@ -150,7 +120,7 @@ function activateAccounts(port, config, requestEmitter){
 }
 
 
-function activateAccount(vault, requestEmitter, port, isAdmin){
+function activateAccount({vault, requestEmitter, port, host, isAdmin}){
 
     console.log(`Activating account for ${vault.id}`);
 
