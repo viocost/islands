@@ -63,9 +63,11 @@ class Vault{
         const hsFiles = fs.readdirSync(hsDir);
 
         return hsFiles.map(hsName =>{
+            let hsFilePath = path.join(hsDir, hsName)
             return {
                 onion: hsName,
-                key: fs.readFileSync(path.join(hsDir, hsName), "utf8")
+                key: JSON.parse(fs.readFileSync(path.join(hsDir, hsName), "utf8")).key,
+                hsPath: hsFilePath
             }
         })
 

@@ -128,14 +128,16 @@ function activateAccount({vault, config, requestEmitter, port, host, isAdmin}){
     const torControl = new TorController({ host: host, port: port, password:  config.torConnector.torControlPassword })
 
     //launching hidden services
-    let hiddenServices = vault.loadHiddenServices().map(hs=>{
-        return new HiddenService({
-            onion: hs.onion,
-            key: hs.key,
+    let hiddenServices = vault.loadHiddenServices().map(hsData=>{
+        let hs= new HiddenService({
+            onion: hsData.onion,
             control: torControl,
             host: host,
-            port: port
+            port: port,
+            hsPath: hsData.hsPath
         })
+        hs.launch()
+        return hs
     });
 
     let routers = isAdmin ? [ adminRouter.router, appRouter.router ] : [ appRouter.router ]
@@ -156,7 +158,9 @@ function activateAccount({vault, config, requestEmitter, port, host, isAdmin}){
         sessions.add(socket)
         //create new session and add it
     })
+
     webService.launch();
+
     accounts.push([webService, sessions, hiddenServices])
 }
 
