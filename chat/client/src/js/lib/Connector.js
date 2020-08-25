@@ -10,11 +10,13 @@ import { inspect } from "util";
 
 
 export class Connector {
+   
     constructor(connectionString = "", authenticationAgent) {
         WildEmitter.mixin(this);
         this.authenticationAgent = authenticationAgent;
         this.connectorStateMachine = this._prepareConnectorStateMachine()
         this.acceptorStateMachine = this._prepareAcceptorStateMachine()
+        this.sessionStateMachine = this._prepareSessionStateMachine()
         this.socket = this._createSocket(connectionString);
         this.socketInitialized = false;
         this.pingCount = 0;
@@ -24,8 +26,8 @@ export class Connector {
         this.connectionAttempts = 0;
         this.maxConnectionAttempts = 8;
         this.killSocket = false;
-        this.keyAgent;
         this._challenge;
+        this._sessionKey;
         this._sendCount = 0;
         this._receiveCount = 0;
     }
@@ -40,8 +42,9 @@ export class Connector {
         this.acceptorStateMachine.handle.acceptMessage(msg);
     }
 
-    setKeyAgent(keyAgent){
-        this.connectorStateMachine.handle.acceptKeyAgent(keyAgent);
+    acceptSessionKey(key){
+        this.sessionKey = key;
+
     }
 
     setConnectionQueryProperty(k, v) {
@@ -62,13 +65,17 @@ export class Connector {
     }
 
 
+
+
     // ---------------------------------------------------------------------------------------------------------------------------
     // PRIVATE METHODS
 
 
-    _acceptKeyAgent(stateMachine, evName, args){
-        this.keyAgent = args[0];
-    }
+    //////////////////////////////////////////////////
+    // _acceptKeyAgent(stateMachine, evName, args){ //
+    //     this.keyAgent = args[0];                 //
+    // }                                            //
+    //////////////////////////////////////////////////
 
     _resetConnectionAttempts(){
         this.connectionAttempts = 0;
@@ -97,6 +104,9 @@ export class Connector {
         setTimeout(this.establishConnection.bind(this), this.reconnectionDelay)
     }
 
+    _processSendQueue(stateMachine, evName, args){
+
+    }
 
 
     _createSocket(connectionString) {
@@ -223,7 +233,6 @@ export class Connector {
         this.connectorStateMachine.handle.gotSessionKey(message)
     }
 
-
     _decryptSessionKey(stateMachine, evName, args){
         try{
             const { privateKeyEncrypted, sessionKey, secret } = this._challenge;
@@ -263,6 +272,10 @@ export class Connector {
           .setSYMKey("key", this.sessionKey)
           .AESDecrypt("msg_enc", "key", "msg_raw", true)
         return ic.get("msg_raw");
+    }
+
+    _setSessionKey(stateMachine, evName, args){
+        this.sessionKey = args[0];
     }
 
     _prepareAcceptorStateMachine(){
@@ -417,6 +430,45 @@ export class Connector {
         }, { msgNotExistMode: StateMachine.Warn, traceLevel: StateMachine.TraceLevel.DEBUG })
     }
 
+    _prepareSessionStateMachine(){
+        return new StateMachine(this, {
+            name: "Session State Machine",
+            stateMap: {
+                noKey: {
+                    //No key is present
+                    transitions: {
+                        keyProvided: {
+                            actions: this._setSessionKey.bind(this),
+                            state: "awatingKeyConfirmation"
+                        },
+                    }
+                },
+
+                // State when we have session key
+                // But cannot be sure whether it is valid or not
+                // Specifically we need to receive a confirmation from the server
+                // That the key is valid
+                awatingKeyConfirmation: {
+                    transitions: {
+                        keyValidated: {
+                            state: "sessionEstablished"
+                        }
+                    }
+
+                },
+
+                sessionEstablished: {
+                    entry: this._processSendQueue.bind(this),
+                    transitions: {
+                        processSendQueue: {
+                            actions: this._processSendQueue.bind(this)
+                        }
+                    }
+                }
+            }
+        })
+
+    }
 
 }
 
@@ -463,7 +515,7 @@ class MessageQueue{
     }
 
 
-    _processQueue(){
+    _processSendQueue(){
 
         if(this.queue.length === 0){
             console.log("Nothing to send");
@@ -487,7 +539,7 @@ class MessageQueue{
         let seq = ++this._sendCount;
         console.log(`Accepting outgoing message. Seq: ${seq}`);
         this.queue.push({seq: seq, message: msg});
-        this.connectorStateMachine.handle.processQueue()
+        this.sessionStateMachine.handle.processSendQueue()
     }
 
 }

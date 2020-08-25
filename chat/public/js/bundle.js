@@ -1761,7 +1761,7 @@ var iCrypto = /*#__PURE__*/function () {
         bytes.push(parseInt(pkfp.slice(i, i + 2), 16));
       }
 
-      return Base32.encode(bytes, "RFC4648_HEX").toLowerCase() + ".onion";
+      return Base32.encode(bytes, "RFC4648_HEX").toLowerCase();
     }
     /**
      * Returns random integer
@@ -69247,7 +69247,7 @@ window.topics = chat_ui_topics; // ---------------------------------------------
 // ~END TEST
 
 document.addEventListener('DOMContentLoaded', function (event) {
-  chat_ui_init();
+  isRegistration() ? initRegistration() : initLogin();
   return;
   initChat();
   initLoginUI();
@@ -69279,7 +69279,20 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
     loadTopics(chat_ui_vaultHolder.getVault());
   });
-}); //Called when document content loaded
+});
+
+function initRegistration() {
+  var registrationBlock = bakeRegistrationBlock(function () {
+    console.log("Registration handler");
+  });
+  appendChildren("#main-container", registrationBlock);
+}
+
+function initLogin() {
+  var loginBlock = bakeLoginBlock(initSession);
+  appendChildren("#main-container", loginBlock);
+} //Called when document content loaded
+
 
 function chat_ui_init() {
   loadSounds();
@@ -69306,7 +69319,6 @@ function chat_ui_init() {
 
 
 function initUI(vaultHolder) {
-  // let form = isRegistration() ? bakeRegistrationBlock() : bakeLoginBlock();
   var vault = vaultHolder.getVault();
   var header = $("header");
   var isSoundOn = !vault.hasOwnProperty("settings") || !vault.settings.hasOwnProperty("sound") || vault.settings.sound;

@@ -96,7 +96,7 @@ window.topics = topics;
 // ~END TEST
 
 document.addEventListener('DOMContentLoaded', event => {
-    init()
+    isRegistration() ? initRegistration() : initLogin()
     return;
 
 
@@ -135,8 +135,23 @@ document.addEventListener('DOMContentLoaded', event => {
 
 });
 
+function initRegistration(){
+    let registrationBlock = UI.bakeRegistrationBlock(()=>{
+        console.log("Registration handler");
+    })
+
+    util.appendChildren("#main-container", registrationBlock)
+
+}
+
+function initLogin(){
+    let loginBlock = UI.bakeLoginBlock(initSession)
+    util.appendChildren("#main-container", loginBlock)
+}
+
 //Called when document content loaded
 function init(){
+
     loadSounds();
     MainView.setLoginView({ onLoginClick: initSession })
 
@@ -161,10 +176,8 @@ function init(){
 
 
 
-
 //Called after successful login
 function initUI(vaultHolder) {
-    // let form = isRegistration() ? bakeRegistrationBlock() : bakeLoginBlock();
     let vault = vaultHolder.getVault();
     let header = util.$("header")
 
