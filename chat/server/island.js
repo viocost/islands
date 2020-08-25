@@ -2,14 +2,12 @@ const { buildConfig } = require("./Config")
 const { Vault, Vaults } = require("./Vault")
 const { WebService } = require("./WebService")
 const { parseArguments } = require("./ArgParser");
-const adminRouter = require("../old_server/adminRouter")
-const appRouter = require("./appRouter")
 const { Sessions } = require("./Sessions")
 const { HiddenService } = require("./lib/HiddenService")
 const { migrate } = require("./lib/Migration");
 const TorController = require("../old_server/classes/libs/TorController")
 const getPort = require("get-port-sync")
-
+const { RouterFactory } = require("./lib/RouterFactory");
 const Logger = require("../old_server/classes/libs/Logger");
 
 const fs = require("fs-extra")
@@ -141,7 +139,8 @@ function activateAccount({vault, requestEmitter, port, host, isAdmin, config}){
         return hs
     });
 
-    let routers = isAdmin ? [ adminRouter.router, appRouter.router ] : [ appRouter.router ]
+    let routers = isAdmin ? [ RouterFactory.AppRouter(vault), RouterFactory.AdminRouter(vault) ]
+        : [ RouterFactory.AppRouter(vault) ]
 
     let webService = new WebService({
         routers: routers,
@@ -170,7 +169,6 @@ function activateAccount({vault, requestEmitter, port, host, isAdmin, config}){
 function initializeManagers(config){
     managers.historyManager = new HistoryManager(config.historyPath);
 }
-
 
 
 

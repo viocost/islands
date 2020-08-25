@@ -8,7 +8,7 @@ const { Internal } = require("../common/Events")
 
 
 /**FILENAMES*/
-const PENDING = "pending.signature";
+const PENDING = "pending";
 const VAULT = "vault";
 const PUBLICKEY = "publicKey";
 const HIDDEN_SERVICES_DIRNAME = "hidden_services"
@@ -56,6 +56,11 @@ class Vault{
             key: key,
             enabled: isEnabled
         }))
+        fs.writeFileSync(path.join(vaultPath, PENDING), "")
+    }
+
+    isPending(){
+        return fs.existsSync(path.join(this.vaultDirectory, PENDING))
     }
 
     loadHiddenServices(){
