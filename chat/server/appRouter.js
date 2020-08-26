@@ -16,6 +16,8 @@ const { RouterHolder } = require("../server/lib/RouterHolder")
 // }                                              //
 ////////////////////////////////////////////////////
 
+
+
 router.get('/', (req, res)=>{
     console.log(`GET chat. Version ${global.VERSION}`);
 
@@ -23,7 +25,6 @@ router.get('/', (req, res)=>{
         title:"Islands chat",
         version: global.VERSION,
         registration: false,
-
     });
 });
 

@@ -120,11 +120,15 @@ function initLogin(){
     arrivalHub = new ArrivalHub(connector);
     version = islandsVersion()
 
+
+
     loginAgent = new LoginAgent({
         version: version,
         connector: connector,
         arrivalHub: arrivalHub
     })
+
+
 
     loginAgent.on(Events.LOGIN_ERROR, err=>processLoginResult(null, err));
     loginAgent.on(Events.LOGIN_SUCCESS, resVaultHolder=>{

@@ -10,9 +10,10 @@ import { Message } from "./Message";
 
 
 
-export class Connector {keyProvided();
+export class Connector {
+    keyProvided();
 
-  
+
     constructor(connectionString = "", authenticationAgent) {
         WildEmitter.mixin(this);
         this.authenticationAgent = authenticationAgent;
@@ -37,14 +38,12 @@ export class Connector {keyProvided();
 
     // ---------------------------------------------------------------------------------------------------------------------------
     // PUBLIC METHODS
-
-
     send(msg) {
         console.log("Sending message");
         this.acceptorStateMachine.handle.acceptMessage(msg);
     }
 
-    acceptSessionKey(key){
+    acceptSessionKey(key) {
         this.sessionKey = key;
         this.sessionStateMachine.handle.keyProvided();
     }
@@ -62,7 +61,7 @@ export class Connector {keyProvided();
         this.connectorStateMachine.handle.connect();
     }
 
-    getConnectionState(){
+    getConnectionState() {
         return this.connectorStateMachine.state;
     }
 
@@ -79,7 +78,7 @@ export class Connector {keyProvided();
     // }                                            //
     //////////////////////////////////////////////////
 
-    _resetConnectionAttempts(){
+    _resetConnectionAttempts() {
         this.connectionAttempts = 0;
     }
 
@@ -87,18 +86,18 @@ export class Connector {keyProvided();
         this.emit(Internal.CONNECTION_STATE_CHANGED, stateMachine.state);
     }
 
-    _notifyError(err){
+    _notifyError(err) {
         this.emit(Internal.CONNECTION_ERROR, err)
     }
 
-    _connect(){
+    _connect() {
         this.connectionAttempts++;
         this.socket.open();
     }
 
-    _scheduleReconnect(){
+    _scheduleReconnect() {
 
-        if (this.connectionAttempts >= this.maxConnectionAttempts){
+        if (this.connectionAttempts >= this.maxConnectionAttempts) {
             console.log("Reached max connection attempts, giving up...")
             return
         }
@@ -106,7 +105,7 @@ export class Connector {keyProvided();
         setTimeout(this.establishConnection.bind(this), this.reconnectionDelay)
     }
 
-    _processSendQueue(stateMachine, evName, args){
+    _processSendQueue(stateMachine, evName, args) {
 
     }
 
@@ -151,11 +150,11 @@ export class Connector {keyProvided();
         });
 
 
-        socket.on("message", (msg)=>{
+        socket.on("message", (msg) => {
             this.connectorStateMachine.handle.messageReceived(msg)
         })
 
-        socket.on("auth", msg=>{
+        socket.on("auth", msg => {
             this.connectorStateMachine.handle.authMessage(msg)
         })
 
@@ -177,7 +176,7 @@ export class Connector {keyProvided();
         socket.on('error', (err) => {
             this.connectorStateMachine.handle.error();
         })
-       
+
         socket.on('reconnecting', (attemptNumber) => {
             this.connectorStateMachine.handle.reconnecting()
             console.log(`Attempting to reconnect : ${attemptNumber}`)
@@ -201,47 +200,47 @@ export class Connector {keyProvided();
         return socket;
     }
 
-    _processAuthMessage(stateMachine, evName, args){
+    _processAuthMessage(stateMachine, evName, args) {
         console.log("Auth message received");
         let message = args[0];
         const handlers = {
-            challenge: ()=>{
+            challenge: () => {
                 console.log("challenge");
-                this.emit("auth_challenge" )
+                this.emit("auth_challenge")
             },
 
 
         }
 
-        switch(message.headers.command){
+        switch (message.headers.command) {
         }
     }
 
 
 
-    _processIncomingMessage(stateMachine, evName, args){
-        try{
+    _processIncomingMessage(stateMachine, evName, args) {
+        try {
 
             let encryptedBlob = args[0]
             console.log(inspect(encryptedBlob));
             let decrypted = this._sessionKeyDecrypt(encryptedBlob)
             console.log(`Decrypted message: ${decrypted}`);
-            let { seq, message }= JSON.parse(decrypted)
+            let { seq, message } = JSON.parse(decrypted)
 
             console.log(`Received message with seq ${seq}. Previous seq: ${this._receiveCount}`);
-            if(seq !== this._receiveCount + 1){
+            if (seq !== this._receiveCount + 1) {
                 console.log("Messages missing!");
             }
             this._receiveCount++;
             this.emit(message.headers.pkfpDest, message)
-        } catch(err) {
+        } catch (err) {
             console.log(`Message processing error: ${err}`);
         }
     }
 
 
-    _decryptSessionKey(stateMachine, evName, args){
-        try{
+    _decryptSessionKey(stateMachine, evName, args) {
+        try {
             const { privateKeyEncrypted, sessionKey, secret } = this._challenge;
             this.keyAgent.initializeMasterKey(privateKeyEncrypted)
             this.sessionKey = this.keyAgent.masterKeyDecrypt(sessionKey)
@@ -252,42 +251,50 @@ export class Connector {keyProvided();
             this.setConnectionQueryProperty("secret", secretEncryptedWithSessionKey)
             this.acceptorStateMachine.handle.activate()
             this.connectorStateMachine.handle.decryptionSuccess()
-        }catch(err){
+        } catch (err) {
             console.log(`DECRYPTION ERROR: ${err}`);
             this.connectorStateMachine.handle.decryptionError();
         }
     }
 
-    _retryDecryption(stateMachine, evName, args){
+    _retryDecryption(stateMachine, evName, args) {
         this.keyAgent = args[0]
         this.connectorStateMachine.handle.decryptSessionKey()
     }
 
-    _sessionKeyEncrypt(data){
+    _sessionKeyEncrypt(data) {
         console.log(`SESSION KEY ${this.sessionKey}`);
         const msg = typeof data === "string" ? data : JSON.stringify(data);
         const ic = new iCrypto();
         ic.addBlob("msg_raw", msg)
-          .setSYMKey("key", this.sessionKey)
-          .AESEncrypt("msg_raw", "key", "msg_enc", true)
+            .setSYMKey("key", this.sessionKey)
+            .AESEncrypt("msg_raw", "key", "msg_enc", true)
         return ic.get("msg_enc");
     }
 
-    _sessionKeyDecrypt(data){
+    _sessionKeyDecrypt(data) {
         const ic = new iCrypto();
         ic.addBlob("msg_enc", data)
-          .setSYMKey("key", this.sessionKey)
-          .AESDecrypt("msg_enc", "key", "msg_raw", true)
+            .setSYMKey("key", this.sessionKey)
+            .AESDecrypt("msg_enc", "key", "msg_raw", true)
         return ic.get("msg_raw");
     }
 
-    _setSessionKey(stateMachine, evName, args){
+    _setSessionKey(stateMachine, evName, args) {
         this.sessionKey = args[0];
     }
 
+    //Called whenever connection to server is established
+    _onConnectionEstablished(stateMachine, enName, args) {
+        this.sessionStateMachine.handle.validateSessionKey()
+    }
+
+
+
+
     // Encrypts a nonce and sends it to server
     // for confirmation request
-    _sendSessionKeyConfirmationRequest(){
+    _sendKeyValidationRequest() {
         //make request
         let ic = new iCrypto();
         ic.createNonce("n", 32)
@@ -302,7 +309,7 @@ export class Connector {keyProvided();
         this.connectorStateMachine.handle.send("auth_confirm", request)
     }
 
-    _prepareAcceptorStateMachine(){
+    _prepareAcceptorStateMachine() {
         return new StateMachine(this, {
             name: "Accept input from user SM",
             stateMap: {
@@ -316,7 +323,7 @@ export class Connector {keyProvided();
                 },
 
                 acceptingMessages: {
-                    entry: ()=>{ console.log("Now accepting messages") },
+                    entry: () => { console.log("Now accepting messages") },
                     transitions: {
                         acceptMessage: {
                             actions: this._performAcceptMessage
@@ -343,79 +350,22 @@ export class Connector {keyProvided();
                             state: ConnectionState.CONNECTING,
                             actions: this._connect
                         },
-
-                        acceptKeyAgent: {
-                            actions: this._acceptKeyAgent
-                        },
-
-                        reconnect: {
-
-                        }
                     }
                 },
 
                 connecting: {
-                    entry:  this._emitState,
+                    entry: this._emitState,
                     transitions: {
                         connected: {
                             state: ConnectionState.AWATING_SESSION_KEY,
                         },
-                        error: {
-                            state: ConnectionState.DISCONNECTED,
-                            actions: this._notifyError
-                        },
 
                     }
                 },
 
-                awatingSessionKey: {
-                    transitions: {
-                        authMessage: {
-                            actions: this._processAuthMessage
-                        },
-
-                        gotSessionKey: {
-                            state: ConnectionState.DECRYPTING_SESSION_KEY,
-                        }
-                    }
+                connected: {
+                    entry: this._onConnectionEstablished.bind(this)
                 },
-
-                decryptingSessionKey:{
-                    entry: this._decryptSessionKey,
-                    transitions: {
-                        decryptionSuccess: {
-                            state: ConnectionState.SESSION_ESTABLISHED
-                        },
-
-                        decryptionError: {
-                            state: "invalidKey"
-                        }
-
-                    }
-                },
-
-                invalidKey: {
-                    entry: this._emitState,
-                    transitions: {
-                        acceptKeyAgent: {
-                            actions: this._retryDecryption
-                        },
-
-                        decryptSessionKey: {
-                            state: "decryptingSessionKey"
-                        }
-                    }
-                },
-
-                reconnecting: {
-                    entry: this._emitState,
-                    transitions: {
-                        connected: { state: ConnectionState.SESSION_ESTABLISHED },
-                        error: { state: ConnectionState.ERROR }
-                    }
-                },
-
-
 
                 sessionEstablished: {
                     entry: [this._resetConnectionAttempts, this._emitState, this._processQueue],
@@ -427,7 +377,7 @@ export class Connector {keyProvided();
                         },
 
                         disconnectSocket: {
-                            actions:  this.killSocket
+                            actions: this.killSocket
                         },
 
                         messageReceived: {
@@ -454,7 +404,7 @@ export class Connector {keyProvided();
         }, { msgNotExistMode: StateMachine.Warn, traceLevel: StateMachine.TraceLevel.DEBUG })
     }
 
-    _prepareSessionStateMachine(){
+    _prepareSessionStateMachine() {
         return new StateMachine(this, {
             name: "Session State Machine",
             stateMap: {
@@ -463,9 +413,8 @@ export class Connector {keyProvided();
                     //No key is present
                     transitions: {
                         acceptSessionKey: {
-                            actions: this._sendKeyConfirmationRequest.bind(this),
-                            state: "awatingKeyConfirmation"
-
+                            state: "awatingKeyConfirmation",
+                            actions: this._sendKeyValidationRequest.bind(this)
                         }
                     }
                 },
@@ -475,10 +424,15 @@ export class Connector {keyProvided();
                 // Specifically we need to receive a confirmation from the server
                 // That the key is valid
                 awatingKeyConfirmation: {
+                    entry: this._sendKeyValidationRequest.bind(this),
                     transitions: {
                         keyValidated: {
-
-
+                            state: "sessionEstablished"
+                        },
+                        authRequired: {
+                            state: "noKey"
+                        }
+                    }
                 },
 
                 sessionEstablished: {
@@ -492,27 +446,26 @@ export class Connector {keyProvided();
                             actions: this._processIncomingMessage.bind(this)
                         },
 
-                        keyInvalidated: {
-                            state: "awatingKeyConfirmation"
+                        authRequired: {
+                            state: "noKey"
                         }
                     }
                 }
             }
+
         })
-
     }
-
 }
 
-class MessageQueue{
+class MessageQueue {
 
-    constructor(socket){
+    constructor(socket) {
         this._socket = socket;
         this._sm = this._prepareAcceptorStateMachine()
 
     }
 
-    _prepareAcceptorStateMachine(){
+    _prepareAcceptorStateMachine() {
         return new StateMachine(this, {
             name: "Accept input from user SM",
             stateMap: {
@@ -526,7 +479,7 @@ class MessageQueue{
                 },
 
                 acceptingMessages: {
-                    entry: ()=>{ console.log("Now accepting messages") },
+                    entry: () => { console.log("Now accepting messages") },
                     transitions: {
                         acceptMessage: {
                             actions: this._performAcceptMessage
@@ -542,9 +495,9 @@ class MessageQueue{
     }
 
 
-    _processSendQueue(){
+    _processSendQueue() {
 
-        if(this.queue.length === 0){
+        if (this.queue.length === 0) {
             console.log("Nothing to send");
             return;
         }
@@ -553,7 +506,7 @@ class MessageQueue{
         let outbound = this.queue
         this.queue = []
         let msg
-        while(msg = outbound.shift(0)){
+        while (msg = outbound.shift(0)) {
             const msgEncrypted = this._sessionKeyEncrypt(msg)
             console.log(`Sending message ${JSON.stringify(msg)} \n ENCRYPTED: ${msgEncrypted}`);
             this.socket.emit("message", msgEncrypted);
@@ -561,11 +514,11 @@ class MessageQueue{
     }
 
 
-    _performAcceptMessage(stateMachine, evName, args){
+    _performAcceptMessage(stateMachine, evName, args) {
         let msg = args[0]
         let seq = ++this._sendCount;
         console.log(`Accepting outgoing message. Seq: ${seq}`);
-        this.queue.push({seq: seq, message: msg});
+        this.queue.push({ seq: seq, message: msg });
         this.sessionStateMachine.handle.processSendQueue()
     }
 
