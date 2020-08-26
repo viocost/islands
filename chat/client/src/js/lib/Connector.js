@@ -3,14 +3,16 @@ import * as io from "socket.io-client";
 import { Internal } from "../../../../common/Events";
 import { StateMachine } from "../../../../common/AdvStateMachine";
 import { iCrypto } from "../../../../common/iCrypto";
-import { createClientIslandEnvelope } from "../../../../common/Message"
+import { createClientIslandEnvelope, createAuthMessage } from "../../../../common/Message"
 import { inspect } from "util";
+import { Message } from "./Message";
 
 
 
 
-export class Connector {
-   
+export class Connector {keyProvided();
+
+  
     constructor(connectionString = "", authenticationAgent) {
         WildEmitter.mixin(this);
         this.authenticationAgent = authenticationAgent;
@@ -44,7 +46,7 @@ export class Connector {
 
     acceptSessionKey(key){
         this.sessionKey = key;
-
+        this.sessionStateMachine.handle.keyProvided();
     }
 
     setConnectionQueryProperty(k, v) {
@@ -144,6 +146,7 @@ export class Connector {
 
         socket.on('connect', () => {
             console.log("Island connection established");
+            this.sessionStateMachine.handle.validateKey();
             this.connectorStateMachine.handle.connected()
         });
 
@@ -181,7 +184,7 @@ export class Connector {
         })
 
         socket.on("disconnect", () => {
-            this.connectorStateMachine.handle.processDisconnect();
+            this.sessionStateMachine.handle.keyInvalidated()
         });
 
         socket.on('connect_error', (err) => {
@@ -201,12 +204,20 @@ export class Connector {
     _processAuthMessage(stateMachine, evName, args){
         console.log("Auth message received");
         let message = args[0];
+        const handlers = {
+            challenge: ()=>{
+                console.log("challenge");
+                this.emit("auth_challenge" )
+            },
+
+
+        }
+
         switch(message.headers.command){
-            case "challenge":
-                this._solveChallenge.call(this, message)
-                break
         }
     }
+
+
 
     _processIncomingMessage(stateMachine, evName, args){
         try{
@@ -228,10 +239,6 @@ export class Connector {
         }
     }
 
-    _solveChallenge(message){
-        this._challenge = message.body;
-        this.connectorStateMachine.handle.gotSessionKey(message)
-    }
 
     _decryptSessionKey(stateMachine, evName, args){
         try{
@@ -276,6 +283,23 @@ export class Connector {
 
     _setSessionKey(stateMachine, evName, args){
         this.sessionKey = args[0];
+    }
+
+    // Encrypts a nonce and sends it to server
+    // for confirmation request
+    _sendSessionKeyConfirmationRequest(){
+        //make request
+        let ic = new iCrypto();
+        ic.createNonce("n", 32)
+        let encrypted = this._sessionKeyEncrypt(ic.get("n"))
+
+        let request = createAuthMessage({
+            command: "confirm_key",
+            data: {
+                nonce: encrypted
+            }
+        })
+        this.connectorStateMachine.handle.send("auth_confirm", request)
     }
 
     _prepareAcceptorStateMachine(){
@@ -434,13 +458,15 @@ export class Connector {
         return new StateMachine(this, {
             name: "Session State Machine",
             stateMap: {
+
                 noKey: {
                     //No key is present
                     transitions: {
-                        keyProvided: {
-                            actions: this._setSessionKey.bind(this),
+                        acceptSessionKey: {
+                            actions: this._sendKeyConfirmationRequest.bind(this),
                             state: "awatingKeyConfirmation"
-                        },
+
+                        }
                     }
                 },
 
@@ -451,9 +477,7 @@ export class Connector {
                 awatingKeyConfirmation: {
                     transitions: {
                         keyValidated: {
-                            state: "sessionEstablished"
-                        }
-                    }
+
 
                 },
 
@@ -462,6 +486,14 @@ export class Connector {
                     transitions: {
                         processSendQueue: {
                             actions: this._processSendQueue.bind(this)
+                        },
+
+                        processIncomingMessage: {
+                            actions: this._processIncomingMessage.bind(this)
+                        },
+
+                        keyInvalidated: {
+                            state: "awatingKeyConfirmation"
                         }
                     }
                 }
@@ -469,11 +501,6 @@ export class Connector {
         })
 
     }
-
-}
-
-
-class SessionAuthenticator{
 
 }
 

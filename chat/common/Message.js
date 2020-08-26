@@ -134,10 +134,20 @@ function createClientIslandEnvelope({ pkfpSource,
     return message;
 }
 
+function createAuthMessage({
+    data, command
+}){
+    const message = new Message();
+    message.headers.command = command;
+    message.body = data;
+    return message;
+}
+
 Message.properties = ["headers", "body", "signature"];
 
 
 module.exports = {
     createClientIslandEnvelope: createClientIslandEnvelope,
-    Message: Message
+    Message: Message,
+    createAuthMessage: createAuthMessage
 }

@@ -98,15 +98,27 @@ window.topics = topics;
 document.addEventListener('DOMContentLoaded', event => {
     isRegistration() ? initRegistration() : initLogin()
     return;
+//    initChat();
+//    initLoginUI();
+});
 
+function initRegistration(){
+    let registrationBlock = UI.bakeRegistrationBlock(()=>{
+        console.log("Registration handler");
+    })
 
-    initChat();
-    initLoginUI();
+    util.appendChildren("#main-container", registrationBlock)
+
+}
+
+function initLogin(){
+    let loginBlock = UI.bakeLoginBlock(initSession)
+    util.appendChildren("#main-container", loginBlock)
+
     connector = new Connector("/chat");
     window.connector = connector
     arrivalHub = new ArrivalHub(connector);
     version = islandsVersion()
-//    connector.establishConnection()
 
     loginAgent = new LoginAgent({
         version: version,
@@ -133,20 +145,6 @@ document.addEventListener('DOMContentLoaded', event => {
     })
 
 
-});
-
-function initRegistration(){
-    let registrationBlock = UI.bakeRegistrationBlock(()=>{
-        console.log("Registration handler");
-    })
-
-    util.appendChildren("#main-container", registrationBlock)
-
-}
-
-function initLogin(){
-    let loginBlock = UI.bakeLoginBlock(initSession)
-    util.appendChildren("#main-container", loginBlock)
 }
 
 //Called when document content loaded

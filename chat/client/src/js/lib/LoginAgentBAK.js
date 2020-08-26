@@ -19,6 +19,11 @@ export class LoginAgent{
         this.vaultEncrypted;
         this.vaultHolder;
         this.vaultRaw;
+        this.connector.on("auth_challenge", ()=>{
+            //solve challenge and set session key to connector
+            let key = "key"
+            this.connector.acceptSessionKey(key)
+        })
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------
