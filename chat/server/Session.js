@@ -21,8 +21,10 @@ class ClientSession extends Session {
     _publicKey;
     _encryptedPrivateKey;
   
-    constructor(socket, publicKey, encryptedPrivateKey){
+    constructor({socket, publicKey, encryptedPrivateKey}){
         super();
+
+        console.log(publicKey);
         this._socket = socket;
         this._publicKey = publicKey;
         this._encryptedPrivateKey = encryptedPrivateKey

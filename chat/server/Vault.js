@@ -83,7 +83,7 @@ class Vault{
     }
 
     getPublicKey(){
-        return fs.readFileSync(path.join(this.vaultDirectory, PUBLIC_KEY))
+        return fs.readFileSync(path.join(this.vaultDirectory, PUBLIC_KEY), 'utf8')
     }
 
     saveVaultSettings(request){

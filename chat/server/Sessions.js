@@ -21,7 +21,11 @@ class Sessions{
         }
 
         console.log("No existing session was able to decrypt challenge. Creating new session");
-        let session = new ClientSession(socket, publicKey, encryptedPrivateKey);
+        let session = new ClientSession({
+            socket: socket,
+            publicKey: publicKey,
+            encryptedPrivateKey: encryptedPrivateKey
+        });
         this._sessions.push(session);
     }
 

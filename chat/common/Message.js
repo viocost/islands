@@ -20,7 +20,6 @@ const { clone } = require("./ObjectUtil")
  */
 class Message{
     constructor(version, request){
-        if(version === undefined || version === "") throw new Error("Message init error: Software version is required!");
 
         if(typeof(request)==="string"){
             request = JSON.parse(request);

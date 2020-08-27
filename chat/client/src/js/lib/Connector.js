@@ -154,7 +154,7 @@ export class Connector {
         })
 
         socket.on("auth", msg => {
-            this.connectorStateMachine.handle.authMessage(msg)
+            console.log("Received auth message");
         })
 
         socket.on("*", (event, data) => {
