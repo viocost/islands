@@ -10,7 +10,7 @@ const { Internal } = require("../common/Events")
 /**FILENAMES*/
 const PENDING = "pending";
 const VAULT = "vault";
-const PUBLICKEY = "publicKey";
+const PUBLIC_KEY = "publicKey";
 const HIDDEN_SERVICES_DIRNAME = "hidden_services"
 
 const VAULT_ID_LENGTH = 64;
@@ -81,6 +81,11 @@ class Vault{
         //Get vault
         return fs.readFileSync(path.join(this.vaultDirectory, VAULT), 'utf8');
     }
+
+    getPublicKey(){
+        return fs.readFileSync(path.join(this.vaultDirectory, PUBLIC_KEY))
+    }
+
     saveVaultSettings(request){
         console.log("SAVING VAULT SETTINGS");
         let id = this.id;
@@ -288,7 +293,7 @@ class Vault{
     isRegistrationPending(vaultID){
         return  fs.existsSync(path.join(this.vaultDirectory  )) &&
             !fs.existsSync(path.join(this.vaultDirectory,  VAULT)) &&
-            !fs.existsSync(path.join(this.vaultDirectory,  PUBLICKEY)) &&
+            !fs.existsSync(path.join(this.vaultDirectory,  PUBLIC_KEY)) &&
             fs.existsSync(path.join(this.vaultDirectory,   PENDING))
     }
 

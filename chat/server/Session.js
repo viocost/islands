@@ -1,7 +1,8 @@
 const err = require('../common/Error')
 const { StateMachine } = require("adv-state");
 const { iCrypto } = require("../common/iCrypto")
-const { createClientIslandEnvelope } = require("../common/Message");
+const { createClientIslandEnvelope, createAuthMessage } = require("../common/Message");
+const { Internal } = require("../common/Events")
 
 
 class Session{
@@ -19,15 +20,16 @@ class ClientSession extends Session {
     _socket;
     _publicKey;
     _encryptedPrivateKey;
-
+  
     constructor(socket, publicKey, encryptedPrivateKey){
         super();
-        this._sm = this._prepareStateMachine();
         this._socket = socket;
         this._publicKey = publicKey;
         this._encryptedPrivateKey = encryptedPrivateKey
         this._sendCount = 0;
         this._receiveCount = 0;
+        this._sessionKey = this._createSessionKey();
+        this._sm = this._prepareStateMachine();
         //this._subscribe(clientConnector, connectionId)
     }
 
@@ -40,8 +42,6 @@ class ClientSession extends Session {
     send(message){
         this._sm.handle.messageToClient(message);
     }
-
-
 
 
     tryReconnection(socket){
@@ -59,6 +59,24 @@ class ClientSession extends Session {
 
     // ---------------------------------------------------------------------------------------------------------------------------
     // Private methods
+
+    _sendChallenge(){
+        let ic = new iCrypto()
+        ic.setRSAKey("pub", this._publicKey, "public")
+          .addBlob("session_key", this._sessionKey)
+          .publicKeyEncrypt("session_key", "pub", "challenge", "hex")
+        let data = {
+            session_key: ic.get("session_key"),
+            private_key: this._encryptedPrivateKey
+        }
+
+        let msg = createAuthMessage({ data: data, command: Internal.AUTH_CHALLENGE })
+        this._sendAuth(msg)
+    }
+
+    _sendAuth(msg){
+        this._socket.emit("auth", msg)
+    }
 
     _acceptMessage(message){
         console.log("Accept message called");
@@ -88,6 +106,11 @@ class ClientSession extends Session {
         }
     }
 
+    _createSessionKey(){
+        let ic = new iCrypto()
+        ic.createSYMKey("sk")
+        return ic.get("sk")
+    }
 
     _sessionKeyEncrypt(data){
         const msg = typeof data === "string" ? data : JSON.stringify(data);
@@ -107,31 +130,6 @@ class ClientSession extends Session {
         return ic.get("msg_raw");
     }
 
-    _authWithPublicKey(stateMachine, evName, args){
-        let publicKey = args[0]
-        let privateKeyEncrypted = args[1]
-
-        let ic = new iCrypto()
-        ic.createNonce("secret-bin", 64)
-          .bytesToHex("secret-bin", "secret")
-          .createSYMKey("session-key")
-          .setRSAKey("public-key", publicKey, "public")
-          .publicKeyEncrypt("secret", "public-key", "secret-enc", "hex")
-          .publicKeyEncrypt("session-key", "public-key", "session-key-enc", "hex")
-
-        this.sessionKey = ic.get("session-key")
-        this.secret = ic.get("secret")
-
-        let msg = createClientIslandEnvelope({ command: "challenge", body: {
-            privateKeyEncrypted: privateKeyEncrypted,
-            secret: ic.get("secret-enc"),
-            sessionKey: ic.get("session-key-enc")
-        }})
-
-        console.log("Sending auth challenge to client");
-
-        this.clientConnector.send(this.connectionId, "auth", msg)
-    }
 
 
     _authWithSymkey(){
@@ -178,6 +176,7 @@ class ClientSession extends Session {
             name: "Clien Session SM",
             stateMap: {
                 connectedNotAuthenticated: {
+                    entry: this._sendChallenge(),
                     initial: true,
                     transitions: {
                         disconnect: {

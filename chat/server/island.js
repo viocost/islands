@@ -154,7 +154,9 @@ function activateAccount({vault, requestEmitter, port, host, isAdmin, config}){
 
 
     webService.on('connection', (socket)=>{
-        sessions.add(socket)
+        let publicKey = vault.getPublicKey()
+        let vaultKeys = vault.getVault()
+        sessions.add({ socket: socket, publicKey: publicKey, encryptedPrivateKey: vaultKeys })
     })
 
     webService.launch();
