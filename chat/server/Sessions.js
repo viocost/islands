@@ -1,4 +1,4 @@
-const { Session } = require("./Session")
+const { ClientSession } = require("./Session")
 
 
 //This object holds all active sessions that serve a particular vault
@@ -10,25 +10,30 @@ class Sessions{
     }
 
     //Socket here is socket wrapper around socket.io
-    add(socket){
+    add({socket, publicKey, encryptedPrivateKey}){
         if(socket.handshake.query){
             for(let session of this._sessions){
-                if(session.challengeDecrypted(session.handshake.query.challenge)){
+                if(session.doesDecrypt(socket.handshake.query)){
                     session.replaceSocket(socket)
                     return
                 }
             }
         }
 
-        let session = new Session(socket);
-        session.on("kill_me", ()=>{
-
-        })
+        console.log("No existing session was able to decrypt challenge. Creating new session");
+        let session = new ClientSession(socket, publicKey, encryptedPrivateKey);
         this._sessions.push(session);
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------
     // Private methods
+
+    _subscribeToSessionEvents(session){
+        session.on("kill_me", ()=>{
+
+        })
+
+    }
 
     _getSession(socket){
         for (let session of this._sessions){

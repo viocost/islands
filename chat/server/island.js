@@ -154,9 +154,7 @@ function activateAccount({vault, requestEmitter, port, host, isAdmin, config}){
 
 
     webService.on('connection', (socket)=>{
-        //need to figure out if
         sessions.add(socket)
-        //create new session and add it
     })
 
     webService.launch();

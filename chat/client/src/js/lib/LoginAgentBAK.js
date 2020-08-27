@@ -5,7 +5,7 @@ import { Vault } from "./Vault";
 import { WildEmitter } from "./WildEmitter";
 import { Events } from "../../../../common/Events";
 import { iCrypto } from "../../../../common/iCrypto";
-
+import { Internal } from "../../../../common/Events"
 
 export class LoginAgent{
     //In object pass UI functions
@@ -19,8 +19,9 @@ export class LoginAgent{
         this.vaultEncrypted;
         this.vaultHolder;
         this.vaultRaw;
-        this.connector.on("auth_challenge", ()=>{
-            //solve challenge and set session key to connector
+        this.connector.on(Internal.AUTH_CHALLENGE, (msg)=>{
+
+            console.log("GOT auth challenge. Solving");
             let key = "key"
             this.connector.acceptSessionKey(key)
         })
@@ -28,9 +29,6 @@ export class LoginAgent{
 
     // ---------------------------------------------------------------------------------------------------------------------------
     // PUBLIC METHODS
-    fetchVault(){
-        this.sm.handle.fetchVault()
-    }
 
     acceptPassword(password){
         this.password = password;

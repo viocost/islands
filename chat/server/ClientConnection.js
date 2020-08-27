@@ -32,7 +32,7 @@ class SocketIOClientConnection extends ClientConnection{
     }
 
     getReconnectInfo(){
-       // return this._socket.handshake.query...
+       return this._socket.handshake.query;
     }
 
     send(){

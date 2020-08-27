@@ -18,6 +18,7 @@ import { ChatUtility } from "./lib/ChatUtility";
 import { Vault } from "./lib/Vault";
 import { TopicJoinAgent } from "./lib/TopicJoinAgent";
 import { ConnectionIndicator } from  "./ui/ConnectionIndicator";
+import { LoginAgent } from "./lib/LoginAgentBAK";
 // TEMP IMPORTS FOR FURTHER REFACTORING
 import { iCrypto } from "../../../common/iCrypto";
 import { createClientIslandEnvelope, Message } from "../../../common/Message";
@@ -117,8 +118,8 @@ function initLogin(){
 
     connector = new Connector("/chat");
     window.connector = connector
-    arrivalHub = new ArrivalHub(connector);
     version = islandsVersion()
+    arrivalHub = new ArrivalHub(connector);
 
 
 
@@ -128,26 +129,27 @@ function initLogin(){
         arrivalHub: arrivalHub
     })
 
-
-
     loginAgent.on(Events.LOGIN_ERROR, err=>processLoginResult(null, err));
     loginAgent.on(Events.LOGIN_SUCCESS, resVaultHolder=>{
         console.log("%c Login agent success handler", "color: red; font-size: 20px");
 
         //TODO REFACTORING REQUIRED!
-        chat = new ChatClient({ version: version });
-        chat.vault = resVaultHolder.getVault();
-        chat.connector = connector;
-        chat.arrivalHub = arrivalHub;
-        chat.topics = topics;
-        //end//////////////////////////////////////////////////////////////////
-
-        vaultHolder = resVaultHolder;
-
-        //Load topics V1 here
-        loadTopics(vaultHolder.getVault())
+        /////////////////////////////////////////////////////////////////////////////
+        // chat = new ChatClient({ version: version });                            //
+        // chat.vault = resVaultHolder.getVault();                                 //
+        // chat.connector = connector;                                             //
+        // chat.arrivalHub = arrivalHub;                                           //
+        // chat.topics = topics;                                                   //
+        // //end////////////////////////////////////////////////////////////////// //
+        //                                                                         //
+        // vaultHolder = resVaultHolder;                                           //
+        //                                                                         //
+        // //Load topics V1 here                                                   //
+        // loadTopics(vaultHolder.getVault())                                      //
+        /////////////////////////////////////////////////////////////////////////////
     })
 
+    connector.establishConnection()
 
 }
 

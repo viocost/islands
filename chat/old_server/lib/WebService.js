@@ -51,7 +51,8 @@ class WebService extends EventEmitter{
         this.dataSocket = this.io.of("/data")
 
         this.chatSocket.on("connect", socket=>{
-            this.emit("connect")
+
+            this.emit("connect", )
             socket.on("message", msg=>{
                 this.emit("message", msg)
             })

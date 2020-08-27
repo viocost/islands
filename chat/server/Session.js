@@ -15,11 +15,17 @@ class Session{
 
 
 class ClientSession extends Session {
-    constructor(socket){
-        super();
+    _sessionKey;
+    _socket;
+    _publicKey;
+    _encryptedPrivateKey;
 
-        this.sm = this._prepareStateMachine();
+    constructor(socket, publicKey, encryptedPrivateKey){
+        super();
+        this._sm = this._prepareStateMachine();
         this._socket = socket;
+        this._publicKey = publicKey;
+        this._encryptedPrivateKey = encryptedPrivateKey
         this._sendCount = 0;
         this._receiveCount = 0;
         //this._subscribe(clientConnector, connectionId)
@@ -32,7 +38,7 @@ class ClientSession extends Session {
 
 
     send(message){
-        this.sm.handle.messageToClient(message);
+        this._sm.handle.messageToClient(message);
     }
 
 
@@ -41,11 +47,14 @@ class ClientSession extends Session {
     tryReconnection(socket){
         let secretEncrypted = socket.getSessionSecret()
         if(this._isSecretIdentified()){
-            this.sm.handle.reconnect(socket)
+            this._sm.handle.reconnect(socket)
         }
-
     }
 
+    //Given nonce tries to decrypt it with session key
+    doesDecrypt(nonce){
+        return false
+    }
 
 
     // ---------------------------------------------------------------------------------------------------------------------------
@@ -169,6 +178,7 @@ class ClientSession extends Session {
             name: "Clien Session SM",
             stateMap: {
                 connectedNotAuthenticated: {
+                    initial: true,
                     transitions: {
                         disconnect: {
                             state: "terminated",
@@ -207,7 +217,6 @@ class ClientSession extends Session {
                 },
 
                 terminated: {
-                    entry: this._commitSuicide,
                     final: true
                 }
             }

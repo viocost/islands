@@ -4,7 +4,7 @@ const getPort = require('get-port');
 const appRouter = require("./appRouter");
 const path = require("path")
 const { EventEmitter } = require("events")
-const { SocketIOClientConnection } = require("./ClientConnection")
+const { ocketIOClientConnection } = require("./ClientConnection")
 
 class WebService extends EventEmitter{
     constructor({
@@ -67,9 +67,9 @@ class WebService extends EventEmitter{
     }
 
     _handleNewChatConnection(socket){
-        this.emit('connection', new SocketIOClientConnection(socket))
+        this.emit('connection', socket)
 
-        //2 state machines: connection / reconnection
+        //2 state machines: connection / reconnection ?
     }
 
 

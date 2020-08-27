@@ -11,7 +11,6 @@ import { Message } from "./Message";
 
 
 export class Connector {
-    keyProvided();
 
 
     constructor(connectionString = "", authenticationAgent) {
@@ -145,7 +144,7 @@ export class Connector {
 
         socket.on('connect', () => {
             console.log("Island connection established");
-            this.sessionStateMachine.handle.validateKey();
+            //this.sessionStateMachine.handle.validateKey();
             this.connectorStateMachine.handle.connected()
         });
 
@@ -183,6 +182,7 @@ export class Connector {
         })
 
         socket.on("disconnect", () => {
+
             this.sessionStateMachine.handle.keyInvalidated()
         });
 
@@ -286,7 +286,7 @@ export class Connector {
 
     //Called whenever connection to server is established
     _onConnectionEstablished(stateMachine, enName, args) {
-        this.sessionStateMachine.handle.validateSessionKey()
+        //this.sessionStateMachine.handle.validateSessionKey()
     }
 
 
@@ -357,7 +357,7 @@ export class Connector {
                     entry: this._emitState,
                     transitions: {
                         connected: {
-                            state: ConnectionState.AWATING_SESSION_KEY,
+                            state: ConnectionState.CONNECTED,
                         },
 
                     }
@@ -410,6 +410,7 @@ export class Connector {
             stateMap: {
 
                 noKey: {
+                    initial: true,
                     //No key is present
                     transitions: {
                         acceptSessionKey: {
@@ -429,7 +430,7 @@ export class Connector {
                         keyValidated: {
                             state: "sessionEstablished"
                         },
-                        authRequired: {
+                        keyInvalidated: {
                             state: "noKey"
                         }
                     }
@@ -446,7 +447,7 @@ export class Connector {
                             actions: this._processIncomingMessage.bind(this)
                         },
 
-                        authRequired: {
+                        keyInvalidated: {
                             state: "noKey"
                         }
                     }
@@ -527,10 +528,5 @@ class MessageQueue {
 export const ConnectionState = {
     DISCONNECTED: "disconnected",
     CONNECTING: "connecting",
-    AWATING_SESSION_KEY: "awatingSessionKey",
-    DECRYPTING_SESSION_KEY: "decryptingSessionKey",
-    INVALID_KEY: "invalidKey",
-    AWATING_AUTH_RESULT: "awatingAuthResult",
-    SESSION_ESTABLISHED: "sessionEstablished",
-    RECONNECTING: "reconnecting"
+    CONNECTED: "connected",
 }

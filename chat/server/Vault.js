@@ -77,6 +77,10 @@ class Vault{
 
     }
 
+    getVault(){
+        //Get vault
+        return fs.readFileSync(path.join(this.vaultDirectory, VAULT), 'utf8');
+    }
     saveVaultSettings(request){
         console.log("SAVING VAULT SETTINGS");
         let id = this.id;
@@ -251,17 +255,6 @@ class Vault{
         this._consumeRegistrationToken(id)
     }
 
-    getVault(){
-        //Get vault
-        if(!this.isVaultExist()){
-            Logger.debug(`Vault not found for id: {id}`, {cat: "vault"})
-            return undefined;
-        }
-
-        let vaultPath = this.getVaultPath(id);
-        let vault =  fs.readFileSync(vaultPath, 'utf8');
-        return vault
-    }
 
     getTopics(){
         if(!this.isVaultExist()){
