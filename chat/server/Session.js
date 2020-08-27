@@ -15,9 +15,11 @@ class Session{
 
 
 class ClientSession extends Session {
-    constructor(){
+    constructor(socket){
         super();
+
         this.sm = this._prepareStateMachine();
+        this._socket = socket;
         this._sendCount = 0;
         this._receiveCount = 0;
         //this._subscribe(clientConnector, connectionId)
@@ -27,9 +29,6 @@ class ClientSession extends Session {
     // ---------------------------------------------------------------------------------------------------------------------------
     // Public methods
 
-    acceptAsymKey(publicKey, vaultEncrypted){
-        this.sm.handle.authWithPublicKey(publicKey, vaultEncrypted)
-    }
 
 
     send(message){
@@ -208,7 +207,7 @@ class ClientSession extends Session {
                 },
 
                 terminated: {
-                    entry: this._commitSuicie,
+                    entry: this._commitSuicide,
                     final: true
                 }
             }

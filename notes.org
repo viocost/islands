@@ -1,5 +1,6 @@
 * Inbox
-** TODO [2020-08-17 Mon 13:48] Debug server initiation
+** DONE [2020-08-17 Mon 13:48] Debug server initiation
+CLOSED: [2020-08-27 Thu 17:09]
 :PROPERTIES:
 :ID:       a300ab27-2cbc-403d-acb6-9776f663693d
 :END:
