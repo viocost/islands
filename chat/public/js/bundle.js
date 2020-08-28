@@ -220,7 +220,7 @@ module.exports.Internal = Object.freeze({
   AUTH_CHALLENGE: "auth_challenge",
   AUTH_CHALLENGE_RESPONSE: "achall_response",
   VALIDATE_SESSION_KEY: "validate_session_key",
-  SESSION_KEY_VALID: "session_key_valid",
+  AUTH_OK: "auth_ok",
   SESSION_SYNC: "session_sync",
   KILL_SESSION: "kill_session",
   SESSION_KEY: "session_key"
@@ -65985,12 +65985,10 @@ function Connector_createClass(Constructor, protoProps, staticProps) { if (proto
 var Connector_Connector = /*#__PURE__*/function () {
   function Connector() {
     var connectionString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
-    var authenticationAgent = arguments.length > 1 ? arguments[1] : undefined;
 
     Connector_classCallCheck(this, Connector);
 
     WildEmitter["a" /* WildEmitter */].mixin(this);
-    this.authenticationAgent = authenticationAgent;
     this.connectorStateMachine = this._prepareConnectorStateMachine();
     this.acceptorStateMachine = this._prepareAcceptorStateMachine();
     this.sessionStateMachine = this._prepareSessionStateMachine();
@@ -66047,8 +66045,8 @@ var Connector_Connector = /*#__PURE__*/function () {
     // PRIVATE METHODS
 
   }, {
-    key: "_auth",
-    value: function _auth(stateMachine, eventName, args) {
+    key: "_sendAuthToServer",
+    value: function _sendAuthToServer(stateMachine, eventName, args) {
       console.log("Emitting auth message directly");
       this.socket.emit("auth", args[0]);
     }
@@ -66075,9 +66073,13 @@ var Connector_Connector = /*#__PURE__*/function () {
       // auth challenge
 
 
-      handlers[Events["Internal"].SESSION_KEY_VALID] = function () {
+      handlers[Events["Internal"].AUTH_OK] = function () {
+        console.log("AUTH OK RECEIVED");
+
         _this.sessionStateMachine.handle.keyValidated();
       };
+
+      return handlers;
     } //////////////////////////////////////////////////
     // _acceptKeyAgent(stateMachine, evName, args){ //
     //     this.keyAgent = args[0];                 //
@@ -66115,9 +66117,6 @@ var Connector_Connector = /*#__PURE__*/function () {
 
       setTimeout(this.establishConnection.bind(this), this.reconnectionDelay);
     }
-  }, {
-    key: "_processSendQueue",
-    value: function _processSendQueue(stateMachine, evName, args) {}
   }, {
     key: "_createSocket",
     value: function _createSocket(connectionString) {
@@ -66164,6 +66163,10 @@ var Connector_Connector = /*#__PURE__*/function () {
       socket.on("auth", function (msg) {
         console.log("Received auth message");
         console.dir(msg);
+
+        if (_this2._authHandlers.hasOwnProperty(msg.headers.command)) {
+          _this2._authHandlers[msg.headers.command](msg);
+        }
       });
       socket.on("*", function (event, data) {
         console.log("Got event: ".concat(event));
@@ -66322,6 +66325,40 @@ var Connector_Connector = /*#__PURE__*/function () {
       this.connectorStateMachine.handle.auth(request);
     }
   }, {
+    key: "_processSendQueue",
+    value: function _processSendQueue(stateMachine, evName, args) {
+      console.log("processing send queue");
+
+      if (this.queue.length === 0) {
+        console.log("Nothing to send");
+        return;
+      }
+
+      console.log("Processing queue");
+      var outbound = this.queue;
+      this.queue = [];
+      var msg;
+
+      while (msg = outbound.shift(0)) {
+        var msgEncrypted = this._sessionKeyEncrypt(msg);
+
+        console.log("Sending message ".concat(JSON.stringify(msg), " \n ENCRYPTED: ").concat(msgEncrypted));
+        this.socket.emit("message", msgEncrypted);
+      }
+    }
+  }, {
+    key: "_performAcceptMessage",
+    value: function _performAcceptMessage(stateMachine, evName, args) {
+      var msg = args[0];
+      var seq = ++this._sendCount;
+      console.log("Accepting outgoing message. Seq: ".concat(seq));
+      this.queue.push({
+        seq: seq,
+        message: msg
+      });
+      this.sessionStateMachine.handle.processSendQueue();
+    }
+  }, {
     key: "_prepareAcceptorStateMachine",
     value: function _prepareAcceptorStateMachine() {
       return new AdvStateMachine["StateMachine"](this, {
@@ -66381,11 +66418,8 @@ var Connector_Connector = /*#__PURE__*/function () {
           connected: {
             entry: this._onConnectionEstablished.bind(this),
             transitions: {
-              send: {
-                actions: []
-              },
               auth: {
-                actions: []
+                actions: this._sendAuthToServer.bind(this)
               }
             }
           }
@@ -66416,7 +66450,6 @@ var Connector_Connector = /*#__PURE__*/function () {
           // Specifically we need to receive a confirmation from the server
           // That the key is valid
           awatingKeyValidation: {
-            entry: this._sendKeyValidationRequest.bind(this),
             transitions: {
               keyValidated: {
                 state: "sessionEstablished"
@@ -66488,38 +66521,6 @@ var Connector_MessageQueue = /*#__PURE__*/function () {
         msgNotExistMode: AdvStateMachine["StateMachine"].Warn,
         traceLevel: AdvStateMachine["StateMachine"].TraceLevel.DEBUG
       });
-    }
-  }, {
-    key: "_processSendQueue",
-    value: function _processSendQueue() {
-      if (this.queue.length === 0) {
-        console.log("Nothing to send");
-        return;
-      }
-
-      console.log("Processing queue");
-      var outbound = this.queue;
-      this.queue = [];
-      var msg;
-
-      while (msg = outbound.shift(0)) {
-        var msgEncrypted = this._sessionKeyEncrypt(msg);
-
-        console.log("Sending message ".concat(JSON.stringify(msg), " \n ENCRYPTED: ").concat(msgEncrypted));
-        this.socket.emit("message", msgEncrypted);
-      }
-    }
-  }, {
-    key: "_performAcceptMessage",
-    value: function _performAcceptMessage(stateMachine, evName, args) {
-      var msg = args[0];
-      var seq = ++this._sendCount;
-      console.log("Accepting outgoing message. Seq: ".concat(seq));
-      this.queue.push({
-        seq: seq,
-        message: msg
-      });
-      this.sessionStateMachine.handle.processSendQueue();
     }
   }]);
 

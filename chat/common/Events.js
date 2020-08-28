@@ -176,7 +176,7 @@ module.exports.Internal = Object.freeze({
     AUTH_CHALLENGE: "auth_challenge",
     AUTH_CHALLENGE_RESPONSE: "achall_response",
     VALIDATE_SESSION_KEY: "validate_session_key",
-    SESSION_KEY_VALID: "session_key_valid",
+    AUTH_OK: "auth_ok",
     SESSION_SYNC: "session_sync",
 
     KILL_SESSION: "kill_session",

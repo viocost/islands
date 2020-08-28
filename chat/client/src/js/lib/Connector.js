@@ -13,9 +13,8 @@ import { Message } from "./Message";
 export class Connector {
 
 
-    constructor(connectionString = "", authenticationAgent) {
+    constructor(connectionString = "" ) {
         WildEmitter.mixin(this);
-        this.authenticationAgent = authenticationAgent;
         this.connectorStateMachine = this._prepareConnectorStateMachine()
         this.acceptorStateMachine = this._prepareAcceptorStateMachine()
         this.sessionStateMachine = this._prepareSessionStateMachine()
@@ -74,7 +73,7 @@ export class Connector {
     // ---------------------------------------------------------------------------------------------------------------------------
     // PRIVATE METHODS
 
-    _auth(stateMachine, eventName, args){
+    _sendAuthToServer(stateMachine, eventName, args){
         console.log("Emitting auth message directly");
         this.socket.emit("auth", args[0])
     }
@@ -94,11 +93,12 @@ export class Connector {
 
         //Server response after submission of
         // auth challenge
-        handlers[Internal.SESSION_KEY_VALID] = ()=>{
+        handlers[Internal.AUTH_OK] = ()=>{
+            console.log("AUTH OK RECEIVED");
             this.sessionStateMachine.handle.keyValidated()
         }
 
-
+        return handlers;
 
     }
     //////////////////////////////////////////////////
@@ -179,9 +179,11 @@ export class Connector {
         })
 
         socket.on("auth", msg => {
-
             console.log("Received auth message");
             console.dir(msg)
+            if(this._authHandlers.hasOwnProperty(msg.headers.command)){
+                this._authHandlers[msg.headers.command](msg)
+            }
         })
 
         socket.on("*", (event, data) => {
@@ -337,7 +339,6 @@ export class Connector {
 
     _processSendQueue(stateMachine, evName, args) {
         console.log("processing send queue");
-
         if (this.queue.length === 0) {
             console.log("Nothing to send");
             return;
@@ -420,7 +421,7 @@ export class Connector {
                     entry: this._onConnectionEstablished.bind(this),
                     transitions: {
                         auth: {
-                            actions: this._auth.bind(this)
+                            actions: this._sendAuthToServer.bind(this)
                         }
 
                     }
@@ -452,7 +453,6 @@ export class Connector {
                 // Specifically we need to receive a confirmation from the server
                 // That the key is valid
                 awatingKeyValidation: {
-                    entry: this._sendKeyValidationRequest.bind(this),
                     transitions: {
                         keyValidated: {
                             state: "sessionEstablished"

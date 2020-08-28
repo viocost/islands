@@ -33,6 +33,7 @@ class ClientSession extends Session {
         this._sessionKey = this._createSessionKey();
         this._sm = this._prepareStateMachine();
         //this._subscribe(clientConnector, connectionId)
+        this._socket.on("auth", this._processAuth.bind(this))
     }
 
 
@@ -78,6 +79,20 @@ class ClientSession extends Session {
 
     _sendAuth(msg){
         this._socket.emit("auth", msg)
+    }
+
+    _processAuth({ headers, body }){
+        switch(headers.command){
+            case Internal.AUTH_CHALLENGE_RESPONSE: {
+                //check nonce here
+                console.log("AUTH OK! Sending to client...");
+                let msg = createAuthMessage({  command: Internal.AUTH_OK })
+                this._sendAuth(msg)
+                break
+            }
+
+        }
+
     }
 
     _acceptMessage(message){

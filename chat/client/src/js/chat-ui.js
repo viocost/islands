@@ -23,6 +23,7 @@ import { LoginAgent } from "./lib/LoginAgentBAK";
 import { iCrypto } from "../../../common/iCrypto";
 import { createClientIslandEnvelope, Message } from "../../../common/Message";
 import * as MainView from "./MainView";
+import { StateMachine } from "../../../common/AdvStateMachine";
 
 // ---------------------------------------------------------------------------------------------------------------------------
 // CONSTANTS
@@ -80,6 +81,8 @@ const unreadCounters = {}
 
 let UIInitialized = false;
 
+let UISM = prepareUIStateMachine()
+
 // ---------------------------------------------------------------------------------------------------------------------------
 // TEST ONLY!
 // Comment out for production!
@@ -97,7 +100,7 @@ window.topics = topics;
 // ~END TEST
 
 document.addEventListener('DOMContentLoaded', event => {
-    isRegistration() ? initRegistration() : initLogin()
+    isRegistration() ? UISM.handle.toRegistration() : UISM.handle.toLogin()
     return;
 //    initChat();
 //    initLoginUI();
@@ -2114,3 +2117,84 @@ function moveCursorToStart(el) {
 }
 // ---------------------------------------------------------------------------------------------------------------------------
 // ~END util
+
+
+function prepareUIStateMachine(){
+    return new StateMachine(null, {
+        name: "UI State Machine",
+        stateMap: {
+            start: {
+                initial: true,
+                transitions:{
+                    toLogin: {
+                        state: "login"
+                    },
+
+                    toRegistration: {
+                        state: "registration"
+                    }
+                }
+            },
+
+            login: {
+                entry: initLogin,
+                transitions: {
+                    loginError: {
+                        actions: handleLoginError
+                    },
+
+                    loginSuccess: {
+                        state: "loggedIn"
+                    }
+
+
+                }
+            },
+
+            registration: {
+                entry: initRegistration,
+                transitions: {
+                    registrationError: {
+                        actions: handleRegistrationError
+                    },
+
+                    registrationSuccess: {
+                        state: "registrationSuccess"
+                    }
+
+                }
+
+            },
+
+            registrationSuccess: {
+                final: true
+            },
+
+            loggedIn: {
+                entry: processLoggedIn,
+                transitions: {
+                    disconnect: {
+
+                    },
+
+                    newMessage: {
+
+                    },
+
+                    messageSent: {
+
+                    }
+
+                }
+
+            }
+
+
+
+
+
+
+
+        }
+    })
+}
