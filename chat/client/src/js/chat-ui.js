@@ -837,26 +837,32 @@ function backToChat() {
 
 // ---------------------------------------------------------------------------------------------------------------------------
 // Chat Event handlers
-function handleLoginError(){
+function handleLoginError(stateMachine, eventName, args){
     let loginBtn = util.$("#vault-login-btn")
     loginBtn.removeAttribute("disabled");
     toastr.warning(`Login error: ${err}`)
     loadingOff()
 }
 
-function handleLoginSuccess(loginAgent) {
+function handleLoginSuccess(stateMachine, eventName, args) {
+    let loginAgent = args[0]
+    let vaultRaw = loginAgent.vaultRaw
+
     console.log("Login success handler");
-    UISM.handle.loginSuccess();
-    //const vault = new Vault()                 //
-    //vault.password = password;                //
-    //vault.pkfp = ic.get("pkfp");              //
-    //vault.adminKey = data.adminKey;           //
-    //vault.admin = data.admin;                 //
-    //vault.publicKey = data.publicKey;         //
-    //vault.privateKey = data.privateKey;       //
-    //console.log(`Vault raw data: ${data}`);   //
-    //vault.id = this.vaultId;                  //
-    //vault.version = this.version;             //
+    console.dir(loginAgent)
+
+    const vault = new Vault()                 //
+    vault.password = loginAgent.password;                //
+    vault.pkfp = vaultRaw.pkfp
+    vault.adminKey = vaultRaw.adminKey;           //
+    vault.admin = vaultRaw.admin;                 //
+    vault.publicKey = vaultRaw.publicKey;         //
+    vault.privateKey = vaultRaw.privateKey;       //
+
+    //TODO where did I get it?
+//    vault.id = this.vaultId;                  //
+
+    vault.version = version;             //
     ////
     ////settings                                //
     //vault.initializeSettings(data.settings)   //
@@ -1707,7 +1713,6 @@ function initChat() {
 // ---------------------------------------------------------------------------------------------------------------------------
 // REFACTORING LOGIN
 
-
 function initSession() {
     console.log("Init session called");
     loadingOn()
@@ -2190,7 +2195,7 @@ function prepareUIStateMachine(){
             },
 
             loggedIn: {
-                //entry: processLoggedIn,
+                entry: initSession,
                 transitions: {
                     disconnect: {
 
@@ -2207,13 +2212,8 @@ function prepareUIStateMachine(){
                 }
 
             }
-
-
-
-
-
-
-
         }
     })
 }
+
+

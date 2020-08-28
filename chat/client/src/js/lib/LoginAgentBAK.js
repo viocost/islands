@@ -158,7 +158,8 @@ export class LoginAgent{
 
             data = JSON.parse(ic.get("vault_raw"));
             this.vaultRaw = data;
-
+            // Temporary. Later vault will be fetched separately.
+            // Login agent will only fetch specific keys
         } catch (err){
             this.sm.handle.decryptError(err);
             return;
@@ -168,6 +169,7 @@ export class LoginAgent{
         ic.setRSAKey("pub", data.publicKey, "public")
             .getPublicKeyFingerprint("pub", "pkfp");
 
+        this.vaultRaw.pkfp = ic.get("pkfp")
         //decrypt session key
 
         ic.setRSAKey("secret_k", this.vaultRaw.privateKey, "private")

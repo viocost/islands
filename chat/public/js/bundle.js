@@ -70200,16 +70200,17 @@ function backToChat() {
 // Chat Event handlers
 
 
-function handleLoginError() {
+function handleLoginError(stateMachine, eventName, args) {
   var loginBtn = $("#vault-login-btn");
   loginBtn.removeAttribute("disabled");
   lib_toastr.warning("Login error: ".concat(err));
   chat_ui_loadingOff();
 }
 
-function handleLoginSuccess(loginAgent) {
+function handleLoginSuccess(stateMachine, eventName, args) {
+  var loginAgent = args[0];
   console.log("Login success handler");
-  UISM.handle.loginSuccess(); //const vault = new Vault()                 //
+  console.dir(loginAgent); //const vault = new Vault()                 //
   //vault.password = password;                //
   //vault.pkfp = ic.get("pkfp");              //
   //vault.adminKey = data.adminKey;           //
@@ -71604,7 +71605,7 @@ function prepareUIStateMachine() {
         "final": true
       },
       loggedIn: {
-        //entry: processLoggedIn,
+        entry: initSession,
         transitions: {
           disconnect: {},
           newMessage: {},
