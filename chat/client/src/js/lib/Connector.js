@@ -32,6 +32,7 @@ export class Connector {
         this._sessionKey;
         this._sendCount = 0;
         this._receiveCount = 0;
+        this._authHandlers = this._getAuthHandlers()
     }
 
 
@@ -42,9 +43,12 @@ export class Connector {
         this.acceptorStateMachine.handle.acceptMessage(msg);
     }
 
+
+
     acceptSessionKey(key) {
         this.sessionKey = key;
-        this.sessionStateMachine.handle.keyProvided();
+        console.log(`Session key is set to ${key}`);
+        this.sessionStateMachine.handle.validateKey();
     }
 
     setConnectionQueryProperty(k, v) {
@@ -70,7 +74,33 @@ export class Connector {
     // ---------------------------------------------------------------------------------------------------------------------------
     // PRIVATE METHODS
 
+    _auth(stateMachine, eventName, args){
+        console.log("Emitting auth message directly");
+        this.socket.emit("auth", args[0])
+    }
 
+    _getAuthHandlers(){
+        let handlers = {}
+        handlers[Internal.AUTH_CHALLENGE] = ({ private_key, session_key })=>{
+            //Server request to establish a session
+            // session key is encrypted with public key
+            // private key is encrypted with password-based symkey known to the user
+            // User supposed to decrypt private key, decrypt session key and send session key encrypted nonce to the server
+            // The session will be the established
+            //
+            console.log("Received auth challenge");
+            this.sessionStateMachine.handle.keyInvalidated()
+        }
+
+        //Server response after submission of
+        // auth challenge
+        handlers[Internal.SESSION_KEY_VALID] = ()=>{
+            this.sessionStateMachine.handle.keyValidated()
+        }
+
+
+
+    }
     //////////////////////////////////////////////////
     // _acceptKeyAgent(stateMachine, evName, args){ //
     //     this.keyAgent = args[0];                 //
@@ -102,10 +132,6 @@ export class Connector {
         }
 
         setTimeout(this.establishConnection.bind(this), this.reconnectionDelay)
-    }
-
-    _processSendQueue(stateMachine, evName, args) {
-
     }
 
 
@@ -148,13 +174,14 @@ export class Connector {
             this.connectorStateMachine.handle.connected()
         });
 
-
         socket.on("message", (msg) => {
             this.connectorStateMachine.handle.messageReceived(msg)
         })
 
         socket.on("auth", msg => {
+
             console.log("Received auth message");
+            console.dir(msg)
         })
 
         socket.on("*", (event, data) => {
@@ -263,7 +290,6 @@ export class Connector {
     }
 
     _sessionKeyEncrypt(data) {
-        console.log(`SESSION KEY ${this.sessionKey}`);
         const msg = typeof data === "string" ? data : JSON.stringify(data);
         const ic = new iCrypto();
         ic.addBlob("msg_raw", msg)
@@ -294,19 +320,46 @@ export class Connector {
 
     // Encrypts a nonce and sends it to server
     // for confirmation request
-    _sendKeyValidationRequest() {
+    _sendKeyValidationRequest(stateMachine, evName, args) {
         //make request
         let ic = new iCrypto();
         ic.createNonce("n", 32)
         let encrypted = this._sessionKeyEncrypt(ic.get("n"))
 
         let request = createAuthMessage({
-            command: "confirm_key",
+            command: Internal.AUTH_CHALLENGE_RESPONSE,
             data: {
                 nonce: encrypted
             }
         })
-        this.connectorStateMachine.handle.send("auth_confirm", request)
+        this.connectorStateMachine.handle.auth(request)
+    }
+
+    _processSendQueue(stateMachine, evName, args) {
+        console.log("processing send queue");
+
+        if (this.queue.length === 0) {
+            console.log("Nothing to send");
+            return;
+        }
+
+        console.log("Processing queue");
+        let outbound = this.queue
+        this.queue = []
+        let msg
+        while (msg = outbound.shift(0)) {
+            const msgEncrypted = this._sessionKeyEncrypt(msg)
+            console.log(`Sending message ${JSON.stringify(msg)} \n ENCRYPTED: ${msgEncrypted}`);
+            this.socket.emit("message", msgEncrypted);
+        }
+    }
+
+    _performAcceptMessage(stateMachine, evName, args) {
+        let msg = args[0]
+        let seq = ++this._sendCount;
+        console.log(`Accepting outgoing message. Seq: ${seq}`);
+        this.queue.push({ seq: seq, message: msg });
+        this.sessionStateMachine.handle.processSendQueue()
     }
 
     _prepareAcceptorStateMachine() {
@@ -364,42 +417,16 @@ export class Connector {
                 },
 
                 connected: {
-                    entry: this._onConnectionEstablished.bind(this)
-                },
-
-                sessionEstablished: {
-                    entry: [this._resetConnectionAttempts, this._emitState, this._processQueue],
-
+                    entry: this._onConnectionEstablished.bind(this),
                     transitions: {
-                        processDisconnect: {
-                            state: ConnectionState.DISCONNECTED,
-                            actions: this._scheduleReconnect
-                        },
-
-                        disconnectSocket: {
-                            actions: this.killSocket
-                        },
-
-                        messageReceived: {
-                            actions: this._processIncomingMessage
-                        },
-
-                        processQueue: {
-                            actions: this._processQueue
-                        },
-                        error: { state: ConnectionState.ERROR },
-                    }
-                },
-
-                error: {
-                    entry: [this._emitState, this._scheduleReconnect],
-                    transitions: {
-                        connect: {
-                            state: ConnectionState.CONNECTING,
-                            actions: this._connect
+                        auth: {
+                            actions: this._auth.bind(this)
                         }
+
                     }
+
                 },
+
             }
         }, { msgNotExistMode: StateMachine.Warn, traceLevel: StateMachine.TraceLevel.DEBUG })
     }
@@ -413,8 +440,8 @@ export class Connector {
                     initial: true,
                     //No key is present
                     transitions: {
-                        acceptSessionKey: {
-                            state: "awatingKeyConfirmation",
+                        validateKey: {
+                            state: "awatingKeyValidation",
                             actions: this._sendKeyValidationRequest.bind(this)
                         }
                     }
@@ -424,7 +451,7 @@ export class Connector {
                 // But cannot be sure whether it is valid or not
                 // Specifically we need to receive a confirmation from the server
                 // That the key is valid
-                awatingKeyConfirmation: {
+                awatingKeyValidation: {
                     entry: this._sendKeyValidationRequest.bind(this),
                     transitions: {
                         keyValidated: {
@@ -496,32 +523,8 @@ class MessageQueue {
     }
 
 
-    _processSendQueue() {
-
-        if (this.queue.length === 0) {
-            console.log("Nothing to send");
-            return;
-        }
-
-        console.log("Processing queue");
-        let outbound = this.queue
-        this.queue = []
-        let msg
-        while (msg = outbound.shift(0)) {
-            const msgEncrypted = this._sessionKeyEncrypt(msg)
-            console.log(`Sending message ${JSON.stringify(msg)} \n ENCRYPTED: ${msgEncrypted}`);
-            this.socket.emit("message", msgEncrypted);
-        }
-    }
 
 
-    _performAcceptMessage(stateMachine, evName, args) {
-        let msg = args[0]
-        let seq = ++this._sendCount;
-        console.log(`Accepting outgoing message. Seq: ${seq}`);
-        this.queue.push({ seq: seq, message: msg });
-        this.sessionStateMachine.handle.processSendQueue()
-    }
 
 }
 

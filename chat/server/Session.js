@@ -68,7 +68,7 @@ class ClientSession extends Session {
           .addBlob("session_key", this._sessionKey)
           .publicKeyEncrypt("session_key", "pub", "challenge", "hex")
         let data = {
-            session_key: ic.get("session_key"),
+            session_key: ic.get("challenge"),
             private_key: this._encryptedPrivateKey
         }
 

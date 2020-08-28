@@ -1688,6 +1688,7 @@ function initChat() {
 
 
 function initSession() {
+    console.log("Init session called");
     loadingOn()
     let loginBtn = util.$("#vault-login-btn")
     loginBtn.setAttribute("disabled", true);

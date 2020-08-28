@@ -19,11 +19,16 @@ export class LoginAgent{
         this.vaultEncrypted;
         this.vaultHolder;
         this.vaultRaw;
-        this.connector.on(Internal.AUTH_CHALLENGE, (msg)=>{
+        this.sessionKeyEncrypted;
+        this.sessionKeyRaw;
 
-            console.log("GOT auth challenge. Solving");
-            let key = "key"
-            this.connector.acceptSessionKey(key)
+
+        this.connector.on("auth", (msg)=>{
+            switch(msg.headers.command){
+                case Internal.AUTH_CHALLENGE:{
+                    this.sm.handle.acceptChallenge(msg)
+                }
+            }
         })
     }
 
@@ -32,7 +37,7 @@ export class LoginAgent{
 
     acceptPassword(password){
         this.password = password;
-        this.sm.handle.gotPassword()
+        this.sm.handle.acceptPassword()
     }
 
     getRawVault(){
@@ -42,6 +47,31 @@ export class LoginAgent{
     // ---------------------------------------------------------------------------------------------------------------------------
     // PRIVATE METHODS
 
+    _acceptChallenge(stateMachine, eventName, args){
+        console.log("Saving session data");
+        let { headers, body } = args[0]
+        let { private_key, session_key } = body
+        this.vaultEncrypted = private_key;
+        this.sessionKeyEncrypted = session_key;
+    }
+
+    _acceptPassword(stateMachine, eventName, args){
+        console.log("Saving password");
+        this._password = args[0]
+    }
+
+
+    _decryptSuccessHandler(stateMachine, eventName, args){
+
+        this.connector.acceptSessionKey(args[0])
+        //this.emit(Events.LOGIN_SUCCESS, this.vaultHolder)
+    }
+
+
+    _notifyLoginError(sm, evName, err){
+        this.emit(Events.LOGIN_ERROR, err);
+    }
+
     _prepareStateMachine(){
         return new StateMachine(this, {
             name: "Login Agent SM",
@@ -49,96 +79,63 @@ export class LoginAgent{
                 noVaultNoPassword: {
                     initial: true,
                     transitions: {
-                        fetchVault: {
-                            actions: this._performFetchVault
-                        },
 
-                        gotPassword: {
+                        acceptPassword: {
                             state: "noVaultHasPassword",
+                            actions: this._acceptPassword.bind(this)
                         },
 
-                        gotVault: {
+                        acceptChallenge:{
                             state: "hasVaultNoPassword",
+                            actions: this._acceptChallenge.bind(this)
                         }
                     }
                 },
 
                 noVaultHasPassword: {
                     transitions: {
-                        gotVault: {
-                            state: "decryptingVault"
-                        },
-
-                        vaultTimeout: {
-
+                        acceptChallenge:{
+                            state: "hasVaultNoPassword",
+                            actions: this._acceptChallenge.bind(this)
                         }
+
                     }
 
                 },
+
 
                 hasVaultNoPassword: {
                     transitions: {
-                        gotPassword: {
-                            state: "decryptingVault"
+                        acceptPassword: {
+                            state: "decrypting"
                         }
                     }
-
                 },
-                decryptingVault: {
-                    entry: this._tryDecrypt,
+
+                decrypting: {
+                    entry: this._tryDecrypt.bind(this),
+
                     transitions: {
                         decryptError: {
                             state: "hasVaultNoPassword",
                             actions: this._notifyLoginError
-
                         },
 
                         decryptSuccess: {
-                            state: "exchangingKeys"
+                            actions: this._decryptSuccessHandler.bind(this),
+                            state: "authenticated"
                         }
-                    }
-
-                },
-
-                exchangingKeys:{
-                    transitions: {
-                        solveChallenge: {
-                            actions: this._solveChallenge
-                        },
-
-                        authenticated: {
-                            state: "loggedIn"
-                        }
-
                     }
                 },
 
-                loggedIn: {
-                    entry: this._notifyLoginSuccess,
+
+                authenticated: {
                     final: true
                 }
             }
        })
     }
 
-    _performFetchVault(){
-        const vaultRetriever = new VaultRetriever("/vault");
-        vaultRetriever.run(this._processFetchVaultResult.bind(this))
-    }
-
-    _processFetchVaultResult(err, data){
-
-        if (err){
-            console.log(`Fetch vault error: ${err}`);
-            this.error = err;
-            return;
-        }
-
-        console.log(`Got the vault: ${data} this: ${this}`);
-        this.vaultId = data.vaultId;
-        this.vaultEncrypted = data.vault;
-        this.sm.handle.gotVault();
-    }
 
     _tryDecrypt(){
         console.log("Decrypting vault...");
@@ -166,31 +163,34 @@ export class LoginAgent{
         ic.setRSAKey("pub", data.publicKey, "public")
             .getPublicKeyFingerprint("pub", "pkfp");
 
-        const vault = new Vault()
-        vault.password = password;
-        vault.pkfp = ic.get("pkfp");
-        vault.adminKey = data.adminKey;
-        vault.admin = data.admin;
-        vault.publicKey = data.publicKey;
-        vault.privateKey = data.privateKey;
-        console.log(`Vault raw data: ${data}`);
-        vault.id = this.vaultId;
-        vault.version = this.version;
+        //decrypt session key
 
-        //settings
-        vault.initializeSettings(data.settings)
-        this.vaultHolder = new VaultHolder(vault)
-        console.log('decrypt success');
-        this.sm.handle.decryptSuccess();
+        ic.setRSAKey("secret_k", this.vaultRaw.privateKey, "private")
+          .addBlob("session_k", this.sessionKeyEncrypted)
+          .privateKeyDecrypt("session_k", "secret_k", "session_k_raw", "hex")
+        this.sessionKeyRaw = ic.get("session_k_raw");
+
+        console.log("Session key decrypted");
+        this.sm.handle.decryptSuccess(ic.get("session_k_raw"));
+
+        ///////////////////////////////////////////////
+        // const vault = new Vault()                 //
+        // vault.password = password;                //
+        // vault.pkfp = ic.get("pkfp");              //
+        // vault.adminKey = data.adminKey;           //
+        // vault.admin = data.admin;                 //
+        // vault.publicKey = data.publicKey;         //
+        // vault.privateKey = data.privateKey;       //
+        // console.log(`Vault raw data: ${data}`);   //
+        // vault.id = this.vaultId;                  //
+        // vault.version = this.version;             //
+        //                                           //
+        // //settings                                //
+        // vault.initializeSettings(data.settings)   //
+        // this.vaultHolder = new VaultHolder(vault) //
+        // console.log('decrypt success');           //
+        ///////////////////////////////////////////////
     }
 
-    _notifyLoginSuccess(){
-        this.emit(Events.LOGIN_SUCCESS, this.vaultHolder)
-
-    }
-
-    _notifyLoginError(sm, evName, err){
-        this.emit(Events.LOGIN_ERROR, err);
-    }
 
 }

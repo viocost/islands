@@ -484,6 +484,10 @@ export function bakeLoginBlock(loginClickHandler){
                         id: "vault-login-btn",
                         class: ["btn", "form-button"],
                         text: "Login",
+                        listeners: {
+                            click: loginClickHandler
+                        }
+
                     }),
                 })
             ]
