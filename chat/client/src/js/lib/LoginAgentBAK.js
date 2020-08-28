@@ -27,7 +27,14 @@ export class LoginAgent{
             switch(msg.headers.command){
                 case Internal.AUTH_CHALLENGE:{
                     this.sm.handle.acceptChallenge(msg)
+                    break;
                 }
+
+                case Internal.AUTH_OK: {
+                    this.emit(Events.LOGIN_SUCCESS, this)
+                }
+
+
             }
         })
     }
@@ -62,9 +69,7 @@ export class LoginAgent{
 
 
     _decryptSuccessHandler(stateMachine, eventName, args){
-
         this.connector.acceptSessionKey(args[0])
-        //this.emit(Events.LOGIN_SUCCESS, this.vaultHolder)
     }
 
 
@@ -172,24 +177,6 @@ export class LoginAgent{
 
         console.log("Session key decrypted");
         this.sm.handle.decryptSuccess(ic.get("session_k_raw"));
-
-        ///////////////////////////////////////////////
-        // const vault = new Vault()                 //
-        // vault.password = password;                //
-        // vault.pkfp = ic.get("pkfp");              //
-        // vault.adminKey = data.adminKey;           //
-        // vault.admin = data.admin;                 //
-        // vault.publicKey = data.publicKey;         //
-        // vault.privateKey = data.privateKey;       //
-        // console.log(`Vault raw data: ${data}`);   //
-        // vault.id = this.vaultId;                  //
-        // vault.version = this.version;             //
-        //                                           //
-        // //settings                                //
-        // vault.initializeSettings(data.settings)   //
-        // this.vaultHolder = new VaultHolder(vault) //
-        // console.log('decrypt success');           //
-        ///////////////////////////////////////////////
     }
 
 

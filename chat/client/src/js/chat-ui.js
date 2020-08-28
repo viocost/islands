@@ -132,25 +132,8 @@ function initLogin(){
         arrivalHub: arrivalHub
     })
 
-    loginAgent.on(Events.LOGIN_ERROR, err=>processLoginResult(null, err));
-    loginAgent.on(Events.LOGIN_SUCCESS, resVaultHolder=>{
-        console.log("%c Login agent success handler", "color: red; font-size: 20px");
-
-        //TODO REFACTORING REQUIRED!
-        /////////////////////////////////////////////////////////////////////////////
-        // chat = new ChatClient({ version: version });                            //
-        // chat.vault = resVaultHolder.getVault();                                 //
-        // chat.connector = connector;                                             //
-        // chat.arrivalHub = arrivalHub;                                           //
-        // chat.topics = topics;                                                   //
-        // //end////////////////////////////////////////////////////////////////// //
-        //                                                                         //
-        // vaultHolder = resVaultHolder;                                           //
-        //                                                                         //
-        // //Load topics V1 here                                                   //
-        // loadTopics(vaultHolder.getVault())                                      //
-        /////////////////////////////////////////////////////////////////////////////
-    })
+    loginAgent.on(Events.LOGIN_ERROR, UISM.handle.loginError);
+    loginAgent.on(Events.LOGIN_SUCCESS, UISM.handle.loginSuccess);
 
     connector.establishConnection()
 
@@ -854,24 +837,59 @@ function backToChat() {
 
 // ---------------------------------------------------------------------------------------------------------------------------
 // Chat Event handlers
-function processLoginResult(newVaultHolder, err) {
-
-    if (err) {
-        let loginBtn = util.$("#vault-login-btn")
-        loginBtn.removeAttribute("disabled");
-        toastr.warning(`Login error: ${err}`)
-        loadingOff()
-        return;
-    }
-
-    vaultHolder = newVaultHolder;
-    window.vaultHolder = vaultHolder;
-   
-    initUI(vaultHolder);
-    connectionIndicator = new ConnectionIndicator(connector)
-    appendEphemeralMessage("Topics has been loaded and decrypted successfully. ")
-    playSound("user_online");
+function handleLoginError(){
+    let loginBtn = util.$("#vault-login-btn")
+    loginBtn.removeAttribute("disabled");
+    toastr.warning(`Login error: ${err}`)
     loadingOff()
+}
+
+function handleLoginSuccess(loginAgent) {
+    console.log("Login success handler");
+    UISM.handle.loginSuccess();
+    //const vault = new Vault()                 //
+    //vault.password = password;                //
+    //vault.pkfp = ic.get("pkfp");              //
+    //vault.adminKey = data.adminKey;           //
+    //vault.admin = data.admin;                 //
+    //vault.publicKey = data.publicKey;         //
+    //vault.privateKey = data.privateKey;       //
+    //console.log(`Vault raw data: ${data}`);   //
+    //vault.id = this.vaultId;                  //
+    //vault.version = this.version;             //
+    ////
+    ////settings                                //
+    //vault.initializeSettings(data.settings)   //
+    //this.vaultHolder = new VaultHolder(vault) //
+    //console.log('decrypt success');           //
+    //TODO REFACTORING REQUIRED!
+    /////////////////////////////////////////////////////////////////////////////
+    // chat = new ChatClient({ version: version });                            //
+    // chat.vault = resVaultHolder.getVault();                                 //
+    // chat.connector = connector;                                             //
+    // chat.arrivalHub = arrivalHub;                                           //
+    // chat.topics = topics;                                                   //
+    // //end////////////////////////////////////////////////////////////////// //
+    //                                                                         //
+    // vaultHolder = resVaultHolder;                                           //
+    //                                                                         //
+    // //Load topics V1 here                                                   //
+    // loadTopics(vaultHolder.getVault())                                      //
+    /////////////////////////////////////////////////////////////////////////////
+    //toastr.success(`You have logged in!`)
+    //loadingOff()
+    //return
+    //vaultHolder = newVaultHolder;
+    //window.vaultHolder = vaultHolder;
+    //initUI(vaultHolder);
+    //connectionIndicator = new ConnectionIndicator(connector)
+    //appendEphemeralMessage("Topics has been loaded and decrypted successfully. ")
+    //playSound("user_online");
+    //loadingOff()
+}
+
+function handleRegistrationError(){
+   
 }
 
 function processMessagesLoaded(pkfp, messages, cb) {
@@ -2144,6 +2162,7 @@ function prepareUIStateMachine(){
                     },
 
                     loginSuccess: {
+                        actions: handleLoginSuccess,
                         state: "loggedIn"
                     }
 
@@ -2171,7 +2190,7 @@ function prepareUIStateMachine(){
             },
 
             loggedIn: {
-                entry: processLoggedIn,
+                //entry: processLoggedIn,
                 transitions: {
                     disconnect: {
 

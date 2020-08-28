@@ -69218,6 +69218,13 @@ var LoginAgentBAK_LoginAgent = /*#__PURE__*/function () {
         case Events["Internal"].AUTH_CHALLENGE:
           {
             _this.sm.handle.acceptChallenge(msg);
+
+            break;
+          }
+
+        case Events["Internal"].AUTH_OK:
+          {
+            _this.emit(Events["Events"].LOGIN_SUCCESS, _this);
           }
       }
     });
@@ -69259,7 +69266,7 @@ var LoginAgentBAK_LoginAgent = /*#__PURE__*/function () {
   }, {
     key: "_decryptSuccessHandler",
     value: function _decryptSuccessHandler(stateMachine, eventName, args) {
-      this.connector.acceptSessionKey(args[0]); //this.emit(Events.LOGIN_SUCCESS, this.vaultHolder)
+      this.connector.acceptSessionKey(args[0]);
     }
   }, {
     key: "_notifyLoginError",
@@ -69342,23 +69349,7 @@ var LoginAgentBAK_LoginAgent = /*#__PURE__*/function () {
       ic.setRSAKey("secret_k", this.vaultRaw.privateKey, "private").addBlob("session_k", this.sessionKeyEncrypted).privateKeyDecrypt("session_k", "secret_k", "session_k_raw", "hex");
       this.sessionKeyRaw = ic.get("session_k_raw");
       console.log("Session key decrypted");
-      this.sm.handle.decryptSuccess(ic.get("session_k_raw")); ///////////////////////////////////////////////
-      // const vault = new Vault()                 //
-      // vault.password = password;                //
-      // vault.pkfp = ic.get("pkfp");              //
-      // vault.adminKey = data.adminKey;           //
-      // vault.admin = data.admin;                 //
-      // vault.publicKey = data.publicKey;         //
-      // vault.privateKey = data.privateKey;       //
-      // console.log(`Vault raw data: ${data}`);   //
-      // vault.id = this.vaultId;                  //
-      // vault.version = this.version;             //
-      //                                           //
-      // //settings                                //
-      // vault.initializeSettings(data.settings)   //
-      // this.vaultHolder = new VaultHolder(vault) //
-      // console.log('decrypt success');           //
-      ///////////////////////////////////////////////
+      this.sm.handle.decryptSuccess(ic.get("session_k_raw"));
     }
   }]);
 
@@ -69420,6 +69411,7 @@ function chat_ui_arrayLikeToArray(arr, len) { if (len == null || len > arr.lengt
 
 
 
+
  // ---------------------------------------------------------------------------------------------------------------------------
 // CONSTANTS
 
@@ -69474,7 +69466,8 @@ var activeTopics; //uploading state to handle concurrent messages sending
 var uploadingState = false; //Counters for unread messages
 
 var unreadCounters = {};
-var UIInitialized = false; // ---------------------------------------------------------------------------------------------------------------------------
+var UIInitialized = false;
+var UISM = prepareUIStateMachine(); // ---------------------------------------------------------------------------------------------------------------------------
 // TEST ONLY!
 // Comment out for production!
 
@@ -69491,7 +69484,7 @@ window.topics = chat_ui_topics; // ---------------------------------------------
 // ~END TEST
 
 document.addEventListener('DOMContentLoaded', function (event) {
-  isRegistration() ? initRegistration() : initLogin();
+  isRegistration() ? UISM.handle.toRegistration() : UISM.handle.toLogin();
   return; //    initChat();
   //    initLoginUI();
 });
@@ -69515,25 +69508,8 @@ function initLogin() {
     connector: chat_ui_connector,
     arrivalHub: chat_ui_arrivalHub
   });
-  loginAgent.on(Events["Events"].LOGIN_ERROR, function (err) {
-    return processLoginResult(null, err);
-  });
-  loginAgent.on(Events["Events"].LOGIN_SUCCESS, function (resVaultHolder) {
-    console.log("%c Login agent success handler", "color: red; font-size: 20px"); //TODO REFACTORING REQUIRED!
-    /////////////////////////////////////////////////////////////////////////////
-    // chat = new ChatClient({ version: version });                            //
-    // chat.vault = resVaultHolder.getVault();                                 //
-    // chat.connector = connector;                                             //
-    // chat.arrivalHub = arrivalHub;                                           //
-    // chat.topics = topics;                                                   //
-    // //end////////////////////////////////////////////////////////////////// //
-    //                                                                         //
-    // vaultHolder = resVaultHolder;                                           //
-    //                                                                         //
-    // //Load topics V1 here                                                   //
-    // loadTopics(vaultHolder.getVault())                                      //
-    /////////////////////////////////////////////////////////////////////////////
-  });
+  loginAgent.on(Events["Events"].LOGIN_ERROR, UISM.handle.loginError);
+  loginAgent.on(Events["Events"].LOGIN_SUCCESS, UISM.handle.loginSuccess);
   chat_ui_connector.establishConnection();
 } //Called when document content loaded
 
@@ -70224,23 +70200,57 @@ function backToChat() {
 // Chat Event handlers
 
 
-function processLoginResult(newVaultHolder, err) {
-  if (err) {
-    var loginBtn = $("#vault-login-btn");
-    loginBtn.removeAttribute("disabled");
-    lib_toastr.warning("Login error: ".concat(err));
-    chat_ui_loadingOff();
-    return;
-  }
-
-  chat_ui_vaultHolder = newVaultHolder;
-  window.vaultHolder = chat_ui_vaultHolder;
-  initUI(chat_ui_vaultHolder);
-  connectionIndicator = new ConnectionIndicator_ConnectionIndicator(chat_ui_connector);
-  appendEphemeralMessage("Topics has been loaded and decrypted successfully. ");
-  playSound("user_online");
+function handleLoginError() {
+  var loginBtn = $("#vault-login-btn");
+  loginBtn.removeAttribute("disabled");
+  lib_toastr.warning("Login error: ".concat(err));
   chat_ui_loadingOff();
 }
+
+function handleLoginSuccess(loginAgent) {
+  console.log("Login success handler");
+  UISM.handle.loginSuccess(); //const vault = new Vault()                 //
+  //vault.password = password;                //
+  //vault.pkfp = ic.get("pkfp");              //
+  //vault.adminKey = data.adminKey;           //
+  //vault.admin = data.admin;                 //
+  //vault.publicKey = data.publicKey;         //
+  //vault.privateKey = data.privateKey;       //
+  //console.log(`Vault raw data: ${data}`);   //
+  //vault.id = this.vaultId;                  //
+  //vault.version = this.version;             //
+  ////
+  ////settings                                //
+  //vault.initializeSettings(data.settings)   //
+  //this.vaultHolder = new VaultHolder(vault) //
+  //console.log('decrypt success');           //
+  //TODO REFACTORING REQUIRED!
+  /////////////////////////////////////////////////////////////////////////////
+  // chat = new ChatClient({ version: version });                            //
+  // chat.vault = resVaultHolder.getVault();                                 //
+  // chat.connector = connector;                                             //
+  // chat.arrivalHub = arrivalHub;                                           //
+  // chat.topics = topics;                                                   //
+  // //end////////////////////////////////////////////////////////////////// //
+  //                                                                         //
+  // vaultHolder = resVaultHolder;                                           //
+  //                                                                         //
+  // //Load topics V1 here                                                   //
+  // loadTopics(vaultHolder.getVault())                                      //
+  /////////////////////////////////////////////////////////////////////////////
+  //toastr.success(`You have logged in!`)
+  //loadingOff()
+  //return
+  //vaultHolder = newVaultHolder;
+  //window.vaultHolder = vaultHolder;
+  //initUI(vaultHolder);
+  //connectionIndicator = new ConnectionIndicator(connector)
+  //appendEphemeralMessage("Topics has been loaded and decrypted successfully. ")
+  //playSound("user_online");
+  //loadingOff()
+}
+
+function handleRegistrationError() {}
 
 function chat_ui_processMessagesLoaded(pkfp, messages, cb) {
   if (topicInFocus !== pkfp) {
@@ -71550,6 +71560,60 @@ function moveCursorToStart(el) {
   }
 } // ---------------------------------------------------------------------------------------------------------------------------
 // ~END util
+
+
+function prepareUIStateMachine() {
+  return new AdvStateMachine["StateMachine"](null, {
+    name: "UI State Machine",
+    stateMap: {
+      start: {
+        initial: true,
+        transitions: {
+          toLogin: {
+            state: "login"
+          },
+          toRegistration: {
+            state: "registration"
+          }
+        }
+      },
+      login: {
+        entry: initLogin,
+        transitions: {
+          loginError: {
+            actions: handleLoginError
+          },
+          loginSuccess: {
+            actions: handleLoginSuccess,
+            state: "loggedIn"
+          }
+        }
+      },
+      registration: {
+        entry: initRegistration,
+        transitions: {
+          registrationError: {
+            actions: handleRegistrationError
+          },
+          registrationSuccess: {
+            state: "registrationSuccess"
+          }
+        }
+      },
+      registrationSuccess: {
+        "final": true
+      },
+      loggedIn: {
+        //entry: processLoggedIn,
+        transitions: {
+          disconnect: {},
+          newMessage: {},
+          messageSent: {}
+        }
+      }
+    }
+  });
+}
 
 /***/ })
 /******/ ]);
