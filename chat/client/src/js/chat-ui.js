@@ -16,6 +16,7 @@ import { TopicCreator } from "./lib/TopicCreator";
 import { runConnectorTest } from "./test/connector"
 import { ChatUtility } from "./lib/ChatUtility";
 import { Vault } from "./lib/Vault";
+import { VaultRetriever } from "./lib/VaultRetriever"
 import { TopicJoinAgent } from "./lib/TopicJoinAgent";
 import { ConnectionIndicator } from  "./ui/ConnectionIndicator";
 import { LoginAgent } from "./lib/LoginAgentBAK";
@@ -849,20 +850,9 @@ function handleLoginSuccess(stateMachine, eventName, args) {
     let vaultRaw = loginAgent.vaultRaw
 
     console.log("Login success handler");
-    console.dir(loginAgent)
 
-    const vault = new Vault()                 //
-    vault.password = loginAgent.password;                //
-    vault.pkfp = vaultRaw.pkfp
-    vault.adminKey = vaultRaw.adminKey;           //
-    vault.admin = vaultRaw.admin;                 //
-    vault.publicKey = vaultRaw.publicKey;         //
-    vault.privateKey = vaultRaw.privateKey;       //
-
-    //TODO where did I get it?
-//    vault.id = this.vaultId;                  //
-
-    vault.version = version;             //
+    let vaultRetriever = new VaultRetriever()
+    vaultRetriever.run(handleVaultReceived)
     ////
     ////settings                                //
     //vault.initializeSettings(data.settings)   //
@@ -892,6 +882,11 @@ function handleLoginSuccess(stateMachine, eventName, args) {
     //appendEphemeralMessage("Topics has been loaded and decrypted successfully. ")
     //playSound("user_online");
     //loadingOff()
+}
+
+function handleVaultReceived(error, vault){
+    console.log("Vault received");
+    console.dir(vault);
 }
 
 function handleRegistrationError(){
