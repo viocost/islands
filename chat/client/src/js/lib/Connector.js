@@ -14,6 +14,7 @@ const err = createDerivedErrorClasses(ConnectorError, {
  * Wrapper around whatever socket library
  */
 class Connector{
+    emit;
     constructor(){
         WildEmitter.mixin(this);
     }
@@ -70,9 +71,17 @@ export class ConnectorSocketIO extends Connector{
         } else {
             this._sm.handle.expired();
         }
-
-
     }
+
+    _handleConnecting(stateMachine, evName, args){
+        this.emit("connecting")
+    }
+
+    _handleConnected(stateMachine, evName, args){
+        this.emit("connected")
+    }
+
+
 
     _handleSend(stateMachine, evName, args){
         let { event, data } = args[0]
@@ -80,8 +89,13 @@ export class ConnectorSocketIO extends Connector{
     }
 
     _handleIncomingMessage(stateMachine, evName, args){
+        let { event, data } = args[0]
+        this.emit(event, data)
        
     }
+
+
+
 
     //End//////////////////////////////////////////////////////////////////////
 
@@ -97,20 +111,22 @@ export class ConnectorSocketIO extends Connector{
                             actions: this._handleConnect.bind(this)
                         },
 
-                        expired: {
-                            state: "dead"
-                        }
                     }
                 },
 
                 connecting: {
+                    entry: this._handleConnecting.bind(this),
                     transitions: {
                         connected: {
                             state: "connected",
                         },
 
+                        connect: {
+                            state: "connecting",
+                            actions: this._handleConnect.bind(this)
+                        },
+
                         error: {
-                            state: "disconnected",
                             actions: this._handleConnectError.bind(this)
                         }
 
@@ -137,7 +153,7 @@ export class ConnectorSocketIO extends Connector{
                 },
 
                 dead: {
-                    entry: this._handleDead.bind(this)
+                    entry: this._handleDead.bind(this),
                     final: true
                 }
 
