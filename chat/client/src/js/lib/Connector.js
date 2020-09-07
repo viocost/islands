@@ -31,11 +31,9 @@ class Connector{
     destroy(){
         throw new err.notImplemented()
     }
-
-
 }
 
-export class ConnectorSocketIO extends Connector{
+class ConnectorSocketIO extends Connector{
     constructor(connectionString){
         super();
         this._sm = this._prepareStateMachine()
@@ -93,7 +91,11 @@ export class ConnectorSocketIO extends Connector{
         this.emit(event, data)
        
     }
+   
+    _handleDead(stateMachine, evName, args){
+        this.emit()
 
+    }
 
 
 
@@ -164,7 +166,6 @@ export class ConnectorSocketIO extends Connector{
 
     _prepareSocket(connectionString, reconnectAttempts = 5, reconnectTimeout = 4000){
 
-
         let socket = io(connectionString, {
             reconnection: false,
             autoConnect: false,
@@ -181,13 +182,13 @@ export class ConnectorSocketIO extends Connector{
         }
 
         socket.on('connect', () => {
-            this.emit("connected")
+            this.emit("connect")
         });
 
 
         socket.on('disconnect', ()=>{
             this._sm.handle.expired()
-
+            this.emit("disconnect")
         });
 
         socket.on('connect_timeout', ()=>{
@@ -204,8 +205,34 @@ export class ConnectorSocketIO extends Connector{
             })
         });
 
-
-
         return socket;
     }
+}
+
+class ConnectorSocketIOFactory{
+    constructor(connectPath){
+        this.connectPath = connectPath;
+    }
+
+    make(){
+        return new ConnectorSocketIO(this.connectPath)
+    }
+}
+
+export class ConnectorAbstractFactory{
+    static getChatConnectorFactory(){
+        return new ConnectorSocketIOFactory("/chat")
+    }
+
+    static getDataConnectorFactory(){
+        return new ConnectorSocketIOFactory("/data")
+    }
+
+}
+
+
+export const ConnectorEvents = {
+    CONNECTING: Symbol("dead"),
+    CONNECTED: Symbol("connect"),
+    DEAD: Symbol("dead"),
 }

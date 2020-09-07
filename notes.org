@@ -1,12 +1,75 @@
-* Inbox
-** DONE [2020-08-17 Mon 13:48] Debug server initiation
-CLOSED: [2020-08-27 Thu 17:09]
-:PROPERTIES:
-:ID:       a300ab27-2cbc-403d-acb6-9776f663693d
-:END:
 
-[[file:~/projects/islands/notes.org::*\[2020-08-17 Mon 13:37\] Invalid argument exception in island.js][[2020-08-17 Mon 13:37] Invalid argument exception in island.js]]
-** DONE [2020-08-17 Mon 13:37] Invalid argument exception in island.js
-CLOSED: [2020-08-17 Mon 13:48]
 
-[[file:~/projects/islands/chat/server/island.js::webService.on('connection', (ClientConnectionSocket)=>{]]
+* Registration
+
+* Authentication
+- Every island's user has a dedicated web service,
+  thus, Island already assumes which user it is.
+
+- When the web page is requested, island checks whether user is
+  registered and supplies that information along with the web page
+
+- Once page is loaded - an login agent is created.
+  user is asked to enter the password.
+
+- The password is then supplied to the login agent.
+
+- Login agent tasks after password is received:
+  1. Establish a socket connection with the island, by creating socket
+     connector, waiting for it to connect
+  2. Receive encrypted user's master private key and encrypted session key
+  3. Decrypt the master private key using supplied password
+  4. Decrypt the session key using master private key
+  5. Create Session, Master Key Agent, Session Crypto Agent,  Reconnection Agent,
+  6. Send encrypted nonce to the server, so server knows that session key was
+     successfully decrypted and session is good to go.
+
+It is possible that Login agent fails to reach the server due to some reasons.
+If that happens, Login agent will issue an error messages that says "Cannot reach
+the server".
+
+In case if user will enter wrong password - Login agent will fail to decrypt the
+private key. In that case - user will be asked to enter the new password. Login
+agent will hold encrypted private key and wait for user to enter a new password.
+This will repeat until user enters the correct password or leaves the page.
+
+Once the session is established - Login agent creates Post Login agent and then can be dismissed.
+
+
+** Reconnection
+If session receives "Connection lost" from the connector - it destroys the
+connector and asks Reconnection agent to reconnect. Reconnection agent creates
+new connector, asks it to connect. It also supplies reconnection query, that has
+a nonce encrypted with session key, so when Island gets new connection it will
+be able to identify the session. Island then sends "Reconnection OK" along with
+message, which means that session has been identified and reconnected. Reconnection agent
+then notifies the session that reconnection is successful and gives it new
+connector. After reconnection session must syncronize  message queue
+
+Session always accepts messages, even if not connected. It stores them in queue,
+and once connection is established - it will deliver them;
+
+
+** Message ordering and resending
+Session maintains a message queue.
+It also processes all incoming messages and reads their seq numbers.
+
+Once every n seconds session sends sync message with last message seen number.
+
+Session on the other end checks the queue and removes the last message seen and
+all messages that were before it. Then it resends whatever messages were after
+the last seen.
+
+Thus session removes messages from the send queue only when sync message
+received from the other end.
+
+
+
+** Post login
+Once session has been established, client must load topics' keys and data,
+initialize topics and vault objects, and create request emitter that will deliver message
+to topics and vault. This job is assigned to Post login agent.
+The user will be able to use chat only after post login agent initialized all
+the objects and finished its job.
+
+
