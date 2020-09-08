@@ -18,9 +18,9 @@ class Sessions{
                     return
                 }
             }
+            console.log("No existing session was able to decrypt challenge. Creating new session");
         }
 
-        console.log("No existing session was able to decrypt challenge. Creating new session");
         let session = new ClientSession({
             socket: socket,
             publicKey: publicKey,

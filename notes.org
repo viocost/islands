@@ -73,3 +73,34 @@ The user will be able to use chat only after post login agent initialized all
 the objects and finished its job.
 
 
+
+* Handling new connections on server
+Whenever new connection opened on the server, there may be 2 possible scenarios:
+1. A brand new connection
+2. Reconnection with the connection query
+
+On a brand new connection there must be following steps taken:
+   1. Server should find corresponding vault
+   2. Generate a session key
+   3. Send vault and encrypted session key to client
+   4. Wait for a message with session key encrypted nonce
+   5. Decrypt the nonce with session key
+   6. Send auth ok message to client identifying that session is now established
+
+If nonce decryption fails - server should drop the connection immediately and
+destroy the session
+
+If at any moment connection with client drops before step 5 - drop the
+connection and destroy the session
+
+If there is a reconnection query present - server should identify the session
+that is able to decrypt the nonce. If such session is found - then new connected
+socket is given to it, and the session becomes active again.
+
+If no sessions found - connection dropped.
+
+
+
+
+When new connection comes in - webservice creates new Connection object and
+passes it to the sessions. Sessions
