@@ -86,8 +86,6 @@ let UISM = prepareUIStateMachine()
 // ---------------------------------------------------------------------------------------------------------------------------
 // TEST ONLY!
 // Comment out for production!
-window.connectorTest = runConnectorTest;
-window.connector = connector;
 window.util = util;
 window.toastr = toastr;
 window.chat = chat;
@@ -119,15 +117,16 @@ function initLogin(){
     let loginBlock = UI.bakeLoginBlock(initSession)
     util.appendChildren("#main-container", loginBlock)
 
-    connector = new Connector("/chat");
-    window.connector = connector
+    //connector = new Connector("/chat");
+    //window.connector = connector
     version = islandsVersion()
-    arrivalHub = new ArrivalHub(connector);
+    //arrivalHub = new ArrivalHub(connector);
 
 
-
+    console.log("Initializing login agent");
     let loginAgent = new LoginAgent(ConnectorAbstractFactory.getChatConnectorFactory())
 
+    console.log("Login agnent initialized");
     //loginAgent.on(Events.LOGIN_ERROR, UISM.handle.loginError);
     //loginAgent.on(Events.LOGIN_SUCCESS, UISM.handle.loginSuccess);
 }

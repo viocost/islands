@@ -1,12 +1,4 @@
 /**
- *
- * Responsibilities:
- * - Initialize connector
- * - Establish authenticated connection
- * - Initialize session
- * - Initialize Crypto agent
- * - Initiazlie Master key agent
- *
 
  First thing login agent does is initializes a connector.
 
@@ -35,31 +27,17 @@
 
 
 import { ConnectorEvents } from "./Connector"
+import { StateMachine } from "../../../../common/AdvStateMachine";
 
 
 export class LoginAgent{
     constructor(connectorFactory){
         this.sm = this._prepareStateMachine()
-        this.connector = connectorFactory.make()
-        this.connector.on(ConnectorEvents.CONNECTING, ()=>{
-            console.log("connector connecting");
-        })
-
-        this.connector.on(ConnectorEvents.CONNECTED, ()=>{
-            console.log("connector conected");
-        })
-
-        this.connector.on(ConnectorEvents.DEAD, ()=>{
-            console.log("connector dead");
-            this.sm.handle.connectorDead()
-        })
-
-
-        this.connector.on("auth", msg=>{
-            console.log(`Auth message received: ${msg}`);
-        })
-
+        this.connector = this._prepareConnector(connectorFactory);
+        this.connector.connect()
     }
+
+
 
     acceptPassword(password){
         this.sm.handle.acceptPassword(password)
@@ -69,6 +47,30 @@ export class LoginAgent{
     // ---------------------------------------------------------------------------------------------------------------------------
     // PRIVATE METHODS
 
+    _prepareConnector(connectorFactory){
+
+        let connector = connectorFactory.make()
+
+        connector.on(ConnectorEvents.CONNECTING, ()=>{
+            console.log("connector connecting");
+        })
+
+        connector.on(ConnectorEvents.CONNECTED, ()=>{
+            console.log("connector conected");
+        })
+
+        connector.on(ConnectorEvents.DEAD, ()=>{
+            console.log("connector dead");
+            this.sm.handle.connectorDead()
+        })
+
+
+        connector.on("*", (event, data)=>{
+            console.log(`message received: ${event.toString()}, ${data}`);
+        })
+
+        return connector;
+    }
 
     _decryptSuccessHandler(stateMachine, eventName, args){
 
@@ -80,6 +82,10 @@ export class LoginAgent{
 
     }
 
+    _acceptChallenge(stateMachine, eventName, args){
+        console.log("Accepting challengte");
+
+    }
 
     _acceptPassword(stateMachine, eventName, args){
         console.log("Saving password");
@@ -89,6 +95,14 @@ export class LoginAgent{
 
     _handleFailed(stateMachine, eventName, args){
         console.log("Login agent failed");
+    }
+
+    _tryDecrypt(stateMachine, eventName, args){
+
+    }
+
+    _notifyLoginError(stateMachine, eventName, args){
+       
     }
 
     _prepareStateMachine(){
@@ -136,12 +150,11 @@ export class LoginAgent{
 
                     transitions: {
                         connectorDead: {
-                            state:
-
+                            state: "failed"
                         },
                         decryptError: {
                             state: "hasVaultNoPassword",
-                            actions: this._notifyLoginError
+                            actions: this._notifyLoginError.bind(this)
                         },
 
                         decryptSuccess: {
@@ -166,7 +179,7 @@ export class LoginAgent{
 
                 }
             }
-       })
+        }, { msgNotExistMode: StateMachine.Warn, traceLevel: StateMachine.TraceLevel.DEBUG })
     }
 
 

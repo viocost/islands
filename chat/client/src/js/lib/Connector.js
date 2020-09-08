@@ -14,7 +14,6 @@ const err = createDerivedErrorClasses(ConnectorError, {
  * Wrapper around whatever socket library
  */
 class Connector{
-    emit;
     constructor(){
         WildEmitter.mixin(this);
     }
@@ -46,6 +45,7 @@ class ConnectorSocketIO extends Connector{
 
 
     connect(query, attempts, timeout){
+        console.log("Connector connecting");
         this._sm.handle.connect(attempts, timeout)
     }
 
@@ -72,11 +72,12 @@ class ConnectorSocketIO extends Connector{
     }
 
     _handleConnecting(stateMachine, evName, args){
-        this.emit("connecting")
+        this.emit(ConnectorEvents.CONNECTING)
     }
 
     _handleConnected(stateMachine, evName, args){
-        this.emit("connected")
+
+        this.emit(ConnectorEvents.CONNECTED)
     }
 
 
@@ -93,7 +94,7 @@ class ConnectorSocketIO extends Connector{
     }
    
     _handleDead(stateMachine, evName, args){
-        this.emit()
+        this.emit(ConnectorEvents.DEAD)
 
     }
 
@@ -182,7 +183,7 @@ class ConnectorSocketIO extends Connector{
         }
 
         socket.on('connect', () => {
-            this.emit("connect")
+            this._sm.handle.connected();
         });
 
 
