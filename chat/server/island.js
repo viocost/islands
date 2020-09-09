@@ -119,6 +119,10 @@ function activateAccounts(port, config, requestEmitter){
 }
 
 
+/**
+ * This function initializes web services for each active island account
+ *
+ */
 function activateAccount({vault, requestEmitter, port, host, isAdmin, config}){
 
     console.log(`Activating account for ${vault.id}`);
