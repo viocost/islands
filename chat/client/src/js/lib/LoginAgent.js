@@ -28,7 +28,7 @@
 
 import { ConnectorEvents } from "./Connector"
 import { StateMachine } from "../../../../common/AdvStateMachine";
-import { Message } from "../../../../common/Message";
+import { Message, createAuthMessage } from "../../../../common/Message";
 import { iCrypto } from "../../../../common/iCrypto"
 import { WildEmitter } from "../../../../common/WildEmitter"
 
@@ -94,7 +94,19 @@ export class LoginAgent{
         return connector;
     }
 
+    /**
+     * Sending challenge solution to the server
+     */
     _decryptSuccessHandler(stateMachine, eventName, args){
+        let sessionKey = args[0]
+        let nonceEnc = args[1]
+
+        let msg = createAuthMessage({
+            command: "challenge_solution",
+            data: nonceEnc
+        })
+
+        this.connector.send("auth", msg)
 
     }
 
@@ -141,13 +153,19 @@ export class LoginAgent{
         this.vaultRaw.pkfp = ic.get("pkfp")
         //decrypt session key
 
-        ic.setRSAKey("secret_k", this.vaultRaw.privateKey, "private")
-          .addBlob("session_k", this._challenge.sessionKey)
-          .privateKeyDecrypt("session_k", "secret_k", "session_k_raw", "hex")
-        this.sessionKeyRaw = ic.get("session_k_raw");
+        ic.setRSAKey("secret-k", this.vaultRaw.privateKey, "private")
+          .addBlob("session-k", this._challenge.sessionKey)
+          .privateKeyDecrypt("session-k", "secret-k", "session-k-raw", "hex")
+          .bytesToHex("session-k-raw", "session-k-raw-hex")
+        this.sessionKeyRaw = ic.get("session-k-raw-hex");
+
+        //Encrypting control nonce for the server
+        ic.addBlob("nonce-raw", this._challenge.nonce)
+          .hexToBytes('nonce-raw')
+          .AESEncrypt('nonce-raw', "session-k-raw", "nonce-enc", true)
 
         console.log("Session key decrypted");
-        this.sm.handle.decryptSuccess(ic.get("session_k_raw"));
+        this.sm.handle.decryptSuccess(ic.get("session-k-raw-hex"), ic.get("nonce-enc"));
 
     }
 

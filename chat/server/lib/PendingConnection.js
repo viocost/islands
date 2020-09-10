@@ -1,6 +1,6 @@
 const { StateMachine } = require("../../common/AdvStateMachine")
 const { iCrypto } = require("../../common/iCrypto")
-const { createAuthMessage } = require("../../common/Message")
+const { createAuthMessage, Message } = require("../../common/Message")
 
 class PendingConnection{
     constructor({ connector, sessions, vault }){
@@ -53,9 +53,10 @@ class PendingConnection{
 
         let sessions  = args[1]
         let connector = args[0]
+        let controlNonce = iCrypto.hexEncode(iCrypto.getBytes(256))
 
-        connector.on("challenge_response", message=>{
-            this._sm.handle.processChallengeResponse(message)
+        connector.on("auth", message=>{
+            this._processAuthMessage(message)
         })
 
         let vault = this.vault.getVault()
@@ -65,7 +66,21 @@ class PendingConnection{
         let encryptedSessionKey = this._encryptSessionKey(sessionKey, vaultPublicKey)
 
         console.log("Sedning cahllenge to client");
-        this._sendChallenge(encryptedSessionKey, vault);
+        this._sendChallenge(encryptedSessionKey, vault, controlNonce);
+
+    }
+
+    _processAuthMessage(msg){
+        msg = Message.from(msg)
+        switch(msg.command){
+            case("challenge_solution"): {
+                this._sm.handle.processChallengeResponse(message, controlNonce)
+                break
+
+            }
+        }
+
+
 
     }
 
@@ -73,7 +88,17 @@ class PendingConnection{
      * Called when auth request received from the connector
      * Verifies the nonce and creates new session. Or dies
      */
-    _processChallengeResponse(stateMachine, eventName, args){
+    _processChallengeSolution(stateMachine, eventName, args){
+        try{
+
+            let message = args[0]
+            let nonce = args[1]
+            let ic = new iCrypto()
+            ic.
+
+        }
+
+
 
     }
 
@@ -100,12 +125,13 @@ class PendingConnection{
         return ic.get("key-cipher")
     }
 
-    _sendChallenge(sessionKey, vault){
+    _sendChallenge(sessionKey, vault, nonce){
         console.log("Sending challenge");
         let msg = createAuthMessage({
             data: {
                 sessionKey: sessionKey,
-                privateKey: vault
+                privateKey: vault,
+                nonce: nonce
             },
             command: "challenge"
         })
