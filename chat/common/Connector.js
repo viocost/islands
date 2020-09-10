@@ -224,9 +224,20 @@ class ConnectorSocketIOPassive extends Connector{
         super()
         this.sm = this._prepareStateMachine()
         this._socket = socket
+
+        //Wildcard fix
+        let onevent = socket.onevent;
+        socket.onevent = function(packet) {
+            let args = packet.data || [];
+            onevent.call(this, packet);
+            packet.data = ["*"].concat(args);
+            onevent.call(this, packet)
+        }
+
         socket.on("disconnect", ()=>{
             console.log("Session socket dead");
         }),
+
 
 
         socket.on("*", (ev, data)=>{

@@ -1,6 +1,7 @@
 const { StateMachine } = require("../../common/AdvStateMachine")
 const { iCrypto } = require("../../common/iCrypto")
 const { createAuthMessage, Message } = require("../../common/Message")
+const { CryptoAgentFactory } = require("../../common/CryptoAgent")
 
 class PendingConnection{
     constructor({ connector, sessions, vault }){
@@ -11,9 +12,9 @@ class PendingConnection{
 
 
         if(this.connector.hasConnectionQuery()){
-            this._sm.handle.reconnect()
+            this._sm.handle.reauth()
         } else {
-            this._sm.handle.connect(connector, sessions, vault)
+            this._sm.handle.auth(connector, sessions, vault)
         }
     }
 
@@ -62,8 +63,11 @@ class PendingConnection{
         let vault = this.vault.getVault()
         let vaultPublicKey = this.vault.getPublicKey()
 
-        let sessionKey = this._createSessionKey()
-        let encryptedSessionKey = this._encryptSessionKey(sessionKey, vaultPublicKey)
+        let sessionKeyAgent = CryptoAgentFactory.makeSessionCryptoAgent();
+
+        let encryptedSessionKey = this._encryptSessionKey(sessionKeyAgent.getKey(), vaultPublicKey)
+        this.sessionKey = sessionKey;
+        this.controlNonce = controlNonce;
 
         console.log("Sedning cahllenge to client");
         this._sendChallenge(encryptedSessionKey, vault, controlNonce);
@@ -74,9 +78,8 @@ class PendingConnection{
         msg = Message.from(msg)
         switch(msg.command){
             case("challenge_solution"): {
-                this._sm.handle.processChallengeResponse(message, controlNonce)
+                this._sm.handle.verifySolution(msg.data);
                 break
-
             }
         }
 
@@ -88,14 +91,25 @@ class PendingConnection{
      * Called when auth request received from the connector
      * Verifies the nonce and creates new session. Or dies
      */
-    _processChallengeSolution(stateMachine, eventName, args){
+    _handleVerifySolution(stateMachine, eventName, args){
         try{
-
-            let message = args[0]
-            let nonce = args[1]
+            let nonceEncrypted = args[0]
             let ic = new iCrypto()
-            ic.
-
+            ic.addBlob("nonce-enc", nonceEncrypted)
+              .addBlob("session-key-hex", this.sessionKey)
+              .hexToBytes("session-key-hex", "session-key")
+              .AESDecrypt("nonce-enc", "session-key", "nonce-raw", true)
+              .bytesToHex("nonce-raw", "nonce-hex")
+            if(ic.get("nonce-hex" !== this.controlNonce)){
+                console.log("Error, solution is invalid. Shutting down");
+                this._sm.handle.solutionInvalid()
+                return
+            } else {
+                console.log("Control nonce verification successful");
+            }
+        }catch(err){
+            console.log(`Error while decrypting a message: ${err}. Shutting down`);
+            this._sm.handle.fail()
         }
 
 
@@ -105,17 +119,15 @@ class PendingConnection{
     _handleFail(stateMachine, eventName, args){
         console.log("Destroying the connector");
         let connector = args[0]
-        connector.destroy()
+        //connector.destroy()
     }
 
     _sendSuccessMessage(connector){
         console.log("Sending success message");
-        connector.send("auth", "success")
+        let msg = createAuthMessage({ command: "auth_ok", data: null })
+        this.connector.send("auth", msg)
     }
 
-    _createSessionKey(){
-        return iCrypto.getBytes(32)
-    }
 
     _encryptSessionKey(target, publicKey){
         let ic = new iCrypto()
@@ -125,13 +137,13 @@ class PendingConnection{
         return ic.get("key-cipher")
     }
 
-    _sendChallenge(sessionKey, vault, nonce){
+    _sendChallenge(sessionKey, vault, nonceEncrypted){
         console.log("Sending challenge");
         let msg = createAuthMessage({
             data: {
                 sessionKey: sessionKey,
                 privateKey: vault,
-                nonce: nonce
+                nonceEncrypted: nonceEncrypted
             },
             command: "challenge"
         })
@@ -146,34 +158,71 @@ class PendingConnection{
                 start: {
                     initial: true,
                     transitions: {
-                        connect: {
-                            state: "connecting",
+                        auth: {
+                            state: "authenticating",
                             actions: this._handleConnect.bind(this)
                         },
 
-                        reconnect: {
-                            state: "reconnecting"
+                        reauth: {
+                            state: "reauthenticating"
+                        },
+
+                        fail: {
+                            state: "failed"
                         }
 
                     }
                 },
 
-                connecting: {
+                authenticating: {
+                    transitions: {
+                        verifySolution: {
+                            actions: this._handleVerifySolution.bind(this)
+                        },
+
+                        solutionInvalid: {
+                            state: "failed"
+                        },
+
+                        solutionValid: {
+                            state: "done"
+                        },
+
+                        fail: {
+                            state: "failed"
+                        }
+
+                    }
+
 
                 },
 
-                reconnecting: {
+                reauthenticating: {
+                    transitions: {
+                        solutionInvalid: {
+                            state: "failed"
+                        },
 
+                        solutionValid: {
+                            state: "done"
+                        },
+
+                        fail: {
+                            state: "failed"
+                        }
+
+                    }
                 },
 
                 failed: {
+                    final: true,
 
+                    entry: this._handleFail.bind(this),
                 },
 
                 done: {
-
+                    final: true
                 }
-
 
             }
         }, )

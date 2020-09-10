@@ -155,13 +155,14 @@ export class LoginAgent{
 
         ic.setRSAKey("secret-k", this.vaultRaw.privateKey, "private")
           .addBlob("session-k", this._challenge.sessionKey)
-          .privateKeyDecrypt("session-k", "secret-k", "session-k-raw", "hex")
-          .bytesToHex("session-k-raw", "session-k-raw-hex")
+          .privateKeyDecrypt("session-k", "secret-k", "session-k-raw-hex", "hex")
         this.sessionKeyRaw = ic.get("session-k-raw-hex");
+        console.log(`SESSION KEY ${this.sessionKeyRaw}`);
 
         //Encrypting control nonce for the server
-        ic.addBlob("nonce-raw", this._challenge.nonce)
-          .hexToBytes('nonce-raw')
+        ic.addBlob("nonce-raw-hex", this._challenge.nonceEncrypted)
+          .hexToBytes('nonce-raw-hex', "nonce-raw")
+          .hexToBytes("session-k-raw-hex", "session-k-raw")
           .AESEncrypt('nonce-raw', "session-k-raw", "nonce-enc", true)
 
         console.log("Session key decrypted");

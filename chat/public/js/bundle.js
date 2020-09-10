@@ -8183,7 +8183,7 @@ if (__webpack_require__(12)) {
   var toAbsoluteIndex = __webpack_require__(50);
   var toPrimitive = __webpack_require__(34);
   var has = __webpack_require__(22);
-  var classof = __webpack_require__(63);
+  var classof = __webpack_require__(64);
   var isObject = __webpack_require__(8);
   var toObject = __webpack_require__(14);
   var isArrayIter = __webpack_require__(122);
@@ -8197,7 +8197,7 @@ if (__webpack_require__(12)) {
   var createArrayIncludes = __webpack_require__(83);
   var speciesConstructor = __webpack_require__(73);
   var ArrayIterators = __webpack_require__(127);
-  var Iterators = __webpack_require__(65);
+  var Iterators = __webpack_require__(66);
   var $iterDetect = __webpack_require__(88);
   var setSpecies = __webpack_require__(53);
   var arrayFill = __webpack_require__(126);
@@ -12674,6 +12674,201 @@ Duplex.prototype._destroy = function (err, cb) {
 /* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
+/* WEBPACK VAR INJECTION */(function(global) {function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var _require = __webpack_require__(2),
+    iCrypto = _require.iCrypto;
+
+var _require2 = __webpack_require__(502),
+    clone = _require2.clone;
+/**
+ * Message is the major data type used for client-server-client communication
+ * 
+ * 
+ * 
+ * Possible headers:
+ *  command: used mainly between browser and island
+ *  response: island response to browser. This is an arbitrary string by which
+ *         sender identifies the outcome of the request. Can be an error code like login_error
+ *  error: error message if something goes wrong it should be set. If it is set -
+ *              the response treated as an error code
+ *  pkfpSource: public key fingerprint of the sender
+ *  pkfpDest: public key fingerprint of the recipient
+ *
+ *
+ */
+
+
+var Message = /*#__PURE__*/function () {
+  function Message(version, request) {
+    _classCallCheck(this, Message);
+
+    if (typeof request === "string") {
+      request = JSON.parse(request);
+    }
+
+    this.headers = request ? this.copyHeaders(request.headers) : {
+      command: "",
+      response: "",
+      version: version
+    };
+    this.body = request ? request.body : {};
+    this.signature = request ? request.signature : "";
+  }
+
+  _createClass(Message, [{
+    key: "copyHeaders",
+    value: function copyHeaders(headers) {
+      var result = {};
+      var keys = Object.keys(headers);
+
+      for (var i = 0; i < keys.length; ++i) {
+        result[keys[i]] = headers[keys[i]];
+      }
+
+      return result;
+    }
+  }, {
+    key: "setVersion",
+    value: function setVersion(version) {
+      if (version === undefined || version === "") throw new Error("Error setting message version: version undefined");
+      this.headers.version = version;
+    }
+  }, {
+    key: "signMessage",
+    value: function signMessage(privateKey) {
+      var ic = new iCrypto();
+      var requestString = JSON.stringify(this.headers) + JSON.stringify(this.body);
+      ic.addBlob("body", requestString).setRSAKey("priv", privateKey, "private").privateKeySign("body", "priv", "sign");
+      this.signature = ic.get("sign");
+    }
+  }, {
+    key: "setSource",
+    value: function setSource(pkfp) {
+      this.headers.pkfpSource = pkfp;
+    }
+  }, {
+    key: "setDest",
+    value: function setDest(pkfp) {
+      this.headers.pkfpDest = pkfp;
+    }
+  }, {
+    key: "setCommand",
+    value: function setCommand(command) {
+      this.headers.command = command;
+    }
+  }, {
+    key: "addNonce",
+    value: function addNonce() {
+      var ic = new iCrypto();
+      ic.createNonce("n").bytesToHex("n", "nhex");
+      this.headers.nonce = ic.get("nhex");
+    }
+  }, {
+    key: "source",
+    get: function get() {
+      return this.headers.source;
+    },
+    set: function set(source) {
+      this.headers.source = source;
+    }
+  }, {
+    key: "dest",
+    get: function get() {
+      return this.headers.dest;
+    },
+    set: function set(dest) {
+      this.headers.dest = dest;
+    }
+  }, {
+    key: "command",
+    get: function get() {
+      return this.headers.command;
+    },
+    set: function set(command) {
+      this.headers.command = command;
+    }
+  }, {
+    key: "data",
+    get: function get() {
+      return this.body;
+    },
+    set: function set(data) {
+      this.body = data;
+    }
+  }], [{
+    key: "from",
+    value: function from(obj) {
+      var message = new Message();
+
+      for (var key in obj) {
+        message[key] = obj[key];
+      }
+
+      return message;
+    }
+  }, {
+    key: "verifyMessage",
+    value: function verifyMessage(publicKey, message) {
+      var ic = new iCrypto();
+      var requestString = JSON.stringify(message.headers) + JSON.stringify(message.body);
+      ic.setRSAKey("pubk", publicKey, "public").addBlob("sign", message.signature).hexToBytes('sign', "signraw").addBlob("b", requestString);
+      ic.publicKeyVerify("b", "sign", "pubk", "v");
+      return ic.get("v");
+    }
+  }]);
+
+  return Message;
+}();
+
+function createClientIslandEnvelope(_ref) {
+  var pkfpSource = _ref.pkfpSource,
+      pkfpDest = _ref.pkfpDest,
+      command = _ref.command,
+      _ref$version = _ref.version,
+      version = _ref$version === void 0 ? global.VERSION ? global.VERSION : window.islandsVersion() : _ref$version,
+      _ref$body = _ref.body,
+      body = _ref$body === void 0 ? {} : _ref$body,
+      privateKey = _ref.privateKey;
+  var message = new Message(version);
+  message.headers.pkfpSource = pkfpSource;
+  message.headers.pkfpDest = pkfpDest;
+  message.headers.command = command;
+  message.headers.version = version;
+  message.body = clone(body);
+
+  if (privateKey) {
+    message.signMessage(privateKey);
+  }
+
+  return message;
+}
+
+function createAuthMessage(_ref2) {
+  var data = _ref2.data,
+      command = _ref2.command;
+  var message = new Message();
+  message.headers.command = command;
+  message.body = data;
+  return message;
+}
+
+Message.properties = ["headers", "body", "signature"];
+module.exports = {
+  createClientIslandEnvelope: createClientIslandEnvelope,
+  Message: Message,
+  createAuthMessage: createAuthMessage
+};
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(27)))
+
+/***/ }),
+/* 63 */
+/***/ (function(module, exports, __webpack_require__) {
+
 var def = __webpack_require__(13).f;
 var has = __webpack_require__(22);
 var TAG = __webpack_require__(9)('toStringTag');
@@ -12684,7 +12879,7 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 63 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // getting tag from 19.1.3.6 Object.prototype.toString()
@@ -12713,7 +12908,7 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 64 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var $export = __webpack_require__(1);
@@ -12749,14 +12944,14 @@ module.exports = exporter;
 
 
 /***/ }),
-/* 65 */
+/* 66 */
 /***/ (function(module, exports) {
 
 module.exports = {};
 
 
 /***/ }),
-/* 66 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -12992,7 +13187,7 @@ function ltrim(str) {
 
 
 /***/ }),
-/* 67 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -13601,201 +13796,6 @@ exports.decodePayloadAsBinary = function (data, binaryType, callback) {
   });
 };
 
-
-/***/ }),
-/* 68 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(global) {function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-var _require = __webpack_require__(2),
-    iCrypto = _require.iCrypto;
-
-var _require2 = __webpack_require__(502),
-    clone = _require2.clone;
-/**
- * Message is the major data type used for client-server-client communication
- * 
- * 
- * 
- * Possible headers:
- *  command: used mainly between browser and island
- *  response: island response to browser. This is an arbitrary string by which
- *         sender identifies the outcome of the request. Can be an error code like login_error
- *  error: error message if something goes wrong it should be set. If it is set -
- *              the response treated as an error code
- *  pkfpSource: public key fingerprint of the sender
- *  pkfpDest: public key fingerprint of the recipient
- *
- *
- */
-
-
-var Message = /*#__PURE__*/function () {
-  function Message(version, request) {
-    _classCallCheck(this, Message);
-
-    if (typeof request === "string") {
-      request = JSON.parse(request);
-    }
-
-    this.headers = request ? this.copyHeaders(request.headers) : {
-      command: "",
-      response: "",
-      version: version
-    };
-    this.body = request ? request.body : {};
-    this.signature = request ? request.signature : "";
-  }
-
-  _createClass(Message, [{
-    key: "copyHeaders",
-    value: function copyHeaders(headers) {
-      var result = {};
-      var keys = Object.keys(headers);
-
-      for (var i = 0; i < keys.length; ++i) {
-        result[keys[i]] = headers[keys[i]];
-      }
-
-      return result;
-    }
-  }, {
-    key: "setVersion",
-    value: function setVersion(version) {
-      if (version === undefined || version === "") throw new Error("Error setting message version: version undefined");
-      this.headers.version = version;
-    }
-  }, {
-    key: "signMessage",
-    value: function signMessage(privateKey) {
-      var ic = new iCrypto();
-      var requestString = JSON.stringify(this.headers) + JSON.stringify(this.body);
-      ic.addBlob("body", requestString).setRSAKey("priv", privateKey, "private").privateKeySign("body", "priv", "sign");
-      this.signature = ic.get("sign");
-    }
-  }, {
-    key: "setSource",
-    value: function setSource(pkfp) {
-      this.headers.pkfpSource = pkfp;
-    }
-  }, {
-    key: "setDest",
-    value: function setDest(pkfp) {
-      this.headers.pkfpDest = pkfp;
-    }
-  }, {
-    key: "setCommand",
-    value: function setCommand(command) {
-      this.headers.command = command;
-    }
-  }, {
-    key: "addNonce",
-    value: function addNonce() {
-      var ic = new iCrypto();
-      ic.createNonce("n").bytesToHex("n", "nhex");
-      this.headers.nonce = ic.get("nhex");
-    }
-  }, {
-    key: "source",
-    get: function get() {
-      return this.headers.source;
-    },
-    set: function set(source) {
-      this.headers.source = source;
-    }
-  }, {
-    key: "dest",
-    get: function get() {
-      return this.headers.dest;
-    },
-    set: function set(dest) {
-      this.headers.dest = dest;
-    }
-  }, {
-    key: "command",
-    get: function get() {
-      return this.headers.command;
-    },
-    set: function set(command) {
-      this.headers.command = command;
-    }
-  }, {
-    key: "data",
-    get: function get() {
-      return this.body;
-    },
-    set: function set(data) {
-      this.body = data;
-    }
-  }], [{
-    key: "from",
-    value: function from(obj) {
-      var message = new Message();
-
-      for (var key in obj) {
-        message[key] = obj[key];
-      }
-
-      return message;
-    }
-  }, {
-    key: "verifyMessage",
-    value: function verifyMessage(publicKey, message) {
-      var ic = new iCrypto();
-      var requestString = JSON.stringify(message.headers) + JSON.stringify(message.body);
-      ic.setRSAKey("pubk", publicKey, "public").addBlob("sign", message.signature).hexToBytes('sign', "signraw").addBlob("b", requestString);
-      ic.publicKeyVerify("b", "sign", "pubk", "v");
-      return ic.get("v");
-    }
-  }]);
-
-  return Message;
-}();
-
-function createClientIslandEnvelope(_ref) {
-  var pkfpSource = _ref.pkfpSource,
-      pkfpDest = _ref.pkfpDest,
-      command = _ref.command,
-      _ref$version = _ref.version,
-      version = _ref$version === void 0 ? global.VERSION ? global.VERSION : window.islandsVersion() : _ref$version,
-      _ref$body = _ref.body,
-      body = _ref$body === void 0 ? {} : _ref$body,
-      privateKey = _ref.privateKey;
-  var message = new Message(version);
-  message.headers.pkfpSource = pkfpSource;
-  message.headers.pkfpDest = pkfpDest;
-  message.headers.command = command;
-  message.headers.version = version;
-  message.body = clone(body);
-
-  if (privateKey) {
-    message.signMessage(privateKey);
-  }
-
-  return message;
-}
-
-function createAuthMessage(_ref2) {
-  var data = _ref2.data,
-      command = _ref2.command;
-  var message = new Message();
-  message.headers.command = command;
-  message.body = data;
-  return message;
-}
-
-Message.properties = ["headers", "body", "signature"];
-module.exports = {
-  createClientIslandEnvelope: createClientIslandEnvelope,
-  Message: Message,
-  createAuthMessage: createAuthMessage
-};
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(27)))
 
 /***/ }),
 /* 69 */
@@ -15695,7 +15695,7 @@ module.exports = function (exec, skipClosing) {
 "use strict";
 
 
-var classof = __webpack_require__(63);
+var classof = __webpack_require__(64);
 var builtinExec = RegExp.prototype.exec;
 
  // `RegExpExec` abstract operation
@@ -15845,7 +15845,7 @@ var anInstance = __webpack_require__(54);
 var isObject = __webpack_require__(8);
 var fails = __webpack_require__(7);
 var $iterDetect = __webpack_require__(88);
-var setToStringTag = __webpack_require__(62);
+var setToStringTag = __webpack_require__(63);
 var inheritIfRequired = __webpack_require__(114);
 
 module.exports = function (NAME, wrapper, methods, common, IS_MAP, IS_WEAK) {
@@ -20506,9 +20506,9 @@ var LIBRARY = __webpack_require__(43);
 var $export = __webpack_require__(1);
 var redefine = __webpack_require__(19);
 var hide = __webpack_require__(18);
-var Iterators = __webpack_require__(65);
+var Iterators = __webpack_require__(66);
 var $iterCreate = __webpack_require__(119);
-var setToStringTag = __webpack_require__(62);
+var setToStringTag = __webpack_require__(63);
 var getPrototypeOf = __webpack_require__(25);
 var ITERATOR = __webpack_require__(9)('iterator');
 var BUGGY = !([].keys && 'next' in [].keys()); // Safari has buggy iterators w/o `next`
@@ -20580,7 +20580,7 @@ module.exports = function (Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCE
 
 var create = __webpack_require__(51);
 var descriptor = __webpack_require__(47);
-var setToStringTag = __webpack_require__(62);
+var setToStringTag = __webpack_require__(63);
 var IteratorPrototype = {};
 
 // 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
@@ -20629,7 +20629,7 @@ module.exports = function (KEY) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // check on default Array iterator
-var Iterators = __webpack_require__(65);
+var Iterators = __webpack_require__(66);
 var ITERATOR = __webpack_require__(9)('iterator');
 var ArrayProto = Array.prototype;
 
@@ -20657,9 +20657,9 @@ module.exports = function (object, index, value) {
 /* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var classof = __webpack_require__(63);
+var classof = __webpack_require__(64);
 var ITERATOR = __webpack_require__(9)('iterator');
-var Iterators = __webpack_require__(65);
+var Iterators = __webpack_require__(66);
 module.exports = __webpack_require__(28).getIteratorMethod = function (it) {
   if (it != undefined) return it[ITERATOR]
     || it['@@iterator']
@@ -20709,7 +20709,7 @@ module.exports = function fill(value /* , start = 0, end = @length */) {
 
 var addToUnscopables = __webpack_require__(45);
 var step = __webpack_require__(168);
-var Iterators = __webpack_require__(65);
+var Iterators = __webpack_require__(66);
 var toIObject = __webpack_require__(23);
 
 // 22.1.3.4 Array.prototype.entries()
@@ -21032,7 +21032,7 @@ var toIndex = __webpack_require__(178);
 var gOPN = __webpack_require__(52).f;
 var dP = __webpack_require__(13).f;
 var arrayFill = __webpack_require__(126);
-var setToStringTag = __webpack_require__(62);
+var setToStringTag = __webpack_require__(63);
 var ARRAY_BUFFER = 'ArrayBuffer';
 var DATA_VIEW = 'DataView';
 var PROTOTYPE = 'prototype';
@@ -22164,7 +22164,7 @@ __webpack_require__(98);
 __webpack_require__(41);
 __webpack_require__(442);
 __webpack_require__(59);
-__webpack_require__(66);
+__webpack_require__(67);
 __webpack_require__(138);
 __webpack_require__(99);
 __webpack_require__(6);
@@ -26225,7 +26225,7 @@ module.exports = (function () {
  * Module dependencies.
  */
 
-var parser = __webpack_require__(67);
+var parser = __webpack_require__(68);
 var Emitter = __webpack_require__(144);
 
 /**
@@ -27956,7 +27956,7 @@ module.exports = function (fn, args, that) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var $parseInt = __webpack_require__(5).parseInt;
-var $trim = __webpack_require__(64).trim;
+var $trim = __webpack_require__(65).trim;
 var ws = __webpack_require__(113);
 var hex = /^[-+]?0[xX]/;
 
@@ -27971,7 +27971,7 @@ module.exports = $parseInt(ws + '08') !== 8 || $parseInt(ws + '0x16') !== 22 ? f
 /***/ (function(module, exports, __webpack_require__) {
 
 var $parseFloat = __webpack_require__(5).parseFloat;
-var $trim = __webpack_require__(64).trim;
+var $trim = __webpack_require__(65).trim;
 
 module.exports = 1 / $parseFloat(__webpack_require__(113) + '-0') !== -Infinity ? function parseFloat(str) {
   var string = $trim(String(str), 3);
@@ -28683,7 +28683,7 @@ module.exports = function (isEntries) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://github.com/DavidBruant/Map-Set.prototype.toJSON
-var classof = __webpack_require__(63);
+var classof = __webpack_require__(64);
 var from = __webpack_require__(184);
 module.exports = function (NAME) {
   return function toJSON() {
@@ -29974,7 +29974,7 @@ var forge = __webpack_require__(4);
 __webpack_require__(40);
 __webpack_require__(76);
 __webpack_require__(135);
-__webpack_require__(66);
+__webpack_require__(67);
 __webpack_require__(189);
 __webpack_require__(33);
 __webpack_require__(77);
@@ -34025,7 +34025,7 @@ var forge = __webpack_require__(4);
 __webpack_require__(40);
 __webpack_require__(59);
 __webpack_require__(190);
-__webpack_require__(66);
+__webpack_require__(67);
 __webpack_require__(136);
 __webpack_require__(197);
 __webpack_require__(138);
@@ -34147,7 +34147,7 @@ __webpack_require__(98);
 __webpack_require__(41);
 __webpack_require__(59);
 __webpack_require__(136);
-__webpack_require__(66);
+__webpack_require__(67);
 __webpack_require__(33);
 __webpack_require__(194);
 __webpack_require__(99);
@@ -40204,7 +40204,7 @@ function polling (opts) {
 
 var Transport = __webpack_require__(143);
 var parseqs = __webpack_require__(102);
-var parser = __webpack_require__(67);
+var parser = __webpack_require__(68);
 var inherit = __webpack_require__(103);
 var yeast = __webpack_require__(211);
 var debug = __webpack_require__(104)('engine.io-client:polling');
@@ -45129,7 +45129,17 @@ var ConnectorSocketIOPassive = /*#__PURE__*/function (_Connector2) {
 
     _this5 = _super3.call(this);
     _this5.sm = _this5._prepareStateMachine();
-    _this5._socket = socket;
+    _this5._socket = socket; //Wildcard fix
+
+    var onevent = socket.onevent;
+
+    socket.onevent = function (packet) {
+      var args = packet.data || [];
+      onevent.call(this, packet);
+      packet.data = ["*"].concat(args);
+      onevent.call(this, packet);
+    };
+
     socket.on("disconnect", function () {
       console.log("Session socket dead");
     }), socket.on("*", function (ev, data) {
@@ -45526,7 +45536,7 @@ var redefine = __webpack_require__(19);
 var META = __webpack_require__(44).KEY;
 var $fails = __webpack_require__(7);
 var shared = __webpack_require__(69);
-var setToStringTag = __webpack_require__(62);
+var setToStringTag = __webpack_require__(63);
 var uid = __webpack_require__(48);
 var wks = __webpack_require__(9);
 var wksExt = __webpack_require__(151);
@@ -45996,7 +46006,7 @@ $export($export.S, 'Object', { setPrototypeOf: __webpack_require__(112).set });
 "use strict";
 
 // 19.1.3.6 Object.prototype.toString()
-var classof = __webpack_require__(63);
+var classof = __webpack_require__(64);
 var test = {};
 test[__webpack_require__(9)('toStringTag')] = 'z';
 if (test + '' != '[object z]') {
@@ -46093,7 +46103,7 @@ var fails = __webpack_require__(7);
 var gOPN = __webpack_require__(52).f;
 var gOPD = __webpack_require__(24).f;
 var dP = __webpack_require__(13).f;
-var $trim = __webpack_require__(64).trim;
+var $trim = __webpack_require__(65).trim;
 var NUMBER = 'Number';
 var $Number = global[NUMBER];
 var Base = $Number;
@@ -46742,7 +46752,7 @@ $export($export.S, 'String', {
 "use strict";
 
 // 21.1.3.25 String.prototype.trim()
-__webpack_require__(64)('trim', function ($trim) {
+__webpack_require__(65)('trim', function ($trim) {
   return function trim() {
     return $trim(this, 3);
   };
@@ -48049,7 +48059,7 @@ __webpack_require__(90)('split', 2, function (defined, SPLIT, $split, maybeCallN
 var LIBRARY = __webpack_require__(43);
 var global = __webpack_require__(5);
 var ctx = __webpack_require__(29);
-var classof = __webpack_require__(63);
+var classof = __webpack_require__(64);
 var $export = __webpack_require__(1);
 var isObject = __webpack_require__(8);
 var aFunction = __webpack_require__(16);
@@ -48267,7 +48277,7 @@ if (!USE_NATIVE) {
 }
 
 $export($export.G + $export.W + $export.F * !USE_NATIVE, { Promise: $Promise });
-__webpack_require__(62)($Promise, PROMISE);
+__webpack_require__(63)($Promise, PROMISE);
 __webpack_require__(53)(PROMISE);
 Wrapper = __webpack_require__(28)[PROMISE];
 
@@ -48994,7 +49004,7 @@ $export($export.P + $export.F * WEBKIT_BUG, 'String', {
 "use strict";
 
 // https://github.com/sebmarkbage/ecmascript-string-left-right-trim
-__webpack_require__(64)('trimLeft', function ($trim) {
+__webpack_require__(65)('trimLeft', function ($trim) {
   return function trimLeft() {
     return $trim(this, 1);
   };
@@ -49008,7 +49018,7 @@ __webpack_require__(64)('trimLeft', function ($trim) {
 "use strict";
 
 // https://github.com/sebmarkbage/ecmascript-string-left-right-trim
-__webpack_require__(64)('trimRight', function ($trim) {
+__webpack_require__(65)('trimRight', function ($trim) {
   return function trimRight() {
     return $trim(this, 2);
   };
@@ -49999,7 +50009,7 @@ var getKeys = __webpack_require__(49);
 var redefine = __webpack_require__(19);
 var global = __webpack_require__(5);
 var hide = __webpack_require__(18);
-var Iterators = __webpack_require__(65);
+var Iterators = __webpack_require__(66);
 var wks = __webpack_require__(9);
 var ITERATOR = wks('iterator');
 var TO_STRING_TAG = wks('toStringTag');
@@ -51055,7 +51065,7 @@ __webpack_require__(202);
 __webpack_require__(445);
 __webpack_require__(199);
 __webpack_require__(136);
-__webpack_require__(66);
+__webpack_require__(67);
 __webpack_require__(195);
 __webpack_require__(197);
 __webpack_require__(446);
@@ -53237,7 +53247,7 @@ __webpack_require__(58);
 __webpack_require__(40);
 __webpack_require__(98);
 __webpack_require__(59);
-__webpack_require__(66);
+__webpack_require__(67);
 __webpack_require__(198);
 __webpack_require__(33);
 __webpack_require__(6);
@@ -57787,7 +57797,7 @@ module.exports = __webpack_require__(464);
  * @api public
  *
  */
-module.exports.parser = __webpack_require__(67);
+module.exports.parser = __webpack_require__(68);
 
 
 /***/ }),
@@ -57802,7 +57812,7 @@ var transports = __webpack_require__(208);
 var Emitter = __webpack_require__(144);
 var debug = __webpack_require__(104)('engine.io-client:socket');
 var index = __webpack_require__(212);
-var parser = __webpack_require__(67);
+var parser = __webpack_require__(68);
 var parseuri = __webpack_require__(204);
 var parseqs = __webpack_require__(102);
 
@@ -57942,7 +57952,7 @@ Socket.protocol = parser.protocol; // this is an int
 Socket.Socket = Socket;
 Socket.Transport = __webpack_require__(143);
 Socket.transports = __webpack_require__(208);
-Socket.parser = __webpack_require__(67);
+Socket.parser = __webpack_require__(68);
 
 /**
  * Creates transport of the given type.
@@ -60176,7 +60186,7 @@ JSONPPolling.prototype.doWrite = function (data, fn) {
  */
 
 var Transport = __webpack_require__(143);
-var parser = __webpack_require__(67);
+var parser = __webpack_require__(68);
 var parseqs = __webpack_require__(102);
 var inherit = __webpack_require__(103);
 var yeast = __webpack_require__(211);
@@ -69043,7 +69053,7 @@ var ConnectionIndicator_ConnectionIndicator = /*#__PURE__*/function () {
   return ConnectionIndicator;
 }();
 // EXTERNAL MODULE: ./common/Message.js
-var common_Message = __webpack_require__(68);
+var common_Message = __webpack_require__(62);
 
 // EXTERNAL MODULE: ./common/WildEmitter.js
 var common_WildEmitter = __webpack_require__(149);
@@ -69143,9 +69153,21 @@ var LoginAgent_LoginAgent = /*#__PURE__*/function () {
       });
       return connector;
     }
+    /**
+     * Sending challenge solution to the server
+     */
+
   }, {
     key: "_decryptSuccessHandler",
-    value: function _decryptSuccessHandler(stateMachine, eventName, args) {}
+    value: function _decryptSuccessHandler(stateMachine, eventName, args) {
+      var sessionKey = args[0];
+      var nonceEnc = args[1];
+      var msg = Object(common_Message["createAuthMessage"])({
+        command: "challenge_solution",
+        data: nonceEnc
+      });
+      this.connector.send("auth", msg);
+    }
   }, {
     key: "_initializeSession",
     value: function _initializeSession(stateMachine, eventName, args) {//Init session, arrival hub, topic loader etc
@@ -69178,10 +69200,12 @@ var LoginAgent_LoginAgent = /*#__PURE__*/function () {
       ic.setRSAKey("pub", data.publicKey, "public").getPublicKeyFingerprint("pub", "pkfp");
       this.vaultRaw.pkfp = ic.get("pkfp"); //decrypt session key
 
-      ic.setRSAKey("secret_k", this.vaultRaw.privateKey, "private").addBlob("session_k", this._challenge.sessionKey).privateKeyDecrypt("session_k", "secret_k", "session_k_raw", "hex");
-      this.sessionKeyRaw = ic.get("session_k_raw");
+      ic.setRSAKey("secret-k", this.vaultRaw.privateKey, "private").addBlob("session-k", this._challenge.sessionKey).privateKeyDecrypt("session-k", "secret-k", "session-k-raw-hex", "hex");
+      this.sessionKeyRaw = ic.get("session-k-raw-hex"); //Encrypting control nonce for the server
+
+      ic.addBlob("nonce-raw-hex", this._challenge.nonceEncrypted).hexToBytes('nonce-raw-hex', "nonce-raw").hexToBytes("session-k-raw-hex", "session-k-raw").AESEncrypt('nonce-raw', "session-k-raw", "nonce-enc", true);
       console.log("Session key decrypted");
-      this.sm.handle.decryptSuccess(ic.get("session_k_raw"));
+      this.sm.handle.decryptSuccess(ic.get("session-k-raw-hex"), ic.get("nonce-enc"));
     }
   }, {
     key: "_notifyLoginError",
