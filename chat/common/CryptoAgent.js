@@ -59,12 +59,31 @@ class SymCryptoAgent{
 
 }
 
-class CryptoAgentFactory{
-    static makeSessionCryptoAgent(key){
-        return new SymCryptoAgent(key);
+class AsymPublicCryptoAgent{
+    constructor(key){
+        this._publicKey = key
+    }
+
+    encrypt(blob){
+        let ic = new iCrypto()
+        ic.setRSAKey("pub", this._publicKey)
+          .addBlob("blob", blob)
+          .publicKeyEncrypt("blob", "pub", "res", "hex")
+        return ic.get("res")
+    }
+}
+
+class AsymFullCryptoAgent extends AsymPublicCryptoAgent{
+
+}
+
+
+class SymCryptoAgentFactory{
+    static make(key){
+        return new CryptoAgent(key)
     }
 }
 
 module.exports = {
-    CryptoAgentFactory: CryptoAgentFactory
+    SymCryptoAgentFactory: SymCryptoAgentFactory
 }

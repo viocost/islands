@@ -30,6 +30,7 @@ import { ConnectorEvents } from "./Connector"
 import { StateMachine } from "../../../../common/AdvStateMachine";
 import { Message, createAuthMessage } from "../../../../common/Message";
 import { iCrypto } from "../../../../common/iCrypto"
+import { CryptoAgentFactory } from "../../../../common/CryptoAgent"
 import { WildEmitter } from "../../../../common/WildEmitter"
 
 
