@@ -30,11 +30,12 @@ import { ConnectorEvents } from "./Connector"
 import { StateMachine } from "../../../../common/AdvStateMachine";
 import { Message } from "../../../../common/Message";
 import { iCrypto } from "../../../../common/iCrypto"
+import { WildEmitter } from "../../../../common/WildEmitter"
 
 
 export class LoginAgent{
     constructor(connectorFactory){
-
+        WildEmitter.mixin(this)
         this.sm = this._prepareStateMachine()
         this.connector = this._prepareConnector(connectorFactory);
         this.connector.connect()
@@ -151,9 +152,12 @@ export class LoginAgent{
     }
 
     _notifyLoginError(stateMachine, eventName, args){
-       
+        this.emit(LoginAgentEvents.FAIL)
     }
 
+    _notifyDecryptionError(stateMachine, eventName, args){
+        this.emit(LoginAgentEvents.DECRYPTION_ERROR)
+    }
 
 
     _prepareStateMachine(){
@@ -202,7 +206,7 @@ export class LoginAgent{
                         },
                         decryptError: {
                             state: "hasVaultNoPassword",
-                            actions: this._notifyLoginError.bind(this)
+                            actions: this._notifyDecryptionError.bind(this)
                         },
 
                         decryptSuccess: {
@@ -234,5 +238,9 @@ export class LoginAgent{
 }
 
 export const LoginAgentEvents = {
+
+    DECRYPTION_ERROR: Symbol("decryption_error"),
+    FAIL: Symbol("fail"),
+    SUCCESS: Symbol("success")
 
 }

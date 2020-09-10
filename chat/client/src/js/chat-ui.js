@@ -1668,11 +1668,16 @@ function initSession(loginAgent) {
     let loginBtn = util.$("#vault-login-btn")
     loginBtn.setAttribute("disabled", true);
     let passwordEl = util.$("#vault-password");
-    if (!passwordEl) {
-        throw new Error("Vault password element is not found.");
-    }
 
     loginAgent.acceptPassword(passwordEl.value);
+    loginAgent.on(LoginAgentEvents.DECRYPTION_ERROR, ()=>{
+        loadingOff()
+        loginBtn.removeAttribute("disabled");
+        passwordEl.value = ""
+        toastr.warning("Invalid password. Try again.")
+
+
+    })
 
 }
 
