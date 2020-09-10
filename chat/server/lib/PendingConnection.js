@@ -98,6 +98,16 @@ class PendingConnection{
     }
 
     _sendChallenge(sessionKey, vault){
+        console.log("Sending challenge");
+        let msg = createAuthMessage({
+            data: {
+                sessionKey: sessionKey,
+                privateKey: vault
+            },
+            command: "challenge"
+        })
+
+        this.connector.send("auth", msg)
     }
 
     _prepareStateMachine(){
@@ -141,5 +151,5 @@ class PendingConnection{
 
 
 module.exports = {
-    pendingConnection: PendingConnection
+    PendingConnection: PendingConnection
 }

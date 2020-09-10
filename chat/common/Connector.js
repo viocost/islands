@@ -23,12 +23,15 @@ class Connector{
         throw new err.notImplemented()
     }
 
-
     connect(query){
         throw new err.notImplemented()
     }
 
     destroy(){
+        throw new err.notImplemented()
+    }
+
+    hasConnectionQuery(){
         throw new err.notImplemented()
     }
 }
@@ -43,6 +46,7 @@ class ConnectorSocketIO extends Connector{
     send(event, data){
         this._sm.handle.send({event: event, data: data})
     }
+
 
 
     connect(query, attempts, timeout){
@@ -231,10 +235,17 @@ class ConnectorSocketIOPassive extends Connector{
         this._socket.emit(event, data);
     }
 
-
-
     connect(){
         throw new err.notSupported()
+    }
+
+    hasConnectionQuery(){
+        console.log(`Connection query is ${this._socket.handshake.query}`);
+        return this._socket.handshake.query !== undefined
+    }
+
+    getConnectionQuery(){
+        return this._socket.handshake.query
     }
 
     _handleSend(stateMachine, eventName, args){
@@ -284,13 +295,13 @@ class ConnectorSocketIOFactory{
 }
 
 class ConnectorSocketIOPassiveFactory{
-    make(){
+    make(socket){
         return new ConnectorSocketIOPassive(socket)
     }
 }
 
 
-export class ConnectorAbstractFactory{
+class ConnectorAbstractFactory{
     static getChatConnectorFactory(){
         return new ConnectorSocketIOFactory("/chat")
     }
@@ -306,8 +317,13 @@ export class ConnectorAbstractFactory{
 }
 
 
-export const ConnectorEvents = {
+const ConnectorEvents = {
     CONNECTING: Symbol("dead"),
     CONNECTED: Symbol("connect"),
     DEAD: Symbol("dead"),
+}
+
+module.exports = {
+    ConnectorEvent: ConnectorEvents,
+    ConnectorAbstractFactory: ConnectorAbstractFactory
 }
