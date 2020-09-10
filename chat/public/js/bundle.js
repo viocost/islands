@@ -69124,7 +69124,11 @@ var LoginAgent_LoginAgent = /*#__PURE__*/function () {
         switch (msg.command) {
           case "challenge":
             {
-              _this.sm.handle.acceptChallenge(msg.data);
+              var challenge = msg.data;
+
+              if (challenge.sessionKey && challenge.privateKey) {
+                _this.sm.handle.acceptChallenge(challenge);
+              }
             }
         }
       });
@@ -69140,7 +69144,7 @@ var LoginAgent_LoginAgent = /*#__PURE__*/function () {
   }, {
     key: "_acceptChallenge",
     value: function _acceptChallenge(stateMachine, eventName, args) {
-      console.log("Accepting challengte");
+      this._challenge = args[0];
     }
   }, {
     key: "_acceptPassword",
@@ -69371,16 +69375,11 @@ function initRegistration() {
 }
 
 function initLogin() {
-  var loginBlock = bakeLoginBlock(initSession);
-  appendChildren("#main-container", loginBlock); //connector = new Connector("/chat");
-  //window.connector = connector
-
-  chat_ui_version = islandsVersion(); //arrivalHub = new ArrivalHub(connector);
-
   console.log("Initializing login agent");
   var loginAgent = new LoginAgent_LoginAgent(common_Connector["ConnectorAbstractFactory"].getChatConnectorFactory());
-  console.log("Login agnent initialized"); //loginAgent.on(Events.LOGIN_ERROR, UISM.handle.loginError);
-  //loginAgent.on(Events.LOGIN_SUCCESS, UISM.handle.loginSuccess);
+  var loginBlock = bakeLoginBlock(initSession.bind(null, loginAgent));
+  appendChildren("#main-container", loginBlock);
+  chat_ui_version = islandsVersion();
 } //Called after successful login
 
 
@@ -70998,7 +70997,7 @@ function initChat() {
 // REFACTORING LOGIN
 
 
-function initSession() {
+function initSession(loginAgent) {
   console.log("Init session called");
   chat_ui_loadingOn();
   var loginBtn = $("#vault-login-btn");

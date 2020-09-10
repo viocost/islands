@@ -112,21 +112,11 @@ function initRegistration(){
 }
 
 function initLogin(){
-    let loginBlock = UI.bakeLoginBlock(initSession)
-    util.appendChildren("#main-container", loginBlock)
-
-    //connector = new Connector("/chat");
-    //window.connector = connector
-    version = islandsVersion()
-    //arrivalHub = new ArrivalHub(connector);
-
-
     console.log("Initializing login agent");
     let loginAgent = new LoginAgent(ConnectorAbstractFactory.getChatConnectorFactory())
-
-    console.log("Login agnent initialized");
-    //loginAgent.on(Events.LOGIN_ERROR, UISM.handle.loginError);
-    //loginAgent.on(Events.LOGIN_SUCCESS, UISM.handle.loginSuccess);
+    let loginBlock = UI.bakeLoginBlock(initSession.bind(null, loginAgent))
+    util.appendChildren("#main-container", loginBlock)
+    version = islandsVersion()
 }
 
 
@@ -1672,7 +1662,7 @@ function initChat() {
 // ---------------------------------------------------------------------------------------------------------------------------
 // REFACTORING LOGIN
 
-function initSession() {
+function initSession(loginAgent) {
     console.log("Init session called");
     loadingOn()
     let loginBtn = util.$("#vault-login-btn")
