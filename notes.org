@@ -74,6 +74,21 @@ the objects and finished its job.
 
 
 
+* Client-server types of messages
+There are only 3 types of messages:
+1. Regular message.
+   It is transparently processed by the session mechanism and passed on to the consumers
+2. Authentication message.
+   Used for client and server to establish or re-establish the secure
+   connection.
+3. Sync messages.
+   Used to re-synchronize messages between client and server.
+
+Messages of types 2 and 3 should not be delivered to consumers, those are
+internal types.
+
+
+
 * Handling new connections on server
 Whenever new connection opened on the server, there may be 2 possible scenarios:
 1. A brand new connection

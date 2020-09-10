@@ -1,9 +1,12 @@
 const { StateMachine } = require("../../common/AdvStateMachine")
+const { iCrypto } = require("../../common/iCrypto")
+const { createAuthMessage } = require("../../common/Message")
 
 class PendingConnection{
-    constructor({ connector, sessions }){
+    constructor({ connector, sessions, vault }){
         this.connector = connector;
         this.sessions = sessions;
+        this.vault = vault
         this._sm = this._prepareStateMachine()
 
 
@@ -53,8 +56,8 @@ class PendingConnection{
             this._sm.handle.processChallengeResponse(message)
         })
 
-        let vault = getVault()
-        let vaultPublicKey = getVaultPublicKey()
+        let vault = this.vault.getVault()
+        let vaultPublicKey = this.vault.getPublicKey()
 
         let sessionKey = this._createSessionKey()
         let encryptedSessionKey = this._encryptSessionKey(sessionKey, vaultPublicKey)
@@ -80,6 +83,21 @@ class PendingConnection{
     _sendSuccessMessage(connector){
         console.log("Sending success message");
         connector.send("auth", "success")
+    }
+
+    _createSessionKey(){
+        return iCrypto.getBytes(32)
+    }
+
+    _encryptSessionKey(target, publicKey){
+        let ic = new iCrypto()
+        ic.addBlob("key-raw", target)
+          .setRSAKey("pub", publicKey, "public")
+          .publicKeyEncrypt("key-raw", "pub", "key-cipher", "hex")
+        return ic.get("key-cipher")
+    }
+
+    _sendChallenge(sessionKey, vault){
     }
 
     _prepareStateMachine(){
@@ -119,4 +137,9 @@ class PendingConnection{
             }
         }, )
     }
+}
+
+
+module.exports = {
+    pendingConnection: PendingConnection
 }

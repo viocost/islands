@@ -9,6 +9,7 @@ const TorController = require("../old_server/classes/libs/TorController")
 const getPort = require("get-port-sync")
 const { RouterFactory } = require("./lib/RouterFactory");
 const Logger = require("../old_server/classes/libs/Logger");
+const { PendingConnection } = require("./lib/PendingConnection")
 
 const fs = require("fs-extra")
 const path = require("path")
@@ -158,6 +159,8 @@ function activateAccount({vault, requestEmitter, port, host, isAdmin, config}){
 
 
     webService.on('connection', (socket)=>{
+        console.log("New incoming connection");
+        let pendingConnection =
         let publicKey = vault.getPublicKey()
         let vaultKeys = vault.getVault()
         sessions.add({ socket: socket, publicKey: publicKey, encryptedPrivateKey: vaultKeys })
