@@ -240,12 +240,12 @@ class ConnectorSocketIOPassive extends Connector{
     }
 
     hasConnectionQuery(){
-        console.log(`Connection query is ${this._socket.handshake.query}`);
-        return this._socket.handshake.query !== undefined
+        console.log(`Connection query is ${JSON.stringify(this._socket.handshake.query.params)}`);
+        return this._socket.handshake.query.params !== undefined
     }
 
     getConnectionQuery(){
-        return this._socket.handshake.query
+        return this._socket.handshake.query.params
     }
 
     _handleSend(stateMachine, eventName, args){
@@ -257,7 +257,7 @@ class ConnectorSocketIOPassive extends Connector{
     }
 
     _prepareStateMachine(){
-        return new StateMachine({
+        return new StateMachine(this, {
             name: "SocketIO Passive Connector SM",
             stateMap: {
                 active: {

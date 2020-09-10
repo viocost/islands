@@ -1,4 +1,4 @@
-export function WildEmitter() { }
+function WildEmitter() { }
 
 WildEmitter.mixin = function (constructor) {
     var prototype = constructor.prototype || constructor;
@@ -132,3 +132,7 @@ WildEmitter.mixin = function (constructor) {
 
 WildEmitter.mixin(WildEmitter);
 
+
+module.exports = {
+    WildEmitter: WildEmitter
+}

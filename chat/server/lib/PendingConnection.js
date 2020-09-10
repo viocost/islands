@@ -13,7 +13,7 @@ class PendingConnection{
         if(this.connector.hasConnectionQuery()){
             this._sm.handle.reconnect()
         } else {
-            this._sm.handle.connect()
+            this._sm.handle.connect(connector, sessions, vault)
         }
     }
 
@@ -28,8 +28,9 @@ class PendingConnection{
      *
      */
     _handleReconnect(stateMachine, eventName, args){
-        let sessions  = args[1]
         let connector = args[0]
+        let sessions  = args[1]
+        let vault = args[2]
 
         for(let session of sessions){
             if (session.recognizesCipher(connector.getConnectionQuery().nonce)){
@@ -39,6 +40,7 @@ class PendingConnection{
             }
         }
 
+        console.log("Unable to process connection. Dropping...");
         this._sm.handle.fail(connector)
     }
 
@@ -111,13 +113,15 @@ class PendingConnection{
     }
 
     _prepareStateMachine(){
-        return new StateMachine({
+        return new StateMachine(this, {
             name: "Pending connection SM",
             stateMap: {
                 start: {
+                    initial: true,
                     transitions: {
                         connect: {
-                            state: "connecting"
+                            state: "connecting",
+                            actions: this._handleConnect.bind(this)
                         },
 
                         reconnect: {

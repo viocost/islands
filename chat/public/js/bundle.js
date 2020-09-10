@@ -20453,9 +20453,8 @@ var Message = /*#__PURE__*/function () {
   return Message;
 }();
 
-function createClientIslandEnvelope() {
-  var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-      pkfpSource = _ref.pkfpSource,
+function createClientIslandEnvelope(_ref) {
+  var pkfpSource = _ref.pkfpSource,
       pkfpDest = _ref.pkfpDest,
       command = _ref.command,
       _ref$version = _ref.version,
@@ -20463,7 +20462,6 @@ function createClientIslandEnvelope() {
       _ref$body = _ref.body,
       body = _ref$body === void 0 ? {} : _ref$body,
       privateKey = _ref.privateKey;
-
   var message = new Message(version);
   message.headers.pkfpSource = pkfpSource;
   message.headers.pkfpDest = pkfpDest;

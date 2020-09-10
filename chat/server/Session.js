@@ -47,15 +47,22 @@ class ClientSession extends Session {
     }
 
 
-    tryReconnection(socket){
-        let secretEncrypted = socket.getSessionSecret()
-        if(this._isSecretIdentified()){
-            this._sm.handle.reconnect(socket)
-        }
+    /////////////////////////////////////////////////////////
+    // tryReconnection(socket){                            //
+    //     let secretEncrypted = socket.getSessionSecret() //
+    //     if(this._isSecretIdentified()){                 //
+    //         this._sm.handle.reconnect(socket)           //
+    //     }                                               //
+    // }                                                   //
+    /////////////////////////////////////////////////////////
+
+    replaceConnection(connector){
+        this._connector = connector
+
     }
 
     //Given nonce tries to decrypt it with session key
-    doesDecrypt(nonce){
+    recognizesCipher(nonce){
         return false
     }
 
