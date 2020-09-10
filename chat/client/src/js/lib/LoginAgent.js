@@ -29,6 +29,7 @@
 import { ConnectorEvents } from "./Connector"
 import { StateMachine } from "../../../../common/AdvStateMachine";
 import { Message } from "../../../../common/Message";
+import { iCrypto } from "../../../../common/iCrypto"
 
 
 export class LoginAgent{
@@ -43,7 +44,8 @@ export class LoginAgent{
 
 
     acceptPassword(password){
-        this.sm.handle.acceptPassword(password)
+        this._password = password;
+        this.sm.handle.passwordAccepted(password)
     }
 
 
@@ -79,7 +81,8 @@ export class LoginAgent{
                 case("challenge"): {
                     let challenge = msg.data
                     if(challenge.sessionKey && challenge.privateKey){
-                        this.sm.handle.acceptChallenge(challenge)
+                        this._challenge = challenge
+                        this.sm.handle.challengeAccepted(challenge)
                     }
                 }
             }
@@ -100,21 +103,50 @@ export class LoginAgent{
 
     }
 
-    _acceptChallenge(stateMachine, eventName, args){
-        this._challenge = args[0]
-    }
-
-    _acceptPassword(stateMachine, eventName, args){
-        console.log("Saving password");
-        this._password = args[0]
-    }
-
 
     _handleFailed(stateMachine, eventName, args){
         console.log("Login agent failed");
     }
 
     _tryDecrypt(stateMachine, eventName, args){
+        console.log("Trying to decrypt the challenge");
+
+        console.log("Decrypting vault...");
+        let password = this._password;
+
+        let ic = new iCrypto();
+        let data;
+
+        try{
+            ic.addBlob("s16", this._challenge.privateKey.substring(0, 256))
+                .addBlob("v_cip", this._challenge.privateKey.substr(256))
+                .hexToBytes("s16", "salt")
+                .createPasswordBasedSymKey("sym", password, "s16")
+                .AESDecrypt("v_cip", "sym", "vault_raw", true)
+
+            data = JSON.parse(ic.get("vault_raw"));
+            this.vaultRaw = data;
+            // Temporary. Later vault will be fetched separately.
+            // Login agent will only fetch specific keys
+        } catch (err){
+            this.sm.handle.decryptError(err);
+            return;
+        }
+
+        // Populating new object
+        ic.setRSAKey("pub", data.publicKey, "public")
+            .getPublicKeyFingerprint("pub", "pkfp");
+
+        this.vaultRaw.pkfp = ic.get("pkfp")
+        //decrypt session key
+
+        ic.setRSAKey("secret_k", this.vaultRaw.privateKey, "private")
+          .addBlob("session_k", this._challenge.sessionKey)
+          .privateKeyDecrypt("session_k", "secret_k", "session_k_raw", "hex")
+        this.sessionKeyRaw = ic.get("session_k_raw");
+
+        console.log("Session key decrypted");
+        this.sm.handle.decryptSuccess(ic.get("session_k_raw"));
 
     }
 
@@ -132,23 +164,20 @@ export class LoginAgent{
                     initial: true,
                     transitions: {
 
-                        acceptPassword: {
+                        passwordAccepted: {
                             state: "noVaultHasPassword",
-                            actions: this._acceptPassword.bind(this)
                         },
 
-                        acceptChallenge:{
+                        challengeAccepted:{
                             state: "hasVaultNoPassword",
-                            actions: this._acceptChallenge.bind(this)
                         }
                     }
                 },
 
                 noVaultHasPassword: {
                     transitions: {
-                        acceptChallenge:{
+                        challengeAccepted:{
                             state: "hasVaultNoPassword",
-                            actions: this._acceptChallenge.bind(this)
                         }
 
                     }
@@ -158,7 +187,7 @@ export class LoginAgent{
 
                 hasVaultNoPassword: {
                     transitions: {
-                        acceptPassword: {
+                        passwordAccepted: {
                             state: "decrypting"
                         }
                     }
