@@ -28,13 +28,16 @@
 
 import { ConnectorEvents } from "./Connector"
 import { StateMachine } from "../../../../common/AdvStateMachine";
+import { Message } from "../../../../common/Message";
 
 
 export class LoginAgent{
     constructor(connectorFactory){
+
         this.sm = this._prepareStateMachine()
         this.connector = this._prepareConnector(connectorFactory);
         this.connector.connect()
+
     }
 
 
@@ -69,6 +72,21 @@ export class LoginAgent{
             console.log(`message received: ${event.toString()}, ${data}`);
         })
 
+        connector.on("auth", msg=>{
+            console.log(`Auth message received ${msg.headers.command}`);
+            msg = Message.from(msg)
+            switch(msg.command){
+                case("challenge"): {
+                    let challenge = msg.data
+                    if(challenge.sessionKey && challenge.privateKey){
+                        this.sm.handle.acceptChallenge(challenge)
+                    }
+                }
+            }
+
+
+
+        })
         return connector;
     }
 
@@ -83,8 +101,7 @@ export class LoginAgent{
     }
 
     _acceptChallenge(stateMachine, eventName, args){
-        console.log("Accepting challengte");
-
+        this._challenge = args[0]
     }
 
     _acceptPassword(stateMachine, eventName, args){
@@ -104,6 +121,8 @@ export class LoginAgent{
     _notifyLoginError(stateMachine, eventName, args){
        
     }
+
+
 
     _prepareStateMachine(){
         return new StateMachine(this, {

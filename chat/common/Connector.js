@@ -194,7 +194,6 @@ class ConnectorSocketIO extends Connector{
 
         socket.on('disconnect', ()=>{
             this._sm.handle.expired()
-            this.emit("disconnect")
         });
 
         socket.on('connect_timeout', ()=>{
@@ -210,6 +209,11 @@ class ConnectorSocketIO extends Connector{
                 reconnectTimeout: reconnectTimeout
             })
         });
+
+
+        socket.on("*", (event, data)=>{
+            this.emit(event, data)
+        })
 
         return socket;
     }

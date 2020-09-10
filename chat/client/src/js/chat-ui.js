@@ -8,9 +8,7 @@ import "../css/chat.sass"
 import "../css/vendor/loading.css";
 import * as CuteSet from "cute-set";
 import { Topic } from "./lib/Topic";
-import { ArrivalHub } from "./lib/ArrivalHub"
 import { TopicRetriever } from "./lib/TopicRetriever";
-import { AuthenticationAgent } from "./lib/AuthenticationAgent";
 import { TopicCreator } from "./lib/TopicCreator";
 import { ChatUtility } from "./lib/ChatUtility";
 import { Vault } from "./lib/Vault";
@@ -18,7 +16,7 @@ import { VaultRetriever } from "./lib/VaultRetriever"
 import { TopicJoinAgent } from "./lib/TopicJoinAgent";
 import { ConnectionIndicator } from  "./ui/ConnectionIndicator";
 import { LoginAgent, LoginAgentEvents } from "./lib/LoginAgent";
-import { ConnectorAbstractFactory } from "./lib/Connector"
+import { ConnectorAbstractFactory } from "../../../common/Connector"
 //import { runConnectorTest } from "./test/connector"
 // TEMP IMPORTS FOR FURTHER REFACTORING
 import { iCrypto } from "../../../common/iCrypto";
@@ -130,31 +128,6 @@ function initLogin(){
     //loginAgent.on(Events.LOGIN_ERROR, UISM.handle.loginError);
     //loginAgent.on(Events.LOGIN_SUCCESS, UISM.handle.loginSuccess);
 }
-
-//Called when document content loaded
-function init(){
-
-    loadSounds();
-    MainView.setLoginView({ onLoginClick: initSession })
-
-    version = islandsVersion()
-    console.log("INITIALIZINGF");
-    // establish connection with island
-
-    connector = new Connector("/chat");
-
-    arrivalHub = new ArrivalHub(connector);
-    const authAgent = new AuthenticationAgent({version: version, connector: connector, arrivalHub: arrivalHub})
-    window.connector = connector;
-    connector.establishConnection();
-
-    // request auth
-    // if vault exist
-    //    - show login screen
-    // else
-    //    - show registrations
-}
-
 
 
 

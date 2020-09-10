@@ -64,6 +64,7 @@ class PendingConnection{
         let sessionKey = this._createSessionKey()
         let encryptedSessionKey = this._encryptSessionKey(sessionKey, vaultPublicKey)
 
+        console.log("Sedning cahllenge to client");
         this._sendChallenge(encryptedSessionKey, vault);
 
     }
