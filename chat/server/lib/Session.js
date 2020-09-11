@@ -64,6 +64,7 @@ class Session{
         this._keyAgent = keyAgent;
         this._messageQueue = new MessageQueue()
         this._bootstrapConnector(connector);
+        this._incomingCounter = new SeqCounter();
     }
 
 
@@ -74,10 +75,22 @@ class Session{
     _processIncomingMessage(stateMachine, eventName, args){
         let msg = JSON.parse(this._keyAgent.decrypt(args[0]))
 
+        if(!this._incomingCounter.accept(msg.seq)){
+            this._sm.handle.sendPing()
+        }
+
     }
 
     _processOutgoingMessage(stateMachine, eventName, args){
 
+    }
+
+    _processSendPing(stateMachine, eventName, args){
+        let payload = this._keyAgent.encrypt(JSON.stringify({
+            command: "ping",
+            seq: this._incomingCounter.get()
+        }))
+        this._connector.send("sync", payload)
     }
 
     _commitSuicide(stateMachine, eventName, args){
@@ -106,6 +119,11 @@ class Session{
                     initial: true,
                     transitions: {
                         sync: {
+
+                        },
+
+                        sendPing: {
+                            actions: this._processSendPing.bind(this)
 
                         },
 
@@ -152,7 +170,47 @@ class Session{
 
 }
 
+class SeqCounter{
+    constructor(){
+        this._counter = 0
+    }
+
+    get(){
+        return this._counter
+    }
+
+    accept(seq){
+        if(seq !== this._counter + 1){
+            return false
+        }
+
+        this._counter++
+        return true;
+    }
+
+}
+
+class SessionEnvelope{
+    constructor(seq, payload){
+        this.seq = seq;
+        this.payload = payload;
+    }
+
+    static from(blob){
+        if(typeof blob === "string"){
+            blob = JSON.parse(blob)
+        }
+        return new SessionEnvelope(blob.seq, blob.payload)
+    }
+}
+
 const SessionEvents = {
     DEAD: Symbol("dead"),
     MESSAGE: Symbol("message")
+}
+
+
+module.exports = {
+    Session: Session,
+    SessionEvents: SessionEvents
 }
