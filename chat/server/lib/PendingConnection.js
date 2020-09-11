@@ -1,13 +1,14 @@
 const { StateMachine } = require("../../common/AdvStateMachine")
 const { iCrypto } = require("../../common/iCrypto")
 const { createAuthMessage, Message } = require("../../common/Message")
-const { CryptoAgentFactory } = require("../../common/CryptoAgent")
+const { SymCryptoAgentFactory, AsymPublicCryptoAgentFactory } = require("../../common/CryptoAgent")
 
 class PendingConnection{
     constructor({ connector, sessions, vault }){
         this.connector = connector;
         this.sessions = sessions;
         this.vault = vault
+        this.sessionKeyAgent;
         this._sm = this._prepareStateMachine()
 
 
@@ -63,10 +64,14 @@ class PendingConnection{
         let vault = this.vault.getVault()
         let vaultPublicKey = this.vault.getPublicKey()
 
-        let sessionKeyAgent = CryptoAgentFactory.makeSessionCryptoAgent();
+        let sessionKeyAgent = SymCryptoAgentFactory.make();
 
-        let encryptedSessionKey = this._encryptSessionKey(sessionKeyAgent.getKey(), vaultPublicKey)
-        this.sessionKey = sessionKey;
+        let vaultPublicKeyAgent = AsymPublicCryptoAgentFactory.make(vaultPublicKey)
+
+        console.log(`Session key is ${sessionKeyAgent.getKey()}`);
+
+        let encryptedSessionKey = vaultPublicKeyAgent.encrypt(sessionKeyAgent.getKey())
+        this.sessionKeyAgent = sessionKeyAgent;
         this.controlNonce = controlNonce;
 
         console.log("Sedning cahllenge to client");
@@ -129,13 +134,6 @@ class PendingConnection{
     }
 
 
-    _encryptSessionKey(target, publicKey){
-        let ic = new iCrypto()
-        ic.addBlob("key-raw", target)
-          .setRSAKey("pub", publicKey, "public")
-          .publicKeyEncrypt("key-raw", "pub", "key-cipher", "hex")
-        return ic.get("key-cipher")
-    }
 
     _sendChallenge(sessionKey, vault, nonceEncrypted){
         console.log("Sending challenge");

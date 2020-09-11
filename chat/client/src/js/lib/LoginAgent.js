@@ -30,7 +30,7 @@ import { ConnectorEvents } from "./Connector"
 import { StateMachine } from "../../../../common/AdvStateMachine";
 import { Message, createAuthMessage } from "../../../../common/Message";
 import { iCrypto } from "../../../../common/iCrypto"
-import { CryptoAgentFactory } from "../../../../common/CryptoAgent"
+import { SymCryptoAgentFactory, AsymFullCryptoAgentFactory, AsymPublicCryptoAgentFactory } from "../../../../common/CryptoAgent"
 import { WildEmitter } from "../../../../common/WildEmitter"
 
 
@@ -113,7 +113,8 @@ export class LoginAgent{
 
     _initializeSession(stateMachine, eventName, args){
         //Init session, arrival hub, topic loader etc
-       
+
+
 
     }
 
@@ -132,14 +133,12 @@ export class LoginAgent{
         let data;
 
         try{
-            ic.addBlob("s16", this._challenge.privateKey.substring(0, 256))
-                .addBlob("v_cip", this._challenge.privateKey.substr(256))
-                .hexToBytes("s16", "salt")
-                .createPasswordBasedSymKey("sym", password, "s16")
-                .AESDecrypt("v_cip", "sym", "vault_raw", true)
+            let salt = this._challenge.privateKey.substring(0, 256)
+            let vaultSymKey = SymCryptoAgentFactory.makeHexFromPassword(password, salt)
+            let vaultCipher = this._challenge.privateKey.substr(256)
+            let vaultRaw = JSON.parse(vaultSymKey.decrypt(vaultCipher));
+            this.vaultRaw = vaultRaw;
 
-            data = JSON.parse(ic.get("vault_raw"));
-            this.vaultRaw = data;
             // Temporary. Later vault will be fetched separately.
             // Login agent will only fetch specific keys
         } catch (err){
@@ -147,27 +146,21 @@ export class LoginAgent{
             return;
         }
 
-        // Populating new object
-        ic.setRSAKey("pub", data.publicKey, "public")
-            .getPublicKeyFingerprint("pub", "pkfp");
+        let vaultPrivateKey = AsymFullCryptoAgentFactory.make(this.vaultRaw.privateKey)
 
-        this.vaultRaw.pkfp = ic.get("pkfp")
+
+        this.vaultRaw.pkfp = vaultPrivateKey.getPkfp()
+        
         //decrypt session key
 
-        ic.setRSAKey("secret-k", this.vaultRaw.privateKey, "private")
-          .addBlob("session-k", this._challenge.sessionKey)
-          .privateKeyDecrypt("session-k", "secret-k", "session-k-raw-hex", "hex")
-        this.sessionKeyRaw = ic.get("session-k-raw-hex");
-        console.log(`SESSION KEY ${this.sessionKeyRaw}`);
+        let sessionKey = vaultPrivateKey.decrypt(this._challenge.sessionKey)
 
-        //Encrypting control nonce for the server
-        ic.addBlob("nonce-raw-hex", this._challenge.nonceEncrypted)
-          .hexToBytes('nonce-raw-hex', "nonce-raw")
-          .hexToBytes("session-k-raw-hex", "session-k-raw")
-          .AESEncrypt('nonce-raw', "session-k-raw", "nonce-enc", true)
+        let sessionKeyAgent = SymCryptoAgentFactory.make(sessionKey)
+        this.sessionKeyAgent = sessionKeyAgent
+        console.log(`SESSION KEY ${sessionKeyAgent.getKey()}`);
 
-        console.log("Session key decrypted");
-        this.sm.handle.decryptSuccess(ic.get("session-k-raw-hex"), ic.get("nonce-enc"));
+        let nonceEncrypted = sessionKeyAgent.encrypt(this._challenge.nonceEncrypted)
+        this.sm.handle.decryptSuccess(sessionKeyAgent.getKey(), nonceEncrypted);
 
     }
 
