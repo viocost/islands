@@ -108,14 +108,12 @@ class PendingConnection{
                 return
             } else {
                 console.log("Control nonce verification successful");
+                this._sm.handle.solutionValid()
             }
         }catch(err){
             console.log(`Error while decrypting a message: ${err}. Shutting down`);
             this._sm.handle.fail()
         }
-
-
-
     }
 
     _handleFail(stateMachine, eventName, args){
@@ -144,6 +142,16 @@ class PendingConnection{
         })
 
         this.connector.send("auth", msg)
+    }
+
+    /**
+     * Called after successful authentication
+     * Initializes new session, message queue etc
+     */
+    _initSession(stateMachine, eventName, args){
+        let session  = new Session()
+
+
     }
 
     _prepareStateMachine(){
@@ -180,7 +188,7 @@ class PendingConnection{
                         },
 
                         solutionValid: {
-                            state: "done"
+                            state: "initializing"
                         },
 
                         fail: {
@@ -189,6 +197,20 @@ class PendingConnection{
 
                     }
 
+
+                },
+
+                initizlizing: {
+                    entry: this._initSession.bind(this),
+                    transitions: {
+                        done: {
+                            state: "done"
+                        },
+
+                        fail: {
+                            state: "failed"
+                        }
+                    }
 
                 },
 
