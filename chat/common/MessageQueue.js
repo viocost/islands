@@ -21,16 +21,6 @@ class MessageQueue{
         }
     }
 
-    dequeueAll(){
-        let allEnqueued = this._queue;
-        this._queue = []
-
-        for(let msg of allEnqueued){
-            this._sent.push(msg)
-        }
-        return allEnqueued;
-    }
-
     sync(lastSeq){
         let lastSeenMessage = this._sent.find(e=>e.seq === lastSeq)
         if(lastSeenMessage){

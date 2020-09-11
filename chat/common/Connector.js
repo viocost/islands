@@ -333,7 +333,7 @@ class ConnectorAbstractFactory{
 
 
 const ConnectorEvents = {
-    CONNECTING: Symbol("dead"),
+    CONNECTING: Symbol("connecting"),
     CONNECTED: Symbol("connect"),
     DEAD: Symbol("dead"),
 }
