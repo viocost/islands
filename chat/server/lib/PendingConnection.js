@@ -99,13 +99,10 @@ class PendingConnection{
     _handleVerifySolution(stateMachine, eventName, args){
         try{
             let nonceEncrypted = args[0]
-            let ic = new iCrypto()
-            ic.addBlob("nonce-enc", nonceEncrypted)
-              .addBlob("session-key-hex", this.sessionKey)
-              .hexToBytes("session-key-hex", "session-key")
-              .AESDecrypt("nonce-enc", "session-key", "nonce-raw", true)
-              .bytesToHex("nonce-raw", "nonce-hex")
-            if(ic.get("nonce-hex" !== this.controlNonce)){
+            let nonceDecrypted = this.sessionKeyAgent.decrypt(nonceEncrypted)
+
+            console.log(`Nonce decrypted: ${nonceDecrypted} \nControl nonce: ${this.controlNonce}`);
+            if(nonceDecrypted !== this.controlNonce){
                 console.log("Error, solution is invalid. Shutting down");
                 this._sm.handle.solutionInvalid()
                 return
