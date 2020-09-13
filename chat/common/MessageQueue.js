@@ -5,7 +5,7 @@ class MessageQueue{
         this._id = iCrypto.hexEncode(iCrypto.getBytes(16))
         this._seq = 0
         this._queue = []
-        this._sent = []
+        this._dequeued = []
 
     }
 
@@ -16,17 +16,18 @@ class MessageQueue{
     dequeue(){
         let msg = this._queue.splice(0, 1)[0]
         if(msg){
-            this._sent.push(msg)
+            this._dequeued.push(msg)
             return msg;
         }
     }
 
     sync(lastSeq){
-        let lastSeenMessage = this._sent.find(e=>e.seq === lastSeq)
+        let lastSeenMessage = this._dequeued.find(e=>e.seq === lastSeq)
         if(lastSeenMessage){
-            let lastSeqIndex = this._sent.indexOf(lastSeenMessage)
-            this._sent.splice(0, lastSeqIndex+1);
-            return [...this._sent];
+            let lastSeqIndex = this._dequeued.indexOf(lastSeenMessage)
+            this._dequeued.splice(0, lastSeqIndex+1);
+            this._queue = [...this._dequeued, ...this._queue]
+            this._dequeued = []
         }
     }
 

@@ -77,11 +77,15 @@ class Session{
 
         if(!this._incomingCounter.accept(msg.seq)){
             this._sm.handle.sendPing()
+        } else {
+            console.log("Emitting a message");
+            this.emit(SessionEvents.MESSAGE, msg.payload)
         }
-
     }
 
     _processOutgoingMessage(stateMachine, eventName, args){
+        this._messageQueue.enqueue(args[0])
+        this._sm.handle.processQueue()
 
     }
 

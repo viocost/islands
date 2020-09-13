@@ -14,31 +14,35 @@ describe("Message queue test", ()=>{
         mq.enqueue("hello7")
         console.log(`Last seq: ${ mq.lastSeq}`);
         let m;
+
+        let count = 0;
+        console.log("Dequeueing 1-7");
         while(m = mq.dequeue()){
+            assert(m.seq === ++count)
             console.log(` Dequeued: ${m.seq} ${m.message}`);
         }
         assert(mq.lastSeq === 7)
 
-        let unseen = mq.sync(3);
+        mq.sync(3);
 
-        assert(unseen.length === 4)
-        assert(mq._sent.length === 4)
-        assert(mq._sent[0].seq === 4)
+        assert(mq._queue.length === 4)
+        assert(mq._dequeued.length === 0)
 
-        unseen = mq.sync(3)
-        assert(unseen === undefined)
-
-        unseen = mq.sync(5)
-        assert(unseen.length === 2)
-        assert(unseen[0].seq === 6)
-
+        console.log("Dequeueing 4-10");
         mq.enqueue("hello8")
         mq.enqueue("hello9")
         mq.enqueue("hello10")
 
-        let all = mq.dequeueAll()
-        assert(all.length = 3)
-        console.log(mq.id);
+
+        count = 3
+        while(m = mq.dequeue()){
+
+            assert(m.seq === ++count)
+            console.log(` Dequeued: ${m.seq} ${m.message}`);
+        }
+        mq.sync(10);
+        assert(mq._queue.length ===0)
+        assert(mq._dequeued.length ===0)
         console.log("Test completed");
 
     })
