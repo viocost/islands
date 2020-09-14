@@ -339,6 +339,6 @@ const ConnectorEvents = {
 }
 
 module.exports = {
-    ConnectorEvent: ConnectorEvents,
+    ConnectorEvents: ConnectorEvents,
     ConnectorAbstractFactory: ConnectorAbstractFactory
 }

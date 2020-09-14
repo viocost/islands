@@ -134,9 +134,10 @@ class Session{
     _processQueue(stateMachine, eventName, args){
         let message;
         while(message = this._messageQueue.dequeue()){
-            for(let preProcessor of this._preprocessors){
-                message = preProcessor.process(message)
+            for(let preProcessor of this._outgoingMessagePreprocessors){
+                message = preProcessor(message)
             }
+
             this._connector.send(MessageTypes.MESSAGE, message)
         }
 
@@ -185,8 +186,7 @@ class Session{
                         },
 
                         processQueue: {
-                            actions: this._processQueue.bind(this);
-
+                            actions: this._processQueue.bind(this)
                         },
 
                         connectorDisconnected: {
@@ -286,7 +286,7 @@ const MessageTypes = {
 }
 
 class SessionFactory{
-    makeRegularSession(connector, cryptoAgent){
+    static makeRegularSession(connector, cryptoAgent){
         let jsonPreprocessor = (msg)=>{
             if(typeof msg !== "string"){
                 return JSON.stringify(msg)
@@ -301,13 +301,13 @@ class SessionFactory{
         let session = new Session(connector);
         session.setOutgoingMessagePreprocessors([jsonPreprocessor, cryptoPreprocessor])
         session.setIncomingMessagePreprocessors([cryptoPreprocessor, jsonPreprocessor])
+        return session
     }
-
-
 
 }
 
 module.exports = {
+    SessionFactory: SessionFactory,
     SessionEvents: SessionEvents,
     MessageTypes: MessageTypes
 }
