@@ -34,8 +34,9 @@ class MessageQueue{
     get lastSeq(){
         return this._seq;
     }
-
 }
+
+
 
 module.exports = {
     MessageQueue: MessageQueue

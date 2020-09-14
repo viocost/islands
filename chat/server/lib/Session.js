@@ -1,20 +1,52 @@
 /**
- * Session is the object that transparently processes messages to and
- * from client, maintains message queue and keep track of messages it
- * sent and received.
+ * Session identifies a single authenticated multiplexed connection between the client
+ * and the server, transparently processes messages to and
+ * from client, maintains message queue and keep track of messages sent and received.
  *
  * It is responsible for keeping messages in-sync and re-sending missed messages
  *
  * When session is started - it is given authenticated connector and the session key agent
  * Once initialized - it is ready to work.
  *
- *
- * The is immediately thrown away on disconnect, then the session sets timer and waits for client reconnect.
+ * The connector immediately thrown away on disconnect, then the session sets timer and waits for client reconnect.
  * If client re-connects - the session replaces the connector, resyncs and continues
  * Otherwise, the timer will expire and the session will be removed from the list of active sessions
  *
- * Whenever session sends a message, it passes it through a queue. Each message is given seq number.
- * All the messages pushed to a connector in the order of their seq number.
+ * Session accepts and enqueues messages while active or on timeout!
+ * After timeout session no longer accepts messages.
+ *
+ * Session does not process messages from the connector while on timeout,
+ * if such situation ever occurs.
+ *
+ * Message types
+ * There are 3 types of messages:
+ * "sync" - for resyncronization protocol
+ * "auth" - for reconnection and reauth
+ * "message" - regular message
+ * Only "message" type messages are processed by queue and all preprocessors.
+ * "auth" and "sync" are handled differently
+ *
+ * Sending messages to the client steps:
+ * 1. Message is enqueued
+ * 2. Queue processing scheduled
+ * 3. While there are messages in the queue
+ *    - message dequeued
+ *    - message processed
+ *    - message pushed thruough connector
+ *
+ * Receiving messages from the client, steps:
+ *
+ * 1. Message received at connector.
+ * 2. Message pre-processed
+ * 3. Message is checked by message counter,
+ * 4. If it is in order - it is pushed to the sink, otherwise dropped
+ *
+ *
+ *
+ *
+ *
+ *
+ *
  *
  * Syncing messages.
  * Session sends ping messages every n seconds with lastMessageSeen seq.
@@ -57,19 +89,30 @@ const { WildEmitter } = require("../../common/WildEmitter")
 const { ConnectorEvents } = require("../../common/Connector")
 
 class Session{
-    constructor(connector, keyAgent){
+    constructor(connector){
         WildEmitter.mixin(this)
+        this._messageQueue = new MessageQueue()
+        this._incomingCounter = new SeqCounter();
         this._sm = this._prepareStateMachine()
         this._connector = connector;
-        this._keyAgent = keyAgent;
-        this._messageQueue = new MessageQueue()
+        this._incomingMessagePreprocessors = [];
+        this._outgoingMessagePreprocessors = [];
         this._bootstrapConnector(connector);
-        this._incomingCounter = new SeqCounter();
     }
 
-
-    send(message){
+    /**
+     * The main method to call for sending message to the client
+     */
+    acceptMessage(message){
         this._sm.handle.outgoingMessage(message)
+    }
+
+    setOutgoingMessagePreprocessors(arr){
+        this._outgoingMessagePreprocessors = arr
+    }
+
+    setIncomingMessagePreprocessors(arr){
+        this._incomingMessagePreprocessors = arr
     }
 
     _processIncomingMessage(stateMachine, eventName, args){
@@ -86,6 +129,16 @@ class Session{
     _processOutgoingMessage(stateMachine, eventName, args){
         this._messageQueue.enqueue(args[0])
         this._sm.handle.processQueue()
+    }
+
+    _processQueue(stateMachine, eventName, args){
+        let message;
+        while(message = this._messageQueue.dequeue()){
+            for(let preProcessor of this._preprocessors){
+                message = preProcessor.process(message)
+            }
+            this._connector.send(MessageTypes.MESSAGE, message)
+        }
 
     }
 
@@ -106,11 +159,11 @@ class Session{
             this._sm.handle.connectorDisconnected();
         })
 
-        connector.on("sync", msg=>{
+        connector.on(MessageTypes.SYNC, msg=>{
             this._sm.handle.sync(msg);
         })
 
-        connector.on("message", msg=>{
+        connector.on(MessageTypes.MESSAGE, msg=>{
             this._sm.handle.incomingMessage(msg)
         })
     }
@@ -128,6 +181,11 @@ class Session{
 
                         sendPing: {
                             actions: this._processSendPing.bind(this)
+
+                        },
+
+                        processQueue: {
+                            actions: this._processQueue.bind(this);
 
                         },
 
@@ -194,6 +252,14 @@ class SeqCounter{
 
 }
 
+
+function prepareMessageProcessor(lambda){
+    return (msg)=>{
+        return lambda(msg)
+    }
+}
+
+
 class SessionEnvelope{
     constructor(seq, payload){
         this.seq = seq;
@@ -213,8 +279,35 @@ const SessionEvents = {
     MESSAGE: Symbol("message")
 }
 
+const MessageTypes = {
+    AUTH: "auth",
+    SYNC: "sync",
+    MESSAGE: "message"
+}
+
+class SessionFactory{
+    makeRegularSession(connector, cryptoAgent){
+        let jsonPreprocessor = (msg)=>{
+            if(typeof msg !== "string"){
+                return JSON.stringify(msg)
+            }
+            return msg
+        }
+
+        let cryptoPreprocessor = (msg)=>{
+            return cryptoAgent.encrypt(msg)
+        }
+
+        let session = new Session(connector);
+        session.setOutgoingMessagePreprocessors([jsonPreprocessor, cryptoPreprocessor])
+        session.setIncomingMessagePreprocessors([cryptoPreprocessor, jsonPreprocessor])
+    }
+
+
+
+}
 
 module.exports = {
-    Session: Session,
-    SessionEvents: SessionEvents
+    SessionEvents: SessionEvents,
+    MessageTypes: MessageTypes
 }

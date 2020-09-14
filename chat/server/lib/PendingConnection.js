@@ -87,9 +87,6 @@ class PendingConnection{
                 break
             }
         }
-
-
-
     }
 
     /**
@@ -147,9 +144,13 @@ class PendingConnection{
     /**
      * Called after successful authentication
      * Initializes new session, message queue etc
+     *
      */
     _initSession(stateMachine, eventName, args){
         let session  = new Session()
+       
+       
+
 
 
     }
