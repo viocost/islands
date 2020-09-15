@@ -2,6 +2,9 @@ const { StateMachine } = require("../../common/AdvStateMachine")
 const { iCrypto } = require("../../common/iCrypto")
 const { createAuthMessage, Message } = require("../../common/Message")
 const { SymCryptoAgentFactory, AsymPublicCryptoAgentFactory } = require("../../common/CryptoAgent")
+const { SessionFactory } = require("../lib/Session");
+const { AuthMessage } = require("../../common/AuthMessage")
+
 
 class PendingConnection{
     constructor({ connector, sessions, vault }){
@@ -82,7 +85,7 @@ class PendingConnection{
     _processAuthMessage(msg){
         msg = Message.from(msg)
         switch(msg.command){
-            case("challenge_solution"): {
+            case(AuthMessage.CHALLENGE_SOLUTION): {
                 this._sm.handle.verifySolution(msg.data);
                 break
             }
@@ -121,7 +124,7 @@ class PendingConnection{
 
     _sendSuccessMessage(connector){
         console.log("Sending success message");
-        let msg = createAuthMessage({ command: "auth_ok", data: null })
+        let msg = createAuthMessage({ command: AuthMessage.AUTH_OK, data: null })
         this.connector.send("auth", msg)
     }
 
@@ -143,15 +146,16 @@ class PendingConnection{
 
     /**
      * Called after successful authentication
-     * Initializes new session, message queue etc
+     * Initializes new session, hands it a connector and crypto agent
+     * sends "auth_ok" message to the client,
+     * exits
      *
      */
     _initSession(stateMachine, eventName, args){
-        let session  = new Session()
-       
-       
 
-
+        let session  = SessionFactory.makeServerSessionV1(this.connector, this.sessionKeyAgent);
+        this.sessions.addSession(session)
+        this._sendSuccessMessage()
 
     }
 
@@ -246,6 +250,7 @@ class PendingConnection{
         }, )
     }
 }
+
 
 
 module.exports = {

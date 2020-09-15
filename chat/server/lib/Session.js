@@ -5,6 +5,8 @@
  *
  * It is responsible for keeping messages in-sync and re-sending missed messages
  *
+ ** INITIALIZATION
+ *
  * When session is started - it is given authenticated connector and the session key agent
  * Once initialized - it is ready to work.
  *
@@ -286,7 +288,7 @@ const MessageTypes = {
 }
 
 class SessionFactory{
-    static makeRegularSession(connector, cryptoAgent){
+    static makeServerSessionV1(connector, cryptoAgent){
         let jsonPreprocessor = (msg)=>{
             if(typeof msg !== "string"){
                 return JSON.stringify(msg)
