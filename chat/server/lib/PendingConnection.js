@@ -6,6 +6,7 @@ const { SessionFactory } = require("../lib/Session");
 const { AuthMessage } = require("../../common/AuthMessage")
 
 
+
 class PendingConnection{
     constructor({ connector, sessions, vault }){
         this.connector = connector;
@@ -144,6 +145,10 @@ class PendingConnection{
         this.connector.send("auth", msg)
     }
 
+    _handleReauth(stateMachine, eventName, args){
+        console.log("Reauthenticating");
+    }
+
     /**
      * Called after successful authentication
      * Initializes new session, hands it a connector and crypto agent
@@ -154,7 +159,7 @@ class PendingConnection{
     _initSession(stateMachine, eventName, args){
 
         let session  = SessionFactory.makeServerSessionV1(this.connector, this.sessionKeyAgent);
-        this.sessions.addSession(session)
+        this.sessions.add(session)
         this._sendSuccessMessage()
 
     }
@@ -220,6 +225,7 @@ class PendingConnection{
                 },
 
                 reauthenticating: {
+                    entry: this._handleReauth.bind(this),
                     transitions: {
                         solutionInvalid: {
                             state: "failed"

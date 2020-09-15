@@ -94,6 +94,13 @@ Whenever new connection opened on the server, there may be 2 possible scenarios:
 1. A brand new connection
 2. Reconnection with the connection query
 
+Every new connections is handled by PendingConnection. It handles both cases.
+When PendingConnection detects a connection query it is switched into a
+reconnection mode. Otherwise it creates new session.
+
+
+
+
 On a brand new connection there must be following steps taken:
    1. Server should find corresponding vault
    2. Generate a session key

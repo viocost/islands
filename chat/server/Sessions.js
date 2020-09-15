@@ -9,26 +9,9 @@ class Sessions{
         this._sessions = [];
     }
 
-    //Socket here is socket wrapper around socket.io
-    add({socket, publicKey, encryptedPrivateKey}){
-        if(socket.handshake.query){
-            for(let session of this._sessions){
-                if(session.doesDecrypt(socket.handshake.query)){
-                    session.replaceSocket(socket)
-                    return
-                }
-            }
-            console.log("No existing session was able to decrypt challenge. Creating new session");
-        }
-
-        let session = new ClientSession({
-            socket: socket,
-            publicKey: publicKey,
-            encryptedPrivateKey: encryptedPrivateKey
-        });
-        this._sessions.push(session);
+    add(session){
+        this._sessions.push(session)
     }
-
     // ---------------------------------------------------------------------------------------------------------------------------
     // Private methods
 

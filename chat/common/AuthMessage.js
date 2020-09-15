@@ -1,3 +1,6 @@
+/**
+ * Session auth messages
+ */
 const AuthMessage = {
     CHALLENGE: "challenge",
     CHALLENGE_SOLUTION: "challenge_soulution",
