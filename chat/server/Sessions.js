@@ -12,8 +12,17 @@ class Sessions{
     add(session){
         this._sessions.push(session)
     }
+
+    get pausedSessions(){
+        return this._sessions.filter(session =>{
+            return session.isPaused()
+        })
+    }
+
     // ---------------------------------------------------------------------------------------------------------------------------
     // Private methods
+
+
 
     _subscribeToSessionEvents(session){
         session.on("kill_me", ()=>{

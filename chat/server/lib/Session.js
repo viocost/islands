@@ -5,7 +5,7 @@
  *
  * It is responsible for keeping messages in-sync and re-sending missed messages
  *
- ** INITIALIZATION
+ return this._sm.state !== "awatingReconnection"
  *
  * When session is started - it is given authenticated connector and the session key agent
  * Once initialized - it is ready to work.
@@ -91,14 +91,14 @@ const { WildEmitter } = require("../../common/WildEmitter")
 const { ConnectorEvents } = require("../../common/Connector")
 
 class Session{
-    constructor(connector){
+    constructor(connector, incomingMessagePreprocessors = [], outgoingMessagePreprocessors = []){
         WildEmitter.mixin(this)
         this._messageQueue = new MessageQueue()
         this._incomingCounter = new SeqCounter();
         this._sm = this._prepareStateMachine()
         this._connector = connector;
-        this._incomingMessagePreprocessors = [];
-        this._outgoingMessagePreprocessors = [];
+        this._incomingMessagePreprocessors = incomingMessagePreprocessors;
+        this._outgoingMessagePreprocessors = outgoingMessagePreprocessors;
         this._bootstrapConnector(connector);
     }
 
@@ -109,13 +109,11 @@ class Session{
         this._sm.handle.outgoingMessage(message)
     }
 
-    setOutgoingMessagePreprocessors(arr){
-        this._outgoingMessagePreprocessors = arr
+    isPaused(){
+        return this._sm.state === "awatingReconnection"
     }
 
-    setIncomingMessagePreprocessors(arr){
-        this._incomingMessagePreprocessors = arr
-    }
+
 
     _processIncomingMessage(stateMachine, eventName, args){
         let msg = JSON.parse(this._keyAgent.decrypt(args[0]))
@@ -300,9 +298,11 @@ class SessionFactory{
             return cryptoAgent.encrypt(msg)
         }
 
-        let session = new Session(connector);
-        session.setOutgoingMessagePreprocessors([jsonPreprocessor, cryptoPreprocessor])
-        session.setIncomingMessagePreprocessors([cryptoPreprocessor, jsonPreprocessor])
+        let session = new Session(
+            connector,
+            [cryptoPreprocessor, jsonPreprocessor],
+            [jsonPreprocessor, cryptoPreprocessor]
+        );
         return session
     }
 

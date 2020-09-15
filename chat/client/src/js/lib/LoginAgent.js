@@ -32,6 +32,7 @@ import { Message, createAuthMessage } from "../../../../common/Message";
 import { iCrypto } from "../../../../common/iCrypto"
 import { SymCryptoAgentFactory, AsymFullCryptoAgentFactory, AsymPublicCryptoAgentFactory } from "../../../../common/CryptoAgent"
 import { WildEmitter } from "../../../../common/WildEmitter"
+import { AuthMessage } from "../../../../common/AuthMessage"
 
 
 export class LoginAgent{
@@ -80,7 +81,7 @@ export class LoginAgent{
             console.log(`Auth message received ${msg.headers.command}`);
             msg = Message.from(msg)
             switch(msg.command){
-                case("challenge"): {
+                case(AuthMessage.CHALLENGE): {
                     let challenge = msg.data
                     if(challenge.sessionKey && challenge.privateKey){
                         this._challenge = challenge
@@ -103,7 +104,7 @@ export class LoginAgent{
         let nonceEnc = args[1]
 
         let msg = createAuthMessage({
-            command: "challenge_solution",
+            command: AuthMessage.CHALLENGE_SOLUTION,
             data: nonceEnc
         })
 

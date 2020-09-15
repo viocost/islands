@@ -90,6 +90,10 @@ class PendingConnection{
                 this._sm.handle.verifySolution(msg.data);
                 break
             }
+
+            default: {
+                console.log(`Unknown auth message received: ${msg}`);
+            }
         }
     }
 
@@ -124,6 +128,7 @@ class PendingConnection{
     }
 
     _sendSuccessMessage(connector){
+
         console.log("Sending success message");
         let msg = createAuthMessage({ command: AuthMessage.AUTH_OK, data: null })
         this.connector.send("auth", msg)
@@ -145,8 +150,21 @@ class PendingConnection{
         this.connector.send("auth", msg)
     }
 
+    /**
+     * Reauth is basically taking an encrypted nonce and
+     * trying to decrypt it with every existing session.
+     * If some pending session successfully decrypts the nonce, then
+     * that session is given a new connector and its destroy timer is disabled
+     */
     _handleReauth(stateMachine, eventName, args){
+
         console.log("Reauthenticating");
+        for(let session of this.sessions.getPausedSessions()){
+            if (session.decrypts(args[0])){
+                session.replaceConnector(args[1])
+            }
+        }
+
     }
 
     /**
@@ -158,9 +176,11 @@ class PendingConnection{
      */
     _initSession(stateMachine, eventName, args){
 
+        console.log("Initializing session");
         let session  = SessionFactory.makeServerSessionV1(this.connector, this.sessionKeyAgent);
         this.sessions.add(session)
         this._sendSuccessMessage()
+
 
     }
 
@@ -179,11 +199,9 @@ class PendingConnection{
                         reauth: {
                             state: "reauthenticating"
                         },
-
                         fail: {
                             state: "failed"
                         }
-
                     }
                 },
 
@@ -210,7 +228,7 @@ class PendingConnection{
 
                 },
 
-                initizlizing: {
+                initializing: {
                     entry: this._initSession.bind(this),
                     transitions: {
                         done: {
