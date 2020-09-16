@@ -8,6 +8,7 @@ const AuthMessage = {
    
 }
 
+
 module.exports = {
     AuthMessage: AuthMessage
 }

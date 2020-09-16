@@ -126,3 +126,32 @@ If no sessions found - connection dropped.
 
 When new connection comes in - webservice creates new Connection object and
 passes it to the sessions. Sessions
+
+* Initialization of the chat
+Once session has been established, it is now needed to load
+vault, topics, decrypt everything and initialize UI.
+
+
+
+* Reconnection on client
+When client looses connection with the server, there must be
+an automatic re-connection and resyncronization. There must be n automatic
+reconnect attempts, after withc only manual reconnect is possible.
+
+For that purpose we create ReconnectionAgent, whenever connection is lost.
+
+Reconnection agent creates new connector, give it an ecnrypted control nonce
+and tries to establish connection with the server. If connector doesn't succeed, then reconnection agent throws it away
+and makes a new one and tries again n times. If it fails, then it remains
+running and responding to manual reconnects.
+
+Once connection is established, the new connector is given to the session, and
+session considered to be running.
+
+When session replaces the connector, it begins resync protocol pinging the
+session with last seq.
+
+Client session doesn't have timeout.
+
+If client session is refused reconnection - then the session is no longer
+recoverable, thus the page must be reloaded.

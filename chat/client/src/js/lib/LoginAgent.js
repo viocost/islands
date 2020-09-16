@@ -30,9 +30,10 @@ import { ConnectorEvents } from "./Connector"
 import { StateMachine } from "../../../../common/AdvStateMachine";
 import { Message, createAuthMessage } from "../../../../common/Message";
 import { iCrypto } from "../../../../common/iCrypto"
-import { SymCryptoAgentFactory, AsymFullCryptoAgentFactory, AsymPublicCryptoAgentFactory } from "../../../../common/CryptoAgent"
+import { SymCryptoAgentFactory, AsymFullCryptoAgentFactory } from "../../../../common/CryptoAgent"
 import { WildEmitter } from "../../../../common/WildEmitter"
 import { AuthMessage } from "../../../../common/AuthMessage"
+
 
 
 export class LoginAgent{
@@ -87,11 +88,13 @@ export class LoginAgent{
                         this._challenge = challenge
                         this.sm.handle.challengeAccepted(challenge)
                     }
+                    break
+                }
+
+                case(AuthMessage.AUTH_OK): {
+                    this.sm.handle.authOk()
                 }
             }
-
-
-
         })
         return connector;
     }
@@ -114,8 +117,7 @@ export class LoginAgent{
 
     _initializeSession(stateMachine, eventName, args){
         //Init session, arrival hub, topic loader etc
-
-
+        console.log("Initializing session");
 
     }
 
@@ -225,8 +227,12 @@ export class LoginAgent{
 
                         decryptSuccess: {
                             actions: this._decryptSuccessHandler.bind(this),
+                        },
+
+                        authOk: {
                             state: "initializing"
                         }
+
                     }
                 },
 

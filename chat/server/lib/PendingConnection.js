@@ -2,7 +2,7 @@ const { StateMachine } = require("../../common/AdvStateMachine")
 const { iCrypto } = require("../../common/iCrypto")
 const { createAuthMessage, Message } = require("../../common/Message")
 const { SymCryptoAgentFactory, AsymPublicCryptoAgentFactory } = require("../../common/CryptoAgent")
-const { SessionFactory } = require("../lib/Session");
+const { SessionFactory } = require("../../common/Session");
 const { AuthMessage } = require("../../common/AuthMessage")
 
 
@@ -39,7 +39,7 @@ class PendingConnection{
         let vault = args[2]
 
         for(let session of sessions){
-            if (session.recognizesCipher(connector.getConnectionQuery().nonce)){
+            if (session.recognizes(connector.getConnectionQuery().nonce)){
                 session.replaceConnection(connector);
                 this._sm.handle.done()
                 return;
@@ -177,7 +177,14 @@ class PendingConnection{
     _initSession(stateMachine, eventName, args){
 
         console.log("Initializing session");
-        let session  = SessionFactory.makeServerSessionV1(this.connector, this.sessionKeyAgent);
+
+        let controlNonce = this.controlNonce
+        let cryptoAgent = this.sessionKeyAgent
+        let recognizer = (nonce)=>{
+            return controlNonce === cryptoAgent.decrypt(nonce)
+        }
+
+        let session  = SessionFactory.makeServerSessionV1(this.connector, this.sessionKeyAgent, recognizer);
         this.sessions.add(session)
         this._sendSuccessMessage()
 

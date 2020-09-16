@@ -85,18 +85,43 @@
  *
  */
 
-const { MessageQueue } = require("../../common/MessageQueue")
-const { StateMachine } = require("../../common/AdvStateMachine")
-const { WildEmitter } = require("../../common/WildEmitter")
-const { ConnectorEvents } = require("../../common/Connector")
+const { MessageQueue } = require("./MessageQueue")
+const { StateMachine } = require("./AdvStateMachine")
+const { WildEmitter } = require("./WildEmitter")
+const { ConnectorEvents } = require("./Connector")
+
 
 class Session{
-    constructor(connector, incomingMessagePreprocessors = [], outgoingMessagePreprocessors = []){
+    /**
+     * @param connector
+     * Is an instance that session will push messages to and listen events from.
+     * It must have methods:
+     *     send(ev, data)
+     *     on(ev, func)
+     *
+     * @param incomingMessagePreprocessors
+     * An array of functions which will be used to process incoming messages
+     * before checking it with incoming message counter and pushing to sink
+     *
+     *
+     * @param outgoingMessagePreprocessors
+     * An array of functions which will be used to process outgoing messages
+     * before pushing them to connector and after dequeueing
+     *
+     * @param recognizer
+     * Is a function that checks passed nonce using internal rules and returns true or false
+     * depending on whether it complies with the rules or not.
+     * Recognizer can be any function, but initially it is meant to identify
+     * whether a passed cipher can be decrypted to a control nonce using session key.
+     *
+     */
+    constructor({ connector, incomingMessagePreprocessors = [], outgoingMessagePreprocessors = [], recognizer }){
         WildEmitter.mixin(this)
         this._messageQueue = new MessageQueue()
         this._incomingCounter = new SeqCounter();
         this._sm = this._prepareStateMachine()
         this._connector = connector;
+        this._recognizer = recognizer
         this._incomingMessagePreprocessors = incomingMessagePreprocessors;
         this._outgoingMessagePreprocessors = outgoingMessagePreprocessors;
         this._bootstrapConnector(connector);
@@ -114,6 +139,24 @@ class Session{
     }
 
 
+    replaceConnectorOnReconnection(connector){
+        this._sm.handle.reconnect(connector)
+    }
+
+
+    /**
+     * We need a mechanism through wich a session can identify a nonce and
+     * respond whether it is recognized or not. This function calls session recognizer with the passed nonce.
+     * Session itself doesn't keep the nonce, it is enclosed within the recognizer function.
+     */
+    recognizes(nonce){
+        return this._recognizer(nonce)
+    }
+
+    _handleReplaceConnector(stateMachine, eventName, args){
+        console.log("Replacing connector");
+        this._connector = args[0]
+    }
 
     _processIncomingMessage(stateMachine, eventName, args){
         let msg = JSON.parse(this._keyAgent.decrypt(args[0]))
@@ -210,6 +253,7 @@ class Session{
                 awatingReconnection: {
                     transitions: {
                         reconnect: {
+                            action: this._handleReplaceConnector.bind(this),
                             state: "active"
                         },
 
@@ -217,7 +261,6 @@ class Session{
                             state: "dead"
                         }
                     }
-
                 },
 
                 dead: {
@@ -285,8 +328,17 @@ const MessageTypes = {
     MESSAGE: "message"
 }
 
+
+class SessionRecognizer{
+    constructor(recognizerLambda){
+        this.recognize = recognizerLambda;
+    }
+}
+
+
+
 class SessionFactory{
-    static makeServerSessionV1(connector, cryptoAgent){
+    static makeServerSessionV1(connector, cryptoAgent, recognizer){
         let jsonPreprocessor = (msg)=>{
             if(typeof msg !== "string"){
                 return JSON.stringify(msg)
@@ -298,18 +350,24 @@ class SessionFactory{
             return cryptoAgent.encrypt(msg)
         }
 
-        let session = new Session(
-            connector,
-            [cryptoPreprocessor, jsonPreprocessor],
-            [jsonPreprocessor, cryptoPreprocessor]
+        let session = new Session({
+            connector: connector,
+            incomingMessagePreprocessors: [cryptoPreprocessor, jsonPreprocessor],
+            outgoingMessagePreprocessors: [jsonPreprocessor, cryptoPreprocessor],
+            recognizer: recognizer
+        }
         );
         return session
     }
 
+    static makeGenericSessionRecognizer(){
+
+    }
 }
 
 module.exports = {
     SessionFactory: SessionFactory,
     SessionEvents: SessionEvents,
     MessageTypes: MessageTypes
+
 }
