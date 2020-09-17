@@ -144,6 +144,15 @@ export class LoginAgent{
         this.emit(LoginAgentEvents.SUCCESS, this.session)
     }
 
+    /**
+     * Given a challenge from the server, which consists of
+     * - Password encrypted vault private key
+     * - vault public key encrypted session key
+     * - vault public key encrypted session secret nonce
+     *
+     * This function will try to decrypt the vault using password
+     * provided by user, and decrypt session keys with resulting private key
+     */
     _tryDecrypt(stateMachine, eventName, args){
         console.log("Trying to decrypt the challenge");
 
@@ -160,29 +169,25 @@ export class LoginAgent{
             let vaultRaw = JSON.parse(vaultSymKey.decrypt(vaultCipher));
             this.vaultRaw = vaultRaw;
 
-            // Temporary. Later vault will be fetched separately.
-            // Login agent will only fetch specific keys
+            let vaultPrivateKey = AsymFullCryptoAgentFactory.make(this.vaultRaw.privateKey)
+            this.secret = vaultPrivateKey.decrypt(this._challenge.secret)
+
+            this.vaultRaw.pkfp = vaultPrivateKey.getPkfp()
+
+            let sessionKey = vaultPrivateKey.decrypt(this._challenge.sessionKey)
+
+            let sessionKeyAgent = SymCryptoAgentFactory.make(sessionKey)
+
+            this.sessionKeyAgent = sessionKeyAgent
+            console.log(`SESSION KEY ${sessionKeyAgent.getKey()}`);
+
+            let secretSessionEncrypted = sessionKeyAgent.encrypt()
+            this.sm.handle.decryptSuccess(sessionKeyAgent.getKey(), secretSessionEncrypted);
+
         } catch (err){
             this.sm.handle.decryptError(err);
             return;
         }
-
-        let vaultPrivateKey = AsymFullCryptoAgentFactory.make(this.vaultRaw.privateKey)
-
-
-        this.vaultRaw.pkfp = vaultPrivateKey.getPkfp()
-        
-        //decrypt session key
-
-        let sessionKey = vaultPrivateKey.decrypt(this._challenge.sessionKey)
-
-        let sessionKeyAgent = SymCryptoAgentFactory.make(sessionKey)
-        this.sessionKeyAgent = sessionKeyAgent
-        console.log(`SESSION KEY ${sessionKeyAgent.getKey()}`);
-
-        let secretSessionEncrypted = sessionKeyAgent.encrypt(vaultPrivateKey.decrypt(this._challenge.secret))
-        this.sm.handle.decryptSuccess(sessionKeyAgent.getKey(), secretSessionEncrypted);
-
     }
 
     _notifyLoginError(stateMachine, eventName, args){

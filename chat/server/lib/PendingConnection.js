@@ -135,6 +135,8 @@ class PendingConnection{
 
 
 
+    //Sending vault public key encrypted secret nonce to the client.
+    // Expecting the same nonce session key encrypted in response
     _sendChallenge(sessionKey, vault, secretEncrypted){
         console.log("Sending challenge");
         let msg = createAuthMessage({
