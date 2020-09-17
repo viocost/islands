@@ -33,7 +33,7 @@ import { iCrypto } from "../../../../common/iCrypto"
 import { SymCryptoAgentFactory, AsymFullCryptoAgentFactory } from "../../../../common/CryptoAgent"
 import { WildEmitter } from "../../../../common/WildEmitter"
 import { AuthMessage } from "../../../../common/AuthMessage"
-
+import { SessionFactory } from "../../../../common/Session"
 
 
 export class LoginAgent{
@@ -118,6 +118,8 @@ export class LoginAgent{
     _initializeSession(stateMachine, eventName, args){
         //Init session, arrival hub, topic loader etc
         console.log("Initializing session");
+
+
 
     }
 

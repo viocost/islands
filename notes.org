@@ -140,7 +140,7 @@ reconnect attempts, after withc only manual reconnect is possible.
 
 For that purpose we create ReconnectionAgent, whenever connection is lost.
 
-Reconnection agent creates new connector, give it an ecnrypted control nonce
+Reconnection agent creates new connector, give it a session secret
 and tries to establish connection with the server. If connector doesn't succeed, then reconnection agent throws it away
 and makes a new one and tries again n times. If it fails, then it remains
 running and responding to manual reconnects.

@@ -45,9 +45,16 @@
  *
  *
  *
- *
- *
- *
+ * **SECRET
+ * Secret is a arbitrary nonce that session instances may pass around to
+ * re-identify each other. The algorithm of creating such instance or recognizing it
+ * is determined by session creator. Session only calls internal recognizer and secret
+ * functions and returns the result.
+ * Since the session doesn't handle reconnection itself, it is up to
+ * whatever entity to call those methods and make sense of it.
+ * Session API has 2 methods:
+ * getSecret()
+ * recognizesSecret(secret)
  *
  *
  * Syncing messages.
@@ -89,9 +96,54 @@ const { MessageQueue } = require("./MessageQueue")
 const { StateMachine } = require("./AdvStateMachine")
 const { WildEmitter } = require("./WildEmitter")
 const { ConnectorEvents } = require("./Connector")
+const { NotImplemented } = require("./Error")
 
 
 class Session{
+    constructor(connector){
+        WildEmitter.mixin(this)
+        this._messageQueue = new MessageQueue()
+        this._incomingCounter = new SeqCounter();
+        this._connector = connector;
+    }
+
+    acceptMessage(){
+        throw new NotImplemented()
+    }
+
+    /**
+     * Returns whether the session is active
+     */
+    isPaused(){
+        throw new NotImplemented()
+    }
+
+    /**
+     * Given a secret string returns whether it recognizes it
+     */
+    recognizesSecret(secret){
+        throw new NotImplemented()
+    }
+
+    /**
+     * Returns a secret string that is meant to be passes to
+     * another session instance for recognition
+     */
+    getSecret(){
+        throw new NotImplemented()
+    }
+
+    /**
+     * Replaces the connector
+     */
+    replaceConnectorOnReconnection(connector){
+        throw new NotImplemented()
+    }
+}
+
+
+class GenericSession extends Session{
+
     /**
      * @param connector
      * Is an instance that session will push messages to and listen events from.
@@ -115,16 +167,9 @@ class Session{
      * whether a passed cipher can be decrypted to a control nonce using session key.
      *
      */
-    constructor({ connector, incomingMessagePreprocessors = [], outgoingMessagePreprocessors = [], recognizer }){
-        WildEmitter.mixin(this)
-        this._messageQueue = new MessageQueue()
-        this._incomingCounter = new SeqCounter();
-        this._sm = this._prepareStateMachine()
-        this._connector = connector;
-        this._recognizer = recognizer
-        this._incomingMessagePreprocessors = incomingMessagePreprocessors;
-        this._outgoingMessagePreprocessors = outgoingMessagePreprocessors;
-        this._bootstrapConnector(connector);
+    constructor(connector){
+        super(connector)
+
     }
 
     /**
@@ -144,34 +189,18 @@ class Session{
     }
 
 
-    /**
-     * We need a mechanism through wich a session can identify a nonce and
-     * respond whether it is recognized or not. This function calls session recognizer with the passed nonce.
-     * Session itself doesn't keep the nonce, it is enclosed within the recognizer function.
-     */
-    recognizes(nonce){
-        return this._recognizer(nonce)
-    }
-
     _handleReplaceConnector(stateMachine, eventName, args){
         console.log("Replacing connector");
         this._connector = args[0]
     }
 
     _processIncomingMessage(stateMachine, eventName, args){
-        let msg = JSON.parse(this._keyAgent.decrypt(args[0]))
+        throw new NotImplemented()
 
-        if(!this._incomingCounter.accept(msg.seq)){
-            this._sm.handle.sendPing()
-        } else {
-            console.log("Emitting a message");
-            this.emit(SessionEvents.MESSAGE, msg.payload)
-        }
     }
 
     _processOutgoingMessage(stateMachine, eventName, args){
-        this._messageQueue.enqueue(args[0])
-        this._sm.handle.processQueue()
+        throw new NotImplemented
     }
 
     _processQueue(stateMachine, eventName, args){
@@ -184,6 +213,93 @@ class Session{
             this._connector.send(MessageTypes.MESSAGE, message)
         }
 
+    }
+
+    _processSendPing(stateMachine, eventName, args){
+        let payload = this._keyAgent.encrypt(JSON.stringify({
+            command: "ping",
+            seq: this._incomingCounter.get()
+        }))
+        this._connector.send("sync", payload)
+    }
+
+}
+
+class SessionServer extends GenericSession{
+    constructor({ connector, incomingMessagePreprocessors = [], outgoingMessagePreprocessors = [], recognizer }){
+        super(connector)
+        this._sm = this._prepareStateMachine()
+        this._recognizer = recognizer
+        this._incomingMessagePreprocessors = incomingMessagePreprocessors;
+        this._outgoingMessagePreprocessors = outgoingMessagePreprocessors;
+        this._bootstrapConnector(connector);
+    }
+
+
+    isPaused(){
+        return this._sm.state === "awatingReconnection"
+    }
+
+    replaceConnectorOnReconnection(connector){
+        this._sm.handle.reconnect(connector)
+    }
+
+
+    /**
+     * We need a mechanism through wich a session can identify a nonce and
+     * respond whether it is recognized or not. This function calls session recognizer with the passed nonce.
+     * Session itself doesn't keep the nonce, it is enclosed within the recognizer function.
+     */
+    recognizesSecret(nonce){
+        return this._recognizer(nonce)
+    }
+
+    _handleReplaceConnector(stateMachine, eventName, args){
+        console.log("Replacing connector");
+        this._connector = args[0]
+    }
+
+    _processIncomingMessage(stateMachine, eventName, args){
+
+        let msg = args[0]
+
+        let processed = this._preprocessIncoming(msg)
+
+        if(!this._incomingCounter.accept(processed.seq)){
+            this._sm.handle.sendPing()
+        } else {
+            console.log("Emitting a message");
+            this.emit(SessionEvents.MESSAGE, processed.payload)
+        }
+    }
+
+    _processOutgoingMessage(stateMachine, eventName, args){
+        this._messageQueue.enqueue(args[0])
+        this._sm.handle.processQueue()
+    }
+
+    _processQueue(stateMachine, eventName, args){
+        let message;
+        while(message = this._messageQueue.dequeue()){
+            let processed = this._preprocessOutgoing(message)
+            this._connector.send(MessageTypes.MESSAGE, processed)
+        }
+
+    }
+
+    _preprocessIncoming(message){
+        for(let preProcessor of this._incomingMessagePreprocessors){
+            message = preProcessor(message)
+        }
+        return message
+    }
+
+
+    _preprocessOutgoing(message){
+        for(let preProcessor of this._outgoingMessagePreprocessors){
+            message = preProcessor(message)
+        }
+        return message
     }
 
     _processSendPing(stateMachine, eventName, args){
@@ -265,15 +381,99 @@ class Session{
 
                 dead: {
                     entry: this._commitSuicide.bind(this)
-
                 }
             }
         })
+    }
+}
 
+class SessionClient extends Session{
+    constructor({ connector, incomingMessagePreprocessors = [], outgoingMessagePreprocessors = [], recognizer }){
+        super(connector)
+        this._sm = this._prepareStateMachine()
+        this._recognizer = recognizer
+        this._incomingMessagePreprocessors = incomingMessagePreprocessors;
+        this._outgoingMessagePreprocessors = outgoingMessagePreprocessors;
+        this._bootstrapConnector(connector);
     }
 
 
+    acceptMessage(){
+        this._sm.handle.outgoingMessage(message)
+    }
+
+    isPaused(){
+        throw new NotImplemented()
+    }
+
+    getSecret(){
+
+    }
+
+    replaceConnectorOnReconnection(){
+        throw new NotImplemented()
+    }
+
+
+    _prepareStateMachine(){
+        return new StateMachine(this, {
+            name: "Session SM",
+            stateMap: {
+                active: {
+                    initial: true,
+                    transitions: {
+                        sync: {
+
+                        },
+
+                        sendPing: {
+                            actions: this._processSendPing.bind(this)
+
+                        },
+
+                        processQueue: {
+                            actions: this._processQueue.bind(this)
+                        },
+
+                        connectorDisconnected: {
+                            state: "reconnecting"
+                        },
+
+                        //to client
+                        outgoingMessage: {
+                            actions: this._processOutgoingMessage.bind(this),
+                        },
+
+                        //from client
+                        incomingMessage: {
+                            actions: this._processIncomingMessage.bind(this),
+                        }
+
+                    }
+
+                },
+
+                reconnecting: {
+                    transitions: {
+                        reconnect: {
+                            action: this._handleReplaceConnector.bind(this),
+                            state: "active"
+                        },
+
+                        timeout: {
+                            state: "dead"
+                        }
+                    }
+                },
+
+                dead: {
+                    entry: this._commitSuicide.bind(this)
+                }
+            }
+        })
+    }
 }
+
 
 class SeqCounter{
     constructor(){
@@ -337,6 +537,7 @@ class SessionRecognizer{
 
 
 
+
 class SessionFactory{
     static makeServerSessionV1(connector, cryptoAgent, recognizer){
         let jsonPreprocessor = (msg)=>{
@@ -350,7 +551,7 @@ class SessionFactory{
             return cryptoAgent.encrypt(msg)
         }
 
-        let session = new Session({
+        let session = new SessionServer({
             connector: connector,
             incomingMessagePreprocessors: [cryptoPreprocessor, jsonPreprocessor],
             outgoingMessagePreprocessors: [jsonPreprocessor, cryptoPreprocessor],
@@ -360,7 +561,7 @@ class SessionFactory{
         return session
     }
 
-    static makeGenericSessionRecognizer(){
+    static makeClientSessionV1(connector, cryptoAgent){
 
     }
 }
