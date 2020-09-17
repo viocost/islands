@@ -19,6 +19,8 @@ const HistoryManager = require("../old_server/classes/libs/HistoryManager.js");
 const HiddenServiceManager = require("../old_server/classes/libs/HiddenServiceManager");
 const ClientRequestRouter = require("../old_server/classes/libs/ClientRequestCollector.js");
 
+const IslandsChat = require("../old_server/classes/IslandsChat")
+
 const accounts = [];
 const vaults = [];
 
@@ -79,9 +81,14 @@ function main(){
     //activateGuestAccounts(vaults)
     const requestEmitter = new ClientRequestRouter();
 
-    //create managers here
 
     activateAccounts(args.port, config, requestEmitter)
+
+
+    //create managers here
+    //chat here is a collection of legacy managers that eventually have to go
+    let sessionManagerAdapter = new SessionManagerAdapter()
+    let chat = new IslandsChat(config, requestEmitter)
 
 }
 
@@ -170,7 +177,12 @@ function activateAccount({vault, requestEmitter, port, host, isAdmin, config}){
 
     webService.launch();
 
-    accounts.push([webService, sessions, hiddenServices])
+    accounts.push({
+        webService: webService,
+        vault: vault,
+        sessions: sessions,
+        hiddenServices: hiddenServices
+    })
 }
 
 
