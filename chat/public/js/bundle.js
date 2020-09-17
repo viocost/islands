@@ -45789,7 +45789,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
  * **SECRET
  * Secret is a arbitrary nonce that session instances may pass around to
  * re-identify each other. The algorithm of creating such instance or recognizing it
- * is determined by session creator. Session only calls internal recognizer and secret
+ * is determined by session creator. Session only calls internal secretRecognizer and secret
  * functions and returns the result.
  * Since the session doesn't handle reconnection itself, it is up to
  * whatever entity to call those methods and make sense of it.
@@ -45925,7 +45925,7 @@ var GenericSession = /*#__PURE__*/function (_Session) {
    * An array of functions which will be used to process outgoing messages
    * before pushing them to connector and after dequeueing
    *
-   * @param recognizer
+   * @param secretRecognizer
    * Is a function that checks passed nonce using internal rules and returns true or false
    * depending on whether it complies with the rules or not.
    * Recognizer can be any function, but initially it is meant to identify
@@ -45940,12 +45940,14 @@ var GenericSession = /*#__PURE__*/function (_Session) {
         incomingMessagePreprocessors = _ref$incomingMessageP === void 0 ? [] : _ref$incomingMessageP,
         _ref$outgoingMessageP = _ref.outgoingMessagePreprocessors,
         outgoingMessagePreprocessors = _ref$outgoingMessageP === void 0 ? [] : _ref$outgoingMessageP,
-        recognizer = _ref.recognizer;
+        secretRecognizer = _ref.secretRecognizer,
+        secretHolder = _ref.secretHolder;
 
     _classCallCheck(this, GenericSession);
 
     _this = _super.call(this, connector);
-    _this._recognizer = recognizer;
+    _this._recognizer = secretRecognizer;
+    _this._secretHolder = secretHolder;
     _this._incomingMessagePreprocessors = incomingMessagePreprocessors;
     _this._outgoingMessagePreprocessors = outgoingMessagePreprocessors;
     return _this;
@@ -45956,8 +45958,8 @@ var GenericSession = /*#__PURE__*/function (_Session) {
 
   /**
    * We need a mechanism through wich a session can identify a nonce and
-   * respond whether it is recognized or not. This function calls session recognizer with the passed nonce.
-   * Session itself doesn't keep the nonce, it is enclosed within the recognizer function.
+   * respond whether it is recognized or not. This function calls session secretRecognizer with the passed nonce.
+   * Session itself doesn't keep the nonce, it is enclosed within the secretRecognizer function.
    */
 
 
@@ -45965,6 +45967,21 @@ var GenericSession = /*#__PURE__*/function (_Session) {
     key: "recognizesSecret",
     value: function recognizesSecret(nonce) {
       return this._recognizer(nonce);
+    }
+  }, {
+    key: "getSecret",
+    value: function getSecret() {
+      return this._secretHolder();
+    }
+  }, {
+    key: "replaceConnectorOnReconnection",
+    value: function replaceConnectorOnReconnection(connector) {
+      this._sm.handle.reconnect(connector);
+    }
+  }, {
+    key: "isPaused",
+    value: function isPaused() {
+      return this._sm.state === "awatingReconnection";
     }
   }, {
     key: "_preprocessIncoming",
@@ -46003,55 +46020,6 @@ var GenericSession = /*#__PURE__*/function (_Session) {
       }
 
       return message;
-    }
-  }]);
-
-  return GenericSession;
-}(Session);
-
-var ServerSession = /*#__PURE__*/function (_GenericSession) {
-  _inherits(ServerSession, _GenericSession);
-
-  var _super2 = _createSuper(ServerSession);
-
-  function ServerSession(_ref2) {
-    var _this2;
-
-    var connector = _ref2.connector,
-        _ref2$incomingMessage = _ref2.incomingMessagePreprocessors,
-        incomingMessagePreprocessors = _ref2$incomingMessage === void 0 ? [] : _ref2$incomingMessage,
-        _ref2$outgoingMessage = _ref2.outgoingMessagePreprocessors,
-        outgoingMessagePreprocessors = _ref2$outgoingMessage === void 0 ? [] : _ref2$outgoingMessage,
-        recognizer = _ref2.recognizer;
-
-    _classCallCheck(this, ServerSession);
-
-    _this2 = _super2.call(this, connector);
-    _this2._sm = _this2._prepareStateMachine();
-    _this2._recognizer = recognizer;
-    _this2._incomingMessagePreprocessors = incomingMessagePreprocessors;
-    _this2._outgoingMessagePreprocessors = outgoingMessagePreprocessors;
-
-    _this2._bootstrapConnector(connector);
-
-    return _this2;
-  }
-
-  _createClass(ServerSession, [{
-    key: "isPaused",
-    value: function isPaused() {
-      return this._sm.state === "awatingReconnection";
-    }
-  }, {
-    key: "replaceConnectorOnReconnection",
-    value: function replaceConnectorOnReconnection(connector) {
-      this._sm.handle.reconnect(connector);
-    }
-  }, {
-    key: "_handleReplaceConnector",
-    value: function _handleReplaceConnector(stateMachine, eventName, args) {
-      console.log("Replacing connector");
-      this._connector = args[0];
     }
   }, {
     key: "_processIncomingMessage",
@@ -46096,24 +46064,35 @@ var ServerSession = /*#__PURE__*/function (_GenericSession) {
       this._connector.send("sync", payload);
     }
   }, {
-    key: "_commitSuicide",
-    value: function _commitSuicide(stateMachine, eventName, args) {
-      this.emit(SessionEvents.DEAD);
+    key: "_handleReplaceConnector",
+    value: function _handleReplaceConnector(stateMachine, eventName, args) {
+      console.log("Replacing connector");
+
+      this._connector.off();
+
+      this._connector = args[0];
+
+      this._bootstrapConnector(this._connector);
     }
   }, {
     key: "_bootstrapConnector",
     value: function _bootstrapConnector(connector) {
-      var _this3 = this;
+      var _this2 = this;
 
       connector.on(ConnectorEvents.DEAD, function () {
-        _this3._sm.handle.connectorDisconnected();
+        _this2._sm.handle.connectorDisconnected();
       });
       connector.on(MessageTypes.SYNC, function (msg) {
-        _this3._sm.handle.sync(msg);
+        _this2._sm.handle.sync(msg);
       });
       connector.on(MessageTypes.MESSAGE, function (msg) {
-        _this3._sm.handle.incomingMessage(msg);
+        _this2._sm.handle.incomingMessage(msg);
       });
+    }
+  }, {
+    key: "_processDead",
+    value: function _processDead() {
+      console.log("Dead");
     }
   }, {
     key: "_prepareStateMachine",
@@ -46156,10 +46135,48 @@ var ServerSession = /*#__PURE__*/function (_GenericSession) {
             }
           },
           dead: {
-            entry: this._commitSuicide.bind(this)
+            entry: this._processDead.bind(this)
           }
         }
       });
+    }
+  }]);
+
+  return GenericSession;
+}(Session);
+
+var ServerSession = /*#__PURE__*/function (_GenericSession) {
+  _inherits(ServerSession, _GenericSession);
+
+  var _super2 = _createSuper(ServerSession);
+
+  function ServerSession(_ref2) {
+    var _this3;
+
+    var connector = _ref2.connector,
+        _ref2$incomingMessage = _ref2.incomingMessagePreprocessors,
+        incomingMessagePreprocessors = _ref2$incomingMessage === void 0 ? [] : _ref2$incomingMessage,
+        _ref2$outgoingMessage = _ref2.outgoingMessagePreprocessors,
+        outgoingMessagePreprocessors = _ref2$outgoingMessage === void 0 ? [] : _ref2$outgoingMessage,
+        secretRecognizer = _ref2.secretRecognizer;
+
+    _classCallCheck(this, ServerSession);
+
+    _this3 = _super2.call(this, connector);
+    _this3._sm = _this3._prepareStateMachine();
+    _this3._recognizer = secretRecognizer;
+    _this3._incomingMessagePreprocessors = incomingMessagePreprocessors;
+    _this3._outgoingMessagePreprocessors = outgoingMessagePreprocessors;
+
+    _this3._bootstrapConnector(connector);
+
+    return _this3;
+  }
+
+  _createClass(ServerSession, [{
+    key: "_commitSuicide",
+    value: function _commitSuicide(stateMachine, eventName, args) {
+      this.emit(SessionEvents.DEAD);
     }
   }]);
 
@@ -46195,97 +46212,9 @@ var ClientSession = /*#__PURE__*/function (_GenericSession2) {
   }
 
   _createClass(ClientSession, [{
-    key: "acceptMessage",
-    value: function acceptMessage() {
-      this._sm.handle.outgoingMessage(message);
-    }
-  }, {
-    key: "isPaused",
-    value: function isPaused() {
-      throw new NotImplemented();
-    }
-  }, {
     key: "getSecret",
     value: function getSecret() {
       return this._secretHolder();
-    }
-  }, {
-    key: "replaceConnectorOnReconnection",
-    value: function replaceConnectorOnReconnection() {}
-  }, {
-    key: "_processSendQueue",
-    value: function _processSendQueue(stateMachine, eventName, args) {
-      var message;
-
-      while (message = this._messageQueue.dequeue()) {
-        var processed = this._preprocessOutgoing(message);
-
-        this._connector.send(MessageTypes.MESSAGE, processed);
-      }
-    }
-  }, {
-    key: "_processSendPing",
-    value: function _processSendPing(stateMachine, eventName, args) {}
-  }, {
-    key: "_bootstrapConnector",
-    value: function _bootstrapConnector(connector) {
-      var _this5 = this;
-
-      connector.on(ConnectorEvents.DEAD, function () {
-        _this5._sm.handle.connectorDisconnected();
-      });
-      connector.on(MessageTypes.SYNC, function (msg) {
-        _this5._sm.handle.sync(msg);
-      });
-      connector.on(MessageTypes.MESSAGE, function (msg) {
-        _this5._sm.handle.incomingMessage(msg);
-      });
-    }
-  }, {
-    key: "_prepareStateMachine",
-    value: function _prepareStateMachine() {
-      return new StateMachine(this, {
-        name: "Client Session SM",
-        stateMap: {
-          active: {
-            initial: true,
-            transitions: {
-              sync: {},
-              sendPing: {
-                actions: this._processSendPing.bind(this)
-              },
-              processQueue: {
-                actions: this._processQueue.bind(this)
-              },
-              connectorDisconnected: {
-                state: "reconnecting"
-              },
-              //to client
-              outgoingMessage: {
-                actions: this._processOutgoingMessage.bind(this)
-              },
-              //from client
-              incomingMessage: {
-                actions: this._processIncomingMessage.bind(this)
-              }
-            }
-          },
-          reconnecting: {
-            transitions: {
-              reconnect: {
-                action: this._handleReplaceConnector.bind(this),
-                state: "active"
-              },
-              timeout: {
-                state: "dead"
-              }
-            }
-          },
-          dead: {
-            entry: this._commitSuicide.bind(this)
-          }
-        }
-      });
     }
   }]);
 
@@ -46369,8 +46298,8 @@ var SessionFactory = /*#__PURE__*/function () {
   }
 
   _createClass(SessionFactory, null, [{
-    key: "makeServerSessionV1",
-    value: function makeServerSessionV1(connector, cryptoAgent, recognizer) {
+    key: "make",
+    value: function make(connector, cryptoAgent, secret) {
       var jsonPreprocessor = function jsonPreprocessor(msg) {
         if (typeof msg !== "string") {
           return JSON.stringify(msg);
@@ -46383,34 +46312,20 @@ var SessionFactory = /*#__PURE__*/function () {
         return cryptoAgent.encrypt(msg);
       };
 
-      var session = new ServerSession({
+      var secretRecognizer = function secretRecognizer(msg) {
+        return cryptoAgent.decrypt(msg) === secret;
+      };
+
+      var secretHolder = function secretHolder() {
+        return cryptoAgent.encrypt(secret);
+      };
+
+      var session = new GenericSession({
         connector: connector,
         incomingMessagePreprocessors: [cryptoPreprocessor, jsonPreprocessor],
         outgoingMessagePreprocessors: [jsonPreprocessor, cryptoPreprocessor],
-        recognizer: recognizer
-      });
-      return session;
-    }
-  }, {
-    key: "makeClientSessionV1",
-    value: function makeClientSessionV1(connector, cryptoAgent, secretHolder) {
-      var jsonPreprocessor = function jsonPreprocessor(msg) {
-        if (typeof msg !== "string") {
-          return JSON.stringify(msg);
-        }
-
-        return msg;
-      };
-
-      var cryptoPreprocessor = function cryptoPreprocessor(msg) {
-        return cryptoAgent.encrypt(msg);
-      };
-
-      var session = new ClientSession({
-        connector: connector,
-        incomingMessagePreprocessors: [cryptoPreprocessor, jsonPreprocessor],
-        outgoingMessagePreprocessors: [jsonPreprocessor, cryptoPreprocessor],
-        secretHolder: secretHolder
+        secretHolder: secretHolder,
+        secretRecognizer: secretRecognizer
       });
       return session;
     }
@@ -46422,8 +46337,7 @@ var SessionFactory = /*#__PURE__*/function () {
 module.exports = {
   SessionFactory: SessionFactory,
   SessionEvents: SessionEvents,
-  MessageTypes: MessageTypes,
-  ClientSession: ClientSession
+  MessageTypes: MessageTypes
 };
 
 /***/ }),
@@ -70411,16 +70325,17 @@ var LoginAgent_LoginAgent = /*#__PURE__*/function () {
     }
     /**
      * Sending challenge solution to the server
+     * Secret here is already re-encrypted with session key
      */
 
   }, {
     key: "_decryptSuccessHandler",
     value: function _decryptSuccessHandler(stateMachine, eventName, args) {
       var sessionKey = args[0];
-      var nonceEnc = args[1];
+      var secret = args[1];
       var msg = Object(common_Message["createAuthMessage"])({
         command: AuthMessage["AuthMessage"].CHALLENGE_SOLUTION,
-        data: nonceEnc
+        data: secret
       });
       this.connector.send("auth", msg);
     }
@@ -70430,9 +70345,9 @@ var LoginAgent_LoginAgent = /*#__PURE__*/function () {
       //Init session, arrival hub, topic loader etc
       console.log("Initializing session"); //make crypto agent
 
-      var cryptoAgent;
-      var secretHolder;
-      this.session = Session["SessionFactory"].makeClientSessionV1(this.connector, cryptoAgent, secretHolder);
+      var cryptoAgent = this.sessionKeyAgent;
+      var secret = this._challenge.nonce;
+      this.session = Session["SessionFactory"].make(this.connector, cryptoAgent);
       this.sm.handle.success();
     }
   }, {
@@ -70478,8 +70393,8 @@ var LoginAgent_LoginAgent = /*#__PURE__*/function () {
       var sessionKeyAgent = CryptoAgent["SymCryptoAgentFactory"].make(sessionKey);
       this.sessionKeyAgent = sessionKeyAgent;
       console.log("SESSION KEY ".concat(sessionKeyAgent.getKey()));
-      var nonceEncrypted = sessionKeyAgent.encrypt(this._challenge.nonceEncrypted);
-      this.sm.handle.decryptSuccess(sessionKeyAgent.getKey(), nonceEncrypted);
+      var secretSessionEncrypted = sessionKeyAgent.encrypt(vaultPrivateKey.decrypt(this._challenge.secret));
+      this.sm.handle.decryptSuccess(sessionKeyAgent.getKey(), secretSessionEncrypted);
     }
   }, {
     key: "_notifyLoginError",

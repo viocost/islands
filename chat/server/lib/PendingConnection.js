@@ -59,7 +59,7 @@ class PendingConnection{
 
         let sessions  = args[1]
         let connector = args[0]
-        let controlNonce = iCrypto.hexEncode(iCrypto.getBytes(256))
+        let secret = iCrypto.hexEncode(iCrypto.getBytes(64))
 
         connector.on("auth", message=>{
             this._processAuthMessage(message)
@@ -76,11 +76,10 @@ class PendingConnection{
 
         let encryptedSessionKey = vaultPublicKeyAgent.encrypt(sessionKeyAgent.getKey())
         this.sessionKeyAgent = sessionKeyAgent;
-        this.controlNonce = controlNonce;
+        this.secret = secret;
 
         console.log("Sedning cahllenge to client");
-        this._sendChallenge(encryptedSessionKey, vault, controlNonce);
-
+        this._sendChallenge(encryptedSessionKey, vault, vaultPublicKeyAgent.encrypt(secret));
     }
 
     _processAuthMessage(msg){
@@ -106,8 +105,8 @@ class PendingConnection{
             let nonceEncrypted = args[0]
             let nonceDecrypted = this.sessionKeyAgent.decrypt(nonceEncrypted)
 
-            console.log(`Nonce decrypted: ${nonceDecrypted} \nControl nonce: ${this.controlNonce}`);
-            if(nonceDecrypted !== this.controlNonce){
+            console.log(`Nonce decrypted: ${nonceDecrypted} \nControl nonce: ${this.secret}`);
+            if(nonceDecrypted !== this.secret){
                 console.log("Error, solution is invalid. Shutting down");
                 this._sm.handle.solutionInvalid()
                 return
@@ -136,13 +135,13 @@ class PendingConnection{
 
 
 
-    _sendChallenge(sessionKey, vault, nonceEncrypted){
+    _sendChallenge(sessionKey, vault, secretEncrypted){
         console.log("Sending challenge");
         let msg = createAuthMessage({
             data: {
                 sessionKey: sessionKey,
                 privateKey: vault,
-                nonceEncrypted: nonceEncrypted
+                secret: secretEncrypted
             },
             command: "challenge"
         })
@@ -177,18 +176,9 @@ class PendingConnection{
     _initSession(stateMachine, eventName, args){
 
         console.log("Initializing session");
-
-        let controlNonce = this.controlNonce
-        let cryptoAgent = this.sessionKeyAgent
-        let recognizer = (nonce)=>{
-            return controlNonce === cryptoAgent.decrypt(nonce)
-        }
-
-        let session  = SessionFactory.makeServerSessionV1(this.connector, this.sessionKeyAgent, recognizer);
+        let session  = SessionFactory.make(this.connector, this.sessionKeyAgent, this.secret);
         this.sessions.add(session)
         this._sendSuccessMessage()
-
-
     }
 
     _prepareStateMachine(){

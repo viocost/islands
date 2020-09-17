@@ -101,14 +101,15 @@ export class LoginAgent{
 
     /**
      * Sending challenge solution to the server
+     * Secret here is already re-encrypted with session key
      */
     _decryptSuccessHandler(stateMachine, eventName, args){
         let sessionKey = args[0]
-        let nonceEnc = args[1]
+        let secret = args[1]
 
         let msg = createAuthMessage({
             command: AuthMessage.CHALLENGE_SOLUTION,
-            data: nonceEnc
+            data: secret
         })
 
         this.connector.send("auth", msg)
@@ -121,10 +122,10 @@ export class LoginAgent{
 
         //make crypto agent
 
-        let cryptoAgent;
+        let cryptoAgent = this.sessionKeyAgent;
+        let secret = this._challenge.nonce
 
-        let secretHolder;
-        this.session = SessionFactory.makeClientSessionV1(this.connector, cryptoAgent, secretHolder);
+        this.session = SessionFactory.make(this.connector, cryptoAgent, );
         this.sm.handle.success()
 
 
@@ -179,8 +180,8 @@ export class LoginAgent{
         this.sessionKeyAgent = sessionKeyAgent
         console.log(`SESSION KEY ${sessionKeyAgent.getKey()}`);
 
-        let nonceEncrypted = sessionKeyAgent.encrypt(this._challenge.nonceEncrypted)
-        this.sm.handle.decryptSuccess(sessionKeyAgent.getKey(), nonceEncrypted);
+        let secretSessionEncrypted = sessionKeyAgent.encrypt(vaultPrivateKey.decrypt(this._challenge.secret))
+        this.sm.handle.decryptSuccess(sessionKeyAgent.getKey(), secretSessionEncrypted);
 
     }
 

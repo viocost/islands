@@ -48,7 +48,7 @@
  * **SECRET
  * Secret is a arbitrary nonce that session instances may pass around to
  * re-identify each other. The algorithm of creating such instance or recognizing it
- * is determined by session creator. Session only calls internal recognizer and secret
+ * is determined by session creator. Session only calls internal secretRecognizer and secret
  * functions and returns the result.
  * Since the session doesn't handle reconnection itself, it is up to
  * whatever entity to call those methods and make sense of it.
@@ -160,16 +160,17 @@ class GenericSession extends Session{
      * An array of functions which will be used to process outgoing messages
      * before pushing them to connector and after dequeueing
      *
-     * @param recognizer
+     * @param secretRecognizer
      * Is a function that checks passed nonce using internal rules and returns true or false
      * depending on whether it complies with the rules or not.
      * Recognizer can be any function, but initially it is meant to identify
      * whether a passed cipher can be decrypted to a control nonce using session key.
      *
      */
-    constructor({ connector, incomingMessagePreprocessors = [], outgoingMessagePreprocessors = [], recognizer }){
+    constructor({ connector, incomingMessagePreprocessors = [], outgoingMessagePreprocessors = [], secretRecognizer, secretHolder }){
         super(connector)
-        this._recognizer = recognizer
+        this._recognizer = secretRecognizer
+        this._secretHolder = secretHolder
         this._incomingMessagePreprocessors = incomingMessagePreprocessors;
         this._outgoingMessagePreprocessors = outgoingMessagePreprocessors;
     }
@@ -181,13 +182,16 @@ class GenericSession extends Session{
 
     /**
      * We need a mechanism through wich a session can identify a nonce and
-     * respond whether it is recognized or not. This function calls session recognizer with the passed nonce.
-     * Session itself doesn't keep the nonce, it is enclosed within the recognizer function.
+     * respond whether it is recognized or not. This function calls session secretRecognizer with the passed nonce.
+     * Session itself doesn't keep the nonce, it is enclosed within the secretRecognizer function.
      */
     recognizesSecret(nonce){
         return this._recognizer(nonce)
     }
 
+    getSecret(){
+        return this._secretHolder()
+    }
 
     replaceConnectorOnReconnection(connector){
         this._sm.handle.reconnect(connector)
@@ -277,6 +281,10 @@ class GenericSession extends Session{
         })
     }
 
+    _processDead(){
+        console.log("Dead");
+    }
+
 
     _prepareStateMachine(){
         return new StateMachine(this, {
@@ -291,7 +299,6 @@ class GenericSession extends Session{
 
                         sendPing: {
                             actions: this._processSendPing.bind(this)
-
                         },
 
                         processQueue: {
@@ -330,7 +337,7 @@ class GenericSession extends Session{
                 },
 
                 dead: {
-                    entry: this._commitSuicide.bind(this)
+                    entry: this._processDead.bind(this)
                 }
             }
         })
@@ -339,10 +346,10 @@ class GenericSession extends Session{
 
 
 class ServerSession extends GenericSession{
-    constructor({ connector, incomingMessagePreprocessors = [], outgoingMessagePreprocessors = [], recognizer }){
+    constructor({ connector, incomingMessagePreprocessors = [], outgoingMessagePreprocessors = [], secretRecognizer }){
         super(connector)
         this._sm = this._prepareStateMachine()
-        this._recognizer = recognizer
+        this._recognizer = secretRecognizer
         this._incomingMessagePreprocessors = incomingMessagePreprocessors;
         this._outgoingMessagePreprocessors = outgoingMessagePreprocessors;
         this._bootstrapConnector(connector);
@@ -436,7 +443,8 @@ class SessionRecognizer{
 
 
 class SessionFactory{
-    static makeServerSessionV1(connector, cryptoAgent, recognizer){
+
+    static make(connector, cryptoAgent, secret){
         let jsonPreprocessor = (msg)=>{
             if(typeof msg !== "string"){
                 return JSON.stringify(msg)
@@ -448,34 +456,20 @@ class SessionFactory{
             return cryptoAgent.encrypt(msg)
         }
 
-        let session = new ServerSession({
+        let secretRecognizer = (msg)=>{
+            return cryptoAgent.decrypt(msg) === secret
+        }
+
+        let secretHolder = ()=>{
+            return cryptoAgent.encrypt(secret);
+        }
+
+        let session = new GenericSession({
             connector: connector,
             incomingMessagePreprocessors: [cryptoPreprocessor, jsonPreprocessor],
             outgoingMessagePreprocessors: [jsonPreprocessor, cryptoPreprocessor],
-            recognizer: recognizer
-        }
-        );
-        return session
-    }
-
-    static makeClientSessionV1(connector, cryptoAgent, secretHolder){
-        let jsonPreprocessor = (msg)=>{
-            if(typeof msg !== "string"){
-                return JSON.stringify(msg)
-            }
-            return msg
-        }
-
-        let cryptoPreprocessor = (msg)=>{
-            return cryptoAgent.encrypt(msg)
-        }
-
-
-        let session = new ClientSession({
-            connector: connector,
-            incomingMessagePreprocessors: [cryptoPreprocessor, jsonPreprocessor],
-            outgoingMessagePreprocessors: [jsonPreprocessor, cryptoPreprocessor],
-            secretHolder: secretHolder
+            secretHolder: secretHolder,
+            secretRecognizer: secretRecognizer
         });
         return session
     }
@@ -485,5 +479,4 @@ module.exports = {
     SessionFactory: SessionFactory,
     SessionEvents: SessionEvents,
     MessageTypes: MessageTypes,
-    ClientSession: ClientSession
 }
