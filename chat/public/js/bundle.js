@@ -70346,8 +70346,9 @@ var LoginAgent_LoginAgent = /*#__PURE__*/function () {
       console.log("Initializing session"); //make crypto agent
 
       var cryptoAgent = this.sessionKeyAgent;
-      var secret = this._challenge.nonce;
-      this.session = Session["SessionFactory"].make(this.connector, cryptoAgent);
+      var secret = this.secret;
+      console.log("Creating session. Secret: ".concat(secret));
+      this.session = Session["SessionFactory"].make(this.connector, cryptoAgent, secret);
       this.sm.handle.success();
     }
   }, {
@@ -70362,6 +70363,16 @@ var LoginAgent_LoginAgent = /*#__PURE__*/function () {
       console.log("Login agent success");
       this.emit(LoginAgentEvents.SUCCESS, this.session);
     }
+    /**
+     * Given a challenge from the server, which consists of
+     * - Password encrypted vault private key
+     * - vault public key encrypted session key
+     * - vault public key encrypted session secret nonce
+     *
+     * This function will try to decrypt the vault using password
+     * provided by user, and decrypt session keys with resulting private key
+     */
+
   }, {
     key: "_tryDecrypt",
     value: function _tryDecrypt(stateMachine, eventName, args) {
@@ -70379,22 +70390,20 @@ var LoginAgent_LoginAgent = /*#__PURE__*/function () {
         var vaultCipher = this._challenge.privateKey.substr(256);
 
         var vaultRaw = JSON.parse(vaultSymKey.decrypt(vaultCipher));
-        this.vaultRaw = vaultRaw; // Temporary. Later vault will be fetched separately.
-        // Login agent will only fetch specific keys
+        this.vaultRaw = vaultRaw;
+        var vaultPrivateKey = CryptoAgent["AsymFullCryptoAgentFactory"].make(this.vaultRaw.privateKey);
+        this.secret = vaultPrivateKey.decrypt(this._challenge.secret);
+        this.vaultRaw.pkfp = vaultPrivateKey.getPkfp();
+        var sessionKey = vaultPrivateKey.decrypt(this._challenge.sessionKey);
+        var sessionKeyAgent = CryptoAgent["SymCryptoAgentFactory"].make(sessionKey);
+        this.sessionKeyAgent = sessionKeyAgent;
+        console.log("SESSION KEY ".concat(sessionKeyAgent.getKey()));
+        var secretSessionEncrypted = sessionKeyAgent.encrypt(this.secret);
+        this.sm.handle.decryptSuccess(sessionKeyAgent.getKey(), secretSessionEncrypted);
       } catch (err) {
         this.sm.handle.decryptError(err);
         return;
       }
-
-      var vaultPrivateKey = CryptoAgent["AsymFullCryptoAgentFactory"].make(this.vaultRaw.privateKey);
-      this.vaultRaw.pkfp = vaultPrivateKey.getPkfp(); //decrypt session key
-
-      var sessionKey = vaultPrivateKey.decrypt(this._challenge.sessionKey);
-      var sessionKeyAgent = CryptoAgent["SymCryptoAgentFactory"].make(sessionKey);
-      this.sessionKeyAgent = sessionKeyAgent;
-      console.log("SESSION KEY ".concat(sessionKeyAgent.getKey()));
-      var secretSessionEncrypted = sessionKeyAgent.encrypt(vaultPrivateKey.decrypt(this._challenge.secret));
-      this.sm.handle.decryptSuccess(sessionKeyAgent.getKey(), secretSessionEncrypted);
     }
   }, {
     key: "_notifyLoginError",

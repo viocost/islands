@@ -123,9 +123,10 @@ export class LoginAgent{
         //make crypto agent
 
         let cryptoAgent = this.sessionKeyAgent;
-        let secret = this._challenge.nonce
+        let secret = this.secret
 
-        this.session = SessionFactory.make(this.connector, cryptoAgent, );
+        console.log(`Creating session. Secret: ${secret}`);
+        this.session = SessionFactory.make(this.connector, cryptoAgent, secret);
         this.sm.handle.success()
 
 
@@ -181,7 +182,7 @@ export class LoginAgent{
             this.sessionKeyAgent = sessionKeyAgent
             console.log(`SESSION KEY ${sessionKeyAgent.getKey()}`);
 
-            let secretSessionEncrypted = sessionKeyAgent.encrypt()
+            let secretSessionEncrypted = sessionKeyAgent.encrypt(this.secret)
             this.sm.handle.decryptSuccess(sessionKeyAgent.getKey(), secretSessionEncrypted);
 
         } catch (err){
