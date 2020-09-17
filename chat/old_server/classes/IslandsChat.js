@@ -20,9 +20,9 @@ const AssistantCoordinator = require("./assistants/AssistantCoordinator.js");
 const VaultUpdater = require("../lib/VaultUpdater");
 
 class IslandsChat{
-    constructor(server, opts) {
+    constructor(opts) {
         this.historyPath = (opts ? opts.historyPath : null);
-        this.chatConnectionManager = new ClientConnectionManager(server);
+        this.chatConnectionManager = new ClientConnectionManager();
         this.clientRequestEmitter = new ClientRequestRouter();
         this.torConnector = new TorConnector(opts);
         this.crossIslandMessenger = new CrossIslandMessenger(this.torConnector);
@@ -39,8 +39,7 @@ class IslandsChat{
             this.torConnector,
             this.hm);
 
-        this.topicInitAssistant = new TopicInitAssistant(this.chatConnectionManager,
-            this.clientRequestEmitter,
+        this.topicInitAssistant = new TopicInitAssistant(this.clientRequestEmitter,
             this.hm,
             this.topicAuthorityManager,
             this.torConnector,

@@ -1842,23 +1842,28 @@ function setTopicListeners(topic) {
 
 }
 
-function postLogin(vault) {
-    //sending post_login request
-
-    const message = createClientIslandEnvelope({
-        command: Internal.POST_LOGIN,
-        pkfpSource: vault.id,
-        privateKey: vault.privateKey,
-        body: {
-            topics: Object.keys(topics)
-        }
-    })
-
-    vault.once(Internal.POST_LOGIN_DECRYPT, (msg) => {
-        postLoginDecrypt(msg, vault);
-    })
-    connector.send(message);
-}
+/**
+ * Moved to PostLoginInitializer
+ */
+////////////////////////////////////////////////////////////
+// function postLogin(vault) {                            //
+//     //sending post_login request                       //
+//                                                        //
+//     const message = createClientIslandEnvelope({       //
+//         command: Internal.POST_LOGIN,                  //
+//         pkfpSource: vault.id,                          //
+//         privateKey: vault.privateKey,                  //
+//         body: {                                        //
+//             topics: Object.keys(topics)                //
+//         }                                              //
+//     })                                                 //
+//                                                        //
+//     vault.once(Internal.POST_LOGIN_DECRYPT, (msg) => { //
+//         postLoginDecrypt(msg, vault);                  //
+//     })                                                 //
+//     connector.send(message);                           //
+// }                                                      //
+////////////////////////////////////////////////////////////
 
 function checkUpdateVaultFormat(vaultHolder, existingTopics){
     //V1 support

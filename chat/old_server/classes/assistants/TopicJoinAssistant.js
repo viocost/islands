@@ -13,8 +13,7 @@ const semver = require("semver")
 
 
 class TopicJoinAssistant {
-    constructor(connectionManager = Err.required(),
-                sessionManager = Err.required(),
+    constructor(sessionManager = Err.required(),
                 requestEmitter = Err.required(),
                 historyManager = Err.required(),
                 topicAuthorityManager = Err.required(),
@@ -24,7 +23,6 @@ class TopicJoinAssistant {
 
         this.connector = connector;
         this.crossIslandMessenger = crossIslandMessenger;
-        this.connectionManager = connectionManager;
         this.sessionManager = sessionManager;
         this.hm = historyManager;
         this.vaultManager = vaultManager;
@@ -299,29 +297,6 @@ class TopicJoinAssistant {
         }
     }
 
-    //special case if error occurs during finalize
-
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // async processJoinTopicError(message, self, error = undefined) {                                                       //
-    //     try {                                                                                                             //
-    //         //Kill hidden services                                                                                        //
-    //         const pendingRequest = self.getOutgoingPendingJoinRequest(message.headers.pkfpSource);                        //
-    //         let message                                                                                                   //
-    //         //Send notification to that connection that invite failed                                                     //
-    //                                                                                                                       //
-    //         let clientError = new ClientError(message,                                                                    //
-    //             self.getClientErrorType(message.headers.command),                                                         //
-    //             error ? error : "unknown error");                                                                         //
-    //         if (pendingRequest) {                                                                                         //
-    //             self.connectionManager.sendResponse(pendingRequest.connectionId, clientError);                            //
-    //             delete self.pendingOutgoingJoinRequests[message.headers.pkfpSorce];                                       //
-    //         }                                                                                                             //
-    //     } catch (err) {                                                                                                   //
-    //         Logger.error("FATAL ERROR while processing join topic error: " + err + " " + err.stack, {cat: "topic_join"}); //
-    //     }                                                                                                                 //
-    // }                                                                                                                     //
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     async clientRequestErrorHandler(request, connectionId, self, err) {
 

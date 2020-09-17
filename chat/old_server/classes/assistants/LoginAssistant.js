@@ -17,8 +17,7 @@ const DEFAULT_LOADED_MSGS_QTY = 30
 
 
 class LoginAssistant{
-    constructor(connectionManager = Err.required(),
-                requestEmitter = Err.required(),
+    constructor(requestEmitter = Err.required(),
                 historyManager = Err.required(),
                 taManager = Err.required(),
                 connector = Err.required(),
@@ -26,7 +25,6 @@ class LoginAssistant{
                 vaultManager = Err.required()){
 
         this.pendingLogins = {};
-        this.connectionManager = connectionManager;
         this.hm = historyManager;
         this.vaultManager = vaultManager;
         this.connector = connector;

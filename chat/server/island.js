@@ -28,8 +28,6 @@ const managers = {};
 
 //create express
 function main(){
-
-
     console.log("Starting Islands...");
     const args = parseArguments(process.argv.slice(2));
 
@@ -80,6 +78,9 @@ function main(){
 
     //activateGuestAccounts(vaults)
     const requestEmitter = new ClientRequestRouter();
+
+    //create managers here
+
     activateAccounts(args.port, config, requestEmitter)
 
 }
@@ -155,7 +156,7 @@ function activateAccount({vault, requestEmitter, port, host, isAdmin, config}){
         staticPath: path.join(__dirname, "..", "public")
     })
 
-    let sessions = new Sessions(vault)
+    let sessions = new Sessions(vault, requestEmitter)
 
 
     webService.on('connection', (socket)=>{

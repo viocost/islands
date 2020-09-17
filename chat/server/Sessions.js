@@ -1,15 +1,19 @@
-const { ClientSession } = require("./Session")
+const { MessageTypes } = require("../common/Session")
 
 
 //This object holds all active sessions that serve a particular vault
 //There could be only one sessions object per vault
 class Sessions{
-    constructor(vault){
+    constructor(vault, requestEmitter){
         this._vault = vault;
         this._sessions = [];
+        this._requestEmitter = requestEmitter
     }
 
     add(session){
+        session.on(MessageTypes.MESSAGE, (msg)=>{
+            this._requestEmitter.acceptMessage(msg, session.getId())
+        })
         this._sessions.push(session)
     }
 
