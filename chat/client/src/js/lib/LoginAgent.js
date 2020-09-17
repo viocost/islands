@@ -119,6 +119,13 @@ export class LoginAgent{
         //Init session, arrival hub, topic loader etc
         console.log("Initializing session");
 
+        //make crypto agent
+
+        let cryptoAgent;
+
+        let secretHolder;
+        this.session = SessionFactory.makeClientSessionV1(this.connector, cryptoAgent, secretHolder);
+        this.sm.handle.success()
 
 
     }
@@ -126,6 +133,14 @@ export class LoginAgent{
 
     _handleFailed(stateMachine, eventName, args){
         console.log("Login agent failed");
+
+        this.emit(LoginAgentEvents.FAIL)
+    }
+
+
+    _handleSuccess(stateMachine, eventName, args){
+        console.log("Login agent success");
+        this.emit(LoginAgentEvents.SUCCESS, this.session)
     }
 
     _tryDecrypt(stateMachine, eventName, args){
@@ -239,11 +254,17 @@ export class LoginAgent{
                 },
 
                 initializing: {
-                    entry: this._initializeSession.bind(this)
+                    entry: this._initializeSession.bind(this),
+                    transitions: {
+                        success: {
+                            state: "authenticated"
+                        }
+                    }
 
                 },
 
                 authenticated: {
+                    entry: this._handleSuccess.bind(this),
                     final: true
                 },
 

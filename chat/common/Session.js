@@ -167,82 +167,16 @@ class GenericSession extends Session{
      * whether a passed cipher can be decrypted to a control nonce using session key.
      *
      */
-    constructor(connector){
+    constructor({ connector, incomingMessagePreprocessors = [], outgoingMessagePreprocessors = [], recognizer }){
         super(connector)
-
+        this._recognizer = recognizer
+        this._incomingMessagePreprocessors = incomingMessagePreprocessors;
+        this._outgoingMessagePreprocessors = outgoingMessagePreprocessors;
     }
 
     /**
      * The main method to call for sending message to the client
      */
-    acceptMessage(message){
-        this._sm.handle.outgoingMessage(message)
-    }
-
-    isPaused(){
-        return this._sm.state === "awatingReconnection"
-    }
-
-
-    replaceConnectorOnReconnection(connector){
-        this._sm.handle.reconnect(connector)
-    }
-
-
-    _handleReplaceConnector(stateMachine, eventName, args){
-        console.log("Replacing connector");
-        this._connector = args[0]
-    }
-
-    _processIncomingMessage(stateMachine, eventName, args){
-        throw new NotImplemented()
-
-    }
-
-    _processOutgoingMessage(stateMachine, eventName, args){
-        throw new NotImplemented
-    }
-
-    _processQueue(stateMachine, eventName, args){
-        let message;
-        while(message = this._messageQueue.dequeue()){
-            for(let preProcessor of this._outgoingMessagePreprocessors){
-                message = preProcessor(message)
-            }
-
-            this._connector.send(MessageTypes.MESSAGE, message)
-        }
-
-    }
-
-    _processSendPing(stateMachine, eventName, args){
-        let payload = this._keyAgent.encrypt(JSON.stringify({
-            command: "ping",
-            seq: this._incomingCounter.get()
-        }))
-        this._connector.send("sync", payload)
-    }
-
-}
-
-class SessionServer extends GenericSession{
-    constructor({ connector, incomingMessagePreprocessors = [], outgoingMessagePreprocessors = [], recognizer }){
-        super(connector)
-        this._sm = this._prepareStateMachine()
-        this._recognizer = recognizer
-        this._incomingMessagePreprocessors = incomingMessagePreprocessors;
-        this._outgoingMessagePreprocessors = outgoingMessagePreprocessors;
-        this._bootstrapConnector(connector);
-    }
-
-
-    isPaused(){
-        return this._sm.state === "awatingReconnection"
-    }
-
-    replaceConnectorOnReconnection(connector){
-        this._sm.handle.reconnect(connector)
-    }
 
 
     /**
@@ -254,38 +188,17 @@ class SessionServer extends GenericSession{
         return this._recognizer(nonce)
     }
 
-    _handleReplaceConnector(stateMachine, eventName, args){
-        console.log("Replacing connector");
-        this._connector = args[0]
+
+    replaceConnectorOnReconnection(connector){
+        this._sm.handle.reconnect(connector)
     }
 
-    _processIncomingMessage(stateMachine, eventName, args){
 
-        let msg = args[0]
 
-        let processed = this._preprocessIncoming(msg)
-
-        if(!this._incomingCounter.accept(processed.seq)){
-            this._sm.handle.sendPing()
-        } else {
-            console.log("Emitting a message");
-            this.emit(SessionEvents.MESSAGE, processed.payload)
-        }
+    isPaused(){
+        return this._sm.state === "awatingReconnection"
     }
 
-    _processOutgoingMessage(stateMachine, eventName, args){
-        this._messageQueue.enqueue(args[0])
-        this._sm.handle.processQueue()
-    }
-
-    _processQueue(stateMachine, eventName, args){
-        let message;
-        while(message = this._messageQueue.dequeue()){
-            let processed = this._preprocessOutgoing(message)
-            this._connector.send(MessageTypes.MESSAGE, processed)
-        }
-
-    }
 
     _preprocessIncoming(message){
         for(let preProcessor of this._incomingMessagePreprocessors){
@@ -302,6 +215,37 @@ class SessionServer extends GenericSession{
         return message
     }
 
+    _processIncomingMessage(stateMachine, eventName, args){
+
+        let msg = args[0]
+
+        let processed = this._preprocessIncoming(msg)
+
+        if(!this._incomingCounter.accept(processed.seq)){
+            this._sm.handle.sendPing()
+        } else {
+            console.log("Emitting a message");
+            this.emit(SessionEvents.MESSAGE, processed.payload)
+        }
+    }
+
+
+    _processOutgoingMessage(stateMachine, eventName, args){
+        this._messageQueue.enqueue(args[0])
+        this._sm.handle.processQueue()
+    }
+
+
+
+    _processQueue(stateMachine, eventName, args){
+        let message;
+        while(message = this._messageQueue.dequeue()){
+            let processed = this._preprocessOutgoing(message)
+            this._connector.send(MessageTypes.MESSAGE, processed)
+        }
+    }
+
+
     _processSendPing(stateMachine, eventName, args){
         let payload = this._keyAgent.encrypt(JSON.stringify({
             command: "ping",
@@ -310,9 +254,14 @@ class SessionServer extends GenericSession{
         this._connector.send("sync", payload)
     }
 
-    _commitSuicide(stateMachine, eventName, args){
-        this.emit(SessionEvents.DEAD)
+
+    _handleReplaceConnector(stateMachine, eventName, args){
+        console.log("Replacing connector");
+        this._connector.off()
+        this._connector = args[0]
+        this._bootstrapConnector(this._connector)
     }
+
 
     _bootstrapConnector(connector){
         connector.on(ConnectorEvents.DEAD, ()=>{
@@ -328,9 +277,10 @@ class SessionServer extends GenericSession{
         })
     }
 
+
     _prepareStateMachine(){
         return new StateMachine(this, {
-            name: "Session SM",
+            name: "Server Session SM",
             stateMap: {
                 active: {
                     initial: true,
@@ -387,7 +337,8 @@ class SessionServer extends GenericSession{
     }
 }
 
-class SessionClient extends Session{
+
+class ServerSession extends GenericSession{
     constructor({ connector, incomingMessagePreprocessors = [], outgoingMessagePreprocessors = [], recognizer }){
         super(connector)
         this._sm = this._prepareStateMachine()
@@ -397,80 +348,26 @@ class SessionClient extends Session{
         this._bootstrapConnector(connector);
     }
 
-
-    acceptMessage(){
-        this._sm.handle.outgoingMessage(message)
+    _commitSuicide(stateMachine, eventName, args){
+        this.emit(SessionEvents.DEAD)
     }
 
-    isPaused(){
-        throw new NotImplemented()
+
+}
+
+
+class ClientSession extends GenericSession{
+    constructor({ connector, incomingMessagePreprocessors = [], outgoingMessagePreprocessors = [], secretHolder}){
+        super(arguments)
+        this._secretHolder = secretHolder
+        this._sm = this._prepareStateMachine()
+        this._incomingMessagePreprocessors = incomingMessagePreprocessors;
+        this._outgoingMessagePreprocessors = outgoingMessagePreprocessors;
+        this._bootstrapConnector(connector);
     }
 
     getSecret(){
-
-    }
-
-    replaceConnectorOnReconnection(){
-        throw new NotImplemented()
-    }
-
-
-    _prepareStateMachine(){
-        return new StateMachine(this, {
-            name: "Session SM",
-            stateMap: {
-                active: {
-                    initial: true,
-                    transitions: {
-                        sync: {
-
-                        },
-
-                        sendPing: {
-                            actions: this._processSendPing.bind(this)
-
-                        },
-
-                        processQueue: {
-                            actions: this._processQueue.bind(this)
-                        },
-
-                        connectorDisconnected: {
-                            state: "reconnecting"
-                        },
-
-                        //to client
-                        outgoingMessage: {
-                            actions: this._processOutgoingMessage.bind(this),
-                        },
-
-                        //from client
-                        incomingMessage: {
-                            actions: this._processIncomingMessage.bind(this),
-                        }
-
-                    }
-
-                },
-
-                reconnecting: {
-                    transitions: {
-                        reconnect: {
-                            action: this._handleReplaceConnector.bind(this),
-                            state: "active"
-                        },
-
-                        timeout: {
-                            state: "dead"
-                        }
-                    }
-                },
-
-                dead: {
-                    entry: this._commitSuicide.bind(this)
-                }
-            }
-        })
+        return this._secretHolder()
     }
 }
 
@@ -551,7 +448,7 @@ class SessionFactory{
             return cryptoAgent.encrypt(msg)
         }
 
-        let session = new SessionServer({
+        let session = new ServerSession({
             connector: connector,
             incomingMessagePreprocessors: [cryptoPreprocessor, jsonPreprocessor],
             outgoingMessagePreprocessors: [jsonPreprocessor, cryptoPreprocessor],
@@ -561,14 +458,32 @@ class SessionFactory{
         return session
     }
 
-    static makeClientSessionV1(connector, cryptoAgent){
+    static makeClientSessionV1(connector, cryptoAgent, secretHolder){
+        let jsonPreprocessor = (msg)=>{
+            if(typeof msg !== "string"){
+                return JSON.stringify(msg)
+            }
+            return msg
+        }
 
+        let cryptoPreprocessor = (msg)=>{
+            return cryptoAgent.encrypt(msg)
+        }
+
+
+        let session = new ClientSession({
+            connector: connector,
+            incomingMessagePreprocessors: [cryptoPreprocessor, jsonPreprocessor],
+            outgoingMessagePreprocessors: [jsonPreprocessor, cryptoPreprocessor],
+            secretHolder: secretHolder
+        });
+        return session
     }
 }
 
 module.exports = {
     SessionFactory: SessionFactory,
     SessionEvents: SessionEvents,
-    MessageTypes: MessageTypes
-
+    MessageTypes: MessageTypes,
+    ClientSession: ClientSession
 }
