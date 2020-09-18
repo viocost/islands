@@ -34,7 +34,8 @@ import { SymCryptoAgentFactory, AsymFullCryptoAgentFactory } from "../../../../c
 import { WildEmitter } from "../../../../common/WildEmitter"
 import { AuthMessage } from "../../../../common/AuthMessage"
 import { SessionFactory } from "../../../../common/Session"
-
+import { VaultFactory } from "./Vault"
+import { IslandsVersion } from "../../../../common/Version"
 
 export class LoginAgent{
     constructor(connectorFactory){
@@ -128,8 +129,6 @@ export class LoginAgent{
         console.log(`Creating session. Secret: ${secret}`);
         this.session = SessionFactory.make(this.connector, cryptoAgent, secret);
         this.sm.handle.success()
-
-
     }
 
 
@@ -140,9 +139,19 @@ export class LoginAgent{
     }
 
 
+    /**
+     * After successful authentication it is needed to initialize
+     * Arrival hub, Vault, all topics UI and whatever else.
+     * This function will do part of that, but later must be refactored
+     * into a dedicated initializer object.
+     */
     _handleSuccess(stateMachine, eventName, args){
         console.log("Login agent success");
-        this.emit(LoginAgentEvents.SUCCESS, this.session)
+
+
+        let vault = VaultFactory.initSaved(IslandsVersion.getVersion, this.vaultRaw)
+
+        this.emit(LoginAgentEvents.SUCCESS, this.session, vault)
     }
 
     /**

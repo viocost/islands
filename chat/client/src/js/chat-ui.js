@@ -17,12 +17,14 @@ import { TopicJoinAgent } from "./lib/TopicJoinAgent";
 import { ConnectionIndicator } from  "./ui/ConnectionIndicator";
 import { LoginAgent, LoginAgentEvents } from "./lib/LoginAgent";
 import { ConnectorAbstractFactory } from "../../../common/Connector"
+import { IslandsVersion } from "../../../common/Version";
 //import { runConnectorTest } from "./test/connector"
 // TEMP IMPORTS FOR FURTHER REFACTORING
 import { iCrypto } from "../../../common/iCrypto";
 import { createClientIslandEnvelope, Message } from "../../../common/Message";
 import * as MainView from "./MainView";
 import { StateMachine } from "../../../common/AdvStateMachine";
+
 
 // ---------------------------------------------------------------------------------------------------------------------------
 // CONSTANTS
@@ -96,6 +98,8 @@ window.topics = topics;
 // ~END TEST
 
 document.addEventListener('DOMContentLoaded', event => {
+    IslandsVersion.setVersion(islandsVersion())
+    console.log(`Islands version is ${IslandsVersion.getVersion()}`);
     isRegistration() ? UISM.handle.toRegistration() : UISM.handle.toLogin()
     return;
 //    initChat();
@@ -1677,6 +1681,13 @@ function initSession(loginAgent) {
         toastr.warning("Invalid password. Try again.")
 
 
+    })
+
+    loginAgent.on(LoginAgentEvents.SUCCESS, (session, vault)=>{
+        console.log("Login agent succeeded. continuing initialization");
+
+
+        //init vault
     })
 
 }
