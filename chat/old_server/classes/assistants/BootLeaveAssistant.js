@@ -11,8 +11,7 @@ const Events = require("../../../common/Events").Events;
 const Internal = require("../../../common/Events").Internal;
 
 class BootLeaveAssistant extends Assistant{
-    constructor(connectionManager = Err.required(),
-                sessionManager = Err.required(),
+    constructor(sessionManager = Err.required(),
                 requestEmitter = Err.required(),
                 historyManager = Err.required(),
                 topicAuthorityManager = Err.required(),
@@ -22,7 +21,6 @@ class BootLeaveAssistant extends Assistant{
         super(historyManager);
         this.crossIslandMessenger = crossIslandMessenger;
         this.vaultManager = vaultManager;
-        this.connectionManager = connectionManager;
         this.sessionManager = sessionManager;
         this.topicAuthorityManager = topicAuthorityManager;
         this.connector = torConnector;

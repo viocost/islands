@@ -15,8 +15,8 @@ const fs = require("fs-extra")
 const path = require("path")
 
 const HistoryManager = require("../old_server/classes/libs/HistoryManager.js");
+const { SessionManagerAdapter } = require("./lib/SessionManagerAdapter")
 
-const HiddenServiceManager = require("../old_server/classes/libs/HiddenServiceManager");
 const ClientRequestRouter = require("../old_server/classes/libs/ClientRequestCollector.js");
 
 const IslandsChat = require("../old_server/classes/IslandsChat")
@@ -88,7 +88,7 @@ function main(){
     //create managers here
     //chat here is a collection of legacy managers that eventually have to go
     let sessionManagerAdapter = new SessionManagerAdapter()
-    let chat = new IslandsChat(config, requestEmitter)
+    let chat = new IslandsChat(config, requestEmitter, sessionManagerAdapter)
 
 }
 

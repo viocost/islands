@@ -12,8 +12,7 @@ const Logger = require("../libs/Logger.js");
 
 class TopicInitAssistant{
 
-    constructor(connectionManager = Err.required(),
-                requestEmitter = Err.required(),
+    constructor(requestEmitter = Err.required(),
                 historyManager = Err.required(),
                 topicAuthorityManager = Err.required(),
                 torConnector = Err.required(),
@@ -22,7 +21,6 @@ class TopicInitAssistant{
 
         this.connector = torConnector;
         this.newTopicPending = {};
-        this.connectionManager = connectionManager;
         this.hm = historyManager;
         this.topicAuthorityManager = topicAuthorityManager;
         this.vaultManager = vaultManager;

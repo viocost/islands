@@ -9,8 +9,7 @@ const Coordinator = require("../assistants/AssistantCoordinator.js");
 const { Internal, Events } = require("../../../common/Events");
 
 class ChatMessageAssistant{
-    constructor(connectionManager = Err.required(),
-                sessionManager = Err.required(),
+    constructor(sessionManager = Err.required(),
                 requestEmitter = Err.required(),
                 historyManager = Err.required(),
                 topicAuthorityManager = Err.required(),
@@ -18,7 +17,6 @@ class ChatMessageAssistant{
         let self = this;
         this.appendQueue = {};
         this.crossIslandMessenger = crossIslandMessenger;
-        this.connectionManager = connectionManager;
         this.sessionManager = sessionManager;
         this.hm = historyManager;
         this.topicAuthorityManager = topicAuthorityManager;

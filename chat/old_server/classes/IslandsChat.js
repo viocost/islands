@@ -20,7 +20,7 @@ const AssistantCoordinator = require("./assistants/AssistantCoordinator.js");
 const VaultUpdater = require("../lib/VaultUpdater");
 
 class IslandsChat{
-    constructor(opts, requestEmitter) {
+    constructor(opts, requestEmitter, sessionManager) {
         this.historyPath = (opts ? opts.historyPath : null);
         this.clientRequestEmitter = requestEmitter
         this.torConnector = new TorConnector(opts);
@@ -28,13 +28,14 @@ class IslandsChat{
         this.hm = new HistoryManager(this.historyPath);
 
         this.vaultManager = new VaultManager(opts, this.clientRequestEmitter);
-        this.clientSessionManager = new ClientSessionManager(this.chatConnectionManager, this.vaultManager, this.clientRequestEmitter);
+        this.clientSessionManager = sessionManager
         this.vaultManager.registerSessionManager(this.clientSessionManager);
 
         AssistantCoordinator.initialize();
 
 
-        this.topicAuthorityManager = new TopicAuthorityManager(this.crossIslandMessenger,
+        this.topicAuthorityManager = new TopicAuthorityManager(
+            this.crossIslandMessenger,
             this.torConnector,
             this.hm);
 
@@ -45,15 +46,14 @@ class IslandsChat{
             this.vaultManager,
             this.clientSessionManager);
 
-        this.LoginAssistant = new LoginAssistant(this.chatConnectionManager,
-            this.clientRequestEmitter,
+        this.LoginAssistant = new LoginAssistant(this.clientRequestEmitter,
             this.hm,
             this.topicAuthorityManager,
             this.torConnector,
             this.clientSessionManager,
             this.vaultManager);
 
-        this.inviteAssistant = new InviteAssistant(this.chatConnectionManager,
+        this.inviteAssistant = new InviteAssistant(
             this.clientSessionManager,
             this.clientRequestEmitter,
             this.hm,
@@ -62,7 +62,6 @@ class IslandsChat{
         );
 
         this.topicJoinAssistant = new TopicJoinAssistant(
-            this.chatConnectionManager,
             this.clientSessionManager,
             this.clientRequestEmitter,
             this.hm,
@@ -73,7 +72,6 @@ class IslandsChat{
         );
 
         this.serviceAssistant = new ServiceAssistant(
-            this.chatConnectionManager,
             this.clientSessionManager,
             this.clientRequestEmitter,
             this.hm,
@@ -83,7 +81,6 @@ class IslandsChat{
         );
 
         this.chatMessageAssistant = new ChatMessageAssistant(
-            this.chatConnectionManager,
             this.clientSessionManager,
             this.clientRequestEmitter,
             this.hm,
@@ -92,20 +89,17 @@ class IslandsChat{
         );
 
         this.clientSettingsAssistant = new ClientSettingsAssistant(
-            this.chatConnectionManager,
             this.clientSessionManager,
             this.clientRequestEmitter,
             this.hm
         );
 
         this.dataTransferAssistant = new DataTransferAssistant(
-            this.chatConnectionManager,
             this.hm,
             this.torConnector
         );
 
         this.bootLeaveAssistant = new BootLeaveAssistant(
-            this.chatConnectionManager,
             this.clientSessionManager,
             this.clientRequestEmitter,
             this.hm,

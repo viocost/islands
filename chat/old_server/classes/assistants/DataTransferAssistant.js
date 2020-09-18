@@ -4,10 +4,9 @@ const FileDownloader = require("../libs/FileDownloader.js");
 const Err = require("../libs/IError.js");
 
 class DataTransferAssistant{
-    constructor(connectionManager = Err.required(),
-                historyManager = Err.required(),
+    constructor(historyManager = Err.required(),
                 torConnector = Err.required()){
-        this.registerConnectionManager(connectionManager);
+        //this.registerConnectionManager(connectionManager);
         this.hm = historyManager;
         this.dataSockets = {};
         this.crossIslandDataTransporter = new CrossIslandDataTransporter(

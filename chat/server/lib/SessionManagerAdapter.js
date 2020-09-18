@@ -1,7 +1,9 @@
 const { CuteSet } = require("cute-set")
+const { WildEmitter } = require("../../common/WildEmitter")
 
 class SessionManagerAdapter{
     constructor(accounts){
+        WildEmitter.mixin(this)
         this._accounts = accounts;
     }
 
@@ -30,14 +32,18 @@ class SessionManagerAdapter{
             }
 
         }
+
         ////////////////////////////////////////////////////////////////////
         // for(let adapterId in this.sessionAdapters){                    //
         //     if (this.sessionAdapters[adapterId].doesServeTopic(pkfp)){ //
         //         return this.sessionAdapters[adapterId];                //
         //     }                                                          //
         // }                                                              //
+        //
         ////////////////////////////////////////////////////////////////////
+
     }
+
 
 
 
@@ -45,4 +51,8 @@ class SessionManagerAdapter{
 
     }
 
+}
+
+module.exports = {
+    SessionManagerAdapter: SessionManagerAdapter
 }

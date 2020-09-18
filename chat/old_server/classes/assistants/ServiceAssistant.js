@@ -17,8 +17,7 @@ const assert = require("../libs/assert");
 const DEFAULT_LOADED_MSGS_QTY = 30
 
 class ServiceAssistant{
-    constructor(connectionManager = Err.required(),
-                sessionManager = Err.required(),
+    constructor(sessionManager = Err.required(),
                 requestEmitter = Err.required(),
                 historyManager = Err.required(),
                 topicAuthorityManager = Err.required(),
@@ -28,7 +27,6 @@ class ServiceAssistant{
         this.syncInProgress = new CuteSet();
         this.connector = connector;
         this.ciMessenger = crossIslandMessenger;
-        this.connectionManager = connectionManager;
         this.sessionManager = sessionManager;
         this.hm = historyManager;
         this.topicAuthorityManager = topicAuthorityManager;

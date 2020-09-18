@@ -12,11 +12,9 @@ const Logger = require("../libs/Logger.js");
 
 
 class ClientSettingsAssistant{
-    constructor(connectionManager = Err.required(),
-                sessionManager = Err.required(),
+    constructor(sessionManager = Err.required(),
                 requestEmitter = Err.required(),
                 historyManager = Err.required()){
-        this.connectionManager = connectionManager;
         this.hm = historyManager;
         this.sessionManager = sessionManager;
         this.subscribeToClientRequests(requestEmitter);
