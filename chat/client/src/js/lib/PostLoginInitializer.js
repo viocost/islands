@@ -1,7 +1,12 @@
+import { ArrivalHub } from "./ArrivalHub"
+
 class PostLoginInitializer{
-    constructor(session){
-        console.log("");
+    constructor(session, vault){
+        console.log("PostLoginInitializer started...");
+
+        this.arrivalHub =
         this.session = session;
+        this.vault = vault;
     }
 
     run(){
@@ -10,6 +15,40 @@ class PostLoginInitializer{
     }
 
 
+    loadTopics(vault) {
+        console.log("Loading topics...");
+        setVaultListeners(vault);
+        vault.bootstrap(arrivalHub, connector, version);
+        let retriever = new TopicRetriever();
+        retriever.once("finished", (data) => initTopics(data, vault))
+        retriever.once("error", (err) => { console.log(err) })
+        retriever.run();
+    }
+
+
+
+    initTopics(data, vault) {
+        console.log("Initializing topics...");
+
+        if (!data.topics) return
+
+        for (let pkfp in data.topics) {
+            console.log(`Initializing topics ${pkfp}`);
+
+            // TODO fix version!
+            let topic = vault.decryptTopic(data.topics[pkfp], vault.password)
+            topics[pkfp] = new Topic(pkfp, topic.name, topic.key, topic.comment)
+            setTopicListeners(topics[pkfp])
+            topics[pkfp].bootstrap(connector, arrivalHub, version);
+        }
+
+        vault.topics = topics;
+
+        checkUpdateVaultFormat(vaultHolder, topics)
+
+        postLogin(vault);
+
+    }
     postLogin(vault){
         const message = createClientIslandEnvelope({
             command: Internal.POST_LOGIN,
