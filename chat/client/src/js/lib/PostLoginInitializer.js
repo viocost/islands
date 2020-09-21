@@ -104,6 +104,7 @@ export class PostLoginInitializer {
 
 
     postLogin(vault) {
+        console.log("SENDING POST LOGIN");
         const message = createClientIslandEnvelope({
             command: Internal.POST_LOGIN,
             pkfpSource: vault.id,

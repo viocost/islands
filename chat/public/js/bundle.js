@@ -20822,7 +20822,11 @@ var GenericSession = /*#__PURE__*/function (_Session) {
     value: function _processIncomingMessage(stateMachine, eventName, args) {
       var processed = this._preprocessIncoming(args[0]);
 
+      console.log("Received incoming message: ".concat(JSON.stringify(processed)));
+
       if (!this._incomingCounter.accept(processed.seq)) {
+        console.log("Message out of sync. Ignoring and sending ping");
+
         this._sm.handle.sendPing();
       } else {
         console.log("Emitting a message");
@@ -20913,8 +20917,6 @@ var GenericSession = /*#__PURE__*/function (_Session) {
         _this2._sm.handle.pingPong(msg);
       });
       connector.on(MessageTypes.MESSAGE, function (msg) {
-        console.log("Incoming message received at session! Processing...");
-
         _this2._sm.handle.incomingMessage(msg);
       });
     }
@@ -21070,7 +21072,9 @@ var SeqCounter = /*#__PURE__*/function () {
   }, {
     key: "accept",
     value: function accept(seq) {
-      if (seq !== this._counter + 1) {
+      console.log("Checking if message is in-sync. Seq ".concat(seq, ", current: ").concat(this._counter));
+
+      if (seq != this._counter + 1) {
         return false;
       }
 
@@ -21138,12 +21142,16 @@ var SessionFactory = /*#__PURE__*/function () {
   _createClass(SessionFactory, null, [{
     key: "make",
     value: function make(connector, cryptoAgent, secret) {
-      var jsonPreprocessor = function jsonPreprocessor(msg) {
+      var serializer = function serializer(msg) {
         if (typeof msg !== "string") {
           return JSON.stringify(msg);
         }
 
         return msg;
+      };
+
+      var deserializer = function deserializer(msg) {
+        return JSON.parse(msg);
       };
 
       var encryptor = function encryptor(msg) {
@@ -21164,8 +21172,8 @@ var SessionFactory = /*#__PURE__*/function () {
 
       var session = new GenericSession({
         connector: connector,
-        incomingMessagePreprocessors: [decryptor, jsonPreprocessor],
-        outgoingMessagePreprocessors: [jsonPreprocessor, encryptor],
+        incomingMessagePreprocessors: [decryptor, deserializer],
+        outgoingMessagePreprocessors: [serializer, encryptor],
         secretHolder: secretHolder,
         secretRecognizer: secretRecognizer
       });
@@ -70682,6 +70690,7 @@ var PostLoginInitializer_PostLoginInitializer = /*#__PURE__*/function () {
     value: function postLogin(vault) {
       var _this2 = this;
 
+      console.log("SENDING POST LOGIN");
       var message = Object(common_Message["createClientIslandEnvelope"])({
         command: Events["Internal"].POST_LOGIN,
         pkfpSource: vault.id,
