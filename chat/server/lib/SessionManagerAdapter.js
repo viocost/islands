@@ -1,5 +1,7 @@
 const { CuteSet } = require("cute-set")
 const { WildEmitter } = require("../../common/WildEmitter")
+const { SessionAdapter } = require("./SessionAdapter")
+
 
 class SessionManagerAdapter{
     constructor(accounts){
@@ -13,42 +15,39 @@ class SessionManagerAdapter{
     }
 
     getSessionByConnectionId(connectionId = Err.required()){
-        for(let adapterId in this.sessionAdapters){
-            if (this.sessionAdapters[adapterId].hasSession(connectionId)){
-                return this.sessionAdapters[adapterId];
+        for(let account of this._accounts){
+            for(let session of account.sessions){
+                if(session.getId() === connectionId){
+                    return new SessionAdaptera(account.sessions)
+                }
             }
         }
     }
 
-    getSessionBySessionID(adapterId){
-        return this.sessionAdapters[adapterId];
+    //this should be vault id
+    // The purpose of this is to give any random active session for given vault
+    getSessionBySessionID(vaultId){
+        let account = this._accounts.filter(acc=> account.vault.getId() === vaultId)[0]
+        if(account){
+            return new SessionAdapter(account.sessions.getActive())
+        }
     }
 
     getSessionByTopicPkfp(pkfp){
         for(let account of this._accounts){
             let topicIds = new CuteSet(account.vault.getTopicIds())
-            if(toipcIds.has(pkfp)){
-                return account.sessions
+            if(topicIds.has(pkfp)){
+                return new SessionAdapter(account.sessions)
             }
 
         }
-
-        ////////////////////////////////////////////////////////////////////
-        // for(let adapterId in this.sessionAdapters){                    //
-        //     if (this.sessionAdapters[adapterId].doesServeTopic(pkfp)){ //
-        //         return this.sessionAdapters[adapterId];                //
-        //     }                                                          //
-        // }                                                              //
-        //
-        ////////////////////////////////////////////////////////////////////
-
     }
 
-
-
-
     broadcastMessage(vaultId, message){
-
+        let adapter = this.getSessionBySessionID(vaultId);
+        if(adapter){
+            adapter.broadcast(message)
+        }
     }
 
 }

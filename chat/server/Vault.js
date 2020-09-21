@@ -63,6 +63,11 @@ class Vault{
         return fs.existsSync(path.join(this.vaultDirectory, PENDING))
     }
 
+    getId(){
+        return this.id
+
+    }
+
     loadHiddenServices(){
         const hsDir = path.join(this.vaultDirectory, HIDDEN_SERVICES_DIRNAME)
         const hsFiles = fs.readdirSync(hsDir);
