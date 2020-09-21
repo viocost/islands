@@ -210,25 +210,17 @@ class GenericSession extends Session{
 
 
     _preprocessIncoming(message){
-        for(let preProcessor of this._incomingMessagePreprocessors){
-            message = preProcessor(message)
-        }
-        return message
+        return this._incomingMessagePreprocessors.reduce((acc, f)=>f(acc), message)
     }
 
 
     _preprocessOutgoing(message){
-        for(let preProcessor of this._outgoingMessagePreprocessors){
-            message = preProcessor(message)
-        }
-        return message
+        return this._outgoingMessagePreprocessors.reduce((acc, f)=>f(acc), message)
     }
 
     _processIncomingMessage(stateMachine, eventName, args){
 
-        let msg = args[0]
-
-        let processed = this._preprocessIncoming(msg)
+        let processed = this._preprocessIncoming(args[0])
 
         if(!this._incomingCounter.accept(processed.seq)){
             this._sm.handle.sendPing()
@@ -256,13 +248,43 @@ class GenericSession extends Session{
 
 
     _processSendPing(stateMachine, eventName, args){
-        let payload = this._keyAgent.encrypt(JSON.stringify({
-            command: "ping",
+        let payload = this._preprocessOutgoing({
+            command: SyncEvents.PING,
             seq: this._incomingCounter.get()
-        }))
-        this._connector.send("sync", payload)
+        })
+        this._connector.send(MessageTypes.SYNC, payload)
     }
 
+    _processSendPong(stateMachine, eventName, args){
+        let payload = this._preprocessOutgoing({
+            command: SyncEvents.PONG,
+            seq: this._incomingCounter.get()
+        })
+
+        this._connector.send(MessageTypes.SYNC, payload)
+    }
+
+
+    _processPingPong(stateMachine, eventName, args){
+
+        let msg = this._preprocessIncoming(args[0])
+        let seq = msg.seq;
+
+        console.log(`Pingpong received: ${JSON.stringify(msg)}`);
+        this._messageQueue.sync(seq)
+        this._sm.handle.processQueue();
+
+        if(msg.command === SyncEvents.PING){
+            console.log("Ping received. Processing...");
+            this._sm.handle.sendPong();
+        } else {
+            console.log("Pong received");
+        }
+    }
+
+
+    _processSync(stateMachne, eventName, args){
+    }
 
     _handleReplaceConnector(stateMachine, eventName, args){
         console.log("Replacing connector");
@@ -278,7 +300,7 @@ class GenericSession extends Session{
         })
 
         connector.on(MessageTypes.SYNC, msg=>{
-            this._sm.handle.sync(msg);
+            this._sm.handle.pingPong(msg);
         })
 
         connector.on(MessageTypes.MESSAGE, msg=>{
@@ -299,13 +321,6 @@ class GenericSession extends Session{
                 active: {
                     initial: true,
                     transitions: {
-                        sync: {
-
-                        },
-
-                        sendPing: {
-                            actions: this._processSendPing.bind(this)
-                        },
 
                         processQueue: {
                             actions: this._processQueue.bind(this)
@@ -323,7 +338,22 @@ class GenericSession extends Session{
                         //from client
                         incomingMessage: {
                             actions: this._processIncomingMessage.bind(this),
-                        }
+                        },
+
+                        sendPing: {
+                            actions: this._processSendPing.bind(this)
+                        },
+
+                        sendPong: {
+                            actions: this._processSendPong.bind(this)
+
+                        },
+
+                        pingPong: {
+                            actions: this._processPingPong.bind(this)
+                        },
+
+
 
                     }
 
@@ -438,6 +468,10 @@ const MessageTypes = {
     MESSAGE: "message"
 }
 
+const SyncEvents = {
+    PING: "ping",
+    PONG: "pong"
+}
 
 class SessionRecognizer{
     constructor(recognizerLambda){
@@ -458,8 +492,12 @@ class SessionFactory{
             return msg
         }
 
-        let cryptoPreprocessor = (msg)=>{
+        let encryptor = (msg)=>{
             return cryptoAgent.encrypt(msg)
+        }
+
+        let decryptor = (msg)=>{
+            return cryptoAgent.decrypt(msg)
         }
 
         let secretRecognizer = (msg)=>{
@@ -472,8 +510,8 @@ class SessionFactory{
 
         let session = new GenericSession({
             connector: connector,
-            incomingMessagePreprocessors: [cryptoPreprocessor, jsonPreprocessor],
-            outgoingMessagePreprocessors: [jsonPreprocessor, cryptoPreprocessor],
+            incomingMessagePreprocessors: [decryptor, jsonPreprocessor],
+            outgoingMessagePreprocessors: [jsonPreprocessor, encryptor],
             secretHolder: secretHolder,
             secretRecognizer: secretRecognizer
         });

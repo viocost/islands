@@ -20530,12 +20530,6 @@ module.exports = {
 
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
-function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
@@ -20812,47 +20806,21 @@ var GenericSession = /*#__PURE__*/function (_Session) {
   }, {
     key: "_preprocessIncoming",
     value: function _preprocessIncoming(message) {
-      var _iterator = _createForOfIteratorHelper(this._incomingMessagePreprocessors),
-          _step;
-
-      try {
-        for (_iterator.s(); !(_step = _iterator.n()).done;) {
-          var preProcessor = _step.value;
-          message = preProcessor(message);
-        }
-      } catch (err) {
-        _iterator.e(err);
-      } finally {
-        _iterator.f();
-      }
-
-      return message;
+      return this._incomingMessagePreprocessors.reduce(function (acc, f) {
+        return f(acc);
+      }, message);
     }
   }, {
     key: "_preprocessOutgoing",
     value: function _preprocessOutgoing(message) {
-      var _iterator2 = _createForOfIteratorHelper(this._outgoingMessagePreprocessors),
-          _step2;
-
-      try {
-        for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-          var preProcessor = _step2.value;
-          message = preProcessor(message);
-        }
-      } catch (err) {
-        _iterator2.e(err);
-      } finally {
-        _iterator2.f();
-      }
-
-      return message;
+      return this._outgoingMessagePreprocessors.reduce(function (acc, f) {
+        return f(acc);
+      }, message);
     }
   }, {
     key: "_processIncomingMessage",
     value: function _processIncomingMessage(stateMachine, eventName, args) {
-      var msg = args[0];
-
-      var processed = this._preprocessIncoming(msg);
+      var processed = this._preprocessIncoming(args[0]);
 
       if (!this._incomingCounter.accept(processed.seq)) {
         this._sm.handle.sendPing();
@@ -20882,13 +20850,46 @@ var GenericSession = /*#__PURE__*/function (_Session) {
   }, {
     key: "_processSendPing",
     value: function _processSendPing(stateMachine, eventName, args) {
-      var payload = this._keyAgent.encrypt(JSON.stringify({
-        command: "ping",
+      var payload = this._preprocessOutgoing({
+        command: SyncEvents.PING,
         seq: this._incomingCounter.get()
-      }));
+      });
 
-      this._connector.send("sync", payload);
+      this._connector.send(MessageTypes.SYNC, payload);
     }
+  }, {
+    key: "_processSendPong",
+    value: function _processSendPong(stateMachine, eventName, args) {
+      var payload = this._preprocessOutgoing({
+        command: SyncEvents.PONG,
+        seq: this._incomingCounter.get()
+      });
+
+      this._connector.send(MessageTypes.SYNC, payload);
+    }
+  }, {
+    key: "_processPingPong",
+    value: function _processPingPong(stateMachine, eventName, args) {
+      var msg = this._preprocessIncoming(args[0]);
+
+      var seq = msg.seq;
+      console.log("Pingpong received: ".concat(JSON.stringify(msg)));
+
+      this._messageQueue.sync(seq);
+
+      this._sm.handle.processQueue();
+
+      if (msg.command === SyncEvents.PING) {
+        console.log("Ping received. Processing...");
+
+        this._sm.handle.sendPong();
+      } else {
+        console.log("Pong received");
+      }
+    }
+  }, {
+    key: "_processSync",
+    value: function _processSync(stateMachne, eventName, args) {}
   }, {
     key: "_handleReplaceConnector",
     value: function _handleReplaceConnector(stateMachine, eventName, args) {
@@ -20909,7 +20910,7 @@ var GenericSession = /*#__PURE__*/function (_Session) {
         _this2._sm.handle.connectorDisconnected();
       });
       connector.on(MessageTypes.SYNC, function (msg) {
-        _this2._sm.handle.sync(msg);
+        _this2._sm.handle.pingPong(msg);
       });
       connector.on(MessageTypes.MESSAGE, function (msg) {
         console.log("Incoming message received at session! Processing...");
@@ -20931,10 +20932,6 @@ var GenericSession = /*#__PURE__*/function (_Session) {
           active: {
             initial: true,
             transitions: {
-              sync: {},
-              sendPing: {
-                actions: this._processSendPing.bind(this)
-              },
               processQueue: {
                 actions: this._processQueue.bind(this)
               },
@@ -20948,6 +20945,15 @@ var GenericSession = /*#__PURE__*/function (_Session) {
               //from client
               incomingMessage: {
                 actions: this._processIncomingMessage.bind(this)
+              },
+              sendPing: {
+                actions: this._processSendPing.bind(this)
+              },
+              sendPong: {
+                actions: this._processSendPong.bind(this)
+              },
+              pingPong: {
+                actions: this._processPingPong.bind(this)
               }
             }
           },
@@ -21113,6 +21119,10 @@ var MessageTypes = {
   SYNC: "sync",
   MESSAGE: "message"
 };
+var SyncEvents = {
+  PING: "ping",
+  PONG: "pong"
+};
 
 var SessionRecognizer = function SessionRecognizer(recognizerLambda) {
   _classCallCheck(this, SessionRecognizer);
@@ -21136,8 +21146,12 @@ var SessionFactory = /*#__PURE__*/function () {
         return msg;
       };
 
-      var cryptoPreprocessor = function cryptoPreprocessor(msg) {
+      var encryptor = function encryptor(msg) {
         return cryptoAgent.encrypt(msg);
+      };
+
+      var decryptor = function decryptor(msg) {
+        return cryptoAgent.decrypt(msg);
       };
 
       var secretRecognizer = function secretRecognizer(msg) {
@@ -21150,8 +21164,8 @@ var SessionFactory = /*#__PURE__*/function () {
 
       var session = new GenericSession({
         connector: connector,
-        incomingMessagePreprocessors: [cryptoPreprocessor, jsonPreprocessor],
-        outgoingMessagePreprocessors: [jsonPreprocessor, cryptoPreprocessor],
+        incomingMessagePreprocessors: [decryptor, jsonPreprocessor],
+        outgoingMessagePreprocessors: [jsonPreprocessor, encryptor],
         secretHolder: secretHolder,
         secretRecognizer: secretRecognizer
       });
