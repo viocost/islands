@@ -20658,11 +20658,15 @@ var _require4 = __webpack_require__(154),
 var _require5 = __webpack_require__(220),
     NotImplemented = _require5.NotImplemented;
 
+var _require6 = __webpack_require__(2),
+    iCrypto = _require6.iCrypto;
+
 var Session = /*#__PURE__*/function () {
   function Session(connector) {
     _classCallCheck(this, Session);
 
     WildEmitter.mixin(this);
+    this._id = iCrypto.hexEncode(iCrypto.getBytes(16));
     this._messageQueue = new MessageQueue();
     this._incomingCounter = new SeqCounter();
     this._connector = connector;
@@ -20699,6 +20703,11 @@ var Session = /*#__PURE__*/function () {
   }, {
     key: "getSecret",
     value: function getSecret() {
+      throw new NotImplemented();
+    }
+  }, {
+    key: "getId",
+    value: function getId() {
       throw new NotImplemented();
     }
     /**
@@ -20794,6 +20803,11 @@ var GenericSession = /*#__PURE__*/function (_Session) {
       return this._secretHolder();
     }
   }, {
+    key: "getId",
+    value: function getId() {
+      return this._id;
+    }
+  }, {
     key: "replaceConnectorOnReconnection",
     value: function replaceConnectorOnReconnection(connector) {
       this._sm.handle.reconnect(connector);
@@ -20830,7 +20844,7 @@ var GenericSession = /*#__PURE__*/function (_Session) {
         this._sm.handle.sendPing();
       } else {
         console.log("Emitting a message");
-        this.emit(SessionEvents.MESSAGE, processed.payload);
+        this.emit(SessionEvents.MESSAGE, processed.message);
       }
     }
   }, {

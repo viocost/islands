@@ -7,16 +7,17 @@ const Logger = require("./Logger");
  * messages from client. All sessions write to it and all managers are subscribed to it.
  *
  */
-class ClientRequestCollector extends EventEmitter{
+class ClientRequestEmitter extends EventEmitter{
 
     constructor(){
         super();
     }
 
     acceptMessage(msg, connectionId){
+        console.log(`RECEIVED A MESSAGE: ${JSON.stringify(msg)} ${connectionId}`);
         this.emit(msg.headers.command, msg, connectionId)
     }
 
 }
 
-module.exports = ClientRequestCollector;
+module.exports = ClientRequestEmitter;

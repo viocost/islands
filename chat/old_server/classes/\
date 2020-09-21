@@ -21,7 +21,7 @@ const VaultUpdater = require("../lib/VaultUpdater");
 
 class IslandsChat{
     constructor(opts, requestEmitter, sessionManager) {
-        console.log(`Initializing legacy managers!!!!!!!!`);
+        console.log(`Initializing legacy managers!`);
         this.historyPath = (opts ? opts.historyPath : null);
         this.clientRequestEmitter = requestEmitter
         this.torConnector = new TorConnector(opts);

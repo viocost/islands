@@ -1,6 +1,0 @@
-{
-    "compilerOptions": {
-        "target": "ES6"
-    },
-    "include": [ "./server", "./client/src/js", "./test" ]
-}

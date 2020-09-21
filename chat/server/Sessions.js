@@ -1,4 +1,4 @@
-const { MessageTypes } = require("../common/Session")
+const { MessageTypes, SessionEvents } = require("../common/Session")
 
 
 //This object holds all active sessions that serve a particular vault
@@ -11,7 +11,7 @@ class Sessions{
     }
 
     add(session){
-        session.on(MessageTypes.MESSAGE, (msg)=>{
+        session.on(SessionEvents.MESSAGE, (msg)=>{
             this._requestEmitter.acceptMessage(msg, session.getId())
         })
         this._sessions.push(session)

@@ -97,11 +97,12 @@ const { StateMachine } = require("./AdvStateMachine")
 const { WildEmitter } = require("./WildEmitter")
 const { ConnectorEvents } = require("./Connector")
 const { NotImplemented } = require("./Error")
-
+const { iCrypto } = require("./iCrypto")
 
 class Session {
     constructor(connector) {
         WildEmitter.mixin(this)
+        this._id = iCrypto.hexEncode(iCrypto.getBytes(16))
         this._messageQueue = new MessageQueue()
         this._incomingCounter = new SeqCounter();
         this._connector = connector;
@@ -130,6 +131,11 @@ class Session {
      * another session instance for recognition
      */
     getSecret() {
+        throw new NotImplemented()
+    }
+
+    getId(){
+
         throw new NotImplemented()
     }
 
@@ -198,6 +204,10 @@ class GenericSession extends Session {
         return this._secretHolder()
     }
 
+    getId(){
+        return this._id
+    }
+
     replaceConnectorOnReconnection(connector) {
         this._sm.handle.reconnect(connector)
     }
@@ -229,7 +239,7 @@ class GenericSession extends Session {
             this._sm.handle.sendPing()
         } else {
             console.log("Emitting a message");
-            this.emit(SessionEvents.MESSAGE, processed.payload)
+            this.emit(SessionEvents.MESSAGE, processed.message)
         }
     }
 

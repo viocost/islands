@@ -17,7 +17,7 @@ const path = require("path")
 const HistoryManager = require("../old_server/classes/libs/HistoryManager.js");
 const { SessionManagerAdapter } = require("./lib/SessionManagerAdapter")
 
-const ClientRequestRouter = require("../old_server/classes/libs/ClientRequestCollector.js");
+const ClientRequestRouter = require("../old_server/classes/libs/ClientRequestEmitter.js");
 
 const IslandsChat = require("../old_server/classes/IslandsChat")
 
@@ -86,6 +86,8 @@ function main(){
 
 
     //create managers here
+    //
+
     //chat here is a collection of legacy managers that eventually have to go
     let sessionManagerAdapter = new SessionManagerAdapter()
     let chat = new IslandsChat(config, requestEmitter, sessionManagerAdapter)

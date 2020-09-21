@@ -49,6 +49,7 @@ class LoginAssistant{
 
 
     async postLogin(request, connectionId, self){
+        console.log(`POST LOGIN CALLED: ${JSON.stringify(request)} ${connectionId}`);
         Logger.debug(`Processing post login request. Topics: ${JSON.stringify(request.body.topics)}, conn id: ${connectionId}`, {cat: "login"})
 
         // Verify request
