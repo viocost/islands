@@ -16,6 +16,7 @@ import { VaultRetriever } from "./lib/VaultRetriever"
 import { TopicJoinAgent } from "./lib/TopicJoinAgent";
 import { ConnectionIndicator } from  "./ui/ConnectionIndicator";
 import { LoginAgent, LoginAgentEvents } from "./lib/LoginAgent";
+import { PostLoginInitializer } from "./lib/PostLoginInitializer"
 import { ConnectorAbstractFactory } from "../../../common/Connector"
 import { IslandsVersion } from "../../../common/Version";
 //import { runConnectorTest } from "./test/connector"
@@ -811,6 +812,8 @@ function handleLoginSuccess(stateMachine, eventName, args) {
 
     let vaultRetriever = new VaultRetriever()
     vaultRetriever.run(handleVaultReceived)
+
+
     ////
     ////settings                                //
     //vault.initializeSettings(data.settings)   //
@@ -1685,6 +1688,8 @@ function initSession(loginAgent) {
 
     loginAgent.on(LoginAgentEvents.SUCCESS, (session, vault)=>{
         console.log("Login agent succeeded. continuing initialization");
+        let postLoginInitializer = new PostLoginInitializer(session, vault)
+        postLoginInitializer.run();
         //init vault
     })
 

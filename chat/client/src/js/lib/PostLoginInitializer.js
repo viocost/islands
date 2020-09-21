@@ -1,10 +1,16 @@
 import { ArrivalHub } from "./ArrivalHub"
 
-class PostLoginInitializer{
+/**
+ * It is given an authenticated session and vault
+ * It has to
+ * - Load and decrypt topics and all services
+ * - Have server to launch hidden services
+ */
+export class PostLoginInitializer{
     constructor(session, vault){
         console.log("PostLoginInitializer started...");
 
-        this.arrivalHub =
+        this.arrivalHub = new ArrivalHub();
         this.session = session;
         this.vault = vault;
     }
@@ -32,7 +38,7 @@ class PostLoginInitializer{
 
         if (!data.topics) return
 
-        for (let pkfp in data.topics) {
+      for (let pkfp in data.topics) {
             console.log(`Initializing topics ${pkfp}`);
 
             // TODO fix version!
