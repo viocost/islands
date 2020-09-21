@@ -169,6 +169,7 @@ class GenericSession extends Session{
      */
     constructor({ connector, incomingMessagePreprocessors = [], outgoingMessagePreprocessors = [], secretRecognizer, secretHolder }){
         super(connector)
+        this._sm = this._prepareStateMachine()
         this._recognizer = secretRecognizer
         this._secretHolder = secretHolder
         this._incomingMessagePreprocessors = incomingMessagePreprocessors;
@@ -178,6 +179,9 @@ class GenericSession extends Session{
     /**
      * The main method to call for sending message to the client
      */
+    acceptMessage(msg){
+        this._sm.handle.outgoingMessage(msg)
+    }
 
 
     /**
@@ -277,6 +281,7 @@ class GenericSession extends Session{
         })
 
         connector.on(MessageTypes.MESSAGE, msg=>{
+            console.log("Incoming message received at session! Processing...");
             this._sm.handle.incomingMessage(msg)
         })
     }
@@ -479,4 +484,5 @@ module.exports = {
     SessionFactory: SessionFactory,
     SessionEvents: SessionEvents,
     MessageTypes: MessageTypes,
+    ClientSession: ClientSession
 }

@@ -40,7 +40,8 @@ function AppRouter(vault){
     // Posting to root path interpreted as a login attempt
     // processing login
     router.get("/topics", (req, res)=>{
-        res.status(200).send("Topics")
+        let topics  = vault.getTopics();
+        res.status(200).send({ topics: topics })
         ////////////////////////////////////////////////////////////////////////////////////////////////
         // try{                                                                                       //
         //     let id = getVaultId(req.headers["host"]);                                              //

@@ -1,4 +1,8 @@
 import { ArrivalHub } from "./ArrivalHub"
+import { IslandsVersion } from "../../../../common/Version"
+import { TopicRetriever } from  "./TopicRetriever"
+import { createClientIslandEnvelope, Message } from "../../../../common/Message";
+import { Internal, Events } from "../../../../common/Events"
 
 /**
  * It is given an authenticated session and vault
@@ -6,16 +10,20 @@ import { ArrivalHub } from "./ArrivalHub"
  * - Load and decrypt topics and all services
  * - Have server to launch hidden services
  */
-export class PostLoginInitializer{
-    constructor(session, vault){
+export class PostLoginInitializer {
+    constructor(session, vault) {
+
         console.log("PostLoginInitializer started...");
 
-        this.arrivalHub = new ArrivalHub();
+        this.arrivalHub = new ArrivalHub(session);
         this.session = session;
         this.vault = vault;
+
+        vault.bootstrap(this.arrivalHub, session, IslandsVersion.getVersion());
     }
 
-    run(){
+    run() {
+        this.loadTopics(this.vault)
         //initialize vault
         // initialize all topics
     }
@@ -23,57 +31,14 @@ export class PostLoginInitializer{
 
     loadTopics(vault) {
         console.log("Loading topics...");
-        setVaultListeners(vault);
-        vault.bootstrap(arrivalHub, connector, version);
+        //setVaultListeners(vault);
         let retriever = new TopicRetriever();
-        retriever.once("finished", (data) => initTopics(data, vault))
+        retriever.once("finished", (data) => this.initTopics(data, vault))
         retriever.once("error", (err) => { console.log(err) })
         retriever.run();
     }
 
-
-
-    initTopics(data, vault) {
-        console.log("Initializing topics...");
-
-        if (!data.topics) return
-
-      for (let pkfp in data.topics) {
-            console.log(`Initializing topics ${pkfp}`);
-
-            // TODO fix version!
-            let topic = vault.decryptTopic(data.topics[pkfp], vault.password)
-            topics[pkfp] = new Topic(pkfp, topic.name, topic.key, topic.comment)
-            setTopicListeners(topics[pkfp])
-            topics[pkfp].bootstrap(connector, arrivalHub, version);
-        }
-
-        vault.topics = topics;
-
-        checkUpdateVaultFormat(vaultHolder, topics)
-
-        postLogin(vault);
-
-    }
-    postLogin(vault){
-        const message = createClientIslandEnvelope({
-            command: Internal.POST_LOGIN,
-            pkfpSource: vault.id,
-            privateKey: vault.privateKey,
-            body: {
-                topics: Object.keys(topics)
-            }
-        })
-
-        vault.once(Internal.POST_LOGIN_DECRYPT, (msg) => {
-            postLoginDecrypt(msg, vault);
-        })
-        connector.send(message);
-    }
-
-
-
-    checkUpdateVaultFormat(vaultHolder, existingTopics){
+    checkUpdateVaultFormat(vaultHolder, existingTopics) {
         //V1 support
         let rawVault = loginAgent.getRawVault()
 
@@ -82,14 +47,14 @@ export class PostLoginInitializer{
         //Otherwise version 1, update required. First initializing topics
         for (let pkfp in rawVault.topics) {
 
-            if(pkfp in existingTopics){
+            if (pkfp in existingTopics) {
                 continue;
             }
             let topic = rawVault.topics[pkfp];
             console.log(`Initializing existingTopics ${pkfp}`);
             existingTopics[pkfp] = new Topic(pkfp, topic.name, topic.key, topic.comment)
             setTopicListeners(existingTopics[pkfp])
-            existingTopics[pkfp].bootstrap(connector, arrivalHub, version);
+            existingTopics[pkfp].bootstrap(this.session, arrivalHub, version);
         }
 
 
@@ -109,7 +74,90 @@ export class PostLoginInitializer{
         message.body.topics = packedVault.topics;
         message.signMessage(currentVault.privateKey);
         console.log("%c UPDATING VAULT FORMAT!!", "color: red; font-size: 20px");
-        connector.send(message)
+        this.session.acceptMessage(message)
+
+    }
+
+
+    initTopics(data, vault) {
+        console.log("Initializing topics...");
+
+        if (!data.topics) return
+
+        for (let pkfp in data.topics) {
+            console.log(`Initializing topics ${pkfp}`);
+
+            // TODO fix version!
+            let topic = vault.decryptTopic(data.topics[pkfp], vault.password)
+            topics[pkfp] = new Topic(pkfp, topic.name, topic.key, topic.comment)
+            //setTopicListeners(topics[pkfp])
+            topics[pkfp].bootstrap(this.session, arrivalHub, version);
+        }
+
+        vault.topics = topics;
+
+        //this.checkUpdateVaultFormat(vaultHolder, topics)
+
+        this.postLogin(vault);
+
+    }
+
+
+    postLogin(vault) {
+        const message = createClientIslandEnvelope({
+            command: Internal.POST_LOGIN,
+            pkfpSource: vault.id,
+            privateKey: vault.privateKey,
+            body: {
+                topics: Object.keys(topics)
+            }
+        })
+
+        vault.once(Internal.POST_LOGIN_DECRYPT, (msg) => {
+            this.postLoginDecrypt(msg, vault);
+        })
+        this.session.acceptMessage(message);
+    }
+
+
+
+    checkUpdateVaultFormat(vaultHolder, existingTopics) {
+        //V1 support
+        let rawVault = loginAgent.getRawVault()
+
+        if (!rawVault.topics) return
+
+        //Otherwise version 1, update required. First initializing topics
+        for (let pkfp in rawVault.topics) {
+
+            if (pkfp in existingTopics) {
+                continue;
+            }
+            let topic = rawVault.topics[pkfp];
+            console.log(`Initializing existingTopics ${pkfp}`);
+            existingTopics[pkfp] = new Topic(pkfp, topic.name, topic.key, topic.comment)
+            setTopicListeners(existingTopics[pkfp])
+            existingTopics[pkfp].bootstrap(this.session, arrivalHub, version);
+        }
+
+
+        //updating vault to current format
+
+        let currentVault = vaultHolder.getVault();
+        //let { vault, existingTopics, hash, sign } = currentVault.pack();
+        let packedVault = currentVault.pack()
+
+        let message = new Message(currentVault.version);
+        message.setSource(currentVault.id);
+        message.setCommand(Internal.UPDATE_VAULT_FORMAT);
+        message.addNonce();
+        message.body.vault = packedVault.vault;
+        message.body.sign = packedVault.sign;
+        message.body.hash = packedVault.hash;
+        message.body.topics = packedVault.topics;
+        message.signMessage(currentVault.privateKey);
+        console.log("%c UPDATING VAULT FORMAT!!", "color: red; font-size: 20px");
+        this.session.acceptMessage(message)
 
     }
 
@@ -171,7 +219,7 @@ export class PostLoginInitializer{
             let preDecrypted = {};
 
             if (clientHSPrivateKey) {
-                preDecrypted.clientHSPrivateKey =  clientHSPrivateKey
+                preDecrypted.clientHSPrivateKey = clientHSPrivateKey
             }
             if (taPrivateKey || taHSPrivateKey) {
                 preDecrypted.topicAuthority = {}
@@ -196,7 +244,7 @@ export class PostLoginInitializer{
         vault.once(Events.POST_LOGIN_ERROR, processLoginResult.bind(null, vaultHolder));
         vault.once(Events.LOGIN_ERROR, processLoginResult.bind(null, vaultHolder));
 
-        connector.send(message);
+        this.session.acceptMessage(message);
 
     }
 

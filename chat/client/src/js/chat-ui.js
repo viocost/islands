@@ -22,7 +22,6 @@ import { IslandsVersion } from "../../../common/Version";
 //import { runConnectorTest } from "./test/connector"
 // TEMP IMPORTS FOR FURTHER REFACTORING
 import { iCrypto } from "../../../common/iCrypto";
-import { createClientIslandEnvelope, Message } from "../../../common/Message";
 import * as MainView from "./MainView";
 import { StateMachine } from "../../../common/AdvStateMachine";
 
@@ -1845,45 +1844,6 @@ function setTopicListeners(topic) {
 // }                                                      //
 ////////////////////////////////////////////////////////////
 
-function checkUpdateVaultFormat(vaultHolder, existingTopics){
-    //V1 support
-    let rawVault = loginAgent.getRawVault()
-
-    if (!rawVault.topics) return
-
-    //Otherwise version 1, update required. First initializing topics
-    for (let pkfp in rawVault.topics) {
-
-        if(pkfp in existingTopics){
-            continue;
-        }
-        let topic = rawVault.topics[pkfp];
-        console.log(`Initializing existingTopics ${pkfp}`);
-        existingTopics[pkfp] = new Topic(pkfp, topic.name, topic.key, topic.comment)
-        setTopicListeners(existingTopics[pkfp])
-        existingTopics[pkfp].bootstrap(connector, arrivalHub, version);
-    }
-
-
-    //updating vault to current format
-
-    let currentVault = vaultHolder.getVault();
-    //let { vault, existingTopics, hash, sign } = currentVault.pack();
-    let packedVault = currentVault.pack()
-
-    let message = new Message(currentVault.version);
-    message.setSource(currentVault.id);
-    message.setCommand(Internal.UPDATE_VAULT_FORMAT);
-    message.addNonce();
-    message.body.vault = packedVault.vault;
-    message.body.sign = packedVault.sign;
-    message.body.hash = packedVault.hash;
-    message.body.topics = packedVault.topics;
-    message.signMessage(currentVault.privateKey);
-    console.log("%c UPDATING VAULT FORMAT!!", "color: red; font-size: 20px");
-    connector.send(message)
-
-}
 
 // Decrypts topic authorities' and hidden services keys
 // and re-encrypts them with session key, so island can poke all services
