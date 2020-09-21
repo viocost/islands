@@ -174,6 +174,7 @@ class GenericSession extends Session{
         this._secretHolder = secretHolder
         this._incomingMessagePreprocessors = incomingMessagePreprocessors;
         this._outgoingMessagePreprocessors = outgoingMessagePreprocessors;
+        this._bootstrapConnector(connector)
     }
 
     /**

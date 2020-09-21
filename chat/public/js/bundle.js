@@ -20768,6 +20768,9 @@ var GenericSession = /*#__PURE__*/function (_Session) {
     _this._secretHolder = secretHolder;
     _this._incomingMessagePreprocessors = incomingMessagePreprocessors;
     _this._outgoingMessagePreprocessors = outgoingMessagePreprocessors;
+
+    _this._bootstrapConnector(connector);
+
     return _this;
   }
   /**
