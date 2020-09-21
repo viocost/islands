@@ -89,7 +89,7 @@ function main(){
     //
 
     //chat here is a collection of legacy managers that eventually have to go
-    let sessionManagerAdapter = new SessionManagerAdapter()
+    let sessionManagerAdapter = new SessionManagerAdapter(accounts)
     let chat = new IslandsChat(config, requestEmitter, sessionManagerAdapter)
 
 }

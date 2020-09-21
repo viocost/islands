@@ -4,7 +4,7 @@ const { SessionAdapter } = require("./SessionAdapter")
 
 
 class SessionManagerAdapter{
-    constructor(accounts){
+    constructor(accounts = []){
         WildEmitter.mixin(this)
         this._accounts = accounts;
     }
@@ -18,7 +18,7 @@ class SessionManagerAdapter{
         for(let account of this._accounts){
             for(let session of account.sessions){
                 if(session.getId() === connectionId){
-                    return new SessionAdaptera(account.sessions)
+                    return new SessionAdapter(account.sessions)
                 }
             }
         }
