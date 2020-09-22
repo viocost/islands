@@ -121,47 +121,6 @@ export class PostLoginInitializer {
     }
 
 
-
-    checkUpdateVaultFormat(vaultHolder, existingTopics) {
-        //V1 support
-        let rawVault = loginAgent.getRawVault()
-
-        if (!rawVault.topics) return
-
-        //Otherwise version 1, update required. First initializing topics
-        for (let pkfp in rawVault.topics) {
-
-            if (pkfp in existingTopics) {
-                continue;
-            }
-            let topic = rawVault.topics[pkfp];
-            console.log(`Initializing existingTopics ${pkfp}`);
-            existingTopics[pkfp] = new Topic(pkfp, topic.name, topic.key, topic.comment)
-            setTopicListeners(existingTopics[pkfp])
-            existingTopics[pkfp].bootstrap(this.session, arrivalHub, version);
-        }
-
-
-        //updating vault to current format
-
-        let currentVault = vaultHolder.getVault();
-        //let { vault, existingTopics, hash, sign } = currentVault.pack();
-        let packedVault = currentVault.pack()
-
-        let message = new Message(currentVault.version);
-        message.setSource(currentVault.id);
-        message.setCommand(Internal.UPDATE_VAULT_FORMAT);
-        message.addNonce();
-        message.body.vault = packedVault.vault;
-        message.body.sign = packedVault.sign;
-        message.body.hash = packedVault.hash;
-        message.body.topics = packedVault.topics;
-        message.signMessage(currentVault.privateKey);
-        console.log("%c UPDATING VAULT FORMAT!!", "color: red; font-size: 20px");
-        this.session.acceptMessage(message)
-
-    }
-
     // Decrypts topic authorities' and hidden services keys
     // and re-encrypts them with session key, so island can poke all services
     postLoginDecrypt(msg, vault) {
@@ -236,7 +195,7 @@ export class PostLoginInitializer {
         }
 
         console.log("Decryption is successfull.");
-        let message = new Message(chat.version);
+        let message = new Message(IslandsVersion.getVersion());
         message.setCommand(Internal.POST_LOGIN_CHECK_SERVICES)
         message.setSource(vault.getId());
         message.body.services = res;
@@ -248,5 +207,46 @@ export class PostLoginInitializer {
         this.session.acceptMessage(message);
 
     }
+
+    checkUpdateVaultFormat(vaultHolder, existingTopics) {
+        //V1 support
+        let rawVault = loginAgent.getRawVault()
+
+        if (!rawVault.topics) return
+
+        //Otherwise version 1, update required. First initializing topics
+        for (let pkfp in rawVault.topics) {
+
+            if (pkfp in existingTopics) {
+                continue;
+            }
+            let topic = rawVault.topics[pkfp];
+            console.log(`Initializing existingTopics ${pkfp}`);
+            existingTopics[pkfp] = new Topic(pkfp, topic.name, topic.key, topic.comment)
+            setTopicListeners(existingTopics[pkfp])
+            existingTopics[pkfp].bootstrap(this.session, arrivalHub, version);
+        }
+
+
+        //updating vault to current format
+
+        let currentVault = vaultHolder.getVault();
+        //let { vault, existingTopics, hash, sign } = currentVault.pack();
+        let packedVault = currentVault.pack()
+
+        let message = new Message(currentVault.version);
+        message.setSource(currentVault.id);
+        message.setCommand(Internal.UPDATE_VAULT_FORMAT);
+        message.addNonce();
+        message.body.vault = packedVault.vault;
+        message.body.sign = packedVault.sign;
+        message.body.hash = packedVault.hash;
+        message.body.topics = packedVault.topics;
+        message.signMessage(currentVault.privateKey);
+        console.log("%c UPDATING VAULT FORMAT!!", "color: red; font-size: 20px");
+        this.session.acceptMessage(message)
+
+    }
+
 
 }

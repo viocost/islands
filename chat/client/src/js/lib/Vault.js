@@ -612,12 +612,13 @@ export class VaultFactory{
         return new Vault(version)
     }
 
-    static initSaved(version, data){
+    static initSaved(version, data, vaultId){
         console.log("Initializing saved vault. Data:");
         console.dir(data)
 
         let vault = new Vault(version)
         vault.initSaved(data)
+        vault.id = vaultId
         return vault
     }
 }

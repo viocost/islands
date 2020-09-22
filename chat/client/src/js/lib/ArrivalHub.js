@@ -21,9 +21,12 @@ export class ArrivalHub{
 
                 if (!dest){
                     console.warn(`Unknown destination packet received: Event: ${event}, Data: ${inspect(data)}`);
-                    return;
+                } else {
+
+                    console.log(`Destination: ${dest}`);
+                    this.emit(dest, data);
+
                 }
-                this.emit(dest, data);
             } else {
                 console.log(`MESSAGE WITHOUT HEADERS ARRIVED. Event: ${event}, data: ${inspect(data)}, `);
             }

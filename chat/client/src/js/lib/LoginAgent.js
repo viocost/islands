@@ -79,6 +79,7 @@ export class LoginAgent{
             console.log(`message received: ${event.toString()}, ${data}`);
         })
 
+
         connector.on("auth", msg=>{
             console.log(`Auth message received ${msg.headers.command}`);
             msg = Message.from(msg)
@@ -149,7 +150,7 @@ export class LoginAgent{
         console.log("Login agent success");
 
 
-        let vault = VaultFactory.initSaved(IslandsVersion.getVersion, this.vaultRaw)
+        let vault = VaultFactory.initSaved(IslandsVersion.getVersion, this.vaultRaw, this._challenge.vaultId)
 
         this.emit(LoginAgentEvents.SUCCESS, this.session, vault)
     }

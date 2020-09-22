@@ -65,7 +65,7 @@ class PendingConnection{
             this._processAuthMessage(message)
         })
 
-        let vault = this.vault.getVault()
+        let vaultEncrypted = this.vault.getVault()
         let vaultPublicKey = this.vault.getPublicKey()
 
         let sessionKeyAgent = SymCryptoAgentFactory.make();
@@ -79,7 +79,7 @@ class PendingConnection{
         this.secret = secret;
 
         console.log("Sedning cahllenge to client");
-        this._sendChallenge(encryptedSessionKey, vault, vaultPublicKeyAgent.encrypt(secret));
+        this._sendChallenge(encryptedSessionKey, vaultEncrypted, vaultPublicKeyAgent.encrypt(secret));
     }
 
     _processAuthMessage(msg){
@@ -137,13 +137,14 @@ class PendingConnection{
 
     //Sending vault public key encrypted secret nonce to the client.
     // Expecting the same nonce session key encrypted in response
-    _sendChallenge(sessionKey, vault, secretEncrypted){
+    _sendChallenge(sessionKey, vaultEncrypted, secretEncrypted){
         console.log("Sending challenge");
         let msg = createAuthMessage({
             data: {
                 sessionKey: sessionKey,
-                privateKey: vault,
-                secret: secretEncrypted
+                privateKey: vaultEncrypted, //here sending the whole vault blob
+                secret: secretEncrypted,
+                vaultId: this.vault.getId()
             },
             command: "challenge"
         })

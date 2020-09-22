@@ -328,7 +328,7 @@ class GenericSession extends Session {
 
     _prepareStateMachine() {
         return new StateMachine(this, {
-            name: "Server Session SM",
+            name: "Generic Session SM",
             stateMap: {
                 active: {
                     initial: true,
