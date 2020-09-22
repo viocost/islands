@@ -3,6 +3,7 @@ import { IslandsVersion } from "../../../../common/Version"
 import { TopicRetriever } from  "./TopicRetriever"
 import { createClientIslandEnvelope, Message } from "../../../../common/Message";
 import { Internal, Events } from "../../../../common/Events"
+import { WildEmitter } from "../../../../common/WildEmitter"
 
 /**
  * It is given an authenticated session and vault
@@ -11,7 +12,11 @@ import { Internal, Events } from "../../../../common/Events"
  * - Have server to launch hidden services
  */
 export class PostLoginInitializer {
+    static Success = Symbol("success")
+    static Fail = Symbol("fail")
+
     constructor(session, vault) {
+        WildEmitter.mixin(this)
 
         console.log("PostLoginInitializer started...");
 
@@ -38,7 +43,7 @@ export class PostLoginInitializer {
         retriever.run();
     }
 
-    checkUpdateVaultFormat(vaultHolder, existingTopics) {
+    checkUpdateVaultFormat(vault, existingTopics) {
         //V1 support
         let rawVault = loginAgent.getRawVault()
 
@@ -60,19 +65,18 @@ export class PostLoginInitializer {
 
         //updating vault to current format
 
-        let currentVault = vaultHolder.getVault();
-        //let { vault, existingTopics, hash, sign } = currentVault.pack();
-        let packedVault = currentVault.pack()
+        //let { vault, existingTopics, hash, sign } = vault.pack();
+        let packedVault = vault.pack()
 
-        let message = new Message(currentVault.version);
-        message.setSource(currentVault.id);
+        let message = new Message(vault.version);
+        message.setSource(vault.id);
         message.setCommand(Internal.UPDATE_VAULT_FORMAT);
         message.addNonce();
         message.body.vault = packedVault.vault;
         message.body.sign = packedVault.sign;
         message.body.hash = packedVault.hash;
         message.body.topics = packedVault.topics;
-        message.signMessage(currentVault.privateKey);
+        message.signMessage(vault.privateKey);
         console.log("%c UPDATING VAULT FORMAT!!", "color: red; font-size: 20px");
         this.session.acceptMessage(message)
 
@@ -84,20 +88,19 @@ export class PostLoginInitializer {
 
         if (!data.topics) return
 
+        let topics = {}
         for (let pkfp in data.topics) {
+
             console.log(`Initializing topics ${pkfp}`);
 
             // TODO fix version!
             let topic = vault.decryptTopic(data.topics[pkfp], vault.password)
             topics[pkfp] = new Topic(pkfp, topic.name, topic.key, topic.comment)
-            //setTopicListeners(topics[pkfp])
             topics[pkfp].bootstrap(this.session, arrivalHub, version);
         }
 
         vault.topics = topics;
-
         //this.checkUpdateVaultFormat(vaultHolder, topics)
-
         this.postLogin(vault);
 
     }
@@ -110,7 +113,7 @@ export class PostLoginInitializer {
             pkfpSource: vault.id,
             privateKey: vault.privateKey,
             body: {
-                topics: Object.keys(topics)
+                topics: Object.keys(vault.topics)
             }
         })
 
@@ -200,15 +203,13 @@ export class PostLoginInitializer {
         message.setSource(vault.getId());
         message.body.services = res;
         message.signMessage(vault.privateKey);
-        vault.once(Events.POST_LOGIN_SUCCESS, processLoginResult.bind(null, vaultHolder));
-        vault.once(Events.POST_LOGIN_ERROR, processLoginResult.bind(null, vaultHolder));
-        vault.once(Events.LOGIN_ERROR, processLoginResult.bind(null, vaultHolder));
-
+        vault.once(Events.POST_LOGIN_SUCCESS, this.handleSuccess.bind(this, vault, vault.topics));
+        vault.once(Events.POST_LOGIN_ERROR, this.handleFail.bind(this));
+        vault.once(Events.LOGIN_ERROR, this.handleFail.bind(this));
         this.session.acceptMessage(message);
-
     }
 
-    checkUpdateVaultFormat(vaultHolder, existingTopics) {
+    checkUpdateVaultFormat(vault, existingTopics) {
         //V1 support
         let rawVault = loginAgent.getRawVault()
 
@@ -230,7 +231,7 @@ export class PostLoginInitializer {
 
         //updating vault to current format
 
-        let currentVault = vaultHolder.getVault();
+        let currentVault = vault
         //let { vault, existingTopics, hash, sign } = currentVault.pack();
         let packedVault = currentVault.pack()
 
@@ -246,6 +247,15 @@ export class PostLoginInitializer {
         console.log("%c UPDATING VAULT FORMAT!!", "color: red; font-size: 20px");
         this.session.acceptMessage(message)
 
+    }
+
+    handleSuccess(vault, topics){
+        console.log(`Processing login result`);
+        this.emit(PostLoginInitializer.Success, vault, topics)
+    }
+
+    handleFail(err){
+        this.emit(PostLoginInitializer.Fail, err)
     }
 
 

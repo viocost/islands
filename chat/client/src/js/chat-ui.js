@@ -15,7 +15,6 @@ import { Vault } from "./lib/Vault";
 import { VaultRetriever } from "./lib/VaultRetriever"
 import { TopicJoinAgent } from "./lib/TopicJoinAgent";
 import { ConnectionIndicator } from  "./ui/ConnectionIndicator";
-import { PostLoginInitializer } from "./lib/PostLoginInitializer"
 import { IslandsVersion } from "../../../common/Version";
 //import { runConnectorTest } from "./test/connector"
 // TEMP IMPORTS FOR FURTHER REFACTORING

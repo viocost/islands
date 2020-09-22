@@ -1,6 +1,7 @@
 import { LoginAgent, LoginAgentEvents } from "./lib/LoginAgent";
 import { ConnectorAbstractFactory } from "./../../../common/Connector"
 import { IslandsVersion } from "../../../common/Version"
+import { PostLoginInitializer } from "./lib/PostLoginInitializer"
 import { UIMessageBus } from "./lib/UIMessageBus"
 import * as UX from "./ui/UX"
 
@@ -40,14 +41,33 @@ function initSession(loginAgent, uxBus, password) {
         })
 
         loginAgent.on(LoginAgentEvents.SUCCESS, (session, vault)=>{
-            try{
-                console.log("Login agent succeeded. continuing initialization");
-                let postLoginInitializer = new PostLoginInitializer(session, vault)
-                postLoginInitializer.run();
-            }catch(err){
+            console.log("Login agent succeeded. continuing initialization");
 
+            /**
+             * PostLoginInitiazlier should initialize vault, topics and
+             * Ask server to initialize hidden services for active topcis
+             * Once succeed, it should return a hashmap of topics and the vault
+             */
+            let postLoginInitializer = new PostLoginInitializer(session, vault)
+            postLoginInitializer.on(PostLoginInitializer.Success, (vault, topics)=>{
+                wireAllTogether(vault, topics, uxBus)
+            })
+
+            postLoginInitializer.on(PostLoginInitializer.Fail, err=>{
                 uxBus.emit(UX.UXMessage.LOGIN_ERROR, err.message)
-            }
+            })
+
+            postLoginInitializer.run();
+
         })
-    }, 10)
+    }, 200)
+}
+
+
+
+/**
+ * Given initialized topics and vault sets up events and messages for the UX bus
+ */
+function wireAllTogether(vault, topics, uxBus){
+    uxBus.emit(UX.UXMessage.LOGIN_SUCCESS);
 }

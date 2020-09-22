@@ -65,11 +65,9 @@ function handleLoginError(stateMachine, eventName, args){
 }
 
 function loggingIn(){
-    setImmediate(()=>{
-        loadingOn()
-        let loginBtn = util.$("#vault-login-btn")
-        loginBtn.setAttribute("disabled", true);
-    })
+    loadingOn()
+    let loginBtn = util.$("#vault-login-btn")
+    loginBtn.setAttribute("disabled", true);
 }
 
 function handleLoginSuccess(stateMachine, eventName, args) {
@@ -121,7 +119,139 @@ function handleRegistrationError(){
 }
 
 
-function initMainInterface(){
+function initMainInterface(uxBus, settings){
+
+    //let vault = vaultHolder.getVault();
+    let header = util.$("header")
+
+    //let isSoundOn = !vault.hasOwnProperty("settings") ||
+    //    !vault.settings.hasOwnProperty("sound") ||
+    //    vault.settings.sound;
+    util.removeAllChildren(header);
+
+    util.appendChildren(header, [
+        UI.bakeHeaderLeftSection((menuButton) => {
+            util.toggleClass(menuButton, "menu-on");
+            //renderLayout()
+        }),
+        //TODO
+        //UI.bakeHeaderRightSection(false, isSoundOn, processInfoClick, processMuteClick, processSettingsClick, processLogoutClick)
+        UI.bakeHeaderRightSection(false, true, ()=>{}, ()=>{}, ()=>{}, ()=>{})
+    ])
+
+    let main = util.$("main")
+    util.removeAllChildren(main);
+
+    let mainContainer = UI.bakeMainContainer()
+    util.appendChildren(main, mainContainer)
+    //sidePanel = UI.bakeSidePanel(chat.version);
+    let sidePanel = UI.bakeSidePanel("VERSION");
+    //newMessageBlock = UI.bakeNewMessageControl(sendMessage, processAttachmentChosen);
+    let newMessageBlock = UI.bakeNewMessageControl(()=>{}, ()=>{});
+    //messagesPanel = UI.bakeMessagesPanel(newMessageBlock)
+    let messagesPanel = UI.bakeMessagesPanel(newMessageBlock)
+    util.appendChildren(mainContainer, [sidePanel, messagesPanel]);
+    //setupSidePanelListeners()
+    //setupHotkeysHandlers()
+    //refreshTopics();
+    // add listener to the menu button
+    window.onresize = renderLayout;
+    //renderLayout()
+
+    // modals
+    //topicCreateModal = UI.bakeTopicCreateModal(createTopic)
+    let topicCreateModal = UI.bakeTopicCreateModal(()=>{})
+
+
+    ///////////////////////////////////////////////////////////////////
+    // topicJoinModal = UI.bakeTopicJoinModal(() => {                //
+    //     console.log("Joining topic")                              //
+    //     let nickname = util.$("#join-topic-nickname").value;      //
+    //     let topicName = util.$("#join-topic-name").value;         //
+    //     let inviteCode = util.$("#join-topic-invite-code").value; //
+    //     if (!nickname || !topicName || !inviteCode) {             //
+    //         toastr.warning("All fields are required");            //
+    //         return;                                               //
+    //     }                                                         //
+    //     joinTopic(nickname, topicName, inviteCode);               //
+    //     toastr.info("Attempting to join topic");                  //
+    //     topicJoinModal.close();                                   //
+    // })                                                            //
+    ///////////////////////////////////////////////////////////////////
+    let topicJoinModal = UI.bakeTopicJoinModal(()=>{})
+
+    //////////////////////////////////////////////////////////////////////////////////////////
+    // setAliasModal = UI.bakeSetAliasModal(() => {                                         //
+    //     console.log("Ok handler")                                                        //
+    //     let newAliasEl = util.$("#modal-alias-input")                                    //
+    //     let newAlias = newAliasEl.value                                                  //
+    //     let subject = JSON.parse(newAliasEl.getAttribute("rename-data"))                 //
+    //     switch (subject.type) {                                                          //
+    //         case "topic":                                                                //
+    //             console.log("Renaming topic")                                            //
+    //             chat.renameTopic(subject.topicPkfp, newAlias)                            //
+    //             break                                                                    //
+    //         case "participant":                                                          //
+    //             console.log("Renaming participant")                                      //
+    //             if (subject.pkfp === subject.topicPkfp) {                                //
+    //                 //change nickname                                                    //
+    //                 chat.changeNickname(subject.topicPkfp, newAlias)                     //
+    //             } else {                                                                 //
+    //                 //change alias of another member                                     //
+    //                 chat.setParticipantAlias(subject.topicPkfp, subject.pkfp, newAlias); //
+    //             }                                                                        //
+    //             break                                                                    //
+    //         case "invite":                                                               //
+    //             console.log("Renaming invite")                                           //
+    //             chat.setInviteAlias(subject.topicPkfp, subject.code, newAlias);          //
+    //             break                                                                    //
+    //     }                                                                                //
+    //     setAliasModal.close();                                                           //
+    // })                                                                                   //
+    //////////////////////////////////////////////////////////////////////////////////////////
+
+    let setAliasModal = UI.bakeSetAliasModal(()=>{})
+    // prepare side panel
+    //let sidePanel = bakeSidePanel();
+    //let messagesPanel = bakeMessagesPanel();
+    //let newMessagePanel = bakeNewMessageControl();
+    //let messagesWrapper = util.wrap([messagesPanel, newMessagePanel], "main-panel-container");
+
+
+    //util.$("#remove-private").addEventListener("click", removePrivate);
+    //util.$("#messages-panel-container").onscroll = processChatScroll;
+    //UIInitialized = true;
+}
+
+function renderLayout() {
+    console.log("Rendering layout")
+    let isSidePanelOn = util.hasClass("#menu-button", "menu-on");
+    let sidePanel = util.$(".side-panel-container");
+    let messagesPanel = util.$(".main-panel-container");
+    let connectionIndicatorLabel = util.$("#connection-indicator-label")
+
+
+    if (isSidePanelOn) {
+        if (window.innerWidth <= SMALL_WIDTH) {
+            util.flex(sidePanel);
+            util.hide(messagesPanel);
+
+        } else {
+            util.flex(sidePanel);
+            util.flex(messagesPanel);
+        }
+
+    } else {
+        util.hide(sidePanel);
+        util.flex(messagesPanel);
+    }
+
+    ///////////////////////////////////////////////
+    // window.innerWidth <= XSMALL_WIDTH ?       //
+    //     util.hide(connectionIndicatorLabel) : //
+    //     util.flex(connectionIndicatorLabel)   //
+    ///////////////////////////////////////////////
+
 
 }
 
@@ -198,7 +328,7 @@ function prepareUIStateMachine(){
             },
 
             loggedIn: {
-                entry: initMainInterface,
+                entry: [ loadingOff, initMainInterface,  ],
                 transitions: {
                     disconnect: {
 
