@@ -1,7 +1,6 @@
 import * as util from "./lib/dom-util";
 import * as UI from "./lib/ChatUIFactory";
 import * as UX from "./ui/UX"
-import { BlockingSpinner } from "./lib/BlockingSpinner";
 import toastr from "./lib/toastr";
 import { ChatClient as Chat, ChatClient } from "./lib/ChatClient";
 import { Events, Internal } from "../../../common/Events";
@@ -16,9 +15,7 @@ import { Vault } from "./lib/Vault";
 import { VaultRetriever } from "./lib/VaultRetriever"
 import { TopicJoinAgent } from "./lib/TopicJoinAgent";
 import { ConnectionIndicator } from  "./ui/ConnectionIndicator";
-import { LoginAgent, LoginAgentEvents } from "./lib/LoginAgent";
 import { PostLoginInitializer } from "./lib/PostLoginInitializer"
-import { ConnectorAbstractFactory } from "../../../common/Connector"
 import { IslandsVersion } from "../../../common/Version";
 //import { runConnectorTest } from "./test/connector"
 // TEMP IMPORTS FOR FURTHER REFACTORING
@@ -36,7 +33,6 @@ const DAYSOFWEEK = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 let colors = ["#cfeeff", "#ffcc7f", "#b5ffc0", "#ccfffb", "#67fcf0", "#f8e6ff", "#ffe6f1", "#ccefff", "#ccf1ff"]
 // ---------------------------------------------------------------------------------------------------------------------------
 // Visual Sections and modal forms
-let spinner = new BlockingSpinner();
 let topicCreateModal;
 let topicJoinModal;
 let setAliasModal;
@@ -103,6 +99,7 @@ document.addEventListener('DOMContentLoaded', event => {
     console.log(`Islands version is ${IslandsVersion.getVersion()}`);
     let messageBus = new UIMessageBus();
 
+    messageBus.on(UX.UXMessage.LOGIN_CLICK, )
 
     UX.initialize(messageBus);
 
@@ -787,62 +784,12 @@ function backToChat() {
 
 // ---------------------------------------------------------------------------------------------------------------------------
 // Chat Event handlers
-function handleLoginError(stateMachine, eventName, args){
-    let loginBtn = util.$("#vault-login-btn")
-    loginBtn.removeAttribute("disabled");
-    toastr.warning(`Login error: ${err}`)
-    loadingOff()
-}
-
-function handleLoginSuccess(stateMachine, eventName, args) {
-    let loginAgent = args[0]
-    let vaultRaw = loginAgent.vaultRaw
-
-    console.log("Login success handler");
-
-    let vaultRetriever = new VaultRetriever()
-    vaultRetriever.run(handleVaultReceived)
-
-
-    ////
-    ////settings                                //
-    //vault.initializeSettings(data.settings)   //
-    //this.vaultHolder = new VaultHolder(vault) //
-    //console.log('decrypt success');           //
-    //TODO REFACTORING REQUIRED!
-    /////////////////////////////////////////////////////////////////////////////
-    // chat = new ChatClient({ version: version });                            //
-    // chat.vault = resVaultHolder.getVault();                                 //
-    // chat.connector = connector;                                             //
-    // chat.arrivalHub = arrivalHub;                                           //
-    // chat.topics = topics;                                                   //
-    // //end////////////////////////////////////////////////////////////////// //
-    //                                                                         //
-    // vaultHolder = resVaultHolder;                                           //
-    //                                                                         //
-    // //Load topics V1 here                                                   //
-    // loadTopics(vaultHolder.getVault())                                      //
-    /////////////////////////////////////////////////////////////////////////////
-    //toastr.success(`You have logged in!`)
-    //loadingOff()
-    //return
-    //vaultHolder = newVaultHolder;
-    //window.vaultHolder = vaultHolder;
-    //initUI(vaultHolder);
-    //connectionIndicator = new ConnectionIndicator(connector)
-    //appendEphemeralMessage("Topics has been loaded and decrypted successfully. ")
-    //playSound("user_online");
-    //loadingOff()
-}
 
 function handleVaultReceived(error, vault){
     console.log("Vault received");
     console.dir(vault);
 }
 
-function handleRegistrationError(){
-   
-}
 
 function processMessagesLoaded(pkfp, messages, cb) {
 
@@ -1659,32 +1606,6 @@ function initChat() {
 // ---------------------------------------------------------------------------------------------------------------------------
 // REFACTORING LOGIN
 
-function initSession(loginAgent) {
-    console.log("Init session called");
-    loadingOn()
-    let loginBtn = util.$("#vault-login-btn")
-    loginBtn.setAttribute("disabled", true);
-    let passwordEl = util.$("#vault-password");
-
-    loginAgent.acceptPassword(passwordEl.value);
-    loginAgent.on(LoginAgentEvents.DECRYPTION_ERROR, ()=>{
-        loadingOff()
-        loginBtn.removeAttribute("disabled");
-        passwordEl.value = ""
-        toastr.warning("Invalid password. Try again.")
-
-
-    })
-
-    loginAgent.on(LoginAgentEvents.SUCCESS, (session, vault)=>{
-        console.log("Login agent succeeded. continuing initialization");
-        let postLoginInitializer = new PostLoginInitializer(session, vault)
-        postLoginInitializer.run();
-        //init vault
-    })
-
-}
-
 function joinTopic(nickname, topicName, inviteString) {
     let vault = vaultHolder.getVault()
     let topicJoinAgent = new TopicJoinAgent(nickname, topicName, inviteString, arrivalHub, connector, vault);
@@ -1927,13 +1848,6 @@ function postLoginDecrypt(msg, vault) {
 //END REFACTORING CODE/////////////////////////////////////////////////////////
 
 
-function loadingOn() {
-    spinner.loadingOn()
-}
-
-function loadingOff() {
-    spinner.loadingOff()
-}
 
 function padWithZeroes(requiredLength, value) {
     let res = "0".repeat(requiredLength) + String(value).trim();

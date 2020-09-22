@@ -1,14 +1,17 @@
 import * as UI from "../lib/ChatUIFactory";
 import * as util from "../lib/dom-util";
 import { StateMachine } from "../../../../common/AdvStateMachine"
-import { LoginAgent, LoginAgentEvents } from "../lib/LoginAgent";
-import { ConnectorAbstractFactory } from "../../../../common/Connector"
 import { BlockingSpinner } from "../lib/BlockingSpinner";
+import toastr from "../lib/toastr";
+import "../../css/chat.sass"
+import "../../css/vendor/loading.css";
 
 let spinner = new BlockingSpinner();
+let handlerBuilder;
 
 export function initialize(messageBus){
     let sm = prepareUIStateMachine()
+    handlerBuilder = initHandlerBuilder(messageBus)
 
     //events
     messageBus.on(UXMessage.TO_LOGIN, ()=>{
@@ -20,6 +23,7 @@ export function initialize(messageBus){
     })
 
 }
+
 
 function loadingOn() {
     spinner.loadingOn()
@@ -35,33 +39,49 @@ function initRegistration(){
     })
 
     util.appendChildren("#main-container", registrationBlock)
-
 }
 
 function initLogin(stateMachine, eventName, args){
-    console.log("Initializing login agent");
-    let messageBus = args[0]
-    let loginAgent = new LoginAgent(ConnectorAbstractFactory.getChatConnectorFactory())
-    let loginBlock = UI.bakeLoginBlock(initSession.bind(null, loginAgent))
+    let uxBus = args[0]
+    uxBus.on(UXMessage.LOGIN_PROGRESS, stateMachine.handle.start)
+    uxBus.on(UXMessage.LOGIN_ERROR, stateMachine.handle.loginError)
+    uxBus.on(UXMessage.LOGIN_SUCCESS, stateMachine.handle.loginSuccess)
+    let loginBlock = UI.bakeLoginBlock(()=>{
+        let passwordEl = util.$("#vault-password");
+        uxBus.emit(UXMessage.LOGIN_CLICK, passwordEl.value)
+    })
     util.appendChildren("#main-container", loginBlock)
+
 }
 
 
 function handleLoginError(stateMachine, eventName, args){
+    loadingOff()
+    let passwordEl = util.$("#vault-password");
     let loginBtn = util.$("#vault-login-btn")
     loginBtn.removeAttribute("disabled");
-    toastr.warning(`Login error: ${err}`)
-    loadingOff()
+    passwordEl.value = ""
+    toastr.warning(`Login error: ${args[0] || ""}`)
+}
+
+function loggingIn(){
+    setImmediate(()=>{
+        loadingOn()
+        let loginBtn = util.$("#vault-login-btn")
+        loginBtn.setAttribute("disabled", true);
+    })
 }
 
 function handleLoginSuccess(stateMachine, eventName, args) {
-    let loginAgent = args[0]
-    let vaultRaw = loginAgent.vaultRaw
-
-    console.log("Login success handler");
-
-    let vaultRetriever = new VaultRetriever()
-    vaultRetriever.run(handleVaultReceived)
+    ///////////////////////////////////////////////
+    // let loginAgent = args[0]                  //
+    // let vaultRaw = loginAgent.vaultRaw        //
+    //                                           //
+    // console.log("Login success handler");     //
+    //                                           //
+    // let vaultRetriever = new VaultRetriever() //
+    // vaultRetriever.run(handleVaultReceived)   //
+    ///////////////////////////////////////////////
 
 
     ////
@@ -101,34 +121,9 @@ function handleRegistrationError(){
 }
 
 
-
-function initSession(loginAgent) {
-    console.log("Init session called");
-    loadingOn()
-    let loginBtn = util.$("#vault-login-btn")
-    loginBtn.setAttribute("disabled", true);
-    let passwordEl = util.$("#vault-password");
-
-    loginAgent.acceptPassword(passwordEl.value);
-    loginAgent.on(LoginAgentEvents.DECRYPTION_ERROR, ()=>{
-        loadingOff()
-        loginBtn.removeAttribute("disabled");
-        passwordEl.value = ""
-        toastr.warning("Invalid password. Try again.")
-
-
-    })
-
-    loginAgent.on(LoginAgentEvents.SUCCESS, (session, vault)=>{
-        console.log("Login agent succeeded. continuing initialization");
-        let postLoginInitializer = new PostLoginInitializer(session, vault)
-        postLoginInitializer.run();
-        //init vault
-    })
-
+function initMainInterface(){
 
 }
-
 
 
 function prepareUIStateMachine(){
@@ -139,19 +134,31 @@ function prepareUIStateMachine(){
                 initial: true,
                 transitions:{
                     toLogin: {
+                        actions: initLogin,
                         state: "login"
                     },
 
                     toRegistration: {
+                        actions: initRegistration,
                         state: "registration"
                     }
                 }
             },
 
             login: {
-                entry: initLogin,
+                entry: loadingOff,
+                transitions: {
+                    start: {
+                        state: "loggingIn",
+                        actions: loggingIn
+                    }
+                }
+            },
+
+            loggingIn: {
                 transitions: {
                     loginError: {
+                        state: "login",
                         actions: handleLoginError
                     },
 
@@ -159,32 +166,39 @@ function prepareUIStateMachine(){
                         actions: handleLoginSuccess,
                         state: "loggedIn"
                     }
-
-
                 }
             },
 
             registration: {
-                entry: initRegistration,
+                transition: {
+                    start: {
+                        state: "registering"
+                    }
+                }
+            },
+
+            registering: {
+                entry: loadingOn,
                 transitions: {
                     registrationError: {
+                        state: "registration",
                         actions: handleRegistrationError
                     },
 
                     registrationSuccess: {
                         state: "registrationSuccess"
                     }
-
                 }
 
             },
+
 
             registrationSuccess: {
                 final: true
             },
 
             loggedIn: {
-                entry: initSession,
+                entry: initMainInterface,
                 transitions: {
                     disconnect: {
 
@@ -206,11 +220,18 @@ function prepareUIStateMachine(){
 }
 
 
+function initHandlerBuilder(uxBus){
+    return function(ev, ...args){
+        uxBus.emit(ev, ...args);
+    }
+}
+
 export const UXMessage = {
     TO_LOGIN: Symbol("to_login"),
     TO_REGISTRATION: Symbol("to_registration"),
     LOGIN_ERROR: Symbol("login_error"),
-    REGISTRATION_ERROR: Symbol("reg_error"),
-    OUTGOING_MESSAGE: Symbol("out_msg"),
     CONNECTION_LOST: Symbol("conn_lost"),
+    LOGIN_CLICK: Symbol("login_click"),
+    LOGIN_PROGRESS: Symbol("login_progress"),
+    LOGIN_SUCCESS: Symbol("login_success")
 }
