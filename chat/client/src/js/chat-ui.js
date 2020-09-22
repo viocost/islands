@@ -1,5 +1,6 @@
 import * as util from "./lib/dom-util";
 import * as UI from "./lib/ChatUIFactory";
+import * as UX from "./ui/UX"
 import { BlockingSpinner } from "./lib/BlockingSpinner";
 import toastr from "./lib/toastr";
 import { ChatClient as Chat, ChatClient } from "./lib/ChatClient";
@@ -24,6 +25,7 @@ import { IslandsVersion } from "../../../common/Version";
 import { iCrypto } from "../../../common/iCrypto";
 import * as MainView from "./MainView";
 import { StateMachine } from "../../../common/AdvStateMachine";
+import { UIMessageBus } from "./lib/UIMessageBus"
 
 
 // ---------------------------------------------------------------------------------------------------------------------------
@@ -81,7 +83,6 @@ const unreadCounters = {}
 
 let UIInitialized = false;
 
-let UISM = prepareUIStateMachine()
 
 // ---------------------------------------------------------------------------------------------------------------------------
 // TEST ONLY!
@@ -100,28 +101,18 @@ window.topics = topics;
 document.addEventListener('DOMContentLoaded', event => {
     IslandsVersion.setVersion(islandsVersion())
     console.log(`Islands version is ${IslandsVersion.getVersion()}`);
-    isRegistration() ? UISM.handle.toRegistration() : UISM.handle.toLogin()
+    let messageBus = new UIMessageBus();
+
+
+    UX.initialize(messageBus);
+
+    isRegistration() ? messageBus.emit(UX.UXMessage.TO_REGISTRATION)
+        : messageBus.emit(UX.UXMessage.TO_LOGIN)
     return;
 //    initChat();
 //    initLoginUI();
 });
 
-function initRegistration(){
-    let registrationBlock = UI.bakeRegistrationBlock(()=>{
-        console.log("Registration handler");
-    })
-
-    util.appendChildren("#main-container", registrationBlock)
-
-}
-
-function initLogin(){
-    console.log("Initializing login agent");
-    let loginAgent = new LoginAgent(ConnectorAbstractFactory.getChatConnectorFactory())
-    let loginBlock = UI.bakeLoginBlock(initSession.bind(null, loginAgent))
-    util.appendChildren("#main-container", loginBlock)
-    version = islandsVersion()
-}
 
 
 
@@ -2039,80 +2030,4 @@ function moveCursorToStart(el) {
 }
 // ---------------------------------------------------------------------------------------------------------------------------
 // ~END util
-
-
-function prepareUIStateMachine(){
-    return new StateMachine(null, {
-        name: "UI State Machine",
-        stateMap: {
-            start: {
-                initial: true,
-                transitions:{
-                    toLogin: {
-                        state: "login"
-                    },
-
-                    toRegistration: {
-                        state: "registration"
-                    }
-                }
-            },
-
-            login: {
-                entry: initLogin,
-                transitions: {
-                    loginError: {
-                        actions: handleLoginError
-                    },
-
-                    loginSuccess: {
-                        actions: handleLoginSuccess,
-                        state: "loggedIn"
-                    }
-
-
-                }
-            },
-
-            registration: {
-                entry: initRegistration,
-                transitions: {
-                    registrationError: {
-                        actions: handleRegistrationError
-                    },
-
-                    registrationSuccess: {
-                        state: "registrationSuccess"
-                    }
-
-                }
-
-            },
-
-            registrationSuccess: {
-                final: true
-            },
-
-            loggedIn: {
-                entry: initSession,
-                transitions: {
-                    disconnect: {
-
-                    },
-
-                    newMessage: {
-
-                    },
-
-                    messageSent: {
-
-                    }
-
-                }
-
-            }
-        }
-    })
-}
-
 
