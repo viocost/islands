@@ -3,6 +3,7 @@ import { ConnectorAbstractFactory } from "./../../../common/Connector"
 import { IslandsVersion } from "../../../common/Version"
 import { PostLoginInitializer } from "./lib/PostLoginInitializer"
 import { UIMessageBus } from "./lib/UIMessageBus"
+import { Vault } from "./lib/Vault";
 import * as UX from "./ui/UX"
 
 document.addEventListener('DOMContentLoaded', event => {
@@ -19,6 +20,7 @@ document.addEventListener('DOMContentLoaded', event => {
 });
 
 function prepareRegistration(uxBus){
+    uxBus.on(UX.UXMessage.REGISTER_CLICK, register.bind(null, uxBus))
     uxBus.emit(UX.UXMessage.TO_REGISTRATION)
 }
 
@@ -64,10 +66,22 @@ function initSession(loginAgent, uxBus, password) {
 }
 
 
+function register(uxBus, password, confirm){
+    Vault.registerAdminVault(password, confirm, IslandsVersion.getVersion())
+        .then(()=>{
+            uxBus.emit(UX.UXMessage.REGISTER_SUCCESS)
+        })
+        .catch(err => {
+            uxBus.emit(UX.UXMessage.REGISTER_ERROR, err)
+        })
+}
+
+
 
 /**
  * Given initialized topics and vault sets up events and messages for the UX bus
  */
 function wireAllTogether(vault, topics, uxBus){
     uxBus.emit(UX.UXMessage.LOGIN_SUCCESS);
+
 }

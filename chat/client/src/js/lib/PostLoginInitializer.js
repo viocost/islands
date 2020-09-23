@@ -250,7 +250,7 @@ export class PostLoginInitializer {
     }
 
     handleSuccess(vault, topics){
-        console.log(`Processing login result`);
+        console.log(`Post login success!`);
         this.emit(PostLoginInitializer.Success, vault, topics)
     }
 

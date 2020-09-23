@@ -407,8 +407,6 @@ function setUploadingState(uploading) {
 
 //registration
 function registerVault() {
-    let password = util.$("#new-passwd");
-    let confirm = util.$("#confirm-passwd");
     if (/^((?:[0-9]{1,3}\.){3}[0-9]{1,3}|localhost)(\:[0-9]{1,5})?$/.test(document.location.host)) {
         console.log("Registering admin vault");
         Vault.registerAdminVault(password, confirm, chat.version)

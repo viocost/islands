@@ -33,9 +33,12 @@ function loadingOff() {
     spinner.loadingOff()
 }
 
-function initRegistration(){
+function initRegistration(stateMachine, eventName, args){
+    let uxBus = args[0];
     let registrationBlock = UI.bakeRegistrationBlock(()=>{
-        console.log("Registration handler");
+        let password = util.$("#new-passwd");
+        let confirm = util.$("#confirm-passwd");
+        uxBus.emit(UXMessage.REGISTER_CLICK, password, confirm)
     })
 
     util.appendChildren("#main-container", registrationBlock)
@@ -113,8 +116,19 @@ function handleLoginSuccess(stateMachine, eventName, args) {
     //loadingOff()
 }
 
+function handleRegistrationSuccess(){
+    loadingOff()
+    let mainContainer = util.$('#main-container');
+    util.removeAllChildren(mainContainer);
+    util.appendChildren(mainContainer, UI.bakeRegistrationSuccessBlock(() => {
+        document.location.reload()
+    }))
+}
 
-function handleRegistrationError(){
+function handleRegistrationError(stateMachine, eventName, args){
+    loadingOff()
+
+    toastr.warning(`Registration error: ${args[0] || ""}`)
 
 }
 
@@ -324,6 +338,7 @@ function prepareUIStateMachine(){
 
 
             registrationSuccess: {
+                entry: handleRegistrationSuccess,
                 final: true
             },
 
@@ -359,9 +374,13 @@ function initHandlerBuilder(uxBus){
 export const UXMessage = {
     TO_LOGIN: Symbol("to_login"),
     TO_REGISTRATION: Symbol("to_registration"),
-    LOGIN_ERROR: Symbol("login_error"),
     CONNECTION_LOST: Symbol("conn_lost"),
     LOGIN_CLICK: Symbol("login_click"),
     LOGIN_PROGRESS: Symbol("login_progress"),
-    LOGIN_SUCCESS: Symbol("login_success")
+    LOGIN_SUCCESS: Symbol("login_success"),
+    LOGIN_ERROR: Symbol("login_error"),
+    REGISTER_CLICK: Symbol("reg_click"),
+    REGISTER_PROGRESS: Symbol("reg_prog"),
+    REGISTER_SUCCESS: Symbol("reg_succ"),
+    REGISTER_ERROR: Symbol("reg_err")
 }

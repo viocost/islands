@@ -49,6 +49,13 @@ function main(){
     //Building configuration
     const config = buildConfig()
 
+
+    ensureDirExist(config.basePath);
+
+    //Ensure that at least admin vault exists
+    ensureAdminVaultExist(config)
+
+
     //Migration
     migrate(config);
 
@@ -67,10 +74,6 @@ function main(){
     // ---------------------------------------------------------------------------------------------------------------------------
     // Legacy section
 
-    ensureDirExist(config.basePath);
-
-    //Ensure that at least admin vault exists
-    ensureAdminVaultExist(config)
 
     //Initializing vaults
 

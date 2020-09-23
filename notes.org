@@ -1,4 +1,7 @@
 
+* Message bus
+on(msg, data)
+if deliveringMessage
 
 * Registration
 
