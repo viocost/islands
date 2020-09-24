@@ -57,7 +57,7 @@ class MessageBus {
     }
 
 
-    deliver(sender, message, data) {
+    deliver(message, data, sender) {
         this._queue.push({ sender: sender, message: message, data: data })
 
         if (this._processing) {
@@ -83,9 +83,11 @@ class MessageBus {
                 }
 
                 //Delivering if message not specified, or if specified and matches
+                //Sending JSON, for easier interpretation
+                // Also including the key of the subscription in case the handler wants to
+                // unregister immediately
                 if (!subscription.message || subscription.message === message.message) {
-                    console.log(`Delivering ${message.message} from ${message.sender ? message.sender.name : "unknown"} to ${subscription.recipient ? subscription.recipient.name : "unknown"}`);
-                    subscription.callback(message.sender, message.message, message.data)
+                    subscription.callback(key, message)
                 }
             }
 

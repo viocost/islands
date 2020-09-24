@@ -14,13 +14,13 @@ export function initialize(messageBus){
     handlerBuilder = initHandlerBuilder(messageBus)
 
     //events
-    messageBus.on(UXMessage.TO_LOGIN, ()=>{
+    messageBus.register(()=>{
         sm.handle.toLogin(messageBus)
-    })
+    }, UXMessage.TO_LOGIN)
 
-    messageBus.on(UXMessage.TO_REGISTRATION, ()=>{
+    messageBus.on(()=>{
         sm.handle.toRegistration(messageBus)
-    })
+    }, UXMessage.TO_REGISTRATION)
 
 }
 
@@ -38,7 +38,7 @@ function initRegistration(stateMachine, eventName, args){
     let registrationBlock = UI.bakeRegistrationBlock(()=>{
         let password = util.$("#new-passwd");
         let confirm = util.$("#confirm-passwd");
-        uxBus.emit(UXMessage.REGISTER_CLICK, password, confirm)
+        uxBus.deliver(UXMessage.REGISTER_CLICK, {password: password, confirm: confirm})
     })
 
     util.appendChildren("#main-container", registrationBlock)
@@ -46,12 +46,12 @@ function initRegistration(stateMachine, eventName, args){
 
 function initLogin(stateMachine, eventName, args){
     let uxBus = args[0]
-    uxBus.on(UXMessage.LOGIN_PROGRESS, stateMachine.handle.start)
-    uxBus.on(UXMessage.LOGIN_ERROR, stateMachine.handle.loginError)
-    uxBus.on(UXMessage.LOGIN_SUCCESS, stateMachine.handle.loginSuccess)
+    uxBus.register(stateMachine.handle.start, UXMessage.LOGIN_PROGRESS)
+    uxBus.register(stateMachine.handle.loginError, UXMessage.LOGIN_ERROR)
+    uxBus.register(stateMachine.handle.loginSuccess, UXMessage.LOGIN_SUCCESS)
     let loginBlock = UI.bakeLoginBlock(()=>{
         let passwordEl = util.$("#vault-password");
-        uxBus.emit(UXMessage.LOGIN_CLICK, passwordEl.value)
+        uxBus.deliver(UXMessage.LOGIN_CLICK, { password: passwordEl.value})
     })
     util.appendChildren("#main-container", loginBlock)
 
@@ -367,7 +367,7 @@ function prepareUIStateMachine(){
 
 function initHandlerBuilder(uxBus){
     return function(ev, ...args){
-        uxBus.emit(ev, ...args);
+        //uxBus.emit(ev, ...args);
     }
 }
 
