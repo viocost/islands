@@ -1,5 +1,6 @@
 const { Router } = require("express");
 const { RouterHolder } = require("./RouterHolder")
+const AdminRouterLib = require("../../old_server/adminRouter")
 
 function AppRouter(vault){
     const router = Router()
@@ -77,8 +78,7 @@ function AppRouter(vault){
 
 
 function AdminRouter(vault){
-    const router = Router()
-    return new RouterHolder("/admin", router)
+    return AdminRouterLib.router
 }
 
 module.exports = {

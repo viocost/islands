@@ -17,7 +17,7 @@ import { ChatUtility } from "./ChatUtility";
  *
  *
  */
-class Vault{
+export class Vault{
     constructor(version){
         WildEmitter.mixin(this);
 

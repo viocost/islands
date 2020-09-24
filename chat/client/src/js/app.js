@@ -13,30 +13,21 @@ document.addEventListener('DOMContentLoaded', event => {
 
     let uxBus = new MessageBus();
     UX.initialize(uxBus);
-    isRegistration() ? this.prepareRegistration(uxBus)
-        : this.prepareLogin(uxBus)
+    isRegistration() ? prepareRegistration(uxBus)
+        : prepareLogin(uxBus)
 
 });
 
 
-
-
-
-const messages = [
-    UX.UXMessage.REGISTER_CLICK,
-    UX.UXMessage.LOGIN_CLICK,
-]
-
-
 function prepareRegistration(uxBus) {
     //uxBus.on(UX.UXMessage.REGISTER_CLICK, register.bind(null, uxBus))
-    uxBus.register(register.bind(null, uxBus), UX.UXMessage.REGISTER_CLICK)
-    uxBus.deleiver(UX.UXMessage.TO_REGISTRATION)
+    uxBus.register(UX.UXMessage.REGISTER_CLICK, register.bind(null, uxBus))
+    uxBus.deliver(UX.UXMessage.TO_REGISTRATION)
 }
 
 function prepareLogin(uxBus) {
     let loginAgent = new LoginAgent(ConnectorAbstractFactory.getChatConnectorFactory())
-    uxBus.register(initSession.bind(null, loginAgent, uxBus), UX.UXMessage.LOGIN_CLICK)
+    uxBus.register(UX.UXMessage.LOGIN_CLICK, initSession.bind(null, loginAgent, uxBus))
     uxBus.deliver(UX.UXMessage.TO_LOGIN)
 }
 
@@ -77,13 +68,20 @@ function initSession(loginAgent, uxBus, password) {
 
 
 function register(uxBus, subscriptionId, { data }) {
-    Vault.registerAdminVault(data.password, data.confirm, IslandsVersion.getVersion())
-        .then(() => {
-            uxBus.deliver(UX.UXMessage.REGISTER_SUCCESS)
-        })
-        .catch(err => {
-            uxBus.deliver(UX.UXMessage.REGISTER_ERROR, err)
-        })
+    uxBus.deliver(UX.UXMessage.REGISTER_PROGRESS)
+
+
+    setTimeout(()=>{
+        Vault.registerAdminVault(data.password, data.confirm, IslandsVersion.getVersion())
+            .then(() => {
+                uxBus.deliver(UX.UXMessage.REGISTER_SUCCESS)
+            })
+            .catch(err => {
+                uxBus.deliver(UX.UXMessage.REGISTER_ERROR, err)
+            })
+
+    }, 200)
+
 }
 
 
@@ -97,12 +95,3 @@ function wireAllTogether(vault, topics, uxBus) {
 }
 
 
-function _handleBusEvent(sender, message, data) {
-    let handlers = {}
-    handlers[UX.UXMessage.REGISTER_CLICK] = this.register.bind(this)
-    handlers[UX.UXMessage.LOGIN_CLICK] = this.initSession.bind(this)
-
-    if (message in handlers) {
-        handlers[message](data)
-    }
-}

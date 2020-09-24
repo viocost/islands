@@ -23,47 +23,47 @@ let o3 = new TestObject("Object 3")
 let debugObj = new TestObject("DebugObj")
 
 
-mb.register((sender, message, data) => {
+mb.register(null, (subId, {sender, message, data}) => {
     console.log(`Object 1 received ${message} from ${sender}`);
     console.dir(data)
-}, null, o1)
+}, o1)
 
 
-mb.register((sender, message, data) => {
+mb.register("TEST1", (subId, { sender, message, data} ) => {
     console.log(`Object 2 received ${message} from ${sender}`);
     console.dir(data)
     mb.deliver("TEST3", {
         a: 1,
         b: 2
     })
-}, "TEST1", o2)
+}, o2)
 
 
-mb.register((sender, message, data) => {
+mb.register("TEST1", (subId, { sender, message, data}) => {
     console.log(`Object 3 received ${message} from ${sender}`);
     console.dir(data)
-}, "TEST1", o3)
+}, "TEST1")
 
 
-mb.register((sender, message, data) => {
+mb.register(null, (subId, {sender, message, data}) => {
     console.log(`Debug Object received ${message} from ${sender}`);
     console.dir(data)
-}, null, debugObj)
+}, debugObj)
 
 mb.deliver("TEST1", "blabla", o1)
 mb.deliver("TEST2", "blabla", o2)
 
 
-mb.register((sender, message, data) => {
+mb.register(null, (subId, {sender, message, data}) => {
     console.log(`Object 3 received ${message} from ${sender}`);
     console.dir(data)
 }, o3)
 
 
-mb.deliver("TEST1", "blabla", o1)
+mb.deliver("XXXXXXXXXXXXXX", "blabla", o1)
 
 mb.unregisterByRecipient(o2)
 
 
-mb.deliver("FUCKU", "blabla", o2)
-mb.deliver("Jackass", "blabla", o1)
+mb.deliver("fiz", "blabla", o2)
+mb.deliver("buzz", "blabla", o1)

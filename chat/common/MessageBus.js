@@ -49,9 +49,11 @@ class MessageBus {
 
     /**
      * Registers a callback for a certain message or all of them.
+     * Message must be a string, a symbol, or null, callback - any function,
+     * recipient - anything
      *
      */
-    register(callback, message, recipient) {
+    register(message=null, callback, recipient) {
         this._subscriptions[++this.subscriptionSeq] = { callback: callback, message: message, recipient: recipient }
         return this._subscriptionSeq;
     }
@@ -83,9 +85,10 @@ class MessageBus {
                 }
 
                 //Delivering if message not specified, or if specified and matches
-                //Sending JSON, for easier interpretation
-                // Also including the key of the subscription in case the handler wants to
+                // Including the key of the subscription in case the handler wants to
                 // unregister immediately
+                //
+                // Message is an object { sender, message, data }
                 if (!subscription.message || subscription.message === message.message) {
                     subscription.callback(key, message)
                 }

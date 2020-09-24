@@ -42342,12 +42342,17 @@ var MessageBus = /*#__PURE__*/function () {
     }
     /**
      * Registers a callback for a certain message or all of them.
+     * Message must be a string, a symbol, or null, callback - any function,
+     * recipient - anything
      *
      */
 
   }, {
     key: "register",
-    value: function register(callback, message, recipient) {
+    value: function register() {
+      var message = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+      var callback = arguments.length > 1 ? arguments[1] : undefined;
+      var recipient = arguments.length > 2 ? arguments[2] : undefined;
       this._subscriptions[++this.subscriptionSeq] = {
         callback: callback,
         message: message,
@@ -42385,9 +42390,10 @@ var MessageBus = /*#__PURE__*/function () {
           if (subscription.recipient && subscription.recipient === message.sender) {
             continue;
           } //Delivering if message not specified, or if specified and matches
-          //Sending JSON, for easier interpretation
-          // Also including the key of the subscription in case the handler wants to
+          // Including the key of the subscription in case the handler wants to
           // unregister immediately
+          //
+          // Message is an object { sender, message, data }
 
 
           if (!subscription.message || subscription.message === message.message) {
@@ -61659,7 +61665,6 @@ var Vault_Vault = /*#__PURE__*/function () {
 
   return Vault;
 }();
-
 var VaultFactory = /*#__PURE__*/function () {
   function VaultFactory() {
     Vault_classCallCheck(this, VaultFactory);
@@ -63692,15 +63697,13 @@ var loading = __webpack_require__(473);
 
 
 var spinner = new BlockingSpinner_BlockingSpinner();
-var handlerBuilder;
 function initialize(messageBus) {
-  var sm = prepareUIStateMachine();
-  handlerBuilder = initHandlerBuilder(messageBus); //events
+  var sm = prepareUIStateMachine(); //events
 
-  messageBus.on(UXMessage.TO_LOGIN, function () {
+  messageBus.register(UXMessage.TO_LOGIN, function () {
     sm.handle.toLogin(messageBus);
   });
-  messageBus.on(UXMessage.TO_REGISTRATION, function () {
+  messageBus.register(UXMessage.TO_REGISTRATION, function () {
     sm.handle.toRegistration(messageBus);
   });
 }
@@ -63714,23 +63717,35 @@ function UX_loadingOff() {
 }
 
 function initRegistration(stateMachine, eventName, args) {
+  console.log("Initializing UX registration");
   var uxBus = args[0];
+  uxBus.register(UXMessage.REGISTER_PROGRESS, function (subscriptionId) {
+    $("#register-vault-btn").setAttribute("disabled", true);
+    uxBus.register(UXMessage.REGISTER_SUCCESS, stateMachine.handle.registrationSuccess);
+    uxBus.register(UXMessage.REGISTER_ERROR, stateMachine.handle.registrationError);
+    stateMachine.handle.start();
+  });
   var registrationBlock = bakeRegistrationBlock(function () {
     var password = $("#new-passwd");
     var confirm = $("#confirm-passwd");
-    uxBus.emit(UXMessage.REGISTER_CLICK, password, confirm);
+    uxBus.deliver(UXMessage.REGISTER_CLICK, {
+      password: password,
+      confirm: confirm
+    });
   });
   appendChildren("#main-container", registrationBlock);
 }
 
 function initLogin(stateMachine, eventName, args) {
   var uxBus = args[0];
-  uxBus.on(UXMessage.LOGIN_PROGRESS, stateMachine.handle.start);
-  uxBus.on(UXMessage.LOGIN_ERROR, stateMachine.handle.loginError);
-  uxBus.on(UXMessage.LOGIN_SUCCESS, stateMachine.handle.loginSuccess);
+  uxBus.register(stateMachine.handle.start, UXMessage.LOGIN_PROGRESS);
+  uxBus.register(stateMachine.handle.loginError, UXMessage.LOGIN_ERROR);
+  uxBus.register(stateMachine.handle.loginSuccess, UXMessage.LOGIN_SUCCESS);
   var loginBlock = bakeLoginBlock(function () {
     var passwordEl = $("#vault-password");
-    uxBus.emit(UXMessage.LOGIN_CLICK, passwordEl.value);
+    uxBus.deliver(UXMessage.LOGIN_CLICK, {
+      password: passwordEl.value
+    });
   });
   appendChildren("#main-container", loginBlock);
 }
@@ -63792,6 +63807,7 @@ function handleLoginSuccess(stateMachine, eventName, args) {////////////////////
 
 function handleRegistrationSuccess() {
   UX_loadingOff();
+  $("#register-vault-btn").removeAttribute("disabled");
   var mainContainer = $('#main-container');
   removeAllChildren(mainContainer);
   appendChildren(mainContainer, bakeRegistrationSuccessBlock(function () {
@@ -63801,6 +63817,7 @@ function handleRegistrationSuccess() {
 
 function handleRegistrationError(stateMachine, eventName, args) {
   UX_loadingOff();
+  $("#register-vault-btn").removeAttribute("disabled");
   lib_toastr.warning("Registration error: ".concat(args[0] || ""));
 }
 
@@ -63991,12 +64008,7 @@ function prepareUIStateMachine() {
 }
 
 function initHandlerBuilder(uxBus) {
-  return function (ev) {
-    for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-      args[_key - 1] = arguments[_key];
-    }
-
-    uxBus.emit.apply(uxBus, [ev].concat(args));
+  return function (ev) {//uxBus.emit(ev, ...args);
   };
 }
 
@@ -64014,8 +64026,6 @@ var UXMessage = {
   REGISTER_ERROR: Symbol("reg_err")
 };
 // CONCATENATED MODULE: ./client/src/js/app.js
-var app_this = undefined;
-
 
 
 
@@ -64028,19 +64038,18 @@ document.addEventListener('DOMContentLoaded', function (event) {
   console.log("Islands version is ".concat(Version["IslandsVersion"].getVersion()));
   var uxBus = new MessageBus["MessageBus"]();
   initialize(uxBus);
-  isRegistration() ? app_this.prepareRegistration(uxBus) : app_this.prepareLogin(uxBus);
+  isRegistration() ? prepareRegistration(uxBus) : prepareLogin(uxBus);
 });
-var app_messages = [UXMessage.REGISTER_CLICK, UXMessage.LOGIN_CLICK];
 
 function prepareRegistration(uxBus) {
   //uxBus.on(UX.UXMessage.REGISTER_CLICK, register.bind(null, uxBus))
-  uxBus.register(register.bind(null, uxBus), UXMessage.REGISTER_CLICK);
-  uxBus.deleiver(UXMessage.TO_REGISTRATION);
+  uxBus.register(UXMessage.REGISTER_CLICK, register.bind(null, uxBus));
+  uxBus.deliver(UXMessage.TO_REGISTRATION);
 }
 
 function prepareLogin(uxBus) {
   var loginAgent = new LoginAgent_LoginAgent(common_Connector["ConnectorAbstractFactory"].getChatConnectorFactory());
-  uxBus.register(initSession.bind(null, loginAgent, uxBus), UXMessage.LOGIN_CLICK);
+  uxBus.register(UXMessage.LOGIN_CLICK, initSession.bind(null, loginAgent, uxBus));
   uxBus.deliver(UXMessage.TO_LOGIN);
 }
 
@@ -64075,11 +64084,14 @@ function initSession(loginAgent, uxBus, password) {
 
 function register(uxBus, subscriptionId, _ref) {
   var data = _ref.data;
-  /* Cannot get final name for export "Vault" in "./client/src/js/lib/Vault.js" (known exports: VaultFactory, known reexports: ) */ undefined.registerAdminVault(data.password, data.confirm, Version["IslandsVersion"].getVersion()).then(function () {
-    uxBus.deliver(UXMessage.REGISTER_SUCCESS);
-  })["catch"](function (err) {
-    uxBus.deliver(UXMessage.REGISTER_ERROR, err);
-  });
+  uxBus.deliver(UXMessage.REGISTER_PROGRESS);
+  setTimeout(function () {
+    Vault_Vault.registerAdminVault(data.password, data.confirm, Version["IslandsVersion"].getVersion()).then(function () {
+      uxBus.deliver(UXMessage.REGISTER_SUCCESS);
+    })["catch"](function (err) {
+      uxBus.deliver(UXMessage.REGISTER_ERROR, err);
+    });
+  }, 200);
 }
 /**
  * Given initialized topics and vault sets up events and messages for the UX bus
@@ -64088,16 +64100,6 @@ function register(uxBus, subscriptionId, _ref) {
 
 function wireAllTogether(vault, topics, uxBus) {
   uxBus.deliver(UXMessage.LOGIN_SUCCESS);
-}
-
-function _handleBusEvent(sender, message, data) {
-  var handlers = {};
-  handlers[UXMessage.REGISTER_CLICK] = this.register.bind(this);
-  handlers[UXMessage.LOGIN_CLICK] = this.initSession.bind(this);
-
-  if (message in handlers) {
-    handlers[message](data);
-  }
 }
 
 /***/ })

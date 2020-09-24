@@ -7,20 +7,19 @@ import "../../css/chat.sass"
 import "../../css/vendor/loading.css";
 
 let spinner = new BlockingSpinner();
-let handlerBuilder;
+
 
 export function initialize(messageBus){
     let sm = prepareUIStateMachine()
-    handlerBuilder = initHandlerBuilder(messageBus)
 
     //events
-    messageBus.register(()=>{
+    messageBus.register(UXMessage.TO_LOGIN, ()=>{
         sm.handle.toLogin(messageBus)
-    }, UXMessage.TO_LOGIN)
+    })
 
-    messageBus.on(()=>{
+    messageBus.register(UXMessage.TO_REGISTRATION, ()=>{
         sm.handle.toRegistration(messageBus)
-    }, UXMessage.TO_REGISTRATION)
+    })
 
 }
 
@@ -34,7 +33,16 @@ function loadingOff() {
 }
 
 function initRegistration(stateMachine, eventName, args){
+    console.log("Initializing UX registration");
     let uxBus = args[0];
+
+    uxBus.register(UXMessage.REGISTER_PROGRESS, (subscriptionId)=>{
+        util.$("#register-vault-btn").setAttribute("disabled", true)
+        uxBus.register(UXMessage.REGISTER_SUCCESS, stateMachine.handle.registrationSuccess);
+        uxBus.register(UXMessage.REGISTER_ERROR, stateMachine.handle.registrationError );
+        stateMachine.handle.start()
+
+    })
     let registrationBlock = UI.bakeRegistrationBlock(()=>{
         let password = util.$("#new-passwd");
         let confirm = util.$("#confirm-passwd");
@@ -43,6 +51,7 @@ function initRegistration(stateMachine, eventName, args){
 
     util.appendChildren("#main-container", registrationBlock)
 }
+
 
 function initLogin(stateMachine, eventName, args){
     let uxBus = args[0]
@@ -118,7 +127,9 @@ function handleLoginSuccess(stateMachine, eventName, args) {
 
 function handleRegistrationSuccess(){
     loadingOff()
+    util.$("#register-vault-btn").removeAttribute("disabled");
     let mainContainer = util.$('#main-container');
+
     util.removeAllChildren(mainContainer);
     util.appendChildren(mainContainer, UI.bakeRegistrationSuccessBlock(() => {
         document.location.reload()
@@ -128,8 +139,8 @@ function handleRegistrationSuccess(){
 function handleRegistrationError(stateMachine, eventName, args){
     loadingOff()
 
+    util.$("#register-vault-btn").removeAttribute("disabled");
     toastr.warning(`Registration error: ${args[0] || ""}`)
-
 }
 
 
