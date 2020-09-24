@@ -1,9 +1,7 @@
-const  CuteSet  = require("cute-set") ;
-
-class MessageBus{
+class MessageBus {
 
     //list of recipients and messages
-    constructor(){
+    constructor() {
         this._queue = [];
 
         /**
@@ -33,7 +31,7 @@ class MessageBus{
     /**
      * Deleting a single subscription identified by id
      */
-    unregisterById(id){
+    unregisterById(id) {
         delete this._subscriptions[id]
     }
 
@@ -41,9 +39,9 @@ class MessageBus{
      * Deleting all subscriptions with mathced recipient
      *
      */
-    unregisterByRecipient(recipient){
-        for(let key of Object.keys(this._subscriptions)){
-            if (this._subscriptions[key].recipient === recipient){
+    unregisterByRecipient(recipient) {
+        for (let key of Object.keys(this._subscriptions)) {
+            if (this._subscriptions[key].recipient === recipient) {
                 delete this._subscriptions[key]
             }
         }
@@ -53,15 +51,16 @@ class MessageBus{
      * Registers a callback for a certain message or all of them.
      *
      */
-    register({ callback, message, recipient }){
+    register(callback, message, recipient) {
         this._subscriptions[++this.subscriptionSeq] = { callback: callback, message: message, recipient: recipient }
         return this._subscriptionSeq;
     }
 
-    deliver(sender, message, data){
-        this._queue.push([sender, msg, data])
 
-        if(this._processing){
+    deliver(sender, message, data) {
+        this._queue.push({ sender: sender, message: message, data: data })
+
+        if (this._processing) {
             return;
         }
 
@@ -69,32 +68,30 @@ class MessageBus{
 
     }
 
-    _processQueue(){
+    _processQueue() {
         this._processing = true;
 
+        // While there are messages in the queue
         let message
-        while(message = this._queue.splice(0, 1)[0]){
-            for(let subscription of this._subscriptions){
+        while (message = this._queue.splice(0, 1)[0]) {
+            for (let key in this._subscriptions) {
 
                 //Checking if sender also a recipient and ignoring if so.
-                if(subscription.recipient && subscription.recipient === sender){
+                let subscription = this._subscriptions[key]
+                if (subscription.recipient && subscription.recipient === message.sender) {
                     continue
                 }
 
                 //Delivering if message not specified, or if specified and matches
-                if(!subscription.message || subscription.message === message){
-                   console.log(`Delivering ${message[1]} from ${sender.name} to ${recipient.object.name}`);
-                   recipient.callback(...message)
+                if (!subscription.message || subscription.message === message.message) {
+                    console.log(`Delivering ${message.message} from ${message.sender ? message.sender.name : "unknown"} to ${subscription.recipient ? subscription.recipient.name : "unknown"}`);
+                    subscription.callback(message.sender, message.message, message.data)
                 }
             }
 
         }
 
         this._processing = false
-    }
-
-    _getSubscriptionByObject(object){
-        return this._subscriptions.filter(subscription=>subscription.object === object)[0]
     }
 }
 
