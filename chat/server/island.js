@@ -11,6 +11,7 @@ const { RouterFactory } = require("./lib/RouterFactory");
 const Logger = require("../old_server/classes/libs/Logger");
 const { PendingConnection } = require("./lib/PendingConnection")
 const { ConnectorAbstractFactory } = require("../common/Connector")
+const AdminServer  = require("../old_server/classes/AdminServer")
 const fs = require("fs-extra")
 const path = require("path")
 
@@ -60,6 +61,7 @@ function main(){
     migrate(config);
 
 
+
     //Initializing tor controller
     let torController = new TorController({
         host: config.torConnector.torControlHost,
@@ -69,6 +71,10 @@ function main(){
 
     //Initializing logger
     Logger.initLogger(config.servicePath, global.DEBUG ? "debug" : "info");
+
+
+    //Init admin router
+    AdminServer.initAdminEnv(config, args.host, args.port)
 
 
     // ---------------------------------------------------------------------------------------------------------------------------

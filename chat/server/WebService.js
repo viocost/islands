@@ -1,4 +1,5 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const SocketIO = require('socket.io');
 const getPort = require('get-port');
 const appRouter = require("./appRouter");
@@ -22,6 +23,8 @@ class WebService extends EventEmitter{
         this._app.set('views', viewsPath);
         this._app.set('view engine', 'pug');
 
+        this._app.use(bodyParser.json({limit: '50mb'}));
+        this._app.use(bodyParser.urlencoded({limit: '50mb', parameterLimit: 100000}));
         if (this._app.get('env') === 'development'){
             const logger = require('morgan');
             this._app.use(logger('dev'));
@@ -32,6 +35,7 @@ class WebService extends EventEmitter{
         for(let router of routers){
             this._app.use(router.getBase(), router.getRouter())
         }
+
     }
 
 

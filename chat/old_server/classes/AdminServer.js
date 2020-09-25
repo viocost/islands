@@ -3,10 +3,11 @@ const fs = require('fs');
 const path = require('path');
 const Logger = require("./libs/Logger.js");
 const VaultManager = require("./libs/VaultManager");
-const HiddenServiceManager = require("./libs/HiddenServiceManager");
+const { HiddenServiceManager } = require("./libs/HiddenServiceManager");
 const HSMap = require("./libs/HSVaultMap");
 const shell = require('shelljs');
 const AdminKey = require ("./libs/AdminKey");
+
 
 let keysFolderPath;
 let updatePath;
@@ -18,13 +19,13 @@ let vaultManager;
 
 
 
-module.exports.initAdminEnv = function(app, config, host, port, hsManager){
+module.exports.initAdminEnv = function(config, host, port){
     AdminKey.init(config)
+    keysFolderPath = config.adminKeyPath
     Logger.debug("initAdminEnv called");
+
     islandConfig = config;
-    app.post("/admin", handleAdminRequest);
-    appPort = port;
-    appHost = host;
+
     islandHiddenServiceManager  = new HiddenServiceManager(config, host, port);
     islandHiddenServiceManager.init();
     vaultManager = new VaultManager(config);
@@ -51,6 +52,7 @@ const handlers = {
 
 function handleAdminRequest(req, res){
     console.log("Handling admin request...");
+    console.dir(req.body)
     try{
         handlers[req.body.action](req, res)
     }catch(err){
@@ -676,3 +678,5 @@ module.exports.getAdminPublicKey = function(){
         throw err;
     }
 };
+
+module.exports.handleAdminRequest = handleAdminRequest

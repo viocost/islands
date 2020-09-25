@@ -41,6 +41,10 @@ router.get('/', (req, res)=>{
     }
 });
 
+router.post('/', (req, res)=>{
+    adminServer.handleAdminRequest(req, res)
+})
+
 function isOnion(host){
     let pattern = /.*[a-z2-7]{16}\.onion.*/;
     return pattern.test(host);
