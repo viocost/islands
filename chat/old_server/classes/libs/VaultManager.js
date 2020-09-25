@@ -12,7 +12,7 @@ const Err = require("../libs/IError.js");
 
 
 /**FILENAMES*/
-const PENDING = "pending.signature";
+const PENDING = "pending";
 const VAULT = "vault";
 const PUBLICKEY = "publicKey";
 
@@ -126,6 +126,7 @@ class VaultManager{
     }
 
     saveNewVault(vaultBlob, hash, signature, publicKey, id){
+
         let ic = new iCrypto();
         ic.addBlob("vaulthex", vaultBlob)
             .addBlob("hash", hash)
@@ -148,10 +149,9 @@ class VaultManager{
             do{
                 id = this.generateID();
             }while (this.isVaultExist(id));
-        } else if (this.isVaultExist(id)){
-            throw new Error("Vault already exists");
         }
         this._writeVault(id, vaultBlob, publicKey, hash);
+        this._consumeRegistrationToken(id)
         return id;
     }
 
@@ -193,8 +193,8 @@ class VaultManager{
     }
 
 
-
     completeRegistration(vaultBlob, hash, signature, publicKey, id){
+        console.log(`Completing registration for id ${id}`);
         let ic = new iCrypto();
         ic.addBlob("vault64", vaultBlob)
             .addBlob("hash", hash)
@@ -215,6 +215,7 @@ class VaultManager{
             throw new Error("Registration is not active for: " + id)
         }
 
+        console.log("Writing vault....");
         this._writeVault(id, vaultBlob, publicKey, hash);
         this._consumeRegistrationToken(id)
     }
@@ -332,6 +333,7 @@ class VaultManager{
     }
 
     _writeVault(id, blob, publicKey, hash){
+        console.log(`Writing vault id: ${id}`);
         let vaultPath = path.join(this.vaultsPath, id);
         if(!fs.existsSync(vaultPath)){
             fs.mkdirSync(vaultPath);

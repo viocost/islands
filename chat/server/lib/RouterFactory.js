@@ -18,6 +18,7 @@ function AppRouter(vault){
     // Posting to root path interpreted as a login attempt
     // processing login
     router.get("/vault", (req, res)=>{
+
         /////////////////////////////////////////////////////////////////////////
         // try{                                                                //
         //     let id = getVaultId(req.headers["host"]);                       //

@@ -16,16 +16,16 @@ let appPort;
 let appHost;
 let islandHiddenServiceManager;
 let vaultManager;
+let adminVaultId;
 
 
-
-module.exports.initAdminEnv = function(config, host, port){
+module.exports.initAdminEnv = function(config, vaultId, host, port){
     AdminKey.init(config)
     keysFolderPath = config.adminKeyPath
     Logger.debug("initAdminEnv called");
-
+    adminVaultId = vaultId
+    console.log(`Admin vault id is ${adminVaultId}`);
     islandConfig = config;
-
     islandHiddenServiceManager  = new HiddenServiceManager(config, host, port);
     islandHiddenServiceManager.init();
     vaultManager = new VaultManager(config);
@@ -493,15 +493,14 @@ function adminSetup(req, res){
     let signature = data.vaultSign;
     let publicKey = data.vaultPublicKey;
     ic.getPublicKeyFingerprint("pubk", "pkfp");
-    let vaultID = vaultManager.saveNewVault(vaultBlob, hash, signature, publicKey, ic.get("pkfp"));
+    vaultManager.saveNewVault(vaultBlob, hash, signature, publicKey, adminVaultId);
 
     try{
-
         let kPath = path.join(keysFolderPath , ic.get('pkfp'));
         fs.writeFileSync(kPath, ic.get('pubk'));
         res.set('Content-Type', 'application/json')
             .status(200)
-            .send({vaultID: vaultID});
+            .send({vaultID: adminVaultId});
         Logger.debug("Admin vault registered successfully!", {cat: "admin"})
     }catch(err) {
         Logger.error("Error setting admin: " + err, {cat: "admin"})

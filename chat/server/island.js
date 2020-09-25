@@ -73,8 +73,6 @@ function main(){
     Logger.initLogger(config.servicePath, global.DEBUG ? "debug" : "info");
 
 
-    //Init admin router
-    AdminServer.initAdminEnv(config, args.host, args.port)
 
 
     // ---------------------------------------------------------------------------------------------------------------------------
@@ -115,6 +113,11 @@ function activateAccounts(port, config, requestEmitter){
         })
 
         let isAdmin = isAdminVault(config, vaultId)
+
+        if(isAdmin){
+            //Init admin router legacy
+            AdminServer.initAdminEnv(config, vaultId, "0.0.0.0", port)
+        }
 
         //Activating admin vault with provided port number
         activateAccount({
