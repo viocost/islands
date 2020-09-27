@@ -12,6 +12,9 @@ OPTIONS:
 -p, --path
     Build path
 
+-d, --dev
+    Include all dev packages
+
 -w, --windows
     Path or link to windows build
 
@@ -29,7 +32,7 @@ OPTIONS:
 
 
 INSTALLER_PATH=$(pwd)
-
+DEV=false
 MAC_ARCHIVE="mac.zip"
 WINDOWS_ARCHIVE="windows.zip"
 LINUX_ARCHIVE="linux.zip"
@@ -43,6 +46,11 @@ while [[ $# -gt 0 ]]; do
         -p|--path)
             BUILD_PATH=$(readlink -f "$2")
             shift
+            shift
+            ;;
+
+        -d|--dev)
+            DEV=true
             shift
             ;;
         -m|--mac)
@@ -75,6 +83,11 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
+# Checking if npm is installed
+if [[ ! $(npm --version) ]]; then
+    echo "npm not found. exiting.."
+    exit 1
+fi
 
 # Create directory tree
 #
@@ -165,7 +178,8 @@ echo Preparing engine
 
 cd ${INSTALLER_PATH}/services/engine
 npm run clean
-npm run build
+$DEV && npm run build-dev || npm run build
+
 
 echo Copying engine
 cp -r ${INSTALLER_PATH}/services/engine ${BUILD_PATH}/apps
@@ -174,7 +188,7 @@ cp -r ${INSTALLER_PATH}/services/engine ${BUILD_PATH}/apps
 echo Preparing Islands chat
 cd ${INSTALLER_PATH}/../chat
 npm run unbuild
-npm run build
+$DEV && npm run build-dev || npm run build
 
 echo Copying chat
 cp -r ${INSTALLER_PATH}/../chat ${BUILD_PATH}/apps
