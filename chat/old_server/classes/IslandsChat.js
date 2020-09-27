@@ -1,4 +1,3 @@
-const ClientRequestRouter = require("./libs/ClientRequestCollector.js");
 const ClientSessionManager = require("./libs/ClientSessionManager.js");
 const ClientConnectionManager = require("./libs/ClientConnectionManager.js");
 const TorConnector = require("./libs/TorConnector.js");
