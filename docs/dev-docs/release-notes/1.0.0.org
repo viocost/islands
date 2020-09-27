@@ -1,0 +1,13 @@
+#+TITLE: 1.0.0
+
+- Creating and syncing invites UX improved. Timeouts and notifications are now
+  more adequate.
+
+- Admin panel opnes now in a new tab
+- Islands image security is improved, critical bugs fixed
+- Islands virtualbox prep script is revised
+- NPM libraries are updated
+- New messages indication if tab is inactive
+- Boot button is removed for users without boot rights
+- Added colors per user
+- Other minor UI changes

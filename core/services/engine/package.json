@@ -4,7 +4,9 @@
   "description": "Engine script that keeps an island running",
   "main": "engine.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "clean": "rm -rf node_modules",
+    "build": "npm i"
   },
   "author": "",
   "license": "MIT",
@@ -13,8 +15,6 @@
     "extract-zip": "^2.0.1",
     "fs-extra": "^9.0.1",
     "get-port": "^5.1.1",
-    "hound": "^1.0.5",
-    "node-dev": "^5.0.0",
-    "r": "0.0.5"
+    "hound": "^1.0.5"
   }
 }

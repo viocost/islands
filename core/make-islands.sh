@@ -161,8 +161,20 @@ ${INSTALLER_PATH}/config-gen/generate.py -p ${CONFIG_PATH}
 rm -rf ${BUILD_PATH}/apps/*
 rm -rf ${BUILD_PATH}/data/*
 
+echo Preparing engine
+
+cd ${INSTALLER_PATH}/services/engine
+npm run clean
+npm run build
+
 echo Copying engine
 cp -r ${INSTALLER_PATH}/services/engine ${BUILD_PATH}/apps
+
+
+echo Preparing Islands chat
+cd ${INSTALLER_PATH}/../chat
+npm run unbuild
+npm run build
 
 echo Copying chat
 cp -r ${INSTALLER_PATH}/../chat ${BUILD_PATH}/apps
