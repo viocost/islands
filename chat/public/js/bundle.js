@@ -42291,7 +42291,7 @@ var MessageBus = /*#__PURE__*/function () {
 
     this._queue = [];
     /**
-     * A subscription is an object with callback, and optional recipient and message fields.
+     * A subscription is an object with callback, and optional subscriber and message fields.
      * If message is specified, then callback will be invoked.
      * only when the message matches, otherwise it will be invoked
      * on any message.
@@ -42302,10 +42302,10 @@ var MessageBus = /*#__PURE__*/function () {
      * Wheneve new subscription comes in - it is assigned a key which is
      * returned after registration.
      *
-     * Unregister can take an object recipient or an integer key.
+     * Unregister can take an object subscriber or an integer key.
      *
      * If an integer key passed, then the subscription that matches the key will be deleted.
-     * If an object passed, then all subscriptions where the object is a recipient
+     * If an object passed, then all subscriptions where the object is a subscriber
      * will be deleted.
      *
      */
@@ -42314,55 +42314,51 @@ var MessageBus = /*#__PURE__*/function () {
     this._processing = false;
     this.subscriptionSeq = 0;
   }
-  /**
-   * Deleting a single subscription identified by id
-   */
-
 
   _createClass(MessageBus, [{
-    key: "unregisterById",
-    value: function unregisterById(id) {
-      delete this._subscriptions[id];
-    }
-    /**
-     * Deleting all subscriptions with mathced recipient
-     *
-     */
+    key: "off",
+    value: function off(_ref) {
+      var id = _ref.id,
+          subscriber = _ref.subscriber;
 
-  }, {
-    key: "unregisterByRecipient",
-    value: function unregisterByRecipient(recipient) {
-      for (var _i = 0, _Object$keys = Object.keys(this._subscriptions); _i < _Object$keys.length; _i++) {
-        var key = _Object$keys[_i];
+      if (id) {
+        delete this._subscriptions[id];
+      }
 
-        if (this._subscriptions[key].recipient === recipient) {
-          delete this._subscriptions[key];
+      if (subscriber) {
+        for (var _i = 0, _Object$keys = Object.keys(this._subscriptions); _i < _Object$keys.length; _i++) {
+          var key = _Object$keys[_i];
+
+          if (this._subscriptions[key].subscriber === subscriber) {
+            delete this._subscriptions[key];
+          }
         }
       }
     }
     /**
      * Registers a callback for a certain message or all of them.
      * Message must be a string, a symbol, or null, callback - any function,
-     * recipient - anything
+     * subscriber - anything
      *
      */
 
   }, {
-    key: "register",
-    value: function register() {
+    key: "on",
+    value: function on() {
       var message = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
       var callback = arguments.length > 1 ? arguments[1] : undefined;
-      var recipient = arguments.length > 2 ? arguments[2] : undefined;
-      this._subscriptions[++this.subscriptionSeq] = {
+      var subscriber = arguments.length > 2 ? arguments[2] : undefined;
+      var id = Symbol();
+      this._subscriptions[id] = {
         callback: callback,
         message: message,
-        recipient: recipient
+        subscriber: subscriber
       };
-      return this._subscriptionSeq;
+      return id;
     }
   }, {
-    key: "deliver",
-    value: function deliver(message, data, sender) {
+    key: "emit",
+    value: function emit(message, data, sender) {
       this._queue.push({
         sender: sender,
         message: message,
@@ -42384,20 +42380,20 @@ var MessageBus = /*#__PURE__*/function () {
 
       while (message = this._queue.splice(0, 1)[0]) {
         for (var key in this._subscriptions) {
-          //Checking if sender also a recipient and ignoring if so.
+          //Checking if sender also a subscriber and ignoring if so.
           var subscription = this._subscriptions[key];
 
-          if (subscription.recipient && subscription.recipient === message.sender) {
+          if (subscription.subscriber && subscription.subscriber === message.sender) {
             continue;
           } //Delivering if message not specified, or if specified and matches
           // Including the key of the subscription in case the handler wants to
-          // unregister immediately
+          // off immediately
           //
           // Message is an object { sender, message, data }
 
 
           if (!subscription.message || subscription.message === message.message) {
-            subscription.callback(key, message);
+            subscription.callback(message.data);
           }
         }
       }
@@ -64149,8 +64145,8 @@ function prepareLogin(uxBus) {
   uxBus.deliver(UXMessage.TO_LOGIN);
 }
 
-function initSession(loginAgent, uxBus, subscriptionId, args) {
-  var password = args.data.password;
+function initSession(loginAgent, uxBus, data) {
+  var password = data.password;
   uxBus.deliver(UXMessage.LOGIN_PROGRESS);
   console.log("Init session called"); //Here we need a really small delay
   //in order for UI to work properly

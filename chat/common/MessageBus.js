@@ -1,3 +1,5 @@
+
+
 class MessageBus {
 
     //list of recipients and messages
@@ -5,7 +7,7 @@ class MessageBus {
         this._queue = [];
 
         /**
-         * A subscription is an object with callback, and optional recipient and message fields.
+         * A subscription is an object with callback, and optional subscriber and message fields.
          * If message is specified, then callback will be invoked.
          * only when the message matches, otherwise it will be invoked
          * on any message.
@@ -16,10 +18,10 @@ class MessageBus {
          * Wheneve new subscription comes in - it is assigned a key which is
          * returned after registration.
          *
-         * Unregister can take an object recipient or an integer key.
+         * Unregister can take an object subscriber or an integer key.
          *
          * If an integer key passed, then the subscription that matches the key will be deleted.
-         * If an object passed, then all subscriptions where the object is a recipient
+         * If an object passed, then all subscriptions where the object is a subscriber
          * will be deleted.
          *
          */
@@ -28,21 +30,17 @@ class MessageBus {
         this.subscriptionSeq = 0;
     }
 
-    /**
-     * Deleting a single subscription identified by id
-     */
-    unregisterById(id) {
-        delete this._subscriptions[id]
-    }
+    off({ id, subscriber }){
+        if(id){
+            delete this._subscriptions[id]
+        }
 
-    /**
-     * Deleting all subscriptions with mathced recipient
-     *
-     */
-    unregisterByRecipient(recipient) {
-        for (let key of Object.keys(this._subscriptions)) {
-            if (this._subscriptions[key].recipient === recipient) {
-                delete this._subscriptions[key]
+        if(subscriber){
+
+            for (let key of Object.keys(this._subscriptions)) {
+                if (this._subscriptions[key].subscriber === subscriber) {
+                    delete this._subscriptions[key]
+                }
             }
         }
     }
@@ -50,16 +48,17 @@ class MessageBus {
     /**
      * Registers a callback for a certain message or all of them.
      * Message must be a string, a symbol, or null, callback - any function,
-     * recipient - anything
+     * subscriber - anything
      *
      */
-    register(message=null, callback, recipient) {
-        this._subscriptions[++this.subscriptionSeq] = { callback: callback, message: message, recipient: recipient }
-        return this._subscriptionSeq;
+    on(message=null, callback, subscriber) {
+        let id = Symbol()
+        this._subscriptions[id] = { callback: callback, message: message, subscriber: subscriber }
+        return id;
     }
 
 
-    deliver(message, data, sender) {
+    emit(message, data, sender) {
         this._queue.push({ sender: sender, message: message, data: data })
 
         if (this._processing) {
@@ -78,19 +77,19 @@ class MessageBus {
         while (message = this._queue.splice(0, 1)[0]) {
             for (let key in this._subscriptions) {
 
-                //Checking if sender also a recipient and ignoring if so.
+                //Checking if sender also a subscriber and ignoring if so.
                 let subscription = this._subscriptions[key]
-                if (subscription.recipient && subscription.recipient === message.sender) {
+                if (subscription.subscriber && subscription.subscriber === message.sender) {
                     continue
                 }
 
                 //Delivering if message not specified, or if specified and matches
                 // Including the key of the subscription in case the handler wants to
-                // unregister immediately
+                // off immediately
                 //
                 // Message is an object { sender, message, data }
                 if (!subscription.message || subscription.message === message.message) {
-                    subscription.callback(key, message)
+                    subscription.callback(message.data)
                 }
             }
 

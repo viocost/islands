@@ -13,11 +13,11 @@ export function initialize(messageBus){
     let sm = prepareUIStateMachine()
 
     //events
-    messageBus.register(UXMessage.TO_LOGIN, ()=>{
+    messageBus.on(UXMessage.TO_LOGIN, ()=>{
         sm.handle.toLogin(messageBus)
     })
 
-    messageBus.register(UXMessage.TO_REGISTRATION, ()=>{
+    messageBus.on(UXMessage.TO_REGISTRATION, ()=>{
         sm.handle.toRegistration(messageBus)
     })
 
@@ -36,17 +36,17 @@ function initRegistration(stateMachine, eventName, args){
     console.log("Initializing UX registration");
     let uxBus = args[0];
 
-    uxBus.register(UXMessage.REGISTER_PROGRESS, (subscriptionId)=>{
+    uxBus.on(UXMessage.REGISTER_PROGRESS, (subscriptionId)=>{
         util.$("#register-vault-btn").setAttribute("disabled", true)
-        uxBus.register(UXMessage.REGISTER_SUCCESS, stateMachine.handle.registrationSuccess);
-        uxBus.register(UXMessage.REGISTER_ERROR, stateMachine.handle.registrationError );
+        uxBus.on(UXMessage.REGISTER_SUCCESS, stateMachine.handle.registrationSuccess);
+        uxBus.on(UXMessage.REGISTER_ERROR, stateMachine.handle.registrationError );
         stateMachine.handle.start()
 
     })
     let registrationBlock = UI.bakeRegistrationBlock(()=>{
         let password = util.$("#new-passwd");
         let confirm = util.$("#confirm-passwd");
-        uxBus.deliver(UXMessage.REGISTER_CLICK, {password: password, confirm: confirm})
+        uxBus.emit(UXMessage.REGISTER_CLICK, {password: password, confirm: confirm})
     })
 
     util.appendChildren("#main-container", registrationBlock)
@@ -55,12 +55,12 @@ function initRegistration(stateMachine, eventName, args){
 
 function initLogin(stateMachine, eventName, args){
     let uxBus = args[0]
-    uxBus.register(stateMachine.handle.start, UXMessage.LOGIN_PROGRESS)
-    uxBus.register(stateMachine.handle.loginError, UXMessage.LOGIN_ERROR)
-    uxBus.register(stateMachine.handle.loginSuccess, UXMessage.LOGIN_SUCCESS)
+    uxBus.on(stateMachine.handle.start, UXMessage.LOGIN_PROGRESS)
+    uxBus.on(stateMachine.handle.loginError, UXMessage.LOGIN_ERROR)
+    uxBus.on(stateMachine.handle.loginSuccess, UXMessage.LOGIN_SUCCESS)
     let loginBlock = UI.bakeLoginBlock(()=>{
         let passwordEl = util.$("#vault-password");
-        uxBus.deliver(UXMessage.LOGIN_CLICK, { password: passwordEl.value})
+        uxBus.emit(UXMessage.LOGIN_CLICK, { password: passwordEl.value})
     })
     util.appendChildren("#main-container", loginBlock)
 
