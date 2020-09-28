@@ -30,6 +30,10 @@ class MessageBus {
         this.subscriptionSeq = 0;
     }
 
+    /**
+     * Takes either id of subscription or a subscriber, or both
+     * and removes any handlers associated with them
+     */
     off({ id, subscriber }){
         if(id){
             delete this._subscriptions[id]
@@ -52,9 +56,8 @@ class MessageBus {
      *
      */
     on(message=null, callback, subscriber) {
-        let id = Symbol()
-        this._subscriptions[id] = { callback: callback, message: message, subscriber: subscriber }
-        return id;
+        this._subscriptions[++this.subscriptionSeq] = { callback: callback, message: message, subscriber: subscriber }
+        return this.subscriptionSeq;
     }
 
 
@@ -75,6 +78,7 @@ class MessageBus {
         // While there are messages in the queue
         let message
         while (message = this._queue.splice(0, 1)[0]) {
+
             for (let key in this._subscriptions) {
 
                 //Checking if sender also a subscriber and ignoring if so.

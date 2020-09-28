@@ -11,9 +11,11 @@ let spinner = new BlockingSpinner();
 
 export function initialize(messageBus){
     let sm = prepareUIStateMachine()
+    console.log("Initializing UI");
 
     //events
     messageBus.on(UXMessage.TO_LOGIN, ()=>{
+        console.log("UI TO LOGIN");
         sm.handle.toLogin(messageBus)
     })
 
