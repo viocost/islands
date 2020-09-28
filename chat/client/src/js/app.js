@@ -68,7 +68,7 @@ function initSession(loginAgent, uxBus, data) {
 }
 
 
-function register(uxBus, subscriptionId, { data }) {
+function register(uxBus,  data ) {
     uxBus.emit(UX.UXMessage.REGISTER_PROGRESS)
 
 

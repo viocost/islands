@@ -64181,8 +64181,7 @@ function initSession(loginAgent, uxBus, data) {
   }, 200);
 }
 
-function register(uxBus, subscriptionId, _ref) {
-  var data = _ref.data;
+function register(uxBus, data) {
   uxBus.emit(UXMessage.REGISTER_PROGRESS);
   setTimeout(function () {
     Vault_Vault.registerAdminVault(data.password, data.confirm, Version["IslandsVersion"].getVersion()).then(function () {
