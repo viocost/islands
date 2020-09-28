@@ -49,6 +49,7 @@ export class LoginAgent{
 
 
     acceptPassword(password){
+        console.log(`Accepting password! ${password}`);
         this._password = password;
         this.sm.handle.passwordAccepted(password)
     }

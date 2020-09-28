@@ -31,7 +31,9 @@ function prepareLogin(uxBus) {
     uxBus.deliver(UX.UXMessage.TO_LOGIN)
 }
 
-function initSession(loginAgent, uxBus, password) {
+function initSession(loginAgent, uxBus, subscriptionId, args) {
+    let password = args.data.password;
+
     uxBus.deliver(UX.UXMessage.LOGIN_PROGRESS)
     console.log("Init session called");
 

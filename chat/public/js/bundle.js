@@ -61865,6 +61865,7 @@ var LoginAgent_LoginAgent = /*#__PURE__*/function () {
   LoginAgent_createClass(LoginAgent, [{
     key: "acceptPassword",
     value: function acceptPassword(password) {
+      console.log("Accepting password! ".concat(password));
       this._password = password;
       this.sm.handle.passwordAccepted(password);
     } // ---------------------------------------------------------------------------------------------------------------------------
@@ -64148,7 +64149,8 @@ function prepareLogin(uxBus) {
   uxBus.deliver(UXMessage.TO_LOGIN);
 }
 
-function initSession(loginAgent, uxBus, password) {
+function initSession(loginAgent, uxBus, subscriptionId, args) {
+  var password = args.data.password;
   uxBus.deliver(UXMessage.LOGIN_PROGRESS);
   console.log("Init session called"); //Here we need a really small delay
   //in order for UI to work properly
