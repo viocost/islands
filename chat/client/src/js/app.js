@@ -20,7 +20,6 @@ document.addEventListener('DOMContentLoaded', event => {
 
 
 function prepareRegistration(uxBus) {
-    //uxBus.on(UX.UXMessage.REGISTER_CLICK, register.bind(null, uxBus))
     uxBus.on(UX.UXMessage.REGISTER_CLICK, register.bind(null, uxBus))
     uxBus.emit(UX.UXMessage.TO_REGISTRATION)
 }
@@ -55,7 +54,7 @@ function initSession(loginAgent, uxBus, data) {
              */
             let postLoginInitializer = new PostLoginInitializer(session, vault)
             postLoginInitializer.on(PostLoginInitializer.Success, (vault, topics) => {
-         //       wireAllTogether(vault, topics, uxBus)
+                console.log("Post login succeeded. Continuing...");
             })
 
             postLoginInitializer.on(PostLoginInitializer.Fail, err => {

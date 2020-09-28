@@ -42314,6 +42314,11 @@ var MessageBus = /*#__PURE__*/function () {
     this._processing = false;
     this.subscriptionSeq = 0;
   }
+  /**
+   * Takes either id of subscription or a subscriber, or both
+   * and removes any handlers associated with them
+   */
+
 
   _createClass(MessageBus, [{
     key: "off",
@@ -42348,13 +42353,12 @@ var MessageBus = /*#__PURE__*/function () {
       var message = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
       var callback = arguments.length > 1 ? arguments[1] : undefined;
       var subscriber = arguments.length > 2 ? arguments[2] : undefined;
-      var id = Symbol();
-      this._subscriptions[id] = {
+      this._subscriptions[++this.subscriptionSeq] = {
         callback: callback,
         message: message,
         subscriber: subscriber
       };
-      return id;
+      return this.subscriptionSeq;
     }
   }, {
     key: "emit",
@@ -63790,12 +63794,14 @@ var loading = __webpack_require__(473);
 
 var spinner = new BlockingSpinner_BlockingSpinner();
 function initialize(messageBus) {
-  var sm = prepareUIStateMachine(); //events
+  var sm = prepareUIStateMachine();
+  console.log("Initializing UI"); //events
 
-  messageBus.register(UXMessage.TO_LOGIN, function () {
+  messageBus.on(UXMessage.TO_LOGIN, function () {
+    console.log("UI TO LOGIN");
     sm.handle.toLogin(messageBus);
   });
-  messageBus.register(UXMessage.TO_REGISTRATION, function () {
+  messageBus.on(UXMessage.TO_REGISTRATION, function () {
     sm.handle.toRegistration(messageBus);
   });
 }
@@ -63811,16 +63817,16 @@ function UX_loadingOff() {
 function initRegistration(stateMachine, eventName, args) {
   console.log("Initializing UX registration");
   var uxBus = args[0];
-  uxBus.register(UXMessage.REGISTER_PROGRESS, function (subscriptionId) {
+  uxBus.on(UXMessage.REGISTER_PROGRESS, function (subscriptionId) {
     $("#register-vault-btn").setAttribute("disabled", true);
-    uxBus.register(UXMessage.REGISTER_SUCCESS, stateMachine.handle.registrationSuccess);
-    uxBus.register(UXMessage.REGISTER_ERROR, stateMachine.handle.registrationError);
+    uxBus.on(UXMessage.REGISTER_SUCCESS, stateMachine.handle.registrationSuccess);
+    uxBus.on(UXMessage.REGISTER_ERROR, stateMachine.handle.registrationError);
     stateMachine.handle.start();
   });
   var registrationBlock = bakeRegistrationBlock(function () {
     var password = $("#new-passwd");
     var confirm = $("#confirm-passwd");
-    uxBus.deliver(UXMessage.REGISTER_CLICK, {
+    uxBus.emit(UXMessage.REGISTER_CLICK, {
       password: password,
       confirm: confirm
     });
@@ -63830,12 +63836,12 @@ function initRegistration(stateMachine, eventName, args) {
 
 function initLogin(stateMachine, eventName, args) {
   var uxBus = args[0];
-  uxBus.register(stateMachine.handle.start, UXMessage.LOGIN_PROGRESS);
-  uxBus.register(stateMachine.handle.loginError, UXMessage.LOGIN_ERROR);
-  uxBus.register(stateMachine.handle.loginSuccess, UXMessage.LOGIN_SUCCESS);
+  uxBus.on(stateMachine.handle.start, UXMessage.LOGIN_PROGRESS);
+  uxBus.on(stateMachine.handle.loginError, UXMessage.LOGIN_ERROR);
+  uxBus.on(stateMachine.handle.loginSuccess, UXMessage.LOGIN_SUCCESS);
   var loginBlock = bakeLoginBlock(function () {
     var passwordEl = $("#vault-password");
-    uxBus.deliver(UXMessage.LOGIN_CLICK, {
+    uxBus.emit(UXMessage.LOGIN_CLICK, {
       password: passwordEl.value
     });
   });
@@ -64134,27 +64140,26 @@ document.addEventListener('DOMContentLoaded', function (event) {
 });
 
 function prepareRegistration(uxBus) {
-  //uxBus.on(UX.UXMessage.REGISTER_CLICK, register.bind(null, uxBus))
-  uxBus.register(UXMessage.REGISTER_CLICK, register.bind(null, uxBus));
-  uxBus.deliver(UXMessage.TO_REGISTRATION);
+  uxBus.on(UXMessage.REGISTER_CLICK, register.bind(null, uxBus));
+  uxBus.emit(UXMessage.TO_REGISTRATION);
 }
 
 function prepareLogin(uxBus) {
   var loginAgent = new LoginAgent_LoginAgent(common_Connector["ConnectorAbstractFactory"].getChatConnectorFactory());
-  uxBus.register(UXMessage.LOGIN_CLICK, initSession.bind(null, loginAgent, uxBus));
-  uxBus.deliver(UXMessage.TO_LOGIN);
+  uxBus.on(UXMessage.LOGIN_CLICK, initSession.bind(null, loginAgent, uxBus));
+  uxBus.emit(UXMessage.TO_LOGIN);
 }
 
 function initSession(loginAgent, uxBus, data) {
   var password = data.password;
-  uxBus.deliver(UXMessage.LOGIN_PROGRESS);
+  uxBus.emit(UXMessage.LOGIN_PROGRESS);
   console.log("Init session called"); //Here we need a really small delay
   //in order for UI to work properly
 
   setTimeout(function () {
     loginAgent.acceptPassword(password);
     loginAgent.on(LoginAgentEvents.DECRYPTION_ERROR, function () {
-      uxBus.deliver(UXMessage.LOGIN_ERROR, "Invalid password.");
+      uxBus.emit(UXMessage.LOGIN_ERROR, "Invalid password.");
     });
     loginAgent.on(LoginAgentEvents.SUCCESS, function (session, vault) {
       console.log("Login agent succeeded. continuing initialization");
@@ -64165,10 +64170,11 @@ function initSession(loginAgent, uxBus, data) {
        */
 
       var postLoginInitializer = new PostLoginInitializer_PostLoginInitializer(session, vault);
-      postLoginInitializer.on(PostLoginInitializer_PostLoginInitializer.Success, function (vault, topics) {//       wireAllTogether(vault, topics, uxBus)
+      postLoginInitializer.on(PostLoginInitializer_PostLoginInitializer.Success, function (vault, topics) {
+        console.log("Post login succeeded. Continuing...");
       });
       postLoginInitializer.on(PostLoginInitializer_PostLoginInitializer.Fail, function (err) {
-        uxBus.deliver(UXMessage.LOGIN_ERROR, err.message);
+        uxBus.emit(UXMessage.LOGIN_ERROR, err.message);
       });
       postLoginInitializer.run();
     });
@@ -64177,12 +64183,12 @@ function initSession(loginAgent, uxBus, data) {
 
 function register(uxBus, subscriptionId, _ref) {
   var data = _ref.data;
-  uxBus.deliver(UXMessage.REGISTER_PROGRESS);
+  uxBus.emit(UXMessage.REGISTER_PROGRESS);
   setTimeout(function () {
     Vault_Vault.registerAdminVault(data.password, data.confirm, Version["IslandsVersion"].getVersion()).then(function () {
-      uxBus.deliver(UXMessage.REGISTER_SUCCESS);
+      uxBus.emit(UXMessage.REGISTER_SUCCESS);
     })["catch"](function (err) {
-      uxBus.deliver(UXMessage.REGISTER_ERROR, err);
+      uxBus.emit(UXMessage.REGISTER_ERROR, err);
     });
   }, 200);
 }
@@ -64192,7 +64198,7 @@ function register(uxBus, subscriptionId, _ref) {
 
 
 function wireAllTogether(vault, topics, uxBus) {
-  uxBus.deliver(UXMessage.LOGIN_SUCCESS);
+  uxBus.emit(UXMessage.LOGIN_SUCCESS);
 }
 
 /***/ })
