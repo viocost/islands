@@ -55,6 +55,9 @@ function initSession(loginAgent, uxBus, data) {
             let postLoginInitializer = new PostLoginInitializer(session, vault)
             postLoginInitializer.on(PostLoginInitializer.Success, (vault, topics) => {
                 console.log("Post login succeeded. Continuing...");
+
+                //TODO put settings
+                uxBus.emit(UX.UXMessage.LOGIN_SUCCESS, {soundOn: true})
             })
 
             postLoginInitializer.on(PostLoginInitializer.Fail, err => {
