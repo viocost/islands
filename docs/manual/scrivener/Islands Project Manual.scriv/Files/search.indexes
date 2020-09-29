@@ -1,0 +1,910 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SearchIndexes Version="1.0">
+    <Documents>
+        <Document ID="006181AC-B1BC-4F9D-8BBD-AB3334679A6F">
+            <Title>Philosophy Overview</Title>
+        </Document>
+        <Document ID="01EECB37-AC01-45D1-ADB9-CDAF3B4056AE">
+            <Title>Enabling SSH Access to an Islands VM</Title>
+        </Document>
+        <Document ID="04312C4C-58DE-4ACC-B34C-B1E025C0F2A8">
+            <Title>Torrent Manager</Title>
+        </Document>
+        <Document ID="0778B444-3F1F-4924-83BA-B2AB7028AC3E">
+            <Title>Back Matter</Title>
+        </Document>
+        <Document ID="07B0D7C6-57CE-4D6F-8AD9-11F06A261A5F">
+            <Title>Notes</Title>
+        </Document>
+        <Document ID="080339CF-8F91-4B33-890F-380443D3CE02">
+            <Title>Inviting New People</Title>
+        </Document>
+        <Document ID="08F409C3-BE0E-49B5-8FC4-9E89EA8BA6DE">
+            <Title>Identity Management</Title>
+        </Document>
+        <Document ID="0B19A512-7C20-447B-8D12-A64DC1DA97C6">
+            <Title>Signing Your Builds</Title>
+        </Document>
+        <Document ID="0B8580CD-CD41-45C5-9AB3-A7E02696A593">
+            <Title>Linux Desktop: Islands Manager</Title>
+        </Document>
+        <Document ID="0C3F5764-ECBB-41E1-857D-58A1657D6D7D">
+            <Title>Joining a New Chat Topic</Title>
+        </Document>
+        <Document ID="0CD41849-7215-4FFD-B64E-5627D69209E3">
+            <Title>Updating the Islands Software</Title>
+        </Document>
+        <Document ID="0E74437B-8D47-4F7A-B354-646BD235D05A">
+            <Title>LaTeX Control File</Title>
+            <Text>% This file type can be used to insert custom commands, preamble settings, or whatever material should be printed directly rather than treated as part of the structure of the work.</Text>
+        </Document>
+        <Document ID="0EFA602A-13FA-4FC0-8571-3198DD91FF5F">
+            <Title>Why Use Islands?</Title>
+            <Text>The trade-offs inherent in the Islands design mean that some people will be turned off of wanting to use it. The Islands team believe that this is an acceptable trade-off. (Some “missing” features that don’t constitute security risks are simply missing because they don’t fit with available time and current priorities. Those will get addressed or not as time and priorities allow.)
+If you want your content to be broadcast to the widest audience possible, you are going to be better off using conventional internet platforms.
+For someone with a group of family or friends they would like to talk with, setting them up with Islands takes more work than downloading Skype or signing up on Facebook. However, in return for that effort, they are guaranteed an environment where:
+Their conversation won’t be analysed by corporate algorithms looking to sell you product and ideas.
+Their logs can’t be subpoenaed by governments, if the government can even find who to send the subpoena to.
+Their content won’t get taken down by enforcement bots being abused by trolls or copyright owners.
+Only the people who the island owner wants to expose info to will see it.
+For a person living in a free country, these are nice benefits. For someone living under oppression (for example, pro-democracy protesters in Hong Kong in 2019), these things could be a matter of speech or silence, freedom or imprisonment, life or death.
+This begs the question: can bad actors exploit Islands? Yes, just like with any encrypted system directed at evading surveillance or detection. Can Islands stop them? No, and the Islands team does not intend to try. However, Islands will give you the tools to keep bad actors out of your space. Technology is like a weapon: a knife or a gun sitting on a table is just an inert piece of metal until someone picks it up and uses it for good or ill. 
+￼
+XKCD #504 “Legal Hacks”, © Randal Monroe, CC-BY-NC</Text>
+        </Document>
+        <Document ID="126DB844-8496-4084-A297-9B26FD13C7F9">
+            <Title>Downloading and Installing Qt</Title>
+        </Document>
+        <Document ID="132A43DA-052A-4C80-88DD-148005CC6E52">
+            <Title>Developing for Islands</Title>
+        </Document>
+        <Document ID="1342A462-0A16-4ABF-BBFA-F168A7AB49FA">
+            <Title>Islands Chat</Title>
+        </Document>
+        <Document ID="163F02D4-0BF6-4D9E-AC84-E99FF25BFFD6"/>
+        <Document ID="19454B2C-2696-408E-8B82-B78117357709">
+            <Title>Proofing Packages</Title>
+            <Synopsis>Enable &quot;Include in Compile&quot; for this item if you intend to compile with inline annotations or inspector comments. This will add nice looking margin comments, highlighted text and a wider margin area for notes.</Synopsis>
+            <Text>% CriticMarkup Support
+% See document notes in the inspector for compile setting adjustments.
+% Credit goes to Fletcher Penney, of MultiMarkdown, for these methods.
+
+\usepackage{soul}
+\usepackage{xargs}
+\usepackage{todonotes}
+\newcommandx{\cmnote}[2][1=]{\linespread{1.0}\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red,#1]{#2}}
+
+% Use \ul instead of \underline since we are using soul
+\let\underline\ul
+
+% Use a wider margin for notes
+% Use entire page
+\settrimmedsize{\stockheight}{\stockwidth}{*}
+\settrims{0pt}{0pt}
+
+\setlrmarginsandblock{2.5cm}{5.5cm}{*}
+\setulmarginsandblock{3.5cm}{3.5cm}{*}
+\checkandfixthelayout
+</Text>
+            <Notes>By default, the built-in format will use \marginpar for inline annotations and comments. For best results, edit the compile format to use \cmnote instead:
+
+Open File ▸ Compile...
+Double-click on the “LaTeX (Memoir Book)” compile format, highlighted in the left sidebar.
+In the Replacements pane, click the checkbox beside the line that converts \marginpar to \cmnote.
+Click “Save”.
+
+</Notes>
+        </Document>
+        <Document ID="1C2FEF17-BA9F-447F-83E5-4623868E0C91">
+            <Title>Islands Chat</Title>
+        </Document>
+        <Document ID="1CF8387E-D3DB-4610-BBB9-7817BE0366B1">
+            <Title>System Tray Icon</Title>
+        </Document>
+        <Document ID="254840B2-918A-4980-9B4D-C9B3A774FB9A">
+            <Title>Appendices</Title>
+        </Document>
+        <Document ID="28F83302-9126-430E-976A-79C29CEFC0BC">
+            <Title>Anonymity First</Title>
+        </Document>
+        <Document ID="2958D5BF-2481-4780-9F7A-C03D7764240D">
+            <Title>Managing Chat Topics</Title>
+        </Document>
+        <Document ID="29B7380E-FDA3-423A-98C6-A8BF28C80CE5">
+            <Title>Sample PDF</Title>
+            <Text>General Non-Fiction (LaTeX)
+I. Anonymous 18039
+1
+Contents
+Contents 2
+1 Folder Names as Chapter Titles 1 1.1 HowToUseThisTemplate ...................... 1 1.2 SomeSampleContent ......................... 2
+2 Another Chapter Folder 5 2.1 Anothersection............................. 5
+Appendices 8 SupportingMaterial ............................. 9
+Foreward
+Non-fiction works often feature a foreword or preface. This usually comes after the table of contents, but not always—sometimes the foreword precedes the table of contents. If you need your foreword to come before the table of contents, move the \tableofcontents command in the “Preamble Addendum” document after “Foreword” document. You can also rename “Foreword” to ”Preface” or ”Introduction”, or delete it entirely, depending on your requirements.
+The table of contents is generated automatically by LATEX, using the natural structure of the Draft folder’s outline in Scrivener’s. If you were using Scrivener in a more typical fashion, there would be a long list of instructions here on how to create a table of contents and manually keep it up to date over time.
+2
+Chapter 1
+Folder Names as Chapter Titles
+The goal of this template is make the composition and drafting phase as simple and elegant as possible. It is not meant to turn Scrivener, a rich text editor, into a full-blown LaTeX generator (you’ll need to use MultiMarkdown or Pandoc for that). Instead, this project contains a number of convenience features that could be applied to your work as you wish in an la carte fashion, to alleviate how much code you’d need to type in yourself. For example, if you find handling images to be cumbersome in LaTeX, you can safely leave that up to the template.
+Ultimately, it’s goal is to cater to those that by and large prefer to compose directly in LaTeX itself, and will be approaching Scrivener primarily as an organ- isational and composition tool for constructing a longer .tex file from the smaller snippets written into the Draft folder.
+1.1 How To Use This Template
+1. Inside the “Draft” folder, create a new folder for each chapter and title each folder with the name of the chapter. (You do not need to—and indeed shouldn’t—title the folders “Chapter One” and so on, because chapter num- bering will typically be taken care of automatically by LaTeX.) The first chapter folder has been created for you with the placeholder title “Chapter”.
+2. Create a new text document for each section inside the chapter folders. Sec- tions will be numbered and titled by LaTeX using hierarchical numbering (1.1, 1.2, 1.3).
+3. Nest documents beneath documents to create numbered subsections, subsub- sections and unnumbered paragraphs, at 3rd, 4th and 5th levels of hierarchy respectively.
+1
+CHAPTER 1. FOLDER NAMES AS CHAPTER TITLES 2
+4. If you need to create the occasional unnumbered section, the Informal Chap-
+ter and Informal Section Types are there for you.
+5. If you don’t require a foreword, move the “Foreword” document in the Front Matter folder to the Trash folder. Alternatively, rename it “Preface”, “Ab- stract” or “Introduction” as you require. Any other prefacing materials could be placed between the preamble and the main matter document.
+6. “Notes” and “Ideas” folders have been provided for your convenience, al- though you can replace them or create different top-level folders for your research materials if necessary (these are just regular folders that have had custom icons assigned to them using the Documents&gt;Change Icon feature).
+1.2 Some Sample Content
+Foremost, any LaTeX you type in yourself will be dutifully conveyed to the output. The compile settings also have a few shortcuts you can use to ease typing, or grant yourself a nicer looking working document. Graphics that you place into the editor (linked or embedded) will be exported simply wherever they occur in the text. For more formal figures there are two approaches you can take (you needn’t commit to either exclusively).
+Figures
+Figure 1.1: This is the caption.
+To modify how styled text is converted to LaTeX code, visit the Markup and Styles compile format panes, when editing this project’s ”LaTeX (Memoir Book)” format. The Markup pane itself sets how graphics print themselves, which is the \includegraphics line alone. The stylesheet settings for Figure, Caption and Label determine how the additional syntax is added around that.
+￼
+CHAPTER 1. FOLDER NAMES AS CHAPTER TITLES 3 Equations
+We can also insert equations as discrete items in the binder, making them easy to reference and look up by type. It also means we can refer to them in our writings with the use of simple internal document links (Equation 1.1).
+x2 = 5−√25−4×6 =2 (1.1) 2
+When you need to refer to an equation in the body text (β = (β1, β2, . . . , βn)), you can use the Inline Equation style which will insert the $ and $ codes for you.
+Equations can also be inserted unnumbered
+(  A2 ) P A=2 B&gt;4
+Athran teng ti anu su, thung... ti quolt ma xi rintax yem urfa obrikt frimba flim furng. Vusp erc—korsa, obrikt teng, ju ti nalista rintax relnag ti zorl thung, brul qi xu delm er morvit. Ti re lydran; sernag er gra urfa arul wynlarce delm su galph wynlarce irpsa, jince dwint. Berot sernag groum irpsa epp jince. Sernag dri; er gen relnag ik rintax er, erc su dri, teng groum dwint ju groum relnag. Irpsa lamax erc velar brul flim dwint kurnap irpsa wynlarce clum su menardis yiphras; zorl morvit delm korsa zeuhl fli srung. Wynlarce delm; gen nix, teng su ti ma, dwint su, re furng vo tolaspa obrikt groum lydran xi.
+Here is some verse.
+We do not need much more than a few lines. And then we will be done.
+Erc xi—helk, korsa ma velar vusp gen berot? Arul galph; flim groum su teng twock er velar arul, urfa ma tharn. Quolt cree pank menardis, wynlarce ti sernag su tharn lamax? Tolaspa zorl pank... vo prinquis relnag rintax tolaspa er gronk. Ozlint delm gra; dwint er zorl fli prinquis xi gen qi srung, erc xu whik prinquis irpsa re. Korsa arka morvit, zeuhl gra, zeuhl lamax dri, harle nix velar dri korsa gen. Ma, pank jince wex furng, gra wynlarce clum gronk xu nalista ux arul la menardis teng yem rintax fli.
+Su xi er relnag tolaspa arka—jince erc twock morvit, su ux ozlint korsa ma. Thung epp, yem; yiphras berot la ma vusp su brul prinquis rhull pank vusp relnag erc ma rintax? Qi ik pank delm zorl lamax tolaspa lamax kurnap yem whik ju. Fli morvit—dri su srung gronk cree furng xi. Obrikt gen wex, arul ozlint, ma korsa rintax srung, epp ux, er pank. Lamax ozlint arul epp ju; qi ik ti harle ik. Lamax su ozlint ju ma yem rhull brul rintax re athran flim gra; yiphras rhull wex epp. Er ik epp erk zorl ewayf, ozlint re; wynlarce twock clum, irpsa ewayf er gronk.
+￼￼￼
+CHAPTER 1. FOLDER NAMES AS CHAPTER TITLES 4
+Su galph velar; ewayf, xu anu srung gen wynlarce frimba fli erc kurnap furng, xi kurnap, clum furng erk xi ti harle helk irpsa xu quolt. Gronk teng furng xu obrikt ju—ik clum rintax xu prinquis la. Prinquis zorl ewayf; urfa dri, vo xi, ju fli zeuhl obrikt re gronk teng morvit wex irpsa. Ma nix ewayf lamax. La furng nix brul ewayf sernag korsa yem tharn. Ju teng. Arul vusp er rintax athran, re sernag... ma prinquis. Urfa furng athran jince, gra nix tolaspa la delm; gronk dwint epp yiphras.
+Chapter 2
+Another Chapter Folder
+Begin each new chapter on a new top level folder like this. With LaTeX, the chapter numbering and formatting is handled automatically by the typesetting engine. Scrivener is only responsible for assembling the LaTeX code that will be used to generate these structures.
+If you need parts, or if you don’t need chapters, the automatic assignment of structure to the outline can be adjusted in project settings, under the Section Types pane.
+2.1 Another section
+Whik gronk; thung epp rintax whik jince dwint srung sernag nix la quolt sernag brul jince. Twock, quolt whik tharn dri cree gen... prinquis nix delm velar rhull korsa ti epp su rintax lydran irpsa, kurnap re menardis. Ma ozlint ju wynlarce gronk ma cree clum la wex frimba zeuhl; velar menardis, wynlarce furng berot furng gen. Thung er wynlarce wex tolaspa, srung morvit galph. Gen athran morvit... korsa, morvit menardis kurnap rintax velar teng srung vo frimba. Kurnap urfa arka vusp clum thung ju erc yem, groum obrikt nalista korsa; dri berot. Groum galph; ik, morvit ti gronk zeuhl erc nix. Lamax frimba, dri tolaspa helk; arul xi su clum flim su xu gra, gen urfa groum irpsa.
+Urfa erc prinquis; tharn yem arka, vusp xu erc. Fli xi menardis arka... ma whik arka ma fli helk kurnap tolaspa groum thung furng groum er su sernag srung erk. Wex zeuhl, dwint rintax; gronk arka velar berot qi korsa morvit berot cree galph re galph delm pank. Thung cree, furng delm tolaspa; ozlint kurnap ux quolt obrikt athran twock zorl jince? Re groum; thung su flim kurnap su vo quolt, wex er zorl gen xu ti re. Wynlarce, ti prinquis ux lamax gen wex, wynlarce er la erk lamax rhull?
+Delm vo; berot nix erc twock wynlarce gronk ju? Yem groum whik erk galph 5
+CHAPTER 2. ANOTHER CHAPTER FOLDER 6
+urfa epp; kurnap nalista brul, zeuhl vo. Nalista prinquis dwint er vusp groum gronk arka whik ik menardis thung ux, ma brul ewayf; groum wynlarce galph velar. Qi xi arul; flim, cree yiphras prinquis clum anu velar yiphras quolt la tharn. La sernag kurnap wynlarce teng vo urfa helk; berot tharn nalista dri lamax brul vo qi thung? Galph wex ma epp, twock relnag berot. Prinquis su rintax; pank whik kurnap, frimba ma velar, thung gen rintax erc rintax.
+Ju ti erk gronk ewayf ux, nix prinquis frimba. Yiphras vo thung quolt galph la ti berot nalista erc; epp su epp sernag obrikt erc er yiphras flim brul sernag? Obrikt, whik teng srung nix prinquis xi brul lydran re urfa... groum ti, er harle dri quolt menardis groum qi. Harle gra harle irpsa, la zeuhl. Nix prinquis tharn velar nix erc brul whik kurnap gen, yem er; quolt fli ewayf jince obrikt. Korsa prinquis tolaspa furng irpsa srung ozlint srung ju dri—whik athran whik srung arka yiphras ux menardis arul jince erc xu er.
+Athran teng ti anu su, thung... ti quolt ma xi rintax yem urfa obrikt frimba flim furng. Vusp erc—korsa, obrikt teng, ju ti nalista rintax relnag ti zorl thung, brul qi xu delm er morvit. Ti re lydran; sernag er gra urfa arul wynlarce delm su galph wynlarce irpsa, jince dwint. Berot sernag groum irpsa epp jince. Sernag dri; er gen relnag ik rintax er, erc su dri, teng groum dwint ju groum relnag. Irpsa lamax erc velar brul flim dwint kurnap irpsa wynlarce clum su menardis yiphras; zorl morvit delm korsa zeuhl fli srung. Wynlarce delm; gen nix, teng su ti ma, dwint su, re furng vo tolaspa obrikt groum lydran xi.
+Erc xi—helk, korsa ma velar vusp gen berot? Arul galph; flim groum su teng twock er velar arul, urfa ma tharn. Quolt cree pank menardis, wynlarce ti sernag su tharn lamax? Tolaspa zorl pank... vo prinquis relnag rintax tolaspa er gronk. Ozlint delm gra; dwint er zorl fli prinquis xi gen qi srung, erc xu whik prinquis irpsa re. Korsa arka morvit, zeuhl gra, zeuhl lamax dri, harle nix velar dri korsa gen. Ma, pank jince wex furng, gra wynlarce clum gronk xu nalista ux arul la menardis teng yem rintax fli.
+Su xi er relnag tolaspa arka—jince erc twock morvit, su ux ozlint korsa ma. Thung epp, yem; yiphras berot la ma vusp su brul prinquis rhull pank vusp relnag erc ma rintax? Qi ik pank delm zorl lamax tolaspa lamax kurnap yem whik ju. Fli morvit—dri su srung gronk cree furng xi. Obrikt gen wex, arul ozlint, ma korsa rintax srung, epp ux, er pank. Lamax ozlint arul epp ju; qi ik ti harle ik. Lamax su ozlint ju ma yem rhull brul rintax re athran flim gra; yiphras rhull wex epp. Er ik epp erk zorl ewayf, ozlint re; wynlarce twock clum, irpsa ewayf er gronk.
+Su galph velar; ewayf, xu anu srung gen wynlarce frimba fli erc kurnap furng, xi kurnap, clum furng erk xi ti harle helk irpsa xu quolt. Gronk teng furng xu obrikt ju—ik clum rintax xu prinquis la. Prinquis zorl ewayf; urfa dri, vo xi, ju fli zeuhl obrikt re gronk teng morvit wex irpsa. Ma nix ewayf lamax. La furng nix brul ewayf sernag korsa yem tharn. Ju teng. Arul vusp er rintax athran, re
+CHAPTER 2. ANOTHER CHAPTER FOLDER 7 sernag... ma prinquis. Urfa furng athran jince, gra nix tolaspa la delm; gronk
+dwint epp yiphras.
+A subsection
+Er xu kurnap velar ik ti quolt ozlint. Frimba kurnap ux brul furng; ju tharn helk yem su groum frimba. Srung gronk erk er whik prinquis teng er galph; berot arul lamax erc gra. Relnag ti. Kurnap sernag dwint frimba wynlarce—urfa harle pank su berot arul, zorl harle vo pank. Whik erc—erk jince korsa ma dwint wex nix athran thung ma, twock sernag urfa gen tharn. Ti twock velar, athran yiphras— obrikt clum rhull nalista ozlint ik re korsa. Brul kurnap er sernag obrikt delm erc nix, anu er su tolaspa gen tolaspa nix furng whik la furng korsa? Twock gra harle, yem nix; clum, erk berot gronk rintax gen teng ju, prinquis ma xu, ozlint nalista? Sernag rintax re gen velar tolaspa xi prinquis; su jince erk urfa? Thung clum tolaspa thung ik erk; dwint gra, nalista thung, rhull ux.
+Zorl tharn srung kurnap velar xu wex er dwint gra vo zorl; irpsa cree la vo lydran, dwint jince prinquis teng prinquis. Zorl dri erk nix, ux tolaspa whik, arul er, vo xi anu zeuhl quolt; galph helk korsa flim ma vo. Su er berot gen yem srung whik ux arul dri quolt whik. Helk groum clum; helk yem berot er relnag harle, teng obrikt helk athran quolt wex jince quolt helk harle, relnag lydran furng er ik rintax tharn la. Frimba lydran er; nalista whik lamax menardis ik sernag, delm jince helk morvit gen, erk kurnap flim erc ik athran prinquis pank yiphras erk, vo tolaspa. Arul dwint relnag xi ma, dri dwint harle. Kurnap menardis galph ik gronk sernag gronk delm morvit vusp yiphras jince ju.
+Erk flim anu rhull anu, lydran wex furng morvit delm. Pank nalista, whik nix vusp obrikt dri thung nalista morvit zeuhl, kurnap berot qi prinquis berot. Twock erk erc er... morvit galph ewayf frimba morvit sernag er prinquis? Vo prinquis zeuhl, anu zeuhl la arka erc epp, zeuhl re relnag wynlarce su urfa.
+Su, er velar cree brul yem, gronk helk anu gen athran yiphras ti athran harle ju quolt gen menardis urfa epp ewayf groum. Dwint qi athran sernag anu kurnap arul. Er fli yiphras sernag vo kurnap dwint vusp obrikt rhull gen. Helk yiphras er arul wynlarce korsa arul... korsa tolaspa anu wynlarce lamax srung. Ux ik xu rintax nix. Sernag teng, yiphras erk tolaspa—gen ux velar ik irpsa menardis arul ux obrikt yem zeuhl. Lamax su dri er anu; ewayf er jince, wex er arul flim erk fli. Relnag jince wynlarce jince prinquis. Tharn jince vusp er... gra, korsa yem. Dri la berot ozlint; clum twock, anu rhull dri helk, vusp zorl rintax obrikt wex. Twock lydran arka harle re nalista groum quolt; menardis ma brul qi pank berot dri morvit, erc kurnap delm.
+Appendices
+8
+CHAPTER 2. ANOTHER CHAPTER FOLDER 9 Supporting Material
+Whik gronk; thung epp rintax whik jince dwint srung sernag nix la quolt sernag brul jince. Twock, quolt whik tharn dri cree gen... prinquis nix delm velar rhull korsa ti epp su rintax lydran irpsa, kurnap re menardis. Ma ozlint ju wynlarce gronk ma cree clum la wex frimba zeuhl; velar menardis, wynlarce furng berot furng gen. Thung er wynlarce wex tolaspa, srung morvit galph. Gen athran morvit... korsa, morvit menardis kurnap rintax velar teng srung vo frimba. Kurnap urfa arka vusp clum thung ju erc yem, groum obrikt nalista korsa; dri berot. Groum galph; ik, morvit ti gronk zeuhl erc nix. Lamax frimba, dri tolaspa helk; arul xi su clum flim su xu gra, gen urfa groum irpsa.
+Urfa erc prinquis; tharn yem arka, vusp xu erc. Fli xi menardis arka... ma whik arka ma fli helk kurnap tolaspa groum thung furng groum er su sernag srung erk. Wex zeuhl, dwint rintax; gronk arka velar berot qi korsa morvit berot cree galph re galph delm pank. Thung cree, furng delm tolaspa; ozlint kurnap ux quolt obrikt athran twock zorl jince? Re groum; thung su flim kurnap su vo quolt, wex er zorl gen xu ti re. Wynlarce, ti prinquis ux lamax gen wex, wynlarce er la erk lamax rhull?
+Delm vo; berot nix erc twock wynlarce gronk ju? Yem groum whik erk galph urfa epp; kurnap nalista brul, zeuhl vo. Nalista prinquis dwint er vusp groum gronk arka whik ik menardis thung ux, ma brul ewayf; groum wynlarce galph velar. Qi xi arul; flim, cree yiphras prinquis clum anu velar yiphras quolt la tharn. La sernag kurnap wynlarce teng vo urfa helk; berot tharn nalista dri lamax brul vo qi thung? Galph wex ma epp, twock relnag berot. Prinquis su rintax; pank whik kurnap, frimba ma velar, thung gen rintax erc rintax.
+Ju ti erk gronk ewayf ux, nix prinquis frimba. Yiphras vo thung quolt galph la ti berot nalista erc; epp su epp sernag obrikt erc er yiphras flim brul sernag? Obrikt, whik teng srung nix prinquis xi brul lydran re urfa... groum ti, er harle dri quolt menardis groum qi. Harle gra harle irpsa, la zeuhl. Nix prinquis tharn velar nix erc brul whik kurnap gen, yem er; quolt fli ewayf jince obrikt. Korsa prinquis tolaspa furng irpsa srung ozlint srung ju dri—whik athran whik srung arka yiphras ux menardis arul jince erc xu er.
+Athran teng ti anu su, thung... ti quolt ma xi rintax yem urfa obrikt frimba flim furng. Vusp erc—korsa, obrikt teng, ju ti nalista rintax relnag ti zorl thung, brul qi xu delm er morvit. Ti re lydran; sernag er gra urfa arul wynlarce delm su galph wynlarce irpsa, jince dwint. Berot sernag groum irpsa epp jince. Sernag dri; er gen relnag ik rintax er, erc su dri, teng groum dwint ju groum relnag. Irpsa lamax erc velar brul flim dwint kurnap irpsa wynlarce clum su menardis yiphras; zorl morvit delm korsa zeuhl fli srung. Wynlarce delm; gen nix, teng su ti ma, dwint su, re furng vo tolaspa obrikt groum lydran xi.
+Erc xi—helk, korsa ma velar vusp gen berot? Arul galph; flim groum su teng
+CHAPTER 2. ANOTHER CHAPTER FOLDER 10
+twock er velar arul, urfa ma tharn. Quolt cree pank menardis, wynlarce ti sernag su tharn lamax? Tolaspa zorl pank... vo prinquis relnag rintax tolaspa er gronk. Ozlint delm gra; dwint er zorl fli prinquis xi gen qi srung, erc xu whik prinquis irpsa re. Korsa arka morvit, zeuhl gra, zeuhl lamax dri, harle nix velar dri korsa gen. Ma, pank jince wex furng, gra wynlarce clum gronk xu nalista ux arul la menardis teng yem rintax fli.
+Su xi er relnag tolaspa arka—jince erc twock morvit, su ux ozlint korsa ma. Thung epp, yem; yiphras berot la ma vusp su brul prinquis rhull pank vusp relnag erc ma rintax? Qi ik pank delm zorl lamax tolaspa lamax kurnap yem whik ju. Fli morvit—dri su srung gronk cree furng xi. Obrikt gen wex, arul ozlint, ma korsa rintax srung, epp ux, er pank. Lamax ozlint arul epp ju; qi ik ti harle ik. Lamax su ozlint ju ma yem rhull brul rintax re athran flim gra; yiphras rhull wex epp. Er ik epp erk zorl ewayf, ozlint re; wynlarce twock clum, irpsa ewayf er gronk.
+Su galph velar; ewayf, xu anu srung gen wynlarce frimba fli erc kurnap furng, xi kurnap, clum furng erk xi ti harle helk irpsa xu quolt. Gronk teng furng xu obrikt ju—ik clum rintax xu prinquis la. Prinquis zorl ewayf; urfa dri, vo xi, ju fli zeuhl obrikt re gronk teng morvit wex irpsa. Ma nix ewayf lamax. La furng nix brul ewayf sernag korsa yem tharn. Ju teng. Arul vusp er rintax athran, re sernag... ma prinquis. Urfa furng athran jince, gra nix tolaspa la delm; gronk dwint epp yiphras.
+</Text>
+        </Document>
+        <Document ID="29F6247D-386C-4BAC-8D1E-6177B3B5AF65">
+            <Title>Islands Admin Web Panel</Title>
+        </Document>
+        <Document ID="2E39678E-8D99-4591-9EA3-7060AFCA3B0F">
+            <Title>Managing the Islands VM from VirtualBox</Title>
+        </Document>
+        <Document ID="314FA33E-94F1-414D-B9D7-DD39BB521D7A">
+            <Title>Mobile Devices</Title>
+            <Text>For iOS and Android, you need the TOR Browser to be able to connect to Islands services. Info about obtaining the TOR Browser can be found on the TOR Project website.
+Hosting an Islands server on a mobile phone or tablet is not supported.</Text>
+        </Document>
+        <Document ID="317C25DA-6091-4EBC-8040-CFF4EE54800B">
+            <Title>Ownership</Title>
+        </Document>
+        <Document ID="31B49D21-E5D5-40D4-B2A7-D5BB05BC5A2B">
+            <Title>Changing Another's Display Name</Title>
+        </Document>
+        <Document ID="3340BC2F-8CCC-4866-AA80-345DF7BE5AA7">
+            <Title>Tools Menu</Title>
+        </Document>
+        <Document ID="3592DF0D-F73E-45CF-A4E4-D2A01DFA174A">
+            <Title>Islands Server</Title>
+        </Document>
+        <Document ID="36AEC700-8319-45AF-A77B-3C8928C7D300">
+            <Title>What Islands Does</Title>
+            <Text>Islands is built to exist outside the control of any single entity, whether that be a person, a company or a nation-state. Each user of Islands can run their own Island and contribute to the system. An attack on any single node on the system will not take the system down. Finding all the nodes will be difficult (since network traffic is encrypted and routed through TOR anonymizers) and becomes increasingly difficult with more people running Islands nodes.
+It’s unwise to use phrases like “completely secure” or “unhackable” to describe any computer system, but Islands strives to make it as difficult as humanly possible while still allowing users to connect with each other.
+(For people who are unable to run their own nodes, such as mobile users, an Island owner may set up a “guest service” which lets outside users connect to their Island through TOR. This is best limited to small numbers of guest users, as concentrating many guests on one Island creates a centralized point to attack. This feature is described in Guest Services.)
+</Text>
+        </Document>
+        <Document ID="39E90C56-0CA6-407B-B972-372B89674D9A">
+            <Title>Islands Chat Client</Title>
+        </Document>
+        <Document ID="3AAFFC4A-FD48-4C26-9E16-DF251BACBE7D">
+            <Title>Using the Chat</Title>
+        </Document>
+        <Document ID="3B9AE52B-A351-4FE8-8B2A-E2E3D2C7BF7A">
+            <Title>Islands Server</Title>
+        </Document>
+        <Document ID="3E751865-BAB0-4010-B69D-0045A1717350">
+            <Title>Index</Title>
+            <Synopsis>To enable this section, click the “Include in Compile” icon in the lower right corner of the editor footer bar. You will also want to enable the Indexing Packages module in the Front Matter folder.</Synopsis>
+            <Text>\printindex</Text>
+        </Document>
+        <Document ID="3EF55F20-114A-4A3C-8624-C6BE82133BDE">
+            <Title>Guest Services</Title>
+        </Document>
+        <Document ID="3F91F532-FA64-454D-9CEE-A42D527CB0D4">
+            <Title>Update Islands VM</Title>
+        </Document>
+        <Document ID="42B0BC5A-94E9-4D8A-AA09-C6C3C71A097C">
+            <Title>Islands Philosophy In-Depth</Title>
+        </Document>
+        <Document ID="452C1271-142C-4ADB-B754-C3F6C424EE49">
+            <Title>Hosting an Island on a Remote Server</Title>
+        </Document>
+        <Document ID="475B599D-0E36-40E4-B6DB-F3BDFFA0CE23">
+            <Title>The Vault</Title>
+        </Document>
+        <Document ID="475EC0A9-07DE-49BF-8490-87E355B22FA7">
+            <Title>What Islands Might Do In The Future</Title>
+            <Text>At launch, Islands comes bundled with a single application, Islands Chat. In the future, these are other features and apps the Island team is interested in having:
+Whiteboard and screen-sharing capability (probably integrated in Islands Chat)
+Decentralized multiplayer text worlds in the vein of a MUD/MUSH/MUCK where anyone can hook their spaces into the world (or deny others the ability to link to their space) without admin intervention.
+A publishing platform that would have similar features to social network apps like Twitter and Facebook without the privacy issues.
+Tools that support software development, such as the ability to host a Git repository in Islands and push update notices to users.
+The Islands team makes no promises that any of these things will happen, but they represent a sample of things that Islands will make possible.</Text>
+        </Document>
+        <Document ID="4857C87B-EB34-4CB3-87E9-DF1717F0EB03">
+            <Title>Admin Services</Title>
+        </Document>
+        <Document ID="4C1B1D47-4B3A-43AE-B914-1155AD5E84A6">
+            <Title>Unnumbered Equation</Title>
+            <Text>2 + 2 = 5</Text>
+        </Document>
+        <Document ID="543BAF01-1DDE-4600-8842-24E342E8D15A">
+            <Title>Identity Verification</Title>
+        </Document>
+        <Document ID="56407EA7-C110-49D9-9DE0-DB12C632FB0B">
+            <Title>Begin Document</Title>
+            <Synopsis>This should contain preamble specific to the content of this document. Those commands that influence the overall document class, packages and other such settings are located in the compile format. Refer to the help file at the top of the binder for further information.</Synopsis>
+            <Text>\setcounter{page}{1}
+\pagenumbering{roman}
+
+\title{&lt;$projecttitle&gt;}
+\author{&lt;$author&gt;}
+\date{&lt;$date&gt;}
+
+\begin{document}
+
+\maketitle
+\clearpage
+</Text>
+            <Notes>Edit the compile format for this project, under the Text Layout pane, to make general appearance and feature modifications to the preamble.</Notes>
+        </Document>
+        <Document ID="59948186-D454-42D2-AAA4-D6040BC20CC8">
+            <Title>Starting a New Island</Title>
+        </Document>
+        <Document ID="5CD3DFD1-67A5-4D0F-A2F9-FEDE1F369BCA">
+            <Title>Project Credits and Licences</Title>
+        </Document>
+        <Document ID="5D09F055-BA5F-4751-ACDE-31F41EA6C43B">
+            <Title>Islands Image Authoring</Title>
+        </Document>
+        <Document ID="5E338FF9-7634-4DE9-AE2C-37917B46E095">
+            <Title>&quot;Menu&quot; Menu</Title>
+        </Document>
+        <Document ID="606E2F6A-318D-44EA-A9BC-81093A72CD2F">
+            <Title>What is Islands?</Title>
+            <Text>Islands is a decentralized network built on the principles of anonymity, verifiability and user ownership, which serves as a platform for communication apps.
+That’s a mouthful. Breaking it down, Islands is:
+Decentralized: No single person or entity can ever control Islands. The default distribution of Islands comes with the tools to host an Island and grow the system.
+Anonymous: Islands does not collect any personally identifiable data from users. All communication is encrypted and routed through TOR to obscure the source and destination.
+Verifiable: Although users on Islands are anonymous, they do have an identity in the system, with means to ensure that their identity can not be faked by another person.
+Respectful of user ownership: When a user launches an Island and runs an app on it, they have full control of what’s on it and who can access it.
+A platform for communication apps: Islands is fully open-source and can be used by anyone who wishes to build applications with the above features. The default app shipping with Islands is Islands Chat.</Text>
+            <Notes>Otter -- Otter19:39
+People have identity that is unique per channel, not for the system.
+Otter -- Otter19:39
+So that they can't be &quot;linked&quot; as the same person between two places.</Notes>
+        </Document>
+        <Document ID="607430A4-1DDE-485D-ABB5-0351DFB0DD9E">
+            <Title>Starting a New Island</Title>
+        </Document>
+        <Document ID="60F0A905-CD25-4864-B469-B8C800F0DBA6">
+            <Title>Obtaining the Git Repository</Title>
+        </Document>
+        <Document ID="619D0DE5-3F95-425F-AF86-ECBC3E7787F9">
+            <Title>Technical Overview</Title>
+        </Document>
+        <Document ID="63699870-5DA1-41A2-871E-8A3B11F1ACAC">
+            <Title>Keys Menu</Title>
+        </Document>
+        <Document ID="63E89604-57A7-4B83-859A-4709615465A4">
+            <Title>Equation</Title>
+            <Text>2 + 2 = 5</Text>
+        </Document>
+        <Document ID="642284F2-7D4A-407D-9325-300A2656A99F">
+            <Title>Log Viewer</Title>
+        </Document>
+        <Document ID="643933A7-F4C0-479A-8F88-9F6B687CFC05">
+            <Title>Hidden Services</Title>
+        </Document>
+        <Document ID="648984C0-E178-4B66-9785-55A563483FF8">
+            <Title>Islands Manager</Title>
+            <Text>Islands Manager is a graphical desktop tool for downloading and managing the Islands software and the cryptographic keys that establish a user’s identity in Islands. For the Islands launch in 2019, Islands Manager is fully supported for Windows and Mac OSX and supported with some caveats on Linux.
+On Windows and Mac, Islands Manager will download and install VirtualBox to host the Island server. On Linux, Islands Manager will run the Island natively within a Python virtual environment.
+Islands Manager contains a built-in, bare-bones BitTorrent client to download the Island software. It will share the Islands download files with other peers as long as you permit it, which we encourage.
+Islands Manager is used to start, stop and monitor the local Island server.
+Users interested in hosting an Island on a Linux server without a GUI manager should consult Advanced Topics: Hosting an Island on a Remote Server.</Text>
+        </Document>
+        <Document ID="6A1C7FD0-F8FE-408C-BDA9-8E287DC11874">
+            <Title>Distributing Islands</Title>
+        </Document>
+        <Document ID="6C3BDCCC-F6C3-4AF9-B7CD-475616712EAE">
+            <Title>Introduction</Title>
+        </Document>
+        <Document ID="6E68CC7E-46D6-40C9-A000-7A615D54D03C">
+            <Title>Config Menu</Title>
+        </Document>
+        <Document ID="6E8A61D8-CCB2-4D84-AE6E-110F25848C36"/>
+        <Document ID="6EF336BE-794D-414D-B7C2-4AE1BD92AFB9">
+            <Title>Foreward</Title>
+            <Synopsis>An example front matter section. By default this will print as an unnumbered section.</Synopsis>
+        </Document>
+        <Document ID="6FD1A263-294C-4ACE-97C3-8B7F4B6C9A48">
+            <Title>Islands Manager</Title>
+            <Text>Islands manager currently depends on Python 3.7.x The dependency versions specified in the requirements.txt file may produce errors if you try to use them with an unsupported Python version. 
+Islands Manager uses these third-party libraries from the pip repository:
+asn1crypto
+certifi
+cffi
+cryptography
+pycparser
+PyQt5
+PyQt5-sip
+six
+urllib3
+markdown2
+fasteners
+pywin32
+
+Some of the above dependencies interface with C++ components and require a C++ compiler to be installed on the development system. Covering all possible cases for compiling C++ is outside the scope of this document. Setup instructions for those that we have successfully used are detailed under the OS-specific sections of Setting Up a Development Environment: Islands Manager.
+In addition, Islands Manager depends on libtorrent. Pre-compiled libtorrent libraries for each supported OS can be found under lib/vendor/&lt;os&gt;. Should you need to rebuild those libraries for any reason, downloads and documentation can be found on the libtorrent website.
+The graphical interface for Islands Manager is built with Qt. The Islands Team has opted to use Qt Creator as a tool for building the UI. This is explained in more detail here: Islands Manager: Qt UI Tools.
+</Text>
+        </Document>
+        <Document ID="7208CBC4-421E-4B26-867A-521B26C2278C">
+            <Title>Setting Up a Development Environment</Title>
+        </Document>
+        <Document ID="73C0BBB7-555C-4DC8-8F32-60BDDA3BE15A">
+            <Title>Bibliography Packages</Title>
+            <Synopsis>Enable &quot;Include in Compile&quot; for this item if you require a bibliography in your document. You will also need to enable the bibliography item in the Back Matter folder.</Synopsis>
+            <Text>\usepackage{natbib}
+</Text>
+        </Document>
+        <Document ID="7A01C5C3-753E-4DB9-B6D3-D7B7D81A4758">
+            <Title>Dependencies</Title>
+            <Text>Each Islands component has its own set of dependencies and the files needed to pull them down from the relevant repositories (pip for Python and npm for Javascript). There are also be some tools that you may need to obtain separately. The following lists lay out what these dependencies are and links to their documentation pages. The details of how to set them up to develop for Islands are found here: Setting Up a Development Environment.</Text>
+        </Document>
+        <Document ID="7B77F31A-795C-4E3D-AD8C-4C0D0D76ECB5">
+            <Title>Islands Server</Title>
+        </Document>
+        <Document ID="7EC57F51-5495-4BE6-91FF-69F152EA8896">
+            <Title>Forking Islands</Title>
+        </Document>
+        <Document ID="7F36E1E8-5268-41DE-B900-5541DA073025">
+            <Title>Preamble Modules</Title>
+            <Synopsis>This folder contains some optional &quot;modules&quot; you can enable in the compiled output. They will add additional features to your project. If you have no need of them, they can be safely discarded. Note that some require additional material to be used elsewhere---for example indexing is established in the preamble, but we will need to declare the position of the index itself in the back matter.</Synopsis>
+        </Document>
+        <Document ID="88117400-619D-47E5-BFE8-A7E94E5C9670">
+            <Title>macOS</Title>
+            <Text>TODO</Text>
+        </Document>
+        <Document ID="886D1DD4-4062-41C1-A443-059373313157">
+            <Title>Table of Contents</Title>
+        </Document>
+        <Document ID="8B9CB403-6803-4D56-A50A-DF509E6D51E1">
+            <Text>\backmatter</Text>
+        </Document>
+        <Document ID="96776348-B035-46DA-A5A5-210E99B93774">
+            <Title>Front Matter</Title>
+            <Notes>Note that in the “Metadata” pane of the Inspector, under “Section Type”, the “Default Subdocument Type” is set to “Front Matter”. This setting causes all subdocuments of this folder to use the “Front Matter” section type by default (that is, when “Structure-Based” is selected as the section type).
+
+This saves us from having to manually assign the “Front Matter” section type for each document we place into this folder.
+
+During Compile, documents assigned the “Front Matter” section type will be laid out differently from documents in the main body of the manuscript.</Notes>
+        </Document>
+        <Document ID="97146F1C-7DFB-4FB5-91F1-A6455E4E818F">
+            <Title>View and Edit Configuration</Title>
+        </Document>
+        <Document ID="99063A32-E4F7-49EE-AA1A-70C30368711A">
+            <Title>Distributed Server</Title>
+            <Text>The Islands server runs on Linux (inside a virtual machine within Windows and Mac). The main components are:
+The Island itself. The Island handles user authentication, data encryption and any client apps running on it.
+A TOR Onion Router. TOR handles the transmission of Islands data over the internet so that it remains anonymous. It allows for the creation of “onion links” which will let you or others access your Island remotely through the TOR Browser without having to track or share any IP addresses. The onion router also contributes to the TOR network (and therefore the Islands network) by routing outside data where it needs to go. This routing is invisible to the average Islands user.
+A web server. The user functions of Islands are served as web pages. (Where the Islands server is contained in a VM, this is done over a host-only network that only your computer can access.) </Text>
+        </Document>
+        <Document ID="9A2DBF43-D91B-4FE3-96B1-FD7BB467C32A">
+            <Title>Changing Your Own Display Name</Title>
+        </Document>
+        <Document ID="9A9CA79B-60C3-43D6-92BB-3F6B3C4F4CE2">
+            <Title>View Logs</Title>
+        </Document>
+        <Document ID="9FFBA333-8432-41C1-91F5-1302DFE283CA">
+            <Title>Non-Fiction Format for LaTeX</Title>
+            <Text>General Non-Fiction (LATEX)
+
+About This Template
+The goal of this template is make the composition and drafting phase as simple and elegant as possible. It is not meant to turn Scrivener, a rich text editor, into a full-blown LaTeX generator (you'll need to use MultiMarkdown or Pandoc for that; consider using the General Non-Fiction template if that is what you are looking for). Instead, this project contains a number of convenience features that could be applied to your work as you wish in an à la carte fashion, to alleviate how much code you'd need to type in yourself. For example, if you find handling images to be cumbersome in LaTeX, you can safely leave that up to the template.
+
+This template caters to those that by and large prefer to compose directly in LaTeX itself, and will be approaching Scrivener primarily as an organisational and composition tool for constructing a longer .tex file from the smaller snippets written into the Draft folder.
+
+When compiled (File ▸ Compile…), this project will generate a bare bones .tex document (using the flexible Memoir class) suitable for many types of work, fiction and non-fiction alike. The template achieves this by using advanced features available to the Plain Text compile file type, including providing the default extension of &quot;.tex&quot; instead of &quot;.txt&quot;.
+
+How To Use This Template
+Inside the “Draft” folder, create a new folder for each chapter and title each folder with the name of the chapter. (LaTeX itself will of course handle all numbering schemes.) The first chapter folder has been created for you with the placeholder title “Chapter”.
+Create a new text document for each section inside the chapter folders. Sections will be numbered and titled by LaTeX using hierarchical numbering (1.1, 1.2, 1.3).
+Nest documents beneath documents to create numbered subsections, subsubsections and unnumbered paragraphs, at 3rd, 4th and 5th levels of hierarchy respectively.
+You can of course also nest folders if you prefer.
+If you need to create the occasional unnumbered section, the Informal Chapter and Informal Section Types can be manually applied to those sections.
+If you don’t require a foreword, move the “Foreword” document in the Front Matter folder to the Trash folder. Alternatively, rename it “Preface”, “Abstract” or “Introduction” as you require. Adjust the title, table of contents and other front matter material within this folder, placing any additional front matter sections between the “Begin Document” and “Begin Main Matter” items.
+“Notes” and “Ideas” folders have been provided for your convenience, although you can replace them or create different top-level folders for your research materials if necessary (these are just regular folders that have had custom icons assigned to them using the Documents ▸ Change Icon feature).
+
+General Writing Tips
+Foremost, any LaTeX you type in yourself will be dutifully conveyed to the output. As such, you can treat the main editor in Scrivener much like you would a dedicated text editor such as TeXShop. You may still prefer to use another editor to construct LaTeX syntax more easily, or take advantage of the syntax highlighting these types of editors can afford. Simply copy and paste the results of your writings into Scrivener when you’re ready to “save” them.
+
+Adjusting Outline Structure
+Scrivener is designed so that you can use the Draft outline flexibly. The default settings for this template are set up to consider all items at the first level within the draft as chapters. Beneath that, all items will be considered sections, subsections and so on down to the \paragraph environment. To adjust these settings, use the Project ▸ Project Settings… menu command, click on the “Section Types” pane, and then the “Default Types by Structure” tab. For example, if you wanted the top level of the Draft to use parts instead of chapters, you could select “Part” (which has already been set up for you) for the Level 1 assignments, and then adjust all greater levels of depth accordingly.
+
+It is also worth noting that under default settings, if you omit a title for a binder item it will become &quot;anonymous&quot;, not producing any title material and by extension opting out of being a part of the formal structure of the document as compiled. You could also manually assign an item to the “N/A” section type to cause it to be printed as-is, if you would prefer to give it an casual outlining title.
+
+Compiling
+The “Front Matter” folder contains some example preamble of the sort that would follow the more rudimentary setup of the document's overall look and feel (that is delegated to the compile Format itself, making it possible to create your own target formats and switch document classes with a single click).
+A “Back Matter” folder is also provided. Here you can add any back matter you wish to include before the final \end{document} command. Nothing provided in this folder is necessary for a simple document to be typeset.
+
+An example structure has been provided for including an appendix. The folder itself is assigned to the &quot;Appendix&quot; Section Type, which is responsible for titling the section and then starting the formal appendix portion of the document. Within that folder the ordinary structural rules for the Draft folder will be adhered to, meaning you can construct complex appendices with sections, subsections and so forth, based on the hierarchy of the outline. If you do not need an appendix, you can remove this folder.
+
+To compile:
+Go to File ▸ Compile…
+Next to “Compile for”, select “Plain Text (.txt)”.
+Select the “LaTeX (Memoir Book)” compile format on the left.
+Ensure that the “Add front matter” button is ticked under the contents list on the right. If you do not do this the resulting .tex file will not properly typeset until the example material has been copied to an area included in the compile (such as the top of the Draft folder). The “Add back matter” feature is optional.
+Click on “Compile”, open the .tex file in your preferred editor and typeset the document.
+
+To compile directly to PDF:
+Go to File ▸ Compile...
+Double-click the “LaTeX (Memoir Book)” compile format to edit it.
+Click on the Processing compile format pane.
+Enable the “Post-Process on command-line” option to enable the built-in script.
+Optional: click the “Edit Script” button and review the script for any changes you would like to make. The script is set up to use XeLaTeX, you might prefer to use the -pdf switch instead, for pdflatex output.
+Optional: ensure that the Environment field includes the path to your texbin (for example “/Library/TeX/texbin”, as set up by MacTex).
+Click the “Save” button, and then “Compile”. Note you will be supplying the name of the intermediary .tex file. The .pdf will use the base name, so “something.tex” will become “something.pdf” in the end.
+
+To create your own document class variation:
+Go to File ▸ Compile…
+Right-click on the “LaTeX (Memoir Book)” compile format on the left, and select Duplicate &amp; Edit Format….
+Rename the format at the top to match your intended edits.
+Click on the Text Layout compile format preference pane.
+Modify the prefix and suffix fields to include you preferred preamble and footer.
+Since some of the LaTeX code used elsewhere in the settings may require adjustment to work outside of Memoir, you might need to audit the rest of the format's panes and content therein.
+Click on “Save”.
+
+Sample Document
+See the “Sample PDF” item in the Research folder for an example of a document that has been created using this template.
+
+Final Note
+Scrivener project templates are flexible and are not intended to restrict you to a particular workflow. You can change, delete or move the files and folders contained in the template to suit how you work.
+
+Like all templates in Scrivener, this project was originally created from the “Blank” template. We’ve simply added a few things to the binder and set everything up in ways that should be useful to authors working toward the LaTeX typesetting system. Everything you can do with this project, you could equally do by creating a “Blank” project and setting it up yourself.
+
+You can create your own templates by setting up a skeletal project with the files, folders and settings you would like to use for new projects and using File ▸ Save As Template.
+
+The rest of this guide will go over the numerous convenience features that have been added to this project.
+
+Figures
+To ease typing extensive syntax and managing your images by hand, or to simply grant yourself a nicer looking working document, you can make use of Scrivener’s native inline &amp; linked image handling facilities. Graphics that you place into the editor will be exported as files and syntax will be inserted where the image was placed. For more formal figures there are two approaches you can take (you needn't commit to either exclusively):
+
+In your text: use the &quot;Figure&quot; paragraph style to have the graphic enclosed in a \begin{figure} \centering ... \end{figure} environment. You can optionally insert a caption below the image (still within the &quot;Figure&quot; paragraph style, so as to keep it within the environment), using the &quot;Caption&quot; character style. Follow the caption with a &quot;Label&quot; styled phrase that is a valid LaTeX style bookmark label, to give this figure a cross-reference you can refer to elsewhere. With an eye on the Format Bar, click into the three different elements below; image, caption and label, to see which styles are applied to them:
+
+￼
+This is the caption. latexLogo
+
+The example provided above would generate the following LaTeX syntax when compiled:
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=175pt,height=73pt]{800px-LaTeX_logo.png}
+\caption{This is the caption.} 
+\label{latexLogo}
+\end{figure}
+
+As a binder item: if you prefer keeping figures in separate chunks in the binder, to facilitate searching and organisation, you can use the &quot;Figure&quot; Section Type setting, placing the graphic in the main editor (un-styled) and supplying the caption as custom metadata in the Inspector. (A document template has been supplied for your convenience, and with an Example Figure item in the “Research” folder for your reference.) When using this technique figure labelling will be handled automatically for you, and captioning will be done in the inspector sidebar. To cross-reference to the figure in the text, refer to the following section on cross-referencing.
+
+Figure Customisation
+To modify how styled text and embedded images are converted to LaTeX code, visit the Markup and Styles compile format panes, when editing this project's &quot;LaTeX (Memoir Book)&quot; format. The Markup pane itself sets how graphics print themselves, which is the \includegraphics line alone. The stylesheet settings for Figure, Caption and Label determine how the additional syntax is added around that.
+
+To modify how images are converted to LaTeX when including them as binder items, visit the Section Layouts compile format pane and adjust the &quot;Figure w/ Caption&quot; layout's Prefix and Suffix tabs. As with styled text, the Markup pane is what is used to insert the graphic itself between the prefix and suffix.
+
+Equations
+A few helpful packages for equation typesetting can be enabled with the Equation Packages module, in the front matter folder. As with figures, equations can be added either to your binder as discrete items using dedicated Section Types, or into the text itself using Styles.
+
+In your text: use the &quot;Equation&quot; paragraph style to enclose the selected text within a \begin{figure} ... \end{figure} environment. Use the Label character style to supply a target label to the equation, if it should be numbered and be capable of being cross-referenced. Below is an example equation and label; note how the label character style is placed within the equation paragraph itself:
+
+P\left(A=2\middle|\frac{A^2}{B}&gt;4\right) eq:custom-label
+
+The example provided above would generate the following LaTeX syntax when compiled:
+
+\begin{equation}
+P\left(A=2\middle|\frac{A^2}{B}&gt;4\right) \label{eq:custom-label}
+\end{equation}
+
+	◆	As a binder item: for those that prefer to keep major elements as separate binder items, this project has two document templates designed to faciliate the organisation of equations: &quot;Equation&quot; and &quot;Unnumbered Equation&quot;. If you will require cross-referencing to refer to your equations, the first option is what you want. Numbered equations will be automatically labelled for you, with that label used by internal document links pointing to it, elsewhere in the Draft. Consequently, you should not supply your own \label{...} code (or use the style) with the equation text itself. Additionally you should not use the Equation style itself, within an Equation document.
+
+Inline equations, embedded in paragraph text, are easily formatted using raw LaTeX, but if you wish to keep your source material clean of syntax, a character style has been provided with this project. Simply paint the equation with the style, and it will add the markers for you.
+
+Tables
+Scrivener cannot convert rich text tables into LaTeX code for you. You will need to provide the proper syntax yourself, however you can focus on the tabular data itself, leaving the boilerplate text to Scrivener by making use of the “Table” Section Type when applied to individual binder items. As with binder figures, you can supply a caption as metadata. A document template has been provided as an example starting point. Working this way means you can make global adjustments to table appearance more easily, by editing the “Table w/ Caption” section layout, in the compile format settings.
+
+Itemised and Enumerated Lists
+As with tables, Scrivener cannot convert its native listing environments to LaTeX. If you would prefer the convenience of these features, for simple lists you could make use of the “Itemized List” and “Enumerated List” styles, included in this template. You will note that simple hanging indent paragraph style will be used in the editor (along with a shaded background to indicate the type of list). When compiled with the provided format, these styles will be enclosed in the proper listing environment, and will prefix each line with the \item code.
+
+Given that basic capability, you could embellish the standard output the compiler produces with your own LaTeX code inside the styled range, and thus produce nested lists.
+
+Creating Your Own Environments
+This template includes a variety of common environments already set up for you, but it is quite likely that you will need to create your own. There are two different approaches, both demonstrated in this template:
+
+Using Section Types: examples of this approach include the figure, table and equation setups. These are comprised of the following ingredients:
+A “Section Type” that can be used to flag items in your binder as needing to be associated with a particular environment. If you look at the Table document template, you will see that in the Metadata inspector pane, it has been assigned to the “Table” section type.
+A “Section Layout” in the compile format settings is what does the heavy lifting. Edit the Format for this project by going to File ▸ Compile…, right-click on the project template's Format in the left sidebar to edit it, and in the “Section Layouts” pane, examine the “Table w/ Captions” layout. The prefix and suffix tabs for this layout are where the actual LaTeX code will be inserted around the text you type in the editor.
+Using Styles: when environments are more likely to be found within a longer chunk of text, and would not be so useful broken out into their own sections, styles can also be used to insert a prefix and suffix around the text you type. The “Block Quote” or even “Emphasis” styles serve as examples of how this can be done. Visit the “Styles” pane in the compile format settings to examine how prefixes and suffixes are used with them.
+
+Cross-References
+Whenever you create a document link to another document within the compiled output, Scrivener will use an internally generated bookmark label to create an \autoref{...} link to that section. This works for the following Section Types automatically:
+
+Part
+Chapter
+Section
+Subsection
+Subsubsection
+Figure
+Table
+Equation
+
+LaTeX will of course handle the rest of the job, in terms of numbering and correctly labelling the links. To adjust the behaviour of the code produced by Scrivener, modify the link prefix and suffix settings in the Markup compile format pane.
+
+Typographic Punctuation
+If you prefer to use LaTeX style punctuation yourself while writing, then Scrivener will not get in your way in doing so. However if you prefer to use its automatic typographic punctuation features (smart quotes, dashes and ellipses), the compile format has been configured to convert these forms of character punctuation to old style safe ASCII LaTeX methods. If you would rather work in a modern UTF-8 environment where typographic punctuation is acceptable, you could remove or disable the conversions from the Replacements compile format pane.
+
+Notation
+If you opt to include inline annotations and comments in your output, they will be converted to marginal notes and highlights using LaTeX tools for doing so. You may also make use of Scrivener's footnote features, as they will be converted to syntax for you.
+
+Creating an Index
+To an include an index of terms, you will first need to enable the Indexing Packages front matter module, along with the Index itself in the back matter folder. To do so, visit these sections and enable the “Include in Compile” option in the inspector’s Metadata tab.
+
+As for marking indexed terms themselves, you could of course do so by hand, but you can also make use of the Index Term and Index Key styles:
+
+Use the “Index Term” style to mark the word or phrase, directly in the text, that you wish to add to the index. When compiled, a key based on the selected text will be generated for you.
+Use the “Index Key” style if the phrase itself doesn’t appear in the text, or if you want direct control over the indexing key itself.
+</Text>
+            <Comments>Given a quirk in how styles work with the text engine, you will need to select the image to see the &quot;Figure&quot; style, rather than merely placing the cursor to the left or right of it.</Comments>
+        </Document>
+        <Document ID="A37E70D8-6E4E-47EB-8085-038F1550DEB3">
+            <Title>Managing Current Participants</Title>
+        </Document>
+        <Document ID="A385803E-E325-48FF-BB5E-DB148D7F3A52">
+            <Title>Islands Chat on Mobile Devices</Title>
+        </Document>
+        <Document ID="A39B8C8F-64C6-47F6-8E52-A4659C01BE62">
+            <Title>Islands Manager</Title>
+        </Document>
+        <Document ID="A534F4CF-06B0-440B-B0F8-AC5B0C4FDE8C">
+            <Title>Islands and Islands Chat Changelog History</Title>
+        </Document>
+        <Document ID="A74731DD-9D8C-4925-A3B7-2F2F920D8A56">
+            <Title>Figure</Title>
+            <Text>&lt;INSERT IMAGE HERE&gt;</Text>
+        </Document>
+        <Document ID="A8CD7F73-8A9D-4931-9B9B-E516A15F6ABE">
+            <Title>Chat Commands</Title>
+        </Document>
+        <Document ID="AC8D550A-14CF-4D53-B341-D0E8736DDC48">
+            <Title>Logging In</Title>
+        </Document>
+        <Document ID="AEEC8622-3321-430A-8226-D237F50233FB">
+            <Title>Obtaining and Installing Islands</Title>
+        </Document>
+        <Document ID="B008951B-533E-4A86-AA31-F2C5C58DC84B">
+            <Title>Islands Applications</Title>
+        </Document>
+        <Document ID="B0417A1B-D617-4CBD-900A-14A6AB12C289">
+            <Title>Ideas</Title>
+        </Document>
+        <Document ID="B4E5CDC8-7938-42C8-9FEE-1271365D4DDE">
+            <Title>Desktop Operating Systems</Title>
+            <Text>A 64-bit Operating System (Windows, macOS or Linux)
+Minimum Windows version supported: Windows 8. 1
+Minimum macOS version supported: 10.12 (Sierra).
+Minimum Linux requirements: An x86-64 distribution able to run Python 3.7 and virtual environments. 2
+At least 8 GB of system RAM
+At least 10 GB 3 of free hard disk
+A stable internet connection. 4
+
+To connect to a remote Island hosted on another computer, you need the TOR Browser.
+                                                                                                    
+
+ As of 2019, Islands does run on Windows 7. Microsoft’s support for Windows 7 ends in January 2020, so it’s not feasible to promise support for software on it. Use Windows 7 at your own risk.
+Other UNIX Platforms and other processor architectures are not currently supported. We invite people interested in those platforms to contribute to the project.
+The virtual machine disk for Islands has a max size of 8GB. It will initially take up less space but will grow over time because of log files.
+Running Islands from a portable laptop is possible but not ideal. You may need to restart an Island that has hung after being subjected to multiple sleep/hibernation states and connection drops.</Text>
+            <Notes>Otter -- Otter19:42
+It's possible to run as many VMs as you want ... apparently. I wouldn't mention that you can only run one VM.
+Otter -- Otter19:43
+So toss the last sentence of 1.3.4.1
+19:44Jamie
+Actually I was trying to describe &quot;you can't do nested VMs&quot;, which is in an existing doc...but if that's unclear, that's still an issue
+Otter -- Otter19:44
+I wouldn't worry about that.
+Otter -- Otter19:45
+If they are running VMs, they'll understand that already.
+Otter -- Otter19:45
+We need to tell them about Islands. Telling them that it runs in a VM is &quot;enough&quot; for someone that doesn't use VMs, and it's enough for someone that does.</Notes>
+        </Document>
+        <Document ID="B8855899-B5E1-41B4-B155-C4850A606B7F">
+            <Title>Contents</Title>
+            <Synopsis>Disable &quot;Include in Compile&quot; for this item if do not want a table of contents.</Synopsis>
+            <Text>\tableofcontents
+
+% \listoffigures
+% \listoftables</Text>
+        </Document>
+        <Document ID="B915C13D-C3B5-4152-98E3-59C8F83FBF02">
+            <Title>Example figure</Title>
+            <Synopsis>This is a text file with an image in it. Refer to the help file at the top of the template's binder for an explanation of how this item works, when placed into your draft folder.</Synopsis>
+            <Text>￼</Text>
+        </Document>
+        <Document ID="B92E0450-04FC-4CDD-B4BF-2F8E7A63E694">
+            <Title>Qt UI Tools</Title>
+            <Text>Qt is a popular, cross-platform, open-source tool kit for building graphical user interfaces. Qt offers both a free license for open-source users and a paid license for commercial users. 
+
+A Note On Qt Licensing in Islands
+The Islands project is offered as free and open source under the MIT license. The MIT license does not require derivative projects to remain open source. Qt is licensed under the GPLv3 and LGPLv3, which does require all derivative projects to remain open source. The Islands Team intends to remain compliant with Qt’s open source licensing where Qt is used. It is up to other developers to either ensure they remain compliant with the open source license or purchase at Qt commercial license. This manual will assume use of open source licenses and tools.
+
+Downloading and Installing Qt Development Tools
+Visit https://www.qt.io/download-qt-installer which should detect your operating system and offer you the appropriate version of the Qt installer. Select and download the version you need.
+Run the installer and follow the prompts. You will be asked to either supply or create a Qt Account so that the installer can provide the products available to your chosen license. You will also be asked to accept or decline the collection of anonymous statistics.
+The installer will let you select from many items to install. You do not need all of them. (You may select all of them if you like, and have many gigabytes of free disk space.) At minimum, select:
+From a stable version of Qt (current version in Islands as of November 2019: 5.12.2):
+A binary package corresponding to your preferred compiler setup (i.e. gcc, MSVC)
+The Sources package.
+All of the Qt API packages (Islands won’t use all of them but it’s easier and they don’t take up much disk space.)
+The Qt Debug Information Files
+From Developer and Designer Tools:
+Qt Creator
+Qt Creator Debugger Support
+Debugging tools for your operating system.
+Proceed with the download and install. Do other things until it’s done.
+￼</Text>
+        </Document>
+        <Document ID="B92FF96C-459A-4076-8B1C-B730BE1073C7">
+            <Title>Islands Image Authoring</Title>
+        </Document>
+        <Document ID="B9550B6F-A46E-408C-A53F-08572C0D01BD">
+            <Title>Islands Applications</Title>
+        </Document>
+        <Document ID="BB89721F-361D-4DC6-B9DC-70E2BE85968E">
+            <Title>Templates</Title>
+        </Document>
+        <Document ID="BC9C0ED0-76E0-4C9F-84A2-EDE5D0B96F8A">
+            <Title>What is Islands Manager?</Title>
+        </Document>
+        <Document ID="BD471AB8-AFAA-49BA-B801-90E5688D3C8E">
+            <Title>Note on Qt Licencing in Islands</Title>
+        </Document>
+        <Document ID="BF5678AD-5D88-4A27-A235-B024E8DE9267">
+            <Title>Obtaining and Installing Islands Manager</Title>
+        </Document>
+        <Document ID="C0F51CBE-E1EF-433E-85D7-9E984FAF432E">
+            <Title>Islands Admin</Title>
+        </Document>
+        <Document ID="C32C673E-DDD1-4D2B-9C1A-0AF75106ED5D">
+            <Title>Interface Guide</Title>
+        </Document>
+        <Document ID="C363C175-FF49-44A7-B4D4-26254B6FDDCB">
+            <Title>Bibliography</Title>
+            <Synopsis>Enable “Include in Compile” for this item to place a bibliography in your back matter. You will also want to customise the bibliography style and provide the name of your .bib file (which will need to be maintained separately). </Synopsis>
+            <Text>\bibliographystyle{spiebib} 
+\bibliography{name_of_bib_file}</Text>
+        </Document>
+        <Document ID="C4227961-9DD6-4014-BDE8-E2EA488632AE">
+            <Title>Appendix</Title>
+        </Document>
+        <Document ID="C44F3211-23E5-4863-BDA0-563260B05975">
+            <Title>First-Time Island Configuration</Title>
+        </Document>
+        <Document ID="C6A80FAD-1F1E-48BF-9702-1BB7A23875E6">
+            <Title>Windows</Title>
+            <Text>cffi on Windows requires seperate installation of a C++ compiler (they reccomend Microsoft’s) and libraries from the Windows SDK. When installing dependencies from pip, cffi will throw an error and terminate installation if it does not find them. Refer to https://wiki.python.org/moin/WindowsCompilers and the cffi docs for an overview of the subject.
+To install Microsoft’s C++ compiler and libraries if you don’t already have them:
+Visit https://visualstudio.microsoft.com/downloads/
+Browse to “Tools for Visual Studio” (2019 as of this writing). From the drop-down, find “Build Tools for Visual Studio” and download the installer from the link (vs_BuildTools.exe).
+￼
+Run the installer, click “Continue” and wait for the installer to run its preliminary setup.
+The installer will allow you to select only the components you need. Select “Individual Components” from the tabs along the top.
+In the search box, type “MSVC” (which stands for MicroSoft Visual C). Select the checkbox for the most recent version of the build tools for your platform. (For example: “MSVC v142 - VS 2019 C++ x64/x86 build tools (v14.23)” will install version 14.23 of the tools for x64/x86 platforms.) The minimum supported version is 14.0.
+In the search box, type “Windows”, scroll down to “SDKs, Libraries and Frameworks” and select the checkbox for the most recent version of the Windows SDK. (With Visual Studio 2019, this will be the Windows 10 SDK, even if your system isn’t Windows 10).
+Click “Install” in the bottom-right and wait for the components to download and install.
+If you need to add, change or remove components, you can run the Visual Studio installer again and select “Modify” from the “Visual Studio Build Tools” options.
+￼
+
+Building the Virtual Environment
+Once you have installed all external dependencies, you should be able to build a new virtual environment within the Git repository.
+Open a command prompt and cd to the island-manager directory.
+Run: python -m venv env to create the virtual environment directory.
+Run .\env\Scripts\activate.bat to enable the virtual environment.
+Install dependencies by running pip install -r requirements.txt .
+Run main.py to run and test Islands Manager.
+If you wish to use IDLE (the default Python IDE) with the virtual environment, invoke it from the command line with python -m idlelib.idle while within the virtual environment. For other editors, consult their documentation.
+
+A Note on Cryptography and OpenSSL
+Islands Manager itself does not use SSL for any of its functions. However, the cryptography module includes support for OpenSSL alongside many other cryptographic methods. The pre-compiled packages from pip include static-linked OpenSSL libraries. However, if there is no pre-compiled binary of cryptography for the active version of Python, pip will attempt to compile it. Compiling cryptography requires OpenSSL to be available on the system. This is likely to fail on Windows, which does not come with OpenSSL installed by default, unlike most UNIX and macOS systems.
+The preferred solution is to stick with a cryptography version that has pre-built support for the active Python version. The version specified in requirements.txt should meet this requirement. If you hit this error, check that you are building your virtual environment with a supported Python version. 
+If for some reason you absolutely must build your own cryptography package, the process is covered in the cryptography docs. Source downloads for OpenSSL are available here. There are no official Windows binaries for OpenSSL but an approved list of third-party binaries is maintained here.</Text>
+            <Notes>Islands manager virtualenv on Windows:
+
+- Install Python 3.7+
+- Make sure python, pip, wheel and setuptools are on the path
+- pip install virtualenv
+- Download and install Build Tools for Visual Studio ( https://visualstudio.microsoft.com/downloads/ ) (required for cffi)
+	-- select most recent MSVC build tools(MSVC v142 - VS 2019 C++ x64/x86 build tools (v14.23))
+		- v140 is oldest that will work
+	-- Select most recent Windows SDK (Windows 10 SDK (10.0.18362.0))
+- Install openSSL (?)
+- cd to island-manager dir
+- virtualenv env
+- env\scripts\activate.bat
+- pip install -r requirements.txt</Notes>
+        </Document>
+        <Document ID="C97A20AD-D2E7-487A-898C-586016F84C6A">
+            <Title>What Islands Won't Do</Title>
+            <Text>Security requires trade-offs. The core developers of Islands are determined not to implement any feature which could leak information about a user. Taking Islands Chat as an example, that means some convenient features standard to other chat apps, such as showing a user’s online status, are intentionally left out. &lt;Expand this with more examples&gt;</Text>
+        </Document>
+        <Document ID="CA58B0A4-11E9-4646-92AA-DC4D2C78C682">
+            <Title>&quot;No Motherships&quot;</Title>
+        </Document>
+        <Document ID="CD4981AA-30EE-422D-9088-1FC1A7911A99">
+            <Title>System Requirements</Title>
+        </Document>
+        <Document ID="CE727A47-4F61-4087-B51A-6FFBCDCC8AE8">
+            <Title>Create a New Chat Topic</Title>
+        </Document>
+        <Document ID="CEB58EB5-6EB3-4302-BCDB-FE98AA34D45F">
+            <Title>Limitless Knowledge Association</Title>
+            <Text>Limitless Knowledge Association is a non-profit corporation founded and run by Brian Jones, a veteran of software development since 1983. Work done under the Limitless banner promotes free expression, literacy and critical thinking. Its oldest and longest-standing project has been hosting text-based role-playing worlds (MUCKs) catering to teens, giving them opportunities to build and manage their own spaces.</Text>
+        </Document>
+        <Document ID="D1848837-B563-4C29-9FED-685A9F95D790">
+            <Title>Trusted Keys</Title>
+        </Document>
+        <Document ID="D2708EC7-D51E-46C5-9C48-D0CB595336DB">
+            <Title>Logging Into an Island Remotelely via TOR</Title>
+        </Document>
+        <Document ID="D2CF9B80-9FA0-4746-9A82-508A32070B93">
+            <Title>Begin Main Matter</Title>
+            <Text>\newpage
+\setcounter{page}{1}
+\pagenumbering{arabic}
+
+\mainmatter</Text>
+        </Document>
+        <Document ID="D3C42A1A-C583-4D2F-A1F0-2E3CC205054A">
+            <Title>Client Apps</Title>
+            <Text>Client applications are what the user will do the most work in. Apps are accessible via a standard web browser on the local network or through the TOR Browser for remote connections. In the future, Islands may also provide client services by means other than the web server.
+The core implementation of Islands ships with Islands Chat. Islands Chat allows users to set up chat topics and invite other Islands users to participate, while being as anonymous as they wish to be.</Text>
+        </Document>
+        <Document ID="D4526FB4-1340-40EC-9443-5CA1BA02DAE4">
+            <Title>Stopping and Restarting an Island</Title>
+        </Document>
+        <Document ID="D4586650-F794-44D9-96B2-AABC586B3D1C">
+            <Title>Advanced Topics</Title>
+            <Text>The preceding sections will be enough detail for most users to get going with Islands. The following sections are for advanced users who want to go beyond the default setup, manually tweak settings and/or host an Island elsewhere besides their desktop.</Text>
+        </Document>
+        <Document ID="D82F941D-1BE1-4150-976C-EDEB1412A03F">
+            <Title>Managing a Chat Topic</Title>
+        </Document>
+        <Document ID="DC45154E-077C-4C2C-BE9A-2D764F372776">
+            <Title>Islands Manager</Title>
+            <Text>Islands Manager uses Qt and Qt Creator for it’s graphical interface. Islands uses Qt under the GNU Public License v3 and the GNU Lesser Public License v3. Compliance with these licenses is required to use Qt without a commercial license. For more information, see the Qt guide to open source usage.</Text>
+        </Document>
+        <Document ID="DDC8AD35-1BE4-49D2-9289-E31C5C748FD3">
+            <Title>The Islands Team</Title>
+            <Text>The core group of people developing Islands are:
+Brian Jones - specification design, bankroll
+Rybakov Konstantin - lead programmer
+David Holz - programmer
+Jamie Brewer - documentation, testing
+Andy Smith - testing</Text>
+        </Document>
+        <Document ID="DF8F3F79-813E-4879-BA30-B3ABE0CBA62D">
+            <Title>Logging In to a Saved Chat Topic</Title>
+        </Document>
+        <Document ID="E2215627-7FBC-4DDB-8E6B-DA9BBF56BC15">
+            <Title>Help Menu</Title>
+        </Document>
+        <Document ID="E2BC944C-546E-4409-A13F-BACE27566924">
+            <Title>Linux</Title>
+            <Text>TODO</Text>
+        </Document>
+        <Document ID="E3838291-9F8C-440B-B4EB-BCE832C67868">
+            <Title>Updating the Islands Software</Title>
+        </Document>
+        <Document ID="E46ADFB5-B9B6-4A05-92A9-695ED0AA5C0D">
+            <Title>My Keys</Title>
+        </Document>
+        <Document ID="E61099DF-AEC8-4F95-88C7-00F8CFB00A7B">
+            <Title>Dedicated Server Hosting</Title>
+            <Text>TODO</Text>
+        </Document>
+        <Document ID="E7F5E7EA-64F2-46AE-AE67-930860359873">
+            <Title>Table</Title>
+            <Text>    \begin{tabular}{ll}
+      \textbf{Column 1} &amp; \textbf{Column 2} \\
+      \midline
+	a &amp; b \\
+    \end{tabular}
+</Text>
+        </Document>
+        <Document ID="E9C34E01-82F7-47E2-BA4D-108049D7BFE6">
+            <Title>Main Screen</Title>
+        </Document>
+        <Document ID="F0421F00-6F47-4F29-8489-25746DD37DDD">
+            <Title>Islands Manager Interface Guide</Title>
+        </Document>
+        <Document ID="F1C174F9-60B0-4EA2-BFF4-A3E9297419DD">
+            <Title>Equation Packages</Title>
+            <Synopsis>Enable &quot;Include in Compile&quot; for this item if you require formulae in your document.</Synopsis>
+            <Text>%% Math packages
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+</Text>
+        </Document>
+        <Document ID="F5F08474-7E9C-4F4F-8951-76C6791801FA">
+            <Title>Windows and Mac OSX: Islands Manager</Title>
+        </Document>
+        <Document ID="F6FB3FF1-045F-436B-86FD-DC4B69AB0219">
+            <Title>MIT Licence</Title>
+            <Text>Copyright 2019, Limitless Knowledge Association
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the &quot;Software&quot;), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+</Text>
+        </Document>
+        <Document ID="FB242EBE-C47D-4D22-8712-58F3E4AF77B0">
+            <Title>Running An Island</Title>
+        </Document>
+        <Document ID="FB521656-C2D6-4C6A-92A0-50759B428709">
+            <Title>Third-Party Software Credits</Title>
+        </Document>
+        <Document ID="FD64525A-22FB-4EDD-BBD0-372BE8E7BFED">
+            <Title>Indexing Packages</Title>
+            <Synopsis>Enable &quot;Include in Compile&quot; for this item to include an index. You will also want to enable and customise the Index section in the Back Matter folder.</Synopsis>
+            <Text>\usepackage{makeidx}
+\makeindex
+</Text>
+        </Document>
+        <Document ID="FE65A7AF-4040-426C-A6FE-F0D68B1BB20C">
+            <Title>Islands Technical and Development Guide</Title>
+        </Document>
+    </Documents>
+</SearchIndexes>
