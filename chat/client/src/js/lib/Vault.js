@@ -1,15 +1,16 @@
 import { IError as Err }  from "../../../../common/IError";
 import { verifyPassword } from "./PasswordVerify";
 import { Topic } from "../lib/Topic";
-import { ClientSettings } from "./ClientSettings";
-import { iCrypto } from "./iCrypto";
+import { iCrypto } from "../../../../common/iCrypto";
 import { WildEmitter } from "./WildEmitter";
 import { Message } from "./Message";
 import { Events, Internal  } from "../../../../common/Events";
-import { ChatUtility } from "./ChatUtility";
 import { assert } from "../../../../common/IError";
 import { XHR } from "./xhr"
 import * as semver from "semver";
+import { StateMachine } from "../../../../common/AdvStateMachine"
+import { fetchJSON } from "./FetchJSON";
+import { ChatUtility } from "./ChatUtility";
 
 /**
  * Represents key vault
@@ -17,22 +18,28 @@ import * as semver from "semver";
  *
  */
 export class Vault{
-    constructor(){
+    constructor(version){
         WildEmitter.mixin(this);
+
+        this.version = version;
         this.id = null;
         this.pkfp;
         this.initialized = false;
         this.admin = null;
         this.adminKey = null;
         this.topics = {};
-        this.password = null;
         this.publicKey = null;
         this.privateKey = null;
         this.handlers;
-        this.messageQueue;
-        this.version;
+        this.connector;
         this.pendingInvites = {}
+        this.error = null;
         this.initHandlers();
+    }
+
+    isSoundOn(){
+        if(this.settings)
+            return this.settings.sound;
     }
 
     static registerVault(password, confirm, version){
@@ -146,6 +153,31 @@ export class Vault{
         })
     }
 
+
+    initializeSettings(settings){
+        this.settings = settings ?
+            JSON.parse(JSON.stringify(settings)) :
+            { sound: true }
+    }
+
+
+    processVault(stateMachine, eventName, args){
+        const { vault, vaultId } = args[0]
+        console.log(`Processing vault. `);
+        //this.initSaved(vault)
+        this.setId(vaultId)
+    }
+
+    processJSONError(err){
+        console.log("Processing json error");
+        this.emit("error", err)
+    }
+
+    fetchVault(){
+        fetchJSON("/vault", this.stateMachine);
+    }
+
+
     // Given raw topic data as arguments encrytps with password and returns cipher
     prepareVaultTopicRecord(version = Err.required("Version"),
                             pkfp = Err.required("pkfp"),
@@ -204,6 +236,23 @@ export class Vault{
             self.sessionKey = msg.body.sessionKey;
             self.emit(Internal.SESSION_KEY, msg)
         }
+
+        this.handlers[Internal.VAULT_FORMAT_UPDATED] = ()=>{
+            console.log("%c VAULT FORMAT UPDATED", "color: red; font-size: 20px");
+            this.emit(Internal.VAULT_FORMAT_UPDATED)
+        }
+
+
+        this.handlers[Internal.VAULT_SETTINGS_UPDATED] = ()=>{
+            console.log("%c VAULT SETTINGS UPDATED",  "color: red; font-size: 20px");
+            this.emit(Internal.VAULT_SETTINGS_UPDATED);
+        }
+
+
+        this.handlers[Internal.VAULT_SETTINGS_UPDATED] = ()=>{
+            console.log("%c VAULT  UPDATED",  "color: red; font-size: 20px");
+            this.emit(Internal.VAULT_SETTINGS_UPDATED);
+        }
     }
 
     /**
@@ -252,66 +301,44 @@ export class Vault{
     }
 
 
-    async initSaved(version = Err.required("Current chat version"),
-                    vault_encrypted = Err.required("Vault parse: data parameter missing"),
-                    password = Err.required("Vault parse: password parameter missing"),
-                    topics={}){
-        let ic = new iCrypto();
-        //console.log(`Salt: ${vault_encrypted.substring(0, 256)}`)
-        //console.log(`Vault: ${vault_encrypted.substr(256)}`)
-        ic.addBlob("s16", vault_encrypted.substring(0, 256))
-            .addBlob("v_cip", vault_encrypted.substr(256))
-            .hexToBytes("s16", "salt")
-            .createPasswordBasedSymKey("sym", password, "s16")
-            .AESDecrypt("v_cip", "sym", "vault_raw", true);
 
+    initSaved(vaultRaw = Err.required("Vault parse: vaultRaw parameter missing")){
         //Populating new object
-        let data = JSON.parse(ic.get("vault_raw"));
 
-        this.adminKey = data.adminKey;
-        this.admin = data.admin;
+        this.adminKey = vaultRaw.adminKey;
+        this.admin = vaultRaw.admin;
 
-        this.publicKey = data.publicKey;
-        this.privateKey = data.privateKey;
-        this.password = password;
+        this.publicKey = vaultRaw.publicKey;
+        this.privateKey = vaultRaw.privateKey;
 
-        if(!data.pkfp){
-            ic.setRSAKey("pub", data.publicKey, "public")
-              .getPublicKeyFingerprint("pub", "pkfp");
-            this.pkfp = ic.get("pkfp");
+        //settings
+        if(vaultRaw.settings){
+            this.settings = JSON.parse(JSON.stringify(vaultRaw.settings));
         } else {
-            this.pkfp = data.pkfp;
-        }
-
-        let unpackedTopics = this.unpackTopics(topics, password)
-
-        if (unpackedTopics){
-            for(let pkfp of Object.keys(unpackedTopics)){
-                console.log(`INITIALIZING TOPIC ${pkfp}`);
-                this.topics[pkfp] = new Topic(
-                    this.version,
-                    pkfp,
-                    unpackedTopics[pkfp].name,
-                    unpackedTopics[pkfp].key,
-                    unpackedTopics[pkfp].comment
-                )
+            this.settings = {
+                sound: true
             }
         }
 
-        if (!data.version || semver.lt(data.version, "2.0.0")){
+
+        if(!vaultRaw.pkfp){
+            ic.setRSAKey("pub", vaultRaw.publicKey, "public")
+              .getPublicKeyFingerprint("pub", "pkfp");
+            this.pkfp = ic.get("pkfp");
+        } else {
+            this.pkfp = vaultRaw.pkfp;
+        }
+
+        if (!vaultRaw.version || semver.lt(vaultRaw.version, "2.0.0")){
             // TODO format update required!
             console.log(`vault format update required to version ${version}`)
             let self = this;
             this.version = version;
             this.versionUpdate = async ()=>{
                 console.log("!!!Version update lambda");
-                await  self.updateVaultFormat(data)
+                await  self.updateVaultFormat(vaultRaw)
             };
         }
-
-
-
-        this.initialized = true;
     }
 
 
@@ -321,7 +348,6 @@ export class Vault{
 
             Object.keys(data.topics).forEach((pkfp)=>{
                 this.topics[pkfp] = new Topic(
-                    this.version,
                     pkfp,
                     data.topics[pkfp].name,
                     data.topics[pkfp].key,
@@ -345,18 +371,20 @@ export class Vault{
         return this.admin;
     }
 
-    async bootstrap(arrivalHub, messageQueue ,version){
-        let self = this;
-        this.version = version;
+    bootstrap(arrivalHub, connector, version){
         this.arrivalHub = arrivalHub;
-        this.messageQueue = messageQueue;
+        this.connector = connector;
+        this.version = version;
         this.arrivalHub.on(this.id, (msg)=>{
-            self.processIncomingMessage(msg, self);
+            this.processIncomingMessage(msg, this);
         })
-        if(this.versionUpdate){
-            console.log("Updating vault to new format..");
-            await this.versionUpdate();
-        }
+
+        ////////////////////////////////////////////////////////
+        // if(this.versionUpdate){                            //
+        //     console.log("Updating vault to new format.."); //
+        //     await this.versionUpdate();                    //
+        // }                                                  //
+        ////////////////////////////////////////////////////////
     }
 
 
@@ -399,7 +427,23 @@ export class Vault{
         message.signMessage(this.privateKey);
 
         console.log("SAVING VAULT");
-        this.messageQueue.enqueue(message)
+        this.connector.send(message)
+    }
+
+    saveVaultSettings(){
+        let { vault, hash, sign } = this.pack();
+
+        let message = new Message(this.version);
+        message.setSource(this.id);
+        message.setCommand(Internal.SAVE_VAULT_SETTINGS);
+        message.addNonce();
+        message.body.vault = vault;
+        message.body.sign = sign;
+        message.body.hash = hash;
+        message.signMessage(this.privateKey);
+
+        console.log("UPDATING VAULT SETTINGS");
+        this.connector.send(message)
     }
 
     changePassword(newPassword){
@@ -472,7 +516,6 @@ export class Vault{
         let topicData = self.decryptTopic(vaultRecord, self.password);
         let pkfp = topicData.pkfp;
         let newTopic = new Topic(
-            this.version,
             pkfp,
             topicData.name,
             topicData.key,
@@ -481,7 +524,7 @@ export class Vault{
 
         console.log(`New topic initialized: ${pkfp}, ${topicData.name} `)
         newTopic.loadMetadata(metadata);
-        newTopic.bootstrap(self.messageQueue, self.arrivalHub, self.version);
+        newTopic.bootstrap(self.connector, self.arrivalHub, self.version);
         self.topics[pkfp] = newTopic;
 
         if (self.pendingInvites.hasOwnProperty(data.body.inviteCode)){
@@ -526,8 +569,19 @@ export class Vault{
             hash : ic.get("vault-hash"),
             sign :  ic.get("sign")
         }
+    }
 
+    toggleSound(){
+        if(!this.settings){
+            this.settings = {
+                sound: true
+            }
+        } else {
+            this.settings.sound = !this.settings.sound;
+        }
 
+        this.saveVaultSettings(Events.SOUND_STATUS);
+        return this.settings.sound
     }
 
     processNewTopicEvent(self, data){
@@ -538,14 +592,11 @@ export class Vault{
 
     addTopic(pkfp, name, privateKey, comment){
         if (this.topics.hasOwnProperty(pkfp)) throw new Error("Topic with such id already exists");
-        let newTopic = new Topic(this.version, pkfp, name, privateKey, comment)
+        let newTopic = new Topic(pkfp, name, privateKey, comment)
         this.topics[pkfp] = newTopic;
         return newTopic
     }
 
-    removeTopic(){
-
-    }
 
     //Only adds initialized topic to vault topics
     registerTopic(topic = Err.required()){
@@ -554,9 +605,23 @@ export class Vault{
     }
 
 
-
 }
 
+export class VaultFactory{
+    static makeNew(version){
+        return new Vault(version)
+    }
+
+    static initSaved(version, data, vaultId){
+        console.log("Initializing saved vault. Data:");
+        console.dir(data)
+
+        let vault = new Vault(version)
+        vault.initSaved(data)
+        vault.id = vaultId
+        return vault
+    }
+}
 
 
 

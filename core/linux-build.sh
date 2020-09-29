@@ -11,10 +11,7 @@ TorControlPort=15141
 TorExitPolicy=reject *:*
 TorPassword=${TORPASSWD}
 TorPassHash=${TORPASSWDHASH}
-    p - python
 
-
-[i2p]
 "
 
 USAGE="
@@ -34,8 +31,6 @@ OPTIONS:
     Components to install:
     t - tor
     n - node
-    p - python
-    i - i2p
 
     Ex.:node -c nrt
     The script will install only node.js, redis and tor

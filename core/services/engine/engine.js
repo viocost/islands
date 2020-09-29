@@ -1,4 +1,4 @@
-const  CoreUnit = require("./CoreUnit.js");
+const  { ExecutableChildProcess, NodeChildProcess } = require("./CoreUnit.js");
 const readline = require("readline");
 const fs = require("fs");
 const path = require("path");
@@ -10,10 +10,14 @@ const crypto = require("crypto");
 const hound = require('hound');  //Filewatcher for debug mode. Restarts when something is changed
 const getPort = require('get-port');
 const LoggerSingleton = require("./Logger")
+const Updater = require("./Updater");
 
 const USAGE = `ISLANDS ENGINE
 
 OPTIONS:
+
+-u islands_update_x.x.xxx.zip
+    Update islands with update file and exit
 
 -p
     Chat port. Default port is ephemeral.
@@ -21,12 +25,25 @@ OPTIONS:
 -d
     Debug mode.
 
+--tor-password somepassword
+    When running in debug mode - set specific tor password
+    This will not work in production mode.
+
+-v
+    Print version and exit
 -h
-    Print this message
-
-
+    Print this message and exit
 
 `
+
+const LOG_FILENAME = "islands.log"
+let LOGS_SWITCH;
+let OUTPUT;
+let UPDATE_FILE;
+let PRINT_VERSION = false;
+let Logger;
+
+let torDebugPassword;
 
 const LOG_FILENAME = "islands.log"
 let LOGS_SWITCH;
@@ -55,6 +72,7 @@ let config;
 
 let tor; //tor subprocess handle
 let chat; //chat subprocess handle
+
 
 
 //Parse islands config
@@ -99,7 +117,10 @@ function generateTorrc(){
 
 function initializeTorEnv(){
     //gen dynamic tor password
-    process.env["TOR_PASSWD"] = crypto.randomBytes(20).toString('hex');
+    process.env["TOR_PASSWD"] = process.env["DEBUG"] && !!torDebugPassword ?
+        torDebugPassword : crypto.randomBytes(20).toString('hex');
+
+
 
     //get tor hash
     let hashCmdArgs = ["--hash-password", process.env["TOR_PASSWD"], "--quiet"]
@@ -131,7 +152,7 @@ function launchTor(){
     // Set tor env variables
     // launch tor
     let torCmdArgs = ["-f", torConfig.torrcPath];
-    tor = new CoreUnit(process.env["TOR"], torCmdArgs, true);
+    tor = new ExecutableChildProcess(process.env["TOR"], torCmdArgs, false);
     tor.launch();
     tor.onoutput = data=>{ outputHandler(data, "TOR") };
 }
@@ -139,7 +160,7 @@ function launchTor(){
 
 async function launchChat(){
 
-    let chatCmdArgs = [`${process.env["APPS"]}/chat/server/app.js`];
+    let chatCmdArgs = [`${process.env["APPS"]}/chat/server/island.js`];
     if (process.env["DEBUG"]){
         console.log("Setting DEUBG flag for chat")
         chatCmdArgs.push("--debug")
@@ -163,7 +184,7 @@ async function launchChat(){
     chatCmdArgs.push("-p")
     chatCmdArgs.push(process.env["CHAT_PORT"]);
 
-    chat = new CoreUnit(process.env["NODEJS"], chatCmdArgs, true)
+    chat = new ExecutableChildProcess(process.env["NODEJS"], chatCmdArgs, true)
     chat.launch();
     chat.onoutput = data=>{ outputHandler(data, "ISLANDS")};
 
@@ -188,18 +209,16 @@ async function launchChat(){
     }
 }
 
-console.log("Done. Launching apps.");
 
 
 
 function outputHandler(data, label){
     if (LOGS_SWITCH) Logger.info(data, label);
-    if (!OUTPUT) return;
     //resetting timestamp
     connectionStringPrintedLast = false;
     lastOutput = new Date();
     setTimeout(()=>{
-        if (new Date() - lastOutput >= CONNECTION_STRING_SHOW_TIMEOUT - 20 && !connectionStringPrintedLast){
+        if (new Date() - lastOutput >= CONNECTION_STRING_SHOW_TIMEOUT - 5 && !connectionStringPrintedLast){
             printConnectionString();
         }
     }, CONNECTION_STRING_SHOW_TIMEOUT)
@@ -235,6 +254,8 @@ function clearLogs(){
 async function main(){
     parseArgs();
     initEnv();
+    await checkUpdate();
+    printVersion()
     prepareLogger()
     console.log("Parsing configuration...");
     await parseTorConfig();
@@ -330,6 +351,7 @@ function initEnv(){
     process.env["APPS"] = path.join(process.env["BASE"], "apps");
     process.env["CONFIG"] = path.join(process.env["BASE"], "config");
     process.env["ISLANDS_DATA"] = path.join(process.env["BASE"], "data");
+    process.env["UPDATE_DIR"] = path.join(process.env["BASE"], "update")
 
     const p = platform()
     if (p === "linux"){
@@ -344,6 +366,16 @@ function initEnv(){
         console.log("ERROR: UNKNONWN PLATFORM");
         process.exit(1);
     }
+}
+
+async function checkUpdate(){
+    if (!UPDATE_FILE) return;
+
+    let updater = new Updater(UPDATE_FILE);
+    await updater.runUpdate()
+    PRINT_VERSION = true
+    printVersion();
+
 }
 
 function initLinux(){
@@ -364,11 +396,35 @@ function initWin(){
     process.env["NODEJS"] = path.join(process.env["BASE"], "core", winPath, "node", "node.exe");
 }
 
+//prints version and exits
+function printVersion(){
+    if(!PRINT_VERSION) return;
+
+    console.log("\nPrinting islands version...\n");
+    let pkgJson = JSON.parse(fs.readFileSync(path.join(process.env["APPS"], "chat", "package.json")))
+    let coreVersion = fs.readFileSync(path.join(process.env["BASE"], "core", "core.version"), "utf8")
+
+    let pkgJsonEngine = JSON.parse(fs.readFileSync(path.join(process.env["APPS"], "engine", "package.json")))
+
+    let versionString = `ISLANDS RELEASE ${pkgJson["version"]}
+Chat version: ${pkgJson["chat-version"]}
+Engine version: ${pkgJsonEngine["version"]}
+${coreVersion}
+`
+    console.log(versionString)
+    console.log("Exiting...")
+    process.exit(0)
+
+}
+
 function parseArgs(){
     const args = process.argv.slice(2);
 
     args.forEach((val, index, arr)=>{
         switch(val){
+            case "-u":
+                UPDATE_FILE = arr[index+1]
+                break;
             case "-d":
                 process.env["DEBUG"] = true;
                 LOGS_SWITCH = true
@@ -377,6 +433,12 @@ function parseArgs(){
                 process.env["CHAT_PORT"] = arr[index+1];
                 break;
 
+            case "-v":
+                PRINT_VERSION = true
+                break;
+            case "--tor-password":
+                torDebugPassword = arr[index+1]
+                break;
             case "-h":
                 console.log(USAGE);
                 process.exit(0);

@@ -74,6 +74,8 @@
 
 //main start
 
+
+
 main
   background-color: $main-background
 
@@ -84,7 +86,18 @@ main
   display: flex
   flex-direction: row
 
-
+.loading-text-container
+  margin: auto auto
+  display: flex
+  flex-direction: row
+  align-items: center
+  img
+    width: 3rem
+    height: 3rem
+  span
+    margin-left: 2rem
+    color: $text-color
+    font-size: 2rem
 
 //~END main
 
@@ -675,6 +688,11 @@ main
   &:hover
     background-color: $button-hover
     transition: .2s
+  &:disabled
+    color: #888
+    cursor: not-allowed
+    &:hover
+      background-color: $main-background
 
 // ~END registration
 

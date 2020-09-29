@@ -1,4 +1,4 @@
-import { iCrypto } from "./iCrypto"
+import { iCrypto } from "../../../../common/iCrypto"
 import { assert, IError as Err } from "../../../../common/IError";
 import { ClientSettings } from "./ClientSettings";
 import { ChatUtility } from "./ChatUtility";
@@ -96,7 +96,14 @@ export class Metadata{
         if(!pkfp){
             pkfp = this.body.owner;
         }
-        return this.body.settings.membersData[pkfp].alias
+
+        if(this.body.settings.membersData.hasOwnProperty(pkfp)){
+            return this.body.settings.membersData[pkfp].alias
+        } else {
+            return "Deleted"
+        }
+
+
     }
 
 

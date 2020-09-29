@@ -1,6 +1,17 @@
 #!/bin/bash
 
-VERSION="1.0.1"
+VERSION="1.0.2"
+
+BINARIES_NOT_FOUND="Islands binaries for MacOS are not found."
+
+if [[ ! -d "${BASE}/core/mac" ]]; then
+    echo "$BINARIES_NOT_FOUND"
+    exit 1
+fi
+
+# Core binaries for easy access
+export BASE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 
 function unleash(){
     if [[ -z $1 ]]; then
@@ -20,8 +31,6 @@ function unleash(){
     done
 }
 
-# Core binaries for easy access
-export BASE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 NODEJS=${BASE}/core/mac/bin/node
 APPS=${BASE}/apps
 

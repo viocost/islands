@@ -4,6 +4,8 @@ import { IError as Err } from "../../../../common/IError";
 
 //Bakes select list for side panel
 // top boolean whether it is select for top block
+
+
 export function bakeCarousel(){
     let options = []
     options.push(util.bake("option", {text: "Topics"}))
@@ -483,8 +485,9 @@ export function bakeLoginBlock(loginClickHandler){
                         class: ["btn", "form-button"],
                         text: "Login",
                         listeners: {
-                            "click": loginClickHandler
+                            click: loginClickHandler
                         }
+
                     }),
                 })
             ]
@@ -655,7 +658,7 @@ export function bakeHeaderLeftSection(menuClickHandler){
 
 export function bakeHeaderRightSection(
     isAdmin,
-    isMute,
+    isSoundOn,
     infoHandler,
     muteHandler,
     settingsHandler,
@@ -670,7 +673,7 @@ export function bakeHeaderRightSection(
 
         util.bake("img", {
             id: "sound-control",
-            src: isMute ? "/img/sound-off.svg" : "/img/sound-on.svg",
+            src: isSoundOn ? "/img/sound-on.svg" : "/img/sound-off.svg",
             listeners: {
                 "click": muteHandler
             }

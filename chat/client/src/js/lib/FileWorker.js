@@ -1,4 +1,4 @@
-import { iCrypto } from "./iCrypto"
+import { iCrypto } from "../../../../common/iCrypto"
 import * as io from "socket.io-client";
 import { WildEmitter } from "./WildEmitter";
 import * as ss from "socket.io-stream";

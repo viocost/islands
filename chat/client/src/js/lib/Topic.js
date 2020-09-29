@@ -4,7 +4,7 @@ import { WildEmitter } from "./WildEmitter";
 import { Message } from "./Message";
 import { Metadata } from  "./Metadata";
 import { ChatUtility } from "./ChatUtility";
-import { iCrypto } from  "./iCrypto";
+import { iCrypto } from  "../../../../common/iCrypto";
 import { ChatMessage } from "./ChatMessage";
 import { ClientSettings } from "./ClientSettings";
 import { CuteSet } from  "cute-set";
@@ -15,14 +15,14 @@ import { assert } from "../../../../common/IError";
 const INITIAL_NUM_MESSAGES = 25
 
 export class Topic{
-    constructor(version, pkfp, name, key, comment){
+    constructor(pkfp, name, key, comment){
         WildEmitter.mixin(this);
         this.pkfp = pkfp;
         this.name = name; // Topic alias. Not shared.
         this.privateKey = key;
         this.comment = comment;
         this.handlers = {};
-        this.messageQueue;
+        this.connector;
         this.arrivalHub;
         this.currentMetadata;
         this.sharedKey;
@@ -32,7 +32,6 @@ export class Topic{
         this.messages = [];
         this.settings = {};
         this.invites = {};
-        this.version  = version;
         this.getPrivateKey = ()=>{ return key }
 
         // Meaning event listeners are set for arrivalHub
@@ -71,10 +70,10 @@ export class Topic{
     }
     // ---------------------------------------------------------------------------------------------------------------------------
     // INITIALIZING
-    bootstrap(messageQueue,
+    bootstrap(connector,
               arrivalHub,
               version){
-        this.messageQueue = messageQueue;
+        this.connector = connector;
         this.arrivalHub = arrivalHub;
         this.arrivalHub.on(this.pkfp, (msg)=>{
             this.preprocessIncomingMessage(msg, this);
@@ -168,13 +167,15 @@ export class Topic{
      * Loads topic's last n messsages
      * If wait for completion function will return only after load is completed
      */
-    async initLoad(messagesToLoad=INITIAL_NUM_MESSAGES, waitCompletion=false){
-        let self = this
-        self.ensureBootstrapped(self);
-        setTimeout(()=>{
-            self._loadMessages(self, messagesToLoad)
-            self.awaitingMessages = true;
-        })
+    initLoad(cb){
+        this.ensureBootstrapped();
+        this.awaitingMessages = true;
+
+        if(cb){
+            this.once(Internal.MESSAGES_LOADED, ()=>{ cb(this.messages)})
+        }
+
+        this.requestMessages()
     }
 
 
@@ -184,6 +185,16 @@ export class Topic{
         this.handlers[Internal.INVITE_REQUEST_TIMEOUT] = ()=>{
             console.log("Invite request timeout");
         }
+
+        this.handlers[Internal.MESSAGES_SYNC] = msg =>{
+            console.log("Got messages sync");
+            console.dir(msg)
+            if(!msg.body.lastMessages || !msg.body.lastMessages.messages) return;
+            for(let chatMsg of msg.body.lastMessages.messages.reverse()){
+                self.processIncomingMessage(self, JSON.parse(chatMsg))
+            }
+        }
+
 
         this.handlers[Internal.INVITE_REQUEST_FAIL] = (msg)=>{
             console.log(`Invite request failed: ${msg.body.errorMsg}`);
@@ -313,6 +324,29 @@ export class Topic{
     // ---------------------------------------------------------------------------------------------------------------------------
     // MESSAGE HANDLING
 
+    processIncomingMessage(self, msg){
+        let message = new ChatMessage(msg)
+        if(message.header.service){
+            message.decryptServiceRecord(self.privateKey)
+        } else if (message.header.private){
+            message.decryptPrivateMessage(self.privateKey)
+        } else {
+            message.decryptMessage(self.getSharedKey())
+        }
+
+        if(!message.header.service){
+            if(message.header.nickname !== self.getParticipantNickname(msg.header.author)){
+                console.log(`Member's nickname has changed from ${self.getParticipantNickname(msg.header.author)} to ${message.header.nickname}`);
+                self.setParticipantNickname(message.header.nickname, msg.header.author);
+            }
+        }
+
+        self.addNewMessage(self, message);
+    }
+
+
+
+
     processMessageSent(self, msg){
         let sentMessage = new ChatMessage(msg.body.message);
             console.log("Setting existing message from pending to delivered")
@@ -338,20 +372,21 @@ export class Topic{
 
         self.messages.splice(0, 0, chatMessage);
         console.log(`Message added. msgCount: ${self.messages.length}`);
-        self.emit(Events.NEW_CHAT_MESSAGE, chatMessage, self.pkfp)
+        self.emit(Events.NEW_CHAT_MESSAGE, chatMessage)
     }
 
-    getMessages(messagesToLoad=INITIAL_NUM_MESSAGES, lastMessageId){
+    getMessages(cb){
         if(this.initLoaded){
-            this.emit(Events.MESSAGES_LOADED, this.messages)
+            cb(this.messages)
         } else {
             console.log("Messages has not been loaded. Loading....");
-            //init load and then emit
-            this.initLoad()
+            this.initLoad(cb)
         }
     }
 
-    async getMessagesAsync(){
+
+
+    getMessagesAsync(){
         if(this.initLoaded){
             return this.messages;
         } else {
@@ -403,21 +438,21 @@ export class Topic{
         this.awaitingMessages = true;
         let lastMessageId = this.messages.length > 0 ?
             this.messages[this.messages.length-1].header.id : undefined;
-        this._loadMessages(this, 25, lastMessageId);
+        this.requestMessages(25, lastMessageId);
     }
 
-    _loadMessages(self, quantity=25, lastMessageId){
-        let request = new Message(self.version);
+    requestMessages(quantity=INITIAL_NUM_MESSAGES, lastMessageId){
+        let request = new Message(this.version);
         request.headers.command = Internal.LOAD_MESSAGES;
-        request.headers.pkfpSource = self.pkfp;
+        request.headers.pkfpSource = this.pkfp;
 
         request.body.quantity = quantity;
         if (lastMessageId){
             request.body.lastMessageId = lastMessageId;
         }
         request.addNonce();
-        request.signMessage(self.privateKey);
-        self.messageQueue.enqueue(request)
+        request.signMessage(this.privateKey);
+        this.connector.send(request)
     }
 
 
@@ -440,7 +475,7 @@ export class Topic{
             request.body.nickname = myNickNameEncrypted;
             request.body.topicName = topicNameEncrypted;
             request.signMessage(self.privateKey);
-            self.messageQueue.enqueue(request);
+            self.connector.send(request);
         }, 100)
 
     }
@@ -477,7 +512,7 @@ export class Topic{
         };
         request.set("body", body);
         request.signMessage(this.privateKey);
-        this.messageQueue.enqueue(request);
+        this.connector.send(request);
     }
 
     updatePendingInvites(userInvites){
@@ -513,7 +548,7 @@ export class Topic{
         request.body.metadataId = this.metadataId;
         request.body.myNickname = myNickname;
         request.signMessage(this.privateKey);
-        this.messageQueue.enqueue(request);
+        this.connector.send(request);
         console.log(`Nicknames exchange request sent: nickname: ${myNicknameRaw}`);
     }
 
@@ -562,7 +597,7 @@ export class Topic{
                             ChatUtility.symKeyEncrypt(curNickname, sharedKey));
         message.setAttribute(Internal.METADATA_ID, self._metadata.getId());
         message.signMessage(self.privateKey);
-        self.messageQueue.enqueue(message);
+        self.connector.send(message);
     }
 
     requestNickname(pkfp){
@@ -632,7 +667,7 @@ export class Topic{
         request.set("body", body);
         request.signMessage(this.privateKey);
         console.log("Sending update settings request");
-        this.messageQueue.enqueue(request);
+        this.connector.send(request);
     }
 
     //~END SETTINGS ///////////////////////////////////////////////////////////
@@ -647,7 +682,7 @@ export class Topic{
         request.body.message = ChatUtility.encryptStandardMessage(message,
             this.getPublicKey);
         request.signMessage(this.privateKey);
-        this.messageQueue.enqueue(request)
+        this.connector.send(request)
     }
 
     processMessagesLoaded(msg, self){
@@ -819,8 +854,8 @@ export class Topic{
         }
     }
 
-    ensureBootstrapped(self){
-        if(!self.isBootstrapped || !self.messageQueue || !self.arrivalHub){
+    ensureBootstrapped(){
+        if(!this.isBootstrapped || !this.connector || !this.arrivalHub){
             throw new Error("Topic is not bootstrapped!");
         }
     }
@@ -850,5 +885,14 @@ export class Topic{
     setTopicName(name){
         assert(inRange(name.length, 2, 30) , `Topic name is invalid`)
         this.name = name;
+    }
+
+    getLastMessageId(){
+        for (let msg of this.messages){
+            if (msg.header && msg.header.id) return msg.header.id
+        }
+
+        return null;
+
     }
 }

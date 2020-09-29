@@ -3,11 +3,11 @@ import { Message } from "./Message";
 import { Internal, Events } from "../../../../common/Events";
 
 export class BootParticipantAgent{
-    constructor(topic, bootCandidatePkfp, messageQueue){
+    constructor(topic, bootCandidatePkfp, connector){
         WildEmitter.mixin(this);
         this.topic = topic;
         this.bootCandidatePkfp = bootCandidatePkfp;
-        this.messageQueue = messageQueue;
+        this.connector = connector;
     }
 
     boot(){
@@ -19,7 +19,7 @@ export class BootParticipantAgent{
             request.setDest(this.topic.getMetadata().getTAPkfp());
             request.setAttribute("pkfp", this.bootCandidatePkfp)
             request.signMessage(this.topic.privateKey);
-            this.messageQueue.enqueue(request)
+            this.connector.send(request)
             console.log("request sent");
         }, 100)
     }

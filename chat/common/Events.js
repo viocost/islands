@@ -56,6 +56,9 @@ module.exports.Events = Object.freeze({
 
     NEW_SERVICE_RECORD: "new_service_record",
 
+    //Sound
+    SOUND_STATUS: "sound_status",
+
     //Connection
     CONNECTION_STATUS_CHANGED: "connection_status_changed",
 
@@ -85,10 +88,12 @@ module.exports.Internal = Object.freeze({
     BROADCAST_MESSAGE: "broadcast_message",
     SEND_MESSAGE: "send_message",
     MESSAGE_SENT: "send_success",
-
+    MESSAGES_SYNC: "messages_sync",
+    UNVERIFIED_MESSAGE: "unverified_message",
 
     // ---------------------------------------------------------------------------------------------------------------------------
     // Vault update notifications
+    GET_LOGIN_SET: "get_login_set",
     SAVE_VAULT: "save_vault",
     TOPIC_CREATED: "topic_created",
 
@@ -97,8 +102,12 @@ module.exports.Internal = Object.freeze({
     TOPIC_DELETED: "topic_deleted",
     TOPIC_ADDED: "topic_added",
     TOPIC_UPDATED: "topic_updated",
+    SAVE_VAULT_SETTINGS: "save_vault_settings",
     VAULT_SETTINGS_UPDATED: "vault_settings_updated",
+    UPDATE_VAULT_FORMAT: "update_vault_format",
+    VAULT_FORMAT_UPDATED: "vault_format_updated",
     VAULT_UPDATED: "vault_updated",
+
     //END//////////////////////////////////////////////////////////////////////
 
     CONNECTION_ERROR: "conn_error",
@@ -115,9 +124,13 @@ module.exports.Internal = Object.freeze({
     //Sent by client to server after establishing the connection
     POST_LOGIN: "post_login",
 
-    //Metadata updates
+    //Metadata
     METADATA_ISSUE: "metadata_issue",
     METADATA_ID: "metadata_id",
+    METADATA_SYNC: "sync_metadata",
+    METADATA_SYNC_SUCCESS: "sync_metadata_success",
+    METADATA_SYNC_FAIL: "sync_metadata_fail",
+    METADATA_OUTDATED: "metadata_outdated",
 
     //Nickname exchange
     NICKNAME_REQUEST: "whats_your_name",
@@ -125,6 +138,8 @@ module.exports.Internal = Object.freeze({
     NICKNAME_INITAL_EXCHANGE: "nickname_exchange",
 
     REGISTER_SERVICE_RECORD: "register_service_record",
+
+
 
     //Response sent by server to client.
     POST_LOGIN_DECRYPT: "post_login_decrypt_services",
@@ -156,6 +171,13 @@ module.exports.Internal = Object.freeze({
 
     LOAD_MESSAGES: "load_messages",
     LOAD_MESSAGES_SUCCESS: "load_messages_success",
+
+    //Auth, session
+    AUTH_CHALLENGE: "auth_challenge",
+    AUTH_CHALLENGE_RESPONSE: "achall_response",
+    VALIDATE_SESSION_KEY: "validate_session_key",
+    AUTH_OK: "auth_ok",
+    SESSION_SYNC: "session_sync",
 
     KILL_SESSION: "kill_session",
     SESSION_KEY: "session_key",

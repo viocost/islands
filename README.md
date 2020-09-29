@@ -6,6 +6,8 @@ The Islands server runs on Linux and is distributed to Mac and Windows as a virt
 
 This repository contains the Islands core implementation and the Islands Chat application. It is a base on which others can build their own implementations if they wish.
 
+
+
 # Legalese
 
 Licensed under the MIT license:
