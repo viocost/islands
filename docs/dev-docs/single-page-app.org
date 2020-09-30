@@ -1,0 +1,60 @@
+#+TITLE: Single page app requirements
+
+Chat, file transfer, chat admin, island admin, file transfer admin, updates.
+I think that's the "tasks" that the user performs with the single-page app.
+
+1. Single page app must be a "frame" that holds all other apps
+2. The following apps are defined at the moment:
+   * Chat
+   * Islands admin
+   * File transfer
+
+
+Feature requirements
+
+* Islands admin
+** Guest vaults and hidden services
+*** Create, delete, activate, deactivate
+** Update islands
+** Manage storage
+- Delete files
+- Set quotas for guests
+  
+** Distribute islands
+** Manage logs, stats
+
+
+
+
+* Chat
+** Manage channels
+- Create
+- Delete
+- Name/Rename
+- Mute/unmute
+
+
+** Invite
+- Create
+- Delete
+- Name/Rename
+
+** Messages
+
+** Files
+- Files attachment
+
+** Rights
+- Kick users
+- Leave channel
+- Alias member
+
+** Manage settings
+- Mute/unmute sounds
+
+
+
+
+
+* File transfer
+?
