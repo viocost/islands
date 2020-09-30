@@ -10,7 +10,7 @@ import { ChatUtility } from "./lib/ChatUtility";
 import { BlockingSpinner } from "./lib/BlockingSpinner"
 import { verifyPassword } from "./lib/PasswordVerify";
 import * as util from "./lib/dom-util";
-import { iCrypto } from "./lib/iCrypto"
+import { iCrypto } from "../../../common/iCrypto"
 import * as semver from "semver"
 import { IError as Err } from "../../../common/IError"
 window.semver = semver;

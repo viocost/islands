@@ -93,6 +93,7 @@ module.exports.Internal = Object.freeze({
 
     // ---------------------------------------------------------------------------------------------------------------------------
     // Vault update notifications
+    GET_LOGIN_SET: "get_login_set",
     SAVE_VAULT: "save_vault",
     TOPIC_CREATED: "topic_created",
 
@@ -170,6 +171,13 @@ module.exports.Internal = Object.freeze({
 
     LOAD_MESSAGES: "load_messages",
     LOAD_MESSAGES_SUCCESS: "load_messages_success",
+
+    //Auth, session
+    AUTH_CHALLENGE: "auth_challenge",
+    AUTH_CHALLENGE_RESPONSE: "achall_response",
+    VALIDATE_SESSION_KEY: "validate_session_key",
+    AUTH_OK: "auth_ok",
+    SESSION_SYNC: "session_sync",
 
     KILL_SESSION: "kill_session",
     SESSION_KEY: "session_key",

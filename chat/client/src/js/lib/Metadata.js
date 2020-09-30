@@ -1,4 +1,4 @@
-import { iCrypto } from "./iCrypto"
+import { iCrypto } from "../../../../common/iCrypto"
 import { assert, IError as Err } from "../../../../common/IError";
 import { ClientSettings } from "./ClientSettings";
 import { ChatUtility } from "./ChatUtility";

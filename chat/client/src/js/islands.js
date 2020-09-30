@@ -16,15 +16,8 @@ let topics;
 
 
 document.addEventListener('DOMContentLoaded', event =>{
-    //console.log(`Initializing page. Registration: ${isRegistration()}, Version: ${version}`);
-
     console.log("Content loaded. Processing!");
-    //loadSounds();
-    //initChat();
     initLoginUI();
-
-    //util.$("#print-dpi").onclick = ()=>{alert(window.devicePixelRatio)}
-    //util.$("#print-max").onclick = ()=>{alert(window.innerWidth)}
 });
 
 

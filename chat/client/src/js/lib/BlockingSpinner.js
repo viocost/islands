@@ -30,8 +30,10 @@ export class BlockingSpinner{
             if (overlayDiv){
                 overlayDiv.classList.add('is-unfreezing');
                 setTimeout(()=>{
-                    if (overlayDiv){
+                    try{
                         overlayDiv.parentElement.removeChild(overlayDiv)
+                    } catch(err){
+                        console.log(`BlockingSpinner error: ${err}`);
                     }
                     this.isOn = false;
                 }, timeout)

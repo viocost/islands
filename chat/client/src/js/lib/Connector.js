@@ -1,111 +1,177 @@
 import { WildEmitter } from "./WildEmitter";
 import * as io from "socket.io-client";
-import { Internal } from "../../../../common/Events";
-import { StateMachine } from "./AdvStateMachine";
+import { StateMachine } from "../../../../common/AdvStateMachine";
+import { createDerivedErrorClasses } from "../../../../common/DynamicError"
 
-export class Connector {
-    constructor(connectionString = "") {
+class ConnectorError extends Error{ constructor(data){ super(data); this.name = "ConnectorError" } }
+
+const err = createDerivedErrorClasses(ConnectorError, {
+    notImplemented: "NotImplemented"
+})
+
+
+/**
+ * Wrapper around whatever socket library
+ */
+class Connector{
+    constructor(){
         WildEmitter.mixin(this);
-        this.socket = this._createSocket(connectionString);
-        this.socketInitialized = false;
-        this.connectorStateMachine = this._prepareConnectorStateMachine()
-        this.acceptorStateMachine = this._prepareAcceptorStateMachine()
-
-
-        this.pingCount = 0;
-        this.queue = [];
-
-        this.maxUnrespondedPings = 10;
-        this.reconnectionDelay = 4000;
-        this.connectionAttempts = 0;
-        this.maxConnectionAttempts = 8;
-        this.killSocket = false;
     }
 
+    send(){
+        throw new err.notImplemented()
+    }
+
+
+    connect(query){
+        throw new err.notImplemented()
+    }
+
+    destroy(){
+        throw new err.notImplemented()
+    }
+}
+
+class ConnectorSocketIO extends Connector{
+    constructor(connectionString){
+        super();
+        this._sm = this._prepareStateMachine()
+        this._socket = this._prepareSocket(connectionString)
+    }
+
+    send(event, data){
+        this._sm.handle.send({event: event, data: data})
+    }
+
+
+    connect(query, attempts, timeout){
+        console.log("Connector connecting");
+        this._sm.handle.connect(attempts, timeout)
+    }
+
+    destroy(){
+        throw new err.notImplemented()
+    }
 
     // ---------------------------------------------------------------------------------------------------------------------------
-    // PUBLIC METHODS
-    
-    send(msg) {
-        console.log("Sending message");
-        this.acceptorStateMachine.handle.acceptMessage(msg);
+    // State machine handlers
+
+    _handleConnect(stateMachine, evName, args){
+        this._socket.open();
     }
 
-    setConnectionQueryProperty(k, v) {
-
-        if (!this.socket.io.opts.query) {
-            this.socket.io.opts.query = {};
-        }
-
-        this.socket.io.opts.query[k] = typeof v !== "string" ? JSON.stringify(v) : v;
-    }
-
-    establishConnection() {
-        this.connectorStateMachine.handle.connect();
-    }
-
-    getConnectionState(){
-        return this.connectorStateMachine.state;
-    }
-
-
-    // ---------------------------------------------------------------------------------------------------------------------------
-    // PRIVATE METHODS
-
-    _resetConnectionAttempts(){
-        this.connectionAttempts = 0;
-    }
-
-    _emitState(stateMachine) {
-        this.emit(Internal.CONNECTION_STATE_CHANGED, stateMachine.state);
-    }
-
-    _connect(){
-        this.connectionAttempts++;
-        this.socket.open();
-    }
-
-    _scheduleReconnect(){
-
-        if (this.connectionAttempts >= this.maxConnectionAttempts){
-            console.log("Reached max connection attempts, giving up...")
-            return
-        }
-
-        setTimeout(this.establishConnection.bind(this), this.reconnectionDelay)
-    }
-
-    _performAcceptMessage(stateMachine, evName, args){
-        let msg = args[0]
-        this.queue.push(msg);
-        this.connectorStateMachine.handle.processQueue()
-    }
-
-    _processQueue(){
-
-        if(this.queue.length === 0){
-            console.log("Nothing to send");
-            return;
-        }
-
-        console.log("Processing queue");
-        let outbound = this.queue
-        this.queue = []
-        let msg
-        while(msg = outbound.shift(0)){
-            console.log(`Sending message ${msg}`);
-            this.socket.send(msg);
+    _handleConnectError(stateMachine, evName, args){
+        let { reconnectAttempts, reconnectTimeout } = args[0]
+        if(reconnectAttempts){
+            setTimeout(()=>{
+                this._sm.handle.connect()
+            }, reconnectTimeout)
+        } else {
+            this._sm.handle.expired();
         }
     }
 
-    _createSocket(connectionString) {
-        let socketConfig = {
+    _handleConnecting(stateMachine, evName, args){
+        this.emit(ConnectorEvents.CONNECTING)
+    }
+
+    _handleConnected(stateMachine, evName, args){
+
+        this.emit(ConnectorEvents.CONNECTED)
+    }
+
+
+
+    _handleSend(stateMachine, evName, args){
+        let { event, data } = args[0]
+        this._socket.emit(event, data);
+    }
+
+    _handleIncomingMessage(stateMachine, evName, args){
+        let { event, data } = args[0]
+        this.emit(event, data)
+       
+    }
+   
+    _handleDead(stateMachine, evName, args){
+        this.emit(ConnectorEvents.DEAD)
+
+    }
+
+
+
+    //End//////////////////////////////////////////////////////////////////////
+
+    _prepareStateMachine() {
+        return new StateMachine(this, {
+            name: "Connector SM",
+            stateMap: {
+                disconnected: {
+                    initial: true,
+                    transitions: {
+                        connect: {
+                            state: "connecting",
+                            actions: this._handleConnect.bind(this)
+                        },
+
+                    }
+                },
+
+                connecting: {
+                    entry: this._handleConnecting.bind(this),
+                    transitions: {
+                        connected: {
+                            state: "connected",
+                        },
+
+                        connect: {
+                            state: "connecting",
+                            actions: this._handleConnect.bind(this)
+                        },
+
+                        error: {
+                            actions: this._handleConnectError.bind(this)
+                        }
+
+                    }
+                },
+
+                connected: {
+                    entry: this._handleConnected.bind(this),
+                    transitions: {
+                        send: {
+                            actions: this._handleSend.bind(this)
+                        },
+
+                        receive: {
+                            actions: this._handleIncomingMessage.bind(this)
+                        },
+
+                        expired: {
+                            state: "dead"
+                        }
+
+                    }
+
+                },
+
+                dead: {
+                    entry: this._handleDead.bind(this),
+                    final: true
+                }
+
+
+            }
+        }, { msgNotExistMode: StateMachine.Warn, traceLevel: StateMachine.TraceLevel.DEBUG })
+    }
+
+    _prepareSocket(connectionString, reconnectAttempts = 5, reconnectTimeout = 4000){
+
+        let socket = io(connectionString, {
             reconnection: false,
             autoConnect: false,
             upgrade: false
-        }
-
-        let socket = io(`${connectionString}`, socketConfig);
+        });
 
         //Wildcard fix
         let onevent = socket.onevent;
@@ -115,174 +181,59 @@ export class Connector {
             packet.data = ["*"].concat(args);
             onevent.call(this, packet)
         }
-        //End
-
-        socket.on("ping", () => {
-            this.pingPongCount++;
-            if (this.pingPongCount > this.maxUnrespondedPings) {
-                console.log("socket pings are not responded. Resetting connection");
-                socket.disconnect();
-                attempted = 0
-                setTimeout(attemptConnection, reconnectionDelay)
-            }
-        })
-
-        socket.on("pong", () => {
-            this.pingPongCount = 0;
-        })
 
         socket.on('connect', () => {
-            console.log("Island connection established");
-            this.connectorStateMachine.handle.connected()
+            this._sm.handle.connected();
         });
 
 
-        socket.on("*", (event, data) => {
-            console.log(`Got event: ${event}`);
-            this.emit(event, data);
-        })
-
-        socket.on('reconnecting', (attemptNumber) => {
-            this.connectorStateMachine.handle.reconnecting()
-            console.log(`Attempting to reconnect : ${attemptNumber}`)
-        })
-
-        socket.on('reconnect', (attemptNumber) => {
-            console.log(`Successfull reconnect client after ${attemptNumber} attempt`)
-            this.connectorStateMachine.handle.connected();
+        socket.on('disconnect', ()=>{
+            this._sm.handle.expired()
+            this.emit("disconnect")
         });
 
-        socket.on('error', (err) => {
-            this.connectorStateMachine.handle.error();
-            console.log(`Socket error: ${err}`)
+        socket.on('connect_timeout', ()=>{
+            this._sm.handle.error({
+                reconnectAttempts: reconnectAttempts,
+                reconnectTimeout: reconnectTimeout
+            })
         })
-
-        socket.on("disconnect", () => {
-            this.connectorStateMachine.handle.processDisconnect();
-        });
 
         socket.on('connect_error', (err) => {
-            this.connectorStateMachine.handle.error(err);
+            this._sm.handle.error({
+                reconnectAttempts: reconnectAttempts,
+                reconnectTimeout: reconnectTimeout
+            })
         });
-
-
-        socket.on('connect_timeout', () => {
-            console.log('Chat connection timeout');
-            this.connectorStateMachine.handle.error();
-        });
-
 
         return socket;
     }
+}
 
-    _prepareAcceptorStateMachine(){
-        return new StateMachine(this, {
-            name: "Accept input from user SM",
-            stateMap: {
-                inactive: {
-                    transitions: {
-                        activate: {
-                            state: "acceptingMessages",
-                        }
-                    }
-                },
-
-                acceptingMessages: {
-                    entry: ()=>{ console.log("Now accepting messages") },
-                    initial: true,
-                    transitions: {
-                        acceptMessage: {
-                            actions: this._performAcceptMessage
-                        },
-
-                        deactivate: {
-                            state: "inactive"
-                        }
-                    }
-                }
-            }
-        }, { msgNotExistMode: StateMachine.Warn, traceLevel: StateMachine.TraceLevel.DEBUG })
+class ConnectorSocketIOFactory{
+    constructor(connectPath){
+        this.connectPath = connectPath;
     }
 
-    _prepareConnectorStateMachine() {
-        return new StateMachine(this, {
-            name: "Connector SM",
-            stateMap: {
-                disconnected: {
-                    entry: this._emitState,
-                    initial: true,
+    make(){
+        return new ConnectorSocketIO(this.connectPath)
+    }
+}
 
-                    transitions: {
-                        connect: {
-                            state: ConnectionState.CONNECTING,
-                            actions: this._connect
-                        },
-                    }
-                },
-
-                connecting: {
-                    entry:  this._emitState,
-                    transitions: {
-                        connected: {
-                            state: ConnectionState.CONNECTED,
-                        },
-                        error: {
-                            state: ConnectionState.ERROR
-                        },
-
-                    }
-                },
-
-                reconnecting: {
-                    entry: this._emitState,
-                    transitions: {
-                        connected: { state: ConnectionState.CONNECTED },
-                        error: { state: ConnectionState.ERROR }
-                    }
-                },
-
-                connected: {
-                    entry: [this._resetConnectionAttempts, this._emitState, this._processQueue],
-
-                    transitions: {
-                        processDisconnect: {
-                            state: ConnectionState.DISCONNECTED,
-                            actions: this._scheduleReconnect
-                        },
-
-                        disconnectSocket: {
-                            actions:  this.killSocket
-                        },
-
-                        processQueue: {
-                            actions: this._processQueue
-                        },
-                        error: { state: ConnectionState.ERROR },
-                    }
-                },
-
-                error: {
-                    entry: [this._emitState, this._scheduleReconnect],
-                    transitions: {
-                        connect: {
-                            state: ConnectionState.CONNECTING,
-                            actions: this._connect
-                        }
-                    }
-                },
-
-            }
-        }, { msgNotExistMode: StateMachine.Warn, traceLevel: StateMachine.TraceLevel.DEBUG })
+export class ConnectorAbstractFactory{
+    static getChatConnectorFactory(){
+        return new ConnectorSocketIOFactory("/chat")
     }
 
+    static getDataConnectorFactory(){
+        return new ConnectorSocketIOFactory("/data")
+    }
 
 }
 
-export const ConnectionState = {
-    DISCONNECTED: "disconnected",
-    CONNECTED: "connected",
-    CONNECTING: "connecting",
-    RECONNECTING: "reconnecting",
-    ERROR: "error",
-    TIMEOUT: "timeout"
+
+export const ConnectorEvents = {
+    CONNECTING: Symbol("dead"),
+    CONNECTED: Symbol("connect"),
+    DEAD: Symbol("dead"),
 }

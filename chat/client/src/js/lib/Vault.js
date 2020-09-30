@@ -1,14 +1,14 @@
 import { IError as Err }  from "../../../../common/IError";
 import { verifyPassword } from "./PasswordVerify";
 import { Topic } from "../lib/Topic";
-import { iCrypto } from "./iCrypto";
+import { iCrypto } from "../../../../common/iCrypto";
 import { WildEmitter } from "./WildEmitter";
 import { Message } from "./Message";
 import { Events, Internal  } from "../../../../common/Events";
 import { assert } from "../../../../common/IError";
 import { XHR } from "./xhr"
 import * as semver from "semver";
-import { StateMachine } from "./AdvStateMachine"
+import { StateMachine } from "../../../../common/AdvStateMachine"
 import { fetchJSON } from "./FetchJSON";
 import { ChatUtility } from "./ChatUtility";
 
@@ -18,8 +18,10 @@ import { ChatUtility } from "./ChatUtility";
  *
  */
 export class Vault{
-    constructor(){
+    constructor(version){
         WildEmitter.mixin(this);
+
+        this.version = version;
         this.id = null;
         this.pkfp;
         this.initialized = false;
@@ -30,7 +32,6 @@ export class Vault{
         this.privateKey = null;
         this.handlers;
         this.connector;
-        this.version;
         this.pendingInvites = {}
         this.error = null;
         this.initHandlers();
@@ -301,29 +302,18 @@ export class Vault{
 
 
 
-    async initSaved(vaultEncrypted = Err.required("Vault parse: data parameter missing")){
-        console.log(`Initializing vault`);
-        let ic = new iCrypto();
-        //console.log(`Salt: ${vaultEncrypted.substring(0, 256)}`)
-        //console.log(`Vault: ${vaultEncrypted.substr(256)}`)
-        ic.addBlob("s16", vaultEncrypted.substring(0, 256))
-            .addBlob("v_cip", vaultEncrypted.substr(256))
-            .hexToBytes("s16", "salt")
-            .createPasswordBasedSymKey("sym", this.password, "s16")
-            .AESDecrypt("v_cip", "sym", "vault_raw", true);
-
+    initSaved(vaultRaw = Err.required("Vault parse: vaultRaw parameter missing")){
         //Populating new object
-        let data = JSON.parse(ic.get("vault_raw"));
 
-        this.adminKey = data.adminKey;
-        this.admin = data.admin;
+        this.adminKey = vaultRaw.adminKey;
+        this.admin = vaultRaw.admin;
 
-        this.publicKey = data.publicKey;
-        this.privateKey = data.privateKey;
+        this.publicKey = vaultRaw.publicKey;
+        this.privateKey = vaultRaw.privateKey;
 
         //settings
-        if(data.settings){
-            this.settings = JSON.parse(JSON.stringify(data.settings));
+        if(vaultRaw.settings){
+            this.settings = JSON.parse(JSON.stringify(vaultRaw.settings));
         } else {
             this.settings = {
                 sound: true
@@ -331,22 +321,22 @@ export class Vault{
         }
 
 
-        if(!data.pkfp){
-            ic.setRSAKey("pub", data.publicKey, "public")
+        if(!vaultRaw.pkfp){
+            ic.setRSAKey("pub", vaultRaw.publicKey, "public")
               .getPublicKeyFingerprint("pub", "pkfp");
             this.pkfp = ic.get("pkfp");
         } else {
-            this.pkfp = data.pkfp;
+            this.pkfp = vaultRaw.pkfp;
         }
 
-        if (!data.version || semver.lt(data.version, "2.0.0")){
+        if (!vaultRaw.version || semver.lt(vaultRaw.version, "2.0.0")){
             // TODO format update required!
             console.log(`vault format update required to version ${version}`)
             let self = this;
             this.version = version;
             this.versionUpdate = async ()=>{
                 console.log("!!!Version update lambda");
-                await  self.updateVaultFormat(data)
+                await  self.updateVaultFormat(vaultRaw)
             };
         }
     }
@@ -617,6 +607,21 @@ export class Vault{
 
 }
 
+export class VaultFactory{
+    static makeNew(version){
+        return new Vault(version)
+    }
+
+    static initSaved(version, data, vaultId){
+        console.log("Initializing saved vault. Data:");
+        console.dir(data)
+
+        let vault = new Vault(version)
+        vault.initSaved(data)
+        vault.id = vaultId
+        return vault
+    }
+}
 
 
 

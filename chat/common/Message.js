@@ -1,4 +1,5 @@
-import { iCrypto } from "./iCrypto"
+const { iCrypto } = require("./iCrypto")
+const { clone } = require("./ObjectUtil")
 
 
 /**
@@ -17,9 +18,8 @@ import { iCrypto } from "./iCrypto"
  *
  *
  */
-export class Message{
+class Message{
     constructor(version, request){
-        if(version === undefined || version === "") throw new Error("Message init error: Software version is required!");
 
         if(typeof(request)==="string"){
             request = JSON.parse(request);
@@ -34,6 +34,15 @@ export class Message{
         this.signature = request ? request.signature : "";
     }
 
+    static from(obj){
+        let message = new Message();
+        for(let key in obj){
+            message[key] = obj[key]
+        }
+
+        return message
+    }
+
 
     static verifyMessage(publicKey, message){
         let ic = new iCrypto();
@@ -44,14 +53,6 @@ export class Message{
             .addBlob("b", requestString);
         ic.publicKeyVerify("b", "sign", "pubk", "v");
         return ic.get("v");
-    }
-
-    setError(error){
-        this.headers.error = error || "Unknown error";
-    }
-
-    setResponse(response){
-        this.headers.response = response;
     }
 
     copyHeaders(headers){
@@ -97,20 +98,73 @@ export class Message{
         this.headers.nonce = ic.get("nhex");
     }
 
-    get  (name){
-        if (this.keyExists(name))
-            return this[name];
-        throw new Error("Property not found");
-    };
+    get source(){
+        return this.headers.source
+    }
 
-    set (name, value){
-        if (!Message.properties.includes(name)){
-            throw 'Invite: invalid property "' + name + '"';
-        }
-        this[name] = value;
-    };
+    set source(source){
+        this.headers.source = source
+    }
 
+    get dest(){
+        return this.headers.dest
+    }
+
+    set dest(dest){
+        this.headers.dest = dest
+    }
+    get command(){
+        return this.headers.command
+    }
+
+    set command(command){
+        this.headers.command = command
+    }
+
+    get data(){
+        return this.body
+    }
+
+    set data(data){
+        this.body = data
+    }
+}
+
+function createClientIslandEnvelope({ pkfpSource,
+                                             pkfpDest,
+                                             command,
+                                             version = global.VERSION ? global.VERSION : window.islandsVersion(),
+                                             body = {},
+                                             privateKey  }){
+
+    const message = new Message(version);
+    message.headers.pkfpSource = pkfpSource;
+    message.headers.pkfpDest = pkfpDest;
+    message.headers.command = command;
+    message.headers.version = version;
+    message.body = clone(body);
+
+    if (privateKey){
+        message.signMessage(privateKey);
+    }
+
+    return message;
+}
+
+function createAuthMessage({
+    data, command
+}){
+    const message = new Message();
+    message.headers.command = command;
+    message.body = data;
+    return message;
 }
 
 Message.properties = ["headers", "body", "signature"];
 
+
+module.exports = {
+    createClientIslandEnvelope: createClientIslandEnvelope,
+    Message: Message,
+    createAuthMessage: createAuthMessage
+}

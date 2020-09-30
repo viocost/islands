@@ -3,6 +3,7 @@
 // parses json and calls stateMachine methods
 //
 export async function fetchJSON(url, stateMachine){
+
     try{
         let response = await fetch(url, {
             method: 'GET',

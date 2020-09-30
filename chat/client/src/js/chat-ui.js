@@ -1,6 +1,6 @@
 import * as util from "./lib/dom-util";
 import * as UI from "./lib/ChatUIFactory";
-import { BlockingSpinner } from "./lib/BlockingSpinner";
+import * as UX from "./ui/UX"
 import toastr from "./lib/toastr";
 import { ChatClient as Chat, ChatClient } from "./lib/ChatClient";
 import { Events, Internal } from "../../../common/Events";
@@ -8,19 +8,21 @@ import "../css/chat.sass"
 import "../css/vendor/loading.css";
 import * as CuteSet from "cute-set";
 import { Topic } from "./lib/Topic";
-import { ArrivalHub } from "./lib/ArrivalHub"
-import { Connector } from "./lib/Connector"
 import { TopicRetriever } from "./lib/TopicRetriever";
-import { LoginAgent } from "./lib/LoginAgent";
 import { TopicCreator } from "./lib/TopicCreator";
-import { runConnectorTest } from "./test/connector"
 import { ChatUtility } from "./lib/ChatUtility";
 import { Vault } from "./lib/Vault";
+import { VaultRetriever } from "./lib/VaultRetriever"
 import { TopicJoinAgent } from "./lib/TopicJoinAgent";
 import { ConnectionIndicator } from  "./ui/ConnectionIndicator";
+import { IslandsVersion } from "../../../common/Version";
+//import { runConnectorTest } from "./test/connector"
 // TEMP IMPORTS FOR FURTHER REFACTORING
-import { iCrypto } from "./lib/iCrypto";
-import { Message } from "./lib/Message";
+import { iCrypto } from "../../../common/iCrypto";
+import * as MainView from "./MainView";
+import { StateMachine } from "../../../common/AdvStateMachine";
+import { UIMessageBus } from "./lib/UIMessageBus"
+
 
 // ---------------------------------------------------------------------------------------------------------------------------
 // CONSTANTS
@@ -30,7 +32,6 @@ const DAYSOFWEEK = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 let colors = ["#cfeeff", "#ffcc7f", "#b5ffc0", "#ccfffb", "#67fcf0", "#f8e6ff", "#ffe6f1", "#ccefff", "#ccf1ff"]
 // ---------------------------------------------------------------------------------------------------------------------------
 // Visual Sections and modal forms
-let spinner = new BlockingSpinner();
 let topicCreateModal;
 let topicJoinModal;
 let setAliasModal;
@@ -46,7 +47,6 @@ let connector;
 let arrivalHub;
 let chat = null//new ChatClient();
 let vaultHolder = null;
-let loginAgent = null;
 let topics = {};
 let metadata = {};
 
@@ -78,11 +78,10 @@ const unreadCounters = {}
 
 let UIInitialized = false;
 
+
 // ---------------------------------------------------------------------------------------------------------------------------
 // TEST ONLY!
 // Comment out for production!
-window.connectorTest = runConnectorTest;
-window.connector = connector;
 window.util = util;
 window.toastr = toastr;
 window.chat = chat;
@@ -95,83 +94,26 @@ window.topics = topics;
 // ~END TEST
 
 document.addEventListener('DOMContentLoaded', event => {
-    loadSounds();
-    initChat();
-    initLoginUI();
-    connector = new Connector("/chat");
-    arrivalHub = new ArrivalHub(connector);
-    version = islandsVersion()
+    IslandsVersion.setVersion(islandsVersion())
+    console.log(`Islands version is ${IslandsVersion.getVersion()}`);
+    let messageBus = new UIMessageBus();
 
-    loginAgent = new LoginAgent({
-        version: version,
-        connector: connector,
-        arrivalHub: arrivalHub
-    })
+    messageBus.on(UX.UXMessage.LOGIN_CLICK, )
 
-    loginAgent.on(Events.LOGIN_ERROR, err=>processLoginResult(null, err));
-    loginAgent.on(Events.LOGIN_SUCCESS, resVaultHolder=>{
-        console.log("%c Login agent success handler", "color: red; font-size: 20px");
+    UX.initialize(messageBus);
 
-        //TODO REFACTORING REQUIRED!
-        chat = new ChatClient({ version: version });
-        chat.vault = resVaultHolder.getVault();
-        chat.connector = connector;
-        chat.arrivalHub = arrivalHub;
-        chat.topics = topics;
-        //end//////////////////////////////////////////////////////////////////
-
-        vaultHolder = resVaultHolder;
-
-        //Load topics V1 here
-
-        loadTopics(vaultHolder.getVault())
-
-    })
-
-    loginAgent.fetchVault();
-
+    isRegistration() ? messageBus.emit(UX.UXMessage.TO_REGISTRATION)
+        : messageBus.emit(UX.UXMessage.TO_LOGIN)
+    return;
+//    initChat();
+//    initLoginUI();
 });
 
 
 
-function initLoginUI() {
-
-    let header = util.$("header")
-    util.appendChildren(header, UI.bakeLoginHeader());
-
-    let mainContainer = util.$('#main-container');
-    util.removeAllChildren(mainContainer);
-
-    if (isRegistration()) {
-
-        let registrationBlock = UI.bakeRegistrationBlock(() => {
-            console.log("New vault registration..")
-            loadingOn()
-            registerVault()
-                .then(() => {
-                    util.removeAllChildren(mainContainer);
-                    util.appendChildren(mainContainer, UI.bakeRegistrationSuccessBlock(() => {
-                        document.location.reload()
-                    }))
-                })
-                .catch(err => {
-                    toastr.error(err.message)
-                })
-                .finally(() => {
-                    loadingOff();
-                })
-        })
-        util.appendChildren("#main-container", registrationBlock)
-    } else {
-        let loginBlock = UI.bakeLoginBlock(initSession)
-        util.appendChildren("#main-container", loginBlock)
-    }
-}
-
 
 //Called after successful login
 function initUI(vaultHolder) {
-    // let form = isRegistration() ? bakeRegistrationBlock() : bakeLoginBlock();
     let vault = vaultHolder.getVault();
     let header = util.$("header")
 
@@ -463,18 +405,32 @@ function setUploadingState(uploading) {
 }
 
 
+//registration
 function registerVault() {
-    let password = util.$("#new-passwd");
-    let confirm = util.$("#confirm-passwd");
     if (/^((?:[0-9]{1,3}\.){3}[0-9]{1,3}|localhost)(\:[0-9]{1,5})?$/.test(document.location.host)) {
         console.log("Registering admin vault");
-        return Vault.registerAdminVault(password, confirm, chat.version)
+        Vault.registerAdminVault(password, confirm, chat.version)
+            .then(afterVaultRegistration)
+            .catch(err => {
+                toastr.error(err.message)
+            })
+            .finally(loadingOff)
+
     } else if (ChatUtility.isOnion(document.location.host)) {
         console.log("Registering guest vault");
         return Vault.registerVault(password, confirm, chat.version)
+        
     } else {
         throw new Error("Unrecognized host!")
     }
+}
+
+function afterVaultRegistration(){
+    let mainContainer = util.$('#main-container');
+    util.removeAllChildren(mainContainer);
+    util.appendChildren(mainContainer, UI.bakeRegistrationSuccessBlock(() => {
+        document.location.reload()
+    }))
 }
 
 
@@ -825,25 +781,12 @@ function backToChat() {
 
 // ---------------------------------------------------------------------------------------------------------------------------
 // Chat Event handlers
-function processLoginResult(newVaultHolder, err) {
 
-    if (err) {
-        let loginBtn = util.$("#vault-login-btn")
-        loginBtn.removeAttribute("disabled");
-        toastr.warning(`Login error: ${err}`)
-        loadingOff()
-        return;
-    }
-
-    vaultHolder = newVaultHolder;
-    window.vaultHolder = vaultHolder;
-   
-    initUI(vaultHolder);
-    connectionIndicator = new ConnectionIndicator(connector)
-    appendEphemeralMessage("Topics has been loaded and decrypted successfully. ")
-    playSound("user_online");
-    loadingOff()
+function handleVaultReceived(error, vault){
+    console.log("Vault received");
+    console.dir(vault);
 }
+
 
 function processMessagesLoaded(pkfp, messages, cb) {
 
@@ -1660,31 +1603,6 @@ function initChat() {
 // ---------------------------------------------------------------------------------------------------------------------------
 // REFACTORING LOGIN
 
-
-function initSession() {
-    loadingOn()
-    let loginBtn = util.$("#vault-login-btn")
-    loginBtn.setAttribute("disabled", true);
-    let passwordEl = util.$("#vault-password");
-    if (!passwordEl) {
-        throw new Error("Vault password element is not found.");
-    }
-
-    loginAgent.acceptPassword(passwordEl.value);
-
-}
-
-function loadTopics(vault) {
-    console.log("Loading topics...");
-    setVaultListeners(vault);
-    vault.bootstrap(arrivalHub, connector, version);
-    let retriever = new TopicRetriever();
-    retriever.once("finished", (data) => initTopics(data, vault))
-    retriever.once("error", (err) => { console.log(err) })
-    retriever.run();
-}
-
-
 function joinTopic(nickname, topicName, inviteString) {
     let vault = vaultHolder.getVault()
     let topicJoinAgent = new TopicJoinAgent(nickname, topicName, inviteString, arrivalHub, connector, vault);
@@ -1702,42 +1620,9 @@ function joinTopic(nickname, topicName, inviteString) {
 }
 
 
-function initTopics(data, vault) {
-    console.log("Initializing topics...");
-
-    if (!data.topics) return
-
-    for (let pkfp in data.topics) {
-        console.log(`Initializing topics ${pkfp}`);
-
-        // TODO fix version!
-        let topic = vault.decryptTopic(data.topics[pkfp], vault.password)
-        topics[pkfp] = new Topic(pkfp, topic.name, topic.key, topic.comment)
-        setTopicListeners(topics[pkfp])
-        topics[pkfp].bootstrap(connector, arrivalHub, version);
-    }
-
-    vault.topics = topics;
-
-    checkUpdateVaultFormat(vaultHolder, topics)
-
-    createSession(vault)
-}
-
-function createSession(vault) {
-    connector.setConnectionQueryProperty("vaultId", vault.id);
-    connector.establishConnection()
-}
 
 
 function setVaultListeners(vault) {
-    vault.on(Internal.SESSION_KEY, (message) => {
-
-        vault.sessionKey = message.body.sessionKey;
-
-        console.log("Session key is set!")
-        postLogin(vault)
-    })
     vault.on(Events.TOPIC_CREATED, (pkfp) => {
 
         if(!(pkfp in vault.topics)){
@@ -1845,59 +1730,29 @@ function setTopicListeners(topic) {
 
 }
 
-function postLogin(vault) {
-    //sending post_login request
-    let message = new Message(chat.version);
-    message.setSource(vault.id);
-    message.setCommand(Internal.POST_LOGIN);
-    message.addNonce();
-    message.body.topics = Object.keys(topics);
-    message.signMessage(vault.privateKey);
-    vault.once(Internal.POST_LOGIN_DECRYPT, (msg) => {
-        postLoginDecrypt(msg, vault);
-    })
-    connector.send(message);
-}
+/**
+ * Moved to PostLoginInitializer
+ */
+////////////////////////////////////////////////////////////
+// function postLogin(vault) {                            //
+//     //sending post_login request                       //
+//                                                        //
+//     const message = createClientIslandEnvelope({       //
+//         command: Internal.POST_LOGIN,                  //
+//         pkfpSource: vault.id,                          //
+//         privateKey: vault.privateKey,                  //
+//         body: {                                        //
+//             topics: Object.keys(topics)                //
+//         }                                              //
+//     })                                                 //
+//                                                        //
+//     vault.once(Internal.POST_LOGIN_DECRYPT, (msg) => { //
+//         postLoginDecrypt(msg, vault);                  //
+//     })                                                 //
+//     connector.send(message);                           //
+// }                                                      //
+////////////////////////////////////////////////////////////
 
-function checkUpdateVaultFormat(vaultHolder, existingTopics){
-    //V1 support
-    let rawVault = loginAgent.getRawVault()
-
-    if (!rawVault.topics) return
-
-    //Otherwise version 1, update required. First initializing topics
-    for (let pkfp in rawVault.topics) {
-
-        if(pkfp in existingTopics){
-            continue;
-        }
-        let topic = rawVault.topics[pkfp];
-        console.log(`Initializing existingTopics ${pkfp}`);
-        existingTopics[pkfp] = new Topic(pkfp, topic.name, topic.key, topic.comment)
-        setTopicListeners(existingTopics[pkfp])
-        existingTopics[pkfp].bootstrap(connector, arrivalHub, version);
-    }
-
-
-    //updating vault to current format
-
-    let currentVault = vaultHolder.getVault();
-    //let { vault, existingTopics, hash, sign } = currentVault.pack();
-    let packedVault = currentVault.pack()
-
-    let message = new Message(currentVault.version);
-    message.setSource(currentVault.id);
-    message.setCommand(Internal.UPDATE_VAULT_FORMAT);
-    message.addNonce();
-    message.body.vault = packedVault.vault;
-    message.body.sign = packedVault.sign;
-    message.body.hash = packedVault.hash;
-    message.body.topics = packedVault.topics;
-    message.signMessage(currentVault.privateKey);
-    console.log("%c UPDATING VAULT FORMAT!!", "color: red; font-size: 20px");
-    connector.send(message)
-
-}
 
 // Decrypts topic authorities' and hidden services keys
 // and re-encrypts them with session key, so island can poke all services
@@ -1957,16 +1812,16 @@ function postLoginDecrypt(msg, vault) {
         let preDecrypted = {};
 
         if (clientHSPrivateKey) {
-            preDecrypted.clientHSPrivateKey = encryptBlob(sessionKey, clientHSPrivateKey)
+            preDecrypted.clientHSPrivateKey =  clientHSPrivateKey
         }
         if (taPrivateKey || taHSPrivateKey) {
             preDecrypted.topicAuthority = {}
         }
         if (taPrivateKey) {
-            preDecrypted.topicAuthority.taPrivateKey = encryptBlob(sessionKey, taPrivateKey)
+            preDecrypted.topicAuthority.taPrivateKey = taPrivateKey
         }
         if (taHSPrivateKey) {
-            preDecrypted.topicAuthority.taHSPrivateKey = encryptBlob(sessionKey, taHSPrivateKey)
+            preDecrypted.topicAuthority.taHSPrivateKey = taHSPrivateKey
         }
 
         res[pkfp] = preDecrypted
@@ -1990,13 +1845,6 @@ function postLoginDecrypt(msg, vault) {
 //END REFACTORING CODE/////////////////////////////////////////////////////////
 
 
-function loadingOn() {
-    spinner.loadingOn()
-}
-
-function loadingOff() {
-    spinner.loadingOff()
-}
 
 function padWithZeroes(requiredLength, value) {
     let res = "0".repeat(requiredLength) + String(value).trim();
@@ -2093,3 +1941,4 @@ function moveCursorToStart(el) {
 }
 // ---------------------------------------------------------------------------------------------------------------------------
 // ~END util
+

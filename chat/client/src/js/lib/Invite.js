@@ -1,4 +1,4 @@
-import { iCrypto } from "./iCrypto"
+import { iCrypto } from "../../../../common/iCrypto"
 
 
 export class Invite{

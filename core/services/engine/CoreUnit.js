@@ -1,4 +1,14 @@
-const { execFile }  = require("child_process");
+const { execFile, fork }  = require("child_process");
+const { StateMachine } = require("adv-state");
+const { createDerivedErrorClasses } = require("./DynamicError");
+
+class CoreUnitError extends Error{ constructor(data){ super(data); this.name = "CoreUnitError" } }
+const err = createDerivedErrorClasses(CoreUnitError, {
+    LaunchFromBase: "AttemptToInvokeLaunchFromBaseClass",
+})
+
+const SHUTDOWN_TIMEOUT = 10000;
+
 
 /**
  * This class provides simple process management functionality
@@ -12,20 +22,88 @@ class CoreUnit{
         this.output = output; //if true then print to console
         this.executable = executable;
         this.args = args;
+        this.sm;
         this.restartTimeout = 200;
         this.crashLevel = 0;
         this.crashes = getLimitedLengthArray(15);
-        this.process = null //  process handle
-        this.killing = false // kill flag
+        this.process = null
         this.onoutput;
     }
 
-    setCrashLevel(level){
+
+    // ---------------------------------------------------------------------------------------------------------------------------
+    // Public methods
+
+    launch(){
+        this.sm.handle.launch()
+    }
+
+
+    kill(){
+        this.sm.handle.kill()
+    }
+
+
+    switchOutput(onOff){
+        this.output = !!onOff;
+    }
+
+
+    restart(){
+        this.sm.handle.restart()
+
+
+    }
+
+    // ---------------------------------------------------------------------------------------------------------------------------
+    // Private methods
+
+
+    _performLaunch(){
+        throw new err.LaunchFromBase("This method should be implemented by child classes")
+    }
+
+
+
+    _processExit(code){
+        console.log(`Child process exited with code: ${code}`);
+        if (code === 0){
+            this.sm.handle.exitedNormally()
+        } else {
+            this.sm.handle.nonZeroExit(code)
+        }
+
+
+    }
+
+    _restartOnCrash(stateMachine, evName, args){
+        this.crashes.push(new Date())
+        let timeout = this._calculateRestartTimeout()
+
+        setTimeout(()=>{
+            console.log("Restarting after crash");
+            this.sm.handle.launch()
+        }, timeout)
+
+    }
+
+    _notifyShutdownTimeout(){
+        console.log("SHUTDOWN TIMEOUT! Process hasn't closed gracefully");
+    }
+
+    _setShutdownTimeout(){
+        setTimeout(()=>{
+
+        })
+
+    }
+
+    _setCrashLevel(level){
         this.crashLevel = level;
         this.crashes.splice(0, this.crashes.length-1)
     }
 
-    calculateRestartTimeout(){
+    _calculateRestartTimeout(){
         let curTime = new Date()
         let timeoutPerLevel = [350, 2000]
         let timeWindow = timeoutPerLevel[this.crashLevel] * 15;
@@ -43,7 +121,7 @@ class CoreUnit{
 
         if (crashCount >= 9 && this.crashLevel < 1){
             console.log("Increasing crash level!");
-            this.setCrashLevel(this.crashLevel + 1)
+            this._setCrashLevel(this.crashLevel + 1)
         }
 
         let res = timeoutPerLevel[this.crashLevel]
@@ -51,48 +129,77 @@ class CoreUnit{
         return res
     }
 
-    launch(){
-        let self = this;
-        this.process = execFile(this.executable, this.args)
-        let handler = ()=>{
-            self.crashes.push(new Date())
-            let tmt = self.calculateRestartTimeout()
-            setTimeout(()=>{
-                if (self.killing) return;
-                self.launch()
-            }, tmt)
-        }
-        this.process.on('exit', handler)
-        this.process.stdout.on("data", data => { this.handleOutput(data, this) })
-        this.process.stderr.on("data", data => { this.handleOutput(data, this) })
-    }
-
-    handleOutput(data, self){
-        let msg = data.toString('utf8')
-        if (self.output){
-            console.log(msg)
-        }
-        if (typeof self.onoutput === "function"){
-            self.onoutput(msg)
-        }
-    }
-
-    switchOutput(onOff){
-        this.output = !!onOff;
-    }
-
-    restart(){
-        this.process.kill("SIGTERM");
-    }
-
-
-    kill(){
+    _performKill(){
         console.log("Killing core unit")
-        this.killing = true;
+        this.process.kill()
+
+        setTimeout(()=>{
+            if(this.sm.state ===  "shuttingDown"){
+                this.sm.handle.shutdownTimeoutExpired()
+            }
+        }, SHUTDOWN_TIMEOUT)
+    }
+
+    _performRestart(){
+        console.log('Restarting process');
         this.process.kill()
     }
+
+    handleOutput(data){
+        let msg = data.toString('utf8')
+        if (this.output){
+            console.log(msg)
+        }
+        if (typeof this.onoutput === "function"){
+            this.onoutput(msg)
+        }
+    }
+
+
+
 }
 
+
+class ExecutableChildProcess extends CoreUnit{
+    constructor(...args){
+        super(...args)
+        this.sm = prepareCoreUnitStateMachine.call(this, this.executable);
+    }
+
+
+    _performLaunch(){
+        this.process = execFile(this.executable, this.args)
+
+        this.process.on('exit', this._processExit.bind(this))
+        this.process.stdout.on("data", this.handleOutput.bind(this))
+        this.process.stderr.on("data", this.handleOutput.bind(this))
+        this.sm.handle.processRunning()
+    }
+
+}
+
+
+class NodeChildProcess extends CoreUnit{
+
+    constructor(...args){
+        super(...args)
+        this.sm = prepareCoreUnitStateMachine.call(this, this.executable);
+    }
+
+
+    _performLaunch(){
+        this.process = fork(this.executable, this.args, ()=>{
+            console.log(`Subprocess ${this.executable} started`);
+            this.sm.handle.processRunning()
+        })
+
+        this.process.on('exit', this._processExit.bind(this))
+        this.process.stdout.on("data", this.handleOutput.bind(this))
+        this.process.stderr.on("data", this.handleOutput.bind(this))
+    }
+
+
+}
 
 
 // ---------------------------------------------------------------------------------------------------------------------------
@@ -112,4 +219,97 @@ function getLimitedLengthArray(length){
     return arr;
 }
 
-module.exports = CoreUnit;
+
+function prepareCoreUnitStateMachine(name){
+        return new StateMachine(this, {
+            name: name,
+            stateMap: {
+                notRunning: {
+                    initial: true,
+                    transitions: {
+                        launch: {
+                            actions: this._performLaunch,
+                        },
+
+                        exitedNormally: {
+                            state: "terminated"
+                        },
+
+                        nonZeroExit: {
+                            state: "notRunning",
+                            actions: this._restartOnCrash
+                        },
+
+
+                        processRunning: {
+                            state: "running"
+                        }
+
+                    }
+                },
+
+                running: {
+                    transitions: {
+                        nonZeroExit: {
+                            state: "notRunning",
+                            actions: this._restartOnCrash
+                        },
+
+                        restart: {
+                            actions: this._performRestart
+                        },
+
+                        kill: {
+                            actions: this._kill,
+                            state: "shuttingDown"
+                        }
+                    }
+                },
+
+                restarting: {
+                    transitions: {
+                        nonZeroExit: {
+                            actions: this._performLaunch
+                        },
+
+                        exitedNormally: {
+                            actions: this._performLaunch
+                        },
+                    }
+
+                },
+
+                shuttingDown: {
+                    entry: this._setShutdownTimeout,
+                    transitions: {
+                        exitedNormally: {
+                            state: "terminated"
+                        },
+
+                        shutdownTimeoutExpired: {
+                            state: "shutdownTimeout"
+
+                        }
+
+                    }
+
+                },
+
+                shutdownTimeout: {
+                    final: true,
+                    entry: this._notifyShutdownTimeout
+                },
+
+                terminated: {
+                    final: true
+                }
+
+            }
+
+        }, { msgNotExist: StateMachine.Warn, traceLevel: StateMachine.TraceLevel.DEBUG })
+    }
+
+module.exports = {
+    NodeChildProcess: NodeChildProcess,
+    ExecutableChildProcess: ExecutableChildProcess
+};

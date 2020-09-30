@@ -4,6 +4,8 @@ import { IError as Err } from "../../../../common/IError";
 
 //Bakes select list for side panel
 // top boolean whether it is select for top block
+
+
 export function bakeCarousel(){
     let options = []
     options.push(util.bake("option", {text: "Topics"}))
@@ -483,8 +485,9 @@ export function bakeLoginBlock(loginClickHandler){
                         class: ["btn", "form-button"],
                         text: "Login",
                         listeners: {
-                            "click": loginClickHandler
+                            click: loginClickHandler
                         }
+
                     }),
                 })
             ]

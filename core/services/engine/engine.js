@@ -1,4 +1,4 @@
-const  CoreUnit = require("./CoreUnit.js");
+const  { ExecutableChildProcess, NodeChildProcess } = require("./CoreUnit.js");
 const readline = require("readline");
 const fs = require("fs");
 const path = require("path");
@@ -66,6 +66,7 @@ let config;
 
 let tor; //tor subprocess handle
 let chat; //chat subprocess handle
+
 
 
 //Parse islands config
@@ -145,7 +146,7 @@ function launchTor(){
     // Set tor env variables
     // launch tor
     let torCmdArgs = ["-f", torConfig.torrcPath];
-    tor = new CoreUnit(process.env["TOR"], torCmdArgs, true);
+    tor = new ExecutableChildProcess(process.env["TOR"], torCmdArgs, false);
     tor.launch();
     tor.onoutput = data=>{ outputHandler(data, "TOR") };
 }
@@ -153,7 +154,7 @@ function launchTor(){
 
 async function launchChat(){
 
-    let chatCmdArgs = [`${process.env["APPS"]}/chat/server/app.js`];
+    let chatCmdArgs = [`${process.env["APPS"]}/chat/server/island.js`];
     if (process.env["DEBUG"]){
         console.log("Setting DEUBG flag for chat")
         chatCmdArgs.push("--debug")
@@ -177,7 +178,7 @@ async function launchChat(){
     chatCmdArgs.push("-p")
     chatCmdArgs.push(process.env["CHAT_PORT"]);
 
-    chat = new CoreUnit(process.env["NODEJS"], chatCmdArgs, true)
+    chat = new ExecutableChildProcess(process.env["NODEJS"], chatCmdArgs, true)
     chat.launch();
     chat.onoutput = data=>{ outputHandler(data, "ISLANDS")};
 
