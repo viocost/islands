@@ -37,6 +37,7 @@ class IslandsChat{
         this.topicAuthorityManager = new TopicAuthorityManager(
             this.crossIslandMessenger,
             this.torConnector,
+            this.torConnector.torController,
             this.hm);
 
         this.topicInitAssistant = new TopicInitAssistant(this.clientRequestEmitter,

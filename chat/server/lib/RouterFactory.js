@@ -10,10 +10,10 @@ function AppRouter(vault){
         res.render("chat", {
             title:"Islands chat",
             version: global.VERSION,
-            registration: vault.isPending(),
+            debug: global.DEBUG || false,
+            registration: vault.isPending()
         });
     });
-
 
     // Posting to root path interpreted as a login attempt
     // processing login

@@ -97,6 +97,7 @@ class LoginAssistant{
     }
 
     async checkServices(request, connectionId, self){
+        console.log("Check services called");
 
         Logger.debug(`Received check services request. Checking...`, {cat: "login"})
 
@@ -124,8 +125,11 @@ class LoginAssistant{
             }
 
         }
+
         let response = Message.makeResponse(request, "island", Events.POST_LOGIN_SUCCESS)
         let session = self.sessionManager.getSessionByConnectionId(connectionId);
+
+        console.log(`Sending login success command: ${response.headers.command}`);
         session.send(response, connectionId);
     }
 
@@ -284,6 +288,7 @@ class LoginAssistant{
             await this.handlers[request.headers.command](request, connectionId, self)
         }catch(err){
             //handle error
+
             Logger.warn("Topic login error", {
                 error: err.message,
                 cat: "login",

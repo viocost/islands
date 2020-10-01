@@ -11,12 +11,15 @@ const Logger = require("./Logger.js");
 class TopicAuthorityManager{
     constructor(crossIslandMessenger = Err.required(),
                 connector = Err.required(),
+                torController,
                 historyManager){
 
         this.topicAuthorities = {};
         this.crossIslandMessenger = crossIslandMessenger;
         this.connector = connector;
+        this.torControler = torController;
         this.historyManager = historyManager;
+
     }
 
     /**

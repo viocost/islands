@@ -15,17 +15,17 @@ let err = createDerivedErrorClasses(TopicCreatorError, {
 
 export class TopicCreator {
 
-    constructor(nickname, topicName, connector, vaultHolder) {
+    constructor(nickname, topicName, session, vault) {
         WildEmitter.mixin(this)
         this.nickname = nickname;
         this.topicName = topicName;
-        this.connector = connector;
-        this.vaultHolder = vaultHolder;
+        this.session = session;
+        this.vault = vault
         this.sm = this._prepareStateMachine();
 
         //TODO GET RID OF SESSION KEY HERE!
-        this.sessionKey = vaultHolder.getVault().sessionKey
-        this.version = vaultHolder.getVault().version
+        this.sessionKey = vault.sessionKey
+        this.version = vault.version
 
     }
 
@@ -124,7 +124,7 @@ export class TopicCreator {
         let settings = Topic.prepareNewTopicSettings(this.version, this.nickname, this.topicName, ownerKeyPair.publicKey)
 
         // TODO Prepare new topic vault record
-        let vault = this.vaultHolder.getVault();
+        let vault = this.vault;
 
         let vaultRecord = vault.prepareVaultTopicRecord(this.version,
             ownerPkfp,
@@ -143,11 +143,11 @@ export class TopicCreator {
         request.body.vaultRecord = vaultRecord;
         request.body.vaultId = vault.id;
         request.signMessage(vault.privateKey)
-        this.connector.send(request)
+        this.session.acceptMessage(request)
     }
 
     _addTopicToVault(){
-        let vault = this.vaultHolder.getVault();
+        let vault = this.vault;
 
         //if(!Message.verifyMessage(vault.sessionKey, data)){
         //    throw new Error("Session key signature is invalid!")

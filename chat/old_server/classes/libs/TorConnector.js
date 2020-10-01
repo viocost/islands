@@ -503,10 +503,14 @@ class TorConnector extends EventEmitter{
     async isHSUp(hiddenServiceID){
         return await this.torController.isHSUp(hiddenServiceID);
     }
-    async checkLaunchIfNotUp(privateKey, discardKey){
+    async checkLaunchIfNotUp(privateKey){
         const hsid = iCrypto.onionAddressFromPrivateKey(privateKey);
         if(!await this.isHSUp(hsid)){
-            return await this.createHiddenService(privateKey, discardKey)
+            return await this.torController.launchOnionWithKey({
+                host: "127.0.0.1",
+                port: this.httpPORT,
+                key: privateKey
+            })
         }
     }
 
@@ -519,20 +523,13 @@ class TorConnector extends EventEmitter{
     async createHiddenService(privateKey, discardKey, awaitPublication = false){
 
         let params = {
-            port: this.getHSPort(),
-            keyType: privateKey ? "RSA1024" : "NEW",
-            detached: true,
-            discardKey: discardKey,
-            awaitPublication: awaitPublication
+            port: this.httpPORT,
+            keyType: "RSA1024",
+            host: "127.0.0.1",
+            key: privateKey
         };
-        if (privateKey){
-            let ic = new iCrypto();
-            ic.setRSAKey("priv", privateKey, "private")
-                .pemToBase64("priv", "b64priv", "private");
-            params.keyContent = ic.get("b64priv");
-        }
 
-        let torResponse = await this.torController.createHiddenService(params)
+        let torResponse = privateKey ? await this.torController.launchOnionWithKey(params) : await this.torController.createAndLaunchNewOnion(params)
         const result = {};
         result.serviceID = torResponse.messages.ServiceID;
         if (torResponse.messages.PrivateKey){

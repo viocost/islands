@@ -4,6 +4,11 @@ import { TopicRetriever } from  "./TopicRetriever"
 import { createClientIslandEnvelope, Message } from "../../../../common/Message";
 import { Internal, Events } from "../../../../common/Events"
 import { WildEmitter } from "../../../../common/WildEmitter"
+import { Topic } from "./Topic"
+import { iCrypto } from "../../../../common/iCrypto"
+
+let topics = []
+
 
 /**
  * It is given an authenticated session and vault
@@ -59,7 +64,7 @@ export class PostLoginInitializer {
             console.log(`Initializing existingTopics ${pkfp}`);
             existingTopics[pkfp] = new Topic(pkfp, topic.name, topic.key, topic.comment)
             setTopicListeners(existingTopics[pkfp])
-            existingTopics[pkfp].bootstrap(this.session, arrivalHub, version);
+            existingTopics[pkfp].bootstrap(this.session, this.arrivalHub, IslandsVersion.getVersion());
         }
 
 
@@ -68,7 +73,7 @@ export class PostLoginInitializer {
         //let { vault, existingTopics, hash, sign } = vault.pack();
         let packedVault = vault.pack()
 
-        let message = new Message(vault.version);
+        let message = new Message(IslandsVersion.getVersion());
         message.setSource(vault.id);
         message.setCommand(Internal.UPDATE_VAULT_FORMAT);
         message.addNonce();
@@ -96,7 +101,7 @@ export class PostLoginInitializer {
             // TODO fix version!
             let topic = vault.decryptTopic(data.topics[pkfp], vault.password)
             topics[pkfp] = new Topic(pkfp, topic.name, topic.key, topic.comment)
-            topics[pkfp].bootstrap(this.session, arrivalHub, version);
+            topics[pkfp].bootstrap(this.session, this.arrivalHub, IslandsVersion.getVersion());
         }
 
         vault.topics = topics;
@@ -144,24 +149,12 @@ export class PostLoginInitializer {
             return icn.get("blob-raw")
         };
 
-        let encryptBlob = (publicKey, blob, lengthChars = 4) => {
-            let icn = new iCrypto();
-            icn.createSYMKey("sym")
-                .asym.setKey("pub", publicKey, "public")
-                .addBlob("blob-raw", blob)
-                .sym.encrypt("blob-raw", "sym", "blob-cip", true)
-                .asym.encrypt("sym", "pub", "symcip", "hex")
-                .encodeBlobLength("symcip", 4, "0", "symcipl")
-                .merge(["blob-cip", "symcip", "symcipl"], "res")
-            return icn.get("res");
-        };
 
         let services = msg.body.services;
-        let sessionKey = msg.body.sessionKey;
         let res = {}
         for (let pkfp of Object.keys(services)) {
             let topicData = services[pkfp];
-            let topicPrivateKey = topics[pkfp].privateKey;
+            let topicPrivateKey = vault.topics[pkfp].privateKey;
 
             let clientHSPrivateKey, taHSPrivateKey, taPrivateKey;
 
@@ -177,7 +170,7 @@ export class PostLoginInitializer {
                 taHSPrivateKey = decryptBlob(topicPrivateKey, topicData.topicAuthority.taHSPrivateKey)
             }
 
-            topics[pkfp].loadMetadata(topicData.metadata);
+            vault.topics[pkfp].loadMetadata(topicData.metadata);
 
             let preDecrypted = {};
 
@@ -225,7 +218,7 @@ export class PostLoginInitializer {
             console.log(`Initializing existingTopics ${pkfp}`);
             existingTopics[pkfp] = new Topic(pkfp, topic.name, topic.key, topic.comment)
             setTopicListeners(existingTopics[pkfp])
-            existingTopics[pkfp].bootstrap(this.session, arrivalHub, version);
+            existingTopics[pkfp].bootstrap(this.session, this.arrivalHub, IslandsVersion.getVersion());
         }
 
 
@@ -235,7 +228,7 @@ export class PostLoginInitializer {
         //let { vault, existingTopics, hash, sign } = currentVault.pack();
         let packedVault = currentVault.pack()
 
-        let message = new Message(currentVault.version);
+        let message = new Message(IslandsVersion.getVersion());
         message.setSource(currentVault.id);
         message.setCommand(Internal.UPDATE_VAULT_FORMAT);
         message.addNonce();

@@ -106,6 +106,7 @@ function loggingIn(){
  */
 function handleLoginSuccess(stateMachine, eventName, args) {
 
+    console.log("Handling successful login");
     let settings = args[1]
     let uxBus = args[0]
     //let vault = vaultHolder.getVault();
@@ -137,7 +138,7 @@ function handleLoginSuccess(stateMachine, eventName, args) {
     let newMessageBlock = UI.bakeNewMessageControl(()=>{}, ()=>{});
     let messagesPanel = UI.bakeMessagesPanel(newMessageBlock)
     util.appendChildren(mainContainer, [sidePanel, messagesPanel]);
-    setupSidePanelListeners(uxBus,  stateMachine)
+    //setupSidePanelListeners(uxBus,  stateMachine)
     setupHotkeysHandlers()
     refreshTopics();
     // add listener to the menu button

@@ -4,6 +4,8 @@ import { IslandsVersion } from "../../../common/Version"
 import { PostLoginInitializer } from "./lib/PostLoginInitializer"
 import { MessageBus } from "../../../common/MessageBus"
 import { Vault } from "./lib/Vault";
+import { TopicCreator } from "./lib/TopicCreator"
+import { SendMessageAgent } from "./lib/SendMessageAgent"
 import * as UX from "./ui/UX"
 
 
@@ -12,6 +14,9 @@ document.addEventListener('DOMContentLoaded', event => {
     console.log(`Islands version is ${IslandsVersion.getVersion()}`);
 
     let uxBus = new MessageBus();
+
+    isDebug() && enableDebug(uxBus)
+
     UX.initialize(uxBus);
     isRegistration() ? prepareRegistration(uxBus)
         : prepareLogin(uxBus)
@@ -56,8 +61,15 @@ function initSession(loginAgent, uxBus, data) {
             postLoginInitializer.on(PostLoginInitializer.Success, (vault, topics) => {
                 console.log("Post login succeeded. Continuing...");
 
-                //TODO put settings
+                // TODO put settings
                 uxBus.emit(UX.UXMessage.LOGIN_SUCCESS, {soundOn: true})
+
+                if(isDebug()){
+                    //TEST only
+                    window.vault = vault;
+                    window.session = session;
+                }
+
             })
 
             postLoginInitializer.on(PostLoginInitializer.Fail, err => {
@@ -99,3 +111,19 @@ function wireAllTogether(vault, topics, uxBus) {
 }
 
 
+
+function enableDebug(uxBus){
+    console.log("Enabling debug mode!");
+    window.uxBus = uxBus
+    window.createTopic = function(nickname, topicName){
+
+        let tc = new TopicCreator(nickname, topicName, window.session, window.vault)
+        tc.run()
+    }
+
+
+    window.sendMessageTest(msg, topic){
+        let sendMessageAgent = new SendMessageAgent(topic, msg)
+        return sendMessageAgent.send();
+    }
+}

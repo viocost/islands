@@ -10,6 +10,7 @@ export class SendMessageAgent{
     constructor(topic, msg, recipient, files, onFilesUploaded){
         assert(topic instanceof Topic);
         assert(msg);
+        this.session = topic.connector;
         this.private = (recipient && recipient !== "ALL");
         this.recipient = recipient;
         this.topic = topic;
@@ -67,7 +68,7 @@ export class SendMessageAgent{
             message.travelLog = {};
             message.travelLog[currentTime] = "Outgoing processed on client.";
             message.signMessage(self.topic.privateKey);
-            self.topic.connector.send(message);
+            self.session.acceptMessage(message);
             console.log("Chat message enqueued");
         }, 100)
 

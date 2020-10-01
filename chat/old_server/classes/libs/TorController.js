@@ -52,12 +52,15 @@ class TorController extends TorControl{
         if(!port)  throw new err.noPort()
         if(!host)  throw new err.noHost()
         if(!host)  throw new err.noKey()
-        let request = `ADD_ONION ${this._preprocessKey(key)} Flags=detach Port=80,${host}:${port}`;
+        let portFull = `Port=80,${host}:${port}`
+        console.log(`PORT: ${portFull}`);
+        let request = `ADD_ONION ${this._preprocessKey(key)} Flags=detach ${portFull}`;
         return this._processOnionLaunchRequest(request)
     }
 
 
     _preprocessKey(privateKey){
+        console.log(`Preprocessing key: ${privateKey}`);
         if(/^ED25519-V3/.test(privateKey)) return privateKey
 
         let ic = new iCrypto()

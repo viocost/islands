@@ -152,6 +152,7 @@ export class LoginAgent{
 
 
         let vault = VaultFactory.initSaved(IslandsVersion.getVersion, this.vaultRaw, this._challenge.vaultId)
+        vault.password = this._password;
 
         this.emit(LoginAgentEvents.SUCCESS, this.session, vault)
     }
