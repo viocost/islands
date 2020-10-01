@@ -9,7 +9,7 @@
     "unbuild": "rm -rf node_modules || rd /s /q node_modules",
     "build": "npm i --production && cd ./node_modules/sjcl && ./configure --with-all && make && cd ../../",
     "build-dev": "npm i && cd ./node_modules/sjcl && ./configure --with-all && make && cd ../../",
-    "build-front": "webpack && webpack --config admin.config.js",
+    "build-front": "npm i %% webpack && webpack --config admin.config.js",
     "build-admin": "webpack --config admin.config.js",
     "build-chat": "webpack",
     "build-vault": "webpack --config vault.config.js"
