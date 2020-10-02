@@ -85,9 +85,26 @@ done
 
 # Checking if npm is installed
 if [[ ! $(npm --version) ]]; then
-    echo "npm not found. exiting.."
+    echo "npm not found. Install npm and try again. Exiting..."
     exit 1
 fi
+
+# Checking if make is installed
+if [[ ! $(make --version) ]]; then
+    echo "make not found. Install make and try again. Exiting..."
+    exit 1
+fi
+
+# Checking if python is present
+if [[ $(python --version) ]]; then
+    PYTHON=python
+elif [[ $(python3 --version) ]]; then
+    PYTHON=python3
+else
+    echo "Python not found. Install python and try again. Exiting..."
+    exit 1
+fi
+
 
 # Create directory tree
 #
@@ -133,7 +150,7 @@ function prepare_core_bin(){
         cp ${1} ${CORE_PATH}
     else
         if ! wget ${1}; then
-            echo "Failed to download mac core files. Exiting..."
+            echo "Failed to download core files from ${1}. Exiting..."
             exit 1
         fi
     fi
@@ -166,7 +183,7 @@ cp  ${INSTALLER_PATH}/zip-build.sh ${BUILD_PATH}
 # copy driver scripts
 #
 # generate default config
-${INSTALLER_PATH}/config-gen/generate.py -p ${CONFIG_PATH}
+${PYTHON} ${INSTALLER_PATH}/config-gen/generate.py -p ${CONFIG_PATH}
 #
 # copy apps and core scripts
 
@@ -184,11 +201,13 @@ $DEV && npm run build-dev || npm run build
 echo Copying engine
 cp -r ${INSTALLER_PATH}/services/engine ${BUILD_PATH}/apps
 
-
+# Building islands from source
 echo Preparing Islands chat
 cd ${INSTALLER_PATH}/../chat
 npm run unbuild
-$DEV && npm run build-dev || npm run build
+npm run build-dev && npm run build-front && npm run build
+
+[[ ! $DEV ]] && npm prune --production
 
 echo Copying chat
 cp -r ${INSTALLER_PATH}/../chat ${BUILD_PATH}/apps

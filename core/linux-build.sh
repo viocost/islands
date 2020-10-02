@@ -149,40 +149,49 @@ function install_python(){
 # TOR dependencies
 
 function zlib(){
-    wget -O -  "https://zlib.net/zlib-1.2.11.tar.gz" | tar zxvf -
-    cd zlib-1.2.11
-    ./configure --prefix="${CORE_PATH}" --libdir="${CORE_PATH}/lib" --sharedlibdir="${CORE_PATH}/lib" --includedir="${CORE_PATH}/include"
-    make -j$(nproc)
-    make install
-    cd $BUILD_PATH
+    wget -O -  "https://zlib.net/zlib-1.2.11.tar.gz" | tar zxvf - &&
+    cd zlib-1.2.11 &&
+    ./configure --prefix="${CORE_PATH}" --libdir="${CORE_PATH}/lib" --sharedlibdir="${CORE_PATH}/lib" --includedir="${CORE_PATH}/include" &&
+    make -j$(nproc) &&
+    make install &&
+    cd $BUILD_PATH ||
+    ( echo zlib build failed.
+    exit 1 )
 }
 
 function zstd(){
-    wget "https://github.com/facebook/zstd/archive/dev.zip"
-    unzip ./dev.zip -d ./zstd
-    cd ./zstd/zstd-dev/
-    make
-    cp ./lib/libzstd.* ${LIB_PATH}
-    cd $BUILD_PATH
-    rm -rf ./dev.zip ./zstd
+    wget "https://github.com/facebook/zstd/archive/dev.zip" &&
+    unzip ./dev.zip -d ./zstd &&
+    cd ./zstd/zstd-dev/ &&
+    make &&
+    cp ./lib/libzstd.* ${LIB_PATH} &&
+    cd $BUILD_PATH &&
+    rm -rf ./dev.zip ./zstd ||
+    ( echo zstd build failed.
+    exit 1 )
 }
 
 function libevent(){
-    wget -O - "https://github.com/libevent/libevent/releases/download/release-2.1.11-stable/libevent-2.1.11-stable.tar.gz" | tar zxvf -
-    cd libevent-2.1.11-stable
-    ./configure --prefix="${CORE_PATH}"
-    make -j $(nproc)
-    make install
-    cd $BUILD_PATH
+    wget -O - "https://github.com/libevent/libevent/releases/download/release-2.1.11-stable/libevent-2.1.11-stable.tar.gz" | tar zxvf - &&
+    cd libevent-2.1.11-stable &&
+    ./configure --prefix="${CORE_PATH}" &&
+    make -j $(nproc) &&
+    make install &&
+    cd $BUILD_PATH ||
+    ( echo libevent build failed.
+    exit 1 )
 }
 
 function libssl(){
-    wget -O - "https://www.openssl.org/source/openssl-1.1.1d.tar.gz" | tar zxvf -
-    cd openssl-1.1.1d
-    ./config --prefix="${CORE_PATH}"
-    make -j $(nproc)
-    make install
-    cd $BUILD_PATH
+    wget -O - "https://www.openssl.org/source/openssl-1.1.1d.tar.gz" | tar zxvf - &&
+    cd openssl-1.1.1d &&
+    ./config --prefix="${CORE_PATH}" &&
+    make -j $(nproc) &&
+    make install &&
+    cd $BUILD_PATH ||
+
+    ( echo libssl build failed.
+    exit 1 )
 }
 
 
@@ -197,23 +206,25 @@ function getall_mac(){
 }
 
 function install_tor(){
-    libevent
-    libssl
-    zlib
-    zstd
-    cd $BUILD_PATH
-    wget "https://dist.torproject.org/tor-0.4.2.6.tar.gz"
-    tar -xvf tor-0.4.2.6.tar.gz
-    cd tor-0.4.2.6
+    libevent &&
+    libssl  &&
+    zlib &&
+    zstd &&
+    cd $BUILD_PATH &&
+    wget "https://dist.torproject.org/tor-0.4.2.6.tar.gz" &&
+    tar -xvf tor-0.4.2.6.tar.gz &&
+    cd tor-0.4.2.6 &&
     ./configure --prefix=${CORE_PATH} \
             --with-libevent-dir="${LIB_PATH}" \
             --with-openssl-dir="${LIB_PATH}" \
             --with-zlib-dir="${LIB_PATH}" \
             --disable-manpage \
             --disable-html-manual \
-            --disable-asciidoc
-    make -j $(nproc) && make install
-    cd $BUILD_PATH
+            --disable-asciidoc &&
+    make -j $(nproc) && make install &&
+    cd $BUILD_PATH ||
+    ( echo "Tor build failed" &&
+    exit 1 )
 }
 
 function install_i2p(){

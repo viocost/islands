@@ -122,7 +122,7 @@ function enableDebug(uxBus){
     }
 
 
-    window.sendMessageTest(msg, topic){
+    window.sendMessageTest =  function (msg, topic){
         let sendMessageAgent = new SendMessageAgent(topic, msg)
         return sendMessageAgent.send();
     }

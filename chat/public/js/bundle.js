@@ -70424,18 +70424,12 @@ function enableDebug(uxBus) {
     var tc = new TopicCreator_TopicCreator(nickname, topicName, window.session, window.vault);
     tc.run();
   };
+
+  window.sendMessageTest = function (msg, topic) {
+    var sendMessageAgent = new SendMessageAgent_SendMessageAgent(topic, msg);
+    return sendMessageAgent.send();
+  };
 }
-/**
- * This function is for testing only and must be removed before release
- */
-
-
-function sendMessageTest(msg, topic) {
-  var sendMessageAgent = new SendMessageAgent_SendMessageAgent(topic, msg);
-  return sendMessageAgent.send();
-}
-
-window.sendMessage = sendMessageTest;
 
 /***/ })
 /******/ ]);
