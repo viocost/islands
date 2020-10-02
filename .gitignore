@@ -25,5 +25,3 @@ custom_config_link
 *.autosave
 .#*
 .projectile
-bundle.js
-admin.min.js
