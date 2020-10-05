@@ -64,6 +64,7 @@
     "@babel/preset-env": "^7.4.5",
     "@babel/runtime": "^7.2.0",
     "babel-loader": "^8.0.4",
+    "@babel/compat-data": "^7.9.0",
     "babel-polyfill": "^6.26.0",
     "brotli-webpack-plugin": "^1.1.0",
     "chai": "^4.2.0",
