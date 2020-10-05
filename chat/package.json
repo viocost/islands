@@ -6,9 +6,10 @@
   "main": "app.js",
   "scripts": {
     "test": "mocha",
-    "unbuild": "rm -rf node_modules || rd /s /q node_modules",
-    "build": "npm install && cd ./node_modules/sjcl && ./configure --with-all && make && cd ../../",
-    "build-front": "webpack && webpack --config admin.config.js",
+    "unbuild": "rm -rf node_modules || rd /s /q node_modules && rm -rf public/js/bundle.js public/js/admin.min.js",
+    "build": "npm i --production && cd ./node_modules/sjcl && ./configure --with-all && make && cd ../../",
+    "build-dev": "npm i && cd ./node_modules/sjcl && ./configure --with-all && make && cd ../../",
+    "build-front": "npm i && cd ./node_modules/sjcl && ./configure --with-all && make && cd ../../ && webpack && webpack --config admin.config.js",
     "build-admin": "webpack --config admin.config.js",
     "build-chat": "webpack",
     "build-vault": "webpack --config vault.config.js"
@@ -61,6 +62,7 @@
     "@babel/polyfill": "^7.2.3",
     "@babel/preset-env": "^7.4.5",
     "@babel/runtime": "^7.2.0",
+    "@babel/compat-data": "^7.9.0",
     "babel-loader": "^8.0.4",
     "babel-polyfill": "^6.26.0",
     "brotli-webpack-plugin": "^1.1.0",
