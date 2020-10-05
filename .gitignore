@@ -25,3 +25,6 @@ custom_config_link
 *.autosave
 .#*
 .projectile
+**/js/bindle.js
+**/js/admin.min.js
+package-lock.json
