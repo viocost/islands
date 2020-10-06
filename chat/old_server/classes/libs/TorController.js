@@ -44,7 +44,7 @@ class TorController extends TorControl{
     async createAndLaunchNewOnion({ host, port, keyType = "ED25519-V3" }){
         if(!port)  throw new err.noPort()
         if(!host)  throw new err.noHost()
-        let request = `ADD_ONION NEW:${this._preprocessKey(keyType)} Flags=detach Port=80,${host}:${port}`;
+        let request = `ADD_ONION NEW:${keyType} Flags=detach Port=80,${host}:${port}`;
         return this._processOnionLaunchRequest(request)
     }
 

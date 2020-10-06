@@ -101,7 +101,7 @@ export class TopicJoinAgent{
             self.arrivalHub.on(self.inviteCode.trim(), (msg)=>{ self.processServerMessage(self, msg)})
             self.arrivalHub.on(Events.JOIN_TOPIC_FAIL, (msg)=>{ self.onJoinTopicFail(self, msg)})
             console.log("Sending join request");
-            self.connector.send(request);
+            self.connector.acceptMessage(request);
         }, 100)
     }
 

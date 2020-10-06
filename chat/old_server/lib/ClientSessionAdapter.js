@@ -51,10 +51,6 @@ class ClientSessionAdapter{
     }
 
     addTopic(topicPkfp){
-        console.log(`Adding topic ${topicPkfp}`);
-        this.topics.add(topicPkfp);
-
-        console.log(`Now served topics: ${this.topics.toString(", ")}`);
     }
 
     deleteTopic(pkfp){

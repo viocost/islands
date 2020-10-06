@@ -2,17 +2,13 @@ import { WildEmitter } from "./WildEmitter";
 import { Events, Internal } from "../../../../common/Events";
 import { inRange } from "../../../../common/Util";
 import { assert } from "../../../../common/IError";
-import { Vault } from "./Vault"
 import { XHR } from "./xhr";
 import { Connector, ConnectionState } from "./Connector";
-import { MessageQueue } from  "./MessageQueue";
-import { ArrivalHub } from "./ArrivalHub";
 import  { ChatUtility }  from "./ChatUtility";
 import { Message } from "./Message";
 import { Topic } from "./Topic";
 import { DownloadAttachmentAgent } from "./DownloadAttachmentAgent";
 import { iCrypto } from "../../../../common/iCrypto"
-import { TopicJoinAgent } from "./TopicJoinAgent";
 import { SendMessageAgent } from "./SendMessageAgent";
 import { BootParticipantAgent } from "./BootParticipantAgent";
 

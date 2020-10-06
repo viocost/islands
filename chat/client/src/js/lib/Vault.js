@@ -3,6 +3,7 @@ import { verifyPassword } from "./PasswordVerify";
 import { Topic } from "../lib/Topic";
 import { iCrypto } from "../../../../common/iCrypto";
 import { WildEmitter } from "./WildEmitter";
+import { IslandsVersion } from "../../../../common/Version"
 import { Message } from "./Message";
 import { Events, Internal  } from "../../../../common/Events";
 import { assert } from "../../../../common/IError";
@@ -41,6 +42,9 @@ export class Vault{
         if(this.settings)
             return this.settings.sound;
     }
+
+
+
 
     static registerVault(password, confirm, version){
         return new Promise((resolve, reject) => {
@@ -253,6 +257,26 @@ export class Vault{
             console.log("%c VAULT  UPDATED",  "color: red; font-size: 20px");
             this.emit(Internal.VAULT_SETTINGS_UPDATED);
         }
+    }
+
+    deleteTopic(pkfp){
+        let topic = this.topics[pkfp];
+        let ic = new iCrypto();
+        ic.createNonce("n")
+            .bytesToHex("n", "nhex")
+            .setRSAKey("priv", this.privateKey, "private")
+            .privateKeySign("nhex", "priv", "sign")
+
+        let request = new Message(IslandsVersion.getVersion());
+        request.setCommand(Internal.DELETE_TOPIC);
+        request.setSource(this.id);
+        request.body.vaultId = this.id;
+        request.body.topicPkfp = pkfp;
+        request.body.vaultNonce = ic.get("nhex")
+        request.body.vaultSign = ic.get("sign")
+        request.addNonce();
+        request.signMessage(topic.getPrivateKey());
+        this.connector.acceptMessage(request);
     }
 
     /**

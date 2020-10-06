@@ -126,4 +126,10 @@ function enableDebug(uxBus){
         let sendMessageAgent = new SendMessageAgent(topic, msg)
         return sendMessageAgent.send();
     }
+
+
+    window.deleteTopic = function(pkfp){
+        vault.deleteTopic(pkfp)
+    }
 }
+

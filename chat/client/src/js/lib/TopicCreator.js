@@ -79,17 +79,21 @@ export class TopicCreator {
     }
 
     async _initTopic(stateMachine, evName, args) {
+        console.log("Init toipc top of the function");
         let nickname = this.nickname;
         let topicName = this.topicName;
 
         console.log("Checking input");
         nickname = String(nickname).trim();
         if (!nickname || !/^.{2,20}$/.test(nickname)) {
+            console.log("Nickname entered is invalid");
             this.emit(Events.INIT_TOPIC_ERROR,
                 `Nickname entered is invalid`);
             return;
         }
         if (!/^.{0,20}$/.test(topicName)) {
+
+            console.log("Topic name entered is invalid");
             this.emit(Events.INIT_TOPIC_ERROR,
                 `Topic name entered is invalid`);
             return;

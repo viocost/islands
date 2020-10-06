@@ -452,7 +452,7 @@ export class Topic{
         }
         request.addNonce();
         request.signMessage(this.privateKey);
-        this.connector.send(request)
+        this.connector.acceptMessage(request)
     }
 
 
@@ -475,7 +475,7 @@ export class Topic{
             request.body.nickname = myNickNameEncrypted;
             request.body.topicName = topicNameEncrypted;
             request.signMessage(self.privateKey);
-            self.connector.send(request);
+            self.connector.acceptMessage(request);
         }, 100)
 
     }
@@ -512,7 +512,7 @@ export class Topic{
         };
         request.set("body", body);
         request.signMessage(this.privateKey);
-        this.connector.send(request);
+        this.connector.acceptMessage(request);
     }
 
     updatePendingInvites(userInvites){
@@ -548,7 +548,7 @@ export class Topic{
         request.body.metadataId = this.metadataId;
         request.body.myNickname = myNickname;
         request.signMessage(this.privateKey);
-        this.connector.send(request);
+        this.connector.acceptMessage(request);
         console.log(`Nicknames exchange request sent: nickname: ${myNicknameRaw}`);
     }
 
@@ -597,7 +597,7 @@ export class Topic{
                             ChatUtility.symKeyEncrypt(curNickname, sharedKey));
         message.setAttribute(Internal.METADATA_ID, self._metadata.getId());
         message.signMessage(self.privateKey);
-        self.connector.send(message);
+        self.connector.acceptMessage(message);
     }
 
     requestNickname(pkfp){
@@ -667,7 +667,7 @@ export class Topic{
         request.set("body", body);
         request.signMessage(this.privateKey);
         console.log("Sending update settings request");
-        this.connector.send(request);
+        this.connector.acceptMessage(request);
     }
 
     //~END SETTINGS ///////////////////////////////////////////////////////////
@@ -682,7 +682,7 @@ export class Topic{
         request.body.message = ChatUtility.encryptStandardMessage(message,
             this.getPublicKey);
         request.signMessage(this.privateKey);
-        this.connector.send(request)
+        this.connector.acceptMessage(request)
     }
 
     processMessagesLoaded(msg, self){

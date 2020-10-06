@@ -123,8 +123,14 @@ class TopicInitAssistant{
         response.body.topicPkfp = request.body.topicPkfp;
 
         let session = self.sessionManager.getSessionByConnectionId(connectionId);
-        session.addTopic(request.body.topicPkfp);
-        session.send(response, connectionId);
+        if(session){
+            console.log("Trying to add topic to a session");
+
+            session.addTopic(request.body.topicPkfp);
+            session.send(response, connectionId);
+        } else {
+            console.log('Active session is not found!');
+        }
     }
 
     /**

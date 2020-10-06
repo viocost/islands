@@ -17,8 +17,16 @@ class SessionAdapter{
                 break;
             }
         }
+    }
 
+    addTopic(){
+        //Sessions used to track served topics but they don't do it anymore
+        //Thus doing nothing here.
+    }
 
+    deleteTopic(){
+        //Sessions used to track served topics but they don't do it anymore
+        //Thus doing nothing here.
     }
 
 }

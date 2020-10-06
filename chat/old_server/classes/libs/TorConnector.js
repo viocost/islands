@@ -520,7 +520,7 @@ class TorConnector extends EventEmitter{
      * @param discardKey
      * @returns {Promise}
      */
-    async createHiddenService(privateKey, discardKey, awaitPublication = false){
+    async createHiddenService(privateKey){
 
         let params = {
             port: this.httpPORT,
