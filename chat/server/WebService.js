@@ -15,7 +15,6 @@ class WebService extends EventEmitter{
         routers = [],
         port
     }){
-
         super()
         this._port = port;
         this._host = host;

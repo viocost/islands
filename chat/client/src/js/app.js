@@ -115,6 +115,7 @@ function wireAllTogether(vault, topics, uxBus) {
 function enableDebug(uxBus){
     console.log("Enabling debug mode!");
     window.uxBus = uxBus
+
     window.createTopic = function(nickname, topicName){
 
         let tc = new TopicCreator(nickname, topicName, window.session, window.vault)
@@ -126,7 +127,6 @@ function enableDebug(uxBus){
         let sendMessageAgent = new SendMessageAgent(topic, msg)
         return sendMessageAgent.send();
     }
-
 
     window.deleteTopic = function(pkfp){
         vault.deleteTopic(pkfp)
