@@ -156,11 +156,12 @@ class TopicJoinAssistant {
             response.body.inviterPkfp = taResponse.body.inviterPkfp;
             response.body.inviteCode = pendingRequest.inviteCode;
             let session = self.sessionManager.getSessionBySessionID(pendingRequest.vaultId);
-            session.addTopic(pendingRequest.pkfp);
             if(!session){
                 Logger.warn(`Session ${pendingRequest.vaultId} not found.`)
                 return;
             }
+
+            session.addTopic(pendingRequest.pkfp);
             session.broadcast(response);
             Logger.debug("Join notification sent!", {cat: "topic_join"});
         } catch (err) {

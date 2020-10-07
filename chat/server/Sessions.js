@@ -24,7 +24,7 @@ class Sessions{
     }
 
     getActive(){
-        return this._sessions.filter(s=> !session.isPaused())[0]
+        return this._sessions.filter(session=> !session.isPaused())[0]
     }
 
     get pausedSessions(){

@@ -1,4 +1,5 @@
-const CuteSet  = require("cute-set")
+const CuteSet = require("cute-set");
+const { log } = require("winston");
 const { WildEmitter } = require("../../common/WildEmitter")
 const { SessionAdapter } = require("./SessionAdapter")
 
@@ -27,9 +28,13 @@ class SessionManagerAdapter{
     //this should be vault id
     // The purpose of this is to give any random active session for given vault
     getSessionBySessionID(vaultId){
+        console.log(`Attempt to find a session by vault id: ${vaultId}`);
+        if(!vaultId){
+            throw new Error("No vault id provided")
+        }
         let account = this._accounts.filter(acc=> acc.vault.getId() === vaultId)[0]
         if(account){
-            return new SessionAdapter(account.sessions.getActive())
+            return new SessionAdapter(account.sessions)
         }
     }
 

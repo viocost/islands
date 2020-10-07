@@ -6,6 +6,8 @@ import { MessageBus } from "../../../common/MessageBus"
 import { Vault } from "./lib/Vault";
 import { TopicCreator } from "./lib/TopicCreator"
 import { SendMessageAgent } from "./lib/SendMessageAgent"
+import { TopicJoinAgent } from "./lib/TopicJoinAgent"
+import { Internal, Events } from "../../../common/Events"
 import * as UX from "./ui/UX"
 
 
@@ -130,6 +132,22 @@ function enableDebug(uxBus){
 
     window.deleteTopic = function(pkfp){
         vault.deleteTopic(pkfp)
+    }
+
+    window.joinTopic = function(nickname, topicName, inviteString){
+       
+        let vault = window.vault;
+        let arrivalHub = vault.arrivalHub;
+        let connector = vault.connector;
+        let topicJoinAgent = new TopicJoinAgent(nickname, topicName, inviteString, arrivalHub, connector, vault);
+
+        topicJoinAgent.on(Internal.JOIN_TOPIC_SUCCESS, (data)=>{
+            // data is object: { pkfp: pkfp, nickname: nickname }
+            console.log("Topic join successful");
+        })
+        topicJoinAgent.on(Internal.JOIN_TOPIC_FAIL, ()=>{ console.log("Join topic fail received from the agent")})
+        topicJoinAgent.start()
+
     }
 }
 

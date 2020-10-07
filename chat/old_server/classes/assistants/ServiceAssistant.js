@@ -46,6 +46,7 @@ class ServiceAssistant{
      * HANDLERS
      *****************************************************/
 
+
     async metadataIssue(envelope, self){
         Logger.verbose("Metadata issue received");
         let message = envelope.payload;
@@ -70,7 +71,7 @@ class ServiceAssistant{
         }
 
         let newMetadata = Metadata.parseMetadata(message.body.metadata);
-        newMetadata.setSettings(prevMeta.body.settings);
+        newMetadata.setSettings(prevMeta.body.settings || {});
         await self.hm.appendMetadata(newMetadata.toBlob(), message.headers.pkfpDest);
         let session = self.sessionManager.getSession(message.headers.pkfpDest);
         if (session){
