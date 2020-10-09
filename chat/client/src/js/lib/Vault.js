@@ -432,7 +432,7 @@ export class Vault{
     }
 
     // Saves current sate of the vault on the island
-    // cause - cause for vault update
+    // cause - reasoun for vault update
     save(cause){
         if (!this.password || !this.privateKey || !this.topics){
             throw new Error("Vault object structure is not valid");
@@ -451,7 +451,7 @@ export class Vault{
         message.signMessage(this.privateKey);
 
         console.log("SAVING VAULT");
-        this.connector.send(message)
+        this.connector.acceptMessage(message)
     }
 
     saveVaultSettings(){
@@ -467,7 +467,7 @@ export class Vault{
         message.signMessage(this.privateKey);
 
         console.log("UPDATING VAULT SETTINGS");
-        this.connector.send(message)
+        this.connector.acceptMessage(message)
     }
 
     changePassword(newPassword){

@@ -36,6 +36,7 @@ class Vault{
         if(requestEmitter){
             requestEmitter.on(Internal.UPDATE_VAULT_FORMAT, this.updateVaultFormat.bind(this))
             requestEmitter.on(Internal.SAVE_VAULT_SETTINGS, this.saveVaultSettings.bind(this))
+            requestEmitter.on(Internal.SAVE_VAULT, this.saveVault.bind(this))
         }
     }
 
@@ -173,7 +174,46 @@ class Vault{
         return ic.get("verified")
     }
 
+    /**
+     * This funcion called when the entire vault needs to be resaved.
+     * One particular use case if for password change.
+     * The entire vault is re-encrypted with new key and resaved
+     */
+    saveVault(request){
+        console.log("SAVE VAULT REQUEST RECEIVED");
+        let vaultId = request.headers.pkfpSource;
+        let { vault, topics, hash, sign } = request.body
+        let publicKey = this.getPublicKey()
+
+        //verifying topic data
+        this.verifyVault(vault, hash, sign, publicKey);
+
+        //all is good. Writing
+        this._writeVault(vaultId, vault, publicKey, hash, topics)
+        console.log("Vault written successfully");
+
+    }
+
+
+
     saveNewVault(vaultBlob, hash, signature, publicKey, id){
+
+        this.verifyVault(vaultBlob, hask, signature, publicKey)
+
+        Logger.debug("Signature is valid");
+
+        if (!id){
+            do{
+                id = Vault.generateId();
+            }while (this.isVaultExist());
+        } else if (this.isVaultExist()){
+            throw new Error("Vault already exists");
+        }
+        this._writeVault(id, vaultBlob, publicKey, hash);
+        return id;
+    }
+
+    verifyVault(vaultBlob, hash, signature, publicKey){
         let ic = new iCrypto();
         ic.addBlob("vaulthex", vaultBlob)
             .addBlob("hash", hash)
@@ -189,18 +229,6 @@ class Vault{
 
             throw new Error(`Vault hash is invalid. Passed: ${hash}, calculated: ${ic.get("calc-hash")}`);
         }
-
-        Logger.debug("Signature is valid");
-
-        if (!id){
-            do{
-                id = Vault.generateId();
-            }while (this.isVaultExist());
-        } else if (this.isVaultExist()){
-            throw new Error("Vault already exists");
-        }
-        this._writeVault(id, vaultBlob, publicKey, hash);
-        return id;
     }
 
     saveTopic(vaultId, topicPkfp, topicBlob){
@@ -363,13 +391,30 @@ class Vault{
                 fs.existsSync(pubKey));
     }
 
-    _writeVault(id, blob, publicKey, hash){
+
+    _writeVault(id, blob, publicKey, hash, topics = {}){
+        //Checking if vault directory exist
         if(!fs.existsSync(this.vaultDirectory)){
+            //creating if doesn't exist
             fs.mkdirSync(this.vaultDirectory);
         }
+
+        //Same about toipcs directory
         if (!fs.existsSync(path.join(this.vaultDirectory, "topics"))){
             fs.mkdirSync(path.join(this.vaultDirectory, "topics"));
         }
+
+
+        //If any topics are passed
+        if(topics){
+            //writing them
+            for(let pkfp in topics){
+                fs.writeFileSync(path.join(this.vaultDirectory, "topics", pkfp), topics[pkfp])
+            }
+        }
+
+
+        //Finalizing: writing vault master key, public key and hash
         fs.writeFileSync(path.join(this.vaultDirectory, "vault"), blob);
         fs.writeFileSync(path.join(this.vaultDirectory, "publicKey"), publicKey);
         fs.writeFileSync(path.join(this.vaultDirectory, "hash"), hash);

@@ -8,6 +8,7 @@ import { TopicCreator } from "./lib/TopicCreator"
 import { SendMessageAgent } from "./lib/SendMessageAgent"
 import { TopicJoinAgent } from "./lib/TopicJoinAgent"
 import { Internal, Events } from "../../../common/Events"
+import { PasswordChangeAgent } from "./lib/PasswordChangeAgent"
 import * as UX from "./ui/UX"
 
 
@@ -149,5 +150,12 @@ function enableDebug(uxBus){
         topicJoinAgent.start()
 
     }
+
+
+    window.changePassword = (passwd)=>{
+        let passwordChangeAgent = new PasswordChangeAgent(passwd, passwd, window.vault);
+        passwordChangeAgent.run()
+    }
+
 }
 
