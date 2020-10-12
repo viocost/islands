@@ -1,7 +1,6 @@
 const { iCrypto } = require("./iCrypto")
 const { clone } = require("./ObjectUtil")
 
-
 /**
  * Message is the major data type used for client-server-client communication
  * 
@@ -89,6 +88,10 @@ class Message{
 
     setCommand(command){
         this.headers.command = command
+    }
+
+    setBody(body){
+        this.body = body;
     }
 
     addNonce(){

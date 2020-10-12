@@ -167,7 +167,7 @@ class ConnectorSocketIO extends Connector{
 
 
             }
-        }, { msgNotExistMode: StateMachine.Warn, traceLevel: StateMachine.TraceLevel.DEBUG })
+        }, { msgNotExistMode: StateMachine.Warn  })
     }
 
     _prepareSocket(connectionString, reconnectAttempts = 5, reconnectTimeout = 4000){
@@ -235,7 +235,7 @@ class ConnectorSocketIOPassive extends Connector{
         }
 
         socket.on("disconnect", ()=>{
-            console.log("Session socket dead");
+            console.log("Session socket has disconnected");
         }),
 
 

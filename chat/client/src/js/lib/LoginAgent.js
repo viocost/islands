@@ -107,6 +107,7 @@ export class LoginAgent{
      * Secret here is already re-encrypted with session key
      */
     _decryptSuccessHandler(stateMachine, eventName, args){
+
         let sessionKey = args[0]
         let secret = args[1]
 
@@ -198,6 +199,7 @@ export class LoginAgent{
             this.sm.handle.decryptSuccess(sessionKeyAgent.getKey(), secretSessionEncrypted);
 
         } catch (err){
+            console.log("Decryption error");
             this.sm.handle.decryptError(err);
             return;
         }

@@ -21,7 +21,13 @@ if(!pathToIsland || !fs.existsSync(pathToIsland)){
 
 gulp.task("client", ()=>{
     let clientWatcher = gulp.watch("client/src/**/*")
+    let commonWatcher = gulp.watch("common/**/*")
     clientWatcher.on('change', ()=>{
+        let cmd = `./refresh.sh -p ${pathToIsland} -bf`
+        shelljs.exec(cmd);
+    })
+
+    commonWatcher.on('change', ()=>{
         let cmd = `./refresh.sh -p ${pathToIsland} -bf`
         shelljs.exec(cmd);
     })
