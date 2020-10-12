@@ -20,6 +20,8 @@ export class PasswordChangeAgent{
 
     run(){
         console.log("Changing password of the vault");
+
+        // Error checks
         if(this.confirm !== this.password){
             console.log("Password don't match");
             this.emit(PasswordChangeEvents.fail, "Password and confirmation don't match");
@@ -31,6 +33,7 @@ export class PasswordChangeAgent{
             this.emit(PasswordChangeEvents.fail, "Entered existing password");
             return;
         }
+        //end
 
         console.log("All checks are good. Resaving vault...");
 

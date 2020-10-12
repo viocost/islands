@@ -245,9 +245,11 @@ class BootLeaveAssistant extends Assistant{
     getClientErrorType(command){
         let errorTypes = {}
         errorTypes[Internal.DELETE_TOPIC] = Internal.DELETE_TOPIC_ERROR;
-        errorTypes[Internal.BOOT_PARTICPANT] = Internal.BOOT_PARTICPANT_ERROR;
+        errorTypes[Internal.BOOT_PARTICIPANT] = Internal.BOOT_PARTICPANT_ERROR;
 
-        if (errorTypes.hasOwnProperty(command)){
+        console.dir(errorTypes)
+
+        if (command in errorTypes){
             return errorTypes[command]
         } else {
             throw new Error(`Invalid error type for ${command}`)
@@ -266,15 +268,16 @@ class BootLeaveAssistant extends Assistant{
             delete_topic: this.deleteTopic
 
         }, this.clientErrorHandler)
+
     }
 
 
     subscribeToCrossIslandsMessages(crossIslandMessenger){
         let handlers = {
-            boot_participant: this.bootParticipantIncoming,
             u_booted: this.leaveTopicOnBoot
         }
         handlers[Internal.DELETE_TOPIC] = this.processTopicLeave
+        handlers[Internal.BOOT_PARTICIPANT] = this.bootParticipantIncoming
         this.subscribe(crossIslandMessenger, handlers, this.crossIslandErrorHandler)
     }
     /*****************************************************

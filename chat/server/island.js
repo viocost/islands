@@ -1,5 +1,5 @@
 const { buildConfig } = require("./Config")
-const { Vault, Vaults } = require("./Vault")
+const { Vault } = require("./Vault")
 const { WebService } = require("./WebService")
 const { parseArguments } = require("./ArgParser");
 const { Sessions } = require("./Sessions")
@@ -16,7 +16,6 @@ const fs = require("fs-extra")
 const path = require("path")
 const { VaultSecretary } = require("./VaultSecretary");
 
-const HistoryManager = require("../old_server/classes/libs/HistoryManager.js");
 const { SessionManagerAdapter } = require("./lib/SessionManagerAdapter")
 
 const ClientRequestEmitter = require("../old_server/classes/libs/ClientRequestEmitter.js");
@@ -24,11 +23,6 @@ const ClientRequestEmitter = require("../old_server/classes/libs/ClientRequestEm
 const IslandsChat = require("../old_server/classes/IslandsChat")
 
 
-//Legacy managers. Have to go eventually
-const managers = {};
-
-
-//create express
 function main(){
     console.log("Starting Islands...");
 

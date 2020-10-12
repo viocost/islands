@@ -9,7 +9,9 @@ import { SendMessageAgent } from "./lib/SendMessageAgent"
 import { TopicJoinAgent } from "./lib/TopicJoinAgent"
 import { Internal, Events } from "../../../common/Events"
 import { PasswordChangeAgent } from "./lib/PasswordChangeAgent"
+import { BootParticipantAgent } from "./lib/BootParticipantAgent";
 import * as UX from "./ui/UX"
+
 
 
 document.addEventListener('DOMContentLoaded', event => {
@@ -163,6 +165,12 @@ function enableDebug(uxBus){
     window.changePassword = (passwd)=>{
         let passwordChangeAgent = new PasswordChangeAgent(passwd, passwd, window.vault);
         passwordChangeAgent.run()
+    }
+
+    window.bootParticipant = (topic, participantPkfp)=>{
+        let agent = new BootParticipantAgent(topic, participantPkfp, vault.connector)
+        agent.boot()
+
     }
 
 }

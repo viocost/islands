@@ -19,7 +19,7 @@ export class BootParticipantAgent{
             request.setDest(this.topic.getMetadata().getTAPkfp());
             request.setAttribute("pkfp", this.bootCandidatePkfp)
             request.signMessage(this.topic.privateKey);
-            this.connector.send(request)
+            this.connector.acceptMessage(request)
             console.log("request sent");
         }, 100)
     }

@@ -39,6 +39,13 @@ gulp.task("server", ()=>{
         let cmd = `./refresh.sh -p ${pathToIsland}`
         shelljs.exec(cmd);
     })
+
+    let oldServerWatcher = gulp.watch("old_server/**/*")
+
+    oldServerWatcher.on('change', ()=>{
+        let cmd = `./refresh.sh -p ${pathToIsland}`
+        shelljs.exec(cmd);
+    })
 })
 
 gulp.task('watch', gulp.parallel(['server', 'client']))

@@ -274,16 +274,28 @@ class TopicAuthority extends EventEmitter{
     }
 
     async processBootRequest(request){
+        console.log("Processing boot request!");
+
         let requestorPkfp = request.headers.pkfpSource;
+        console.log(`pkfp ${requestorPkfp}`);
         let lastMeta = this.getCurrentMetadata();
+        console.dir(request);
+        console.dir(lastMeta);
+
         let bootCandidate = lastMeta.body.participants[request.body.pkfp];
+
+        console.log(`cal rem participants ${bootCandidate.pkfp}`);
         let remainingParticipants = new CuteSet(Object.keys(lastMeta.body.participants)).minus(request.body.pkfp).toArray();
 
+
+        console.log("Checking rights");
         if (lastMeta.body.participants[requestorPkfp].rights < 3){
             //Todo log suspicious request
             throw new Error("requester has not enough rights to boot");
         }
+        console.log("About to exclude participant");
         await this._excludeParticipant(bootCandidate.pkfp);
+        console.log("Participant excluded");
         let noticeToBooted = new ServiceMessage(this.getPkfp(), bootCandidate.pkfp, "u_booted");
         this.emit("send_notice", {notice: noticeToBooted, residence: bootCandidate.residence});
         //issue metadata
