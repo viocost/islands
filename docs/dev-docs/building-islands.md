@@ -11,30 +11,18 @@ Additional dependencies may be required.
 Islands works natively on Windows, MacOS and Linux.
 This achieved by compiling required binaries in every operating system.
 
-There are 3 builder scripts:
-- core/linux-build.sh
-- core/mac-build.sh
-- core/win-build.bat
+There are 3 builder scripts in <git checkout>/core/:
+- linux-build.sh
+- mac-build.sh
+- win-build.bat
 
-Run each of them with parameter  -p specifies destination directory (previously created)
+Run each of them with parameter  -p <dest> specifies destination directory. 
+If destination directory doesn't exist, script will attempt to create it. 
+NOTE! Make sure you are in <git checkout>/core directory before running a script.
 There are also optional parameters. Run script with -h flag to learn more.
 
-Script will produce islands/<os_name> directory and islands/<os_name>.zip
+Script will produce <dest>/islands/<os_name> directory and <dest>/islands/<os_name>.zip
 file, which contains <os_name> directory compressed.
-
-## Building Islands
-### Backend
-To build backend from /islands/chat directory run either
-`npm run build` - production
-`npm run build-dev` - development
-
-to clean, run:
-`npm run unbuild`
-
-### Frontend
-- To rebuild frontend run 
-`npm run build-front`
-Note, that dev packages must be installed. If not - run `npm run build-dev` first
 
 
 ## Main build script 
@@ -53,6 +41,21 @@ The script will unzip supplied binaries, rebuild islands backend and
 bundles it all together at specified destination directory.
 
 Once the script has finished its work - the islands should now be functional.
+
+
+## Building Islands 
+### Backend
+To build backend from /islands/chat directory run either
+`npm run build` - production
+`npm run build-dev` - development
+
+to clean, run:
+`npm run unbuild`
+
+### Frontend
+- To rebuild frontend run 
+`npm run build-front`
+Note, that dev packages must be installed. If not - run `npm run build-dev` first
 
 ## Running islands
 There are 3 scripts to run islands under various OSes:

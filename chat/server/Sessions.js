@@ -4,8 +4,7 @@ const { MessageTypes, SessionEvents } = require("../common/Session")
 //This object holds all active sessions that serve a particular vault
 //There could be only one sessions object per vault
 class Sessions{
-    constructor(vault, requestEmitter){
-        this._vault = vault;
+    constructor(requestEmitter){
         this._sessions = [];
         this._requestEmitter = requestEmitter
 

@@ -34,6 +34,42 @@ function prepareRegistration(uxBus) {
 
 function prepareLogin(uxBus) {
     let loginAgent = new LoginAgent(ConnectorAbstractFactory.getChatConnectorFactory())
+
+    loginAgent.on(LoginAgentEvents.DECRYPTION_ERROR, () => {
+        uxBus.emit(UX.UXMessage.LOGIN_ERROR, "Invalid password.")
+    })
+
+    //Setting handler for correct password
+    loginAgent.on(LoginAgentEvents.SUCCESS, (session, vault) => {
+        console.log("Login agent succeeded. continuing initialization");
+
+        /**
+            * PostLoginInitiazlier should initialize vault, topics and
+            * Ask server to initialize hidden services for active topcis
+            * Once succeed, it should return a hashmap of topics and the vault
+            */
+        let postLoginInitializer = new PostLoginInitializer(session, vault)
+        postLoginInitializer.on(PostLoginInitializer.Success, (vault, topics) => {
+            console.log("Post login succeeded. Continuing...");
+
+            // TODO put settings
+            uxBus.emit(UX.UXMessage.LOGIN_SUCCESS, {soundOn: true})
+
+            if(isDebug()){
+                //TEST only
+                window.vault = vault;
+                window.session = session;
+            }
+
+        })
+
+        postLoginInitializer.on(PostLoginInitializer.Fail, err => {
+            uxBus.emit(UX.UXMessage.LOGIN_ERROR, err.message)
+        })
+
+        postLoginInitializer.run();
+    })
+
     uxBus.on(UX.UXMessage.LOGIN_CLICK, initSession.bind(null, loginAgent, uxBus))
     uxBus.emit(UX.UXMessage.TO_LOGIN)
 }
@@ -44,44 +80,16 @@ function initSession(loginAgent, uxBus, data) {
     uxBus.emit(UX.UXMessage.LOGIN_PROGRESS)
     console.log("Init session called");
 
+
+
+    //Setting handler for wrong password
+
     //Here we need a really small delay
     //in order for UI to work properly
+
     setTimeout(() => {
         loginAgent.acceptPassword(password);
-        loginAgent.on(LoginAgentEvents.DECRYPTION_ERROR, () => {
-            uxBus.emit(UX.UXMessage.LOGIN_ERROR, "Invalid password.")
-        })
 
-        loginAgent.on(LoginAgentEvents.SUCCESS, (session, vault) => {
-            console.log("Login agent succeeded. continuing initialization");
-
-            /**
-             * PostLoginInitiazlier should initialize vault, topics and
-             * Ask server to initialize hidden services for active topcis
-             * Once succeed, it should return a hashmap of topics and the vault
-             */
-            let postLoginInitializer = new PostLoginInitializer(session, vault)
-            postLoginInitializer.on(PostLoginInitializer.Success, (vault, topics) => {
-                console.log("Post login succeeded. Continuing...");
-
-                // TODO put settings
-                uxBus.emit(UX.UXMessage.LOGIN_SUCCESS, {soundOn: true})
-
-                if(isDebug()){
-                    //TEST only
-                    window.vault = vault;
-                    window.session = session;
-                }
-
-            })
-
-            postLoginInitializer.on(PostLoginInitializer.Fail, err => {
-                uxBus.emit(UX.UXMessage.LOGIN_ERROR, err.message)
-            })
-
-            postLoginInitializer.run();
-
-        })
     }, 200)
 }
 

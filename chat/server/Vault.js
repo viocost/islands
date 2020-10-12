@@ -19,10 +19,12 @@ class Vault{
     constructor({
         vaultDirectory,
         vaultId,
-        requestEmitter
+        requestEmitter,
+        secretary
     }){
         this.id  = vaultId;
         this.vaultDirectory = vaultDirectory;
+        this.secretary = secretary;
 
         if(!fs.existsSync(this.vaultDirectory)){
             Logger.debug("Vaults directory doesn't exist. Creating...");
@@ -102,7 +104,7 @@ class Vault{
         this._writeVault(vault, publicKey, hash)
         console.log("VAULT SHOULD BE UPDATED NOW");
 
-        this.notifyUser(Internal.VAULT_SETTINGS_UPDATED, id)
+        this.notifyClient(Internal.VAULT_SETTINGS_UPDATED, id)
     }
 
 
@@ -121,26 +123,14 @@ class Vault{
         }
         console.log("VAULT SHOULD BE UPDATED NOW");
 
-        this.notifyUser(Internal.VAULT_FORMAT_UPDATED, id)
+        this.notifyClient(Internal.VAULT_FORMAT_UPDATED, id)
 
     }
 
 
-    notifyUser(event = Err.required("Notify user event"), vaultId = Err.required("Vault id")){
-
-        if(!this.clientSessionManager){
-            return;
-        }
-
-        let session = this.clientSessionManager.getSessionBySessionID(vaultId);
-
-        if(!session) return;
-
-        let response = new Message()
-        response.setSource("island");
-        response.setDest(vaultId);
-        response.setCommand(event)
-        session.broadcast(response);
+    notifyClient(event = Err.required("Notify user event"), data){
+        //
+        this.secretary.deliverAll(event, data)
     }
 
 
@@ -174,13 +164,14 @@ class Vault{
         return ic.get("verified")
     }
 
+
     /**
      * This funcion called when the entire vault needs to be resaved.
      * One particular use case if for password change.
      * The entire vault is re-encrypted with new key and resaved
      */
     saveVault(request){
-        console.log("SAVE VAULT REQUEST RECEIVED");
+        console.log("SAVE VAULT REQUEST RECEIVED!");
         let vaultId = request.headers.pkfpSource;
         let { vault, topics, hash, sign } = request.body
         let publicKey = this.getPublicKey()
@@ -188,9 +179,14 @@ class Vault{
         //verifying topic data
         this.verifyVault(vault, hash, sign, publicKey);
 
+        //Backup vault
+        this._backupVault()
+
         //all is good. Writing
         this._writeVault(vaultId, vault, publicKey, hash, topics)
         console.log("Vault written successfully");
+
+        this.notifyClient(Internal.VAULT_UPDATED, vaultId)
 
     }
 

@@ -14,16 +14,15 @@ const { ConnectorAbstractFactory } = require("../common/Connector")
 const AdminServer  = require("../old_server/classes/AdminServer")
 const fs = require("fs-extra")
 const path = require("path")
+const { VaultSecretary } = require("./VaultSecretary");
 
 const HistoryManager = require("../old_server/classes/libs/HistoryManager.js");
 const { SessionManagerAdapter } = require("./lib/SessionManagerAdapter")
 
-const ClientRequestRouter = require("../old_server/classes/libs/ClientRequestEmitter.js");
+const ClientRequestEmitter = require("../old_server/classes/libs/ClientRequestEmitter.js");
 
 const IslandsChat = require("../old_server/classes/IslandsChat")
 
-const accounts = [];
-const vaults = [];
 
 //Legacy managers. Have to go eventually
 const managers = {};
@@ -32,13 +31,15 @@ const managers = {};
 //create express
 function main(){
     console.log("Starting Islands...");
+
+    // Parsing CLI arguments
     const args = parseArguments(process.argv.slice(2));
 
     if(args.debug){
         global.DEBUG = true;
     }
 
-    //Setting global version
+    //Setting global island version
     try{
         global.VERSION = JSON.parse(fs.readFileSync(path.join(__dirname, "../",'package.json' )).toString()).version;
         console.log(`Version is set to ${global.VERSION}`)
@@ -50,50 +51,36 @@ function main(){
     //Building configuration
     const config = buildConfig()
 
-
-    ensureDirExist(config.basePath);
-
-    //Ensure that at least admin vault exists
-    ensureAdminVaultExist(config)
-
-
-    //Migration
-    migrate(config);
-
-
-
-    //Initializing tor controller
-    let torController = new TorController({
-        host: config.torConnector.torControlHost,
-        port: config.torConnector.torControlPort,
-        password:  config.torConnector.torPassword,
-    })
-
     //Initializing logger
     Logger.initLogger(config.servicePath, global.DEBUG ? "debug" : "info");
 
+    ensureDirExist(config.basePath);
 
 
+    //Converting data to new formats if needed
+    migrate(config);
 
-    // ---------------------------------------------------------------------------------------------------------------------------
-    // Legacy section
-
-
-    //Initializing vaults
-
-    //const vaults = loadVaults(config.vaultsPath);
-
-    //activateAdminAccount(vaults, args.port, config)
-
-    //activateGuestAccounts(vaults)
-    const requestEmitter = new ClientRequestRouter();
+    //Checking if admin vault is present.
+    //If not - creating it
+    ensureAdminVaultExist(config)
 
 
-    activateAccounts(args.port, config, requestEmitter)
+    // TODO Refactor
+    // Request emitter is required for old managers to function
+    // It listens to messages directly from session object, reads "command" field
+    // in the headers of the ClientServerEnvelope and emits the command with
+    // that message. Then Interested parties react appropriately.
+    const requestEmitter = new ClientRequestEmitter();
 
+    // Accounts is an array of objects.
+    // Each account has following fields:
+    // - webServices - wrapper around dedicated express app
+    // - vault - Vault object
+    // - sessions - Collection of account related sessions
+    // - hiddenServices - Account specific hidden services
+    const accounts = []
+    activateAccounts(args.port, config, requestEmitter, accounts)
 
-    //create managers here
-    //
 
     //chat here is a collection of legacy managers that eventually have to go
     let sessionManagerAdapter = new SessionManagerAdapter(accounts)
@@ -102,43 +89,19 @@ function main(){
 }
 
 
-function activateAccounts(port, config, requestEmitter){
+function activateAccounts(port, config, requestEmitter, accounts){
     let vaultDirectories = fs.readdirSync(config.vaultsPath);
 
     for(let vaultId of vaultDirectories){
-        let vault = new Vault({
+
+        //Activating account
+        accounts.push(activateAccount({
             vaultId: vaultId,
             requestEmitter: requestEmitter,
-            vaultDirectory: path.join(config.vaultsPath, vaultId)
-        })
-
-        let isAdmin = isAdminVault(config, vaultId)
-
-        if(isAdmin){
-            //Init admin router legacy
-            AdminServer.initAdminEnv(config, vaultId, "0.0.0.0", port)
-        }
-
-        //Activating admin vault with provided port number
-        activateAccount({
-            vault: vault,
-            requestEmitter: requestEmitter,
-            isAdmin: isAdmin,
-            port: isAdmin ? port : getPort(), //if not admin - then port is ephemeral
-            host: '0.0.0.0',  //hardcoded for now
-            config: config
-        })
+            config: config,
+            argPort: port
+        }))
     }
-
-
-    let vaults = [];
-
-    for (let vaultId of vaultDirectories){
-        let fullVaultDir = path.join(config.vaultsPath, vaultId)
-        vaults.push(new Vault({ vaultId: vaultId, vaultDirectory: fullVaultDir, requestEmitter: requestEmitter }));
-    }
-
-    return vaults;
 }
 
 
@@ -146,9 +109,33 @@ function activateAccounts(port, config, requestEmitter){
  * This function initializes web services for each active island account
  *
  */
-function activateAccount({vault, requestEmitter, port, host, isAdmin, config}){
+function activateAccount({argPort, vaultId, requestEmitter,  config}){
 
-    console.log(`Activating account for ${vault.id}`);
+    console.log(`Activating account for ${vaultId}`);
+
+    // TODO refactor! For now hardcoded
+    const host = "0.0.0.0"
+
+    // Creating collection of sessions
+    let sessions = new Sessions(requestEmitter)
+
+    // Creating vault secretary
+    let secretary = new VaultSecretary(vaultId, sessions);
+
+    let vault = new Vault({
+        vaultId: vaultId,
+        requestEmitter: requestEmitter,
+        vaultDirectory: path.join(config.vaultsPath, vaultId),
+        secretary: secretary
+    })
+
+    let isAdmin = isAdminVault(config, vaultId)
+    let port = isAdmin ? argPort : getPort()
+
+    //Initializing admin router legacy for admin page if vault belongs to admin
+    if(isAdmin){
+        AdminServer.initAdminEnv(config, vaultId, "0.0.0.0", port)
+    }
 
     //Creating tor controller
     const torControl = new TorController({ host: config.torConnector.torControlHost, port: config.torConnector.torControlPort, password:  config.torConnector.torControlPassword })
@@ -177,7 +164,6 @@ function activateAccount({vault, requestEmitter, port, host, isAdmin, config}){
         staticPath: path.join(__dirname, "..", "public")
     })
 
-    let sessions = new Sessions(vault, requestEmitter)
 
 
     webService.on('connection', (socket)=>{
@@ -191,30 +177,14 @@ function activateAccount({vault, requestEmitter, port, host, isAdmin, config}){
 
     webService.launch();
 
-    accounts.push({
+    return {
         webService: webService,
         vault: vault,
         sessions: sessions,
         hiddenServices: hiddenServices
-    })
-}
-
-
-//Initializing leagcy managers, they all have to go at some point
-function initializeManagers(config){
-    managers.historyManager = new HistoryManager(config.historyPath);
-}
-
-
-
-function getHSPrivateKey(config, hsid){
-    hsid = hsid.substring(0, 16);
-    let hsPath = path.join(config.hiddenServicesPath, hsid)
-    if(!fs.existsSync(hsPath)){
-        throw new Error("Hidden service private key is not found");
     }
-    return fs.readFileSync(hsPath, "utf8")
 }
+
 
 function isAdminVault(config, vaultId){
     let vaultPath = path.join(config.vaultsPath, vaultId)
