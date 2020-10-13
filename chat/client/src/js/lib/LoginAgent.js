@@ -106,7 +106,7 @@ export class LoginAgent{
      * Sending challenge solution to the server
      * Secret here is already re-encrypted with session key
      */
-    _decryptSuccessHandler(stateMachine, eventName, args){
+    _decryptSuccessHandler(args){
 
         let sessionKey = args[0]
         let secret = args[1]
@@ -120,7 +120,7 @@ export class LoginAgent{
 
     }
 
-    _initializeSession(stateMachine, eventName, args){
+    _initializeSession(args){
         //Init session, arrival hub, topic loader etc
         console.log("Initializing session");
 
@@ -135,7 +135,7 @@ export class LoginAgent{
     }
 
 
-    _handleFailed(stateMachine, eventName, args){
+    _handleFailed(args){
         console.log("Login agent failed");
 
         this.emit(LoginAgentEvents.FAIL)
@@ -148,7 +148,7 @@ export class LoginAgent{
      * This function will do part of that, but later must be refactored
      * into a dedicated initializer object.
      */
-    _handleSuccess(stateMachine, eventName, args){
+    _handleSuccess(args){
         console.log("Login agent success");
 
 
@@ -167,7 +167,7 @@ export class LoginAgent{
      * This function will try to decrypt the vault using password
      * provided by user, and decrypt session keys with resulting private key
      */
-    _tryDecrypt(stateMachine, eventName, args){
+    _tryDecrypt(args){
         console.log("Trying to decrypt the challenge");
 
         console.log("Decrypting vault...");
@@ -205,11 +205,11 @@ export class LoginAgent{
         }
     }
 
-    _notifyLoginError(stateMachine, eventName, args){
+    _notifyLoginError(args){
         this.emit(LoginAgentEvents.FAIL)
     }
 
-    _notifyDecryptionError(stateMachine, eventName, args){
+    _notifyDecryptionError(args){
         this.emit(LoginAgentEvents.DECRYPTION_ERROR)
     }
 

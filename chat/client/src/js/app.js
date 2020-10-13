@@ -3,15 +3,14 @@ import { ConnectorAbstractFactory } from "./../../../common/Connector"
 import { IslandsVersion } from "../../../common/Version"
 import { PostLoginInitializer } from "./lib/PostLoginInitializer"
 import { MessageBus } from "../../../common/MessageBus"
-import { Vault } from "./lib/Vault";
 import { TopicCreator } from "./lib/TopicCreator"
 import { SendMessageAgent } from "./lib/SendMessageAgent"
 import { TopicJoinAgent } from "./lib/TopicJoinAgent"
-import { Internal, Events } from "../../../common/Events"
+import { Internal } from "../../../common/Events"
 import { PasswordChangeAgent } from "./lib/PasswordChangeAgent"
 import { BootParticipantAgent } from "./lib/BootParticipantAgent";
+import { register } from "./lib/Registration";
 import * as UX from "./ui/UX"
-
 
 
 document.addEventListener('DOMContentLoaded', event => {
@@ -96,33 +95,6 @@ function initSession(loginAgent, uxBus, data) {
 }
 
 
-function register(uxBus,  data ) {
-    uxBus.emit(UX.UXMessage.REGISTER_PROGRESS)
-
-
-    setTimeout(()=>{
-        Vault.registerAdminVault(data.password, data.confirm, IslandsVersion.getVersion())
-            .then(() => {
-                uxBus.emit(UX.UXMessage.REGISTER_SUCCESS)
-            })
-            .catch(err => {
-                uxBus.emit(UX.UXMessage.REGISTER_ERROR, err)
-            })
-
-    }, 200)
-
-}
-
-
-
-/**
- * Given initialized topics and vault sets up events and messages for the UX bus
- */
-function wireAllTogether(vault, topics, uxBus) {
-    uxBus.emit(UX.UXMessage.LOGIN_SUCCESS);
-
-}
-
 
 
 function enableDebug(uxBus){
@@ -166,6 +138,7 @@ function enableDebug(uxBus){
         let passwordChangeAgent = new PasswordChangeAgent(passwd, passwd, window.vault);
         passwordChangeAgent.run()
     }
+
 
     window.bootParticipant = (topic, participantPkfp)=>{
         let agent = new BootParticipantAgent(topic, participantPkfp, vault.connector)

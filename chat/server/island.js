@@ -45,18 +45,20 @@ function main(){
     //Building configuration
     const config = buildConfig()
 
+    //make sure all directories exist
+    validateDirStructure(config)
+
     //Initializing logger
     Logger.initLogger(config.servicePath, global.DEBUG ? "debug" : "info");
 
-    ensureDirExist(config.basePath);
-
-
-    //Converting data to new formats if needed
-    migrate(config);
 
     //Checking if admin vault is present.
     //If not - creating it
     ensureAdminVaultExist(config)
+
+    //Converting data to new formats if needed
+    migrate(config);
+
 
 
     // TODO Refactor
@@ -206,6 +208,15 @@ function ensureDirExist(dirPath){
     }
 }
 
+function validateDirStructure(config){
+    ensureDirExist(config.basePath)
+    ensureDirExist(config.servicePath)
+    ensureDirExist(config.vaultsPath)
+    ensureDirExist(config.historyPath)
+    ensureDirExist(config.hiddenServicesPath)
+    ensureDirExist(config.adminKeyPath)
+    ensureDirExist(config.hsVaultMap)
+}
 
 
 main();

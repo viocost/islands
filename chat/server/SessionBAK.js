@@ -180,7 +180,7 @@ class ClientSession extends Session {
         }
     }
 
-    _messageToClient(stateMachine, evName, args) {
+    _messageToClient(args) {
 
         const seq = ++this._sendCount;
         const blob = this._sessionKeyEncrypt({ seq: seq, message: args[0] });

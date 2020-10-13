@@ -228,7 +228,7 @@ class GenericSession extends Session {
         return this._outgoingMessagePreprocessors.reduce((acc, f) => f(acc), message)
     }
 
-    _processIncomingMessage(stateMachine, eventName, args) {
+    _processIncomingMessage(args) {
 
         let processed = this._preprocessIncoming(args[0])
 
@@ -244,14 +244,14 @@ class GenericSession extends Session {
     }
 
 
-    _processOutgoingMessage(stateMachine, eventName, args) {
+    _processOutgoingMessage(args) {
         this._messageQueue.enqueue(args[0])
         this._sm.handle.processQueue()
     }
 
 
 
-    _processQueue(stateMachine, eventName, args) {
+    _processQueue(args) {
         let message;
         while (message = this._messageQueue.dequeue()) {
             let processed = this._preprocessOutgoing(message)
@@ -260,7 +260,7 @@ class GenericSession extends Session {
     }
 
 
-    _processSendPing(stateMachine, eventName, args) {
+    _processSendPing(args) {
         let payload = this._preprocessOutgoing({
             command: SyncEvents.PING,
             seq: this._incomingCounter.get()
@@ -268,7 +268,7 @@ class GenericSession extends Session {
         this._connector.send(MessageTypes.SYNC, payload)
     }
 
-    _processSendPong(stateMachine, eventName, args) {
+    _processSendPong(args) {
         let payload = this._preprocessOutgoing({
             command: SyncEvents.PONG,
             seq: this._incomingCounter.get()
@@ -278,7 +278,7 @@ class GenericSession extends Session {
     }
 
 
-    _processPingPong(stateMachine, eventName, args) {
+    _processPingPong(args) {
 
         let msg = this._preprocessIncoming(args[0])
         let seq = msg.seq;
@@ -299,7 +299,7 @@ class GenericSession extends Session {
     _processSync(stateMachne, eventName, args) {
     }
 
-    _handleReplaceConnector(stateMachine, eventName, args) {
+    _handleReplaceConnector(args) {
         console.log("Replacing connector");
         this._connector.off()
         this._connector = args[0]
@@ -403,7 +403,7 @@ class ServerSession extends GenericSession {
         this._bootstrapConnector(connector);
     }
 
-    _commitSuicide(stateMachine, eventName, args) {
+    _commitSuicide() {
         this.emit(SessionEvents.DEAD)
     }
 

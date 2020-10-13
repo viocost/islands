@@ -82,7 +82,7 @@ class ClientSession {
         return ic.get("msg_raw");
     }
 
-    _authWithPublicKey(stateMachine, evName, args){
+    _authWithPublicKey(args){
         let publicKey = args[0]
         let privateKeyEncrypted = args[1]
 
@@ -133,7 +133,7 @@ class ClientSession {
         }
     }
 
-    _messageToClient(stateMachine, evName, args) {
+    _messageToClient(args) {
 
         const seq = ++this._sendCount;
         const blob = this._sessionKeyEncrypt({ seq: seq, message: args[0] });

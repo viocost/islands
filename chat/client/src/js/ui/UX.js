@@ -24,17 +24,19 @@ let setAliasModal;
 
 
 export function initialize(messageBus){
-    let sm = prepareUIStateMachine()
+    let mainStateMachine = prepareUIStateMachine()
+    let connectorStateMachine;
+
     console.log("Initializing UI");
 
     //events
     messageBus.on(UXMessage.TO_LOGIN, ()=>{
         console.log("UI TO LOGIN");
-        sm.handle.toLogin(messageBus)
+        mainStateMachine.handle.toLogin(messageBus)
     })
 
     messageBus.on(UXMessage.TO_REGISTRATION, ()=>{
-        sm.handle.toRegistration(messageBus)
+        mainStateMachine.handle.toRegistration(messageBus)
     })
 
 }
@@ -45,17 +47,21 @@ function loadingOn() {
 }
 
 function loadingOff() {
+    console.log("Turning Spinner off");
     spinner.loadingOff()
 }
 
-function initRegistration(stateMachine, eventName, args){
+// Builds registration page and prepares relevant event listeners
+function initRegistration(args, stateMachine){
+
     console.log("Initializing UX registration");
     let uxBus = args[0];
 
+    //Routing all the event through the state machine
+    uxBus.on(UXMessage.REGISTER_SUCCESS, stateMachine.handle.registrationSuccess)
+    uxBus.on(UXMessage.REGISTER_ERROR, stateMachine.handle.registrationError);
     uxBus.on(UXMessage.REGISTER_PROGRESS, (subscriptionId)=>{
         util.$("#register-vault-btn").setAttribute("disabled", true)
-        uxBus.on(UXMessage.REGISTER_SUCCESS, stateMachine.handle.registrationSuccess);
-        uxBus.on(UXMessage.REGISTER_ERROR, stateMachine.handle.registrationError );
         stateMachine.handle.start()
 
     })
@@ -69,7 +75,7 @@ function initRegistration(stateMachine, eventName, args){
 }
 
 
-function initLogin(stateMachine, eventName, args){
+function initLogin(args, stateMachine){
     let uxBus = args[0]
 
     uxBus.on(UXMessage.LOGIN_PROGRESS, stateMachine.handle.start)
@@ -86,7 +92,7 @@ function initLogin(stateMachine, eventName, args){
 }
 
 
-function handleLoginError(stateMachine, eventName, args){
+function handleLoginError(args){
     loadingOff()
     let passwordEl = util.$("#vault-password");
     let loginBtn = util.$("#vault-login-btn")
@@ -104,7 +110,7 @@ function loggingIn(){
 /**
  * Preparing main interface and other handlers
  */
-function handleLoginSuccess(stateMachine, eventName, args) {
+function handleLoginSuccess(args) {
 
     console.log("Handling successful login");
     let settings = args[1]
@@ -246,6 +252,8 @@ function handleLoginSuccess(stateMachine, eventName, args) {
 }
 
 function handleRegistrationSuccess(){
+    console.log("registration success handler invoked");
+
     loadingOff()
     util.$("#register-vault-btn").removeAttribute("disabled");
     let mainContainer = util.$('#main-container');
@@ -256,7 +264,7 @@ function handleRegistrationSuccess(){
     }))
 }
 
-function handleRegistrationError(stateMachine, eventName, args){
+function handleRegistrationError(args){
     loadingOff()
 
     util.$("#register-vault-btn").removeAttribute("disabled");
@@ -506,9 +514,10 @@ function prepareUIStateMachine(){
             },
 
             registration: {
-                transition: {
+                transitions: {
                     start: {
                         state: "registering"
+
                     }
                 }
             },
@@ -522,7 +531,8 @@ function prepareUIStateMachine(){
                     },
 
                     registrationSuccess: {
-                        state: "registrationSuccess"
+                        state: "registrationSuccess",
+                        actions: handleRegistrationSuccess
                     }
                 }
 
@@ -530,7 +540,6 @@ function prepareUIStateMachine(){
 
 
             registrationSuccess: {
-                entry: handleRegistrationSuccess,
                 final: true
             },
 
@@ -540,50 +549,12 @@ function prepareUIStateMachine(){
                     disconnect: {
 
                     },
-
-                    newMessage: {
-
-                    },
-
-                    messageSent: {
-
-                    },
-
-                    createTopic: {
-                        state: "creatingTopic"
-                    }
-
                 }
 
             },
-
-            creatingTopic: {
-                transitions: {
-                    cancel: {
-
-                    },
-
-                    create: {
-
-                    },
-
-                    topicCreated: {
-
-                    },
-
-                    error: {
-
-                    }
-                }
-               
-            },
-
-            joiningTopic: {
-
-            }
 
         }
-    })
+    }, { traceLevel: StateMachine.TraceLevel.DEBUG, msgNotExistMode: StateMachine.Warn })
 }
 
 

@@ -61,11 +61,11 @@ class ConnectorSocketIO extends Connector{
     // ---------------------------------------------------------------------------------------------------------------------------
     // State machine handlers
 
-    _handleConnect(stateMachine, evName, args){
+    _handleConnect(args){
         this._socket.open();
     }
 
-    _handleConnectError(stateMachine, evName, args){
+    _handleConnectError(args){
         let { reconnectAttempts, reconnectTimeout } = args[0]
         if(reconnectAttempts){
             setTimeout(()=>{
@@ -76,29 +76,29 @@ class ConnectorSocketIO extends Connector{
         }
     }
 
-    _handleConnecting(stateMachine, evName, args){
+    _handleConnecting(args){
         this.emit(ConnectorEvents.CONNECTING)
     }
 
-    _handleConnected(stateMachine, evName, args){
+    _handleConnected(args){
 
         this.emit(ConnectorEvents.CONNECTED)
     }
 
 
 
-    _handleSend(stateMachine, evName, args){
+    _handleSend(args){
         let { event, data } = args[0]
         this._socket.emit(event, data);
     }
 
-    _handleIncomingMessage(stateMachine, evName, args){
+    _handleIncomingMessage(args){
         let { event, data } = args[0]
         this.emit(event, data)
        
     }
    
-    _handleDead(stateMachine, evName, args){
+    _handleDead(args){
         this.emit(ConnectorEvents.DEAD)
 
     }
@@ -263,11 +263,11 @@ class ConnectorSocketIOPassive extends Connector{
         return this._socket.handshake.query.params
     }
 
-    _handleSend(stateMachine, eventName, args){
+    _handleSend(args){
         this.socket.emit(...args)
     }
 
-    _handleReceived(stateMachine, eventName, args){
+    _handleReceived(args){
 
     }
 

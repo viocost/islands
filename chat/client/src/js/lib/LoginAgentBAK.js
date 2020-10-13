@@ -54,7 +54,7 @@ export class LoginAgent{
     // ---------------------------------------------------------------------------------------------------------------------------
     // PRIVATE METHODS
 
-    _acceptChallenge(stateMachine, eventName, args){
+    _acceptChallenge(args){
         console.log("Saving session data");
         let { headers, body } = args[0]
         let { private_key, session_key } = body
@@ -62,13 +62,13 @@ export class LoginAgent{
         this.sessionKeyEncrypted = session_key;
     }
 
-    _acceptPassword(stateMachine, eventName, args){
+    _acceptPassword(args){
         console.log("Saving password");
         this._password = args[0]
     }
 
 
-    _decryptSuccessHandler(stateMachine, eventName, args){
+    _decryptSuccessHandler(args){
         this.connector.acceptSessionKey(args[0])
     }
 

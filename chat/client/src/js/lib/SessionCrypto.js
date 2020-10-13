@@ -21,7 +21,7 @@ class SessionCrypto{
     }
 
 
-    _processSendMessage(stateMachine, evName, args){
+    _processSendMessage(args){
         this.connector.send(this._wrap(args[0]))
        
     }

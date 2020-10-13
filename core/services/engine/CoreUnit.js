@@ -76,7 +76,7 @@ class CoreUnit{
 
     }
 
-    _restartOnCrash(stateMachine, evName, args){
+    _restartOnCrash(args){
         this.crashes.push(new Date())
         let timeout = this._calculateRestartTimeout()
 

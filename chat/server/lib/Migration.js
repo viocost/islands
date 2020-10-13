@@ -47,23 +47,32 @@ function toVersion1(config){
     let hsVaultMap = getMap()
 
     let vaultsPath = config.vaultsPath;
+
+    //Reading all vaults directories names
     let vaults = fs.readdirSync(vaultsPath);
+
+    //Only getting an admin vault
     let adminVaultId = vaults.filter(vaultId =>{
         return isAdminVault(vaultId, hsVaultMap);
     })[0];
 
 
+
+    //for each vault directory
     for (let vaultId of vaults){
         let vaultDir = path.join(vaultsPath, vaultId)
         let hsDir = path.join(vaultDir, "hidden_services")
         if(!fs.existsSync(hsDir)){
+            //creating hidden service directory
             fs.mkdirSync(hsDir);
         }
 
+        // Obtaining hidden services that belong to this vault
         let hiddenServices = Object.keys(hsVaultMap).filter(onion=>{
             return hsVaultMap[onion].vaultID === vaultId;
         })
 
+        //Saving each hidden service in the directory
         for(let onion of hiddenServices){
             let hsPath = path.join(hsDir, onion)
             let key = fs.readFileSync(path.join(config.hiddenServicesPath, onion), "utf8")
@@ -74,8 +83,10 @@ function toVersion1(config){
         }
     }
 
+    //Now admin vault is identified by an empty admin file in vault dir
     fs.writeFileSync(path.join(vaultsPath, adminVaultId, "admin"), "");
 
+    //Writing vault version for future reference
     fs.writeFileSync(path.join(config.basePath, VERSION_FILENAME), "1")
     console.log("Migration to version 1 is completed");
 }

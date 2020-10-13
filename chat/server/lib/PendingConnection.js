@@ -33,7 +33,7 @@ class PendingConnection{
      * If session has expired - user will have to re-login anyway. Or someone is trying to supply wrong key or attack.
      *
      */
-    _handleReconnect(stateMachine, eventName, args){
+    _handleReconnect(args){
         let connector = args[0]
         let sessions  = args[1]
         let vault = args[2]
@@ -55,7 +55,7 @@ class PendingConnection{
      * vault public key, and sends vault and encrypted session key to client
      * for decryption.
      */
-    _handleConnect(stateMachine, eventName, args){
+    _handleConnect(args){
 
         let sessions  = args[1]
         let connector = args[0]
@@ -100,7 +100,7 @@ class PendingConnection{
      * Called when auth request received from the connector
      * Verifies the nonce and creates new session. Or dies
      */
-    _handleVerifySolution(stateMachine, eventName, args){
+    _handleVerifySolution(args){
         try{
             let nonceEncrypted = args[0]
             let nonceDecrypted = this.sessionKeyAgent.decrypt(nonceEncrypted)
@@ -120,7 +120,7 @@ class PendingConnection{
         }
     }
 
-    _handleFail(stateMachine, eventName, args){
+    _handleFail(args){
         console.log("Destroying the connector");
         let connector = args[0]
         //connector.destroy()
@@ -158,7 +158,7 @@ class PendingConnection{
      * If some pending session successfully decrypts the nonce, then
      * that session is given a new connector and its destroy timer is disabled
      */
-    _handleReauth(stateMachine, eventName, args){
+    _handleReauth(args){
 
         console.log("Reauthenticating");
         for(let session of this.sessions.getPausedSessions()){
@@ -176,7 +176,7 @@ class PendingConnection{
      * exits
      *
      */
-    _initSession(stateMachine, eventName, args){
+    _initSession(args){
 
         console.log("Initializing session");
         let session  = SessionFactory.make(this.connector, this.sessionKeyAgent, this.secret);

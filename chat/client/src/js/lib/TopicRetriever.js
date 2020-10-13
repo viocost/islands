@@ -50,13 +50,13 @@ export class TopicRetriever {
         fetchJSON("/topics", this.stateMachine)
     }
 
-    processError(stateMachine, eventName, args) {
+    processError(args) {
         console.log("Processing error");
         this.error = args[0];
         this.emit("error", err);
     }
 
-    processTopics(stateMachine, eventName, args) {
+    processTopics(args) {
         console.log("Processing topics");
         let data = args[0]
         this.topics = data;

@@ -73,7 +73,7 @@ export class Connector {
     // ---------------------------------------------------------------------------------------------------------------------------
     // PRIVATE METHODS
 
-    _sendAuthToServer(stateMachine, eventName, args){
+    _sendAuthToServer(args){
         console.log("Emitting auth message directly");
         this.socket.emit("auth", args[0])
     }
@@ -102,7 +102,7 @@ export class Connector {
 
     }
     //////////////////////////////////////////////////
-    // _acceptKeyAgent(stateMachine, evName, args){ //
+    // _acceptKeyAgent(args){ //
     //     this.keyAgent = args[0];                 //
     // }                                            //
     //////////////////////////////////////////////////
@@ -229,7 +229,7 @@ export class Connector {
         return socket;
     }
 
-    _processAuthMessage(stateMachine, evName, args) {
+    _processAuthMessage(args) {
         console.log("Auth message received");
         let message = args[0];
         const handlers = {
@@ -247,7 +247,7 @@ export class Connector {
 
 
 
-    _processIncomingMessage(stateMachine, evName, args) {
+    _processIncomingMessage(args) {
         try {
 
             let encryptedBlob = args[0]
@@ -268,7 +268,7 @@ export class Connector {
     }
 
 
-    _decryptSessionKey(stateMachine, evName, args) {
+    _decryptSessionKey(args) {
         try {
             const { privateKeyEncrypted, sessionKey, secret } = this._challenge;
             this.keyAgent.initializeMasterKey(privateKeyEncrypted)
@@ -286,7 +286,7 @@ export class Connector {
         }
     }
 
-    _retryDecryption(stateMachine, evName, args) {
+    _retryDecryption(args) {
         this.keyAgent = args[0]
         this.connectorStateMachine.handle.decryptSessionKey()
     }
@@ -308,7 +308,7 @@ export class Connector {
         return ic.get("msg_raw");
     }
 
-    _setSessionKey(stateMachine, evName, args) {
+    _setSessionKey(args) {
         this.sessionKey = args[0];
     }
 
@@ -322,7 +322,7 @@ export class Connector {
 
     // Encrypts a nonce and sends it to server
     // for confirmation request
-    _sendKeyValidationRequest(stateMachine, evName, args) {
+    _sendKeyValidationRequest(args) {
         //make request
         let ic = new iCrypto();
         ic.createNonce("n", 32)
@@ -337,7 +337,7 @@ export class Connector {
         this.connectorStateMachine.handle.auth(request)
     }
 
-    _processSendQueue(stateMachine, evName, args) {
+    _processSendQueue(args) {
         console.log("processing send queue");
         if (this.queue.length === 0) {
             console.log("Nothing to send");
@@ -355,7 +355,7 @@ export class Connector {
         }
     }
 
-    _performAcceptMessage(stateMachine, evName, args) {
+    _performAcceptMessage(args) {
         let msg = args[0]
         let seq = ++this._sendCount;
         console.log(`Accepting outgoing message. Seq: ${seq}`);

@@ -78,7 +78,7 @@ export class TopicCreator {
         }, { msgNotExistMode: StateMachine.Warn, traceLevel: StateMachine.TraceLevel.DEBUG })
     }
 
-    async _initTopic(stateMachine, evName, args) {
+    async _initTopic(args) {
         console.log("Init toipc top of the function");
         let nickname = this.nickname;
         let topicName = this.topicName;
@@ -182,7 +182,7 @@ export class TopicCreator {
         return pkfp
     }
 
-    _processTopicCreateError(stateMachine, evName, args){
+    _processTopicCreateError(args){
         console.log(`Error creating topic ${args[0]}`);
     }
 

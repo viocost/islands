@@ -81,7 +81,6 @@ function get(endpoint, settings){
 
     let keys = new CuteSet(Object.keys(settings));
     for (let cbtype of CALLBACKTYPES){
-        console.log(`Checking if there is callback for ${cbtype}`)
         if (keys.has(cbtype) && (typeof settings[cbtype] === "function")){
             console.log("Setting handler for " + cbtype);
             _xhr[AJAXTOXHR[cbtype]] = callback(cbtype, _xhr, settings[cbtype])
@@ -125,7 +124,6 @@ function post(endpoint, settings){
     //setting callbacks
     let keys = new CuteSet(Object.keys(settings));
     for (let cbtype of CALLBACKTYPES){
-        console.log(`Checking if there is callback for ${cbtype}`)
         if (keys.has(cbtype) && (typeof settings[cbtype] === "function")){
             console.log("Setting handler for " + cbtype);
             _xhr[AJAXTOXHR[cbtype]] = callback(cbtype, _xhr, settings[cbtype])

@@ -65,7 +65,7 @@ class Vault extends EventEmitter {
 
     }
 
-    _setPendingSymkey(stateMachine, eventName, args){
+    _setPendingSymkey(args){
         let OTP = args[0];
         this._pendingSymKey = this._OTPDeriveSymKey(OTP);
     }

@@ -165,7 +165,7 @@ export class Vault{
     }
 
 
-    processVault(stateMachine, eventName, args){
+    processVault(args){
         const { vault, vaultId } = args[0]
         console.log(`Processing vault. `);
         //this.initSaved(vault)
