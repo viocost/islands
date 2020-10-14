@@ -62,6 +62,13 @@ function prepareLogin(uxBus) {
                 window.session = session;
             }
 
+            // This handles create topic request
+            uxBus.on(UX.UXMessage.CREATE_TOPIC_REQUEST, data=>{
+                let { nickname, topicName } = data
+                let tc = new TopicCreator(nickname, topicName, session, vault)
+                tc.run()
+            })
+
         })
 
         postLoginInitializer.on(PostLoginInitializer.Fail, err => {

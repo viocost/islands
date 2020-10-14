@@ -14,6 +14,20 @@ import { assert } from "../../../../common/IError";
 
 const INITIAL_NUM_MESSAGES = 25
 
+class TopicBase{
+    messages = [];
+
+
+    constructor(){
+
+
+
+
+    }
+
+
+}
+
 export class Topic{
     constructor(pkfp, name, key, comment){
         WildEmitter.mixin(this);

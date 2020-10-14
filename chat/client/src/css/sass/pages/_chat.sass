@@ -16,6 +16,28 @@
   #active-title
     margin-left: 1rem
 
+.header-button
+  width: 4rem
+  height: 4rem
+  background: top left no-repeat
+  background-size: 4rem 4rem
+  padding: 0
+
+  &:hover
+    background-color: rgb(30, 31, 38)
+
+  svg
+    transition: .3s
+    &:hover
+      -webkit-filter: brightness(70%)
+      filter: birghtness(70%)
+      transition: .3s
+
+
+.logo
+  width: 4rem
+  height: 4rem
+  margin-right: 1rem
 
 #menu-button
     width: 4rem
@@ -65,6 +87,7 @@
     height: 4rem
     margin: 1rem
     &:hover
+      background-color: rgb(30, 31, 38)
       cursor: pointer
       -webkit-filter: brightness(100%)
       filter: birghtness(100%)

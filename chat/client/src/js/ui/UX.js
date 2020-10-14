@@ -108,52 +108,31 @@ function loggingIn(){
 }
 
 /**
- * Preparing main interface and other handlers
+ * This is main initialization of the chat after successful login
+ *
  */
 function handleLoginSuccess(args) {
+
 
     console.log("Handling successful login");
     let settings = args[1]
     let uxBus = args[0]
     //let vault = vaultHolder.getVault();
-    let header = util.$("header")
 
-    //////////////////////////////////////////////////////////
-    // let isSoundOn = !vault.hasOwnProperty("settings") || //
-    //     !vault.settings.hasOwnProperty("sound") ||       //
-    //     vault.settings.sound;                            //
-    //////////////////////////////////////////////////////////
-    util.removeAllChildren(header);
+    updateHeaderOnSuccessfulLogin(settings);
+    createChatInterface()
 
-    util.appendChildren(header, [
-        UI.bakeHeaderLeftSection((menuButton) => {
-            util.toggleClass(menuButton, "menu-on");
-            renderLayout()
-        }),
-        //UI.bakeHeaderRightSection(false, settings.soundOn , processInfoClick, processMuteClick, processSettingsClick, processLogoutClick)
-        UI.bakeHeaderRightSection(false, settings.soundOn , ()=>{}, ()=>{}, ()=>{}, ()=>{})
-    ])
-
-    let main = util.$("main")
-    util.removeAllChildren(main);
-
-    let mainContainer = UI.bakeMainContainer()
-    util.appendChildren(main, mainContainer)
-    let sidePanel = UI.bakeSidePanel(IslandsVersion.getVersion());
-    //newMessageBlock = UI.bakeNewMessageControl(sendMessage, processAttachmentChosen);
-    let newMessageBlock = UI.bakeNewMessageControl(()=>{}, ()=>{});
-    let messagesPanel = UI.bakeMessagesPanel(newMessageBlock)
-    util.appendChildren(mainContainer, [sidePanel, messagesPanel]);
-    //setupSidePanelListeners(uxBus,  stateMachine)
-    setupHotkeysHandlers()
-    refreshTopics();
-    // add listener to the menu button
-    window.onresize = renderLayout;
-    renderLayout()
-
-    // modals
-    //topicCreateModal = UI.bakeTopicCreateModal(createTopic)
-    topicCreateModal = UI.bakeTopicCreateModal()
+    //make modals
+    topicCreateModal = UI.bakeTopicCreateModal(()=>{
+        let nicknameEl = util.$("#new-topic-nickname");
+        let topicNameEl = util.$("#new-topic-name");
+        let nickname = nicknameEl.value
+        let topicName = topicNameEl.value
+        nicknameEl.value = "";
+        topicNameEl.value = ""
+        uxBus.emit(UXMessage.CREATE_TOPIC_REQUEST, {nickname: nickname, topicName: topicName})
+        topicCreateModal.close();
+    })
 
 
     topicJoinModal = UI.bakeTopicJoinModal(() => {
@@ -198,6 +177,27 @@ function handleLoginSuccess(args) {
         }
         setAliasModal.close();
     })
+    //hook all buttons to the bus
+
+    util.$$("button").forEach(button=>{
+        button.addEventListener("click", ()=>{
+            uxBus.emit(UXMessage.BUTTON_CLICK, button.id)
+        })
+    })
+
+
+    setEventListeners(uxBus)
+
+    //setupSidePanelListeners(uxBus,  stateMachine)
+    setupHotkeysHandlers()
+    refreshTopics();
+    // add listener to the menu button
+    window.onresize = renderLayout;
+
+    // modals
+    //topicCreateModal = UI.bakeTopicCreateModal(createTopic)
+
+    renderLayout()
     // prepare side panel
     //let sidePanel = bakeSidePanel();
     //let messagesPanel = bakeMessagesPanel();
@@ -249,6 +249,44 @@ function handleLoginSuccess(args) {
     //appendEphemeralMessage("Topics has been loaded and decrypted successfully. ")
     //playSound("user_online");
     //loadingOff()
+}
+
+function updateHeaderOnSuccessfulLogin(settings, uxBus){
+
+    let header = util.$("header")
+
+    //////////////////////////////////////////////////////////
+    // let isSoundOn = !vault.hasOwnProperty("settings") || //
+    //     !vault.settings.hasOwnProperty("sound") ||       //
+    //     vault.settings.sound;                            //
+    //////////////////////////////////////////////////////////
+    util.removeAllChildren(header);
+
+    util.appendChildren(header, [
+        UI.bakeHeaderLeftSection((menuButton) => {
+            util.toggleClass(menuButton, "menu-on");
+            renderLayout()
+        }),
+        //UI.bakeHeaderRightSection(false, settings.soundOn , processInfoClick, processMuteClick, processSettingsClick, processLogoutClick)
+        UI.bakeHeaderRightSection(settings.soundOn)
+    ])
+}
+
+function prepareCreateTopicModal(){
+
+}
+
+function createChatInterface(){
+    let main = util.$("main")
+    util.removeAllChildren(main);
+
+    let mainContainer = UI.bakeMainContainer()
+    util.appendChildren(main, mainContainer)
+    let sidePanel = UI.bakeSidePanel(IslandsVersion.getVersion());
+    //newMessageBlock = UI.bakeNewMessageControl(sendMessage, processAttachmentChosen);
+    let newMessageBlock = UI.bakeNewMessageControl();
+    let messagesPanel = UI.bakeMessagesPanel(newMessageBlock)
+    util.appendChildren(mainContainer, [sidePanel, messagesPanel]);
 }
 
 function handleRegistrationSuccess(){
@@ -331,14 +369,34 @@ function setupHotkeysHandlers(){
 
 }
 
+//Sets listeners and callbacks for
+//all button clicks
+function setEventListeners(uxBus){
+    console.log("Setting event listeners");
+    let buttonClickHandlers = {}
+    buttonClickHandlers[UI.BUTTON_IDS.JOIN_TOPIC] = topicJoinModal.open.bind(topicJoinModal)
+    buttonClickHandlers[UI.BUTTON_IDS.NEW_TOPIC] =  topicCreateModal.open.bind(topicCreateModal)
+
+    //Processing button clicks
+    uxBus.on(UXMessage.BUTTON_CLICK, btnId=>{
+        if(btnId in buttonClickHandlers){
+            buttonClickHandlers[btnId]()
+        }
+    })
+
+
+
+
+
+
+}
+
+
+
 function refreshTopics(){
 
 }
 
-
-function processJoinTopicClick() {
-    topicJoinModal.open()
-}
 
 
 
@@ -368,7 +426,6 @@ function processCtxAliasClick(uxBus) {
     //Rename topc, or member or invite
 
     let topicInFocus = getTopicInFocusData()
-    uxBus.emit(UXMessage.ALIAS_BUTTON_CLICK, topicInFocus);
     return
 
 
@@ -559,6 +616,12 @@ function prepareUIStateMachine(){
 
 
 
+function addNewTopicToUX(topic){
+
+}
+
+
+
 export const UXMessage = {
     TO_LOGIN: Symbol("to_login"),
     TO_REGISTRATION: Symbol("to_registration"),
@@ -571,6 +634,12 @@ export const UXMessage = {
     REGISTER_PROGRESS: Symbol("reg_prog"),
     REGISTER_SUCCESS: Symbol("reg_succ"),
     REGISTER_ERROR: Symbol("reg_err"),
+    BUTTON_CLICK: Symbol("btn_click"),
+    BUTTON_DBL_CLICK: Symbol("btndbl_click"),
+    CREATE_TOPIC_REQUEST: Symbol("create_topic_request"),
+    TOPIC_JOIN_REQUEST: Symbol("topic_join_request"),
 
-    ALIAS_BUTTON_CLICK: Symbol("alias_click"),
+    NEW_TOPIC_ONLINE: Symbol("new_topic")
+
+
 }

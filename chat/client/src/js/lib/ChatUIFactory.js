@@ -1,6 +1,7 @@
 import * as util from "./dom-util"
 import * as Modal from "./DynmaicModal";
 import { IError as Err } from "../../../../common/IError";
+import * as SVG from "./SVG"
 
 //Bakes select list for side panel
 // top boolean whether it is select for top block
@@ -45,6 +46,8 @@ export function bakeCarousel(){
 
 export function bakeSidePanel(version = Err.required("Version")){
     let carousel = bakeCarousel()
+    let logo = svgAsDOM(SVG.islandSVG);
+    util.addClass(logo, "logo")
     return util.bake("div", {
         class: "side-panel-container",
         children: [
@@ -69,12 +72,7 @@ export function bakeSidePanel(version = Err.required("Version")){
             util.bake("div", {
                 class: "version-wrapper",
                 children: [
-                    util.bake("img", {
-                        class: "logo",
-                        attributes: {
-                            src:  "/img/island.svg"
-                        }
-                    }),
+                    logo,
                     util.bake("h3", {
                         text: `Islands Release v${version}`
                     })
@@ -100,14 +98,14 @@ function bakeTopicsBlock(){
 
                     util.bake("button", {
                         //New topic button
-                        id: `btn-new-topic`,
+                        id: BUTTON_IDS.NEW_TOPIC,
                         class: ["side-panel-btn", "btn", "btn-top"],
                         text: "New topic",
                     }),
 
                     util.bake("button", {
                         //Join button
-                        id: `btn-join-topic`,
+                        id: BUTTON_IDS.JOIN_TOPIC,
                         class: ["side-panel-btn", "btn", "btn-top"],
                         text: "Join topic",
                     }),
@@ -139,13 +137,13 @@ function bakeTopicsBlock(){
                                 text: "Alias",
                                 style: "display: none",
                                 class: "btn",
-                                id: "btn-ctx-alias",
+                                id: BUTTON_IDS.CTX_ALIAS,
                             }),
                             util.bake("button", {
                                 text: "Invite",
                                 style: "display: none",
                                 class: "btn",
-                                id: "btn-ctx-invite"
+                                id: BUTTON_IDS.CTX_INVITE
 
                             }),
 
@@ -169,7 +167,7 @@ function bakeTopicsBlock(){
                                 text: "Delete",
                                 class: "btn",
                                 style: "display: none",
-                                id: "btn-ctx-delete"
+                                id: BUTTON_IDS.CTX_DELETE
 
                             }),
 
@@ -177,8 +175,7 @@ function bakeTopicsBlock(){
                                 text: "Boot",
                                 class: "btn",
                                 style: "display: none",
-                                id: "btn-ctx-boot"
-
+                                id: BUTTON_IDS.CTX_BOOT
                             }),
                         ]
                     }),
@@ -290,8 +287,7 @@ export function bakeMessagesPanel(newMsgBlock){
     })
 }
 
-export function bakeNewMessageControl(sendHandler = Err.required("sendMessage handler"),
-                                      attachmentChosenHandler = Err.required("attachmentChosen handler")){
+export function bakeNewMessageControl(){
     return util.bake("div", {
         id: "new-message-container",
         children: [
@@ -373,12 +369,9 @@ export function bakeNewMessageControl(sendHandler = Err.required("sendMessage ha
                         class: "send-button-wrap",
                         children: [
                             util.bake("button", {
-                                id: "send-new-msg",
+                                id: BUTTON_IDS.SEND,
                                 class: "btn-send",
                                 text: "SEND",
-                                listeners: {
-                                    click: sendHandler
-                                }
                             })
                         ]
                     }),
@@ -387,12 +380,8 @@ export function bakeNewMessageControl(sendHandler = Err.required("sendMessage ha
                         class: "inputfile",
                         attributes: {
                             type: "file",
-                            name: "file",
-
+                            name: "file"
                         },
-                        listeners: {
-                            "change": attachmentChosenHandler
-                        }
                     }),
                     util.bake("input", {
                         id: "attach-file-dummy",
@@ -481,7 +470,7 @@ export function bakeLoginBlock(loginClickHandler){
                 }),
                 util.bake("div", {
                     children: util.bake("button", {
-                        id: "vault-login-btn",
+                        id: BUTTON_IDS.LOGIN,
                         class: ["btn", "form-button"],
                         text: "Login",
                         listeners: {
@@ -555,7 +544,7 @@ export function bakeRegistrationBlock(onRegisterClick){
                     },
                     text: "Save",
                     class: ["btn", "form-button"],
-                    id: "register-vault-btn",
+                    id: BUTTON_IDS.REGISTER,
                 })
             ]
         })
@@ -602,16 +591,13 @@ export function bakeLoginHeader(){
     })
 }
 
-export function bakeHeaderLeftSection(menuClickHandler){
+export function bakeHeaderLeftSection(){
     return util.bake("div", {
         class: "header-section-left",
         children: [
-            util.bake("div", {
-                id: "menu-button",
+            util.bake("button", {
+                id: BUTTON_IDS.MAIN_MENU,
                 class: "menu-on",
-                listeners: {
-                    "click": ()=>{menuClickHandler("#menu-button")}
-                }
             }),
 
             util.bake("div", {
@@ -656,36 +642,32 @@ export function bakeHeaderLeftSection(menuClickHandler){
     })
 }
 
-export function bakeHeaderRightSection(
-    isAdmin,
-    isSoundOn,
-    infoHandler,
-    muteHandler,
-    settingsHandler,
-    logoutHandler,
-    adminLoginHandler
-){
+export function bakeHeaderRightSection(isSoundOn){
     let rightSection = util.bake("div", {
         class: "header-section-right",
     })
 
+    let svgStyle =  "height: 40px; width: 40px; top: 0; left: 0; position: relative"
+    let logoutImg = svgAsDOM(SVG.logoutSVG)
+    let soundOnImg = svgAsDOM(SVG.soundOnSVG)
+    let soundOffImg = svgAsDOM(SVG.soundOffSVG)
+    logoutImg.style = svgStyle;
+    soundOnImg.style = svgStyle;
+    soundOffImg.style = svgStyle;
+
+
     util.appendChildren(rightSection, [
 
-        util.bake("img", {
-            id: "sound-control",
-            src: isSoundOn ? "/img/sound-on.svg" : "/img/sound-off.svg",
-            listeners: {
-                "click": muteHandler
-            }
+        util.bake("button", {
+            id: BUTTON_IDS.MUTE_SOUND,
+            class: "header-button",
+            children: isSoundOn ? soundOnImg : soundOffImg
         }),
 
-
-        util.bake("img", {
-            id: "logout",
-            src: "/img/logout-light.svg",
-            listeners: {
-                "click": logoutHandler
-            }
+        util.bake("button", {
+            id: BUTTON_IDS.LOGOUT,
+            class: "header-button",
+            children: logoutImg
         })
     ])
     return  rightSection
@@ -903,6 +885,30 @@ export function bakeTopicJoinModal(joinClick){
                       'tingle-btn tingle-btn--primary tingle-btn--pull-right',
                       joinClick);
     return form
+
+}
+
+
+function svgAsDOM(svgString){
+    return util.bake("div", {
+        html: svgString
+    }).firstElementChild
+}
+
+
+export const BUTTON_IDS = {
+    JOIN_TOPIC:  "btn-join-topic",
+    NEW_TOPIC: "btn-new-topic",
+    CTX_ALIAS:  "btn-ctx-alias",
+    CTX_INVITE:  "btn-ctx-invite",
+    CTX_DELETE:  "btn-ctx-delete",
+    CTX_BOOT:  "btn-ctx-boot",
+    SEND:  "send-new-msg",
+    LOGIN: "vault-login-btn",
+    REGISTER: "register-vault-btn",
+    MAIN_MENU: "menu-button",
+    MUTE_SOUND: "sound-control-btn",
+    LOGOUT:  "logout-btn"
 
 }
 
