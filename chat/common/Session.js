@@ -321,6 +321,17 @@ class GenericSession extends Session {
         })
     }
 
+
+    _reconnect(){
+        let reconnectionAgent = this.reconnectionAgentFactory.make({
+            timeLimit: this.reconnectTimeLimit,
+            onSuccess: this._sm.handle.reconnectSuccess,
+            onTimeout: this._sm.handle.reconnectTimeout
+        })
+        reconnectionAgent.run()
+
+    }
+
     _processDead() {
         console.log("Dead");
     }
@@ -373,12 +384,12 @@ class GenericSession extends Session {
 
                 awatingReconnection: {
                     transitions: {
-                        reconnect: {
+                        reconnectSuccess: {
                             action: this._handleReplaceConnector.bind(this),
                             state: "active"
                         },
 
-                        timeout: {
+                        reconnectTimeout: {
                             state: "dead"
                         }
                     }
@@ -412,18 +423,23 @@ class ServerSession extends GenericSession {
 
 
 class ClientSession extends GenericSession {
-    constructor({ connector, incomingMessagePreprocessors = [], outgoingMessagePreprocessors = [], secretHolder }) {
+    constructor({ connector, incomingMessagePreprocessors = [], outgoingMessagePreprocessors = [], secretRecognizer, secretHolder, uxBus }) {
         super(arguments)
-        this._secretHolder = secretHolder
-        this._sm = this._prepareStateMachine()
-        this._incomingMessagePreprocessors = incomingMessagePreprocessors;
-        this._outgoingMessagePreprocessors = outgoingMessagePreprocessors;
-        this._bootstrapConnector(connector);
     }
 
     getSecret() {
         return this._secretHolder()
     }
+
+    subscribeClientBusToConnectorEvents(connector, uxBus){
+
+        connector.on(ConnectorEvents.DEAD, ()=>uxBus.emit(SessionEvents.CONNECTION_LOST))
+
+    }
+
+
+
+
 }
 
 
@@ -437,7 +453,6 @@ class SeqCounter {
     }
 
     accept(seq) {
-        console.log(`Checking if message is in-sync. Seq ${seq}, current: ${this._counter}`);
         if (seq != (this._counter + 1)) {
             return false
         }
@@ -472,7 +487,11 @@ class SessionEnvelope {
 
 const SessionEvents = {
     DEAD: Symbol("dead"),
-    MESSAGE: Symbol("message")
+    MESSAGE: Symbol("message"),
+    CONNECTION_LOST: Symbol("connection_lost"),
+    RECONNECTING: Symbol("reconnecting"),
+    CONNECTED: Symbol("connected")
+
 }
 
 const MessageTypes = {
@@ -485,13 +504,6 @@ const SyncEvents = {
     PING: "ping",
     PONG: "pong"
 }
-
-class SessionRecognizer {
-    constructor(recognizerLambda) {
-        this.recognize = recognizerLambda;
-    }
-}
-
 
 
 

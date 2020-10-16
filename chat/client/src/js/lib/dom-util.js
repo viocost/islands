@@ -17,6 +17,7 @@
  *  * children - single DOM element or array of DOM elements that will be appended as children
  *  * listeners - JSON object with keys - events types, vaules - event handlers
  */
+
 export function bake(name, recipe){
     let el = document.createElement(name);
     if(!recipe) return el;
@@ -291,9 +292,22 @@ export function flex(node){
     displayElement(node, "flex")
 }
 
+// Toggles visibility of a given node.
+// displayMode can be anything supported
+export function toggleDisplay(node, displayMode = "flex"){
+    isShown(node) ? hide(node) : displayElement(node, displayMode)
+}
+
 export function isShown(el){
     let node = verifyGetElement(el)
-    return node.style.display === "flex" || node.style.display === "block";
+    let displayShownStates = new Set([
+        "",
+        "flex",
+        "block",
+        "inline-block",
+        "inline-flex",
+    ])
+    return displayShownStates.has(node.style.display);
 }
 
 /**

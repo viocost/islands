@@ -650,7 +650,7 @@ function processNewInviteClick() {
     if (topicInFocus) {
         chat.requestInvite(topicInFocus);
     } else {
-        console.log("No toipc in focus");
+        console.log("No topic in focus");
     }
 }
 
@@ -1902,7 +1902,7 @@ function setUnreadMessagesIndicator(pkfp, num) {
         return
     }
 
-    let unreadCounterLabel = topicEl.firstElementChild.children[2]
+    let unreadCounterLabel = topicEl.firstElementChild.children[3]
 
     util.html(unreadCounterLabel, "");
     num ? unreadCounterLabel.appendChild(UI.bakeUnreadMessagesElement(num)) : 1 === 1;

@@ -88,14 +88,14 @@ class BootLeaveAssistant extends Assistant{
         let userResidence = metadata.body.participants[pkfp].residence;
         let taResidence = metadata.body.owner === pkfp ? metadata.body.topicAuthority.residence : null
         if(await self.connector.isHSUp(userResidence)){
-            Logger.info(`Taking down user hidden service ${userResidence} on toipc delete`, {cat: "topic_delete"})
+            Logger.info(`Taking down user hidden service ${userResidence} on topic delete`, {cat: "topic_delete"})
             try{
                 //await self.connector.killHiddenService(userResidence);
             }catch(err){console.log(`err deleting tor: ${err.message}`)}
         }
         if (metadata.body.owner === pkfp ){
             if ( await self.connector.isHSUp(taResidence)){
-                Logger.info(`Taking down toipc authority service ${taResidence} on topic delete`, {cat: "topic_delete"})
+                Logger.info(`Taking down topic authority service ${taResidence} on topic delete`, {cat: "topic_delete"})
                 try{
                    // await self.connector.killHiddenService(taResidence);
                 }catch(err){console.log(`err deleting tor: ${err.message}`)}
@@ -129,7 +129,7 @@ class BootLeaveAssistant extends Assistant{
 
         let request = envelope.payload;
         let ta = self.topicAuthorityManager.getTopicAuthority(request.headers.pkfpDest);
-        assert(ta, `No toipc authority ${request.headers.pkfpDest} found, or it is not launched`)
+        assert(ta, `No topic authority ${request.headers.pkfpDest} found, or it is not launched`)
         let metadata = ta.getCurrentMetadata()
 
         const publicKey = metadata.body.participants[request.headers.pkfpSource].publicKey;
@@ -142,7 +142,7 @@ class BootLeaveAssistant extends Assistant{
 
     //TODO
     async leaveTopic(request, connectionId, self){
-        Logger.debug("Leaving toipc", {cat: "topic_delete"})
+        Logger.debug("Leaving topic", {cat: "topic_delete"})
         let pkfp = request.body.topicPkfp;
 
         const publicKey = await self.hm.getOwnerPublicKey(pkfp);
@@ -159,7 +159,7 @@ class BootLeaveAssistant extends Assistant{
         self.crossIslandMessenger.send(envelope);
 
         if(await self.connector.isHSUp(userResidence)){
-            Logger.info(`Taking down user hidden service ${userResidence} on toipc delete`, {cat: "topic_delete"})
+            Logger.info(`Taking down user hidden service ${userResidence} on topic delete`, {cat: "topic_delete"})
             try{
                 await self.connector.killHiddenService(userResidence);
             }catch(err){console.log(`err deleting tor: ${err.message}`, {cat: "topic_delete"})}

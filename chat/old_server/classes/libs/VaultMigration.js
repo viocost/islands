@@ -58,7 +58,7 @@ async function exportVault(vaultId, historyManager, vaultManager){
         });
     } else{
         //new version
-        toipcIds = fs.readdirSync(topicsPath)
+        topicIds = fs.readdirSync(topicsPath)
     }
 
     //for each topic

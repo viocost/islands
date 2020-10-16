@@ -2,6 +2,10 @@ import * as util from "./dom-util"
 import * as Modal from "./DynmaicModal";
 import { IError as Err } from "../../../../common/IError";
 import * as SVG from "./SVG"
+<<<<<<< HEAD
+=======
+import { UXMessage } from "../ui/UX"
+>>>>>>> ux-refactoring
 
 //Bakes select list for side panel
 // top boolean whether it is select for top block
@@ -186,108 +190,52 @@ function bakeTopicsBlock(){
     })
 }
 
-
-export function bakeParticipantListItem(data){
-    let { nickname, pkfp, alias, onClick, onDClick, isSelf } = data;
-    let iconClasses = ["participant-icon", ]
-
-    if(isSelf){
-        iconClasses.push("that-is-me");
-    }
-
-    return util.bake("div", {
-        class: "participant-list-item",
-        listeners: {
-            click: onClick,
-            dblclick: onDClick
-        },
-        attributes: {
-            pkfp: pkfp
-        },
-        children: [
-            util.bake("div", {
-                class: iconClasses
-            }),
-
-            util.bake("div", {
-                class: "participant-label",
-                children: [
-
-                    util.bake("span", {
-                        text: isSelf ? "(me)" : alias ? alias : `${pkfp.substring(0, 8)}`
-                    }),
-
-                    util.bake("span", {
-                        text: "--"
-                    }),
-
-                    util.bake("span", {
-                        text: nickname
-                    }),
-                ]
-                //html: alias ? `${nickname} -- ${alias}` : `${nickname} -- ${nickname}`
-            })
-        ]
-    })
-}
-
-export function bakeInviteListItem(inviteCode, onclick, onDoubleClick, alias=""){
-    return util.bake("div", {
-        attributes: {
-            "code": inviteCode
-        },
-        listeners: {
-            click: onclick,
-            dblclick: onDoubleClick
-        },
-        class: "invite-list-item",
-        children: [
-            util.bake("div", {
-                class: "invite-icon"
-            }),
-            util.bake("div", {
-                class: "invite-label",
-                html: `Invite ${alias ? alias : inviteCode.substring(117, 147)}`
-            })
-
-        ],
-        //////////////////////////
-        // listeners: {         //
-        //     "click": onclick //
-        // },                   //
-        //////////////////////////
-        //
-        //html: inviteCode.substr(117, )
-    })
-}
-
 export function bakeMessagesPanel(newMsgBlock){
     return util.bake("div", {
         class: "main-panel-container",
         children: [
             util.bake("div", {
-                class: "messages-panel-container",
-                id: "messages-panel-container",
-                children: [
-                    util.bake("h4", {
-                        id: "topic-in-focus-label",
-                        class: "topic-in-focus-label"
-                    }),
-
-                    util.bake("div", {
-                        class: "messages-window",
-                        id: "messages-window-1"
-                    })
-
-
-                ],
+                class: "topic-message-blocks-container",
+                id: "topic-message-blocks-container"
             }),
+
             newMsgBlock
         ]
     })
 }
 
-export function bakeNewMessageControl(){
+export function bakeTopicMessagesBlock(pkfp, topicName){
+
+    return util.bake("div", {
+        class: "messages-panel-container",
+        attributes: {
+            pkfp: pkfp
+        },
+        children: [
+            util.bake("h4", {
+                id: "topic-in-focus-label",
+                class: "topic-in-focus-label",
+                text: `Topic: ${topicName}`
+            }),
+
+            util.bake("div", {
+                class: "messages-window",
+                id: "messages-window-1"
+            })
+
+
+        ],
+    })
+}
+
+export function bakeNewMessageControl(uxBus){
+    const clipIcon = svgAsDOM(SVG.clipSVG)
+    clipIcon.addEventListener("click", ()=>uxBus.emit(UXMessage.ATTACH_FILE_ICON_CLICK))
+    util.addClass(clipIcon, "attach-icon");
+
+    const cancelIcon = svgAsDOM(SVG.cancelSVG)
+    cancelIcon.addEventListener("click", ()=>uxBus.emit(UXMessage.CANCEL_PRIVATE_MESSAGE))
+
     return util.bake("div", {
         id: "new-message-container",
         children: [
@@ -298,13 +246,7 @@ export function bakeNewMessageControl(){
                         class: "private-label",
                         id: "private-label",
                         children: [
-                            util.bake("img", {
-                                attributes:{
-                                    id: "remove-private",
-                                    src: "/img/close.png"
-                                },
-
-                            }),
+                            cancelIcon,
                             util.bake("span", {
                                 text: "Prvate to: "
                             }),
@@ -329,11 +271,7 @@ export function bakeNewMessageControl(){
                                             for: "attach-file"
                                         },
                                         children: [
-                                            util.bake("img", {
-                                                attributes: {
-                                                    src: "/img/clip.svg"
-                                                }
-                                            })
+                                            clipIcon
                                         ]
                                     })
                                 ]
@@ -345,7 +283,12 @@ export function bakeNewMessageControl(){
                                         id: "new-msg",
                                         attributes: {
                                             placeholder: "Enter your message. Ctrl+Enter - new line. Enter - send."
+                                        },
+
+                                        listeners: {
+                                            keyup: ev=>uxBus.emit(UXMessage.MESSAGE_AREA_KEY_PRESS, ev)
                                         }
+
                                     }),
                                     util.bake("div", {
                                         id: "chosen-files"
@@ -372,6 +315,9 @@ export function bakeNewMessageControl(){
                                 id: BUTTON_IDS.SEND,
                                 class: "btn-send",
                                 text: "SEND",
+                                listeners: {
+                                    click: ()=>uxBus.emit(UXMessage.SEND_BUTTON_CLICK)
+                                }
                             })
                         ]
                     }),
@@ -592,13 +538,16 @@ export function bakeLoginHeader(){
 }
 
 export function bakeHeaderLeftSection(){
+    let menuButton = svgAsDOM(SVG.hamburgerSVG)
+    menuButton.id = BUTTON_IDS.MAIN_MENU
+    util.addClass(menuButton, "main-menu-button")
+    util.addClass(menuButton, "menu-on")
+    menuButton.addEventListener("click", ()=>uxBus.emit(UXMessage.MAIN_MENU_CLICK))
+
     return util.bake("div", {
         class: "header-section-left",
         children: [
-            util.bake("button", {
-                id: BUTTON_IDS.MAIN_MENU,
-                class: "menu-on",
-            }),
+            menuButton,
 
             util.bake("div", {
                 class: "connection-indicator-container",
@@ -683,31 +632,40 @@ export function bakeMainContainer(){
 }
 
 
-export function bakeTopicListItem(topic, topicOnClick, expandOnClick){
+export function bakeTopicListItem(topic, uxBus){
+
+    const plus = svgAsDOM(SVG.plusLight);
+    const minus = svgAsDOM(SVG.minusLight);
+
+    util.addClass(plus, "btn-expand-topic")
+    util.addClass(plus, "side-panel-icon")
+    util.addClass(minus, "btn-expand-topic")
+    util.addClass(minus, "side-panel-icon")
+    plus.addEventListener("click", ()=>uxBus.emit(UXMessage.TOPIC_EXPAND_ICON_CLICK, topic.pkfp))
+    minus.addEventListener("click", ()=>uxBus.emit(UXMessage.TOPIC_EXPAND_ICON_CLICK, topic.pkfp))
+    util.displayNone(minus);
+
+
     return util.bake("li", {
         class: "side-block-data-list-item",
         attributes: {
             pkfp: topic.pkfp
         },
         listeners: {
-            click: topicOnClick
         },
         children: [
             util.bake("div", {
                 class: "topic-row-wrap",
-                listeners: {
-                    dblclick: expandOnClick
-                },
                 children: [
-                    util.bake("div", {
-                        class: "btn-expand-topic",
-                        listeners: {
-                            click: expandOnClick
-                        }
-                    }),
+                    plus,
+                    minus,
                     util.bake("span", {
                         class: "topic-name",
-                        text: topic.name
+                        text: topic.name,
+                        listeners: {
+                            click: ()=>uxBus.emit(UXMessage.TOPIC_CLICK, topic.pkfp),
+                            dblclick: ()=>uxBus.emit(UXMessage.TOPIC_DBLCLICK, topic.pkfp)
+                        }
                     }),
 
                     util.bake("div", {
@@ -732,6 +690,137 @@ export function bakeTopicListItem(topic, topicOnClick, expandOnClick){
         ]
     })
 
+}
+
+
+export function bakeInviteListItem(uxBus, topicPkfp, inviteCode, alias=""){
+
+    let inviteSVG = svgAsDOM(SVG.inviteSVG);
+    util.addClass(inviteSVG,  "side-panel-icon")
+
+    console.log("Baking Invite list item");
+    return util.bake("div", {
+        attributes: {
+            "code": inviteCode
+        },
+        listeners: {
+            click: ()=>{uxBus.emit(UXMessage.INVITE_CLICK, {
+                pkfp: topicPkfp,
+                inviteCode: inviteCode
+            })},
+
+            dblclick: ()=>{uxBus.emit(UXMessage.INVITE_DBLCLICK, {
+                pkfp: topicPkfp,
+                inviteCode: inviteCode
+            })},
+            contextmenu: ()=>uxBus.emit(UXMessage.CONTEXT_MENU, {
+                subject: CONTEXT_MENU_SUBJECTS.INVITE,
+                topicPkfp: topicPkfp,
+                inviteCode: inviteCode
+            })
+        },
+        class: "invite-list-item",
+        children: [
+            inviteSVG,
+
+            util.bake("div", {
+                class: "invite-label",
+                html: `Invite ${alias ? alias : inviteCode.substring(117, 147)}`
+            })
+
+        ],
+        //////////////////////////
+        // listeners: {         //
+        //     "click": onclick //
+        // },                   //
+        //////////////////////////
+        //
+        //html: inviteCode.substr(117, )
+    })
+}
+
+
+export function bakeParticipantListItem(data){
+    let { nickname, participantPkfp, topicPkfp, alias, uxBus } = data;
+    let iconClasses = ["side-panel-icon"]
+
+    // This participant is self
+    let isSelf = participantPkfp === topicPkfp
+    if(isSelf){
+        iconClasses.push("side-panel-icon-green");
+    }
+
+    let participantIcon = svgAsDOM(SVG.participantSVG)
+    for(let cls of iconClasses) util.addClass(participantIcon, cls);
+
+    console.log("Baking participant list item");
+
+    return util.bake("div", {
+        class: "participant-list-item",
+        listeners: {
+            click: ()=>uxBus.emit(UXMessage.PARTICIPANT_CLICK, {
+                participantPkfp: participantPkfp,
+                topicPkfp: topicPkfp
+            }),
+            dblclick: ()=>uxBus.emit(UXMessage.PARTICIPANT_DBLCLICK, {
+                participantPkfp: participantPkfp,
+                topicPkfp: topicPkfp
+            })
+        },
+        attributes: {
+            participantPkfp: participantPkfp,
+            topicPkfp: topicPkfp
+        },
+        children: [
+            participantIcon,
+
+            util.bake("div", {
+                class: "participant-label",
+                children: [
+
+                    util.bake("span", {
+                        text: isSelf ? "(me)" : alias ? alias : `${pkfp.substring(0, 8)}`
+                    }),
+
+                    util.bake("span", {
+                        text: "--"
+                    }),
+
+                    util.bake("span", {
+                        text: nickname
+                    }),
+                ]
+            })
+        ]
+    })
+}
+
+export function bakeTopicAssets(topic, uxBus){
+
+    let topicAssets = util.bake("div", {
+        class: "topic-assets",
+        attributes: {
+            pkfp: topic.pkfp
+        }
+    })
+
+    for(let pkfp in topic.participants){
+        let participantItem = bakeParticipantListItem({
+            nickname: topic.getParticipantNickname(pkfp),
+            alias: topic.getParticipantAlias(pkfp),
+            participantPkfp: pkfp,
+            topicPkfp: topic.pkfp,
+            uxBus: uxBus
+        })
+        util.appendChildren(topicAssets, participantItem)
+    }
+
+    for(let inviteCode in topic.invites){
+        let inviteItem = bakeInviteListItem(uxBus, topic.pkfp, inviteCode, topic.invites[inviteCode].name)
+        util.appendChildren(topicAssets, inviteItem)
+    }
+
+    return topicAssets
 }
 
 export function bakeUnreadMessagesElement(num){
@@ -906,12 +995,17 @@ export const BUTTON_IDS = {
     SEND:  "send-new-msg",
     LOGIN: "vault-login-btn",
     REGISTER: "register-vault-btn",
-    MAIN_MENU: "menu-button",
+    MAIN_MENU: "main-menu-button",
     MUTE_SOUND: "sound-control-btn",
     LOGOUT:  "logout-btn"
 
 }
 
+export const CONTEXT_MENU_SUBJECTS = {
+    INVITE: Symbol("invite"),
+    PARTICIPANT: Symbol("participant"),
+    TOPIC: Symbol("topic")
+}
 
 //////////////////////////////////////////////
 // export function bakeSettingsContainer(){ //

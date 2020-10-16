@@ -68,7 +68,7 @@ class TopicInitAssistant{
             throw new Error("Init topic request is invalid");
         }
 
-        Logger.debug("Init toipc request verified", {cat: "topic_create"})
+        Logger.debug("Init topic request verified", {cat: "topic_create"})
         //const newTopicPending = self.getNewTopicPendingData(request.body.topicID);
 
 

@@ -127,9 +127,152 @@ const islandSVG = `
 
 `
 
+const participantSVG = `
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 350 350"  xml:space="preserve" width="512px" height="512px" ><g><g>
+	<path d="M175,171.173c38.914,0,70.463-38.318,70.463-85.586C245.463,38.318,235.105,0,175,0s-70.465,38.318-70.465,85.587   C104.535,132.855,136.084,171.173,175,171.173z" data-original="#000000" class="active-path" data-old_color="#000000" fill="#FFFFFF"/>
+	<path d="M41.909,301.853C41.897,298.971,41.885,301.041,41.909,301.853L41.909,301.853z" data-original="#000000" class="active-path" data-old_color="#000000" fill="#FFFFFF"/>
+	<path d="M308.085,304.104C308.123,303.315,308.098,298.63,308.085,304.104L308.085,304.104z" data-original="#000000" class="active-path" data-old_color="#000000" fill="#FFFFFF"/>
+	<path d="M307.935,298.397c-1.305-82.342-12.059-105.805-94.352-120.657c0,0-11.584,14.761-38.584,14.761   s-38.586-14.761-38.586-14.761c-81.395,14.69-92.803,37.805-94.303,117.982c-0.123,6.547-0.18,6.891-0.202,6.131   c0.005,1.424,0.011,4.058,0.011,8.651c0,0,19.592,39.496,133.08,39.496c113.486,0,133.08-39.496,133.08-39.496   c0-2.951,0.002-5.003,0.005-6.399C308.062,304.575,308.018,303.664,307.935,298.397z" data-original="#000000" class="active-path" data-old_color="#000000" fill="#FFFFFF"/>
+</g></g> </svg>
+
+`
+
+
+const inviteSVG = `
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve" width="512px" height="512px" class=""><g><g>
+	<g>
+		<path d="M491.669,485.888L286.443,330.347c-18.197-13.867-42.709-13.888-60.885-0.021L20.331,485.888    c-4.715,3.563-5.632,10.24-2.069,14.933c3.563,4.715,10.261,5.589,14.933,2.069l205.248-155.584    c10.517-7.957,24.576-7.979,35.115,0.021l205.248,155.563c1.92,1.472,4.203,2.176,6.443,2.176c3.2,0,6.4-1.472,8.491-4.245    C497.301,496.128,496.384,489.451,491.669,485.888z" data-original="#000000" class="active-path" data-old_color="#000000" fill="#FFFFFF"/>
+	</g>
+</g><g>
+	<g>
+		<path d="M498.219,178.709c-3.52-4.693-10.261-5.632-14.933-2.069l-206.4,156.203c-4.693,3.541-5.632,10.24-2.069,14.933    c2.069,2.773,5.269,4.224,8.491,4.224c2.261,0,4.523-0.704,6.443-2.155l206.4-156.203    C500.843,190.101,501.781,183.403,498.219,178.709z" data-original="#000000" class="active-path" data-old_color="#000000" fill="#FFFFFF"/>
+	</g>
+</g><g>
+	<g>
+		<path d="M235.115,332.821l-206.4-156.203c-4.651-3.541-11.392-2.667-14.933,2.069c-3.563,4.693-2.624,11.392,2.069,14.933    l206.4,156.203c1.92,1.472,4.203,2.176,6.443,2.176c3.2,0,6.421-1.451,8.491-4.245    C240.747,343.061,239.808,336.363,235.115,332.821z" data-original="#000000" class="active-path" data-old_color="#000000" fill="#FFFFFF"/>
+	</g>
+</g><g>
+	<g>
+		<path d="M489.835,166.763L454.827,137.6c-4.501-3.755-11.221-3.179-15.019,1.344c-3.776,4.523-3.179,11.243,1.344,15.019    l34.987,29.163c2.475,2.048,3.861,5.056,3.861,8.213V480c0,5.867-4.8,10.667-10.667,10.667H42.667C36.8,490.667,32,485.867,32,480    V191.339c0-3.179,1.387-6.165,3.84-8.213l34.987-29.163c4.523-3.776,5.141-10.496,1.365-15.019    c-3.776-4.544-10.517-5.141-15.019-1.365l-35.029,29.184c-7.296,6.123-11.477,15.083-11.477,24.576V480c0,17.643,14.357,32,32,32    h426.667c17.643,0,32-14.357,32-32V191.339C501.333,181.824,497.152,172.885,489.835,166.763z" data-original="#000000" class="active-path" data-old_color="#000000" fill="#FFFFFF"/>
+	</g>
+</g><g>
+	<g>
+		<path d="M448,0H64c-5.888,0-10.667,4.779-10.667,10.667v204.544c0,5.888,4.779,10.667,10.667,10.667s10.667-4.779,10.667-10.667    V21.333h362.667v193.984c0,5.888,4.779,10.667,10.667,10.667c5.888,0,10.667-4.779,10.667-10.667V10.667    C458.667,4.779,453.888,0,448,0z" data-original="#000000" class="active-path" data-old_color="#000000" fill="#FFFFFF"/>
+	</g>
+</g><g>
+	<g>
+		<path d="M256,85.333c-5.888,0-10.667,4.779-10.667,10.667v128c0,5.888,4.779,10.667,10.667,10.667s10.667-4.779,10.667-10.667V96    C266.667,90.112,261.888,85.333,256,85.333z" data-original="#000000" class="active-path" data-old_color="#000000" fill="#FFFFFF"/>
+	</g>
+</g><g>
+	<g>
+		<path d="M320,149.333H192c-5.888,0-10.667,4.779-10.667,10.667s4.779,10.667,10.667,10.667h128    c5.888,0,10.667-4.779,10.667-10.667S325.888,149.333,320,149.333z" data-original="#000000" class="active-path" data-old_color="#000000" fill="#FFFFFF"/>
+	</g>
+</g></g> </svg>
+
+`
+
+const plusLight = `
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 480 480" style="enable-background:new 0 0 480 480;" xml:space="preserve" width="512px" height="512px"><g><g>
+	<g>
+		<path d="M240,0C107.452,0,0,107.452,0,240s107.452,240,240,240s240-107.452,240-240C479.85,107.514,372.486,0.15,240,0z M240,464    C116.288,464,16,363.712,16,240S116.288,16,240,16s224,100.288,224,224C463.859,363.653,363.653,463.859,240,464z" data-original="#000000" class="active-path" data-old_color="#000000" fill="#FFFFFF"/>
+	</g>
+</g><g>
+	<g>
+		<path d="M376,232H248V104c0-4.418-3.582-8-8-8s-8,3.582-8,8v128H104c-4.418,0-8,3.582-8,8s3.582,8,8,8h128v128    c0,4.418,3.582,8,8,8s8-3.582,8-8V248h128c4.418,0,8-3.582,8-8S380.418,232,376,232z" data-original="#000000" class="active-path" data-old_color="#000000" fill="#FFFFFF"/>
+	</g>
+</g></g> </svg>
+
+`
+
+const minusLight = `
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 52 52" style="enable-background:new 0 0 52 52;" xml:space="preserve" width="512px" height="512px" class=""><g><g>
+	<path d="M26,0C11.664,0,0,11.663,0,26s11.664,26,26,26s26-11.663,26-26S40.336,0,26,0z M26,50C12.767,50,2,39.233,2,26   S12.767,2,26,2s24,10.767,24,24S39.233,50,26,50z" data-original="#000000" class="active-path" data-old_color="#000000" fill="#FFFFFF"/>
+	<path d="M39,25H13c-0.552,0-1,0.447-1,1s0.448,1,1,1h26c0.552,0,1-0.447,1-1S39.552,25,39,25z" data-original="#000000" class="active-path" data-old_color="#000000" fill="#FFFFFF"/>
+</g></g> </svg>
+`
+
+const clipSVG = `
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 51.619 51.619" style="enable-background:new 0 0 51.619 51.619;" xml:space="preserve" width="512px" height="512px" class=""><g><path d="M50.14,19.206c-0.391-0.391-1.023-0.391-1.414,0L21.432,46.5c-2.012,2.012-4.697,3.119-7.563,3.119  c-2.867,0-5.553-1.107-7.564-3.119s-3.119-4.697-3.119-7.564c0-2.866,1.107-5.552,3.119-7.563L33.598,4.078  c2.897-2.896,7.445-2.719,10.579,0.413c3.133,3.133,3.311,7.682,0.414,10.579L18.951,40.711c-1.433,1.433-3.767,1.434-5.203,0  c-1.434-1.435-1.434-3.769,0-5.203l17.369-17.369c0.391-0.391,0.391-1.023,0-1.414s-1.023-0.391-1.414,0L12.334,34.093  c-2.214,2.214-2.214,5.816,0,8.031c2.216,2.216,5.819,2.212,8.031,0l25.641-25.641c3.703-3.704,3.525-9.468-0.414-13.407  c-3.938-3.938-9.703-4.117-13.407-0.413L4.89,29.958c-2.39,2.389-3.705,5.577-3.705,8.978c0,3.401,1.315,6.59,3.705,8.979  c2.389,2.39,5.577,3.705,8.979,3.705c3.4,0,6.589-1.315,8.978-3.705L50.14,20.62C50.531,20.229,50.531,19.596,50.14,19.206z" data-original="#000000" class="active-path" data-old_color="#000000" fill="#FFFFFF"/></g> </svg>
+
+`
+
+const cancelSVG = `
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" version="1.1" width="512" height="512" x="0" y="0" viewBox="0 0 241.171 241.171" style="enable-background:new 0 0 512 512" xml:space="preserve"><g>
+<g xmlns="http://www.w3.org/2000/svg">
+	<path id="Close" d="M138.138,120.754l99.118-98.576c4.752-4.704,4.752-12.319,0-17.011c-4.74-4.704-12.439-4.704-17.179,0   l-99.033,98.492L21.095,3.699c-4.74-4.752-12.439-4.752-17.179,0c-4.74,4.764-4.74,12.475,0,17.227l99.876,99.888L3.555,220.497   c-4.74,4.704-4.74,12.319,0,17.011c4.74,4.704,12.439,4.704,17.179,0l100.152-99.599l99.551,99.563   c4.74,4.752,12.439,4.752,17.179,0c4.74-4.764,4.74-12.475,0-17.227L138.138,120.754z" fill="#ff0000" data-original="#000000" style=""/>
+	<g>
+	</g>
+	<g>
+	</g>
+	<g>
+	</g>
+	<g>
+	</g>
+	<g>
+	</g>
+	<g>
+	</g>
+</g>
+<g xmlns="http://www.w3.org/2000/svg">
+</g>
+<g xmlns="http://www.w3.org/2000/svg">
+</g>
+<g xmlns="http://www.w3.org/2000/svg">
+</g>
+<g xmlns="http://www.w3.org/2000/svg">
+</g>
+<g xmlns="http://www.w3.org/2000/svg">
+</g>
+<g xmlns="http://www.w3.org/2000/svg">
+</g>
+<g xmlns="http://www.w3.org/2000/svg">
+</g>
+<g xmlns="http://www.w3.org/2000/svg">
+</g>
+<g xmlns="http://www.w3.org/2000/svg">
+</g>
+<g xmlns="http://www.w3.org/2000/svg">
+</g>
+<g xmlns="http://www.w3.org/2000/svg">
+</g>
+<g xmlns="http://www.w3.org/2000/svg">
+</g>
+<g xmlns="http://www.w3.org/2000/svg">
+</g>
+<g xmlns="http://www.w3.org/2000/svg">
+</g>
+<g xmlns="http://www.w3.org/2000/svg">
+</g>
+</g></svg>
+
+`
+
+const hamburgerSVG = `
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" width="512px" height="512px" viewBox="0 0 124 124" style="enable-background:new 0 0 124 124;" xml:space="preserve" class=""><g transform="matrix(0.989802 0 0 0.989802 0.632275 0.632275)"><g>
+	<path d="M112,6H12C5.4,6,0,11.4,0,18s5.4,12,12,12h100c6.6,0,12-5.4,12-12S118.6,6,112,6z" data-original="#000000" class="active-path" data-old_color="#000000" fill="#FFFFFF"/>
+	<path d="M112,50H12C5.4,50,0,55.4,0,62c0,6.6,5.4,12,12,12h100c6.6,0,12-5.4,12-12C124,55.4,118.6,50,112,50z" data-original="#000000" class="active-path" data-old_color="#000000" fill="#FFFFFF"/>
+	<path d="M112,94H12c-6.6,0-12,5.4-12,12s5.4,12,12,12h100c6.6,0,12-5.4,12-12S118.6,94,112,94z" data-original="#000000" class="active-path" data-old_color="#000000" fill="#FFFFFF"/>
+</g></g> </svg>
+
+`
+
 module.exports = {
     islandSVG: islandSVG,
     logoutSVG: logoutSVG,
     soundOffSVG: soundSVGOff,
-    soundOnSVG: soundSVGOn
+    soundOnSVG: soundSVGOn,
+    participantSVG: participantSVG, 
+    inviteSVG: inviteSVG,
+    plusLight: plusLight,
+    minusLight: minusLight, 
+    clipSVG: clipSVG,
+	cancelSVG: cancelSVG,
+	hamburgerSVG: hamburgerSVG
 }

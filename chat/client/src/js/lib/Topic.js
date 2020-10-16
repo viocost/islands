@@ -57,7 +57,7 @@ export class Topic{
         // Initial messages load has been completed
         this.isInitLoaded = false;
 
-        // All messages on this toipcs has been loaded
+        // All messages on this topics has been loaded
         this.allMessagesLoaded = false;
 
         // When topic has sent load n messages from the server and awaiting result
@@ -124,6 +124,7 @@ export class Topic{
         this.sharedKey = this.getSharedKey()
         this.metadataId = this._metadata.getId();
         this.metadataLoaded = true;
+        this.invites = this._metadata.body.settings.invites;
     }
     //called only when loading metadata from Island on login
     loadMetadataBAK(metadata){

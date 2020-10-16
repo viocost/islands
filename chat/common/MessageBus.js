@@ -56,7 +56,8 @@ class MessageBus {
      *
      */
     on(message=null, callback, subscriber) {
-        this._subscriptions[++this.subscriptionSeq] = { callback: callback, message: message, subscriber: subscriber }
+
+        this._subscriptions[++this.subscriptionSeq] = { callbacks: asArray(callback), message: message, subscriber: subscriber }
         return this.subscriptionSeq;
     }
 
@@ -93,7 +94,9 @@ class MessageBus {
                 //
                 // Message is an object { sender, message, data }
                 if (!subscription.message || subscription.message === message.message) {
-                    subscription.callback(message.data)
+                    for(let cb of subscription.callbacks){
+                        cb(message.data)
+                    }
                 }
             }
 
@@ -101,6 +104,10 @@ class MessageBus {
 
         this._processing = false
     }
+}
+
+function asArray(item){
+    return Array.isArray(item) ? item : [ item ];
 }
 
 module.exports = {

@@ -27,10 +27,12 @@
     background-color: rgb(30, 31, 38)
 
   svg
+    -webkit-filter: brightness(70%)
+    filter: birghtness(70%)
     transition: .3s
     &:hover
-      -webkit-filter: brightness(70%)
-      filter: birghtness(70%)
+      -webkit-filter: brightness(100%)
+      filter: birghtness(100%)
       transition: .3s
 
 
@@ -39,21 +41,23 @@
   height: 4rem
   margin-right: 1rem
 
-#menu-button
+.main-menu-button
     width: 4rem
     height: 4rem
     margin: 1rem
-    background: transparent url("/img/menu.svg") no-repeat 0 50%
-    background-size: 100% 100%
+    transition: .2s
+
+    -webkit-filter: brightness(50%)
+    filter: birghtness(50%)
     &:hover
-        cursor: pointer
-        -webkit-filter: brightness(70%)
-        filter: birghtness(70%)
-        transition: .2s
+      cursor: pointer
+      transition: .2s
+      -webkit-filter: brightness(90%)
+      filter: birghtness(90%)
 
 .menu-on
-    -webkit-filter: brightness(70%)
-    filter: birghtness(70%)
+    filter: brightness(90%)
+    -webkit-filter: brightness(90%)
 
 .header-section-middle
 
@@ -126,6 +130,7 @@ main
 
 //Side panel
 
+
 .side-panel-container
   display: flex
   flex-direction: column
@@ -136,6 +141,9 @@ main
   @media (max-width: $medium)
     width: 100%
     max-width: 100%
+
+.side-panel-btn
+  border-radius: .2rem
 
 .carousel-wrap
   width: 100%
@@ -221,7 +229,6 @@ main
 .side-block-data-list-item
   flex-direction: column
   border-bottom: 1px solid darken($main-background, 5%)
-  padding: .5rem
   display: flex
   width: 100%
   &:hover
@@ -231,6 +238,10 @@ main
 .topic-assets
   margin-left: 2rem
   width: calc(100% - 2rem)
+  display: none
+
+.topic-assets-expanded
+  display: block
 
 .topic-asset-item-wrap
   padding: .5rem
@@ -249,17 +260,20 @@ main
   cursor: pointer
   &:hover
     background-color: darken($main-background, 5%)
-  .invite-icon
-    background: url("/img/invite-light.svg")
-    background-size: cover
-    width: 2rem
-    height: 2rem
   .invite-label
     color: $text-color
     margin-left: 1rem
     overflow: hidden
     text-overflow: ellipsis
     flex: 1
+
+
+.side-panel-icon
+  width: 2rem
+  height: 2rem
+
+.side-panel-icon-green
+  filter: invert(53%) sepia(95%) saturate(3424%) hue-rotate(88deg) brightness(100%) contrast(112%)
 
 .participant-list-item
 
@@ -277,14 +291,7 @@ main
   &:hover
     background-color: darken($main-background, 5%)
 
-  .that-is-me
-    filter: invert(53%) sepia(95%) saturate(3424%) hue-rotate(88deg) brightness(100%) contrast(112%)
 
-  .participant-icon
-    background: url("/img/user-light.svg")
-    background-size: cover
-    width: 2rem
-    height: 2rem
   .participant-label
     color: $text-color
     margin-left: 1rem
@@ -306,12 +313,12 @@ main
   display: flex
   flex-direction: row
 
+.topic-name
+  margin: 0 0 0 1rem
+  align-items: center
 
 .btn-expand-topic
-  width: 2rem
-  height: 2rem
-  background: url("/img/add-light.svg")
-  background-size: cover
+  margin: .5rem 0 .5rem .5rem
 
 .btn-collapse-topic
   background: url("/img/minus-light.svg")
@@ -729,20 +736,23 @@ main
   flex-direction: column
   flex: 1
   overflow: hidden
-  .messages-panel-container
-    @include scroll-style
-    width: 100%
-    display: flex
-    flex: 1
-    background-color: inherit
-    border-bottom: 2px solid $main-background
-    overflow-x: hidden
-    overflow-y: auto
-    flex-grow: 1
-    border-radius: 1rem
-    padding: 1rem 2rem 1rem 2rem
-    resize: none
+  .topic-message-blocks-container
     height: 100%
+
+    .messages-panel-container
+      @include scroll-style
+      width: 100%
+      display: none
+      flex: 1
+      background-color: inherit
+      border-bottom: 2px solid $main-background
+      overflow-x: hidden
+      overflow-y: auto
+      flex-grow: 1
+      border-radius: 1rem
+      padding: 1rem 2rem 1rem 2rem
+      resize: none
+      height: 100%
 
 .messages-window
   width: 100%
@@ -856,6 +866,15 @@ main
 .att-info
   display: none
 
+.attach-icon
+  height: 3rem
+  width: 3rem
+  margin: 0 1rem
+  transition: .2s
+  filter: brightness(70%)
+  &:hover
+    transition: .2s
+    filter: invert(53%) sepia(95%) saturate(3424%) hue-rotate(88deg) brightness(100%) contrast(112%)
 
 // ~END MESSAGES
 

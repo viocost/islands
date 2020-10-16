@@ -6,6 +6,7 @@ import { Internal, Events } from "../../../../common/Events"
 import { WildEmitter } from "../../../../common/WildEmitter"
 import { Topic } from "./Topic"
 import { iCrypto } from "../../../../common/iCrypto"
+import { UXMessage } from "../ui/UX";
 
 let topics = []
 
@@ -20,7 +21,7 @@ export class PostLoginInitializer {
     static Success = Symbol("success")
     static Fail = Symbol("fail")
 
-    constructor(session, vault) {
+    constructor(session, vault, uxBus) {
         WildEmitter.mixin(this)
 
         console.log("PostLoginInitializer started...");
@@ -28,8 +29,8 @@ export class PostLoginInitializer {
         this.arrivalHub = new ArrivalHub(session);
         this.session = session;
         this.vault = vault;
-
-        vault.bootstrap(this.arrivalHub, session, IslandsVersion.getVersion());
+        this.bus = uxBus
+        vault.bootstrap(this.arrivalHub, session, IslandsVersion.getVersion(), uxBus);
     }
 
     run() {
@@ -102,6 +103,7 @@ export class PostLoginInitializer {
             let topic = vault.decryptTopic(data.topics[pkfp], vault.password)
             topics[pkfp] = new Topic(pkfp, topic.name, topic.key, topic.comment)
             topics[pkfp].bootstrap(this.session, this.arrivalHub, IslandsVersion.getVersion());
+
         }
 
         vault.topics = topics;

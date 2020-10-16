@@ -229,7 +229,7 @@ class Vault{
 
     saveTopic(vaultId, topicPkfp, topicBlob){
         //verify
-        Logger.debug(`Save topic request received: vault id: ${vaultId}, toipcPkfp: ${topicPkfp}, blob lengt: ${topicBlob.length}`,
+        Logger.debug(`Save topic request received: vault id: ${vaultId}, topicPkfp: ${topicPkfp}, blob lengt: ${topicBlob.length}`,
                      {cat: "topic_create"});
         let publicKey = this.getVaultPublicKey(vaultId);
 
@@ -250,7 +250,7 @@ class Vault{
     }
 
     async deleteTopic(vaultId, topicPkfp, nonce, sign){
-        Logger.debug(`Deleting toipc record pkfp: ${topicPkfp}, vault: ${vaultId}`, {cat: "topic_delete"})
+        Logger.debug(`Deleting topic record pkfp: ${topicPkfp}, vault: ${vaultId}`, {cat: "topic_delete"})
         let publicKey = this.getVaultPublicKey(vaultId)
         let ic = new iCrypto()
         ic.addBlob("sign", sign)
@@ -395,7 +395,7 @@ class Vault{
             fs.mkdirSync(this.vaultDirectory);
         }
 
-        //Same about toipcs directory
+        //Same about topics directory
         if (!fs.existsSync(path.join(this.vaultDirectory, "topics"))){
             fs.mkdirSync(path.join(this.vaultDirectory, "topics"));
         }

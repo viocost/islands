@@ -38,7 +38,7 @@ import { VaultFactory } from "./Vault"
 import { IslandsVersion } from "../../../../common/Version"
 
 export class LoginAgent{
-    constructor(connectorFactory){
+    constructor(connectorFactory, uxBus){
         WildEmitter.mixin(this)
         this.sm = this._prepareStateMachine()
         this.connector = this._prepareConnector(connectorFactory);

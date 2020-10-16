@@ -7,7 +7,7 @@ export class TopicRetriever {
     constructor() {
         WildEmitter.mixin(this)
         this.stateMachine = this.prepareStateMachine();
-        this.toipcs;
+        this.topics;
         this.error;
     }
 

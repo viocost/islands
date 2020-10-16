@@ -395,10 +395,11 @@ export class Vault{
         return this.admin;
     }
 
-    bootstrap(arrivalHub, connector, version){
+    bootstrap(arrivalHub, connector, version, uxBus){
         this.arrivalHub = arrivalHub;
         this.connector = connector;
         this.version = version;
+        this.uxBus = uxBus;
         this.arrivalHub.on(this.id, (msg)=>{
             this.processIncomingMessage(msg, this);
         })
@@ -556,7 +557,7 @@ export class Vault{
             console.log(`Initialize settings  on topic join. Invitee ${inviteeNickname}`);
             self.initSettingsOnTopicJoin(self, pkfp, inviteeNickname, data)
         }
-        self.emit(Events.TOPIC_CREATED, pkfp);
+        self.uxBus.emit(Events.TOPIC_CREATED, newTopic);
         return pkfp
     }
 

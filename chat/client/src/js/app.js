@@ -34,7 +34,7 @@ function prepareRegistration(uxBus) {
 }
 
 function prepareLogin(uxBus) {
-    let loginAgent = new LoginAgent(ConnectorAbstractFactory.getChatConnectorFactory())
+    let loginAgent = new LoginAgent(ConnectorAbstractFactory.getChatConnectorFactory(), uxBus)
 
     loginAgent.on(LoginAgentEvents.DECRYPTION_ERROR, () => {
         uxBus.emit(UX.UXMessage.LOGIN_ERROR, "Invalid password.")
@@ -44,17 +44,23 @@ function prepareLogin(uxBus) {
     loginAgent.on(LoginAgentEvents.SUCCESS, (session, vault) => {
         console.log("Login agent succeeded. continuing initialization");
 
+        // TODO put settings
+        uxBus.emit(UX.UXMessage.LOGIN_SUCCESS, {soundOn: true})
         /**
             * PostLoginInitiazlier should initialize vault, topics and
             * Ask server to initialize hidden services for active topcis
             * Once succeed, it should return a hashmap of topics and the vault
             */
-        let postLoginInitializer = new PostLoginInitializer(session, vault)
+        let postLoginInitializer = new PostLoginInitializer(session, vault, uxBus)
         postLoginInitializer.on(PostLoginInitializer.Success, (vault, topics) => {
             console.log("Post login succeeded. Continuing...");
 
-            // TODO put settings
-            uxBus.emit(UX.UXMessage.LOGIN_SUCCESS, {soundOn: true})
+            // Notifying UX about each topic loaded
+            for(let topic in vault.topics){
+                uxBus.emit(UX.UXMessage.TOPIC_LOADED, vault.topics[topic])
+            }
+
+
 
             if(isDebug()){
                 //TEST only
@@ -65,9 +71,10 @@ function prepareLogin(uxBus) {
             // This handles create topic request
             uxBus.on(UX.UXMessage.CREATE_TOPIC_REQUEST, data=>{
                 let { nickname, topicName } = data
-                let tc = new TopicCreator(nickname, topicName, session, vault)
+                let tc = new TopicCreator(nickname, topicName, session, vault, uxBus)
                 tc.run()
             })
+
 
         })
 
@@ -97,7 +104,6 @@ function initSession(loginAgent, uxBus, data) {
 
     setTimeout(() => {
         loginAgent.acceptPassword(password);
-
     }, 200)
 }
 

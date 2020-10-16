@@ -670,7 +670,7 @@ function processNewInviteClick() {
     if(topicInFocus){
         chat.requestInvite(topicInFocus);
     } else {
-        console.log("No toipc in focus");
+        console.log("No topic in focus");
     }
 }
 

@@ -3,10 +3,10 @@ import { IslandsVersion } from "../../../../common/Version"
 import * as util from "../lib/dom-util";
 import { StateMachine } from "../../../../common/AdvStateMachine"
 import { BlockingSpinner } from "../lib/BlockingSpinner";
-import toastr from "../lib/toastr";
+import { Events } from "../../../../common/Events"
 import "../../css/chat.sass"
 import "../../css/vendor/loading.css";
-
+import toastr from "../lib/toastr";
 let spinner = new BlockingSpinner();
 
 
@@ -22,6 +22,10 @@ let topicCreateModal;
 let topicJoinModal;
 let setAliasModal;
 
+let topicInFocus;
+
+//Counters for unread messages
+const unreadCounters = {}
 
 export function initialize(messageBus){
     let mainStateMachine = prepareUIStateMachine()
@@ -120,7 +124,11 @@ function handleLoginSuccess(args) {
     //let vault = vaultHolder.getVault();
 
     updateHeaderOnSuccessfulLogin(settings);
+<<<<<<< HEAD
     createChatInterface()
+=======
+    createChatInterface(uxBus)
+>>>>>>> ux-refactoring
 
     //make modals
     topicCreateModal = UI.bakeTopicCreateModal(()=>{
@@ -189,13 +197,10 @@ function handleLoginSuccess(args) {
     setEventListeners(uxBus)
 
     //setupSidePanelListeners(uxBus,  stateMachine)
-    setupHotkeysHandlers()
-    refreshTopics();
+    //refreshTopics();
     // add listener to the menu button
     window.onresize = renderLayout;
 
-    // modals
-    //topicCreateModal = UI.bakeTopicCreateModal(createTopic)
 
     renderLayout()
     // prepare side panel
@@ -206,8 +211,7 @@ function handleLoginSuccess(args) {
 
 
     //util.$("#remove-private").addEventListener("click", removePrivate);
-    util.$("#remove-private").addEventListener("click", undefined);
-    util.$("#messages-panel-container").onscroll = undefined //processChatScroll;
+    //util.$("#messages-panel-container").onscroll = undefined //processChatScroll;
     //UIInitialized = true;
     ///////////////////////////////////////////////
     // let loginAgent = args[0]                  //
@@ -264,27 +268,22 @@ function updateHeaderOnSuccessfulLogin(settings, uxBus){
 
     util.appendChildren(header, [
         UI.bakeHeaderLeftSection((menuButton) => {
-            util.toggleClass(menuButton, "menu-on");
-            renderLayout()
         }),
         //UI.bakeHeaderRightSection(false, settings.soundOn , processInfoClick, processMuteClick, processSettingsClick, processLogoutClick)
         UI.bakeHeaderRightSection(settings.soundOn)
     ])
 }
 
-function prepareCreateTopicModal(){
 
-}
-
-function createChatInterface(){
+function createChatInterface(uxBus){
     let main = util.$("main")
     util.removeAllChildren(main);
 
     let mainContainer = UI.bakeMainContainer()
     util.appendChildren(main, mainContainer)
     let sidePanel = UI.bakeSidePanel(IslandsVersion.getVersion());
-    //newMessageBlock = UI.bakeNewMessageControl(sendMessage, processAttachmentChosen);
-    let newMessageBlock = UI.bakeNewMessageControl();
+
+    let newMessageBlock = UI.bakeNewMessageControl(uxBus);
     let messagesPanel = UI.bakeMessagesPanel(newMessageBlock)
     util.appendChildren(mainContainer, [sidePanel, messagesPanel]);
 }
@@ -312,7 +311,7 @@ function handleRegistrationError(args){
 
 function renderLayout() {
     console.log("Rendering layout")
-    let isSidePanelOn = util.hasClass("#menu-button", "menu-on");
+    let isSidePanelOn = util.hasClass(`#${UI.BUTTON_IDS.MAIN_MENU}`, "menu-on");
     let sidePanel = util.$(".side-panel-container");
     let messagesPanel = util.$(".main-panel-container");
     let connectionIndicatorLabel = util.$("#connection-indicator-label")
@@ -370,7 +369,7 @@ function setupHotkeysHandlers(){
 }
 
 //Sets listeners and callbacks for
-//all button clicks
+//all related message bus events
 function setEventListeners(uxBus){
     console.log("Setting event listeners");
     let buttonClickHandlers = {}
@@ -384,18 +383,207 @@ function setEventListeners(uxBus){
         }
     })
 
+    uxBus.on(Events.TOPIC_CREATED, addNewTopicToUX.bind(null, uxBus))
+    uxBus.on(UXMessage.TOPIC_LOADED, addNewTopicToUX.bind(null, uxBus))
+
+    uxBus.on(UXMessage.TOPIC_CLICK, activateTopic)
+    uxBus.on(UXMessage.TOPIC_DBLCLICK, [activateTopic, toggleTopicExpand])
+    uxBus.on(UXMessage.TOPIC_EXPAND_ICON_CLICK, [activateTopic, toggleTopicExpand])
+
+    uxBus.on(UXMessage.MAIN_MENU_CLICK, handleMainMenuClick);
+
+    //Invite code click events
+    uxBus.on(UXMessage.INVITE_DBLCLICK, copyInviteCodeToClipboard);
+    uxBus.on(UXMessage.PARTICIPANT_CLICK, ()=>console.log("participant click"))
+
+    //Attachment handlers
+    uxBus.on(UXMessage.ATTACH_FILE_ICON_CLICK, selectFileAttachment);
+
+
+    //Handle private message mode cancel click
+    uxBus.on(UXMessage.CANCEL_PRIVATE_MESSAGE, cancelPrivateMessageSend);
+
+    //Handling send message click
+    uxBus.on(UXMessage.SEND_BUTTON_CLICK, sendMessage);
+
+    //Handling key presses while in new message area
+    uxBus.on(UXMessage.MESSAGE_AREA_KEY_PRESS, processMessageAreaKeyPress)
+}
+
+
+function handleMainMenuClick(){
+    let menuButton = util.$(`#${UI.BUTTON_IDS.MAIN_MENU}`)
+
+    util.toggleClass(menuButton, "menu-on");
+    renderLayout()
+}
+
+//TODO Implement
+function selectFileAttachment(){
+    console.log("Selecting file to attach");
+}
+
+//TODO Implement
+function cancelPrivateMessageSend(){
+    console.log("Cancelling private message send");
+
+}
+
+
+//TODO Implement
+function sendMessage(){
+    console.log("SENDING MESSAGE!");
+}
+
+
+//TODO Implement
+function processMessageAreaKeyPress(ev){
+    console.log(`Key pressed: ${ev.keyCode}`);
+
+}
+
+function copyInviteCodeToClipboard(data){
+    let { inviteCode } = data
+    let textArea = document.createElement("textarea");
+    textArea.value = inviteCode;
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+        document.execCommand("copy");
+        console.log("Invite code has been copied");
+
+        toastr.info("Invite code has been copied to the clipboard");
+    } catch (err) {
+        toastr.error("Error copying invite code to the clipboard");
+    }
+    textArea.remove();
+}
 
 
 
+//Shows or hids the details of a given topic
+function toggleTopicExpand(pkfp){
+
+    console.log("Expanding topic");
+    let topicsList = util.$("#topics-list")
+    let topicEl = Array.from(util.$$(".side-block-data-list-item", topicsList)).filter(el=>el.getAttribute("pkfp") === pkfp)[0]
+    let topicAssets = Array.from(util.$$(".topic-assets", topicsList)).filter(el=>el.getAttribute("pkfp") === pkfp)[0]
+
+    // adding topic-assets-expanded makes topic assets visible
+    util.toggleClass(topicAssets, "topic-assets-expanded")
+
+    util.toggleDisplay(topicEl.firstElementChild.children[0])
+    util.toggleDisplay(topicEl.firstElementChild.children[1])
+    //here we are replacing + icon to minus if expanding
 
 
 }
 
 
 
-function refreshTopics(){
+function activateTopic(pkfp){
+    console.log("Activating topic");
 
+    //setting active topic
+    topicInFocus = pkfp;
+
+    //show topic messages panel
+    for(let panel of util.$$(".messages-panel-container")){
+        if (panel.getAttribute("pkfp") === pkfp){
+            util.flex(panel)
+        } else {
+            util.hide(panel)
+        }
+    }
+
+    //mark active topic on the side panel
+    for (let el of util.$("#topics-list").children) {
+        if (el.getAttribute("pkfp") === pkfp) {
+            util.addClass(el, "topic-in-focus");
+            //Here set the name for active topic in header
+
+        } else {
+            util.removeClass(el, "topic-in-focus");
+        }
+    }
+
+
+    //make sure new message input block is visible
+    newMessageBlockSetVisible(topicInFocus);
+
+    //reset unread messages counter
+    resetUnreadCounter(pkfp);
 }
+
+function incrementUnreadCounter(pkfp) {
+    console.log("Incrementing unread messages counter");
+    if (!unreadCounters.hasOwnProperty(pkfp)) {
+        unreadCounters[pkfp] = 1
+    } else {
+        unreadCounters[pkfp]++;
+    }
+    setUnreadMessagesIndicator(pkfp, unreadCounters[pkfp])
+}
+
+function resetUnreadCounter(pkfp) {
+    console.log("Resetting unread messages counter");
+    unreadCounters[pkfp] = 0
+    setUnreadMessagesIndicator(pkfp, unreadCounters[pkfp])
+}
+
+
+function setUnreadMessagesIndicator(pkfp, num) {
+    console.log("Setting unread messages indicator");
+    let topicEl
+
+    for (let topic of util.$("#topics-list").children) {
+        if (topic.getAttribute("pkfp") === pkfp) {
+            topicEl = topic;
+            break;
+        }
+    }
+    if (!topicEl) {
+        console.log(`Error: topic element with pkfp ${pkfp} is not found`);
+        return
+    }
+
+    let unreadCounterLabel = topicEl.firstElementChild.children[3]
+
+    util.html(unreadCounterLabel, "");
+    num ? unreadCounterLabel.appendChild(UI.bakeUnreadMessagesElement(num)) : 1 === 1;
+}
+
+function newMessageBlockSetVisible(visible) {
+    let display = !!visible ? "flex" : "none";
+    util.$("#new-message-container").style.display = display
+}
+
+
+
+/**
+ * This function creates all UX elements for newly added topic
+ */
+function addNewTopicToUX(uxBus, topic){
+    //Make sure topic with such pkfp does not exist
+    console.log("Adding topic to UX");
+    let topicsList = util.$("#topics-list")
+
+    let topics = Array.from(util.$$(".side-block-data-list-item", topicsList)).filter(item=>item.getAttribute("pkfp") === topic.pkfp)
+    if(topics.length > 0) return
+
+
+    let messageBlocksContainer = util.$("#topic-message-blocks-container")
+
+    console.log("Baking UX elements");
+    let topicListItem = UI.bakeTopicListItem(topic, uxBus);
+    let topicAssets = UI.bakeTopicAssets(topic, uxBus);
+    console.log("Baked");
+    util.appendChildren(topicsList, [topicListItem, topicAssets])
+    let topicMessageBlock = UI.bakeTopicMessagesBlock(topic.pkfp, topic.name)
+    util.appendChildren(messageBlocksContainer, topicMessageBlock)
+}
+
 
 
 
@@ -404,7 +592,7 @@ function processNewInviteClick() {
     if (topicInFocus) {
         chat.requestInvite(topicInFocus);
     } else {
-        console.log("No toipc in focus");
+        console.log("No topic in focus");
     }
 }
 
@@ -595,7 +783,6 @@ function prepareUIStateMachine(){
 
             },
 
-
             registrationSuccess: {
                 final: true
             },
@@ -607,17 +794,19 @@ function prepareUIStateMachine(){
 
                     },
                 }
-
             },
-
         }
     }, { traceLevel: StateMachine.TraceLevel.DEBUG, msgNotExistMode: StateMachine.Warn })
 }
 
 
 
-function addNewTopicToUX(topic){
 
+function handleContextMenuClick(data){
+    console.log("Context menu click");
+    switch(data.subject){
+
+    }
 }
 
 
@@ -638,8 +827,27 @@ export const UXMessage = {
     BUTTON_DBL_CLICK: Symbol("btndbl_click"),
     CREATE_TOPIC_REQUEST: Symbol("create_topic_request"),
     TOPIC_JOIN_REQUEST: Symbol("topic_join_request"),
+    TOPIC_LOADED: Symbol("topic_loaded"),
 
-    NEW_TOPIC_ONLINE: Symbol("new_topic")
+    // Main menu click message
+    MAIN_MENU_CLICK: Symbol("main_menu_click"),
 
+    // Event fired when user clicks on topic list item on the side panel
+    TOPIC_CLICK: Symbol("topic_click"),
+    // Double click on toipc list item on the side panel
+    TOPIC_DBLCLICK: Symbol("topic_double_click"),
+
+    //User clicks on expand/collapse icon on topic list item
+    TOPIC_EXPAND_ICON_CLICK: Symbol("topic_expand_icon_click"),
+
+    PARTICIPANT_CLICK: Symbol("participant_click"),
+    PARTICIPANT_DBLCLICK: Symbol("participant_dblclick"),
+    INVITE_CLICK: Symbol("invite_click"),
+    INVITE_DBLCLICK: Symbol("invite_dblclick"),
+    CONTEXT_MENU: Symbol("context_menu"),
+    SEND_BUTTON_CLICK: Symbol("send_button_click"),
+    ATTACH_FILE_ICON_CLICK: Symbol("attach_file"),
+    CANCEL_PRIVATE_MESSAGE: Symbol("private_cancel"),
+    MESSAGE_AREA_KEY_PRESS: Symbol("msg_key_press"),
 
 }

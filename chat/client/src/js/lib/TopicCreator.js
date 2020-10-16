@@ -1,26 +1,23 @@
 import { StateMachine } from "../../../../common/AdvStateMachine";
 import { iCrypto } from "../../../../common/iCrypto";
-import { ChatUtility } from "./ChatUtility";
 import { Message } from "./Message";
 import { WildEmitter } from  "./WildEmitter";
-import { createDerivedErrorClasses } from "../../../../common/DynamicError"
 import { Topic } from "./Topic";
 import { Internal, Events } from "../../../../common/Events";
+import { IslandsVersion }from "../../../../common/Version";
 
-class TopicCreatorError extends Error{ constructor(data){ super(data); this.name = "TopicCreatorError" } }
-let err = createDerivedErrorClasses(TopicCreatorError, {
-   
-})
+//class TopicCreatorError extends Error{ constructor(data){ super(data); this.name = "TopicCreatorError" } }
 
 
 export class TopicCreator {
 
-    constructor(nickname, topicName, session, vault) {
+    constructor(nickname, topicName, session, vault, uxBus) {
         WildEmitter.mixin(this)
         this.nickname = nickname;
         this.topicName = topicName;
         this.session = session;
-        this.vault = vault
+        this.vault = vault;
+        this.uxBus = uxBus;
         this.sm = this._prepareStateMachine();
 
         //TODO GET RID OF SESSION KEY HERE!
@@ -67,7 +64,7 @@ export class TopicCreator {
                     }
                 },
                 success: {
-                    entry: this._addTopicToVault,
+//                    entry: this._addTopicToVault,
                     final: true
                 },
                 error: {
@@ -79,7 +76,7 @@ export class TopicCreator {
     }
 
     async _initTopic(args) {
-        console.log("Init toipc top of the function");
+        console.log("Init topic top of the function");
         let nickname = this.nickname;
         let topicName = this.topicName;
 
@@ -87,14 +84,14 @@ export class TopicCreator {
         nickname = String(nickname).trim();
         if (!nickname || !/^.{2,20}$/.test(nickname)) {
             console.log("Nickname entered is invalid");
-            this.emit(Events.INIT_TOPIC_ERROR,
+            this.uxBus.emit(Events.INIT_TOPIC_ERROR,
                 `Nickname entered is invalid`);
             return;
         }
         if (!/^.{0,20}$/.test(topicName)) {
 
             console.log("Topic name entered is invalid");
-            this.emit(Events.INIT_TOPIC_ERROR,
+            this.uxBus.emit(Events.INIT_TOPIC_ERROR,
                 `Topic name entered is invalid`);
             return;
         }
@@ -150,37 +147,6 @@ export class TopicCreator {
         this.session.acceptMessage(request)
     }
 
-    _addTopicToVault(){
-        let vault = this.vault;
-
-        //if(!Message.verifyMessage(vault.sessionKey, data)){
-        //    throw new Error("Session key signature is invalid!")
-        //}
-        console.log(`Adding new topic to vault`)
-        let vaultRecord = data.body.vaultRecord;
-        let metadata = data.body.metadata;
-        let topicData = vault.decryptTopic(vaultRecord, vault.password);
-        let pkfp = topicData.pkfp;
-        let newTopic = new Topic(
-            pkfp,
-            topicData.name,
-            topicData.key,
-            topicData.comment
-        )
-
-        console.log(`New topic initialized: ${pkfp}, ${topicData.name} `)
-        newTopic.loadMetadata(metadata);
-        newTopic.bootstrap(vault.messageQueue, vault.arrivalHub, vault.version);
-        vault.topics[pkfp] = newTopic;
-
-        if (vault.pendingInvites.hasOwnProperty(data.body.inviteCode)){
-            let inviteeNickname = vault.pendingInvites[data.body.inviteCode].nickname
-            console.log(`Initialize settings  on topic join. Invitee ${inviteeNickname}`);
-            vault.initSettingsOnTopicJoin(vault, pkfp, inviteeNickname, data)
-        }
-        vault.emit(Events.TOPIC_CREATED, pkfp);
-        return pkfp
-    }
 
     _processTopicCreateError(args){
         console.log(`Error creating topic ${args[0]}`);

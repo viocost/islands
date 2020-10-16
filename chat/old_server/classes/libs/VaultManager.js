@@ -157,7 +157,7 @@ class VaultManager{
 
     saveTopic(vaultId, topicPkfp, topicBlob){
         //verify
-        Logger.debug(`Save topic request received: vault id: ${vaultId}, toipcPkfp: ${topicPkfp}, blob lengt: ${topicBlob.length}`,
+        Logger.debug(`Save topic request received: vault id: ${vaultId}, topicPkfp: ${topicPkfp}, blob lengt: ${topicBlob.length}`,
                      {cat: "topic_create"});
         let publicKey = this.getVaultPublicKey(vaultId);
 
@@ -178,7 +178,7 @@ class VaultManager{
     }
 
     async deleteTopic(vaultId, topicPkfp, nonce, sign){
-        Logger.debug(`Deleting toipc record pkfp: ${topicPkfp}, vault: ${vaultId}`, {cat: "topic_delete"})
+        Logger.debug(`Deleting topic record pkfp: ${topicPkfp}, vault: ${vaultId}`, {cat: "topic_delete"})
         let publicKey = this.getVaultPublicKey(vaultId)
         let ic = new iCrypto()
         ic.addBlob("sign", sign)
