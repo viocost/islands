@@ -267,7 +267,7 @@ module.exports = {
     islandSVG: islandSVG,
     logoutSVG: logoutSVG,
     soundOffSVG: soundSVGOff,
-    soundOnSVG: soundSVGOn,
+    soundOnSVG: soundSVGOn, 
     participantSVG: participantSVG, 
     inviteSVG: inviteSVG,
     plusLight: plusLight,

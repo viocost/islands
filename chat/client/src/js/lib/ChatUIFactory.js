@@ -2,10 +2,7 @@ import * as util from "./dom-util"
 import * as Modal from "./DynmaicModal";
 import { IError as Err } from "../../../../common/IError";
 import * as SVG from "./SVG"
-<<<<<<< HEAD
-=======
 import { UXMessage } from "../ui/UX"
->>>>>>> ux-refactoring
 
 //Bakes select list for side panel
 // top boolean whether it is select for top block
@@ -220,7 +217,6 @@ export function bakeTopicMessagesBlock(pkfp, topicName){
 
             util.bake("div", {
                 class: "messages-window",
-                id: "messages-window-1"
             })
 
 
@@ -752,8 +748,6 @@ export function bakeParticipantListItem(data){
 
     let participantIcon = svgAsDOM(SVG.participantSVG)
     for(let cls of iconClasses) util.addClass(participantIcon, cls);
-
-    console.log("Baking participant list item");
 
     return util.bake("div", {
         class: "participant-list-item",

@@ -47,6 +47,7 @@ class StateMachine {
         this.name = name;
         this.validateStateMap(stateMap)
         this.active = !isSubstate;
+        this.storage = {};
 
         this.obj = obj;
 
@@ -96,7 +97,9 @@ class StateMachine {
                                 target.processEvent(prop, args);
                             }catch(err){
                                 target.error = err;
+
                                 console.warn(`${target.name}: Event handler "${prop}" thrown an exception: ${err}`)
+                                console.log(err.stack)
                                 if(target.isDebug()) throw err
                             }
                         })

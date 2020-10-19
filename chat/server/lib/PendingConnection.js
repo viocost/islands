@@ -2,7 +2,7 @@ const { StateMachine } = require("../../common/AdvStateMachine")
 const { iCrypto } = require("../../common/iCrypto")
 const { createAuthMessage, Message } = require("../../common/Message")
 const { SymCryptoAgentFactory, AsymPublicCryptoAgentFactory } = require("../../common/CryptoAgent")
-const { SessionFactory } = require("../../common/Session");
+const { ServerSessionFactory } = require("../../common/Session");
 const { AuthMessage } = require("../../common/AuthMessage")
 
 
@@ -17,7 +17,7 @@ class PendingConnection{
 
 
         if(this.connector.hasConnectionQuery()){
-            this._sm.handle.reauth()
+            this._sm.handle.reauth(connector.getConnectionQuery(), connector)
         } else {
             this._sm.handle.auth(connector, sessions, vault)
         }
@@ -34,12 +34,14 @@ class PendingConnection{
      *
      */
     _handleReconnect(args){
+
+        console.log(`Handling reconnect. ${connector.getConnectionQuery()}`);
         let connector = args[0]
         let sessions  = args[1]
         let vault = args[2]
 
         for(let session of sessions){
-            if (session.recognizes(connector.getConnectionQuery().nonce)){
+            if (session.recognizes(connector.getConnectionQuery())){
                 session.replaceConnection(connector);
                 this._sm.handle.done()
                 return;
@@ -161,11 +163,21 @@ class PendingConnection{
     _handleReauth(args){
 
         console.log("Reauthenticating");
+        let connector = args[1]
         for(let session of this.sessions.getPausedSessions()){
-            if (session.decrypts(args[0])){
-                session.replaceConnector(args[1])
+            console.log("FOUND PAUSED SESSION");
+            if (session.recognizesSecret(args[0])){
+
+                console.log("SECRET RECOGNIZED");
+                session.replaceConnectorOnReconnection(connector)
+
+                //Sending Auth OK message
+                let msg = createAuthMessage({ command: AuthMessage.AUTH_OK, data: null })
+                connector.send("auth", msg)
             }
         }
+
+
 
     }
 
@@ -179,7 +191,7 @@ class PendingConnection{
     _initSession(args){
 
         console.log("Initializing session");
-        let session  = SessionFactory.make(this.connector, this.sessionKeyAgent, this.secret);
+        let session  = ServerSessionFactory.make(this.connector, this.sessionKeyAgent, this.secret);
         this.sessions.add(session)
         this._sendSuccessMessage()
     }

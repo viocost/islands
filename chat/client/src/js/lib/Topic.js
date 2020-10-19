@@ -3,28 +3,27 @@ import { inRange } from "../../../../common/Util";
 import { WildEmitter } from "./WildEmitter";
 import { Message } from "./Message";
 import { Metadata } from  "./Metadata";
+import { IslandsVersion } from "../../../../common/Version"
 import { ChatUtility } from "./ChatUtility";
 import { iCrypto } from  "../../../../common/iCrypto";
 import { ChatMessage } from "./ChatMessage";
 import { ClientSettings } from "./ClientSettings";
-import { CuteSet } from  "cute-set";
 import { INSPECT_MAX_BYTES } from "buffer";
 import { assert } from "../../../../common/IError";
+import { UXMessage } from "../ui/UX"
+import { StateMachine } from "../../../../common/AdvStateMachine"
+import { RequestForMessagesFactory } from "./RequestForMessages";
+import { SendMessageAgent } from "./SendMessageAgent"
 
 
 const INITIAL_NUM_MESSAGES = 25
 
+//for later refactoring
 class TopicBase{
     messages = [];
-
-
     constructor(){
 
-
-
-
     }
-
 
 }
 
@@ -63,7 +62,119 @@ export class Topic{
         // When topic has sent load n messages from the server and awaiting result
         this.awaitingMessages = false
 
+        this._messageServerSM = this._prepareMessageServerSM()
+        this._messageFetcherSM = this._prepareMessageFetcherSM();
 
+    }
+
+    //Whenever there is a request for messages
+    //this state machine handles is making sure
+    //there is only a single message request served at a time
+    _prepareMessageServerSM(){
+        return new StateMachine(this, {
+            name: "Message server SM",
+            stateMap: {
+                idle: {
+                    initial: true,
+                    transitions: {
+                        getMessages: {
+                            state: "processing",
+                            actions: this._initializeGetMessagesRequest.bind(this)
+                        }
+                    }
+                },
+
+                processing: {
+                    transitions: {
+                        entry: this._giveMessages.bind(this),
+                        fulfilled: {
+                            state: "idle",
+                        },
+
+                        moreMessages: {
+                            actions: this._giveMessages.bind(this)
+                        }
+
+                    }
+                }
+            }
+        })
+
+    }
+
+    //This function is called when message request from
+    // UX is received
+    _giveMessages(args){
+        //If not fulfilled the request and not all messages loaded
+        //   invoke message fetcher
+
+        //let { pkfp, before } = args[0]; //before is the id of the earliest message
+
+        //not our requets
+        //if(pkfp !== this.pkfp) return
+
+        let lastId = args[0] || 0;
+        let messagesRequested = args[1];
+        let lastMessageIndex = this.messages.find(message.header.id === lastId)
+
+
+        //Give any messages that already cached
+    }
+
+
+    //When get_messages request received
+    // it MUST provide all the requested messages eventually
+    //
+    // if it doesn't have all the messages right away, it provides what it has and
+    // invokes message fetcher to fetch messages from the island. When following messages
+    // arrive, they are given to requester and the request is terminated
+    //
+    //
+    _initializeGetMessagesRequest(args){
+        let { lastId=0, howMany, } = args[0];
+
+
+        let lastMessageIndex = this.messages.find(message.header.id === lastId)
+    }
+
+    _prepareMessageFetcherSM(){
+
+        return new StateMachine(this, {
+            name: "Message fetcher SM",
+            stateMap: {
+                idle: {
+                    initial: true,
+                    transitions: {
+                        fetch: {
+                            state: "fetching",
+                            actions: this.loadMoreMessages.bind(this)
+                        }
+                    },
+
+                },
+
+                fetching: {
+                    transitions: {
+                        messagesArrived: {
+                            actions: this.cacheMessages.bind(this)
+                        },
+
+                        fulfilled: {
+                            state: "idle"
+                        },
+
+                        allLoaded: {
+                            state: "allLoaded",
+                            actions: ()=>console.log("Fetcher now goes to all loaded state")
+                        }
+                    }
+                },
+
+                allLoaded: {
+                    final: true
+                }
+            }
+        })
     }
 
     static prepareNewTopicSettings(version, nickname, topicName, publicKey, encrypt = true){
@@ -86,6 +197,7 @@ export class Topic{
     // INITIALIZING
     bootstrap(connector,
               arrivalHub,
+              uxBus,
               version){
         this.connector = connector;
         this.arrivalHub = arrivalHub;
@@ -94,9 +206,17 @@ export class Topic{
         });
         this.version = version;
         this.setHandlers()
-
+        this.uxBus = uxBus;
+        this.subscribeToBus(uxBus),
         this.isBootstrapped = true;
+
     }
+
+    subscribeToBus(uxBus){
+        uxBus.on(UXMessage.GET_LAST_MESSAGES, this.processGetMessagesRequest.bind(this), this)
+        uxBus.on(UXMessage.SEND_CHAT_MESSAGE, this.sendChatMessage.bind(this))
+    }
+
 
 
     //Called when newly issued metadata arrived
@@ -194,9 +314,23 @@ export class Topic{
     }
 
 
+    sendChatMessage(request){
+        let { pkfp, message } = request
+
+        //not this topic's message
+        if(this.pkfp !== pkfp){
+            return
+        }
+
+        console.log("SEND CHAT MESSAGE CALLED");
+        let sendMessageAgent = new SendMessageAgent(this, message)
+        return sendMessageAgent.send();
+    }
+
+
     setHandlers(){
         let self = this;
-        this.handlers[Internal.LOAD_MESSAGES_SUCCESS] = this.processMessagesLoaded
+        this.handlers[Internal.LOAD_MESSAGES_SUCCESS] = this.processMessagesLoaded.bind(this)
         this.handlers[Internal.INVITE_REQUEST_TIMEOUT] = ()=>{
             console.log("Invite request timeout");
         }
@@ -357,6 +491,7 @@ export class Topic{
         }
 
         self.addNewMessage(self, message);
+
     }
 
 
@@ -387,7 +522,13 @@ export class Topic{
 
         self.messages.splice(0, 0, chatMessage);
         console.log(`Message added. msgCount: ${self.messages.length}`);
-        self.emit(Events.NEW_CHAT_MESSAGE, chatMessage)
+
+        console.log("Emitting messages to the bus");
+        this.uxBus.emit(TopicEvents.NEW_CHAT_MESSAGE, {
+            topicPkfp: this.pkfp,
+            message: chatMessage,
+            authorAlias: this.getParticipantAlias(chatMessage.header.author)
+        });
     }
 
     getMessages(cb){
@@ -444,20 +585,109 @@ export class Topic{
         return this._metadata.getId();
     }
 
-    loadMoreMessages(){
-        if (this.awaitingMessages || this.allMessagesLoaded){
-            console.log("Already awaiting messages")
-            return;
+    //Checks whether the request related to us
+    //and passes it to the state machine that handles messages requests
+    processGetMessagesRequest(data){
+
+        let { pkfp, lastId, howMany } = data; //before is the id of the earliest message
+
+        //not our requets
+        if(pkfp !== this.pkfp) return
+
+        //proceeding with request
+
+        let requestForMessages = RequestForMessagesFactory.make(this, howMany, this.uxBus, lastId);
+        requestForMessages.run();
+
+    }
+
+
+    cacheMessages(args){
+        console.log("Caching messages on client");
+        let msg = args[0];
+
+        let data = msg.body.lastMessages;
+        let keys = data.keys;
+
+        console.log(`Messages loaded. Processing.... Keys: ${keys}`);
+        let metaIDs = Object.keys(keys);
+        for (let i=0;i<metaIDs.length; ++i){
+            let ic = new iCrypto;
+            ic.addBlob('k', keys[metaIDs[i]])
+                .hexToBytes("k", "kraw")
+                .setRSAKey("priv", this.privateKey, "private")
+                .privateKeyDecrypt("kraw", "priv", "kdec");
+            keys[metaIDs[i]] = ic.get("kdec");
         }
-        console.log("Loading more messages");
-        this.awaitingMessages = true;
-        let lastMessageId = this.messages.length > 0 ?
-            this.messages[this.messages.length-1].header.id : undefined;
-        this.requestMessages(25, lastMessageId);
+
+        let messages = data.messages;
+        let result = [];
+        for (let i=0; i<messages.length; ++i){
+            let message = new ChatMessage(messages[i]);
+            if(message.header.service){
+                message.body = ChatUtility.decryptStandardMessage(message.body, this.privateKey)
+            } else if(message.header.private){
+                message.decryptPrivateMessage(this.privateKey);
+            } else{
+                if(!keys.hasOwnProperty(message.header.metadataID)){
+                    console.error(`Warning! key not found for ${message.headers.metadataID}`)
+                }
+                message.decryptMessage(keys[message.header.metadataID]);
+            }
+            result.push(message);
+        }
+
+        if(!this.initLoaded || this.messages.length === 0){
+            this.messages = result;
+        } else {
+            let latestLoadedID = result[0].header.id;
+            let glueIndex = this.messages.findIndex((msg)=>{
+                return msg.header.id === latestLoadedID;
+            });
+            this.messages = glueIndex ? [...this.messages.slice(0, glueIndex), ...result] :
+                [...this.messages, ...result]
+
+        }
+        this.initLoaded = true;
+        this.allMessagesLoaded = data.allLoaded;
+
+        if(this.allMessagesLoaded){
+            this._messageFetcherSM.handle.allLoaded()
+        }
+
+        this.awaitingMessages = false;
+        this.uxBus.emit(TopicEvents.MESSAGES_LOADED)
+    }
+
+    loadMoreMessages(howMany){
+
+        let lastMessageId = this.messages.length > 0 ?                             //
+            this.messages[this.messages.length-1].header.id : undefined;           //
+
+        this.requestMessages(howMany, lastMessageId);                                   //
+
+
+        ////////////////////////////////////////////////////////////////////////////////
+        // let { pkfp, before } = request; //before is the id of the earliest message //
+        //                                                                            //
+        // //not our requets                                                          //
+        // if(pkfp !== this.pkfp) return                                              //
+        //                                                                            //
+        // console.log("Load more messages request received");                        //
+        // if (this.awaitingMessages || this.allMessagesLoaded){                      //
+        //     console.log("Already awaiting messages")                               //
+        //     return;                                                                //
+        // }                                                                          //
+        // console.log("Loading more messages");                                      //
+        // this.awaitingMessages = true;                                              //
+        // let lastMessageId = this.messages.length > 0 ?                             //
+        //     this.messages[this.messages.length-1].header.id : undefined;           //
+        // this.requestMessages(25, lastMessageId);                                   //
+        ////////////////////////////////////////////////////////////////////////////////
     }
 
     requestMessages(quantity=INITIAL_NUM_MESSAGES, lastMessageId){
-        let request = new Message(this.version);
+        let request = new Message(IslandsVersion.getVersion());
         request.headers.command = Internal.LOAD_MESSAGES;
         request.headers.pkfpSource = this.pkfp;
 
@@ -700,55 +930,14 @@ export class Topic{
         this.connector.acceptMessage(request)
     }
 
-    processMessagesLoaded(msg, self){
-        let data = msg.body.lastMessages;
-        let keys = data.keys;
-
-        console.log(`Messages loaded. Processing.... Keys: ${keys}`);
-        let metaIDs = Object.keys(keys);
-        for (let i=0;i<metaIDs.length; ++i){
-            let ic = new iCrypto;
-            ic.addBlob('k', keys[metaIDs[i]])
-                .hexToBytes("k", "kraw")
-                .setRSAKey("priv", self.privateKey, "private")
-                .privateKeyDecrypt("kraw", "priv", "kdec");
-            keys[metaIDs[i]] = ic.get("kdec");
-        }
-
-        let messages = data.messages;
-        let result = [];
-        for (let i=0; i<messages.length; ++i){
-            let message = new ChatMessage(messages[i]);
-            if(message.header.service){
-                message.body = ChatUtility.decryptStandardMessage(message.body, self.privateKey)
-            } else if(message.header.private){
-                message.decryptPrivateMessage(self.privateKey);
-            } else{
-                if(!keys.hasOwnProperty(message.header.metadataID)){
-                    console.error(`Warning! key not found for ${message.headers.metadataID}`)
-                }
-                message.decryptMessage(keys[message.header.metadataID]);
-            }
-            result.push(message);
-        }
-
-        if(!self.initLoaded || self.messages.length === 0){
-            self.messages = result;
-        } else {
-            let latestLoadedID = result[0].header.id;
-            let glueIndex = self.messages.findIndex((msg)=>{
-                return msg.header.id === latestLoadedID;
-            });
-            self.messages = glueIndex ? [...self.messages.slice(0, glueIndex), ...result] :
-                [...self.messages, ...result]
-
-        }
-        self.initLoaded = true;
-        self.allMessagesLoaded = data.allLoaded;
-        self.awaitingMessages = false;
-        self.emit(Events.MESSAGES_LOADED, self.messages);
+    processMessagesLoaded(msg){
+        this._messageFetcherSM.handle.messagesArrived(msg)
     }
 
+
+    areAllMessagesLoaded(){
+        return this.allMessagesLoaded;
+    }
 
     processSettingsUpdated(self, msg){
         let settings = msg.body.settings;
@@ -910,4 +1099,61 @@ export class Topic{
         return null;
 
     }
+
+
+    //returns last n messages since the very last one
+    //or since id if it is passed
+    getLastMessages(howMany, id){
+        let res;
+        if(id){
+            let lastMessage = this.messages.find(msg=>msg.header.id === id)
+            let index = this.messages.indexOf(lastMessage);
+            res = this.messages.slice(index, index+howMany)
+
+        }else{
+            res = this.messages.slice(0, howMany)
+        }
+
+
+        //if needToLoadMoreMessages
+        //   startLoadingMessages()
+
+        if(this.isMoreMessagesNeeded(howMany, id)){
+            this._messageFetcherSM.handle.fetch(howMany * 3)
+        }
+        return res
+    }
+
+    //Determins whether it is needed to fetch more chat messages
+    // from the island
+    isMoreMessagesNeeded(lastRequestedHowMany, lastRequestedId ){
+
+        //if all messages are already loaded, then the answer is no
+        if (this.areAllMessagesLoaded())
+            return false;
+
+        //otherwise we take last requested result and making sure we have
+        // at least twice as many
+
+        let index = 0
+        if(lastRequestedId){
+            let lastMessage = this.messages.find(message.header.id === lastRequestedId)
+            index = this.messages.indexOf(lastMessage);
+        }
+
+        if(this.messages.slice(index).length >= lastRequestedHowMany * 3){
+            return false
+        }
+
+        return true;
+    }
+
+
+}
+
+
+
+export const TopicEvents = {
+    MESSAGES_LOADED: Symbol("messages_loaded"),
+    NEW_CHAT_MESSAGE: Symbol("new_chat_message")
 }

@@ -29,7 +29,11 @@ export class PostLoginInitializer {
         this.arrivalHub = new ArrivalHub(session);
         this.session = session;
         this.vault = vault;
+<<<<<<< HEAD
         this.bus = uxBus
+=======
+        this.uxBus = uxBus
+>>>>>>> messages-loading-scrolling
         vault.bootstrap(this.arrivalHub, session, IslandsVersion.getVersion(), uxBus);
     }
 
@@ -65,7 +69,7 @@ export class PostLoginInitializer {
             console.log(`Initializing existingTopics ${pkfp}`);
             existingTopics[pkfp] = new Topic(pkfp, topic.name, topic.key, topic.comment)
             setTopicListeners(existingTopics[pkfp])
-            existingTopics[pkfp].bootstrap(this.session, this.arrivalHub, IslandsVersion.getVersion());
+            existingTopics[pkfp].bootstrap(this.session, this.arrivalHub, this.uxBus, IslandsVersion.getVersion());
         }
 
 
@@ -102,7 +106,7 @@ export class PostLoginInitializer {
             // TODO fix version!
             let topic = vault.decryptTopic(data.topics[pkfp], vault.password)
             topics[pkfp] = new Topic(pkfp, topic.name, topic.key, topic.comment)
-            topics[pkfp].bootstrap(this.session, this.arrivalHub, IslandsVersion.getVersion());
+            topics[pkfp].bootstrap(this.session, this.arrivalHub, this.uxBus, IslandsVersion.getVersion());
 
         }
 
@@ -220,7 +224,7 @@ export class PostLoginInitializer {
             console.log(`Initializing existingTopics ${pkfp}`);
             existingTopics[pkfp] = new Topic(pkfp, topic.name, topic.key, topic.comment)
             setTopicListeners(existingTopics[pkfp])
-            existingTopics[pkfp].bootstrap(this.session, this.arrivalHub, IslandsVersion.getVersion());
+            existingTopics[pkfp].bootstrap(this.session, this.arrivalHub, this.uxBus, IslandsVersion.getVersion());
         }
 
 

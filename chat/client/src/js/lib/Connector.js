@@ -33,10 +33,10 @@ class Connector{
 }
 
 class ConnectorSocketIO extends Connector{
-    constructor(connectionString){
+    constructor(connectionString, query){
         super();
         this._sm = this._prepareStateMachine()
-        this._socket = this._prepareSocket(connectionString)
+        this._socket = this._prepareSocket(connectionString, query)
     }
 
     send(event, data){
@@ -44,13 +44,17 @@ class ConnectorSocketIO extends Connector{
     }
 
 
-    connect(query, attempts, timeout){
+    connect(attempts, timeout){
         console.log("Connector connecting");
         this._sm.handle.connect(attempts, timeout)
     }
 
     destroy(){
         throw new err.notImplemented()
+    }
+
+    hasConnectionQuery(){
+        return this._socket.handshake && this._socket.handshake.query
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------
@@ -165,13 +169,21 @@ class ConnectorSocketIO extends Connector{
         }, { msgNotExistMode: StateMachine.Warn, traceLevel: StateMachine.TraceLevel.DEBUG })
     }
 
-    _prepareSocket(connectionString, reconnectAttempts = 5, reconnectTimeout = 4000){
 
-        let socket = io(connectionString, {
+    _prepareSocket(connectionString, query){
+
+        let socketOptions = {
             reconnection: false,
             autoConnect: false,
             upgrade: false
-        });
+        }
+
+        if(query){
+            socketOptions.query = query
+        }
+
+        let socket = io(connectionString, socketOptions);
+
 
         //Wildcard fix
         let onevent = socket.onevent;

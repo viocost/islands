@@ -7,6 +7,8 @@ import { Events } from "../../../../common/Events"
 import "../../css/chat.sass"
 import "../../css/vendor/loading.css";
 import toastr from "../lib/toastr";
+import { TopicUXData } from "./TopicUXData"
+import { TopicEvents } from "../lib/Topic"
 let spinner = new BlockingSpinner();
 
 
@@ -16,6 +18,7 @@ const SMALL_WIDTH = 760; // Width screen in pixels considered to be small
 const XSMALL_WIDTH = 400;
 const DAYSOFWEEK = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 let colors = ["#cfeeff", "#ffcc7f", "#b5ffc0", "#ccfffb", "#67fcf0", "#f8e6ff", "#ffe6f1", "#ccefff", "#ccf1ff"]
+const INITIAL_MESSAGES_LOAD = 30
 
 // modals
 let topicCreateModal;
@@ -23,6 +26,9 @@ let topicJoinModal;
 let setAliasModal;
 
 let topicInFocus;
+
+//Here we are going to keep all info about topic messages, whethe
+let uxTopics = {}
 
 //Counters for unread messages
 const unreadCounters = {}
@@ -124,11 +130,7 @@ function handleLoginSuccess(args) {
     //let vault = vaultHolder.getVault();
 
     updateHeaderOnSuccessfulLogin(settings);
-<<<<<<< HEAD
-    createChatInterface()
-=======
     createChatInterface(uxBus)
->>>>>>> ux-refactoring
 
     //make modals
     topicCreateModal = UI.bakeTopicCreateModal(()=>{
@@ -404,10 +406,15 @@ function setEventListeners(uxBus){
     uxBus.on(UXMessage.CANCEL_PRIVATE_MESSAGE, cancelPrivateMessageSend);
 
     //Handling send message click
-    uxBus.on(UXMessage.SEND_BUTTON_CLICK, sendMessage);
+    uxBus.on(UXMessage.SEND_BUTTON_CLICK, sendMessage.bind(null, uxBus));
 
     //Handling key presses while in new message area
     uxBus.on(UXMessage.MESSAGE_AREA_KEY_PRESS, processMessageAreaKeyPress)
+
+    uxBus.on(UXMessage.LAST_MESSAGES_RESPONSE, processLastMessagesResponse)
+
+
+    uxBus.on(TopicEvents.NEW_CHAT_MESSAGE, processNewChatMessage)
 }
 
 
@@ -431,8 +438,23 @@ function cancelPrivateMessageSend(){
 
 
 //TODO Implement
-function sendMessage(){
+function sendMessage(uxBus){
+    if(!topicInFocus){
+        toastr.warning("Please first select a topic")
+        return;
+    }
+
+    let inputElement = util.$("#new-msg")
+    let message = inputElement.value
+
     console.log("SENDING MESSAGE!");
+
+    uxBus.emit(UXMessage.SEND_CHAT_MESSAGE, {
+        pkfp: topicInFocus,
+        message: message
+    })
+
+    inputElement.value = "";
 }
 
 
@@ -481,6 +503,55 @@ function toggleTopicExpand(pkfp){
 }
 
 
+function processNewChatMessage(data){
+    const { topicPkfp, message, authorAlias } = data;
+
+    console.log(`New incoming chat message received for ${topicPkfp}`)
+
+    if (!message.header.service) {
+        if (message.header.author === topicPkfp) {
+//            playSound("message_sent")
+        } else {
+
+ //           playSound("incoming_message")
+        }
+    }
+
+    if (topicInFocus !== topicPkfp) {
+        incrementUnreadCounter(topicPkfp)
+    }
+
+    /////////////////////////////////////////////////////////////////////
+    // let alias = "";                                                 //
+    // if (message.header.author) {                                    //
+    //     alias = topic.getParticipantAlias(message.header.author) || //
+    //         message.header.author.substring(0, 8)                   //
+    // }                                                               //
+    /////////////////////////////////////////////////////////////////////
+    let container = getTopicMessagesContainer(topicInFocus);
+
+    console.log("Appending message");
+    appendMessageToChat({
+        nickname: message.header.nickname,
+        alias: authorAlias,
+        body: message.body,
+        timestamp: message.header.timestamp,
+        pkfp: message.header.author,
+        messageID: message.header.id,
+        service: message.header.service,
+        private: message.header.private,
+        recipient: message.header.recipient,
+        attachments: message.attachments
+    }, topicInFocus, util.$(".messages-window", container));
+
+   
+}
+
+function getTopicMessagesContainer(pkfp){
+    console.log("Get messages container");
+    return Array.from(util.$$(".messages-panel-container")).filter(el=> el.getAttribute("pkfp") === pkfp)[0]
+
+}
 
 function activateTopic(pkfp){
     console.log("Activating topic");
@@ -514,7 +585,65 @@ function activateTopic(pkfp){
 
     //reset unread messages counter
     resetUnreadCounter(pkfp);
+
+    //If no messages have been appended, request messages
+    if(!uxTopics[pkfp].isInitialized){
+        //update messages
+        //load messages
+        uxBus.emit(UXMessage.GET_LAST_MESSAGES, {
+            pkfp: pkfp,
+            howMany: INITIAL_MESSAGES_LOAD
+
+        })
+    }
+
+
 }
+
+
+//This function processes MESSGES_LOADED event
+function processLastMessagesResponse(data){
+    let { pkfp, messages, before } = data;
+    let topicUXData = uxTopics[pkfp]
+    console.log("PROCESSING LAST MESSAGES LOADED RESPONSE");
+
+    let container = getTopicMessagesContainer(pkfp);
+
+    if(!messages) return;
+    for(let message of messages){
+
+        console.log("Appending message");
+        appendMessageToChat({
+            nickname: message.header.nickname,
+            alias: "alias",
+            body: message.body,
+            timestamp: message.header.timestamp,
+            pkfp: message.header.author,
+            messageID: message.header.id,
+            service: message.header.service,
+            private: message.header.private,
+            recipient: message.header.recipient,
+            attachments: message.attachments
+        }, pkfp, util.$(".messages-window", container));
+    }
+
+
+}
+
+//This function checks if messages were initially loaded
+//and writes GET_LAST_MESSAGES request to bus if messages count
+// is less than 30
+//
+function updateTopicMessages(pkfp, uxBus){
+    let topicUXData = uxTopics[pkfp]
+    if(!topicUXData.isInitialized || messagesLoaded <  INITIAL_MESSAGES_LOAD){
+        uxBus.emit(UXMessage.GET_LAST_MESSAGES, {
+            pkfp: pkfp,
+            before: topicUXData.earliesLoadedMessage,
+        })
+    }
+}
+
 
 function incrementUnreadCounter(pkfp) {
     console.log("Incrementing unread messages counter");
@@ -528,8 +657,8 @@ function incrementUnreadCounter(pkfp) {
 
 function resetUnreadCounter(pkfp) {
     console.log("Resetting unread messages counter");
-    unreadCounters[pkfp] = 0
-    setUnreadMessagesIndicator(pkfp, unreadCounters[pkfp])
+    uxTopics[pkfp].unreadMessagesCount = 0
+    setUnreadMessagesIndicator(pkfp, uxTopics[pkfp].unreadMessagesCount)
 }
 
 
@@ -566,22 +695,23 @@ function newMessageBlockSetVisible(visible) {
  */
 function addNewTopicToUX(uxBus, topic){
     //Make sure topic with such pkfp does not exist
-    console.log("Adding topic to UX");
     let topicsList = util.$("#topics-list")
-
     let topics = Array.from(util.$$(".side-block-data-list-item", topicsList)).filter(item=>item.getAttribute("pkfp") === topic.pkfp)
     if(topics.length > 0) return
 
-
+    //Creating messages area
     let messageBlocksContainer = util.$("#topic-message-blocks-container")
-
-    console.log("Baking UX elements");
+    //Creating side panel elements
     let topicListItem = UI.bakeTopicListItem(topic, uxBus);
     let topicAssets = UI.bakeTopicAssets(topic, uxBus);
     console.log("Baked");
+
+    //Adding new elements to view
     util.appendChildren(topicsList, [topicListItem, topicAssets])
     let topicMessageBlock = UI.bakeTopicMessagesBlock(topic.pkfp, topic.name)
     util.appendChildren(messageBlocksContainer, topicMessageBlock)
+
+    uxTopics[topic.pkfp] = new TopicUXData()
 }
 
 
@@ -804,12 +934,338 @@ function prepareUIStateMachine(){
 
 function handleContextMenuClick(data){
     console.log("Context menu click");
-    switch(data.subject){
+}
 
+//Appending messages
+/**
+ * Appends message onto the chat window
+ * @param message: {
+ *  nickname: nickname
+ *  body: body
+ *  pkfp: pkfp
+ * }
+ */
+function appendMessageToChat(message, topicPkfp, chatWindow, toHead = false) {
+    let msg = document.createElement('div');
+    let message_id = document.createElement('div');
+    let message_body = document.createElement('div');
+
+    message_body.classList.add('msg-body');
+    let message_heading = buildMessageHeading(message, topicPkfp);
+
+    if (message.pkfp === topicPkfp) {
+        // My message
+        msg.classList.add('my_message');
+    } else if (message.service) {
+        msg.classList.add('service-record');
+    } else {
+        //Not my Message
+        msg.classList.add('message');
+        let author = document.createElement('div');
+        author.classList.add("m-author-id");
+        author.innerHTML = message.pkfp;
+        let participantIndex = Object.keys(topics[topicPkfp].participants).indexOf(message.pkfp)
+        msg.style.color = colors[participantIndex % colors.length];
+        message_heading.appendChild(author);
+    }
+
+    if (message.private) {
+        msg.classList.add('private-message');
+    }
+
+    message_id.classList.add("message-id");
+    message_id.innerHTML = message.messageID;
+    message_heading.appendChild(message_id);
+    message_body.appendChild(processMessageBody(message.body));
+    //msg.innerHTML = '<b>'+message.author +'</b><br>' + message.message;
+
+    //processing attachments
+    let attachments = processAttachments(message.attachments);
+    msg.appendChild(message_heading);
+    msg.appendChild(message_body);
+    if (attachments !== undefined) {
+        msg.appendChild(attachments);
+    }
+
+    if (toHead) {
+        chatWindow.insertBefore(msg, chatWindow.firstChild);
+    } else {
+        chatWindow.appendChild(msg);
+    }
+}
+
+function buildMessageHeading(message, topicPkfp) {
+    let message_heading = document.createElement('div');
+    message_heading.classList.add('msg-heading');
+
+    let alias, aliasNicknameDevisor;
+    if (message.alias) {
+        alias = document.createElement("b");
+        alias.classList.add("m-alias");
+        alias.innerText = message.alias;
+        aliasNicknameDevisor = document.createElement("span");
+        aliasNicknameDevisor.innerText = "  --  ";
+    }
+
+    let nickname = document.createElement("b");
+    nickname.innerText = message.nickname;
+    nickname.classList.add("m-nickname");
+
+    let time_stamp = document.createElement('span');
+    time_stamp.innerHTML = getChatFormatedDate(message.timestamp);
+    time_stamp.classList.add('msg-time-stamp');
+
+    if (message.pkfp === topicPkfp) {
+        // My messages
+        nickname.innerText = `${nickname.innerText} (me)`
+        message_heading.appendChild(nickname);
+        message_heading.appendChild(time_stamp);
+    } else if (message.service) {
+        // Service message
+        message_heading.innerHTML += '<b>Service  </b>';
+        message_heading.appendChild(time_stamp);
+    } else {
+        //Not my Message
+        if (message.alias) {
+            message_heading.appendChild(alias);
+            message_heading.appendChild(aliasNicknameDevisor);
+        }
+        message_heading.appendChild(nickname);
+        message_heading.appendChild(time_stamp);
+    }
+    if (message.recipient && message.recipient !== "ALL") {
+        let recipientId = document.createElement("div");
+        recipientId.innerHTML = message.recipient;
+        recipientId.classList.add("m-recipient-id");
+        message_heading.appendChild(recipientId);
+    }
+
+    if (message.private) {
+        let privateMark = preparePrivateMark(message, topics[topicPkfp]);
+        message_heading.appendChild(privateMark);
+    }
+
+    return message_heading;
+}
+
+function preparePrivateMark(message, topic) {
+    let text = "(private)"
+    if (message.pkfp === topic.pkfp) {
+        let nickname = topics[topic.pkfp].getParticipantNickname(message.recipient);
+        let alias = topics[topic.pkfp].getParticipantAlias(message.recipient) || message.recipient.substring(0, 8);
+        text = `(private to: ${alias} -- ${nickname})`;
+    }
+
+    return util.bake("span", {
+        class: "private-mark",
+        text: text
+    })
+}
+
+/**
+ * Processes all the attachments and returns
+ * attachments wrapper which can be appended to a message
+ * If no attachments are passed - returns undefined
+ * @param attachments
+ * @returns {*}
+ */
+function processAttachments(attachments) {
+    if (attachments === undefined) {
+        return undefined;
+    }
+
+    let getAttachmentSize = function(size) {
+        let res = "";
+        size = parseInt(size);
+        if (size < 1000) {
+            res = size.toString() + "b";
+        } else if (size < 1000000) {
+            res = Number((size / 1000).toFixed(1)).toString() + "kb";
+        } else if (size < 1000000000) {
+            res = Number((size / 1000000).toFixed(1)).toString() + "mb";
+        } else {
+            res = Number((size / 1000000000).toFixed(1)).toString() + "gb";
+        }
+        return res;
+    };
+
+    let attachmentsWrapper = document.createElement("div");
+    attachmentsWrapper.classList.add("msg-attachments");
+
+    for (let att of attachments) {
+        let attachment = document.createElement("div");
+        let attView = document.createElement("div");
+        let attInfo = document.createElement("div");
+        let attSize = document.createElement("span");
+        let attName = document.createElement("span");
+        let attIcon = document.createElement("span");
+        let iconImage = document.createElement("img");
+
+        // //State icons
+        let attState = document.createElement("div");
+        attState.classList.add("att-state");
+
+        let spinner = document.createElement("img");
+        spinner.classList.add("spinner");
+        spinner.src = "/img/spinner.gif";
+        spinner.display = "flex";
+
+        attState.appendChild(spinner);
+
+        iconImage.src = "/img/file.svg";
+        attSize.classList.add("att-size");
+        attView.classList.add("att-view");
+        attInfo.classList.add("att-info");
+        attName.classList.add("att-name");
+        iconImage.classList.add("att-icon");
+        attIcon.appendChild(iconImage);
+        attInfo.innerHTML = JSON.stringify(att);
+        attName.innerText = att.name;
+        attSize.innerHTML = getAttachmentSize(att.size);
+
+        //Appending elements to attachment view
+        attView.appendChild(attState);
+        attView.appendChild(attIcon);
+        attView.appendChild(attName);
+        attView.appendChild(attSize);
+        attView.addEventListener("click", downloadOnClick);
+        attachment.appendChild(attView);
+        attachment.appendChild(attInfo);
+        attachmentsWrapper.appendChild(attachment);
+    }
+    return attachmentsWrapper;
+}
+
+function processMessageBody(text) {
+    text = text.trim();
+    let result = document.createElement("div");
+    let startPattern = /__code/;
+    let endPattern = /__end/;
+
+    //no code
+    if (text.search(startPattern) === -1) {
+        let pars = []
+        for (let p of text.split("\n")) {
+            result.appendChild(util.bake("p", {
+                children: document.createTextNode(p)
+            }));
+        }
+        return result;
+    }
+    //first occurrence of the code
+    let firstOccurrence = text.search(startPattern);
+    if (text.substring(0, firstOccurrence).length > 0) {
+        result.appendChild(document.createTextNode(text.substring(0, firstOccurrence)));
+        text = text.substr(firstOccurrence);
+    }
+    let substrings = text.split(startPattern).filter(el => {
+        return el.length !== 0;
+    });
+    for (let i = 0; i < substrings.length; ++i) {
+        let pre = document.createElement("pre");
+        let code = document.createElement("code");
+        let afterText = null;
+        let endCode = substrings[i].search(endPattern);
+        if (endCode === -1) {
+            code.innerText = processCodeBlock(substrings[i]);
+        } else {
+            code.innerText = processCodeBlock(substrings[i].substring(0, endCode));
+            let rawAfterText = substrings[i].substr(endCode + 5).trim();
+            if (rawAfterText.length > 0) afterText = document.createTextNode(rawAfterText);
+        }
+        //highliter:
+        hljs.highlightBlock(code);
+        ///////////
+
+        pre.appendChild(code);
+        result.appendChild(pre);
+        pre.ondblclick = showCodeView;
+        if (afterText) result.appendChild(afterText);
+    }
+    return result;
+}
+
+
+/**
+ * Processes and styles code block
+ *
+ */
+function processCodeBlock(code) {
+    code = code.trim();
+    let separator = code.match(/\r?\n/) ? code.match(/\r?\n/)[0] : "\r\n";
+    let lines = code.split(/\r?\n/);
+    let min = Infinity;
+    for (let i = 1; i < lines.length; ++i) {
+        if (lines[i] === "") continue;
+        try {
+            min = Math.min(lines[i].match(/^\s+/)[0].length, min);
+        } catch (err) {
+            //found a line with no spaces, therefore returning the entire block as is
+            return lines.join(separator);
+        }
+    }
+    for (let i = 1; i < lines.length; ++i) {
+        lines[i] = lines[i].substr(min);
+    }
+    return lines.join(separator);
+}
+
+/**
+ * Click handler when user clicks on attached file
+ * @param ev
+ * @returns {Promise<void>}
+ */
+
+async function downloadOnClick(ev) {
+    console.log("Download event triggered!");
+    let target = ev.target;
+    while (target && !target.classList.contains("att-view")) {
+        target = target.parentNode;
+    }
+
+    if (!target) {
+        throw new Error("att-view container not found...");
+    }
+    let fileInfo = target.nextSibling.innerHTML; //Extract fileInfo from message
+
+    let fileName = JSON.parse(fileInfo).name;
+    target.childNodes[0].style.display = "inline-block";
+    try {
+        chat.downloadAttachment(fileInfo, topicInFocus); //download file
+        console.log("Download started");
+    } catch (err) {
+        toastr.warning("file download unsuccessfull: " + err)
+        appendEphemeralMessage(fileName + " Download finished with error: " + err)
+    } finally {
+        target.childNodes[0].style.display = "none";
     }
 }
 
 
+function getChatFormatedDate(timestamp) {
+    let d = new Date(timestamp);
+    let today = new Date();
+    if (Math.floor((today - d) / 1000) <= 64000) {
+        return d.getHours() + ':' + padWithZeroes(2, d.getMinutes());
+    } else {
+        return DAYSOFWEEK[d.getDay()] + ", " + d.getMonth() + "/" + padWithZeroes(2, d.getDate()) + " " + padWithZeroes(2, d.getHours()) + ':' + padWithZeroes(2, d.getMinutes());
+    }
+}
+
+
+function padWithZeroes(requiredLength, value) {
+    let res = "0".repeat(requiredLength) + String(value).trim();
+    return res.substr(res.length - requiredLength);
+}
+
+function downloadURI(uri, name) {
+    var link = document.createElement("a");
+    link.download = name;
+    link.href = uri;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
 
 export const UXMessage = {
     TO_LOGIN: Symbol("to_login"),
@@ -849,5 +1305,13 @@ export const UXMessage = {
     ATTACH_FILE_ICON_CLICK: Symbol("attach_file"),
     CANCEL_PRIVATE_MESSAGE: Symbol("private_cancel"),
     MESSAGE_AREA_KEY_PRESS: Symbol("msg_key_press"),
+
+    //UX Requests for messages
+    GET_LAST_MESSAGES: Symbol("get_last_messages"),
+    LAST_MESSAGES_RESPONSE: Symbol("get_last_messages"),
+    NEW_MESSAGE: Symbol("new_message"),
+
+
+    SEND_CHAT_MESSAGE: Symbol("send_chat_message")
 
 }

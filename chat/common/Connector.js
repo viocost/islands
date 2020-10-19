@@ -27,6 +27,10 @@ class Connector{
         throw new err.notImplemented()
     }
 
+    disconnect(){
+        throw new err.notImplemented()
+    }
+
     destroy(){
         throw new err.notImplemented()
     }
@@ -37,10 +41,10 @@ class Connector{
 }
 
 class ConnectorSocketIO extends Connector{
-    constructor(connectionString){
+    constructor(connectionString, secret, reconnectAttepmts, reconnectTimeout){
         super();
         this._sm = this._prepareStateMachine()
-        this._socket = this._prepareSocket(connectionString)
+        this._socket = this._prepareSocket(connectionString, secret, reconnectAttepmts, reconnectTimeout)
     }
 
     send(event, data){
@@ -52,6 +56,10 @@ class ConnectorSocketIO extends Connector{
     connect(query, attempts, timeout){
         console.log("Connector connecting");
         this._sm.handle.connect(attempts, timeout)
+    }
+
+    disconntct(){
+        this._socket.disconnect();
     }
 
     destroy(){
@@ -170,13 +178,23 @@ class ConnectorSocketIO extends Connector{
         }, { msgNotExistMode: StateMachine.Warn  })
     }
 
-    _prepareSocket(connectionString, reconnectAttempts = 5, reconnectTimeout = 4000){
+    _prepareSocket(connectionString, query, reconnectAttempts, reconnectTimeout){
 
-        let socket = io(connectionString, {
+        console.log(`PREPARING SOCKET! ${query}, ${connectionString}`);
+        let parameters = {
             reconnection: false,
             autoConnect: false,
             upgrade: false
-        });
+        }
+
+        if(query){
+            console.log(`Setting query to ${query}`);
+            parameters.query = {
+                params: query
+            }
+        }
+
+        let socket = io(connectionString, parameters);
 
         //Wildcard fix
         let onevent = socket.onevent;
@@ -204,6 +222,7 @@ class ConnectorSocketIO extends Connector{
         })
 
         socket.on('connect_error', (err) => {
+            console.log(`Connection error: ${err}`);
             this._sm.handle.error({
                 reconnectAttempts: reconnectAttempts,
                 reconnectTimeout: reconnectTimeout
@@ -235,7 +254,9 @@ class ConnectorSocketIOPassive extends Connector{
         }
 
         socket.on("disconnect", ()=>{
+            this.sm.handle.disconnect()
             console.log("Session socket has disconnected");
+
         }),
 
 
@@ -267,8 +288,12 @@ class ConnectorSocketIOPassive extends Connector{
         this.socket.emit(...args)
     }
 
-    _handleReceived(args){
+    _handleReceived(){
 
+    }
+
+    _handleDisconnect(){
+        this.emit(ConnectorEvents.DEAD)
     }
 
     _prepareStateMachine(){
@@ -284,6 +309,12 @@ class ConnectorSocketIOPassive extends Connector{
 
                         handleReceived: {
                             actions: this._handleReceived.bind(this)
+                        },
+
+                        disconnect: {
+                            actions: this._handleDisconnect.bind(this),
+                            state: "dead"
+
                         }
 
 
@@ -304,8 +335,8 @@ class ConnectorSocketIOFactory{
         this.connectPath = connectPath;
     }
 
-    make(){
-        return new ConnectorSocketIO(this.connectPath)
+    make(secret){
+        return new ConnectorSocketIO(this.connectPath, secret, 20, 3000)
     }
 }
 

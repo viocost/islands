@@ -219,7 +219,7 @@ export function $(element, parent = document){
         return verifyGetElement(element)
     }
     parent = verifyGetElement(parent);
-    res = parent.querySelector(element);
+    let res = parent.querySelector(element);
     if (res === undefined){
         throw new Error(`Element ${element} is not found at ${parent.nodeName}`)
     }

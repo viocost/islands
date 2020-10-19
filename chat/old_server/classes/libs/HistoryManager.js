@@ -716,7 +716,7 @@ class HistoryManager{
                 let metaIDs = new CuteSet(keys);
                 let currentWrup = new WrapupRecord(this.getWrapupBlobSync(pkfp));
                 //Gather all needed encrypted keys
-                while (metaIDs.length() > 0){
+                while (metaIDs.length > 0){
 
                     let meta = this.getHistoryElementSync(currentWrup.getLastMetadataSize(),
                         currentWrup.lastMetadataStart, pkfp).toString();

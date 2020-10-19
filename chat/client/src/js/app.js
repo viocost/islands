@@ -55,7 +55,8 @@ function prepareLogin(uxBus) {
         postLoginInitializer.on(PostLoginInitializer.Success, (vault, topics) => {
             console.log("Post login succeeded. Continuing...");
 
-            // Notifying UX about each topic loaded
+            // Subscribing each topic to uxBus and
+            // notifying UX about each topic loaded
             for(let topic in vault.topics){
                 uxBus.emit(UX.UXMessage.TOPIC_LOADED, vault.topics[topic])
             }

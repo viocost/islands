@@ -26,7 +26,7 @@ class Sessions{
         return this._sessions.filter(session=> !session.isPaused())[0]
     }
 
-    get pausedSessions(){
+    getPausedSessions(){
         return this._sessions.filter(session =>{
             return session.isPaused()
         })

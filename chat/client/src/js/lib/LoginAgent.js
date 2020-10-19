@@ -33,9 +33,10 @@ import { iCrypto } from "../../../../common/iCrypto"
 import { SymCryptoAgentFactory, AsymFullCryptoAgentFactory } from "../../../../common/CryptoAgent"
 import { WildEmitter } from "../../../../common/WildEmitter"
 import { AuthMessage } from "../../../../common/AuthMessage"
-import { SessionFactory } from "../../../../common/Session"
+import { ClientSessionFactory } from "../../../../common/Session"
 import { VaultFactory } from "./Vault"
 import { IslandsVersion } from "../../../../common/Version"
+import { ClientReconnectionAgentFactory } from "./ReconnectionAgent"
 
 export class LoginAgent{
     constructor(connectorFactory, uxBus){
@@ -43,6 +44,7 @@ export class LoginAgent{
         this.sm = this._prepareStateMachine()
         this.connector = this._prepareConnector(connectorFactory);
         this.connector.connect()
+        this.uxBus = uxBus
 
     }
 
@@ -130,7 +132,8 @@ export class LoginAgent{
         let secret = this.secret
 
         console.log(`Creating session. Secret: ${secret}`);
-        this.session = SessionFactory.make(this.connector, cryptoAgent, secret);
+        let reconnectionAgentFactory = new ClientReconnectionAgentFactory()
+        this.session = ClientSessionFactory.make(this.connector, uxBus, cryptoAgent, secret, reconnectionAgentFactory);
         this.sm.handle.success()
     }
 
