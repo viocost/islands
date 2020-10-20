@@ -29,11 +29,7 @@ export class PostLoginInitializer {
         this.arrivalHub = new ArrivalHub(session);
         this.session = session;
         this.vault = vault;
-<<<<<<< HEAD
-        this.bus = uxBus
-=======
         this.uxBus = uxBus
->>>>>>> messages-loading-scrolling
         vault.bootstrap(this.arrivalHub, session, IslandsVersion.getVersion(), uxBus);
     }
 

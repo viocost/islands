@@ -81,6 +81,7 @@ function initRegistration(args, stateMachine){
         uxBus.emit(UXMessage.REGISTER_CLICK, {password: password, confirm: confirm})
     })
 
+
     util.appendChildren("#main-container", registrationBlock)
 }
 
@@ -195,6 +196,9 @@ function handleLoginSuccess(args) {
         })
     })
 
+    util.$$(".messages-panel-container").forEach(container=>{
+        addEventListenersForMessagesWindow(container)
+    })
 
     setEventListeners(uxBus)
 
@@ -255,6 +259,12 @@ function handleLoginSuccess(args) {
     //appendEphemeralMessage("Topics has been loaded and decrypted successfully. ")
     //playSound("user_online");
     //loadingOff()
+}
+
+function addEventListenersForMessagesWindow(container){
+        container.addEventListener("scroll", ()=>{
+            uxBus.emit(UXMessage.CHAT_SCROLL, container.getAttribute("pkfp"))
+        })
 }
 
 function updateHeaderOnSuccessfulLogin(settings, uxBus){
@@ -355,20 +365,19 @@ function initHandlerBuilder(uxBus){
 // SIDE PANEL HANDLERS
 
 
-function setupSidePanelListeners(uxBus, stateMachine){
+//////////////////////////////////////////////////////////////////////////////////////////
+// function setupSidePanelListeners(uxBus, stateMachine){                               //
+//                                                                                      //
+//     util.$("#btn-new-topic").onclick = topicCreateModal.open;                        //
+//     util.$("#btn-join-topic").onclick = topicJoinModal.open;                         //
+//                                                                                      //
+//     util.$("#btn-ctx-invite").onclick = processInviteButtonClick;                    //
+//     util.$("#btn-ctx-delete").onclick = processCtxDeleteButtonClick;                 //
+//     util.$("#btn-ctx-alias").onclick = processCtxAliasButtonClick.bind(null, uxBus); //
+//     util.$("#btn-ctx-boot").onclick = processCtxBootButtonClick;                     //
+// }                                                                                    //
+//////////////////////////////////////////////////////////////////////////////////////////
 
-    util.$("#btn-new-topic").onclick = topicCreateModal.open;
-    util.$("#btn-join-topic").onclick = topicJoinModal.open;
-
-    util.$("#btn-ctx-invite").onclick = processNewInviteClick;
-    util.$("#btn-ctx-delete").onclick = processCtxDeleteClick;
-    util.$("#btn-ctx-alias").onclick = processCtxAliasClick.bind(null, uxBus);
-    util.$("#btn-ctx-boot").onclick = processCtxBootClick;
-}
-
-function setupHotkeysHandlers(){
-
-}
 
 //Sets listeners and callbacks for
 //all related message bus events
@@ -377,6 +386,12 @@ function setEventListeners(uxBus){
     let buttonClickHandlers = {}
     buttonClickHandlers[UI.BUTTON_IDS.JOIN_TOPIC] = topicJoinModal.open.bind(topicJoinModal)
     buttonClickHandlers[UI.BUTTON_IDS.NEW_TOPIC] =  topicCreateModal.open.bind(topicCreateModal)
+    buttonClickHandlers[UI.BUTTON_IDS.CTX_INVITE] = processInviteButtonClick.bind(null, uxBus)
+    buttonClickHandlers[UI.BUTTON_IDS.CTX_ALIAS] = processAliasButtonClick.bind(null, uxBus)
+    buttonClickHandlers[UI.BUTTON_IDS.CTX_BOOT] = processBootButtonClick.bind(null, uxBus)
+    buttonClickHandlers[UI.BUTTON_IDS.CTX_DELETE] = processDeleteButtonClick.bind(null, uxBus)
+
+
 
     //Processing button clicks
     uxBus.on(UXMessage.BUTTON_CLICK, btnId=>{
@@ -395,8 +410,9 @@ function setEventListeners(uxBus){
     uxBus.on(UXMessage.MAIN_MENU_CLICK, handleMainMenuClick);
 
     //Invite code click events
-    uxBus.on(UXMessage.INVITE_DBLCLICK, copyInviteCodeToClipboard);
-    uxBus.on(UXMessage.PARTICIPANT_CLICK, ()=>console.log("participant click"))
+    uxBus.on(UXMessage.INVITE_DBLCLICK, [copyInviteCodeToClipboard, processInviteClick]);
+    uxBus.on(UXMessage.INVITE_CLICK, processInviteClick);
+    uxBus.on(UXMessage.PARTICIPANT_CLICK, processParticipantClick)
 
     //Attachment handlers
     uxBus.on(UXMessage.ATTACH_FILE_ICON_CLICK, selectFileAttachment);
@@ -409,10 +425,12 @@ function setEventListeners(uxBus){
     uxBus.on(UXMessage.SEND_BUTTON_CLICK, sendMessage.bind(null, uxBus));
 
     //Handling key presses while in new message area
-    uxBus.on(UXMessage.MESSAGE_AREA_KEY_PRESS, processMessageAreaKeyPress)
+    uxBus.on(UXMessage.MESSAGE_AREA_KEY_PRESS, processMessageAreaKeyPress.bind(null, uxBus))
 
     uxBus.on(UXMessage.LAST_MESSAGES_RESPONSE, processLastMessagesResponse)
 
+
+    uxBus.on(UXMessage.CHAT_SCROLL, processChatScroll.bind(null, uxBus))
 
     uxBus.on(TopicEvents.NEW_CHAT_MESSAGE, processNewChatMessage)
 }
@@ -459,10 +477,29 @@ function sendMessage(uxBus){
 
 
 //TODO Implement
-function processMessageAreaKeyPress(ev){
+function processMessageAreaKeyPress(uxBus, ev){
     console.log(`Key pressed: ${ev.keyCode}`);
+    if(ev.keyCode === 13 || ev.keyCode === 10){
+        if(ev.ctrlKey){
+            ev.target.value += "\n";
+            moveCursor(ev.target, "end");
+        } else {
+            ev.preventDefault()
+            sendMessage(uxBus)
+        }
+    }
 
 }
+
+
+function moveCursor(el, pos) {
+    if (pos === "end") {
+        moveCursorToEnd(el);
+    } else if (pos === "start") {
+        moveCursorToStart(el);
+    }
+}
+
 
 function copyInviteCodeToClipboard(data){
     let { inviteCode } = data
@@ -530,6 +567,8 @@ function processNewChatMessage(data){
     /////////////////////////////////////////////////////////////////////
     let container = getTopicMessagesContainer(topicInFocus);
 
+    let willScroll = isScrollingRequired(container);
+
     console.log("Appending message");
     appendMessageToChat({
         nickname: message.header.nickname,
@@ -544,7 +583,19 @@ function processNewChatMessage(data){
         attachments: message.attachments
     }, topicInFocus, util.$(".messages-window", container));
 
+    if(willScroll){
+        scrollChatDown(container)
+    }
    
+}
+
+function scrollChatDown(el){
+        console.log("Scrolling down");
+        el.scrollTop = el.scrollHeight;
+}
+
+function isScrollingRequired(el){
+    return el.scrollHeight - el.scrollTop - el.offsetHeight <= Math.floor(el.offsetHeight / 2)
 }
 
 function getTopicMessagesContainer(pkfp){
@@ -553,8 +604,41 @@ function getTopicMessagesContainer(pkfp){
 
 }
 
+function processInviteClick(uxBus, pkfp){
+    console.log(`Invite click ${uxBus}, ${pkfp}`);
+
+}
+
+//CTX Buttons handlers
+function processInviteButtonClick(uxBus){
+    console.log("Invite button click");
+
+//    displayTopicContextButtons("invite")
+}
+
+function processAliasButtonClick(uxBus){
+    console.log("Alias button click");
+
+}
+
+function processBootButtonClick(uxBus){
+    console.log("Boot button click");
+
+}
+
+function processDeleteButtonClick(uxBus){
+
+    console.log("Delete button click");
+}
+
+function processParticipantClick(){
+    console.log("Participant click");
+    displayTopicContextButtons("participant")
+}
+
 function activateTopic(pkfp){
     console.log("Activating topic");
+    displayTopicContextButtons("topic")
 
     //setting active topic
     topicInFocus = pkfp;
@@ -601,6 +685,28 @@ function activateTopic(pkfp){
 }
 
 
+function processChatScroll(uxBus, pkfp, event) {
+    let chatWindow = event.target;
+
+    if (!chatWindow.firstChild) return;
+
+
+
+    if (event.target.scrollTop <= 1 && topicInFocus) {
+        //load more messages
+
+        let data = uxTopics[pkfp];
+        uxBus.emit(UXMessage.GET_LAST_MESSAGES, {
+            pkfp: pkfp,
+            before: data.earliesLoadedMessage,
+            howMany: 10
+        })
+        console.log("loading more messages");
+        chat.loadMoreMessages(topicInFocus);
+    }
+}
+
+
 //This function processes MESSGES_LOADED event
 function processLastMessagesResponse(data){
     let { pkfp, messages, before } = data;
@@ -609,10 +715,22 @@ function processLastMessagesResponse(data){
 
     let container = getTopicMessagesContainer(pkfp);
 
-    if(!messages) return;
+    if(!messages || messages.length === 0) return;
+
+
+    //Here dumping all messages that have been already appended
+    while(topicUXData.messagesLoadedIds.has(messages[0].header.id)){
+        messages.splice(0, 1)
+        if(messages.length ===0) return
+    }
+
+
+
     for(let message of messages){
 
         console.log("Appending message");
+
+        topicUXData.messagesLoadedIds.add(message.header.id)
         appendMessageToChat({
             nickname: message.header.nickname,
             alias: "alias",
@@ -624,9 +742,10 @@ function processLastMessagesResponse(data){
             private: message.header.private,
             recipient: message.header.recipient,
             attachments: message.attachments
-        }, pkfp, util.$(".messages-window", container));
+        }, pkfp, util.$(".messages-window", container), true);
     }
 
+    uxTopics[pkfp].earliesLoadedMessage = messages[messages.length - 1].header.id;
 
 }
 
@@ -729,7 +848,7 @@ function processNewInviteClick() {
 
 
 
-function processCtxBootClick() {
+function processCtxBootButtonClick() {
     console.log("booting participant")
     let topicPkfp = topicInFocus;
     let asset = getActiveTopicAsset()
@@ -738,7 +857,7 @@ function processCtxBootClick() {
 
 }
 
-function processCtxAliasClick(uxBus) {
+function processCtxAliasButtonClick(uxBus) {
 
     //console.log("Alias button clicked");
     //Rename topc, or member or invite
@@ -823,7 +942,7 @@ function getActiveTopicAsset() {
 }
 
 
-function processCtxDeleteClick(uxBus) {
+function processCtxDeleteButtonClick(uxBus) {
     console.log("Delete click. Processing...");
     let topicInFocus = getTopicInFocusData()
     let topicAsset = getActiveTopicAsset()
@@ -1267,6 +1386,66 @@ function downloadURI(uri, name) {
     document.body.removeChild(link);
 }
 
+
+/**
+ * displays certain context buttons on the topicsPanel.
+ * state must be a string, and must have following values:
+ *    "none" - hide all buttons
+ *    "topic" - show Alias, Invite, Mute, Leave, Delete
+ *    "invite" - show Alias, Delete
+ *    "participant" - show Alias, Mute, Boot only if user has rights to boot
+ * displayBoot - boolean whether user has rights to boot
+ */
+function displayTopicContextButtons(state, displayBoot = false) {
+    let alias = util.$("#btn-ctx-alias");
+    let invite = util.$("#btn-ctx-invite");
+    let mute = util.$("#btn-ctx-mute");
+    let boot = util.$("#btn-ctx-boot");
+    let _delete = util.$("#btn-ctx-delete");
+    let leave = util.$("#btn-ctx-leave");
+
+    switch (state) {
+        case "none":
+            util.hide(alias);
+            util.hide(invite);
+            util.hide(mute);
+            util.hide(boot);
+            util.hide(_delete);
+            util.hide(leave);
+            break;
+        case "topic":
+            util.flex(alias);
+            util.flex(invite);
+            util.hide(mute);
+            util.hide(boot);
+            util.flex(_delete);
+            util.hide(leave);
+            break;
+
+        case "invite":
+            util.flex(alias);
+            util.hide(invite);
+            util.hide(mute);
+            util.hide(boot);
+            util.flex(_delete);
+            util.hide(leave);
+            break;
+
+        case "participant":
+            util.flex(alias);
+            util.hide(invite);
+            util.flex(mute);
+            util.flex(boot);
+            util.hide(_delete);
+            util.hide(leave);
+            break;
+        default:
+            throw new Error(`Invalid state: ${state}`)
+    }
+}
+
+
+
 export const UXMessage = {
     TO_LOGIN: Symbol("to_login"),
     TO_REGISTRATION: Symbol("to_registration"),
@@ -1305,6 +1484,8 @@ export const UXMessage = {
     ATTACH_FILE_ICON_CLICK: Symbol("attach_file"),
     CANCEL_PRIVATE_MESSAGE: Symbol("private_cancel"),
     MESSAGE_AREA_KEY_PRESS: Symbol("msg_key_press"),
+
+    CHAT_SCROLL: Symbol("chat_scroll"),
 
     //UX Requests for messages
     GET_LAST_MESSAGES: Symbol("get_last_messages"),
