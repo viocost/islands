@@ -1,14 +1,19 @@
 import * as UI from "../lib/ChatUIFactory";
 import { IslandsVersion } from "../../../../common/Version"
-import * as util from "../lib/dom-util";
-import { StateMachine } from "../../../../common/AdvStateMachine"
+import * as domUtil from "../lib/dom-util";
+import * as Common from "./Common";
+import { StateMachine } from "../../../../common/AdvStateMachine";
+import { AssetActivator } from "./AssetActivator";
 import { BlockingSpinner } from "../lib/BlockingSpinner";
 import { Events } from "../../../../common/Events"
+import * as Scroll from "../ui/Scroll";
 import "../../css/chat.sass"
 import "../../css/vendor/loading.css";
 import toastr from "../lib/toastr";
 import { TopicUXData } from "./TopicUXData"
 import { TopicEvents } from "../lib/Topic"
+import { Context } from "../lib/Context";
+import { VaultEvents } from "../lib/Vault"
 let spinner = new BlockingSpinner();
 
 
@@ -40,12 +45,12 @@ export function initialize(messageBus){
     console.log("Initializing UI");
 
     //events
-    messageBus.on(UXMessage.TO_LOGIN, ()=>{
+    messageBus.on(Common.UXMessage.TO_LOGIN, ()=>{
         console.log("UI TO LOGIN");
         mainStateMachine.handle.toLogin(messageBus)
     })
 
-    messageBus.on(UXMessage.TO_REGISTRATION, ()=>{
+    messageBus.on(Common.UXMessage.TO_REGISTRATION, ()=>{
         mainStateMachine.handle.toRegistration(messageBus)
     })
 
@@ -68,45 +73,45 @@ function initRegistration(args, stateMachine){
     let uxBus = args[0];
 
     //Routing all the event through the state machine
-    uxBus.on(UXMessage.REGISTER_SUCCESS, stateMachine.handle.registrationSuccess)
-    uxBus.on(UXMessage.REGISTER_ERROR, stateMachine.handle.registrationError);
-    uxBus.on(UXMessage.REGISTER_PROGRESS, (subscriptionId)=>{
-        util.$("#register-vault-btn").setAttribute("disabled", true)
+    uxBus.on(Common.UXMessage.REGISTER_SUCCESS, stateMachine.handle.registrationSuccess)
+    uxBus.on(Common.UXMessage.REGISTER_ERROR, stateMachine.handle.registrationError);
+    uxBus.on(Common.UXMessage.REGISTER_PROGRESS, (subscriptionId)=>{
+        domUtil.$("#register-vault-btn").setAttribute("disabled", true)
         stateMachine.handle.start()
 
     })
     let registrationBlock = UI.bakeRegistrationBlock(()=>{
-        let password = util.$("#new-passwd");
-        let confirm = util.$("#confirm-passwd");
-        uxBus.emit(UXMessage.REGISTER_CLICK, {password: password, confirm: confirm})
+        let password = domUtil.$("#new-passwd");
+        let confirm = domUtil.$("#confirm-passwd");
+        uxBus.emit(Common.UXMessage.REGISTER_CLICK, {password: password, confirm: confirm})
     })
 
 
-    util.appendChildren("#main-container", registrationBlock)
+    domUtil.appendChildren("#main-container", registrationBlock)
 }
 
 
 function initLogin(args, stateMachine){
     let uxBus = args[0]
 
-    uxBus.on(UXMessage.LOGIN_PROGRESS, stateMachine.handle.start)
-    uxBus.on(UXMessage.LOGIN_ERROR, stateMachine.handle.loginError)
-    uxBus.on(UXMessage.LOGIN_SUCCESS, stateMachine.handle.loginSuccess.bind(null, uxBus))
+    uxBus.on(Common.UXMessage.LOGIN_PROGRESS, stateMachine.handle.start)
+    uxBus.on(Common.UXMessage.LOGIN_ERROR, stateMachine.handle.loginError)
+    uxBus.on(Common.UXMessage.LOGIN_SUCCESS, stateMachine.handle.loginSuccess.bind(null, uxBus))
 
     let loginBlock = UI.bakeLoginBlock(()=>{
-        let passwordEl = util.$("#vault-password");
-        uxBus.emit(UXMessage.LOGIN_CLICK, { password: passwordEl.value})
+        let passwordEl = domUtil.$("#vault-password");
+        uxBus.emit(Common.UXMessage.LOGIN_CLICK, { password: passwordEl.value})
     })
 
-    util.appendChildren("#main-container", loginBlock)
+    domUtil.appendChildren("#main-container", loginBlock)
 
 }
 
 
 function handleLoginError(args){
     loadingOff()
-    let passwordEl = util.$("#vault-password");
-    let loginBtn = util.$("#vault-login-btn")
+    let passwordEl = domUtil.$("#vault-password");
+    let loginBtn = domUtil.$("#vault-login-btn")
     loginBtn.removeAttribute("disabled");
     passwordEl.value = ""
     toastr.warning(`Login error: ${args[0] || ""}`)
@@ -114,7 +119,7 @@ function handleLoginError(args){
 
 function loggingIn(){
     loadingOn()
-    let loginBtn = util.$("#vault-login-btn")
+    let loginBtn = domUtil.$("#vault-login-btn")
     loginBtn.setAttribute("disabled", true);
 }
 
@@ -130,27 +135,28 @@ function handleLoginSuccess(args) {
     let uxBus = args[0]
     //let vault = vaultHolder.getVault();
 
+    let context = new Context(uxBus)
     updateHeaderOnSuccessfulLogin(settings);
     createChatInterface(uxBus)
 
     //make modals
     topicCreateModal = UI.bakeTopicCreateModal(()=>{
-        let nicknameEl = util.$("#new-topic-nickname");
-        let topicNameEl = util.$("#new-topic-name");
+        let nicknameEl = domUtil.$("#new-topic-nickname");
+        let topicNameEl = domUtil.$("#new-topic-name");
         let nickname = nicknameEl.value
         let topicName = topicNameEl.value
         nicknameEl.value = "";
         topicNameEl.value = ""
-        uxBus.emit(UXMessage.CREATE_TOPIC_REQUEST, {nickname: nickname, topicName: topicName})
+        uxBus.emit(Common.UXMessage.CREATE_TOPIC_REQUEST, {nickname: nickname, topicName: topicName})
         topicCreateModal.close();
     })
 
 
     topicJoinModal = UI.bakeTopicJoinModal(() => {
         console.log("Joining topic")
-        let nickname = util.$("#join-topic-nickname").value;
-        let topicName = util.$("#join-topic-name").value;
-        let inviteCode = util.$("#join-topic-invite-code").value;
+        let nickname = domUtil.$("#join-topic-nickname").value;
+        let topicName = domUtil.$("#join-topic-name").value;
+        let inviteCode = domUtil.$("#join-topic-invite-code").value;
         if (!nickname || !topicName || !inviteCode) {
             toastr.warning("All fields are required");
             return;
@@ -163,7 +169,7 @@ function handleLoginSuccess(args) {
 
     setAliasModal = UI.bakeSetAliasModal(() => {
         console.log("Ok handler")
-        let newAliasEl = util.$("#modal-alias-input")
+        let newAliasEl = domUtil.$("#modal-alias-input")
         let newAlias = newAliasEl.value
         let subject = JSON.parse(newAliasEl.getAttribute("rename-data"))
         switch (subject.type) {
@@ -190,17 +196,17 @@ function handleLoginSuccess(args) {
     })
     //hook all buttons to the bus
 
-    util.$$("button").forEach(button=>{
+    domUtil.$$("button").forEach(button=>{
         button.addEventListener("click", ()=>{
-            uxBus.emit(UXMessage.BUTTON_CLICK, button.id)
+            uxBus.emit(Common.UXMessage.BUTTON_CLICK, button.id)
         })
     })
 
-    util.$$(".messages-panel-container").forEach(container=>{
+    domUtil.$$(".messages-panel-container").forEach(container=>{
         addEventListenersForMessagesWindow(container)
     })
 
-    setEventListeners(uxBus)
+    setEventListeners(uxBus, context)
 
     //setupSidePanelListeners(uxBus,  stateMachine)
     //refreshTopics();
@@ -213,11 +219,11 @@ function handleLoginSuccess(args) {
     //let sidePanel = bakeSidePanel();
     //let messagesPanel = bakeMessagesPanel();
     //let newMessagePanel = bakeNewMessageControl();
-    //let messagesWrapper = util.wrap([messagesPanel, newMessagePanel], "main-panel-container");
+    //let messagesWrapper = domUtil.wrap([messagesPanel, newMessagePanel], "main-panel-container");
 
 
-    //util.$("#remove-private").addEventListener("click", removePrivate);
-    //util.$("#messages-panel-container").onscroll = undefined //processChatScroll;
+    //domUtil.$("#remove-private").addEventListener("click", removePrivate);
+    //domUtil.$("#messages-panel-container").onscroll = undefined //processChatScroll;
     //UIInitialized = true;
     ///////////////////////////////////////////////
     // let loginAgent = args[0]                  //
@@ -263,22 +269,22 @@ function handleLoginSuccess(args) {
 
 function addEventListenersForMessagesWindow(container){
         container.addEventListener("scroll", ()=>{
-            uxBus.emit(UXMessage.CHAT_SCROLL, container.getAttribute("pkfp"))
+            uxBus.emit(Common.UXMessage.CHAT_SCROLL, container.getAttribute("pkfp"))
         })
 }
 
 function updateHeaderOnSuccessfulLogin(settings, uxBus){
 
-    let header = util.$("header")
+    let header = domUtil.$("header")
 
     //////////////////////////////////////////////////////////
     // let isSoundOn = !vault.hasOwnProperty("settings") || //
     //     !vault.settings.hasOwnProperty("sound") ||       //
     //     vault.settings.sound;                            //
     //////////////////////////////////////////////////////////
-    util.removeAllChildren(header);
+    domUtil.removeAllChildren(header);
 
-    util.appendChildren(header, [
+    domUtil.appendChildren(header, [
         UI.bakeHeaderLeftSection((menuButton) => {
         }),
         //UI.bakeHeaderRightSection(false, settings.soundOn , processInfoClick, processMuteClick, processSettingsClick, processLogoutClick)
@@ -288,27 +294,27 @@ function updateHeaderOnSuccessfulLogin(settings, uxBus){
 
 
 function createChatInterface(uxBus){
-    let main = util.$("main")
-    util.removeAllChildren(main);
+    let main = domUtil.$("main")
+    domUtil.removeAllChildren(main);
 
     let mainContainer = UI.bakeMainContainer()
-    util.appendChildren(main, mainContainer)
+    domUtil.appendChildren(main, mainContainer)
     let sidePanel = UI.bakeSidePanel(IslandsVersion.getVersion());
 
     let newMessageBlock = UI.bakeNewMessageControl(uxBus);
     let messagesPanel = UI.bakeMessagesPanel(newMessageBlock)
-    util.appendChildren(mainContainer, [sidePanel, messagesPanel]);
+    domUtil.appendChildren(mainContainer, [sidePanel, messagesPanel]);
 }
 
 function handleRegistrationSuccess(){
     console.log("registration success handler invoked");
 
     loadingOff()
-    util.$("#register-vault-btn").removeAttribute("disabled");
-    let mainContainer = util.$('#main-container');
+    domUtil.$("#register-vault-btn").removeAttribute("disabled");
+    let mainContainer = domUtil.$('#main-container');
 
-    util.removeAllChildren(mainContainer);
-    util.appendChildren(mainContainer, UI.bakeRegistrationSuccessBlock(() => {
+    domUtil.removeAllChildren(mainContainer);
+    domUtil.appendChildren(mainContainer, UI.bakeRegistrationSuccessBlock(() => {
         document.location.reload()
     }))
 }
@@ -316,38 +322,38 @@ function handleRegistrationSuccess(){
 function handleRegistrationError(args){
     loadingOff()
 
-    util.$("#register-vault-btn").removeAttribute("disabled");
+    domUtil.$("#register-vault-btn").removeAttribute("disabled");
     toastr.warning(`Registration error: ${args[0] || ""}`)
 }
 
 
 function renderLayout() {
     console.log("Rendering layout")
-    let isSidePanelOn = util.hasClass(`#${UI.BUTTON_IDS.MAIN_MENU}`, "menu-on");
-    let sidePanel = util.$(".side-panel-container");
-    let messagesPanel = util.$(".main-panel-container");
-    let connectionIndicatorLabel = util.$("#connection-indicator-label")
+    let isSidePanelOn = domUtil.hasClass(`#${UI.BUTTON_IDS.MAIN_MENU}`, "menu-on");
+    let sidePanel = domUtil.$(".side-panel-container");
+    let messagesPanel = domUtil.$(".main-panel-container");
+    let connectionIndicatorLabel = domUtil.$("#connection-indicator-label")
 
 
     if (isSidePanelOn) {
         if (window.innerWidth <= SMALL_WIDTH) {
-            util.flex(sidePanel);
-            util.hide(messagesPanel);
+            domUtil.flex(sidePanel);
+            domUtil.hide(messagesPanel);
 
         } else {
-            util.flex(sidePanel);
-            util.flex(messagesPanel);
+            domUtil.flex(sidePanel);
+            domUtil.flex(messagesPanel);
         }
 
     } else {
-        util.hide(sidePanel);
-        util.flex(messagesPanel);
+        domUtil.hide(sidePanel);
+        domUtil.flex(messagesPanel);
     }
 
     ///////////////////////////////////////////////
     // window.innerWidth <= XSMALL_WIDTH ?       //
-    //     util.hide(connectionIndicatorLabel) : //
-    //     util.flex(connectionIndicatorLabel)   //
+    //     domUtil.hide(connectionIndicatorLabel) : //
+    //     domUtil.flex(connectionIndicatorLabel)   //
     ///////////////////////////////////////////////
 
 
@@ -368,78 +374,21 @@ function initHandlerBuilder(uxBus){
 //////////////////////////////////////////////////////////////////////////////////////////
 // function setupSidePanelListeners(uxBus, stateMachine){                               //
 //                                                                                      //
-//     util.$("#btn-new-topic").onclick = topicCreateModal.open;                        //
-//     util.$("#btn-join-topic").onclick = topicJoinModal.open;                         //
+//     domUtil.$("#btn-new-topic").onclick = topicCreateModal.open;                        //
+//     domUtil.$("#btn-join-topic").onclick = topicJoinModal.open;                         //
 //                                                                                      //
-//     util.$("#btn-ctx-invite").onclick = processInviteButtonClick;                    //
-//     util.$("#btn-ctx-delete").onclick = processCtxDeleteButtonClick;                 //
-//     util.$("#btn-ctx-alias").onclick = processCtxAliasButtonClick.bind(null, uxBus); //
-//     util.$("#btn-ctx-boot").onclick = processCtxBootButtonClick;                     //
+//     domUtil.$("#btn-ctx-invite").onclick = processInviteButtonClick;                    //
+//     domUtil.$("#btn-ctx-delete").onclick = processCtxDeleteButtonClick;                 //
+//     domUtil.$("#btn-ctx-alias").onclick = processCtxAliasButtonClick.bind(null, uxBus); //
+//     domUtil.$("#btn-ctx-boot").onclick = processCtxBootButtonClick;                     //
 // }                                                                                    //
 //////////////////////////////////////////////////////////////////////////////////////////
 
 
-//Sets listeners and callbacks for
-//all related message bus events
-function setEventListeners(uxBus){
-    console.log("Setting event listeners");
-    let buttonClickHandlers = {}
-    buttonClickHandlers[UI.BUTTON_IDS.JOIN_TOPIC] = topicJoinModal.open.bind(topicJoinModal)
-    buttonClickHandlers[UI.BUTTON_IDS.NEW_TOPIC] =  topicCreateModal.open.bind(topicCreateModal)
-    buttonClickHandlers[UI.BUTTON_IDS.CTX_INVITE] = processInviteButtonClick.bind(null, uxBus)
-    buttonClickHandlers[UI.BUTTON_IDS.CTX_ALIAS] = processAliasButtonClick.bind(null, uxBus)
-    buttonClickHandlers[UI.BUTTON_IDS.CTX_BOOT] = processBootButtonClick.bind(null, uxBus)
-    buttonClickHandlers[UI.BUTTON_IDS.CTX_DELETE] = processDeleteButtonClick.bind(null, uxBus)
-
-
-
-    //Processing button clicks
-    uxBus.on(UXMessage.BUTTON_CLICK, btnId=>{
-        if(btnId in buttonClickHandlers){
-            buttonClickHandlers[btnId]()
-        }
-    })
-
-    uxBus.on(Events.TOPIC_CREATED, addNewTopicToUX.bind(null, uxBus))
-    uxBus.on(UXMessage.TOPIC_LOADED, addNewTopicToUX.bind(null, uxBus))
-
-    uxBus.on(UXMessage.TOPIC_CLICK, activateTopic)
-    uxBus.on(UXMessage.TOPIC_DBLCLICK, [activateTopic, toggleTopicExpand])
-    uxBus.on(UXMessage.TOPIC_EXPAND_ICON_CLICK, [activateTopic, toggleTopicExpand])
-
-    uxBus.on(UXMessage.MAIN_MENU_CLICK, handleMainMenuClick);
-
-    //Invite code click events
-    uxBus.on(UXMessage.INVITE_DBLCLICK, [copyInviteCodeToClipboard, processInviteClick]);
-    uxBus.on(UXMessage.INVITE_CLICK, processInviteClick);
-    uxBus.on(UXMessage.PARTICIPANT_CLICK, processParticipantClick)
-
-    //Attachment handlers
-    uxBus.on(UXMessage.ATTACH_FILE_ICON_CLICK, selectFileAttachment);
-
-
-    //Handle private message mode cancel click
-    uxBus.on(UXMessage.CANCEL_PRIVATE_MESSAGE, cancelPrivateMessageSend);
-
-    //Handling send message click
-    uxBus.on(UXMessage.SEND_BUTTON_CLICK, sendMessage.bind(null, uxBus));
-
-    //Handling key presses while in new message area
-    uxBus.on(UXMessage.MESSAGE_AREA_KEY_PRESS, processMessageAreaKeyPress.bind(null, uxBus))
-
-    uxBus.on(UXMessage.LAST_MESSAGES_RESPONSE, processLastMessagesResponse)
-
-
-    uxBus.on(UXMessage.CHAT_SCROLL, processChatScroll.bind(null, uxBus))
-
-    uxBus.on(TopicEvents.NEW_CHAT_MESSAGE, processNewChatMessage)
-}
-
-
 function handleMainMenuClick(){
-    let menuButton = util.$(`#${UI.BUTTON_IDS.MAIN_MENU}`)
+    let menuButton = domUtil.$(`#${UI.BUTTON_IDS.MAIN_MENU}`)
 
-    util.toggleClass(menuButton, "menu-on");
+    domUtil.toggleClass(menuButton, "menu-on");
     renderLayout()
 }
 
@@ -454,22 +403,23 @@ function cancelPrivateMessageSend(){
 
 }
 
-
 //TODO Implement
-function sendMessage(uxBus){
+function sendMessage(uxBus, context){
+    let topicInFocus = context.getSelectedTopic()
     if(!topicInFocus){
         toastr.warning("Please first select a topic")
         return;
     }
 
-    let inputElement = util.$("#new-msg")
+    let inputElement = domUtil.$("#new-msg")
     let message = inputElement.value
 
     console.log("SENDING MESSAGE!");
 
-    uxBus.emit(UXMessage.SEND_CHAT_MESSAGE, {
+    uxBus.emit(topicInFocus, {
         pkfp: topicInFocus,
-        message: message
+        message: Common.UXMessage.SEND_CHAT_MESSAGE,
+        chatMessage: message
     })
 
     inputElement.value = "";
@@ -477,7 +427,7 @@ function sendMessage(uxBus){
 
 
 //TODO Implement
-function processMessageAreaKeyPress(uxBus, ev){
+function processMessageAreaKeyPress(uxBus, context, ev){
     console.log(`Key pressed: ${ev.keyCode}`);
     if(ev.keyCode === 13 || ev.keyCode === 10){
         if(ev.ctrlKey){
@@ -485,7 +435,7 @@ function processMessageAreaKeyPress(uxBus, ev){
             moveCursor(ev.target, "end");
         } else {
             ev.preventDefault()
-            sendMessage(uxBus)
+            sendMessage(uxBus, context)
         }
     }
 
@@ -501,47 +451,27 @@ function moveCursor(el, pos) {
 }
 
 
-function copyInviteCodeToClipboard(data){
-    let { inviteCode } = data
-    let textArea = document.createElement("textarea");
-    textArea.value = inviteCode;
-    document.body.appendChild(textArea);
-    textArea.focus();
-    textArea.select();
-    try {
-        document.execCommand("copy");
-        console.log("Invite code has been copied");
-
-        toastr.info("Invite code has been copied to the clipboard");
-    } catch (err) {
-        toastr.error("Error copying invite code to the clipboard");
-    }
-    textArea.remove();
-}
 
 
 
 //Shows or hids the details of a given topic
-function toggleTopicExpand(pkfp){
 
-    console.log("Expanding topic");
-    let topicsList = util.$("#topics-list")
-    let topicEl = Array.from(util.$$(".side-block-data-list-item", topicsList)).filter(el=>el.getAttribute("pkfp") === pkfp)[0]
-    let topicAssets = Array.from(util.$$(".topic-assets", topicsList)).filter(el=>el.getAttribute("pkfp") === pkfp)[0]
+function addNewInvite(uxBus, message){
+    let { pkfp, invite } = message
+    console.log(`New invite received adding to UX`);
+    console.dir(invite)
+    let inviteListItem = UI.bakeInviteListItem(uxBus, pkfp, invite, invite)
 
-    // adding topic-assets-expanded makes topic assets visible
-    util.toggleClass(topicAssets, "topic-assets-expanded")
-
-    util.toggleDisplay(topicEl.firstElementChild.children[0])
-    util.toggleDisplay(topicEl.firstElementChild.children[1])
-    //here we are replacing + icon to minus if expanding
-
-
+    let topicAssets = Array.from(domUtil.$$(".topic-assets")).filter(el=>el.getAttribute("pkfp") === pkfp)[0]
+    if(!Array.from(domUtil.$$(".invite-list-item")).filter(el=>el.getAttribute("pkfp") === invite)[0]){
+        topicAssets.appendChild(inviteListItem)
+    }
 }
 
-
-function processNewChatMessage(data){
+function processNewChatMessage(context, data){
     const { topicPkfp, message, authorAlias } = data;
+
+    let topicInFocus = context.getSelectedTopic()
 
     console.log(`New incoming chat message received for ${topicPkfp}`)
 
@@ -581,18 +511,14 @@ function processNewChatMessage(data){
         private: message.header.private,
         recipient: message.header.recipient,
         attachments: message.attachments
-    }, topicInFocus, util.$(".messages-window", container));
+    }, topicInFocus, domUtil.$(".messages-window", container));
 
     if(willScroll){
-        scrollChatDown(container)
+        Scroll.scrollDown(container)
     }
    
 }
 
-function scrollChatDown(el){
-        console.log("Scrolling down");
-        el.scrollTop = el.scrollHeight;
-}
 
 function isScrollingRequired(el){
     return el.scrollHeight - el.scrollTop - el.offsetHeight <= Math.floor(el.offsetHeight / 2)
@@ -600,88 +526,37 @@ function isScrollingRequired(el){
 
 function getTopicMessagesContainer(pkfp){
     console.log("Get messages container");
-    return Array.from(util.$$(".messages-panel-container")).filter(el=> el.getAttribute("pkfp") === pkfp)[0]
+    return Array.from(domUtil.$$(".messages-panel-container")).filter(el=> el.getAttribute("pkfp") === pkfp)[0]
 
 }
 
-function processInviteClick(uxBus, pkfp){
-    console.log(`Invite click ${uxBus}, ${pkfp}`);
 
+//Select invite
+function processInviteClick(data){
+    console.log("Processing invite click");
+    let {pkfp, inviteCode} = data;
+    let activator = new AssetActivator({
+        pkfp: pkfp,
+        code: inviteCode
+    })
+
+    activator.activate();
+
+    displayTopicContextButtons("invite")
 }
 
-//CTX Buttons handlers
-function processInviteButtonClick(uxBus){
-    console.log("Invite button click");
+function getActiveTopicAsset() {
+    if (!topicInFocus || !isExpanded(topicInFocus)) {
+        console.log("No active assets found");
+        return;
+    }
 
-//    displayTopicContextButtons("invite")
-}
-
-function processAliasButtonClick(uxBus){
-    console.log("Alias button click");
-
-}
-
-function processBootButtonClick(uxBus){
-    console.log("Boot button click");
-
-}
-
-function processDeleteButtonClick(uxBus){
-
-    console.log("Delete button click");
-}
-
-function processParticipantClick(){
-    console.log("Participant click");
-    displayTopicContextButtons("participant")
-}
-
-function activateTopic(pkfp){
-    console.log("Activating topic");
-    displayTopicContextButtons("topic")
-
-    //setting active topic
-    topicInFocus = pkfp;
-
-    //show topic messages panel
-    for(let panel of util.$$(".messages-panel-container")){
-        if (panel.getAttribute("pkfp") === pkfp){
-            util.flex(panel)
-        } else {
-            util.hide(panel)
+    let assets = getTopicAssets(topicInFocus);
+    for (let asset of assets.children) {
+        if (util.hasClass(asset, "active-asset")) {
+            return asset;
         }
     }
-
-    //mark active topic on the side panel
-    for (let el of util.$("#topics-list").children) {
-        if (el.getAttribute("pkfp") === pkfp) {
-            util.addClass(el, "topic-in-focus");
-            //Here set the name for active topic in header
-
-        } else {
-            util.removeClass(el, "topic-in-focus");
-        }
-    }
-
-
-    //make sure new message input block is visible
-    newMessageBlockSetVisible(topicInFocus);
-
-    //reset unread messages counter
-    resetUnreadCounter(pkfp);
-
-    //If no messages have been appended, request messages
-    if(!uxTopics[pkfp].isInitialized){
-        //update messages
-        //load messages
-        uxBus.emit(UXMessage.GET_LAST_MESSAGES, {
-            pkfp: pkfp,
-            howMany: INITIAL_MESSAGES_LOAD
-
-        })
-    }
-
-
 }
 
 
@@ -696,10 +571,10 @@ function processChatScroll(uxBus, pkfp, event) {
         //load more messages
 
         let data = uxTopics[pkfp];
-        uxBus.emit(UXMessage.GET_LAST_MESSAGES, {
-            pkfp: pkfp,
+        uxBus.emit(pkfp, {
             before: data.earliesLoadedMessage,
-            howMany: 10
+            howMany: 10,
+            message: Common.UXMessage.GET_LAST_MESSAGES
         })
         console.log("loading more messages");
         chat.loadMoreMessages(topicInFocus);
@@ -742,26 +617,29 @@ function processLastMessagesResponse(data){
             private: message.header.private,
             recipient: message.header.recipient,
             attachments: message.attachments
-        }, pkfp, util.$(".messages-window", container), true);
+        }, pkfp, domUtil.$(".messages-window", container), true);
     }
 
     uxTopics[pkfp].earliesLoadedMessage = messages[messages.length - 1].header.id;
 
 }
 
-//This function checks if messages were initially loaded
-//and writes GET_LAST_MESSAGES request to bus if messages count
-// is less than 30
-//
-function updateTopicMessages(pkfp, uxBus){
-    let topicUXData = uxTopics[pkfp]
-    if(!topicUXData.isInitialized || messagesLoaded <  INITIAL_MESSAGES_LOAD){
-        uxBus.emit(UXMessage.GET_LAST_MESSAGES, {
-            pkfp: pkfp,
-            before: topicUXData.earliesLoadedMessage,
-        })
-    }
-}
+
+////////////////////////////////////////////////////////////////////////////////////
+// //This function checks if messages were initially loaded                       //
+// //and writes GET_LAST_MESSAGES request to bus if messages count                //
+// // is less than 30                                                             //
+// //                                                                             //
+// function updateTopicMessages(pkfp, uxBus){                                     //
+//     let topicUXData = uxTopics[pkfp]                                           //
+//     if(!topicUXData.isInitialized || messagesLoaded <  INITIAL_MESSAGES_LOAD){ //
+//         uxBus.emit(Common.UXMessage.GET_LAST_MESSAGES, {                       //
+//             pkfp: pkfp,                                                        //
+//             before: topicUXData.earliesLoadedMessage,                          //
+//         })                                                                     //
+//     }                                                                          //
+// }                                                                              //
+////////////////////////////////////////////////////////////////////////////////////
 
 
 function incrementUnreadCounter(pkfp) {
@@ -771,41 +649,11 @@ function incrementUnreadCounter(pkfp) {
     } else {
         unreadCounters[pkfp]++;
     }
-    setUnreadMessagesIndicator(pkfp, unreadCounters[pkfp])
-}
-
-function resetUnreadCounter(pkfp) {
-    console.log("Resetting unread messages counter");
-    uxTopics[pkfp].unreadMessagesCount = 0
-    setUnreadMessagesIndicator(pkfp, uxTopics[pkfp].unreadMessagesCount)
+    Common.setUnreadMessagesIndicator(pkfp, unreadCounters[pkfp])
 }
 
 
-function setUnreadMessagesIndicator(pkfp, num) {
-    console.log("Setting unread messages indicator");
-    let topicEl
 
-    for (let topic of util.$("#topics-list").children) {
-        if (topic.getAttribute("pkfp") === pkfp) {
-            topicEl = topic;
-            break;
-        }
-    }
-    if (!topicEl) {
-        console.log(`Error: topic element with pkfp ${pkfp} is not found`);
-        return
-    }
-
-    let unreadCounterLabel = topicEl.firstElementChild.children[3]
-
-    util.html(unreadCounterLabel, "");
-    num ? unreadCounterLabel.appendChild(UI.bakeUnreadMessagesElement(num)) : 1 === 1;
-}
-
-function newMessageBlockSetVisible(visible) {
-    let display = !!visible ? "flex" : "none";
-    util.$("#new-message-container").style.display = display
-}
 
 
 
@@ -814,21 +662,21 @@ function newMessageBlockSetVisible(visible) {
  */
 function addNewTopicToUX(uxBus, topic){
     //Make sure topic with such pkfp does not exist
-    let topicsList = util.$("#topics-list")
-    let topics = Array.from(util.$$(".side-block-data-list-item", topicsList)).filter(item=>item.getAttribute("pkfp") === topic.pkfp)
+    let topicsList = domUtil.$("#topics-list")
+    let topics = Array.from(domUtil.$$(".side-block-data-list-item", topicsList)).filter(item=>item.getAttribute("pkfp") === topic.pkfp)
     if(topics.length > 0) return
 
     //Creating messages area
-    let messageBlocksContainer = util.$("#topic-message-blocks-container")
+    let messageBlocksContainer = domUtil.$("#topic-message-blocks-container")
     //Creating side panel elements
     let topicListItem = UI.bakeTopicListItem(topic, uxBus);
     let topicAssets = UI.bakeTopicAssets(topic, uxBus);
     console.log("Baked");
 
     //Adding new elements to view
-    util.appendChildren(topicsList, [topicListItem, topicAssets])
+    domUtil.appendChildren(topicsList, [topicListItem, topicAssets])
     let topicMessageBlock = UI.bakeTopicMessagesBlock(topic.pkfp, topic.name)
-    util.appendChildren(messageBlocksContainer, topicMessageBlock)
+    domUtil.appendChildren(messageBlocksContainer, topicMessageBlock)
 
     uxTopics[topic.pkfp] = new TopicUXData()
 }
@@ -871,9 +719,9 @@ function processCtxAliasButtonClick(uxBus) {
         return;
     }
 
-    let title = util.$("#modal-alias-title")
-    let forLabel = util.$("#modal-alias-for-label")
-    let aliasInput = util.$("#modal-alias-input")
+    let title = domUtil.$("#modal-alias-title")
+    let forLabel = domUtil.$("#modal-alias-for-label")
+    let aliasInput = domUtil.$("#modal-alias-input")
 
     let subject = {}
 
@@ -881,14 +729,14 @@ function processCtxAliasButtonClick(uxBus) {
     let asset = getActiveTopicAsset()
     if (asset) {
         // Setting alias either for participant or invite
-        if (util.hasClass(asset, "invite-list-item")) {
+        if (domUtil.hasClass(asset, "invite-list-item")) {
             // For invite
             subject.type = "invite"
             subject.code = asset.getAttribute("code")
-            util.text(title, "New alias")
-            util.text(forLabel, `For invite: ${asset.getAttribute("code").substring(117, 140)}...`)
+            domUtil.text(title, "New alias")
+            domUtil.text(forLabel, `For invite: ${asset.getAttribute("code").substring(117, 140)}...`)
             aliasInput.setAttribute("placeholder", "Enter new alias")
-        } else if (util.hasClass(asset, "participant-list-item")) {
+        } else if (domUtil.hasClass(asset, "participant-list-item")) {
             // For participant
             let pkfp = asset.getAttribute("pkfp");
 
@@ -896,13 +744,13 @@ function processCtxAliasButtonClick(uxBus) {
             subject.pkfp = pkfp
             if (pkfp === topicInFocus) {
                 //Changing my nickname
-                util.text(title, "Change my nickname")
-                util.text(forLabel, "")
+                domUtil.text(title, "Change my nickname")
+                domUtil.text(forLabel, "")
                 aliasInput.setAttribute("placeholder", "Enter new nickname")
             } else {
                 //Alias for another participant
-                util.text(title, "New alias")
-                util.text(forLabel, `For ${topics[topicInFocus].getParticipantNickname(pkfp)}(${pkfp.substring(0, 32)}...)`)
+                domUtil.text(title, "New alias")
+                domUtil.text(forLabel, `For ${topics[topicInFocus].getParticipantNickname(pkfp)}(${pkfp.substring(0, 32)}...)`)
                 aliasInput.setAttribute("placeholder", "Enter new alias")
             }
         } else {
@@ -913,8 +761,8 @@ function processCtxAliasButtonClick(uxBus) {
     } else {
         //Renaming topic in vault
         subject.type = "topic"
-        util.text(title, `Rename topic "${chat.getTopicName(topicInFocus)}"`)
-        util.text(forLabel, `(${topicInFocus.substring(0, 32)}...)`)
+        domUtil.text(title, `Rename topic "${chat.getTopicName(topicInFocus)}"`)
+        domUtil.text(forLabel, `(${topicInFocus.substring(0, 32)}...)`)
         aliasInput.setAttribute("placeholder", "Enter new topic name")
     }
 
@@ -927,19 +775,6 @@ function getTopicInFocusData(){
 }
 
 
-function getActiveTopicAsset() {
-    if (!topicInFocus || !isExpanded(topicInFocus)) {
-        console.log("No active assets found");
-        return;
-    }
-
-    let assets = getTopicAssets(topicInFocus);
-    for (let asset of assets.children) {
-        if (util.hasClass(asset, "active-asset")) {
-            return asset;
-        }
-    }
-}
 
 
 function processCtxDeleteButtonClick(uxBus) {
@@ -956,7 +791,7 @@ function processCtxDeleteButtonClick(uxBus) {
         }
     }
 
-    if (util.hasClass(topicAsset, "invite-list-item")) {
+    if (domUtil.hasClass(topicAsset, "invite-list-item")) {
         let inviteCode = topicAsset.getAttribute("code")
         console.log(`Deleting invite ${inviteCode}`)
         chat.deleteInvite(inFocus, inviteCode)
@@ -1083,7 +918,7 @@ function appendMessageToChat(message, topicPkfp, chatWindow, toHead = false) {
         let author = document.createElement('div');
         author.classList.add("m-author-id");
         author.innerHTML = message.pkfp;
-        let participantIndex = Object.keys(topics[topicPkfp].participants).indexOf(message.pkfp)
+        let participantIndex = 4 //Object.keys(topics[topicPkfp].participants).indexOf(message.pkfp)
         msg.style.color = colors[participantIndex % colors.length];
         message_heading.appendChild(author);
     }
@@ -1175,7 +1010,7 @@ function preparePrivateMark(message, topic) {
         text = `(private to: ${alias} -- ${nickname})`;
     }
 
-    return util.bake("span", {
+    return domUtil.bake("span", {
         class: "private-mark",
         text: text
     })
@@ -1265,7 +1100,7 @@ function processMessageBody(text) {
     if (text.search(startPattern) === -1) {
         let pars = []
         for (let p of text.split("\n")) {
-            result.appendChild(util.bake("p", {
+            result.appendChild(domUtil.bake("p", {
                 children: document.createTextNode(p)
             }));
         }
@@ -1387,112 +1222,64 @@ function downloadURI(uri, name) {
 }
 
 
-/**
- * displays certain context buttons on the topicsPanel.
- * state must be a string, and must have following values:
- *    "none" - hide all buttons
- *    "topic" - show Alias, Invite, Mute, Leave, Delete
- *    "invite" - show Alias, Delete
- *    "participant" - show Alias, Mute, Boot only if user has rights to boot
- * displayBoot - boolean whether user has rights to boot
- */
-function displayTopicContextButtons(state, displayBoot = false) {
-    let alias = util.$("#btn-ctx-alias");
-    let invite = util.$("#btn-ctx-invite");
-    let mute = util.$("#btn-ctx-mute");
-    let boot = util.$("#btn-ctx-boot");
-    let _delete = util.$("#btn-ctx-delete");
-    let leave = util.$("#btn-ctx-leave");
 
-    switch (state) {
-        case "none":
-            util.hide(alias);
-            util.hide(invite);
-            util.hide(mute);
-            util.hide(boot);
-            util.hide(_delete);
-            util.hide(leave);
-            break;
-        case "topic":
-            util.flex(alias);
-            util.flex(invite);
-            util.hide(mute);
-            util.hide(boot);
-            util.flex(_delete);
-            util.hide(leave);
-            break;
-
-        case "invite":
-            util.flex(alias);
-            util.hide(invite);
-            util.hide(mute);
-            util.hide(boot);
-            util.flex(_delete);
-            util.hide(leave);
-            break;
-
-        case "participant":
-            util.flex(alias);
-            util.hide(invite);
-            util.flex(mute);
-            util.flex(boot);
-            util.hide(_delete);
-            util.hide(leave);
-            break;
-        default:
-            throw new Error(`Invalid state: ${state}`)
-    }
-}
+//Sets listeners and callbacks for
+//all related message bus events
+function setEventListeners(uxBus, context){
+    console.log("Setting event listeners");
+    let buttonClickHandlers = {}
+    buttonClickHandlers[UI.BUTTON_IDS.JOIN_TOPIC] = topicJoinModal.open.bind(topicJoinModal)
+    buttonClickHandlers[UI.BUTTON_IDS.NEW_TOPIC] =  topicCreateModal.open.bind(topicCreateModal)
+    buttonClickHandlers[UI.BUTTON_IDS.CTX_INVITE] = context.invite.bind(context, uxBus)
+    buttonClickHandlers[UI.BUTTON_IDS.CTX_ALIAS] = context.alias.bind(context, uxBus)
+    buttonClickHandlers[UI.BUTTON_IDS.CTX_BOOT] = context.boot.bind(context, uxBus)
+    buttonClickHandlers[UI.BUTTON_IDS.CTX_DELETE] = context.delete.bind(context, uxBus)
 
 
 
-export const UXMessage = {
-    TO_LOGIN: Symbol("to_login"),
-    TO_REGISTRATION: Symbol("to_registration"),
-    CONNECTION_LOST: Symbol("conn_lost"),
-    LOGIN_CLICK: Symbol("login_click"),
-    LOGIN_PROGRESS: Symbol("login_progress"),
-    LOGIN_SUCCESS: Symbol("login_success"),
-    LOGIN_ERROR: Symbol("login_error"),
-    REGISTER_CLICK: Symbol("reg_click"),
-    REGISTER_PROGRESS: Symbol("reg_prog"),
-    REGISTER_SUCCESS: Symbol("reg_succ"),
-    REGISTER_ERROR: Symbol("reg_err"),
-    BUTTON_CLICK: Symbol("btn_click"),
-    BUTTON_DBL_CLICK: Symbol("btndbl_click"),
-    CREATE_TOPIC_REQUEST: Symbol("create_topic_request"),
-    TOPIC_JOIN_REQUEST: Symbol("topic_join_request"),
-    TOPIC_LOADED: Symbol("topic_loaded"),
+    //Processing button clicks
+    uxBus.on(Common.UXMessage.BUTTON_CLICK, btnId=>{
+        if(btnId in buttonClickHandlers){
+            buttonClickHandlers[btnId]()
+        }
+    })
 
-    // Main menu click message
-    MAIN_MENU_CLICK: Symbol("main_menu_click"),
+    uxBus.on(Events.TOPIC_CREATED, addNewTopicToUX.bind(null, uxBus))
+    uxBus.on(Common.UXMessage.TOPIC_LOADED, addNewTopicToUX.bind(null, uxBus))
 
-    // Event fired when user clicks on topic list item on the side panel
-    TOPIC_CLICK: Symbol("topic_click"),
-    // Double click on toipc list item on the side panel
-    TOPIC_DBLCLICK: Symbol("topic_double_click"),
+    uxBus.on(Common.UXMessage.TOPIC_CLICK, context.selectTopic.bind(context, uxBus, uxTopics))
+    uxBus.on(Common.UXMessage.TOPIC_DBLCLICK, context.expandTopic.bind(context, uxBus, uxTopics))
+    uxBus.on(Common.UXMessage.TOPIC_EXPAND_ICON_CLICK, context.expandTopic.bind(context, uxBus, uxTopics))
 
-    //User clicks on expand/collapse icon on topic list item
-    TOPIC_EXPAND_ICON_CLICK: Symbol("topic_expand_icon_click"),
+    uxBus.on(Common.UXMessage.MAIN_MENU_CLICK, handleMainMenuClick);
 
-    PARTICIPANT_CLICK: Symbol("participant_click"),
-    PARTICIPANT_DBLCLICK: Symbol("participant_dblclick"),
-    INVITE_CLICK: Symbol("invite_click"),
-    INVITE_DBLCLICK: Symbol("invite_dblclick"),
-    CONTEXT_MENU: Symbol("context_menu"),
-    SEND_BUTTON_CLICK: Symbol("send_button_click"),
-    ATTACH_FILE_ICON_CLICK: Symbol("attach_file"),
-    CANCEL_PRIVATE_MESSAGE: Symbol("private_cancel"),
-    MESSAGE_AREA_KEY_PRESS: Symbol("msg_key_press"),
+    //Invite code click events
+    uxBus.on(Common.UXMessage.INVITE_DBLCLICK, context.doubleSelectInvite.bind(context));
+    uxBus.on(Common.UXMessage.INVITE_CLICK, context.selectInvite.bind(context));
 
-    CHAT_SCROLL: Symbol("chat_scroll"),
+    //emitet at chatuifactory.js
+    uxBus.on(Common.UXMessage.PARTICIPANT_CLICK, context.selectParticipant.bind(context));
 
-    //UX Requests for messages
-    GET_LAST_MESSAGES: Symbol("get_last_messages"),
-    LAST_MESSAGES_RESPONSE: Symbol("get_last_messages"),
-    NEW_MESSAGE: Symbol("new_message"),
+    //Attachment handlers
+    uxBus.on(Common.UXMessage.ATTACH_FILE_ICON_CLICK, selectFileAttachment);
 
 
-    SEND_CHAT_MESSAGE: Symbol("send_chat_message")
+    //Handle private message mode cancel click
+    uxBus.on(Common.UXMessage.CANCEL_PRIVATE_MESSAGE, cancelPrivateMessageSend);
 
+    //Handling send message click
+    uxBus.on(Common.UXMessage.SEND_BUTTON_CLICK, sendMessage.bind(null, uxBus, context));
+
+    //Handling key presses while in new message area
+    uxBus.on(Common.UXMessage.MESSAGE_AREA_KEY_PRESS, processMessageAreaKeyPress.bind(null, uxBus, context))
+
+    uxBus.on(Common.UXMessage.LAST_MESSAGES_RESPONSE, processLastMessagesResponse)
+
+
+    uxBus.on(Common.UXMessage.CHAT_SCROLL, processChatScroll.bind(null, uxBus))
+
+    uxBus.on(TopicEvents.NEW_CHAT_MESSAGE, processNewChatMessage.bind(null, context))
+    uxBus.on(TopicEvents.INVITE_CREATED, addNewInvite.bind(null, uxBus))
+
+    uxBus.on(VaultEvents.TOPIC_DELETED, context.topicDeleted.bind(context))
 }

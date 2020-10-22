@@ -11,6 +11,7 @@ import { PasswordChangeAgent } from "./lib/PasswordChangeAgent"
 import { BootParticipantAgent } from "./lib/BootParticipantAgent";
 import { register } from "./lib/Registration";
 import * as UX from "./ui/UX"
+import { UXMessage } from "./ui/Common"
 
 
 document.addEventListener('DOMContentLoaded', event => {
@@ -29,15 +30,15 @@ document.addEventListener('DOMContentLoaded', event => {
 
 
 function prepareRegistration(uxBus) {
-    uxBus.on(UX.UXMessage.REGISTER_CLICK, register.bind(null, uxBus))
-    uxBus.emit(UX.UXMessage.TO_REGISTRATION)
+    uxBus.on(UXMessage.REGISTER_CLICK, register.bind(null, uxBus))
+    uxBus.emit(UXMessage.TO_REGISTRATION)
 }
 
 function prepareLogin(uxBus) {
     let loginAgent = new LoginAgent(ConnectorAbstractFactory.getChatConnectorFactory(), uxBus)
 
     loginAgent.on(LoginAgentEvents.DECRYPTION_ERROR, () => {
-        uxBus.emit(UX.UXMessage.LOGIN_ERROR, "Invalid password.")
+        uxBus.emit(UXMessage.LOGIN_ERROR, "Invalid password.")
     })
 
     //Setting handler for correct password
@@ -45,7 +46,7 @@ function prepareLogin(uxBus) {
         console.log("Login agent succeeded. continuing initialization");
 
         // TODO put settings
-        uxBus.emit(UX.UXMessage.LOGIN_SUCCESS, {soundOn: true})
+        uxBus.emit(UXMessage.LOGIN_SUCCESS, {soundOn: true})
         /**
             * PostLoginInitiazlier should initialize vault, topics and
             * Ask server to initialize hidden services for active topcis
@@ -58,7 +59,9 @@ function prepareLogin(uxBus) {
             // Subscribing each topic to uxBus and
             // notifying UX about each topic loaded
             for(let topic in vault.topics){
-                uxBus.emit(UX.UXMessage.TOPIC_LOADED, vault.topics[topic])
+                setTimeout(()=>{
+                    uxBus.emit(UXMessage.TOPIC_LOADED, vault.topics[topic])
+                }, 100)
             }
 
 
@@ -70,7 +73,7 @@ function prepareLogin(uxBus) {
             }
 
             // This handles create topic request
-            uxBus.on(UX.UXMessage.CREATE_TOPIC_REQUEST, data=>{
+            uxBus.on(UXMessage.CREATE_TOPIC_REQUEST, data=>{
                 let { nickname, topicName } = data
                 let tc = new TopicCreator(nickname, topicName, session, vault, uxBus)
                 tc.run()
@@ -80,20 +83,21 @@ function prepareLogin(uxBus) {
         })
 
         postLoginInitializer.on(PostLoginInitializer.Fail, err => {
-            uxBus.emit(UX.UXMessage.LOGIN_ERROR, err.message)
+            uxBus.emit(UXMessage.LOGIN_ERROR, err.message)
         })
 
         postLoginInitializer.run();
     })
 
-    uxBus.on(UX.UXMessage.LOGIN_CLICK, initSession.bind(null, loginAgent, uxBus))
-    uxBus.emit(UX.UXMessage.TO_LOGIN)
+    uxBus.on(UXMessage.LOGIN_CLICK, initSession.bind(null, loginAgent, uxBus))
+    uxBus.emit(UXMessage.TO_LOGIN)
 }
+
 
 function initSession(loginAgent, uxBus, data) {
     let password = data.password;
 
-    uxBus.emit(UX.UXMessage.LOGIN_PROGRESS)
+    uxBus.emit(UXMessage.LOGIN_PROGRESS)
     console.log("Init session called");
 
 

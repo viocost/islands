@@ -33,6 +33,7 @@ function main(){
         global.DEBUG = true;
     }
 
+
     //Setting global island version
     try{
         global.VERSION = JSON.parse(fs.readFileSync(path.join(__dirname, "../",'package.json' )).toString()).version;

@@ -9,9 +9,9 @@ import { Events, Internal  } from "../../../../common/Events";
 import { assert } from "../../../../common/IError";
 import { XHR } from "./xhr"
 import * as semver from "semver";
-import { StateMachine } from "../../../../common/AdvStateMachine"
 import { fetchJSON } from "./FetchJSON";
 import { ChatUtility } from "./ChatUtility";
+import { UXMessage } from "../ui/Common"
 
 /**
  * Represents key vault
@@ -224,7 +224,7 @@ export class Vault{
         this.handlers[Internal.TOPIC_DELETED] = (msg) =>{
             console.log(`TOPIC DELETED: ${msg.body.topicPkfp}`)
             delete self.topics[msg.body.topicPkfp];
-            self.emit(Internal.TOPIC_DELETED, msg.body.topicPkfp);
+            self.uxBus.emit(VaultEvents.TOPIC_DELETED, msg.body.topicPkfp)
         }
 
         this.handlers[Events.VAULT_UPDATED] = () =>{
@@ -400,6 +400,11 @@ export class Vault{
         this.connector = connector;
         this.version = version;
         this.uxBus = uxBus;
+
+        uxBus.on(UXMessage.DELETE_TOPIC, pkfp=>{
+            this.deleteTopic(pkfp);
+        })
+
         this.arrivalHub.on(this.id, (msg)=>{
             this.processIncomingMessage(msg, this);
         })
@@ -650,6 +655,9 @@ export class VaultFactory{
 
 
 
+export const VaultEvents = {
+    TOPIC_DELETED: Symbol("topic_deleted")
+}
 
 // a = {
 //

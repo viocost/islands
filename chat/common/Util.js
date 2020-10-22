@@ -10,7 +10,12 @@ function inRange(x, min, max, inclusive=true) {
     return inclusive ? temp <= 0 : temp < 0;
 }
 
+function asArray(item){
+    if(Array.isArray(item)) return item
+    return [item];
+}
 
 module.exports = {
-    inRange: inRange
+    inRange: inRange,
+    asArray: asArray
 }

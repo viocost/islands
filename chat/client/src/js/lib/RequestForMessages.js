@@ -1,4 +1,4 @@
-import { UXMessage } from "../ui/UX"
+import { UXMessage } from "../ui/Common"
 import { TopicEvents } from "./Topic"
 
 /**

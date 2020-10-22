@@ -2,7 +2,7 @@ import * as util from "./dom-util"
 import * as Modal from "./DynmaicModal";
 import { IError as Err } from "../../../../common/IError";
 import * as SVG from "./SVG"
-import { UXMessage } from "../ui/UX"
+import { UXMessage } from "../ui/Common"
 
 //Bakes select list for side panel
 // top boolean whether it is select for top block
@@ -643,7 +643,7 @@ export function bakeTopicListItem(topic, uxBus){
 
 
     return util.bake("li", {
-        class: "side-block-data-list-item",
+        class: ["side-block-data-list-item", "topic-list-item"],
         attributes: {
             pkfp: topic.pkfp
         },
@@ -697,7 +697,8 @@ export function bakeInviteListItem(uxBus, topicPkfp, inviteCode, alias=""){
     console.log("Baking Invite list item");
     return util.bake("div", {
         attributes: {
-            "code": inviteCode
+            "code": inviteCode,
+            "pkfp": topicPkfp
         },
         listeners: {
             click: ()=>{uxBus.emit(UXMessage.INVITE_CLICK, {
@@ -708,14 +709,9 @@ export function bakeInviteListItem(uxBus, topicPkfp, inviteCode, alias=""){
             dblclick: ()=>{uxBus.emit(UXMessage.INVITE_DBLCLICK, {
                 pkfp: topicPkfp,
                 inviteCode: inviteCode
-            })},
-            contextmenu: ()=>uxBus.emit(UXMessage.CONTEXT_MENU, {
-                subject: CONTEXT_MENU_SUBJECTS.INVITE,
-                topicPkfp: topicPkfp,
-                inviteCode: inviteCode
-            })
+            })}
         },
-        class: "invite-list-item",
+        class:[ "topic-asset",  "invite-list-item" ],
         children: [
             inviteSVG,
 
@@ -750,7 +746,7 @@ export function bakeParticipantListItem(data){
     for(let cls of iconClasses) util.addClass(participantIcon, cls);
 
     return util.bake("div", {
-        class: "participant-list-item",
+        class: [ "topic-asset", "participant-list-item" ],
         listeners: {
             click: ()=>uxBus.emit(UXMessage.PARTICIPANT_CLICK, {
                 participantPkfp: participantPkfp,

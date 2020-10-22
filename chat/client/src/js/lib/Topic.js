@@ -10,10 +10,11 @@ import { ChatMessage } from "./ChatMessage";
 import { ClientSettings } from "./ClientSettings";
 import { INSPECT_MAX_BYTES } from "buffer";
 import { assert } from "../../../../common/IError";
-import { UXMessage } from "../ui/UX"
+import { UXMessage } from "../ui/Common"
 import { StateMachine } from "../../../../common/AdvStateMachine"
 import { RequestForMessagesFactory } from "./RequestForMessages";
 import { SendMessageAgent } from "./SendMessageAgent"
+import { VaultEvents } from "./Vault"
 
 
 const INITIAL_NUM_MESSAGES = 25
@@ -213,11 +214,27 @@ export class Topic{
     }
 
     subscribeToBus(uxBus){
-        uxBus.on(UXMessage.GET_LAST_MESSAGES, this.processGetMessagesRequest.bind(this), this)
-        uxBus.on(UXMessage.SEND_CHAT_MESSAGE, this.sendChatMessage.bind(this))
+        uxBus.on(this.pkfp, this.processBusMessage.bind(this), this)
     }
 
 
+    processBusMessage(pkg){
+        let handlers = {}
+        handlers[UXMessage.INVITE_REQUEST] = this.requestInvite.bind(this)
+        handlers[UXMessage.GET_LAST_MESSAGES] = this.processGetMessagesRequest.bind(this) ,
+        handlers[UXMessage.SEND_CHAT_MESSAGE] = this.sendChatMessage.bind(this)
+        handlers[VaultEvents.TOPIC_DELETED] = this.processTopicDeleted.bind(this)
+
+        if(pkg.message in handlers){
+            handlers[pkg.message](pkg)
+        }
+    }
+
+    processTopicDeleted(pkfp){
+        if(pkfp === this.pkfp){
+            this.uxBus.off(this);
+        }
+    }
 
     //Called when newly issued metadata arrived
     updateMetadata(metadata){
@@ -315,15 +332,13 @@ export class Topic{
 
 
     sendChatMessage(request){
-        let { pkfp, message } = request
 
-        //not this topic's message
-        if(this.pkfp !== pkfp){
+        if(!request.chatMessage){
+            console.log("chat message not provided")
             return
         }
-
         console.log("SEND CHAT MESSAGE CALLED");
-        let sendMessageAgent = new SendMessageAgent(this, message)
+        let sendMessageAgent = new SendMessageAgent(this, request.chatMessage)
         return sendMessageAgent.send();
     }
 
@@ -351,7 +366,10 @@ export class Topic{
         this.handlers[Events.INVITE_CREATED] = (msg)=>{
             console.log("Invite created event");
             let newInvite = self.processInvitesUpdated(self, msg);
-            self.emit(Events.INVITE_CREATED, newInvite);
+            self.uxBus.emit(TopicEvents.INVITE_CREATED, {
+                pkfp: this.pkfp,
+                invite: newInvite
+            });
         }
 
         this.handlers[Internal.DELETE_INVITE_SUCCESS] = (msg)=>{
@@ -589,14 +607,9 @@ export class Topic{
     //and passes it to the state machine that handles messages requests
     processGetMessagesRequest(data){
 
-        let { pkfp, lastId, howMany } = data; //before is the id of the earliest message
+        let { before, howMany } = data; //before is the id of the earliest message
 
-        //not our requets
-        if(pkfp !== this.pkfp) return
-
-        //proceeding with request
-
-        let requestForMessages = RequestForMessagesFactory.make(this, howMany, this.uxBus, lastId);
+        let requestForMessages = RequestForMessagesFactory.make(this, howMany, this.uxBus, before);
         requestForMessages.run();
 
     }
@@ -1155,5 +1168,6 @@ export class Topic{
 
 export const TopicEvents = {
     MESSAGES_LOADED: Symbol("messages_loaded"),
-    NEW_CHAT_MESSAGE: Symbol("new_chat_message")
+    NEW_CHAT_MESSAGE: Symbol("new_chat_message"),
+    INVITE_CREATED: Symbol("invite_created")
 }

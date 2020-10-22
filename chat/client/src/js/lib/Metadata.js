@@ -108,6 +108,10 @@ export class Metadata{
 
 
     getParticipantNickname(pkfp = Err.required("pkfp")){
+        if(!this.body.settings.membersData[pkfp]) {
+            this.body.settings.membersData[pkfp] = {}
+            return undefined;
+        }
         return this.body.settings.membersData[pkfp].nickname
     }
 

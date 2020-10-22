@@ -6,7 +6,7 @@ import { Internal, Events } from "../../../../common/Events"
 import { WildEmitter } from "../../../../common/WildEmitter"
 import { Topic } from "./Topic"
 import { iCrypto } from "../../../../common/iCrypto"
-import { UXMessage } from "../ui/UX";
+import { UXMessage } from "../ui/Common";
 
 let topics = []
 
