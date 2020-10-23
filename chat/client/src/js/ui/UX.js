@@ -153,15 +153,23 @@ function handleLoginSuccess(args) {
 
 
     topicJoinModal = UI.bakeTopicJoinModal(() => {
-        console.log("Joining topic")
+
         let nickname = domUtil.$("#join-topic-nickname").value;
         let topicName = domUtil.$("#join-topic-name").value;
         let inviteCode = domUtil.$("#join-topic-invite-code").value;
+
+        console.log("Joining topic")
         if (!nickname || !topicName || !inviteCode) {
             toastr.warning("All fields are required");
             return;
         }
-        joinTopic(nickname, topicName, inviteCode);
+
+        uxBus.emit(Common.UXMessage.TOPIC_JOIN_REQUEST, {
+            nickname: nickname,
+            topicName: topicName,
+            inviteCode: inviteCode
+        })
+
         toastr.info("Attempting to join topic");
         topicJoinModal.close();
     })
@@ -326,6 +334,20 @@ function handleRegistrationError(args){
     toastr.warning(`Registration error: ${args[0] || ""}`)
 }
 
+function addNewParticipantToUX(uxBus, topicPkfp, pkfp){
+    let participantEl = UI.bakeParticipantListItem({
+        participantPkfp: pkfp,
+        topicPkfp: topicPkfp,
+        uxBus: uxBus
+    })
+
+    let container = Array.from(domUtil.$$(".topic-assets")).filter(el=>el.getAttribute("pkfp") === topicPkfp)[0]
+
+    if(!container) {
+        console.warn("Topic asset not found")
+    }
+    domUtil.appendChildren(container, participantEl)
+}
 
 function renderLayout() {
     console.log("Rendering layout")
@@ -1282,4 +1304,14 @@ function setEventListeners(uxBus, context){
     uxBus.on(TopicEvents.INVITE_CREATED, addNewInvite.bind(null, uxBus))
 
     uxBus.on(VaultEvents.TOPIC_DELETED, context.topicDeleted.bind(context))
+    uxBus.on(Common.UXMessage.TOPIC_JOIN_SUCCESS, (data)=>{
+        console.log("Topic join success adding to UX");
+        addNewTopicToUX(uxBus, data.topic)
+    })
+
+    uxBus.on(TopicEvents.NEW_PARTICIPANT_JOINED, data=>{
+        console.log("NEW PARTICIPANT JOINED PROCESSING UX");
+        addNewParticipantToUX(uxBus, data.topicPkfp, data.pkfp)
+
+    })
 }

@@ -10,8 +10,8 @@ import { assert } from "../../../../common/IError";
 import { XHR } from "./xhr"
 import * as semver from "semver";
 import { fetchJSON } from "./FetchJSON";
-import { ChatUtility } from "./ChatUtility";
-import { UXMessage } from "../ui/Common"
+import { UXMessage } from "../ui/Common";
+import { TopicJoinAgent } from "./TopicJoinAgent";
 
 /**
  * Represents key vault
@@ -179,6 +179,22 @@ export class Vault{
 
     fetchVault(){
         fetchJSON("/vault", this.stateMachine);
+    }
+
+    initiateTopicJoin(data){
+
+        const { nickname, topicName, inviteCode } = data
+
+        let arrivalHub = this.arrivalHub;
+        let connector = this.connector;
+        let topicJoinAgent = new TopicJoinAgent(nickname, topicName, inviteCode, this.uxBus, arrivalHub, connector, this);
+
+        topicJoinAgent.on(Internal.JOIN_TOPIC_SUCCESS, (data)=>{
+            // data is object: { pkfp: pkfp, nickname: nickname }
+            console.log("Topic join successful");
+        })
+        topicJoinAgent.on(Internal.JOIN_TOPIC_FAIL, ()=>{ console.log("Join topic fail received from the agent")})
+        topicJoinAgent.start()
     }
 
 
@@ -404,9 +420,16 @@ export class Vault{
         uxBus.on(UXMessage.DELETE_TOPIC, pkfp=>{
             this.deleteTopic(pkfp);
         })
-
+        uxBus.on(UXMessage.TOPIC_JOIN_REQUEST, this.initiateTopicJoin.bind(this))
         this.arrivalHub.on(this.id, (msg)=>{
             this.processIncomingMessage(msg, this);
+        })
+
+        uxBus.on(UXMessage.TOPIC_JOIN_SUCCESS, (data)=>{
+            let { topic, pkfp, nickname } = data
+            console.log("Adding topic to vault");
+
+            this.registerTopic(topic)
         })
 
         ////////////////////////////////////////////////////////

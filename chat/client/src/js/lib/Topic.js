@@ -240,6 +240,7 @@ export class Topic{
 
     //Called when newly issued metadata arrived
     updateMetadata(metadata){
+        console.log("METADATA UPDATE RECEIVED!!!!");
         if(typeof metadata === "string"){
             metadata = JSON.parse(metadata);
         }
@@ -384,15 +385,35 @@ export class Topic{
             self.processSettingsUpdated(self, msg);
         }
 
+        // THIS REQUIRES REFACTORING
         this.handlers[Internal.METADATA_ISSUE] = (msg) =>{
             console.log(`Metadata issue received. Event: ${msg.headers.event}`)
+            console.dir(msg)
             assert(Message.verifyMessage(self._metadata.getTAPublicKey(), msg), "TA signature is invalid")
             console.log("Signature verified. Loading metadata...");
             self._metadata.updateMetadata(msg.body.metadata);
+
+            // If consumed invite in the message and this toipc has it - delete it
             if(msg.body.invite && this._metadata.hasInvite(msg.body.invite)){
                 //Invite was used by new member:
                 this._metadata.deleteInvite(msg.body.invite);
+
+                //Notify anyone interested
+                self.uxBus.emit(TopicEvents.INVITE_CONSUMED, {
+                    pkfp: this.pkfp,
+                    userInvites: Object.keys(this.invites)
+                })
             }
+
+            if(msg.headers.event === Events.NEW_MEMBER_JOINED){
+
+                self.uxBus.emit(TopicEvents.NEW_PARTICIPANT_JOINED, {
+                    topicPkfp: this.pkfp,
+                    pkfp: msg.body.pkfp,
+                    nickname: msg.body.nickname
+                })
+            }
+
             if (msg.body.inviteePkfp){
                 self.nicknameChangeNotify(msg.body.inviteePkfp)
             }
@@ -1185,5 +1206,8 @@ export const TopicEvents = {
     MESSAGES_LOADED: Symbol("messages_loaded"),
     NEW_CHAT_MESSAGE: Symbol("new_chat_message"),
     INVITE_CREATED: Symbol("invite_created"),
-    INVITE_DELETED: Symbol("invite_deleted")
+    INVITE_DELETED: Symbol("invite_deleted"),
+    NEW_PARTICIPANT_JOINED: Symbol("new_participant"),
+    PARTICIPANT_EXCLUDED: Symbol("participant_booted"),
+    INVITE_CONSUMED: Symbol("invite_consumed")
 }

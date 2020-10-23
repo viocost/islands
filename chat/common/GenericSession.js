@@ -126,6 +126,10 @@ class GenericSession extends Session {
         return this._sm.state === "awatingReconnection"
     }
 
+    isActive(){
+        return !this.isPaused();
+    }
+
 
     _preprocessIncoming(message) {
         return this._incomingMessagePreprocessors.reduce((acc, f) => f(acc), message)

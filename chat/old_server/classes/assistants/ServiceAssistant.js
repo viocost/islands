@@ -76,7 +76,11 @@ class ServiceAssistant{
         let session = self.sessionManager.getSession(message.headers.pkfpDest);
         if (session){
             //this sends the new metadata to first connected client in the session
+            console.log("SENDING NEW METADATA TO CLIENT!!!!!!!!!!!!!!");
+            console.dir(session)
             session.send(message)
+        } else {
+            console.log("No session found on metadata issue, ignoring...");
         }
         await self.registerMetadataUpdate(message, message.headers.pkfpDest);
     }

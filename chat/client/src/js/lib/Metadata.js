@@ -32,7 +32,7 @@ export class Metadata{
 
         res.body = parsed.body;
         res.signature = parsed.signature;
-        if (parsed.body.settings){
+        if (parsed.body.settings && typeof parsed.body.settings === "string"){
             assert(privateKey, "No Private key to decrypt settings")
             res.body.settings = res.decryptSettings(parsed.body.settings, privateKey);
         } else {

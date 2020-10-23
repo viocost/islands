@@ -4,10 +4,10 @@ import { WildEmitter } from "./WildEmitter";
 import { Topic } from "./Topic";
 import { Events, Internal } from "../../../../common/Events";
 import { ChatUtility } from "./ChatUtility";
-
+import { UXMessage } from "../ui/Common"
 export class TopicJoinAgent{
 
-    constructor(nickname, topicName, inviteString, arrivalHub, connector, vault){
+    constructor(nickname, topicName, inviteString, bus, arrivalHub, connector, vault){
         WildEmitter.mixin(this);
         this.nickname = nickname;
         this.topicName = topicName;
@@ -18,6 +18,7 @@ export class TopicJoinAgent{
         this.version = vault.version
         this.pkfp = null
         this.publicKey = null
+        this.bus = bus
         this.privateKey = null
         this.inviterResidence = null
         this.inviterPkfp = null
@@ -130,6 +131,7 @@ export class TopicJoinAgent{
     }
 
     onJoinTopicSuccess(self, msg){
+        console.log(`TOPIC JOIN AGENT SUCCESS JOIN. Name ${self.topicName}`);
         let topic = new Topic(self.pkfp, self.topicName, self.privateKey);
         if (!msg.body.metadata){
             console.log("Error. No metadata.");
@@ -137,16 +139,19 @@ export class TopicJoinAgent{
 
         let metadata = msg.body.metadata;
         topic.loadMetadata(metadata);
-        topic.bootstrap(self.connector, self.arrivalHub, self.uxBus, self.version)
+        topic.bootstrap(self.connector, self.arrivalHub, self.bus, self.version)
         console.log(`Preparing settings with nickname ${self.nickname}`);
         topic.setParticipantNickname(self.nickname, self.pkfp);
-        self.vault.registerTopic(topic);
+
+
         topic.exchangeNicknames();
 
-        self.emit(Internal.JOIN_TOPIC_SUCCESS, {
+        self.bus.emit(UXMessage.TOPIC_JOIN_SUCCESS, {
+            topic: topic,
             pkfp: self.pkfp,
             nickname: self.nickname
         })
+
     }
 
     onJoinTopicFail(self, msg){

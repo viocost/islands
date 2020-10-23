@@ -630,6 +630,7 @@ export function bakeMainContainer(){
 
 export function bakeTopicListItem(topic, uxBus){
 
+    console.log(`Baking topic ${topic.name}`);
     const plus = svgAsDOM(SVG.plusLight);
     const minus = svgAsDOM(SVG.minusLight);
 
@@ -736,11 +737,16 @@ export function bakeParticipantListItem(data){
     let { nickname, participantPkfp, topicPkfp, alias, uxBus } = data;
     let iconClasses = ["side-panel-icon"]
 
+
     // This participant is self
     let isSelf = participantPkfp === topicPkfp
     if(isSelf){
         iconClasses.push("side-panel-icon-green");
     }
+
+    //Calculating actual alias and nickname that going to use
+    let theAlias = isSelf ? "(me)" : alias ? alias : `${participantPkfp.substring(0, 8)}`
+    let theNickname = nickname ? nickname : "Unknown"
 
     let participantIcon = svgAsDOM(SVG.participantSVG)
     for(let cls of iconClasses) util.addClass(participantIcon, cls);
@@ -769,7 +775,7 @@ export function bakeParticipantListItem(data){
                 children: [
 
                     util.bake("span", {
-                        text: isSelf ? "(me)" : alias ? alias : `${pkfp.substring(0, 8)}`
+                        text: theAlias
                     }),
 
                     util.bake("span", {
@@ -777,7 +783,7 @@ export function bakeParticipantListItem(data){
                     }),
 
                     util.bake("span", {
-                        text: nickname
+                        text: theNickname
                     }),
                 ]
             })
@@ -797,7 +803,7 @@ export function bakeTopicAssets(topic, uxBus){
     for(let pkfp in topic.participants){
         let participantItem = bakeParticipantListItem({
             nickname: topic.getParticipantNickname(pkfp),
-            alias: topic.getParticipantAlias(pkfp),
+            alias: topic.getParticipantAlias(pkfp) ,
             participantPkfp: pkfp,
             topicPkfp: topic.pkfp,
             uxBus: uxBus

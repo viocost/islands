@@ -35,8 +35,11 @@ class ClientSessionAdapter{
 
 
     send(message, connectionId){
-        let session = this.sessions[connectionId]
+        console.log("CLIENT SESSION ADAPTER SEND CALLED");
+        let session = this._getSession(connectionId)
+        console.dir(this.sessions)
         if(session){
+
             session.send(message)
         } else {
             Logger.warn(`Attempt to send message to non-existant session`, {cat: "session"})
@@ -119,6 +122,26 @@ class ClientSessionAdapter{
         for(let topicId of topicIds){
             this.addTopic(topicId)
         }
+    }
+
+    _getSession(connectionId){
+        console.log("getSession called");
+        if(connectionId){
+            console.log("No connection id passed");
+            return this.sessions[connectionId];
+        }
+
+        for(connId in this.sessions){
+            if ( this.sessions[connId].isActive() ){
+                console.log(`Found active session ${connId}`);
+                console.log(`Sessions`);
+                console.dir(Object.keys(this.sessions))
+
+                return this.sessions[connId];
+            }
+        }
+
+
     }
 }
 

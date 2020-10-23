@@ -292,6 +292,7 @@ export class Context{
 
     subscribeToBusEvents(bus){
         bus.on(TopicEvents.INVITE_DELETED, this.inviteDeleted.bind(this))
+        bus.on(TopicEvents.INVITE_CONSUMED, this.inviteDeleted.bind(this))
     }
 
     prepareTopicSelectedSM(){

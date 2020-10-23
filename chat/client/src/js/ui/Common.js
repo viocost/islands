@@ -154,8 +154,11 @@ export const UXMessage = {
     BUTTON_CLICK: Symbol("btn_click"),
     BUTTON_DBL_CLICK: Symbol("btndbl_click"),
     CREATE_TOPIC_REQUEST: Symbol("create_topic_request"),
+
     TOPIC_JOIN_REQUEST: Symbol("topic_join_request"),
+    TOPIC_JOIN_SUCCESS: Symbol("topic_join_success"),
     TOPIC_LOADED: Symbol("topic_loaded"),
+
 
     // Main menu click message
     MAIN_MENU_CLICK: Symbol("main_menu_click"),
