@@ -717,7 +717,7 @@ export function bakeInviteListItem(uxBus, topicPkfp, inviteCode, alias=""){
 
             util.bake("div", {
                 class: "invite-label",
-                html: `Invite ${alias ? alias : inviteCode.substring(117, 147)}`
+                html: `Invite ${alias ? alias : inviteCode.substring(127, 147)}`
             })
 
         ],

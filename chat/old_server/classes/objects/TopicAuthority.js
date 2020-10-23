@@ -89,7 +89,7 @@ class TopicAuthority extends EventEmitter{
         let response = Message.makeResponse(request, this.pkfp, Internal.DELETE_INVITE_SUCCESS)
 
         let rawData = JSON.stringify({
-            userInvites: remainingInvites
+            userInvites: remainingInvites,
         })
         let cipher = Util.encryptStandardMessage(rawData, pubKey);
         response.setAttribute("data", cipher);

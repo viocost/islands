@@ -44,8 +44,7 @@ export function resetUnreadCounter(pkfp, uxTopics) {
 }
 
 
-export function copyInviteCodeToClipboard(data){
-    let { inviteCode } = data
+export function copyInviteCodeToClipboard(inviteCode){
     let textArea = document.createElement("textarea");
     textArea.value = inviteCode;
     document.body.appendChild(textArea);
@@ -192,5 +191,6 @@ export const UXMessage = {
     INVITE_REQUEST: Symbol("invite_request"),
     INVITE_CREATED: Symbol("invite_created"),
 
-    DELETE_TOPIC: Symbol("delete_topic")
+    DELETE_TOPIC: Symbol("delete_topic"),
+    DELETE_INVITE: Symbol('delete_invite')
 }

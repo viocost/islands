@@ -223,7 +223,9 @@ export class Topic{
         handlers[UXMessage.INVITE_REQUEST] = this.requestInvite.bind(this)
         handlers[UXMessage.GET_LAST_MESSAGES] = this.processGetMessagesRequest.bind(this) ,
         handlers[UXMessage.SEND_CHAT_MESSAGE] = this.sendChatMessage.bind(this)
+        handlers[UXMessage.DELETE_INVITE] = this.deleteInvite.bind(this)
         handlers[VaultEvents.TOPIC_DELETED] = this.processTopicDeleted.bind(this)
+
 
         if(pkg.message in handlers){
             handlers[pkg.message](pkg)
@@ -374,8 +376,7 @@ export class Topic{
 
         this.handlers[Internal.DELETE_INVITE_SUCCESS] = (msg)=>{
             console.log("Invite deleted event");
-            self.processInvitesUpdated(self, msg);
-            self.emit(Internal.DELETE_INVITE_SUCCESS)
+            self.processInviteDeleted(self, msg);
         }
 
         this.handlers[Internal.SETTINGS_UPDATED] = (msg)=>{
@@ -758,7 +759,8 @@ export class Topic{
     }
 
 
-    deleteInvite(inviteCode){
+    deleteInvite(data){
+        let { inviteCode } = data;
         console.log("About to delete invite: " + inviteCode);
         assert(this._metadata.hasInvite(inviteCode), `Invite does not exists: ${inviteCode}`)
         let request = new Message(this.version);
@@ -1014,7 +1016,7 @@ export class Topic{
     // }                                                                                                           //
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    //TODO Cleanup or implememnt
+    //TODO  REFACTOR!!! Cleanup or implememnt
 
     processInvitesUpdated(self, msg){
         assert(Message.verifyMessage(self._metadata.getTAPublicKey(), msg), "TA signature is invalid")
@@ -1028,6 +1030,19 @@ export class Topic{
         self._metadata.updateInvites(data.userInvites);
         self.saveClientSettings();
         return data.inviteCode;
+    }
+
+
+    processInviteDeleted(self, msg){
+        assert(Message.verifyMessage(self._metadata.getTAPublicKey(), msg), "TA signature is invalid")
+        let data = JSON.parse(ChatUtility.decryptStandardMessage(msg.body.data, self.privateKey))
+        console.log(`Invites data has been decrypted successfully.`);
+        self._metadata.updateInvites(data.userInvites);
+        self.saveClientSettings();
+        self.uxBus.emit(TopicEvents.INVITE_DELETED, {
+            pkfp: this.pkfp,
+            userInvites: data.userInvites
+        })
     }
 
     getParticipantAlias(pkfp){
@@ -1169,5 +1184,6 @@ export class Topic{
 export const TopicEvents = {
     MESSAGES_LOADED: Symbol("messages_loaded"),
     NEW_CHAT_MESSAGE: Symbol("new_chat_message"),
-    INVITE_CREATED: Symbol("invite_created")
+    INVITE_CREATED: Symbol("invite_created"),
+    INVITE_DELETED: Symbol("invite_deleted")
 }

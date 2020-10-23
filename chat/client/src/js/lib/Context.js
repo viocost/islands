@@ -4,7 +4,7 @@ import * as Common from "../ui/Common"
 import { StateMachine } from "../../../../common/AdvStateMachine"
 import { AssetActivator } from "../ui/AssetActivator";
 import * as Scroll from "../ui/Scroll"
-
+import { TopicEvents } from "./Topic"
 
  /**
  * On side panel there are currently 3 types of objects that
@@ -27,7 +27,10 @@ export class Context{
         this.bus = bus;
         this._topicSelectedSm = this.prepareTopicSelectedSM()
         this._sm = this.prepareMainStateMachine()
+        this.subscribeToBusEvents(bus)
     }
+
+
 
     expandTopic(uxBus, uxTopics, pkfp){
         this._sm.handle.selectTopic(uxBus, uxTopics, pkfp);
@@ -60,7 +63,13 @@ export class Context{
         }
     }
 
-    selectInvite(data){
+    selectInvite(uxBus, uxTopics, data){
+
+        let { pkfp } = data;
+
+        if(pkfp !== this.selectedTopic){
+            this._sm.handle.selectTopic(uxBus, uxTopics, pkfp)
+        }
         //second argument specifies whether to copy or not the invite code
         this._topicSelectedSm.handle.inviteSelected(data, false)
 
@@ -68,13 +77,22 @@ export class Context{
 
     doubleSelectInvite(args){
         console.log("Processing invite double click");
-        let data = args[0]
 
+        if(this.selectedInvite){
+
+            Common.copyInviteCodeToClipboard(this.selectedInvite.inviteCode)
+
+        }
         //second argument specifies whether to copy or not the invite code
-        this._topicSelectedSm.handle.inviteSelected(data, true)
+        //this._topicSelectedSm.handle.inviteSelected(data, true)
     }
 
-    selectParticipant(data){
+    selectParticipant(uxBus, uxTopics, data){
+
+        let { topicPkfp } = data;
+        if(topicPkfp !== this.selectedTopic){
+            this._sm.handle.selectTopic(uxBus, uxTopics, topicPkfp)
+        }
         console.log("Selecting participant")
         this._topicSelectedSm.handle.participantSelected(data)
 
@@ -94,6 +112,22 @@ export class Context{
         }
     }
 
+    inviteDeleted(data){
+
+        let { pkfp, userInvites } = data
+
+        userInvites = new Set(userInvites)
+        if(!(userInvites.has(this.selectedInvite.inviteCode)) && pkfp === this.selectedTopic){
+            this._topicSelectedSm.handle.deselect()
+        }
+
+        let inviteEls = Array.from(domUtil.$$(".invite-list-item")).filter(el=>el.getAttribute("pkfp") === pkfp && !userInvites.has(el.getAttribute("code")))
+
+        for(let el of inviteEls){
+            domUtil.remove(el);
+        }
+    }
+
     //SM Handlers
     _selectInvite(args){
         console.log("Processing invite select");
@@ -108,16 +142,9 @@ export class Context{
 
         //If second argument is true - copying invite to clipboard
         //if(args[1])
-        Common.copyInviteCodeToClipboard(args[0])
+        //    Common.copyInviteCodeToClipboard(args[0])
     }
 
-
-
-    _deselectAssets(){
-        this.selectedInvite = undefined;
-        let activator = new AssetActivator()
-        activator.deactivate()
-    }
 
 
     _selectParticipant(args){
@@ -137,6 +164,7 @@ export class Context{
         this.selectedInvite = undefined;
         let activator = new AssetActivator()
         activator.deactivate()
+        Common.displayTopicContextButtons("topic")
     }
 
     //args: uxBus, uxTopics, pkfp
@@ -174,8 +202,18 @@ export class Context{
     }
 
     _deleteInvite(){
-
+        let { pkfp, inviteCode  }  = this.selectedInvite;
+        this.selectedInvite = { pkfp: pkfp, inviteCode: inviteCode }
+        if(confirm(`Delete invite ${inviteCode}`)){
+            this.bus.emit(pkfp, {
+                message: Common.UXMessage.DELETE_INVITE,
+                inviteCode: inviteCode
+            })
+        } else {
+            toastr.info("Invite deletion cancelled")
+        }
     }
+
 
     _deleteTopic(){
 
@@ -252,6 +290,10 @@ export class Context{
         }, {msgNotExistMode: StateMachine.Warn})
     }
 
+    subscribeToBusEvents(bus){
+        bus.on(TopicEvents.INVITE_DELETED, this.inviteDeleted.bind(this))
+    }
+
     prepareTopicSelectedSM(){
         return new StateMachine(this, {
             name: "Topic selected substate SM",
@@ -284,7 +326,7 @@ export class Context{
                         },
 
                         inviteSelected: {
-                            actinos: this._selectInvite.bind(this)
+                            actions: this._selectInvite.bind(this)
 
                         },
 
@@ -393,4 +435,5 @@ function activateTopic(uxBus, uxTopics, pkfp){
             message: Common.UXMessage.GET_LAST_MESSAGES
         })
     }
+
 }

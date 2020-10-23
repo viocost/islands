@@ -1254,11 +1254,11 @@ function setEventListeners(uxBus, context){
     uxBus.on(Common.UXMessage.MAIN_MENU_CLICK, handleMainMenuClick);
 
     //Invite code click events
-    uxBus.on(Common.UXMessage.INVITE_DBLCLICK, context.doubleSelectInvite.bind(context));
-    uxBus.on(Common.UXMessage.INVITE_CLICK, context.selectInvite.bind(context));
+    uxBus.on(Common.UXMessage.INVITE_DBLCLICK, context.doubleSelectInvite.bind(context, uxBus, uxTopics));
+    uxBus.on(Common.UXMessage.INVITE_CLICK, context.selectInvite.bind(context, uxBus, uxTopics));
 
     //emitet at chatuifactory.js
-    uxBus.on(Common.UXMessage.PARTICIPANT_CLICK, context.selectParticipant.bind(context));
+    uxBus.on(Common.UXMessage.PARTICIPANT_CLICK, context.selectParticipant.bind(context, uxBus, uxTopics));
 
     //Attachment handlers
     uxBus.on(Common.UXMessage.ATTACH_FILE_ICON_CLICK, selectFileAttachment);

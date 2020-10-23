@@ -170,9 +170,11 @@ export function removeAllChildren(element){
  * give element removes it from DOM
  *
  */
-export function remove(element){
-    let el = verifyGetElement(element)
-    el.parentNode.removeChild(el);
+export function remove(element, strict = false){
+    let el = verifyGetElement(element, strict)
+    if(el){
+        el.parentNode.removeChild(el);
+    }
 }
 
 
@@ -333,12 +335,12 @@ export function generateRandomId(length = 10, prefix="", postfix=""){
  * Helper function. Given either DOM element or selector
  * makes sure it exists and valid, and returns it.
  */
-function verifyGetElement(element){
+function verifyGetElement(element, strict = true){
     let node = element
     if (typeof node === "string"){
         node = document.querySelector(element);
     }
-    if (!node){
+    if (!node && strict){
         throw new Error(`Element ${element} is undefined`);
     } else if(!(node instanceof Element) && (!(node instanceof Text))){
         throw new Error("Type of element is invalid");
