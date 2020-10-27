@@ -4,9 +4,9 @@
 import * as domUtil from "../lib/dom-util";
 import toastr from "../lib/toastr";
 import * as UI from "../lib/ChatUIFactory";
+import { IError as Err, assert } from "../../../../common/IError"
 
 export const INITIAL_MESSAGES_LOAD = 30
-
 
 export function setUnreadMessagesIndicator(pkfp, num) {
     console.log("Setting unread messages indicator");
@@ -41,6 +41,80 @@ export function resetUnreadCounter(pkfp, uxTopics) {
     console.log("Resetting unread messages counter");
     uxTopics[pkfp].unreadMessagesCount = 0
     setUnreadMessagesIndicator(pkfp, uxTopics[pkfp].unreadMessagesCount)
+}
+
+
+export function formatInviteAlias(inviteCode, alias=""){
+    try{
+
+        assert(typeof inviteCode === "string" &&  typeof alias === "string", "Invalid argument type")
+        alias = alias.trim();
+        assert(inviteCode.length > 0, "Invite length is invalid")
+        let res = alias.length === 0 ? `Invite: ${inviteCode.substring(127, 136)}`: `Invite: ${alias}`
+        return res.substring(0, 16)
+    }catch(err){
+        console.log("Unable to format alias");
+        return ""
+    }
+}
+
+export function formatParticipantAlias(topicPkfp,
+                                       participantPkfp,
+                                       alias=""){
+    try{
+
+        assert(typeof topicPkfp === "string" && typeof participantPkfp === "string" && typeof alias === "string", "Invalid argument type")
+        let isSelf = topicPkfp === participantPkfp;
+        alias = alias.trim();
+        let res =  isSelf ? "(me)" : alias ? alias : `${participantPkfp.substring(0, 8)}`
+        return res.substring(0, 16)
+    }catch{
+        console.log("Unable to format alias");
+        return ""
+    }
+}
+
+export function formatParticipantNickname(nickname=""){
+    if(typeof nickname !== "string"){
+        return "NICKNAME TYPE INVALID"
+    }
+
+    nickname = nickname.trim()
+    let res = nickname.length > 0 ? nickname : "Unknown"
+    return res.substring(0, 16)
+}
+
+export function setInviteAlias(inviteCode, alias){
+    try{
+        let inviteEl = domUtil.$(`.invite-list-item[code="${inviteCode}"]`)
+        domUtil.$(".invite-label", inviteEl).innerText = formatInviteAlias(inviteCode, alias)
+    }catch(err){
+        console.log("Unable to set invite alias");
+    }
+}
+
+
+export function setParticipantAlias(topicPkfp, participantPkfp, alias){
+    let participantElement = domUtil.$(`.participant-list-item[participantpkfp="${participantPkfp}"]`)
+    let aliasElement = domUtil.$(".p-alias", participantElement)
+    let messagesPanel = domUtil.$(`.messages-panel-container[pkfp="${topicPkfp}"]`)
+    let formatedAlias = formatParticipantAlias(topicPkfp, participantPkfp, alias);
+    aliasElement.innerText = formatedAlias
+
+    let messages = Array.from(domUtil.$$(".message", messagesPanel)).filter(msg=>domUtil.$(".m-author-id", msg).innerText === participantPkfp)
+    for (let message of messages){
+        let aliasEl = domUtil.$(".m-alias", message);
+        if(aliasEl){
+            aliasEl.innerText = formatedAlias
+        }
+    }
+}
+
+
+export function setParticipantNickname(topicPkfp, participantPkfp, nickname){
+    let participantElement = domUtil.$(`.participant-list-item[participantpkfp="${participantPkfp}"]`)
+    let aliasElement = domUtil.$(".p-nickname", participantElement)
+    aliasElement.innerText = formatParticipantNickname(nickname);
 }
 
 
@@ -195,5 +269,11 @@ export const UXMessage = {
     INVITE_CREATED: Symbol("invite_created"),
 
     DELETE_TOPIC: Symbol("delete_topic"),
-    DELETE_INVITE: Symbol('delete_invite')
+    DELETE_INVITE: Symbol('delete_invite'),
+
+    RENAME_TOPIC: Symbol("rename_topic"),
+    SET_PARTICIPANT_ALIAS: Symbol("set_participant_alias"),
+    CHANGE_MY_NICKNAME: Symbol("change_my_nickname"),
+    SET_INVITE_ALIAS: Symbol("set_invite_alias"),
+    BOOT_PARTICIPANT: Symbol("boot_participant")
 }

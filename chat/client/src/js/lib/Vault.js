@@ -244,8 +244,12 @@ export class Vault{
         }
 
         this.handlers[Events.VAULT_UPDATED] = () =>{
+            //This callback called every time when topic renames,
+            //So, here I need to check if any topic names are changed, and change them in UX
             console.log("Vault updated in vault");
-            self.emit(Events.VAULT_UPDATED);
+            this.uxBus.emit(VaultEvents.VAULT_UPDATED, {
+                topics: Object.values(this.topics)
+            })
 
         }
 
@@ -430,6 +434,11 @@ export class Vault{
             console.log("Adding topic to vault");
 
             this.registerTopic(topic)
+        })
+
+        uxBus.on(UXMessage.RENAME_TOPIC, data=>{
+            console.log("Renaming topic in vault");
+            this.renameTopic(data.pkfp, data.name)
         })
 
         ////////////////////////////////////////////////////////
@@ -679,7 +688,8 @@ export class VaultFactory{
 
 
 export const VaultEvents = {
-    TOPIC_DELETED: Symbol("topic_deleted")
+    TOPIC_DELETED: Symbol("topic_deleted"),
+    VAULT_UPDATED: Symbol("vault_updated")
 }
 
 // a = {

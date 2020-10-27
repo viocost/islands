@@ -99,7 +99,8 @@ export class RequestForMessages{
             let response = {
                 pkfp: this.topic.pkfp,
                 messages: messages,
-                before: this.lastId
+                before: this.lastId,
+                topic: this.topic
             }
 
             writer.output(response)

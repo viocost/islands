@@ -12,6 +12,7 @@ import { BootParticipantAgent } from "./lib/BootParticipantAgent";
 import { register } from "./lib/Registration";
 import * as UX from "./ui/UX"
 import { UXMessage } from "./ui/Common"
+import * as Common from "./ui/Common"
 
 
 document.addEventListener('DOMContentLoaded', event => {
@@ -118,6 +119,28 @@ function initSession(loginAgent, uxBus, data) {
 function enableDebug(uxBus){
     console.log("Enabling debug mode!");
     window.uxBus = uxBus
+    window.Common = Common;
+    window.sendNMessages = function(topic, n=10){
+
+        let i=0;
+
+        function _sendMsg(){
+            console.log(`Sending message ${i}`);
+            uxBus.emit(topic, {
+                pkfp: topic,
+                message: Common.UXMessage.SEND_CHAT_MESSAGE,
+                chatMessage: `TEST MESSAGE ${i}`
+            })
+
+            if(i<n){
+                i++;
+                setTimeout(_sendMsg, 50)
+            }
+        }
+
+        _sendMsg()
+
+    }
 
     window.createTopic = function(nickname, topicName){
 

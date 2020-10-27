@@ -15,7 +15,7 @@ import { StateMachine } from "../../../../common/AdvStateMachine"
 import { RequestForMessagesFactory } from "./RequestForMessages";
 import { SendMessageAgent } from "./SendMessageAgent"
 import { VaultEvents } from "./Vault"
-
+import { BootParticipantAgent, BootParticipatAgent } from "./BootParticipantAgent"
 
 const INITIAL_NUM_MESSAGES = 25
 
@@ -175,7 +175,7 @@ export class Topic{
                     final: true
                 }
             }
-        })
+        }, { msgNotExistMode: StateMachine.Warn })
     }
 
     static prepareNewTopicSettings(version, nickname, topicName, publicKey, encrypt = true){
@@ -225,6 +225,14 @@ export class Topic{
         handlers[UXMessage.SEND_CHAT_MESSAGE] = this.sendChatMessage.bind(this)
         handlers[UXMessage.DELETE_INVITE] = this.deleteInvite.bind(this)
         handlers[VaultEvents.TOPIC_DELETED] = this.processTopicDeleted.bind(this)
+        handlers[UXMessage.SET_INVITE_ALIAS] = this.setInviteAlias.bind(this)
+        handlers[UXMessage.SET_PARTICIPANT_ALIAS] = this.setParticipantAlias.bind(this)
+        handlers[UXMessage.BOOT_PARTICIPANT] = this.bootParticipant.bind(this)
+
+        handlers[UXMessage.CHANGE_MY_NICKNAME] = (data)=>{
+            let { nickname } = data;
+            this.setParticipantNickname.call(this, nickname, this.pkfp )
+        }
 
 
         if(pkg.message in handlers){
@@ -255,6 +263,12 @@ export class Topic{
         this.topicAuthority = metadata.body.topicAuthority;
         this.updateParticipants();
         this.saveClientSettings();
+    }
+
+    bootParticipant(data){
+        let { pkfp } = data;
+        let agent  = new BootParticipantAgent(this, pkfp, this.connector)
+        agent.boot()
     }
 
     loadMetadata(metadata){
@@ -657,6 +671,7 @@ export class Topic{
 
         let messages = data.messages;
         let result = [];
+        console.log(`Messages loaded: ${messages.length}`);
         for (let i=0; i<messages.length; ++i){
             let message = new ChatMessage(messages[i]);
             if(message.header.service){
@@ -687,7 +702,11 @@ export class Topic{
         this.allMessagesLoaded = data.allLoaded;
 
         if(this.allMessagesLoaded){
+            console.log(`ALL MESSAGES LOADED! `);
             this._messageFetcherSM.handle.allLoaded()
+        } else {
+            this._messageFetcherSM.handle.fulfilled()
+
         }
 
         this.awaitingMessages = false;
@@ -760,8 +779,10 @@ export class Topic{
 
     }
 
-    setInviteAlias(code, alias){
-        this._metadata.setInviteAlias(code, alias)
+    setInviteAlias(data){
+        let { inviteCode, alias } = data
+        console.log(`Setting alias for an invite: ${inviteCode}, ${alias}`);
+        this._metadata.setInviteAlias(inviteCode, alias)
         this.saveClientSettings();
     }
 
@@ -848,7 +869,6 @@ export class Topic{
     }
 
     setParticipantNickname(nickname, pkfp){
-
         this._metadata.setParticipantNickname(nickname, pkfp);
         this.saveClientSettings();
         if (pkfp === this.pkfp){
@@ -857,7 +877,8 @@ export class Topic{
 
     }
 
-    setParticipantAlias(alias, pkfp){
+    setParticipantAlias(data){
+        let { alias, pkfp } = data
         this._metadata.setParticipantAlias(alias, pkfp)
         this.saveClientSettings();
     }
@@ -993,11 +1014,10 @@ export class Topic{
             this._metadata.updateMetadata(metadata)
         }
 
-
         self._metadata.updateSettings(settingsPlain);
         self.updateParticipants();
+        this.uxBus.emit(TopicEvents.SETTINGS_UPDATED, this)
         console.log("Settings updated successfully!");
-        self.emit(Events.SETTINGS_UPDATED);
     }
 
     //Notification on alias change. Disable for now
@@ -1176,24 +1196,31 @@ export class Topic{
     //Determins whether it is needed to fetch more chat messages
     // from the island
     isMoreMessagesNeeded(lastRequestedHowMany, lastRequestedId ){
+        console.log("CHECKING IF MORE MESSAGES NEEDED");
 
         //if all messages are already loaded, then the answer is no
-        if (this.areAllMessagesLoaded())
+        if (this.areAllMessagesLoaded()){
+            console.log("ALL LOADED not needed");
             return false;
+
+        }
 
         //otherwise we take last requested result and making sure we have
         // at least twice as many
 
         let index = 0
         if(lastRequestedId){
-            let lastMessage = this.messages.find(message.header.id === lastRequestedId)
+            let lastMessage = this.messages.find(message=>message.header.id === lastRequestedId)
             index = this.messages.indexOf(lastMessage);
         }
 
         if(this.messages.slice(index).length >= lastRequestedHowMany * 3){
+
+            console.log("Still have enough messages. ");
             return false
         }
 
+        console.log("NEED TO LOAD MORE MESSAGES");
         return true;
     }
 
@@ -1209,5 +1236,6 @@ export const TopicEvents = {
     INVITE_DELETED: Symbol("invite_deleted"),
     NEW_PARTICIPANT_JOINED: Symbol("new_participant"),
     PARTICIPANT_EXCLUDED: Symbol("participant_booted"),
-    INVITE_CONSUMED: Symbol("invite_consumed")
+    INVITE_CONSUMED: Symbol("invite_consumed"),
+    SETTINGS_UPDATED: Symbol("settings_updated")
 }

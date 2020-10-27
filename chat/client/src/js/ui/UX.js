@@ -135,7 +135,6 @@ function handleLoginSuccess(args) {
     let uxBus = args[0]
     //let vault = vaultHolder.getVault();
 
-    let context = new Context(uxBus)
     updateHeaderOnSuccessfulLogin(settings);
     createChatInterface(uxBus)
 
@@ -183,24 +182,45 @@ function handleLoginSuccess(args) {
         switch (subject.type) {
             case "topic":
                 console.log("Renaming topic")
-                chat.renameTopic(subject.topicPkfp, newAlias)
-                break
+                uxBus.emit(Common.UXMessage.RENAME_TOPIC, {
+                    pkfp: subject.topicPkfp,
+                    name: newAlias
+                })
+       //         chat.renameTopic(subject.topicPkfp, newAlias)
             case "participant":
-                console.log("Renaming participant")
-                if (subject.pkfp === subject.topicPkfp) {
+                if (subject.participantPkfp === subject.topicPkfp) {
                     //change nickname
-                    chat.changeNickname(subject.topicPkfp, newAlias)
+                    console.log("Setting my nickname")
+                    uxBus.emit(subject.topicPkfp, {
+                        message: Common.UXMessage.CHANGE_MY_NICKNAME,
+                        nickname: newAlias,
+                        pkfp: subject.participantPkfp
+                    })
                 } else {
-                    //change alias of another member
-                    chat.setParticipantAlias(subject.topicPkfp, subject.pkfp, newAlias);
+                    console.log("Setting participant alias")
+                    uxBus.emit(subject.topicPkfp, {
+                        message: Common.UXMessage.SET_PARTICIPANT_ALIAS,
+                        alias: newAlias,
+                        pkfp: subject.participantPkfp
+                    })
                 }
                 break
             case "invite":
                 console.log("Renaming invite")
-                chat.setInviteAlias(subject.topicPkfp, subject.code, newAlias);
-                break
+                uxBus.emit(subject.topicPkfp, {
+                    message: Common.UXMessage.SET_INVITE_ALIAS,
+                    inviteCode: subject.inviteCode,
+                    alias: newAlias
+                })
         }
+
         setAliasModal.close();
+    })
+
+    let context = new Context(uxBus, {
+        alias: setAliasModal,
+        topicJoin: topicJoinModal,
+        topicCreate: topicCreateModal
     })
     //hook all buttons to the bus
 
@@ -210,9 +230,6 @@ function handleLoginSuccess(args) {
         })
     })
 
-    domUtil.$$(".messages-panel-container").forEach(container=>{
-        addEventListenersForMessagesWindow(container)
-    })
 
     setEventListeners(uxBus, context)
 
@@ -276,10 +293,15 @@ function handleLoginSuccess(args) {
 }
 
 function addEventListenersForMessagesWindow(container){
-        container.addEventListener("scroll", ()=>{
-            uxBus.emit(Common.UXMessage.CHAT_SCROLL, container.getAttribute("pkfp"))
+        container.addEventListener("scroll", (ev)=>{
+            uxBus.emit(Common.UXMessage.CHAT_SCROLL, {
+                event: ev,
+                pkfp: container.getAttribute("pkfp")
+            })
         })
 }
+
+
 
 function updateHeaderOnSuccessfulLogin(settings, uxBus){
 
@@ -379,6 +401,48 @@ function renderLayout() {
     ///////////////////////////////////////////////
 
 
+}
+
+//Unfortunately, this function is responsible for checking
+// all vault updates, including topic rename, password change...
+//I need to check each topic and update its name in the UX.
+function processVaultUpdated(data){
+    let { topics } = data
+    for(let topic of topics){
+        renameTopicInUX(topic.pkfp, topic.name)
+    }
+}
+
+//The same story here. This function is responsible for
+// updating all participant aliases, invite aliases,
+// and the only way to do it for now is to update them all.
+// There is no knowledge of what exactly has been updated
+function processTopicSettingsUpdated(topic){
+    console.log("Processing topic settings updated");
+    let participants = Object.values(topic.participants);
+    let invites = Object.keys(topic.getInvites());
+    for(let participant of participants){
+        let nickname = participant.nickname;
+        let alias = topic.getParticipantAlias(participant.pkfp)
+        Common.setParticipantAlias(topic.pkfp, participant.pkfp, alias)
+        Common.setParticipantNickname(topic.pkfp, participant.pkfp, nickname)
+    }
+
+    for (let invite of invites){
+        Common.setInviteAlias(invite, topic.getInvites()[invite].name)
+
+    }
+
+}
+
+
+
+
+function renameTopicInUX(pkfp, name){
+    let topicElSide = domUtil.$(`.topic-list-item[pkfp=${pkfp}]`)
+    let messagesPanelEl = domUtil.$(`.messages-panel-container[pkfp=${pkfp}]`)
+    domUtil.$(".topic-name", topicElSide).innerText = name;
+    domUtil.$(".topic-in-focus-label", messagesPanelEl).innerText = `Topic: ${name}`
 }
 
 
@@ -506,6 +570,8 @@ function processNewChatMessage(context, data){
         }
     }
 
+    let willScroll = false;
+
     if (topicInFocus !== topicPkfp) {
         incrementUnreadCounter(topicPkfp)
     }
@@ -517,9 +583,9 @@ function processNewChatMessage(context, data){
     //         message.header.author.substring(0, 8)                   //
     // }                                                               //
     /////////////////////////////////////////////////////////////////////
-    let container = getTopicMessagesContainer(topicInFocus);
+    let container = getTopicMessagesContainer(topicPkfp);
 
-    let willScroll = isScrollingRequired(container);
+    willScroll = isScrollingRequired(container);
 
     console.log("Appending message");
     appendMessageToChat({
@@ -533,7 +599,7 @@ function processNewChatMessage(context, data){
         private: message.header.private,
         recipient: message.header.recipient,
         attachments: message.attachments
-    }, topicInFocus, domUtil.$(".messages-window", container));
+    }, topicPkfp, domUtil.$(".messages-window", container));
 
     if(willScroll){
         Scroll.scrollDown(container)
@@ -582,35 +648,46 @@ function getActiveTopicAsset() {
 }
 
 
-function processChatScroll(uxBus, pkfp, event) {
+//We want request for more messages to fire
+//when user scrolls up and approaches the top
+//
+// We don't want it to fire when user scrolls down
+function processChatScroll(uxBus, data) {
+    let { pkfp, event } = data
     let chatWindow = event.target;
 
     if (!chatWindow.firstChild) return;
 
+    //If last scroll has not been set yet - setting it to current value
+    if(!chatWindow.lastScroll){
+        chatWindow.lastScroll = event.target.scrollTop;
+    }
 
-
-    if (event.target.scrollTop <= 1 && topicInFocus) {
+    //Checking if we are at the top and the scroll direction is up
+    if (event.target.scrollTop <= 5 && event.target.scrollTop < chatWindow.lastScroll) {
         //load more messages
-
+        console.log("loading more messages");
         let data = uxTopics[pkfp];
         uxBus.emit(pkfp, {
             before: data.earliesLoadedMessage,
             howMany: 10,
             message: Common.UXMessage.GET_LAST_MESSAGES
         })
-        console.log("loading more messages");
-        chat.loadMoreMessages(topicInFocus);
     }
+
+    //Setting last scroll to the current element
+    chatWindow.lastScroll = event.target.scrollTop;
 }
 
 
 //This function processes MESSGES_LOADED event
 function processLastMessagesResponse(data){
-    let { pkfp, messages, before } = data;
+    let { pkfp, topic, messages, before } = data;
     let topicUXData = uxTopics[pkfp]
     console.log("PROCESSING LAST MESSAGES LOADED RESPONSE");
 
     let container = getTopicMessagesContainer(pkfp);
+    let messagesWindow = domUtil.$(".messages-window", container)
 
     if(!messages || messages.length === 0) return;
 
@@ -621,16 +698,17 @@ function processLastMessagesResponse(data){
         if(messages.length ===0) return
     }
 
-
+    let willScroll = isScrollingRequired(messagesWindow)
 
     for(let message of messages){
 
         console.log("Appending message");
 
+        let authorAlias = topic.getParticipantAlias(message.header.author)
         topicUXData.messagesLoadedIds.add(message.header.id)
         appendMessageToChat({
             nickname: message.header.nickname,
-            alias: "alias",
+            alias: Common.formatParticipantAlias(topic.pkfp, message.header.author, authorAlias),
             body: message.body,
             timestamp: message.header.timestamp,
             pkfp: message.header.author,
@@ -639,10 +717,14 @@ function processLastMessagesResponse(data){
             private: message.header.private,
             recipient: message.header.recipient,
             attachments: message.attachments
-        }, pkfp, domUtil.$(".messages-window", container), true);
+        }, pkfp, messagesWindow, true);
     }
 
     uxTopics[pkfp].earliesLoadedMessage = messages[messages.length - 1].header.id;
+
+    if(willScroll){
+        Scroll.scrollDown(messagesWindow)
+    }
 
 }
 
@@ -700,6 +782,7 @@ function addNewTopicToUX(uxBus, topic){
     let topicMessageBlock = UI.bakeTopicMessagesBlock(topic.pkfp, topic.name)
     domUtil.appendChildren(messageBlocksContainer, topicMessageBlock)
 
+    addEventListenersForMessagesWindow(topicMessageBlock)
     uxTopics[topic.pkfp] = new TopicUXData()
 }
 
@@ -1314,4 +1397,8 @@ function setEventListeners(uxBus, context){
         addNewParticipantToUX(uxBus, data.topicPkfp, data.pkfp)
 
     })
+
+    uxBus.on(VaultEvents.VAULT_UPDATED, processVaultUpdated)
+    uxBus.on(TopicEvents.SETTINGS_UPDATED, processTopicSettingsUpdated)
+
 }

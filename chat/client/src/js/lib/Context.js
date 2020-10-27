@@ -28,6 +28,7 @@ export class Context{
         this._topicSelectedSm = this.prepareTopicSelectedSM()
         this._sm = this.prepareMainStateMachine()
         this.subscribeToBusEvents(bus)
+        this.modals = modals;
     }
 
 
@@ -46,8 +47,16 @@ export class Context{
         this._sm.handle.invite();
     }
 
-    alias(){
-        this._topicSelectedSm.handle.alias();
+    alias(uxBus, ){
+
+        console.log("Handling alias");
+        //First checking if a participant or an invite is selected and processing alias on them
+        if(this.selectedInvite || this.selectedParticipant){
+            this._topicSelectedSm.handle.alias();
+        } else { //Otherwise user intend to rename topic
+            this._sm.handle.alias()
+
+        }
     }
 
     boot(){
@@ -146,6 +155,67 @@ export class Context{
     }
 
 
+    //alias form preparation
+    _aliasModalTopicMode(args){
+        let topicName = this._getSelectedTopicName();
+
+        let renameData = JSON.stringify({ topicPkfp: this.selectedTopic, type: "topic"})
+        this._prepareAliasModal(`Rename topic ${topicName}`, `Topic id ${this.selectedTopic.substring(0, 8)}...`, "Enter new topic name", renameData)
+        this.modals.alias.open()
+    }
+
+    _aliasModalParticipantMode(args){
+        let participant = Array.from(domUtil.$$(".participant-list-item"))
+                               .filter(el=>el.getAttribute("participantpkfp") === this.selectedParticipant.participantPkfp)[0]
+
+        let topicName = this._getSelectedTopicName()
+        let isMyTopic = this.selectedTopic === this.selectedParticipant.participantPkfp;
+        let participantEl = domUtil.$(".participant-label", participant);
+        let title = isMyTopic ? "Change my nickname:" : `Set alias for ${participantEl.innerText}`
+        let topic = `Topic: ${topicName}(${this.selectedTopic.substring(0, 8)}...)`;
+        let placeholder = isMyTopic ? "Enter new nickname" : "Enter new alias"
+        let renameData = JSON.stringify({
+            type: "participant",
+            topicPkfp: this.selectedTopic,
+            participantPkfp: this.selectedParticipant.participantPkfp
+        })
+        this._prepareAliasModal(title, topic, placeholder, renameData)
+        this.modals.alias.open()
+    }
+
+    _aliasModalInviteMode(args){
+        let title = `Set alias for invite ${this.selectedInvite.inviteCode.substring(128, 136)}...`
+        let placeholder = "New alias"
+
+        let renameData = JSON.stringify({
+            type: "invite",
+            topicPkfp: this.selectedTopic,
+            inviteCode: this.selectedInvite.inviteCode
+        })
+
+        let topicName = this._getSelectedTopicName()
+        let topic = `Topic: ${topicName}(${this.selectedTopic.substring(0, 8)}...)`;
+        this._prepareAliasModal(title, topic, placeholder, renameData)
+        this.modals.alias.open()
+    }
+
+    _getSelectedTopicName(){
+        let topic = Array.from(domUtil.$$(".topic-list-item")).filter(el=>el.getAttribute("pkfp") === this.selectedTopic)[0]
+        let topicName = domUtil.$(".topic-name", topic)
+        return topicName.innerText
+    }
+
+    _prepareAliasModal(title, forLabel, aliasInput, data){
+        let titleEl = domUtil.$("#modal-alias-title")
+        let forLabelEl = domUtil.$("#modal-alias-for-label")
+        let aliasInputEl = domUtil.$("#modal-alias-input")
+        domUtil.text(titleEl,  title);
+        domUtil.text(forLabelEl, forLabel);
+        aliasInputEl.setAttribute("placeholder", aliasInput);
+        aliasInputEl.setAttribute("rename-data", data)
+    }
+
+
 
     _selectParticipant(args){
         console.log("Processing participant select");
@@ -183,6 +253,11 @@ export class Context{
 
 
     _bootParticipant(args){
+        console.log("Booting participant");
+        this.bus.emit(this.selectedTopic, {
+            message: Common.UXMessage.BOOT_PARTICIPANT,
+            pkfp: this.selectedParticipant.participantPkfp
+        })
 
     }
 
@@ -280,6 +355,9 @@ export class Context{
                         currentTopicDeleted: {
                             actions: this._topicDeleted.bind(this),
                             state: "none"
+                        },
+                        alias: {
+                            actions: this._aliasModalTopicMode.bind(this)
                         }
                     } ,
                     substates: topicSelectedSM,
@@ -336,7 +414,7 @@ export class Context{
                         },
 
                         alias: {
-                            actions: this._inviteAlias.bind(this)
+                            actions: this._aliasModalInviteMode.bind(this)
                         },
 
                         delete: {
@@ -369,7 +447,7 @@ export class Context{
                         },
 
                         alias: {
-                            actions: this._participantAlias.bind(this)
+                            actions: this._aliasModalParticipantMode.bind(this)
                         }
 
 

@@ -99,9 +99,8 @@ export class Metadata{
 
         if(this.body.settings.membersData.hasOwnProperty(pkfp)){
             return this.body.settings.membersData[pkfp].alias
-        } else {
-            return "Deleted"
         }
+        return ""
 
 
     }
