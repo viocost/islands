@@ -177,7 +177,11 @@ class ServerSessionFactory {
         }
 
         let secretRecognizer = (msg) => {
-            return cryptoAgent.decrypt(msg) === secret
+            try{
+                return cryptoAgent.decrypt(msg) === secret
+            }catch(err){
+                return false
+            }
         }
 
         let secretHolder = () => {
@@ -215,7 +219,12 @@ class ClientSessionFactory{
         }
 
         let secretRecognizer = (msg) => {
-            return cryptoAgent.decrypt(msg) === secret
+            try{
+                return cryptoAgent.decrypt(msg) === secret
+            }catch(err){
+                //decryption error
+                return false
+            }
         }
 
         let secretHolder = () => {

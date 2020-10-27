@@ -335,8 +335,9 @@ class ConnectorSocketIOFactory{
         this.connectPath = connectPath;
     }
 
+
     make(secret){
-        return new ConnectorSocketIO(this.connectPath, secret, 20, 3000)
+        return new ConnectorSocketIO(this.connectPath, secret, 20, 10000)
     }
 }
 

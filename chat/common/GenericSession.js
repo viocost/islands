@@ -251,6 +251,7 @@ class GenericSession extends Session {
             name: "Generic Session SM",
             stateMap: {
                 active: {
+                    entry: this._processQueue.bind(this),
                     initial: true,
                     transitions: {
 
@@ -294,6 +295,11 @@ class GenericSession extends Session {
 
                 awatingReconnection: {
                     transitions: {
+
+                        outgoingMessage: {
+                            actions: this._processOutgoingMessage.bind(this),
+                        },
+
                         reconnectSuccess: {
                             actions: this._handleReplaceConnector.bind(this),
                             state: "active"
@@ -347,10 +353,16 @@ const MessageTypes = {
     MESSAGE: "message"
 }
 
+const SyncEvents = {
+    PING: "ping",
+    PONG: "pong"
+
+}
 
 module.exports = {
     GenericSession: GenericSession,
     MessageTypes: MessageTypes,
     SessionEvents: SessionEvents,
-    SeqCounter: SeqCounter
+    SeqCounter: SeqCounter,
+    SyncEvents: SyncEvents
 }
