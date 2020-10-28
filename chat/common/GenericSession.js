@@ -343,6 +343,7 @@ const SessionEvents = {
     MESSAGE: Symbol("message"),
     CONNECTION_LOST: Symbol("connection_lost"),
     RECONNECTING: Symbol("reconnecting"),
+    CONNECTION_STATUS_REQUEST: Symbol("connection_status_request"),
     CONNECTED: Symbol("connected")
 
 }

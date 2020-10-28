@@ -269,13 +269,8 @@ export class Vault{
 
         this.handlers[Internal.VAULT_SETTINGS_UPDATED] = ()=>{
             console.log("%c VAULT SETTINGS UPDATED",  "color: red; font-size: 20px");
-            this.emit(Internal.VAULT_SETTINGS_UPDATED);
-        }
-
-
-        this.handlers[Internal.VAULT_SETTINGS_UPDATED] = ()=>{
-            console.log("%c VAULT  UPDATED",  "color: red; font-size: 20px");
-            this.emit(Internal.VAULT_SETTINGS_UPDATED);
+            //this.emit(Internal.VAULT_SETTINGS_UPDATED);
+            this.uxBus.emit(VaultEvents.VAULT_SETTINGS_UPDATED, this.settings)
         }
     }
 
@@ -441,6 +436,9 @@ export class Vault{
             this.renameTopic(data.pkfp, data.name)
         })
 
+        uxBus.on(UXMessage.TOGGLE_MUTE, ()=>{
+            this.toggleSound.call(this)
+        })
         ////////////////////////////////////////////////////////
         // if(this.versionUpdate){                            //
         //     console.log("Updating vault to new format.."); //
@@ -643,7 +641,6 @@ export class Vault{
         }
 
         this.saveVaultSettings(Events.SOUND_STATUS);
-        return this.settings.sound
     }
 
     processNewTopicEvent(self, data){
@@ -689,7 +686,8 @@ export class VaultFactory{
 
 export const VaultEvents = {
     TOPIC_DELETED: Symbol("topic_deleted"),
-    VAULT_UPDATED: Symbol("vault_updated")
+    VAULT_UPDATED: Symbol("vault_updated"),
+    VAULT_SETTINGS_UPDATED: Symbol("vault_settings_updated")
 }
 
 // a = {

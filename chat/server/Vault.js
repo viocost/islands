@@ -99,11 +99,14 @@ class Vault{
         console.log("SAVING VAULT SETTINGS");
         let id = this.id;
         let { vault, hash } = request.body
+        console.log(`REQUEST CONTENT:`);
+        console.dir(vault)
+        console.dir(hash)
         let publicKey = this.getVaultPublicKey(id)
 
         this._backupVault()
         this._writeVault(vault, publicKey, hash)
-        console.log("VAULT SHOULD BE UPDATED NOW");
+        console.log("VAULT SETTINGS SHOULD BE UPDATED NOW");
 
         this.notifyClient(Internal.VAULT_SETTINGS_UPDATED, id)
     }
@@ -117,8 +120,8 @@ class Vault{
         Logger.info("Updating vault format", {cat: "vault"});
 
         console.log(`UPDATING VAULT FORMAT: \nVault: ${vault}\nTopics: ${topics}\npublicKey: ${publicKey}\nHash: ${hash}`);
-        this._backupVault(id)
-        this._writeVault(id, vault, publicKey, hash)
+        this._backupVault()
+        this._writeVault(vault, publicKey, hash)
         for(let pkfp of Object.keys(topics)){
             this.saveTopic(id, pkfp, topics[pkfp])
         }
@@ -184,7 +187,7 @@ class Vault{
         this._backupVault()
 
         //all is good. Writing
-        this._writeVault(vaultId, vault, publicKey, hash, topics)
+        this._writeVault(vault, publicKey, hash, topics)
         console.log("Vault written successfully");
 
         this.notifyClient(Internal.VAULT_UPDATED, vaultId)
@@ -206,7 +209,7 @@ class Vault{
         } else if (this.isVaultExist()){
             throw new Error("Vault already exists");
         }
-        this._writeVault(id, vaultBlob, publicKey, hash);
+        this._writeVault(vaultBlob, publicKey, hash);
         return id;
     }
 
@@ -286,7 +289,7 @@ class Vault{
             throw new Error("Registration is not active for: " + id)
         }
 
-        this._writeVault(id, vaultBlob, publicKey, hash);
+        this._writeVault(vaultBlob, publicKey, hash);
         this._consumeRegistrationToken(id)
     }
 
@@ -389,7 +392,7 @@ class Vault{
     }
 
 
-    _writeVault(id, blob, publicKey, hash, topics = {}){
+    _writeVault(blob, publicKey, hash, topics = {}){
         //Checking if vault directory exist
         if(!fs.existsSync(this.vaultDirectory)){
             //creating if doesn't exist
@@ -446,7 +449,7 @@ class Vault{
             throw new Error("Vault not found");
         }
 
-        return fs.readFileSync(path.join(this.vaultsPath, id, "publicKey"), 'utf8');
+        return fs.readFileSync(path.join(this.vaultDirectory, "publicKey"), 'utf8');
     }
 
 

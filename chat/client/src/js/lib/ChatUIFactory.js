@@ -600,14 +600,17 @@ export function bakeHeaderRightSection(isSoundOn){
     logoutImg.style = svgStyle;
     soundOnImg.style = svgStyle;
     soundOffImg.style = svgStyle;
-
+    soundOnImg.style.display = isSoundOn ? "block": "none"
+    soundOffImg.style.display = isSoundOn ? "none": "block"
+    util.addClass(soundOnImg, "sound-on-img")
+    util.addClass(soundOffImg, "sound-off-img")
 
     util.appendChildren(rightSection, [
 
         util.bake("button", {
             id: BUTTON_IDS.MUTE_SOUND,
             class: "header-button",
-            children: isSoundOn ? soundOnImg : soundOffImg
+            children: [  soundOnImg , soundOffImg ]
         }),
 
         util.bake("button", {

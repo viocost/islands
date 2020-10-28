@@ -9,6 +9,7 @@ import { AuthMessage } from "../../../../common/AuthMessage"
 class ReconnectionAgent{
     //This properties are set by factory
     onSuccess;
+    onStart; //optional function that runs first thing when run is invoked
     onTimeout;
     timeLimit;
     runTimeout = 2000; //timeout before first attempt to reconnect
@@ -25,7 +26,9 @@ class ReconnectionAgent{
 
 
     run(){
+
         console.log(`Reconnection agent running! Secret: ${this.secret}`);
+        if(typeof this.onStart === "function") this.onStart();
         let connector = this._prepareConnector(this.secret)
         setTimeout(()=>{
             if(new Date() >= this.deadline){
@@ -74,12 +77,13 @@ class ReconnectionAgent{
 
 
 export class ClientReconnectionAgentFactory{
-    make({ onSuccess, onTimeout, timeLimit, runTimeout, secret }){
+    make({ onStart, onSuccess, onTimeout, timeLimit, runTimeout, secret }){
         let agent = new ReconnectionAgent(secret)
         agent.onSuccess = onSuccess;
         agent.onTimeout = onTimeout;
         agent.timeLimit = timeLimit;
         agent.runTimeout = runTimeout;
+        agent.onStart = onStart;
         return agent
     }
 }

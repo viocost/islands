@@ -32,32 +32,28 @@ gulp.task("client", ()=>{
     let clientWatcher = gulp.watch("client/src/**/*")
     let commonWatcher = gulp.watch("common/**/*")
     clientWatcher.on('change', ()=>{
-        for(let p of pathToIsland){
-            refresh(p, true)
-        }
+        let paths = pathToIsland.map(el=> ` -p ${el}`)
+        refresh(paths, true)
     })
 
     commonWatcher.on('change', ()=>{
-        for(let p of pathToIsland){
-            refresh(p, true)
-        }
+        let paths = pathToIsland.map(el=> ` -p ${el}`)
+        refresh(paths, true)
     })
 })
 
 gulp.task("server", ()=>{
     let serverWatcher = gulp.watch("server/**/*")
     serverWatcher.on('change', ()=>{
-        for(let p of pathToIsland){
-            refresh(p)
-        }
+        let paths = pathToIsland.map(el=> ` -p ${el}`)
+        refresh(paths)
     })
 
     let oldServerWatcher = gulp.watch("old_server/**/*")
 
     oldServerWatcher.on('change', ()=>{
-        for(let p of pathToIsland){
-            refresh(p)
-        }
+        let paths = pathToIsland.map(el=> ` -p ${el}`)
+        refresh(paths)
     })
 })
 
@@ -67,6 +63,6 @@ gulp.task('default', gulp.task("watch"))
 
 
 function refresh(refreshPath, withFront){
-    let cmd = `./refresh.sh -p ${refreshPath} ${withFront ? "-bf" : ""}`
+    let cmd = `./refresh.sh ${refreshPath.join(" ")} ${withFront ? "-bf" : ""}`
     shelljs.exec(cmd);
 }

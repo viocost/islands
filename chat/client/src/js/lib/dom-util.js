@@ -76,13 +76,15 @@ export function bake(name, recipe){
 // ---------------------------------------------------------------------------------------------------------------------------
 // CSS class wrapers
 export function addClass(element, _class){
+    _class = asArray(_class)
     let node = verifyGetElement(element);
-    node.classList.add(_class);
+    node.classList.add(..._class);
 }
 
 export function removeClass(element, _class){
+    _class = asArray(_class)
     let node = verifyGetElement(element);
-    node.classList.remove(_class);
+    node.classList.remove(..._class);
 }
 
 export function toggleClass(element, _class){
@@ -361,4 +363,11 @@ export function isParent(parent, child){
         node = node.parentNode;
     }
     return false;
+}
+
+
+
+function asArray(item){
+    if(Array.isArray(item)) return item
+    return [item];
 }

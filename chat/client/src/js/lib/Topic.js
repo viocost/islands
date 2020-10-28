@@ -561,7 +561,7 @@ export class Topic{
         let existingMessage = existingMessages[0];
         if (existingMessage){
             existingMessage.pending = false;
-            self.emit(Internal.MESSAGE_SENT, existingMessage);
+            self.uxBus.emit(TopicEvents.MESSAGE_SENT, existingMessage);
         } else {
             console.log("Decrypting and adding sent message.");
             sentMessage.header.private ?
@@ -1237,5 +1237,6 @@ export const TopicEvents = {
     NEW_PARTICIPANT_JOINED: Symbol("new_participant"),
     PARTICIPANT_EXCLUDED: Symbol("participant_booted"),
     INVITE_CONSUMED: Symbol("invite_consumed"),
-    SETTINGS_UPDATED: Symbol("settings_updated")
+    SETTINGS_UPDATED: Symbol("settings_updated"),
+    MESSAGE_SENT: Symbol("message_sent")
 }

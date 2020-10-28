@@ -47,7 +47,7 @@ function prepareLogin(uxBus) {
         console.log("Login agent succeeded. continuing initialization");
 
         // TODO put settings
-        uxBus.emit(UXMessage.LOGIN_SUCCESS, {soundOn: true})
+        uxBus.emit(UXMessage.LOGIN_SUCCESS, vault.settings)
         /**
             * PostLoginInitiazlier should initialize vault, topics and
             * Ask server to initialize hidden services for active topcis
@@ -120,7 +120,7 @@ function enableDebug(uxBus){
     console.log("Enabling debug mode!");
     window.uxBus = uxBus
     window.Common = Common;
-    window.sendNMessages = function(topic, n=10){
+    window.sendNMessages = function(topic, interval=50, n=10, str = `TEST MESSAGE`){
 
         let i=0;
 
@@ -129,17 +129,28 @@ function enableDebug(uxBus){
             uxBus.emit(topic, {
                 pkfp: topic,
                 message: Common.UXMessage.SEND_CHAT_MESSAGE,
-                chatMessage: `TEST MESSAGE ${i}`
+                chatMessage: `${str} ${i}`
             })
 
             if(i<n){
                 i++;
-                setTimeout(_sendMsg, 50)
+                setTimeout(_sendMsg, interval)
             }
         }
 
         _sendMsg()
 
+    }
+
+
+    window.sendNMessagesSync = function(topic,  n=10, str = `TEST MESSAGE`){
+        for(let i=0; i<n; i++){
+            uxBus.emit(topic, {
+                pkfp: topic,
+                message: Common.UXMessage.SEND_CHAT_MESSAGE,
+                chatMessage: `${str} ${i}`
+            })
+        }
     }
 
     window.createTopic = function(nickname, topicName){

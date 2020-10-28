@@ -233,6 +233,7 @@ export const UXMessage = {
     TOPIC_JOIN_SUCCESS: Symbol("topic_join_success"),
     TOPIC_LOADED: Symbol("topic_loaded"),
 
+    TOGGLE_MUTE: Symbol("toggle_mute"),
 
     // Main menu click message
     MAIN_MENU_CLICK: Symbol("main_menu_click"),

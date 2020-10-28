@@ -14,15 +14,17 @@ import { TopicUXData } from "./TopicUXData"
 import { TopicEvents } from "../lib/Topic"
 import { Context } from "../lib/Context";
 import { VaultEvents } from "../lib/Vault"
+import { SessionEvents } from "../../../../common/GenericSession"
 let spinner = new BlockingSpinner();
 
+import { SoundPlayer } from "../lib/SoundPlayer";
 
 // ---------------------------------------------------------------------------------------------------------------------------
 // CONSTANTS
 const SMALL_WIDTH = 760; // Width screen in pixels considered to be small
 const XSMALL_WIDTH = 400;
 const DAYSOFWEEK = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-let colors = ["#cfeeff", "#ffcc7f", "#b5ffc0", "#ccfffb", "#67fcf0", "#f8e6ff", "#ffe6f1", "#ccefff", "#ccf1ff"]
+let colors = [ "#3797b7", "#b137b7", "#b73737", "#b78837", "#37b739", ]
 const INITIAL_MESSAGES_LOAD = 30
 
 // modals
@@ -123,17 +125,35 @@ function loggingIn(){
     loginBtn.setAttribute("disabled", true);
 }
 
+
+function loadSounds(){
+    let sounds = {}
+    let sMap = {}
+    sMap[SOUNDS.USER_ONLINE] =  "user_online.mp3"
+    sMap[SOUNDS.INCOMING_MESSAGE] =  "message_incoming.mp3"
+    sMap[SOUNDS.MESSAGE_SENT] =  "message_sent.mp3"
+
+    for (let s in sMap) {
+        sounds[s] = new Audio("/sounds/" + sMap[s]);
+        sounds[s].load();
+    }
+
+    return sounds
+}
+
 /**
  * This is main initialization of the chat after successful login
  *
  */
 function handleLoginSuccess(args) {
 
-
     console.log("Handling successful login");
-    let settings = args[1]
+
     let uxBus = args[0]
-    //let vault = vaultHolder.getVault();
+    let settings = args[1]
+
+    let player = new SoundPlayer(uxBus, loadSounds(), settings.sound)
+
 
     updateHeaderOnSuccessfulLogin(settings);
     createChatInterface(uxBus)
@@ -231,65 +251,17 @@ function handleLoginSuccess(args) {
     })
 
 
-    setEventListeners(uxBus, context)
+    setEventListeners(uxBus, context, player)
 
     //setupSidePanelListeners(uxBus,  stateMachine)
     //refreshTopics();
     // add listener to the menu button
     window.onresize = renderLayout;
 
-
+    uxBus.emit(SessionEvents.CONNECTION_STATUS_REQUEST)
     renderLayout()
-    // prepare side panel
-    //let sidePanel = bakeSidePanel();
-    //let messagesPanel = bakeMessagesPanel();
-    //let newMessagePanel = bakeNewMessageControl();
-    //let messagesWrapper = domUtil.wrap([messagesPanel, newMessagePanel], "main-panel-container");
+    player.play(SOUNDS.USER_ONLINE)
 
-
-    //domUtil.$("#remove-private").addEventListener("click", removePrivate);
-    //domUtil.$("#messages-panel-container").onscroll = undefined //processChatScroll;
-    //UIInitialized = true;
-    ///////////////////////////////////////////////
-    // let loginAgent = args[0]                  //
-    // let vaultRaw = loginAgent.vaultRaw        //
-    //                                           //
-    // console.log("Login success handler");     //
-    //                                           //
-    // let vaultRetriever = new VaultRetriever() //
-    // vaultRetriever.run(handleVaultReceived)   //
-    ///////////////////////////////////////////////
-
-
-    ////
-    ////settings                                //
-    //vault.initializeSettings(data.settings)   //
-    //this.vaultHolder = new VaultHolder(vault) //
-    //console.log('decrypt success');           //
-    //TODO REFACTORING REQUIRED!
-    /////////////////////////////////////////////////////////////////////////////
-    // chat = new ChatClient({ version: version });                            //
-    // chat.vault = resVaultHolder.getVault();                                 //
-    // chat.connector = connector;                                             //
-    // chat.arrivalHub = arrivalHub;                                           //
-    // chat.topics = topics;                                                   //
-    // //end////////////////////////////////////////////////////////////////// //
-    //                                                                         //
-    // vaultHolder = resVaultHolder;                                           //
-    //                                                                         //
-    // //Load topics V1 here                                                   //
-    // loadTopics(vaultHolder.getVault())                                      //
-    /////////////////////////////////////////////////////////////////////////////
-    //toastr.success(`You have logged in!`)
-    //loadingOff()
-    //return
-    //vaultHolder = newVaultHolder;
-    //window.vaultHolder = vaultHolder;
-    //initUI(vaultHolder);
-    //connectionIndicator = new ConnectionIndicator(connector)
-    //appendEphemeralMessage("Topics has been loaded and decrypted successfully. ")
-    //playSound("user_online");
-    //loadingOff()
 }
 
 function addEventListenersForMessagesWindow(container){
@@ -301,6 +273,11 @@ function addEventListenersForMessagesWindow(container){
         })
 }
 
+
+function toggleMute(uxBus){
+    console.log("Mute button clicked. ");
+    uxBus.emit(Common.UXMessage.TOGGLE_MUTE)
+}
 
 
 function updateHeaderOnSuccessfulLogin(settings, uxBus){
@@ -315,10 +292,10 @@ function updateHeaderOnSuccessfulLogin(settings, uxBus){
     domUtil.removeAllChildren(header);
 
     domUtil.appendChildren(header, [
-        UI.bakeHeaderLeftSection((menuButton) => {
+        UI.bakeHeaderLeftSection(() => {
         }),
         //UI.bakeHeaderRightSection(false, settings.soundOn , processInfoClick, processMuteClick, processSettingsClick, processLogoutClick)
-        UI.bakeHeaderRightSection(settings.soundOn)
+        UI.bakeHeaderRightSection(settings.sound)
     ])
 }
 
@@ -403,7 +380,22 @@ function renderLayout() {
 
 }
 
-//Unfortunately, this function is responsible for checking
+
+function processVaultSettingsUpdate(settings){
+    let soundOn = domUtil.$(".sound-on-img")
+    let soundOff = domUtil.$(".sound-off-img")
+
+    if(settings.sound){
+        domUtil.displayBlock(soundOn)
+        domUtil.hide(soundOff)
+    } else {
+        domUtil.displayBlock(soundOff)
+        domUtil.hide(soundOn)
+    }
+
+}
+
+//This function is responsible for checking
 // all vault updates, including topic rename, password change...
 //I need to check each topic and update its name in the UX.
 function processVaultUpdated(data){
@@ -554,7 +546,7 @@ function addNewInvite(uxBus, message){
     }
 }
 
-function processNewChatMessage(context, data){
+function processNewChatMessage(context, player, data){
     const { topicPkfp, message, authorAlias } = data;
 
     let topicInFocus = context.getSelectedTopic()
@@ -563,10 +555,9 @@ function processNewChatMessage(context, data){
 
     if (!message.header.service) {
         if (message.header.author === topicPkfp) {
-//            playSound("message_sent")
+            player.play(SOUNDS.MESSAGE_SENT)
         } else {
-
- //           playSound("incoming_message")
+            player.play(SOUNDS.INCOMING_MESSAGE)
         }
     }
 
@@ -989,11 +980,20 @@ function prepareUIStateMachine(){
 }
 
 
+function getParticipantColor(topicPkfp, participantPkfp){
+    let topicData = uxTopics[topicPkfp]
+    topicData.participants.add(participantPkfp)
+    let index = Array.from(topicData.participants).indexOf(participantPkfp)
+    console.log(`Participant color index ${index}`);
+    return colors[index % colors.length]
+
+}
 
 
 function handleContextMenuClick(data){
     console.log("Context menu click");
 }
+
 
 //Appending messages
 /**
@@ -1023,8 +1023,7 @@ function appendMessageToChat(message, topicPkfp, chatWindow, toHead = false) {
         let author = document.createElement('div');
         author.classList.add("m-author-id");
         author.innerHTML = message.pkfp;
-        let participantIndex = 4 //Object.keys(topics[topicPkfp].participants).indexOf(message.pkfp)
-        msg.style.color = colors[participantIndex % colors.length];
+        msg.style.color = getParticipantColor(topicPkfp, message.pkfp)
         message_heading.appendChild(author);
     }
 
@@ -1311,7 +1310,6 @@ function getChatFormatedDate(timestamp) {
     }
 }
 
-
 function padWithZeroes(requiredLength, value) {
     let res = "0".repeat(requiredLength) + String(value).trim();
     return res.substr(res.length - requiredLength);
@@ -1328,9 +1326,77 @@ function downloadURI(uri, name) {
 
 
 
+
+function showCodeView(event) {
+    let pre = document.createElement("pre");
+    pre.innerHTML = event.target.innerHTML;
+    let div = document.createElement("div");
+    div.appendChild(pre);
+    showModalNotification("Code:", div.innerHTML);
+}
+
+function moveCursorToEnd(el) {
+    if (typeof el.selectionStart == "number") {
+        el.selectionStart = el.selectionEnd = el.value.length;
+    } else if (typeof el.createTextRange != "undefined") {
+        el.focus();
+        let range = el.createTextRange();
+        range.collapse(false);
+        range.select();
+    }
+}
+
+function moveCursorToStart(el) {
+    if (typeof el.selectionStart == "number") {
+        el.selectionStart = el.selectionEnd = 0;
+    } else if (typeof el.createTextRange != "undefined") {
+        el.focus();
+        let range = el.createTextRange();
+        range.collapse(false);
+        range.select();
+    }
+}
+
+function setConnectionIndicatorStatus(status){
+
+    let indicator = domUtil.$("#connection-indicator")
+    let indicatorLabel = domUtil.$("#connection-indicator-label")
+    let spinner = domUtil.$("#reconnect-spinner")
+    domUtil.hide(spinner)
+    domUtil.removeClass(indicator, ["connected", "disconnected", "connecting", "unknown"])
+
+    switch(status){
+
+        case ConnectionIndicatorStatus.CONNECTED:{
+            domUtil.addClass(indicator, "connected")
+            indicatorLabel.innerText = "Connected to island"
+            break;
+
+        }
+        case ConnectionIndicatorStatus.DISCONNECTED:{
+            domUtil.addClass(indicator, "disconnected")
+            indicatorLabel.innerText = "Disconnected"
+            break;
+        }
+        case ConnectionIndicatorStatus.CONNECTING:{
+            domUtil.addClass(indicator, "connecting")
+            indicatorLabel.innerText = "Connecting..."
+            domUtil.displayFlex(spinner);
+            break;
+        }
+
+        default: {
+            domUtil.addClass(indicator, "unknown")
+            indicatorLabel.innerText = "Connection status unknown"
+            break;
+        }
+
+    }
+}
+
 //Sets listeners and callbacks for
 //all related message bus events
-function setEventListeners(uxBus, context){
+function setEventListeners(uxBus, context, player){
     console.log("Setting event listeners");
     let buttonClickHandlers = {}
     buttonClickHandlers[UI.BUTTON_IDS.JOIN_TOPIC] = topicJoinModal.open.bind(topicJoinModal)
@@ -1339,6 +1405,7 @@ function setEventListeners(uxBus, context){
     buttonClickHandlers[UI.BUTTON_IDS.CTX_ALIAS] = context.alias.bind(context, uxBus)
     buttonClickHandlers[UI.BUTTON_IDS.CTX_BOOT] = context.boot.bind(context, uxBus)
     buttonClickHandlers[UI.BUTTON_IDS.CTX_DELETE] = context.delete.bind(context, uxBus)
+    buttonClickHandlers[UI.BUTTON_IDS.MUTE_SOUND] = toggleMute.bind(null, uxBus)
 
 
 
@@ -1383,7 +1450,7 @@ function setEventListeners(uxBus, context){
 
     uxBus.on(Common.UXMessage.CHAT_SCROLL, processChatScroll.bind(null, uxBus))
 
-    uxBus.on(TopicEvents.NEW_CHAT_MESSAGE, processNewChatMessage.bind(null, context))
+    uxBus.on(TopicEvents.NEW_CHAT_MESSAGE, processNewChatMessage.bind(null, context, player))
     uxBus.on(TopicEvents.INVITE_CREATED, addNewInvite.bind(null, uxBus))
 
     uxBus.on(VaultEvents.TOPIC_DELETED, context.topicDeleted.bind(context))
@@ -1393,6 +1460,7 @@ function setEventListeners(uxBus, context){
     })
 
     uxBus.on(TopicEvents.NEW_PARTICIPANT_JOINED, data=>{
+
         console.log("NEW PARTICIPANT JOINED PROCESSING UX");
         addNewParticipantToUX(uxBus, data.topicPkfp, data.pkfp)
 
@@ -1401,4 +1469,26 @@ function setEventListeners(uxBus, context){
     uxBus.on(VaultEvents.VAULT_UPDATED, processVaultUpdated)
     uxBus.on(TopicEvents.SETTINGS_UPDATED, processTopicSettingsUpdated)
 
+
+    uxBus.on(SessionEvents.CONNECTION_LOST, setConnectionIndicatorStatus.bind(null, ConnectionIndicatorStatus.DISCONNECTED))
+    uxBus.on(SessionEvents.CONNECTED, setConnectionIndicatorStatus.bind(null, ConnectionIndicatorStatus.CONNECTED))
+    uxBus.on(SessionEvents.RECONNECTING, setConnectionIndicatorStatus.bind(null, ConnectionIndicatorStatus.CONNECTING))
+
+    uxBus.on(VaultEvents.VAULT_SETTINGS_UPDATED, processVaultSettingsUpdate)
+    //uxBus.on(TopicEvents.MESSAGE_SENT, player.play.bind(player, SOUNDS.MESSAGE_SENT))
+    ///k/uxBus.on(TopicEvents.NEW_CHAT_MESSAGE, player.play.bind(player, SOUNDS.INCOMING_MESSAGE))
+}
+
+
+const ConnectionIndicatorStatus = {
+    CONNECTED: Symbol("connected"),
+    DISCONNECTED: Symbol("disconnected"),
+    CONNECTING: Symbol("connecting"),
+    UNKNOWN: Symbol("unknown")
+}
+
+const SOUNDS = {
+    USER_ONLINE: "user_online",
+    INCOMING_MESSAGE: "incoming_message",
+    MESSAGE_SENT: "message_sent"
 }

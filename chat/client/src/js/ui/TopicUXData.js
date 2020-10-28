@@ -4,6 +4,7 @@ export class TopicUXData{
     messagesLoaded=0
     earliestLoadedMessage=null
     latestLoadedMessage=null
+    participants=new Set();
 
     constructor(){
         this.messagesLoadedIds = new Set();

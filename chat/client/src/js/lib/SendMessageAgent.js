@@ -24,55 +24,53 @@ export class SendMessageAgent{
 
     send(){
         let self = this;
-        setTimeout(async ()=>{
-            let attachmentsInfo;
-            const metaID = self.topic.getMetadataId();
+        let attachmentsInfo;
+        const metaID = self.topic.getMetadataId();
 
-            if (self.files && self.files.length >0){
-                try{
+        if (self.files && self.files.length >0){
+            try{
 
-                    attachmentsInfo = await self.uploadAttachments(self.files, self.chatMessage.header.id, metaID);
-                    for (let att of attachmentsInfo) {
-                        self.chatMessage.addAttachmentInfo(att);
-                    }
-                }catch(err){
-                    console.log(`Error uploading attachments: ${err} `) ;
-                } finally {
-                    if(self.onFilesUploaded) self.onFilesUploaded();
+                ///attachmentsInfo = await self.uploadAttachments(self.files, self.chatMessage.header.id, metaID);
+                for (let att of attachmentsInfo) {
+                    self.chatMessage.addAttachmentInfo(att);
                 }
-
+            }catch(err){
+                console.log(`Error uploading attachments: ${err} `) ;
+            } finally {
+                if(self.onFilesUploaded) self.onFilesUploaded();
             }
 
-            if (self.private){
-                let keys = [self.topic.getParticipantPublicKey(self.recipient), self.topic.getPublicKey()];
-                self.chatMessage.encryptPrivateMessage(keys);
-            } else {
-                self.chatMessage.encryptMessage(self.topic.getSharedKey());
-            }
+        }
 
-            self.chatMessage.sign(self.topic.privateKey);
+        if (self.private){
+            let keys = [self.topic.getParticipantPublicKey(self.recipient), self.topic.getPublicKey()];
+            self.chatMessage.encryptPrivateMessage(keys);
+        } else {
+            self.chatMessage.encryptMessage(self.topic.getSharedKey());
+        }
 
-            //Preparing request
-            let message = new Message(self.version);
-            message.headers.pkfpSource = self.topic.pkfp;
-            message.headers.command = (self.private) ?
-                Internal.SEND_MESSAGE : Internal.BROADCAST_MESSAGE;
+        self.chatMessage.sign(self.topic.privateKey);
 
-            if(this.private){
-                message.setDest(this.recipient);
-                message.setHeader("private", true);
-            }
+        //Preparing request
+        let message = new Message(self.version);
+        message.headers.pkfpSource = self.topic.pkfp;
+        message.headers.command = (self.private) ?
+            Internal.SEND_MESSAGE : Internal.BROADCAST_MESSAGE;
 
-            message.body.message = self.chatMessage.toBlob();
-            let currentTime = new Date().getTime();
-            message.travelLog = {};
-            message.travelLog[currentTime] = "Outgoing processed on client.";
-            message.signMessage(self.topic.privateKey);
+        if(this.private){
+            message.setDest(this.recipient);
+            message.setHeader("private", true);
+        }
 
-            console.log("SEND MESSAGE AGENT SENDING");
-            self.session.acceptMessage(message);
-            console.log("Chat message enqueued");
-        }, 100)
+        message.body.message = self.chatMessage.toBlob();
+        let currentTime = new Date().getTime();
+        message.travelLog = {};
+        message.travelLog[currentTime] = "Outgoing processed on client.";
+        message.signMessage(self.topic.privateKey);
+
+        console.log("SEND MESSAGE AGENT SENDING");
+        self.session.acceptMessage(message);
+        console.log("Chat message enqueued");
 
         return self.chatMessage;
     }

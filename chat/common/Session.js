@@ -124,6 +124,7 @@ class ClientSession extends GenericSession {
 
         })
         this.uxBus = uxBus
+        uxBus.on(SessionEvents.CONNECTION_STATUS_REQUEST, this._reportConnectionStatus.bind(this))
         this.reconnectionAgentFactory = reconnectionAgentFactory
     }
 
@@ -135,16 +136,43 @@ class ClientSession extends GenericSession {
         connector.on(ConnectorEvents.DEAD, ()=>uxBus.emit(SessionEvents.CONNECTION_LOST))
     }
 
+    _reportConnectionStatus(){
+        console.log("Reporting connection status");
+        switch(this._sm.state){
+            case("active"):{
+                console.log("Reporting connected");
+                this.uxBus.emit(SessionEvents.CONNECTED)
+                break
+            }
+
+            case("awatingReconnection"):{
+
+                console.log("Reporting reconnecting");
+                this.uxBus.emit(SessionEvents.RECONNECTING)
+                break
+            }
+            case("dead"):{
+
+                console.log("Reporting connection lost");
+                this.uxBus.emit(SessionEvents.CONNECTION_LOST)
+                break
+            }
+        }
+
+    }
     _reconnect(){
         console.log("Client session reconnect");
 
         let reconnectionAgent = this.reconnectionAgentFactory.make({
             timeLimit: this.reconnectTimeLimit,
-            onSuccess: this._sm.handle.reconnectSuccess,
+            onSuccess: connector=>{
+                this._sm.handle.reconnectSuccess(connector);
+                this.uxBus.emit(SessionEvents.CONNECTED);
+            },
             onTimeout: this._sm.handle.reconnectTimeout,
             runTimeout: 3000,
-            secret: this.getSecret()
-           
+            secret: this.getSecret(),
+            onStart: ()=>this.uxBus.emit(SessionEvents.RECONNECTING)
         })
 
         reconnectionAgent.run()
