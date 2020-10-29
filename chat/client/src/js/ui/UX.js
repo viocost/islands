@@ -531,7 +531,6 @@ function moveCursor(el, pos) {
 
 
 
-
 //Shows or hids the details of a given topic
 
 function addNewInvite(uxBus, message){
@@ -578,7 +577,6 @@ function processNewChatMessage(context, player, data){
 
     willScroll = isScrollingRequired(container);
 
-    console.log("Appending message");
     appendMessageToChat({
         nickname: message.header.nickname,
         alias: authorAlias,
@@ -693,7 +691,6 @@ function processLastMessagesResponse(data){
 
     for(let message of messages){
 
-        console.log("Appending message");
 
         let authorAlias = topic.getParticipantAlias(message.header.author)
         topicUXData.messagesLoadedIds.add(message.header.id)
@@ -984,7 +981,6 @@ function getParticipantColor(topicPkfp, participantPkfp){
     let topicData = uxTopics[topicPkfp]
     topicData.participants.add(participantPkfp)
     let index = Array.from(topicData.participants).indexOf(participantPkfp)
-    console.log(`Participant color index ${index}`);
     return colors[index % colors.length]
 
 }

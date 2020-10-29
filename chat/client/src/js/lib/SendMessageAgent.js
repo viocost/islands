@@ -42,12 +42,15 @@ export class SendMessageAgent{
 
         }
 
+        console.log(`ORDER DEBUG MESSAGE ENCRYPTION PLAIN TEXT: ${self.chatMessage.body}`);
         if (self.private){
             let keys = [self.topic.getParticipantPublicKey(self.recipient), self.topic.getPublicKey()];
             self.chatMessage.encryptPrivateMessage(keys);
         } else {
             self.chatMessage.encryptMessage(self.topic.getSharedKey());
         }
+
+        console.log(`ORDER DEBUG MESSAGE ENCRYPTION ENCRYPTED TEXT: ${self.chatMessage.body}`);
 
         self.chatMessage.sign(self.topic.privateKey);
 

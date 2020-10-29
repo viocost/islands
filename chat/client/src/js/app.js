@@ -145,10 +145,14 @@ function enableDebug(uxBus){
 
     window.sendNMessagesSync = function(topic,  n=10, str = `TEST MESSAGE`){
         for(let i=0; i<n; i++){
+
+            let message = `${str} ${i}`;
+            console.log("MESSAGE ORDER DEBUG: ", message);
+
             uxBus.emit(topic, {
                 pkfp: topic,
                 message: Common.UXMessage.SEND_CHAT_MESSAGE,
-                chatMessage: `${str} ${i}`
+                chatMessage: message
             })
         }
     }

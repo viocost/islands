@@ -189,12 +189,14 @@ function bakeTopicsBlock(){
 }
 
 export function bakeMessagesPanel(newMsgBlock){
+
     return util.bake("div", {
         class: "main-panel-container",
         children: [
             util.bake("div", {
                 class: "topic-message-blocks-container",
-                id: "topic-message-blocks-container"
+                id: "topic-message-blocks-container",
+
             }),
 
             newMsgBlock
@@ -203,6 +205,13 @@ export function bakeMessagesPanel(newMsgBlock){
 }
 
 export function bakeTopicMessagesBlock(pkfp, topicName){
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
+    // let downArrow = svgAsDOM(SVG.downArrowSVG)                                                    //
+    // downArrow.style = "width: 5rem; height: 5rem; bottom: 10rem; right: 2rem; position: absolute" //
+    // util.addClass(downArrow, "scroll-down-arrow")                                                 //
+    // downArrow.pkfp = pkfp                                                                         //
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
 
     return util.bake("div", {
         class: "messages-panel-container",
@@ -218,8 +227,7 @@ export function bakeTopicMessagesBlock(pkfp, topicName){
 
             util.bake("div", {
                 class: "messages-window",
-            })
-
+            }),
 
         ],
     })

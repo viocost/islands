@@ -144,7 +144,7 @@ class GenericSession extends Session {
 
         let processed = this._preprocessIncoming(args[0])
 
-        console.log(`Received incoming message: ${JSON.stringify(processed)}`);
+        console.log(`Received incoming message. seq: ${processed.seq}`);
 
         if (!this._incomingCounter.accept(processed.seq)) {
             console.log("Message out of sync. Ignoring and sending ping");
@@ -166,6 +166,8 @@ class GenericSession extends Session {
     _processQueue(args) {
         let message;
         while (message = this._messageQueue.dequeue()) {
+            console.log(`MESSAGE ORDER DEBUG IN SESSION PROCESS QUEUE`);
+            console.dir(message);
             let processed = this._preprocessOutgoing(message)
             this._connector.send(MessageTypes.MESSAGE, processed)
         }
