@@ -888,6 +888,7 @@ class HistoryManager{
 
 
     appendMessage(blob, pkfp){
+        console.log(`HISTORY MANAGER APPEND MESSAGE CALLED: ${blob}`);
         let queue = this.getAppendQueue(pkfp);
         queue.enqueue(this._prepareAppendMessageJob(blob, pkfp));
         return queue.run();

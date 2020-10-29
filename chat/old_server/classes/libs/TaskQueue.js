@@ -1,3 +1,5 @@
+const { log } = require("winston");
+
 class TaskQueue{
     constructor(){
         this._queue = [];
@@ -8,7 +10,15 @@ class TaskQueue{
         this._queue.push({routine: routine, args: args})
     }
 
-    async run(){
+
+    run(){
+        console.log("Run called");
+        console.dir(this)
+        setImmediate(this._processQueue.bind(this))
+    }
+
+    async _processQueue(){
+
         console.log("run called: " + this._queue.length);
         if(!this._working){
             this._working = true;

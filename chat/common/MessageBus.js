@@ -64,7 +64,6 @@ class MessageBus {
 
     emit(message, data, sender) {
 
-        console.log("MESSAGE ORDER DEBUG IN Messages bus emit : ", message);
         this._queue.push({ sender: sender, message: message, data: data })
 
         if (this._processing) {
@@ -81,8 +80,6 @@ class MessageBus {
         // While there are messages in the queue
         let message
         while (message = this._queue.splice(0, 1)[0]) {
-            console.log(`MESSAGE ORDER DEBUG process queue: `);
-            console.dir(message)
 
             for (let key in this._subscriptions) {
 

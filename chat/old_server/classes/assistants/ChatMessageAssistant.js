@@ -6,6 +6,7 @@ const Message = require("../objects/ChatMessage.js");
 const ClientError = require("../objects/ClientError.js");
 const Logger = require("../libs/Logger.js");
 const Coordinator = require("../assistants/AssistantCoordinator.js");
+const TaskQueue = require( "../libs/TaskQueue" );
 const { Internal, Events } = require("../../../common/Events");
 
 class ChatMessageAssistant{
@@ -15,7 +16,10 @@ class ChatMessageAssistant{
                 topicAuthorityManager = Err.required(),
                 crossIslandMessenger = Err.required()) {
         let self = this;
+
+        //This queue used for incoming messages REFACTOR
         this.appendQueue = {};
+        this.broadcastSendQueue = new TaskQueue()
         this.crossIslandMessenger = crossIslandMessenger;
         this.sessionManager = sessionManager;
         this.hm = historyManager;
@@ -44,7 +48,19 @@ class ChatMessageAssistant{
     }
 
 
-    async broadcastMessage(message, connectionId, self){
+    broadcastMessage(message, connectionId, self){
+        self.broadcastSendQueue.enqueue(self._broadcastMessage.bind(self, message, connectionId))
+        self.broadcastSendQueue.run()
+       
+    }
+
+
+    async sendPrivateMessage(message, connectionId, self){
+        self.broadcastSendQueue.enqueue(self._sendPrivateMessage.bind(self, message, connectionId))
+        self.broadcastSendQueue.run()
+    }
+
+    async _broadcastMessage(message, connectionId){
         let pkfp = message.headers.pkfpSource;
         Logger.debug("Broadcasting chat message", {
             pkfp: pkfp,
@@ -52,9 +68,13 @@ class ChatMessageAssistant{
             cat: "chat"
         });
 
+        console.log(`\n\n====PROCESSING OUTGOING MESSAGE: `);
+        console.dir(JSON.parse(message.body.message))
+        console.dir(`\n\n`)
+
         assert(message.body.message.length < 65535, "Message is too long")
 
-        const metadata = JSON.parse(await self.hm.getLastMetadata(pkfp));
+        const metadata = JSON.parse(await this.hm.getLastMetadata(pkfp));
         const myPublicKey = metadata.body.participants[pkfp].publicKey;
         assert(Message.verifyMessage(myPublicKey, message), "Broadcasting message error: signature is not valid!")
 
@@ -64,7 +84,7 @@ class ChatMessageAssistant{
 
 
         const recipients = metadata.body.participants;
-        await self.hm.appendMessage(message.body.message, pkfp);
+        await this.hm.appendMessage(message.body.message, pkfp);
         const myResidence = recipients[pkfp].residence;
         let a = new CuteSet(Object.keys(recipients));
         const recipientsPkfps = a.difference([pkfp]).toArray();
@@ -75,7 +95,7 @@ class ChatMessageAssistant{
             let nMessage = new Message(msgBlob);
             nMessage.headers.pkfpDest = participantPkfp;
             let envelope = new Envelope (onionDest,nMessage, myResidence);
-            await self.crossIslandMessenger.send(envelope);
+            await this.crossIslandMessenger.send(envelope);
             Logger.debug("Sending chat message",{
                 pkfpSource: pkfp,
                 pkfpDest: participantPkfp,
@@ -89,14 +109,15 @@ class ChatMessageAssistant{
 
         let receipt  = Message.makeResponse(message, "island", Internal.MESSAGE_SENT);
         receipt.body.message = message.body.message;
-        let session = self.sessionManager.getSessionByConnectionId(connectionId);
+        let session = this.sessionManager.getSessionByConnectionId(connectionId);
         if (session){
             session.broadcast(receipt);
         }
     }
 
 
-    async sendPrivateMessage(message, connectionId, self){
+
+    async _sendPrivateMessage(message, connectionId, self){
         Logger.debug("Sending private message", {
             cat: "chat"
         })

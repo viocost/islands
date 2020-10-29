@@ -163,18 +163,16 @@ class GenericSession extends Session {
 
 
 
-    _processQueue(args) {
+    _processQueue() {
         let message;
         while (message = this._messageQueue.dequeue()) {
-            console.log(`MESSAGE ORDER DEBUG IN SESSION PROCESS QUEUE`);
-            console.dir(message);
             let processed = this._preprocessOutgoing(message)
             this._connector.send(MessageTypes.MESSAGE, processed)
         }
     }
 
 
-    _processSendPing(args) {
+    _processSendPing() {
         let payload = this._preprocessOutgoing({
             command: SyncEvents.PING,
             seq: this._incomingCounter.get()

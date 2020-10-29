@@ -147,7 +147,6 @@ function enableDebug(uxBus){
         for(let i=0; i<n; i++){
 
             let message = `${str} ${i}`;
-            console.log("MESSAGE ORDER DEBUG: ", message);
 
             uxBus.emit(topic, {
                 pkfp: topic,
