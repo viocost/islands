@@ -44,30 +44,32 @@
                                             td.hs-status.hs-head Status
                                             td.hs-actions.hs-head Actions
                                     tbody#hidden-services-wrap.hs-table
-                                        tr
-                                            td.hs-enum #1
-                                            td.hs-link hgkjhdshgkhsdkjghfkds.onion
-                                            td.hs-desc My access
-                                            td.hs-type Admin access
-                                            td.hs-status Enabled
-                                            td.hs-actions Actions
-                                                ul
-                                                    li Activate
-                                                    li Deactivate
-                                                    li Regenerate link
-                                                    li Delete
-                                        tr
-                                            td.hs-enum #2
-                                            td.hs-link hgkjhdshgkhsdkjghfkds.onion
-                                            td.hs-desc For John
-                                            td.hs-type User access
-                                            td.hs-status Disabled
-                                            td.hs-actions Actions
-                                                ul
-                                                    li Activate
-                                                    li Deactivate
-                                                    li Regenerate link
-                                                    li Delete
+                                        //----------------------------------------------//
+                                        //- tr                                         -//
+                                        //-     td.hs-enum #1                          -//
+                                        //-     td.hs-link hgkjhdshgkhsdkjghfkds.onion -//
+                                        //-     td.hs-desc My access                   -//
+                                        //-     td.hs-type Admin access                -//
+                                        //-     td.hs-status Enabled                   -//
+                                        //-     td.hs-actions Actions                  -//
+                                        //-         ul                                 -//
+                                        //-             li Activate                    -//
+                                        //-             li Deactivate                  -//
+                                        //-             li Regenerate link             -//
+                                        //-             li Delete                      -//
+                                        //- tr                                         -//
+                                        //-     td.hs-enum #2                          -//
+                                        //-     td.hs-link hgkjhdshgkhsdkjghfkds.onion -//
+                                        //-     td.hs-desc For John                    -//
+                                        //-     td.hs-type User access                 -//
+                                        //-     td.hs-status Disabled                  -//
+                                        //-     td.hs-actions Actions                  -//
+                                        //-         ul                                 -//
+                                        //-             li Activate                    -//
+                                        //-             li Deactivate                  -//
+                                        //-             li Regenerate link             -//
+                                        //-             li Delete                      -//
+                                        //----------------------------------------------//
 
                     .page
                         .admin-page-content-wrap.logs-control-wrap
@@ -124,6 +126,12 @@
 
 script.
     islandsVersion = function(){
-        return "#{version}"
+        return #{version}
     }
     window.islandsVersion = islandsVersion;
+
+    getHiddenServices = function(){
+        return #{hiddenServices}
+    }
+
+    window.getHiddenServices = getHiddenServices

@@ -133,7 +133,7 @@ export class LoginAgent{
 
         console.log(`Creating session. Secret: ${secret}`);
         let reconnectionAgentFactory = new ClientReconnectionAgentFactory()
-        this.session = ClientSessionFactory.make(this.connector, uxBus, cryptoAgent, secret, reconnectionAgentFactory);
+        this.session = ClientSessionFactory.make(this.connector, this.uxBus, cryptoAgent, secret, reconnectionAgentFactory);
         this.sm.handle.success()
     }
 

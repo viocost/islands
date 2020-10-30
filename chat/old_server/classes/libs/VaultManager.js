@@ -232,6 +232,23 @@ class VaultManager{
         return vault
     }
 
+    getAdminVault(){
+        let vaults = fs.readdirSync(this.vaultsPath);
+        console.log("GET ADMIN VAULT");
+        console.dir(vaults)
+        for(let vault of vaults){
+
+            if(fs.existsSync(path.join(this.vaultsPath, vault, "admin"))){
+                return {
+                    pkfp: vault,
+                    vault: fs.readFileSync(path.join(this.vaultsPath, vault, "vault"), "utf8"),
+                    publicKey: fs.readFileSync(path.join(this.vaultsPath, vault, "publicKey"))
+                }
+            }
+        }
+
+    }
+
     getTopics(vaultId){
         if(!this.isVaultExist(vaultId)){
             return null

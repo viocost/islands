@@ -1,8 +1,11 @@
 import '../css/admin.sass';
+
+import { MessageBus } from "../../../common/MessageBus"
 import { XHR } from "./lib/xhr";
 import toastr from "./lib/toastr";
 window.toastr = toastr;
 import { Vault } from "./lib/Vault";
+import { ConnectorAbstractFactory, ConnectorEvents } from "./../../../common/Connector"
 import * as CuteSet from "cute-set";
 import * as dropdown from "./lib/dropdown";
 import * as editableField from "./lib/editable_field";
@@ -13,6 +16,7 @@ import * as util from "./lib/dom-util";
 import { iCrypto } from "../../../common/iCrypto"
 import * as semver from "semver"
 import { IError as Err } from "../../../common/IError"
+import { LoginAgent, LoginAgentEvents } from "./lib/LoginAgent";
 window.semver = semver;
 let adminSession;
 let filterFieldSelector;
@@ -23,9 +27,11 @@ window.util = util;
 
 window.iCrypto = iCrypto
 
+let vault;
 
 let VERSION;
 
+let loginAgent
 
 /**
  * Closure for processing admin requests while admin logged in
@@ -40,10 +46,7 @@ let processAdminRequest = ()=>{
 
 
 document.addEventListener('DOMContentLoaded', event => {
-    if(!islandsVersion){
-        throw new Error("islandsVersion is not defined!")
-    }
-    VERSION = islandsVersion();
+    //VERSION = islandsVersion();
     document.title = "Islands | Admin login";
     util.$("main").classList.add("main-admin");
     util.$("header").style.minWidth = "111rem";
@@ -84,6 +87,8 @@ document.addEventListener('DOMContentLoaded', event => {
         el.onclick = switchUpdateOption;
     });
 
+
+
     logTableBody = util.$("#log-content").lastElementChild;
     filterFieldSelector = util.$('#filter-field-selector');
     filterFieldSelector.addEventListener("change", filterLogs);
@@ -91,34 +96,45 @@ document.addEventListener('DOMContentLoaded', event => {
     util.$('#log-reverse').onclick = reverseLogList;
     prepareAdminMenuListeners();
     prepareLogPageListeners();
-    autoLogin();
+
+    let uxBus = new MessageBus()
+    loginAgent = new LoginAgent(ConnectorAbstractFactory.getChatConnectorFactory(), uxBus)
+    loginAgent.on(LoginAgentEvents.SUCCESS, (session, theVault)=>{
+        console.log( "LOGIN SUCCESSFUL");
+        let adminKey = theVault.adminKey;
+        let ic= new iCrypto()
+        ic.setRSAKey("sk", adminKey, "private")
+          .publicFromPrivate("sk", 'pk')
+          .getPublicKeyFingerprint("pk", "pkfp")
+
+        adminSession = {
+            publicKey: ic.get('pk'),
+            privateKey: ic.get('sk'),
+            pkfp: ic.get('pkfp'),
+            vaultId: theVault.id
+        };
+
+        processAdminRequest = prepareRequestProcessor(adminSession);
+
+        util.displayFlex('#admin-content-wrapper');
+        util.html('.heading__main', "Rule your island");
+        util.displayNone('#admin-login--wrapper');
+
+        //processLoginData(res);
+        displayAdminMenu(true);
+        loadingOff();
+        toastr.info("Admin login successfull!");
+        document.title = "Islands | Admin panel"
+
+
+        let hiddenServices = JSON.parse(iCrypto.hexDecode(getHiddenServices()))
+        onHiddenServiceUpdate({hiddenServices: hiddenServices})
+
+    })
+
 });
 
 
-function autoLogin(){
-
-    let url = new URL(window.location.href);
-    let id = url.searchParams.get("id");
-    if(!id) return;
-    loadingOn();
-    let token = url.searchParams.get("token");
-    let pkcipher = localStorage.getItem(id);
-    if (!pkcipher){
-        loadingOff();
-        throw new Error("Autologin failed: no private key found in local storage");
-    }
-
-    let ic = new iCrypto();
-    ic.addBlob("pkcip", pkcipher)
-        .addBlob("key", token)
-        .AESDecrypt("pkcip", "key", "privk", true, "CBC", "utf8");
-    let privateKey = ic.get("privk");
-
-    requestAdminLogin(privateKey)
-        .then(()=>{})
-        .catch(()=>{});
-    localStorage.removeItem(id);
-}
 
 
 //*********ISLAND ACCESS SECTION*********************//
@@ -235,7 +251,12 @@ function deleteAdminHiddenService(ev){
         processAdminRequest({
             action: "delete_hidden_service",
             onion: onion
-        }, onHiddenServiceUpdate, displayServerRequestError)
+        }, data=>{
+            console.log("hidden services updated");
+            onHiddenServiceUpdate(data)
+        } , err=>{
+            displayServerRequestError(err)
+        })
     }catch(err){
         toastr.warning("Error deleting guest: " + err);
         console.error(err);
@@ -310,32 +331,40 @@ function updateHiddenServicesList(hiddenServices) {
 
 function onHiddenServiceUpdate(data) {
 
-    let hiddenServices = JSON.parse(data.hiddenServices);
+    console.log("Hidden service update");
+
+    let hiddenServices = data.hiddenServices;
 
     let tableBody = util.$("#hidden-services-wrap");
     tableBody.innerHTML = "";
     let enumer = 1;
-    for (let key of Object.keys(hiddenServices)){
-        let isEnabled = hiddenServices[key].enabled;
-        let row = util.bake("tr");
-        let enumEl = util.bake("td", {class: "hs-enum", text: enumer});
-        let link = util.bake("td", {class: "hs-link", text: key + ".onion"});
 
-        let description = extractDescription(hiddenServices[key].description)
+    for (let vaultId in hiddenServices){
+        let isAdmin = vaultId === adminSession.vaultId
 
-        let hsDesc = bakeDescriptionElement(util.bake("td", {class: "hs-desc"}), description);
-        let hsType = util.bake("td", {class: "hs-type", text: hiddenServices[key].admin ? "Admin" : "User"});
-        let status = util.bake("td", {class: ["hs-status", isEnabled ? "hs-status-enabled" : "hs-status-disabled" ],
-            text: isEnabled ? "Enabled" : "Disabled"});
-        let actions = bakeHsRecordActionsMenu(util.bake("td", {class: "hs-actions"}),
-            hiddenServices[key].admin);
-        util.appendChildren(row, [enumEl, link, hsDesc, hsType, status, actions]);
-        tableBody.appendChild(row);
-        enumer++;
-        link.addEventListener("click", (ev)=>{
-            copyTextToBuffer(ev.target.innerText, "Onion link copied to clipboard")
-        })
+        for (let key in hiddenServices[vaultId]){
+            let isEnabled = hiddenServices[vaultId][key].enabled;
+            let row = util.bake("tr");
+            let enumEl = util.bake("td", {class: "hs-enum", text: enumer});
+            let link = util.bake("td", {class: "hs-link", text: key + ".onion"});
+
+            let description = extractDescription(hiddenServices[vaultId][key].description)
+
+            let hsDesc = bakeDescriptionElement(util.bake("td", {class: "hs-desc"}), description);
+            let hsType = util.bake("td", {class: "hs-type", text: isAdmin ? "Admin" : "User"});
+            let status = util.bake("td", {class: ["hs-status", isEnabled ? "hs-status-enabled" : "hs-status-disabled" ],
+                text: isEnabled ? "Enabled" : "Disabled"});
+            let actions = bakeHsRecordActionsMenu(util.bake("td", {class: "hs-actions"}),
+                isAdmin);
+            util.appendChildren(row, [enumEl, link, hsDesc, hsType, status, actions]);
+            tableBody.appendChild(row);
+            enumer++;
+            link.addEventListener("click", (ev)=>{
+                copyTextToBuffer(ev.target.innerText, "Onion link copied to clipboard")
+            })
+        }
     }
+
     onHiddenServicesPageActivation();
 }
 
@@ -458,6 +487,8 @@ function adminLogin() {
         return;
     }
 
+    loginAgent.acceptPassword(password)
+    return
     //Request admin vault
     XHR({
         type: "GET",
@@ -506,6 +537,7 @@ function decryptVault(vaultEnc = Err.required(), password = Err.require()){
 }
 
 async function requestAdminLogin (privateKey){
+    console.log("Requesting admin login");
     try {
         let ic = new iCrypto();
         ic.createNonce('n')
@@ -816,7 +848,7 @@ function processLogsLoaded(res) {
         row.append(level);
         row.append(msg);
         let additionalValues = new CuteSet(Object.keys(parsed)).minus(["level", "message", "timestamp"]);
-        if (additionalValues.length() > 0) {
+        if (additionalValues.length > 0) {
             let addCell = util.bake("td", {class: "add-value-cell"});
             for (let key of additionalValues) {
                 let wrap = document.createElement("div");

@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const { iCrypto } = require('../common/iCrypto')
 const fs = require("fs-extra");
 const Logger = require("./classes/libs/Logger");
 const HSMap = require("./classes/libs/HSVaultMap");
@@ -10,7 +11,7 @@ const { RouterHolder } = require("../server/lib/RouterHolder")
 let VERSION;
 
 router.get("/vault", (req, res)=>{
-   let vault =  adminServer.getAdminVault();
+   let { vault } =  adminServer.getAdminVault();
    res.set("Content-Type", "application/json")
       .status(200).send({
           "vault": vault,
@@ -29,12 +30,15 @@ router.get('/', (req, res)=>{
         //Return the page
     let host = req.headers["host"];
 
+    let hiddenServices = adminServer.getHiddenServices()
+
     if(!isOnion(host) || HSMap.isAdmin(host)){
         res.render("admin", {
             title:"Admin login",
             secured: adminServer.isSecured(),
             vault: undefined,
-            version: version.getVersion()
+            version: version.getVersion(),
+            hs: iCrypto.hexEncode(JSON.stringify(hiddenServices))
         });
     } else {
         res.status(403).send("Forbidden");

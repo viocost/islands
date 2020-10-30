@@ -1,5 +1,5 @@
 const iCrypto = require('./libs/iCrypto');
-const fs = require('fs');
+const fs = require('fs-extra');
 const path = require('path');
 const Logger = require("./libs/Logger.js");
 const VaultManager = require("./libs/VaultManager");
@@ -7,6 +7,7 @@ const { HiddenServiceManager } = require("./libs/HiddenServiceManager");
 const HSMap = require("./libs/HSVaultMap");
 const shell = require('shelljs');
 const AdminKey = require ("./libs/AdminKey");
+const { log } = require('winston');
 
 
 let keysFolderPath;
@@ -54,7 +55,10 @@ function handleAdminRequest(req, res){
     console.log("Handling admin request...");
     console.dir(req.body)
     try{
+        console.log("Trying handle");
         handlers[req.body.action](req, res)
+
+        console.log("done");
     }catch(err){
         console.log("Error handling admin request: " + err);
         res.status = 400;
@@ -139,7 +143,8 @@ function changeLoggerState(req, res){
  * @returns {Promise<void>}
  */
 function  launchAdminHiddenService(req, res){
-    Logger.debug("Launching admin hidden service");
+    console.log("Launching admin hedden service");
+
     let data = req.body;
 
     let returnSuccess = (hiddenServices)=>{
@@ -147,7 +152,7 @@ function  launchAdminHiddenService(req, res){
         res.set('Content-Type', 'application/json');
         res.status(200).send({
                 hiddenServices: hiddenServices
-            })
+        })
     };
 
     let returnError = (err, status = 400)=>{
@@ -158,22 +163,43 @@ function  launchAdminHiddenService(req, res){
         Logger.warn("Request was not verified!")
         returnError("Request verification failed", 401);
     }
+
+    //requestData can have fields
+    // privateKey
+    // onion
     let requestData = JSON.parse(data.requestString);
+
     islandHiddenServiceManager.launchIslandHiddenService(
+
         true,
         requestData.privateKey,
         requestData.onion
     )
+
         .then((launchRes)=>{
+            //laucnhRes is object:
+            // {
+            //     id: idwithoutonion,
+            //     privateKey: a private key string,
+            //
+            //
+            // }
+            //
             if (launchRes.err){
                 returnError(launchRes.err);
                 return
-        }
+            }
+
+            addAdminHiddenService(launchRes)
             //update HSVault map
-            HSMap.put(launchRes.fullAddress, data.pkfp, "", true);
+            //HSMap.put(launchRes.fullAddress, data.pkfp, "", true);
             //return result
-            returnSuccess(HSMap.getMapAsString());
+            //get here all hidden services and return it
+            let hiddenServices = getHiddenServices();
+            console.dir(hiddenServices);
+            returnSuccess(hiddenServices);
         }).catch(err=>{
+            console.log("Error launching hidden service" + err);
             Logger.debug(err.message);
             returnError(err)
         });
@@ -182,6 +208,7 @@ function  launchAdminHiddenService(req, res){
 function deleteAdminHiddenService(req, res){
     let returnSuccess = (hiddenServices)=>{
         Logger.debug("Admin hidden service removed");
+        console.dir(hiddenServices);
         res.set('Content-Type', 'application/json');
         res.status(200).send({
             hiddenServices: hiddenServices
@@ -202,10 +229,12 @@ function deleteAdminHiddenService(req, res){
     let requestData = JSON.parse(data.requestString);
     islandHiddenServiceManager.deleteHiddenService(requestData.onion)
         .then(()=>{
-            HSMap.delOnion(requestData.onion);
-            returnSuccess(HSMap.getMapAsString())
+            deleteAdminHiddenServiceRecord(requestData.onion)
+
+            returnSuccess(getHiddenServices())
         })
         .catch(err =>{
+            console.log("Error deleting hidden service: " + err);
             returnError(err, 500);
         })
 }
@@ -314,8 +343,8 @@ async function enableHiddenService(req, res){
 
         let requestData = JSON.parse(data.requestString);
         islandHiddenServiceManager.enableSavedHiddenService(requestData.onion);
-        HSMap.setOnionState(requestData.onion, true);
-        returnSuccess(HSMap.getMapAsString())
+        updateAdminHiddenServiceRecordEnabledState(requestData.onion, true)
+        returnSuccess(getHiddenServices())
     }catch(err){
         returnError(err, 500);
     }
@@ -344,10 +373,10 @@ async function disableHiddenService(req, res){
 
         let requestData = JSON.parse(data.requestString);
         islandHiddenServiceManager.disableSavedHiddenService(requestData.onion);
-        HSMap.setOnionState(requestData.onion, false);
-
-        returnSuccess(HSMap.getMapAsString())
+        updateAdminHiddenServiceRecordEnabledState(requestData.onion, false)
+        returnSuccess(getHiddenServices())
     }catch(err){
+        console.log("Error disabling hidden service: " + err);
         returnError(err, 500)
     }
 
@@ -637,17 +666,7 @@ module.exports.isSecured = function(){
 
 
 module.exports.getAdminVault = function(){
-    let pubKey = fs.readFileSync(path.join(keysFolderPath, fs.readdirSync(keysFolderPath)[0]), "utf8");
-    if (!pubKey){
-        throw new Error("Error: public key not found.");
-    }
-
-    let ic = new iCrypto();
-    ic.setRSAKey("pubk", pubKey, "public")
-        .getPublicKeyFingerprint("pubk", "pkfp");
-    Logger.debug("Searching for vault with id: " + ic.get("pkfp"));
-    console.log("Searching for vault with id: " + ic.get("pkfp"));
-    return vaultManager.getVault(ic.get("pkfp"));
+    return vaultManager.getAdminVault()
 };
 
 
@@ -679,3 +698,53 @@ module.exports.getAdminPublicKey = function(){
 };
 
 module.exports.handleAdminRequest = handleAdminRequest
+
+//This is a dumb vacuum for all island hidden services
+// it returns a nested map in form of
+// vaultId => {
+//    hsid: data,
+//    another_hsid: data,
+//    ...
+// }
+function getHiddenServices(){
+
+    res = {}
+    let vaultsPath = vaultManager.vaultsPath;
+    let vaults = fs.readdirSync(vaultsPath);
+    for (vault of vaults){
+        res[vault] = {}
+        let hsPath = path.join(vaultsPath, vault, "hidden_services")
+        let hiddenServices = fs.readdirSync(hsPath);
+        for(let hs of hiddenServices){
+            res[vault][hs] = JSON.parse(fs.readFileSync(path.join(hsPath, hs), "utf8"))
+        }
+
+    }
+
+    return res;
+}
+
+module.exports.getHiddenServices = getHiddenServices
+
+function addAdminHiddenService(service){
+    let vaultsPath = vaultManager.vaultsPath;
+    fs.writeFileSync(path.join(vaultsPath, adminVaultId, "hidden_services", service.id), JSON.stringify({
+        key: service.privateKey,
+        enabled: true
+    }))
+}
+
+function deleteAdminHiddenServiceRecord(serviceId){
+    console.log("Deleting HS record: " + serviceId);
+    console.log("Deleting HS record: " + serviceId.substring(0, 16));
+    let vaultsPath = vaultManager.vaultsPath;
+    fs.removeSync(path.join(vaultsPath, adminVaultId, "hidden_services", serviceId.substring(0, 16)))
+}
+
+function updateAdminHiddenServiceRecordEnabledState(serviceId, setEnabled){
+    let vaultsPath = vaultManager.vaultsPath;
+    let hsRecordPath = path.join(vaultsPath, adminVaultId, "hidden_services", serviceId.substring(0, 16))
+    let hsRecord = JSON.parse(fs.readFileSync(hsRecordPath, "utf8"))
+    hsRecord.enabled = setEnabled
+    fs.writeFileSync(hsRecordPath, JSON.stringify(hsRecord))
+}

@@ -50,7 +50,7 @@ class HiddenServiceManager{
         let self = this;
         let keyType = hsPrivateKey ? "RSA1024" : "NEW";
         let keyContent = hsPrivateKey;
-        port = `${port.toString().trim()},${host}:${self.appPort.toString()}`;
+        port = self.appPort.toString();
 
         if (hsPrivateKey && await this.torCon.isHSUp(onion)){
             return({
@@ -59,11 +59,10 @@ class HiddenServiceManager{
             })
         }
 
-        let response = await self.torCon.createHiddenService({
-            detached: true,
+        let response = await self.torCon.createAndLaunchNewOnion({
+            host: host,
             port: port,
-            keyType: keyType,
-            keyContent: keyContent,
+            keyType: "RSA1024",
         });
 
         if(response.code === 250){

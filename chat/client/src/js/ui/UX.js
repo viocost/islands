@@ -529,8 +529,6 @@ function moveCursor(el, pos) {
 }
 
 
-
-
 //Shows or hids the details of a given topic
 
 function addNewInvite(uxBus, message){
