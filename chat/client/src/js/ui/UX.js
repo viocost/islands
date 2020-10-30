@@ -14,6 +14,7 @@ import { TopicUXData } from "./TopicUXData"
 import { TopicEvents } from "../lib/Topic"
 import { Context } from "../lib/Context";
 import { VaultEvents } from "../lib/Vault"
+import { TabAgent } from "../lib/TabAgent"
 import { SessionEvents } from "../../../../common/GenericSession"
 let spinner = new BlockingSpinner();
 
@@ -243,6 +244,8 @@ function handleLoginSuccess(args) {
         topicCreate: topicCreateModal
     })
     //hook all buttons to the bus
+
+    let tabAgent = new TabAgent(uxBus)
 
     domUtil.$$("button").forEach(button=>{
         button.addEventListener("click", ()=>{
@@ -506,7 +509,6 @@ function sendMessage(uxBus, context){
 
 //TODO Implement
 function processMessageAreaKeyPress(uxBus, context, ev){
-    console.log(`Key pressed: ${ev.keyCode}`);
     if(ev.keyCode === 13 || ev.keyCode === 10){
         if(ev.ctrlKey){
             ev.target.value += "\n";
@@ -1469,8 +1471,10 @@ function setEventListeners(uxBus, context, player){
     uxBus.on(SessionEvents.RECONNECTING, setConnectionIndicatorStatus.bind(null, ConnectionIndicatorStatus.CONNECTING))
 
     uxBus.on(VaultEvents.VAULT_SETTINGS_UPDATED, processVaultSettingsUpdate)
-    //uxBus.on(TopicEvents.MESSAGE_SENT, player.play.bind(player, SOUNDS.MESSAGE_SENT))
-    ///k/uxBus.on(TopicEvents.NEW_CHAT_MESSAGE, player.play.bind(player, SOUNDS.INCOMING_MESSAGE))
+    uxBus.on(TopicEvents.ERROR, errorMessage=>{
+        console.log(`Topic error received: ${errorMessage}`);
+        toastr.warning(errorMessage)
+    })
 }
 
 

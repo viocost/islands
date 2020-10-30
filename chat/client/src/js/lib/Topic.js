@@ -248,7 +248,6 @@ export class Topic{
 
     //Called when newly issued metadata arrived
     updateMetadata(metadata){
-        console.log("METADATA UPDATE RECEIVED!!!!");
         if(typeof metadata === "string"){
             metadata = JSON.parse(metadata);
         }
@@ -428,9 +427,22 @@ export class Topic{
                 })
             }
 
+
             if (msg.body.inviteePkfp){
                 self.nicknameChangeNotify(msg.body.inviteePkfp)
             }
+
+
+            if(msg.headers.event === "member_booted"){
+                console.log("Member booted event received!");
+                console.log(msg.body.bootedPkfp);
+                console.dir(msg)
+                this.uxBus.emit(TopicEvents.PARTICIPANT_EXCLUDED, {
+                    topicPkfp: this.pkfp,
+                    bootedPkfp: msg.body.bootedPkfp
+                })
+            }
+
             self.saveClientSettings();
             console.log("Metadata updated");
             self.emit(Events.METADATA_UPDATED);
@@ -613,6 +625,8 @@ export class Topic{
 
         if(self.handlers.hasOwnProperty(msg.headers.command)){
             self.handlers[msg.headers.command](msg, self)
+        } else if(msg.body.errorMsg){
+            self.uxBus.emit(TopicEvents.ERROR, msg.body.errorMsg)
         } else {
             let errMsg = `No handler found for command: ${msg.headers.command}`
             throw new Error(errMsg);
@@ -1238,5 +1252,6 @@ export const TopicEvents = {
     PARTICIPANT_EXCLUDED: Symbol("participant_booted"),
     INVITE_CONSUMED: Symbol("invite_consumed"),
     SETTINGS_UPDATED: Symbol("settings_updated"),
-    MESSAGE_SENT: Symbol("message_sent")
+    MESSAGE_SENT: Symbol("message_sent"),
+    ERROR: Symbol("error")
 }

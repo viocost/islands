@@ -60,7 +60,19 @@ export class Context{
     }
 
     boot(){
-        this._topicSelectedSm.handle.boot();
+        if(confirm("Would you like to exclude selected participant from the topic?")){
+            this._topicSelectedSm.handle.boot();
+        }
+    }
+
+    participantExcluded(data){
+        let { bootedPkfp } = data;
+        //deleting from side panel
+        let el = domUtil.$(`.participant-list-item[participantpkfp="${bootedPkfp}"]`)
+        domUtil.remove(el);
+        if(this.selectedParticipant && this.selectedParticipant.participantPkfp === bootedPkfp){
+            this._topicSelectedSm.handle.deselect()
+        }
     }
 
     delete(){
@@ -371,6 +383,7 @@ export class Context{
     subscribeToBusEvents(bus){
         bus.on(TopicEvents.INVITE_DELETED, this.inviteDeleted.bind(this))
         bus.on(TopicEvents.INVITE_CONSUMED, this.inviteDeleted.bind(this))
+        bus.on(TopicEvents.PARTICIPANT_EXCLUDED, this.participantExcluded.bind(this))
     }
 
     prepareTopicSelectedSM(){
