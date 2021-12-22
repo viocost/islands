@@ -1,0 +1,6 @@
+!package ClientUtil chat/client/src/js/util
+!package common chat/common
+
+!message LoginAcceptPssword
+  password validated-by ClientUtil/validators/validatePassword
+  message instance-of common/Message/Message

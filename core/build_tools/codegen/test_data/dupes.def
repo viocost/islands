@@ -1,0 +1,9 @@
+; s1.def
+
+ !message RawChatSingle sender string content string
+    sentTime null-ok validated-by timeIsValid
+   start-optional privateRecipient string
+
+ !message RawChatSingle sender string content string
+    sentTime null-ok validated-by timeIsValid
+   start-optional privateRecipient string

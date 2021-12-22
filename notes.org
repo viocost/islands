@@ -1,0 +1,160 @@
+
+* Message bus
+on(msg, data)
+if deliveringMessage
+
+* Registration
+
+* Authentication
+- Every island's user has a dedicated web service,
+  thus, Island already assumes which user it is.
+
+- When the web page is requested, island checks whether user is
+  registered and supplies that information along with the web page
+
+- Once page is loaded - an login agent is created.
+  user is asked to enter the password.
+
+- The password is then supplied to the login agent.
+
+- Login agent tasks after password is received:
+  1. Establish a socket connection with the island, by creating socket
+     connector, waiting for it to connect
+  2. Receive encrypted user's master private key and encrypted session key
+  3. Decrypt the master private key using supplied password
+  4. Decrypt the session key using master private key
+  5. Create Session, Master Key Agent, Session Crypto Agent,  Reconnection Agent,
+  6. Send encrypted nonce to the server, so server knows that session key was
+     successfully decrypted and session is good to go.
+
+It is possible that Login agent fails to reach the server due to some reasons.
+If that happens, Login agent will issue an error messages that says "Cannot reach
+the server".
+
+In case if user will enter wrong password - Login agent will fail to decrypt the
+private key. In that case - user will be asked to enter the new password. Login
+agent will hold encrypted private key and wait for user to enter a new password.
+This will repeat until user enters the correct password or leaves the page.
+
+Once the session is established - Login agent creates Post Login agent and then can be dismissed.
+
+
+** Reconnection
+If session receives "Connection lost" from the connector - it destroys the
+connector and asks Reconnection agent to reconnect. Reconnection agent creates
+new connector, asks it to connect. It also supplies reconnection query, that has
+a nonce encrypted with session key, so when Island gets new connection it will
+be able to identify the session. Island then sends "Reconnection OK" along with
+message, which means that session has been identified and reconnected. Reconnection agent
+then notifies the session that reconnection is successful and gives it new
+connector. After reconnection session must syncronize  message queue
+
+Session always accepts messages, even if not connected. It stores them in queue,
+and once connection is established - it will deliver them;
+
+
+** Message ordering and resending
+Session maintains a message queue.
+It also processes all incoming messages and reads their seq numbers.
+
+Once every n seconds session sends sync message with last message seen number.
+
+Session on the other end checks the queue and removes the last message seen and
+all messages that were before it. Then it resends whatever messages were after
+the last seen.
+
+Thus session removes messages from the send queue only when sync message
+received from the other end.
+
+
+
+** Post login
+Once session has been established, client must load topics' keys and data,
+initialize topics and vault objects, and create request emitter that will deliver message
+to topics and vault. This job is assigned to Post login agent.
+The user will be able to use chat only after post login agent initialized all
+the objects and finished its job.
+
+
+
+* Client-server types of messages
+There are only 3 types of messages:
+1. Regular message.
+   It is transparently processed by the session mechanism and passed on to the consumers
+2. Authentication message.
+   Used for client and server to establish or re-establish the secure
+   connection.
+3. Sync messages.
+   Used to re-synchronize messages between client and server.
+
+Messages of types 2 and 3 should not be delivered to consumers, those are
+internal types.
+
+
+
+* Handling new connections on server
+Whenever new connection opened on the server, there may be 2 possible scenarios:
+1. A brand new connection
+2. Reconnection with the connection query
+
+Every new connections is handled by PendingConnection. It handles both cases.
+When PendingConnection detects a connection query it is switched into a
+reconnection mode. Otherwise it creates new session.
+
+
+
+
+On a brand new connection there must be following steps taken:
+   1. Server should find corresponding vault
+   2. Generate a session key
+   3. Send vault and encrypted session key to client
+   4. Wait for a message with session key encrypted nonce
+   5. Decrypt the nonce with session key
+   6. Send auth ok message to client identifying that session is now established
+
+If nonce decryption fails - server should drop the connection immediately and
+destroy the session
+
+If at any moment connection with client drops before step 5 - drop the
+connection and destroy the session
+
+If there is a reconnection query present - server should identify the session
+that is able to decrypt the nonce. If such session is found - then new connected
+socket is given to it, and the session becomes active again.
+
+If no sessions found - connection dropped.
+
+
+
+
+When new connection comes in - webservice creates new Connection object and
+passes it to the sessions. Sessions
+
+* Initialization of the chat
+Once session has been established, it is now needed to load
+vault, topics, decrypt everything and initialize UI.
+
+
+
+* Reconnection on client
+When client looses connection with the server, there must be
+an automatic re-connection and resyncronization. There must be n automatic
+reconnect attempts, after withc only manual reconnect is possible.
+
+For that purpose we create ReconnectionAgent, whenever connection is lost.
+
+Reconnection agent creates new connector, give it a session secret
+and tries to establish connection with the server. If connector doesn't succeed, then reconnection agent throws it away
+and makes a new one and tries again n times. If it fails, then it remains
+running and responding to manual reconnects.
+
+Once connection is established, the new connector is given to the session, and
+session considered to be running.
+
+When session replaces the connector, it begins resync protocol pinging the
+session with last seq.
+
+Client session doesn't have timeout.
+
+If client session is refused reconnection - then the session is no longer
+recoverable, thus the page must be reloaded.

@@ -1,0 +1,18 @@
+!package clientJS chat/client/src/js
+         common chat/common
+
+!message RawChat
+  sender string
+  count integer
+  thing instance-of common/Message/Message
+  content null-ok string
+  start-optional
+
+!message CreateTopic
+  pkfp validated-by common/iCrypto/isValidPkfp
+  topicName string
+  timeCreated integer
+
+!message InitSession
+  pkfp string
+  password string

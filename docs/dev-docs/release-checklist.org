@@ -1,0 +1,16 @@
+* [ ]  Creating new vault
+* [ ]  Login
+* [ ]  Creating new topic
+* [ ]  Renaming topic
+* [ ]  Creating an invite
+* [ ]  Joining topic given an invite
+* [ ]  Sending regular message
+* [ ]  Making alias for another participant
+* [ ]  Changing my nickname
+* [ ]  Deleting topic
+* [ ]  Creating new admin hidden service
+* [ ]  Restarting island, making sure hidden service is running
+* [ ]  Session reconnect/recovery, connection indicator
+* [ ]  Data backups
+* [ ]  Sound on/off
+* [ ]  Hamburger menu

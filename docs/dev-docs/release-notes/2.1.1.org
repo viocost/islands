@@ -1,0 +1,24 @@
+**** [X] Creating new vault
+CLOSED: [2021-02-09 Tue 21:44]
+**** [X] Login
+CLOSED: [2021-02-09 Tue 21:44]
+**** [X] Creating new topic
+CLOSED: [2021-02-09 Tue 22:09]
+**** [X] Renaming topic
+CLOSED: [2021-02-09 Tue 22:11]
+**** [X] Creating an invite
+CLOSED: [2021-02-09 Tue 22:12]
+**** [ ]  Joining topic given an invite
+**** [ ]  Sending regular message
+**** [ ]  Making alias for another participant
+**** [ ]  Changing my nickname
+**** [X] Deleting topic
+CLOSED: [2021-02-09 Tue 22:11]
+**** [ ]  Creating new admin hidden service
+**** [ ]  Restarting island, making sure hidden service is running
+**** [ ]  Session reconnect/recovery, connection indicator
+**** [ ]  Data backups
+**** [ ]  Sound on/off
+**** [ ]  Hamburger menu
+
+f38c6ee7b13c22e20c2de6866eee71df66c1bb57396e7ec624036c38a00b32a5

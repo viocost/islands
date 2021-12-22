@@ -1,0 +1,6 @@
+; s1.def
+
+!message RawChat sender string content string
+   sentTime null-ok validated-by timeIsValid
+   optional privateRecipient string default_to private
+   optional test string default_to hello

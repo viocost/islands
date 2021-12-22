@@ -1,0 +1,43 @@
+; !machine <identifier>
+; begin-region <identifier>
+; entry-state <identifier> | entry-then-history <identifier>
+; define-state <identifier>
+;   opt: has-tag <identifier> OR has-tag* <identifer ...> *end
+;   OPT: on-entry <action-identifier> | has-action* <identifier ....> *end
+;   OPT: on-exit  <action-identifier> | has-action* <identifier ....> *end
+;   opt <identifier> ; TRANSITION MESSAGE NAME
+;      opt: has-action <identifier> OR has-action* <identifier ...> *end
+;      opt: has-guard <identifier>  OR has-guard* <identifier ...> *end
+;      opt: transitions-to <identifier>
+;   OPT begin-region <recurses> end-region
+; ...
+; end-region
+
+!agent ModernLamp
+begin-region lamp
+
+  entry-state off
+
+  define-state off
+    on-entry
+      has-action turn_off_light
+    flick_switch
+      has-guard* has_power *end
+      has-action play_click_sound
+      transitions-to on
+    power_lamp
+      has-action* set_has_power play_beep *end
+    depower_lamp
+      has-action clear_has_power
+
+  define-state on
+    on-entry
+      has-action turn_on_light
+    flick_switch
+      has-action play_click_sound
+      transitions-to off
+    depower_lamp
+      has-action clear_has_power
+      transitions-to off
+
+end-region
